@@ -1,4 +1,4 @@
-import {verify,simulate,rank,valuation,thesisRank,formatPct,money,finite,verifyIssuerCatalog,filterIssuers} from "./metrics.mjs";
+import {verify,simulate,rank,valuation,thesisRank,formatPct,money,finite,verifyIssuerCatalog,filterIssuers,syntheticBarsFromDemo,nextOpenPaper} from "./metrics.mjs";
 const $=id=>document.getElementById(id);
 const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 const fmt=n=>finite(n)?new Intl.NumberFormat("es-ES",{maximumFractionDigits:2}).format(n):"N/D";
@@ -11,6 +11,7 @@ const disclaimer=(body)=>'<div class="research-note">'+esc(body)+'</div>';
 const all=()=>state.data.strategies;
 const active=()=>simulate(state.data,state.strategy);
 const groups=()=>[...new Set(all().map(s=>s.group))];
+const causalLedger=()=>nextOpenPaper(syntheticBarsFromDemo(state.data),{rule:"trend",feeBps:10,slippageBps:5,lookback:4});
 const tone=(n)=>finite(n)?n>0?"perf-positive":n<0?"perf-negative":"perf-flat":"perf-neutral";
 const pctText=(n)=>'<span class="performance '+tone(n)+'">'+esc(formatPct(n))+'</span>';
 function sparkline(nav){
@@ -102,6 +103,7 @@ function issuerDetail(){
  const i=state.universe.issuers.find(x=>x.ticker===state.issuerTicker)||state.universe.issuers[0];
  return card('<div class="panel-top"><div><span class="label">'+esc(i.ticker)+' · '+esc(i.market)+'</span><h3>'+esc(i.company)+'</h3></div><span class="status-chip">Pendiente de validación</span></div><p>'+esc(i.sector)+'</p>'+
  '<div class="metric-strip">'+metric("Cotización verificable","N/D")+metric("Bear / Base / Bull","N/D")+metric("Precio para CAGR 15 %","N/D")+metric("Próximos resultados","N/D")+'</div>'+
+ '<h3 class="minor-heading">Fuentes oficiales</h3>'+(i.secCik?'<p>Expediente regulatorio verificado de la SEC: <a href="https://www.sec.gov/edgar/browse/?CIK='+esc(i.secCik)+'" target="_blank" rel="noopener noreferrer">Consultar formularios SEC (10-K, 10-Q, 8-K)</a>. Esto no implica que las cuentas y supuestos de valoración se hayan auditado.</p>':'<p>Identificador de expediente regulatorio pendiente de contrastar.</p>')+
  '<h3 class="minor-heading">Control de publicación</h3><p>Identidad del emisor incorporada al catálogo. Para publicar una tesis hacen falta fuentes primarias, fecha y divisa de precio, escenarios reconstruidos, CAGR y una revisión independiente. No se traslada un dossier privado ni se enlaza a él.</p>');
 }
 function theses(){
@@ -117,7 +119,7 @@ function theses(){
 }
 
 function monitoring(){
- const s=active();
+ const s=active(),audit=causalLedger();
  return head("SEGUIMIENTO","Diario paper y salud de fuentes","Se conservan operaciones hipotéticas, reglas de costes y ausencia de fuentes verificadas. No existe conectividad con cuentas reales.")+
  '<div class="section-grid three">'+card('<span class="label">PROCEDENCIA</span><h3>Datos sintéticos</h3><p>Tres activos ficticios. Ningún proveedor de cotizaciones.</p>')+
  card('<span class="label">COTIZACIONES AUSENTES</span><h3>0 en el ejemplo</h3><p>Si un precio es inválido, la simulación no fabrica un fill ni un NAV.</p>')+
@@ -126,7 +128,15 @@ function monitoring(){
  '<div class="filters"><label>Algoritmo<select id="journal-select">'+all().map(x=>'<option value="'+esc(x.id)+'" '+(x.id===state.strategy?"selected":"")+'>'+esc(x.name)+'</option>').join("")+'</select></label>'+button("Exportar diario CSV","export","journal","outline-btn")+'</div>'+
  '<div class="metric-strip spaced">'+metric("Órdenes",String(s.orders.length))+metric("Valor final",money(s.points.at(-1).equity))+metric("Costes",money(s.fees))+metric("Cobertura","100 %")+'</div>'+
  '<div class="table-scroll"><table><thead><tr><th>Sesión</th><th>Activo</th><th>Acción</th><th class="number">Referencia</th><th class="number">Unidades</th><th class="number">Nocional</th><th class="number">Coste</th><th>Tipo</th></tr></thead><tbody>'+s.orders.slice(-30).reverse().map(x=>'<tr><td>'+esc(x.session)+'</td><td>'+esc(x.symbol)+'</td><td>'+esc(x.action)+'</td><td class="number">'+money(x.referencePrice)+'</td><td class="number">'+fmt(x.units)+'</td><td class="number">'+money(x.notional)+'</td><td class="number">'+money(x.cost)+'</td><td>PAPER</td></tr>').join("")+'</tbody></table></div>'+
- disclaimer("Últimas 30 operaciones mostradas; la exportación incluye todo el diario. Ninguna ejecución se origina en una cuenta personal.");
+ disclaimer("Las órdenes del catálogo anterior valoran la ejecución al cierre previo: son ilustrativas y no deben utilizarse como backtest ejecutable.")+
+ head("PROTOCOLO CAUSAL","Ejecución paper en apertura siguiente","Motor alternativo independiente: regla de tendencia con cierres anteriores, apertura posterior, posiciones, comisiones y deslizamiento. No reemplaza aún la competición.")+
+ '<div class="metric-strip spaced">'+metric("Rendimiento sintético",formatPct(audit.returnPct))+metric("Órdenes next-open",String(audit.orders.length))+metric("Comisiones ficticias",money(audit.fees))+metric("Deslizamiento teórico",money(audit.slippage))+'</div>'+
+ '<p class="table-note">Señal al cierre de la sesión previa; transacción a la apertura de la siguiente. Aperturas, máximos y mínimos DERIVADOS ARTIFICIALMENTE de datos ficticios. Sin datos de bolsa ni inferencia estadística.</p>'+
+ '<div class="filters">'+button("Exportar libro causal CSV","export","next-open","outline-btn")+'</div>'+
+ '<div class="table-scroll table-compact"><table><thead><tr><th>Señal al cierre</th><th>Fill en apertura</th><th>Activo</th><th>Acción</th><th class="number">Apertura sintética</th><th class="number">Precio paper</th><th class="number">Unidades</th><th class="number">Comisión</th></tr></thead><tbody>'+audit.orders.slice(-15).reverse().map(o=>
+ '<tr><td>'+esc(o.signalAt)+'</td><td>'+esc(o.fillAt)+'</td><td>'+esc(o.symbol)+'</td><td>'+esc(o.side)+'</td><td class="number">'+esc(fmt(o.openPrice))+'</td><td class="number">'+esc(fmt(o.fillPrice))+'</td><td class="number">'+esc(fmt(o.units))+'</td><td class="number">'+esc(fmt(o.fee))+'</td></tr>'
+ ).join("")+'</tbody></table></div>'+
+ disclaimer("Prototipo analítico next-open. No acredita precisión predictiva ni rentabilidad real; no hay broker, cotizaciones externas, motor de persistencia ni ejecución programada.");
 }
 function methodology(){
  return head("MÉTODO Y LÍMITES","Evaluación reproducible","La infraestructura pública reproduce la experiencia funcional de un laboratorio cuantitativo, pero no ha importado ni los resultados ni los motores entrenados de ningún sistema externo.")+
@@ -162,6 +172,7 @@ function download(name,rows){const u=URL.createObjectURL(new Blob(["\ufeff"+asCS
 function exportData(what){
  if(what==="ranking"){download("midas-ranking-sintetico.csv",[["algoritmo","familia","retorno_pct","drawdown_pct","volatilidad_pct","sharpe","coste"],...rank(state.data,state.sort,state.asc,state.group).map(x=>[x.name,x.group,x.returnPct,x.drawdownPct,x.volatilityPct,x.sharpe,x.fees])]);}
  if(what==="nav"){download("midas-curva-paper-sintetica.csv",[["sesion","nav_base_100","capital_ficticio"],...active().points.map(p=>[p.session,p.nav,p.equity])]);}
+ if(what==="next-open"){const a=causalLedger();download("midas-ordenes-next-open-sinteticas.csv",[["senal_al_cierre","fill_apertura_siguiente","activo","lado","apertura_sintetica","precio_paper","unidades","notional","comision","deslizamiento"],...a.orders.map(o=>[o.signalAt,o.fillAt,o.symbol,o.side,o.openPrice,o.fillPrice,o.units,o.notional,o.fee,o.slippage])]);}
  if(what==="journal"){download("midas-diario-sintetico.csv",[["sesion","activo","accion","precio","unidades","nocional","coste"],...active().orders.map(x=>[x.session,x.symbol,x.action,x.referencePrice,x.units,x.notional,x.cost])]);}
  if(what==="issuers"){download("midas-emisores-publicos.csv",[["ticker","empresa","mercado","sector","precio_actual","cagr_bear_5y","cagr_base_5y","cagr_bull_5y","precio_15pct","objetivo_5y","proximos_resultados","estado"],...filterIssuers(state.universe,state.issuerQuery,state.issuerSort).map(i=>[i.ticker,i.company,i.market,i.sector,"N/D","N/D","N/D","N/D","N/D","N/D","N/D",i.status])]);}
  if(what==="theses"){download("midas-tesis-sinteticas.csv",[["entidad","sector","metodo","estado","cagr_central","valor_bajista","valor_central","valor_alcista"],...thesisRank(state.data).map(x=>[x.company,x.sector,x.method,x.status,x.central,x.valuation.bear.fair,x.valuation.base.fair,x.valuation.bull.fair])]);}
