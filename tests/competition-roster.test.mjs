@@ -1,7 +1,7 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 import {readFileSync} from "node:fs";
-import {verifyFullRoster,filterRoster} from "../src/competition-roster.mjs";
+import {verifyFullRoster,filterRoster,technicalStage,technicalCoverage} from "../src/competition-roster.mjs";
 
 const doc=JSON.parse(readFileSync(new URL("../data/competition-roster.json",import.meta.url),"utf8"));
 test("Institutional full-coverage manifest has exactly 64 independent functional slots",()=>{
@@ -61,4 +61,26 @@ test("Academic origin labels are absent from institutional public output",()=>{
  const originPattern=/\bTF[GM]\b|\bpersonal_[a-z0-9_]+\b|\bsegundo[\s_-]+cerebro\b|\bmamg[0-9]{2}\b/i;
  assert.doesNotMatch(readme,originPattern);
  assert.doesNotMatch(manifest,originPattern);
+});
+
+test("Readiness taxonomy counts only code and never declares economic activity",()=>{
+ const counts=technicalCoverage(doc);
+ assert.deepEqual(counts,{book_unstarted:13,signal_contract:9,pending:42});
+ for(const row of doc.entries){
+  const stage=technicalStage(row.slot);
+  assert.ok(["book_unstarted","signal_contract","pending"].includes(stage.id));
+  assert.equal(row.record_status,"not_migrated");
+  assert.equal(row.return_pct,null);
+ }
+ assert.equal(technicalStage("IL-001").id,"book_unstarted");
+ assert.equal(technicalStage("IL-010").id,"book_unstarted");
+ assert.equal(technicalStage("IL-038").id,"book_unstarted");
+ assert.equal(technicalStage("IL-019").id,"signal_contract");
+ assert.equal(technicalStage("IL-027").id,"signal_contract");
+ assert.equal(technicalStage("IL-045").id,"pending");
+ assert.throws(()=>technicalStage("IL-999"));
+ const site=readFileSync(new URL("../src/site.mjs",import.meta.url),"utf8");
+ assert.ok(site.includes("technicalCoverage(d)"));
+ assert.ok(site.includes("technicalStage(item.slot).label"));
+ assert.ok(site.includes('"Fase técnica"'));
 });
