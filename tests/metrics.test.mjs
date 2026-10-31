@@ -236,5 +236,5 @@ test("Institutional UI offers row inspection, column sorting, historic isolation
   assert.ok(html.includes(label),label);
  }
  assert.ok(css.includes(".interactive-table-row:focus-visible"));
- assert.ok(src.includes("61")===false||src.includes("periodReturns")); // Not a market-data completeness assertion.
+ assert.ok(src.includes("periodReturns")); // Only synthetic NAV windows; no claim of actual trading sessions.
 });
