@@ -50,7 +50,7 @@ function detail(s){
  (proxy?disclaimer("Proxy matemático: no se ha entrenado ni ejecutado el modelo externo de esta familia."):"")+'</article>'+
  '<aside class="panel"><div class="label">CARTERA PAPER</div><h3>'+esc(s.name)+'</h3>'+metric("Capital ficticio final",money(s.points.at(-1).equity))+metric("Costes teóricos",money(s.fees))+metric("Operaciones simuladas",String(s.orders.length))+
  '<div class="minor-heading">Exposición al último cierre</div>'+Object.keys(state.data.market).map((k,i)=>'<div class="bar-label"><span>'+esc(k)+'</span><strong>'+fmt(s.weights[i]*100)+' %</strong></div><div class="exposure-bar"><i style="width:'+Math.max(0,Math.min(100,s.weights[i]*100))+'%"></i></div>').join("")+
- '<p class="small-note">Coste asumido: '+fmt(s.cost_bps)+' puntos básicos por unidad negociada. Sin conexión a ningún broker.</p>'+button("Diario de órdenes","journal",s.id,"outline-btn")+'</aside></div>';
+ '<p class="small-note">Coste asumido: '+fmt(s.cost_bps)+' puntos básicos por unidad negociada. Sin conexión a ningún broker.</p>'+button("Diario de órdenes","journal",s.id,"outline-btn")+button("Exportar NAV","export","nav","outline-btn")+'</aside></div>';
 }
 function algorithms(){
  return head("CATÁLOGO DE MÉTODOS","Algoritmos y familias","Reglas reconstruidas para la versión institucional, sin códigos, pesos entrenados ni configuraciones personales.")+
@@ -123,6 +123,7 @@ const asCSV=rows=>rows.map(row=>row.map(x=>'"'+String(x??"").replaceAll('"','""'
 function download(name,rows){const u=URL.createObjectURL(new Blob(["\ufeff"+asCSV(rows)],{type:"text/csv;charset=utf-8"}));const a=document.createElement("a");a.href=u;a.download=name;document.body.append(a);a.click();a.remove();URL.revokeObjectURL(u);}
 function exportData(what){
  if(what==="ranking"){download("midas-ranking-sintetico.csv",[["algoritmo","familia","retorno_pct","drawdown_pct","volatilidad_pct","sharpe","coste"],...rank(state.data,state.sort,state.asc,state.group).map(x=>[x.name,x.group,x.returnPct,x.drawdownPct,x.volatilityPct,x.sharpe,x.fees])]);}
+ if(what==="nav"){download("midas-curva-paper-sintetica.csv",[["sesion","nav_base_100","capital_ficticio"],...active().points.map(p=>[p.session,p.nav,p.equity])]);}
  if(what==="journal"){download("midas-diario-sintetico.csv",[["sesion","activo","accion","precio","unidades","nocional","coste"],...active().orders.map(x=>[x.session,x.symbol,x.action,x.referencePrice,x.units,x.notional,x.cost])]);}
  if(what==="theses"){download("midas-tesis-sinteticas.csv",[["entidad","sector","metodo","estado","cagr_central","valor_bajista","valor_central","valor_alcista"],...thesisRank(state.data).map(x=>[x.company,x.sector,x.method,x.status,x.central,x.valuation.bear.fair,x.valuation.base.fair,x.valuation.bull.fair])]);}
 }
