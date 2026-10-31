@@ -4,8 +4,9 @@ import json
 import unittest
 from datetime import datetime, timezone
 from pathlib import Path
+from unittest.mock import patch
 
-from refresh_sec import ROSTER, SOURCE, NOTICE, empty, parse_submission, source_url, validate_document
+from refresh_sec import ROSTER, SOURCE, NOTICE, empty, parse_submission, source_url, validate_document, declared_user_agent
 
 STAMP = "2026-10-31T16:00:00Z"
 
@@ -82,6 +83,15 @@ class FilingSourceTests(unittest.TestCase):
         demo = json.loads((root / "data/demo.json").read_text(encoding="utf8"))
         mapping = {x["ticker"]: x.get("secCik") for x in demo["issuerCatalog"]["issuers"] if x.get("secCik")}
         self.assertEqual(mapping, ROSTER)
+
+
+    def test_sec_contact_must_be_monitored_institutional_email_and_never_written_to_source(self):
+        for contact in ("", "350414243+idealab2026@users.noreply.github.com", "plain-text", "tester@example"):
+            with patch.dict("os.environ", {"SEC_CONTACT_EMAIL": contact}):
+                with self.assertRaisesRegex(RuntimeError, "monitored institutional"):
+                    declared_user_agent()
+        with patch.dict("os.environ", {"SEC_CONTACT_EMAIL": "research@institution.example"}):
+            self.assertIn("IDEA LAB Research research@institution.example", declared_user_agent())
 
 
 if __name__ == "__main__":
