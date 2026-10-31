@@ -44,6 +44,7 @@ jobs:
         run: |
           python3 -m unittest discover -s scripts -p 'test_public_market_runner.py' -v
           python3 -m unittest discover -s scripts -p 'test_classic_503.py' -v
+          python3 -m unittest discover -s scripts -p 'test_classic_503_book.py' -v
           python3 scripts/classic_503.py
           python3 scripts/public_market_runner.py --preflight
       - name: Disclose source permission gate
@@ -80,6 +81,7 @@ jobs:
         run: |
           python3 -m unittest discover -s scripts -p 'test_public_market_runner.py' -v
           python3 -m unittest discover -s scripts -p 'test_classic_503.py' -v
+          python3 -m unittest discover -s scripts -p 'test_classic_503_book.py' -v
           python3 scripts/classic_503.py
           python3 scripts/public_market_runner.py --preflight
       - name: Advance only prospective, rights-attested XNYS reference sessions
@@ -91,6 +93,9 @@ jobs:
           import json, os, sys
           sys.path.insert(0, "scripts")
           from public_market_runner import validate_state
+          from classic_503_book import verify_book
+          with open("data/classic-503-book.json", encoding="utf8") as stream:
+              verify_book(json.load(stream), os.environ["IDEALAB_PAPER_FEED_KEY"])
           with open("data/public-paper-book.json", encoding="utf8") as stream:
               validate_state(json.load(stream), os.environ["IDEALAB_PAPER_FEED_KEY"])
           print("HMAC and cash/book accounting accepted")
@@ -98,14 +103,14 @@ jobs:
       - name: Commit only the independent public paper bookkeeping and safe summary
         run: |
           set -euo pipefail
-          if git diff --quiet -- data/public-paper-book.json data/institutional-paper-feed.json; then
+          if git diff --quiet -- data/public-paper-book.json data/classic-503-book.json data/institutional-paper-feed.json; then
             echo "No newly completed market session, no commit"
             exit 0
           fi
-          bad="$(git status --porcelain | grep -Ev 'data/(public-paper-book|institutional-paper-feed).json$' || true)"
+          bad="$(git status --porcelain | grep -Ev 'data/(public-paper-book|classic-503-book|institutional-paper-feed).json$' || true)"
           test -z "$bad"
           git config user.name "Idea Lab"
           git config user.email "350414243+idealab2026@users.noreply.github.com"
-          git add -- data/public-paper-book.json data/institutional-paper-feed.json
+          git add -- data/public-paper-book.json data/classic-503-book.json data/institutional-paper-feed.json
           git commit -m "Record independent prospective MIDAS paper reference books"
           git push origin HEAD:main
