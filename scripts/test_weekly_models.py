@@ -113,7 +113,7 @@ class TrainedResearchModels(unittest.TestCase):
         self.assertLessEqual(abs(model["phi"]),.98)
         self.assertTrue(math.isfinite(predict_arima_100(model,.05)))
         corrupt=deepcopy(a[:40])
-        corrupt[7]["feature_date"]=(date.fromisoformat(corrupt[7]["feature_date"])+timedelta(days=2)).isoformat()
+        corrupt[7]["feature_date"]=(date.fromisoformat(corrupt[7]["feature_date"])+timedelta(days=3)).isoformat()
         corrupt[7]["feature_available_at"]=corrupt[7]["feature_date"]
         with self.assertRaisesRegex(ValueError,"Nonconsecutive"):
             fit_arima_100(corrupt,"AAA")
