@@ -28,9 +28,13 @@ jobs:
         run: |
           git log --all --format='%an|%ae|%cn|%ce' | while IFS='|' read -r author email committer commit_email; do
             test "$author" = "Idea Lab"
-            test "$committer" = "Idea Lab"
             case "$email" in *+idealab2026@users.noreply.github.com) ;; *) exit 1 ;; esac
-            case "$commit_email" in *+idealab2026@users.noreply.github.com) ;; *) exit 1 ;; esac
+            if [ "$committer" = "GitHub" ]; then
+              test "$commit_email" = "noreply@github.com"
+            else
+              test "$committer" = "Idea Lab"
+              case "$commit_email" in *+idealab2026@users.noreply.github.com) ;; *) exit 1 ;; esac
+            fi
           done
       - name: Check publication boundary
         run: python3 scripts/audit_public.py
