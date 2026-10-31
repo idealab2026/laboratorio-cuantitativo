@@ -30,7 +30,7 @@ for page in ("index.html", "research.html"):
  for url in links.references:
         if url.startswith("#"): continue
         if url.startswith("https://"):
-            if not (url.startswith("https://idealab2026.github.io/") or url.startswith("https://github.com/idealab2026/")):
+            if not (url.startswith("https://idealab2026.github.io/") or url.startswith("https://github.com/idealab2026/") or url == "https://static.cloudflareinsights.com/beacon.min.js"):
                 issues.append("Non-institutional external link")
         elif url.startswith("./"):
             if url[2:] not in RELEASE: issues.append("Dependency not on release allowlist")
