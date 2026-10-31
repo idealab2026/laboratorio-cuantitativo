@@ -1,8 +1,9 @@
 import {verify,simulate,rank,valuation,thesisRank,formatPct,money,finite} from "./metrics.mjs";
+import {verifyIssuerCatalog,filterIssuers} from "./catalog.mjs";
 const $=id=>document.getElementById(id);
 const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 const fmt=n=>finite(n)?new Intl.NumberFormat("es-ES",{maximumFractionDigits:2}).format(n):"N/D";
-const state={data:null,view:"overview",strategy:"P-01",group:"",sort:"returnPct",asc:false,thesis:"T-01",query:"",thesisSort:"central"};
+const state={data:null,universe:null,view:"overview",strategy:"P-01",group:"",sort:"returnPct",asc:false,thesis:"T-01",query:"",thesisSort:"central",issuerMode:"catalog",issuerQuery:"",issuerSort:"ticker",issuerTicker:"MSFT"};
 const viewNames=["overview","competition","algorithms","theses","monitoring","method"];
 const button=(label,action,value,cls="smallbtn")=>'<button type="button" class="'+cls+'" data-action="'+esc(action)+'" data-value="'+esc(value)+'">'+esc(label)+'</button>';
 const head=(label,title,body)=>'<div class="section-heading"><div><span class="kicker">'+esc(label)+'</span><h2>'+esc(title)+'</h2><p class="section-context">'+esc(body)+'</p></div></div>';
@@ -11,36 +12,50 @@ const disclaimer=(body)=>'<div class="research-note">'+esc(body)+'</div>';
 const all=()=>state.data.strategies;
 const active=()=>simulate(state.data,state.strategy);
 const groups=()=>[...new Set(all().map(s=>s.group))];
+const tone=(n)=>finite(n)?n>0?"perf-positive":n<0?"perf-negative":"perf-flat":"perf-neutral";
+const pctText=(n)=>'<span class="performance '+tone(n)+'">'+esc(formatPct(n))+'</span>';
+function sparkline(nav){
+ if(!Array.isArray(nav)||nav.length<2||nav.some(n=>!finite(n)))return "N/D";
+ const lo=Math.min(...nav),hi=Math.max(...nav),span=Math.max(hi-lo,.01);
+ const points=nav.map((n,i)=>(3+i*110/(nav.length-1)).toFixed(1)+","+(27-(n-lo)*23/span).toFixed(1)).join(" ");
+ return '<svg class="mini-chart '+tone(nav.at(-1)-nav[0])+'" viewBox="0 0 116 32" width="116" height="32" role="img" aria-label="Evolución sintética del capital"><polyline points="'+points+'" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linejoin="round"/></svg>';
+}
 const metric=(label,value)=>'<div class="metric"><strong>'+esc(value)+'</strong><small>'+esc(label)+'</small></div>';
 const family=(g)=>({"Clásicas":"Equiponderación, tendencia, reversión, menor variabilidad y control en efectivo.","Aprendizaje semanal":"Proxies de métodos supervisados; no se han entrenado modelos reales.","Predicción temporal":"Modelos temporales de referencia; no se ha ejecutado TimesFM.","Capital Cycle":"Ciclo de inversión y disciplina de valoración con supuestos observables.","Buy The Dip":"Escalonamiento de exposición tras caídas, con reserva de liquidez.","Modelos experimentales":"Multicriterio, parámetros fijos y filtro de estrés."})[g]||"Prototipo de estrategia paper.";
 function summary(){
  $("stat-strategies").textContent=all().length;
  $("stat-groups").textContent=groups().length;
- $("stat-theses").textContent=state.data.theses.length;
+ $("stat-theses").textContent=state.universe.issuers.length;
  $("stat-sessions").textContent=state.data.dates.length;
 }
 function overview(){
  const first=rank(state.data)[0];
- return head("INICIO · INVESTIGACIÓN","Laboratorio cuantitativo","El objetivo es comparar algoritmos y documentar hipótesis con reglas de evaluación reproducibles. Todas las cifras actuales corresponden a una demostración sintética.")+
- '<div class="section-grid">'+card('<span class="label">Mayor variación ilustrativa</span><h3>'+esc(first.name)+'</h3><div class="headline-value">'+esc(formatPct(first.returnPct))+'</div><p>Solo una simulación hipotética: no hay operaciones en mercado.</p>'+button("Abrir ficha","select",first.id))+
- card('<span class="label">Comparación y control</span><h3>'+groups().length+' familias de algoritmos</h3><p>Las series se calculan sobre exactamente el mismo período y activos ficticios. No se importan carteras personales.</p>'+button("Abrir competición","navigate","competition"))+'</div>'+
- head("CATÁLOGO","Familias de estrategias","Una ficha por familia y un detalle operativo por algoritmo, con advertencias para los modelos aún no entrenados.")+
+ const featured=["MSFT","META","PLTR"].map(t=>state.universe.issuers.find(i=>i.ticker===t)).filter(Boolean);
+ return head("INICIO · INVESTIGACIÓN","Laboratorio cuantitativo","Comparación reproducible de métodos y catálogo público de compañías. Las clasificaciones son sintéticas; no se atribuyen rentabilidades bursátiles reales.")+
+ '<div class="section-grid">'+card('<span class="label">Variación simulada más alta</span><h3>'+esc(first.name)+'</h3><div class="headline-value '+tone(first.returnPct)+'">'+esc(formatPct(first.returnPct))+'</div><p>Resultado exclusivamente sintético; no existen operaciones en bolsa.</p>'+button("Abrir ficha","select",first.id))+
+ card('<span class="label">Universo de empresas</span><h3>'+state.universe.issuers.length+' emisores y estudios identificados</h3><p>Empresas reales, sin publicar precios ni valoraciones no verificados; investigación institucional pendiente.</p>'+button("Ver empresas","navigate","theses"))+'</div>'+
+ head("CATÁLOGO","Familias de estrategias","Las simulaciones siguen siendo demostraciones; los modelos entrenados de la sección de investigación no están conectados a esta competición.")+
  '<div class="family-grid">'+groups().map(g=>card('<div class="panel-top"><h3>'+esc(g)+'</h3><span class="chip">'+all().filter(x=>x.group===g).length+' métodos</span></div><p>'+esc(family(g))+'</p>'+button("Examinar","group",g))).join("")+'</div>'+
- head("TESIS Y WATCHLIST","Escenarios de valoración","Los flujos, múltiples y precios son ficticios. No corresponden a emisores cotizados.")+
- '<div class="section-grid three">'+thesisRank(state.data).slice(0,3).map(t=>card('<span class="label">'+esc(t.sector)+'</span><h3>'+esc(t.company)+'</h3><p>'+esc(t.thesis)+'</p>'+metric("CAGR base simulado",formatPct(t.central))+button("Analizar","thesis",t.id))).join("")+'</div>'+
- disclaimer("Los modelos de aprendizaje automático, modelos temporales y algoritmos genéticos originales no se han trasladado. Los proxies demuestran las operaciones paper, sin atribuir capacidad predictiva real.");
+ head("EMPRESAS","Seguimiento por emisor","Nombres reales y mercados de referencia; fichas públicas en preparación, sin replicar documentos externos ni carteras privadas.")+
+ '<div class="section-grid three">'+featured.map(t=>card('<span class="label">'+esc(t.ticker)+' · '+esc(t.market)+'</span><h3>'+esc(t.company)+'</h3><p>'+esc(t.sector)+'</p><p>Valoración pública independiente: pendiente de validación.</p>'+button("Ver ficha","issuer-select",t.ticker))).join("")+'</div>'+
+ disclaimer("No existe migración completa de los motores ni de los expedientes de inversión. Sin cotizaciones actualizadas, no se muestran CAGR históricos como pronósticos vigentes.");
 }
 function competition(){
  const rows=rank(state.data,state.sort,state.asc,state.group);
  const current=active();
- return head("COMPETICIÓN PAPER","Clasificación de algoritmos","Cada método parte de 100.000 unidades ficticias y recibe señales basadas en sesiones anteriores, con costes explícitos.")+
- disclaimer("MUESTRA SINTÉTICA. Las curvas y la clasificación no son rentabilidad real ni un backtest validado sobre mercado.")+
+ return head("COMPETICIÓN PAPER","Clasificación de algoritmos","Tabla compacta: un algoritmo por fila, actividad, rentabilidad y curva de NAV. Todo el registro es sintético, no histórico de mercado.")+
+ disclaimer("SIMULACIÓN SINTÉTICA · Las rentabilidades, órdenes y curvas no son resultados de inversión reales ni operaciones verificadas.")+
  '<div class="filters"><label>Familia<select id="group-select"><option value="">Todas</option>'+groups().map(g=>'<option value="'+esc(g)+'" '+(state.group===g?"selected":"")+'>'+esc(g)+'</option>').join("")+'</select></label>'+
  '<label>Ordenar<select id="rank-select">'+[["returnPct","Rentabilidad"],["drawdownPct","Drawdown"],["volatilityPct","Volatilidad"],["sharpe","Sharpe"],["name","Nombre"]].map(([v,n])=>'<option value="'+esc(v)+'" '+(state.sort===v?"selected":"")+'>'+esc(n)+'</option>').join("")+'</select></label>'+
  button(state.asc?"↑ Ascendente":"↓ Descendente","direction","","outline-btn")+button("Exportar CSV","export","ranking","outline-btn")+'</div>'+
- '<div class="table-scroll"><table><thead><tr><th>Algoritmo</th><th>Bloque</th><th class="number">Retorno</th><th class="number">DD máx.</th><th class="number">Vol. anualizada</th><th class="number">Sharpe</th><th class="number">Sesiones</th><th>Ficha</th></tr></thead><tbody>'+rows.map(s=>'<tr class="'+(s.id===current.id?"is-selected":"")+'"><td><strong>'+esc(s.name)+'</strong><small class="smallline">'+esc(s.id)+'</small></td><td>'+esc(s.group)+'</td><td class="number">'+esc(formatPct(s.returnPct))+'</td><td class="number">'+fmt(s.drawdownPct)+' %</td><td class="number">'+(finite(s.volatilityPct)?fmt(s.volatilityPct)+" %":"N/D")+'</td><td class="number">'+fmt(s.sharpe)+'</td><td class="number">'+s.sessions+'</td><td>'+button("Examinar","select",s.id)+'</td></tr>').join("")+'</tbody></table></div>'+
- '<p class="table-note">Volatilidad y Sharpe anualizados sobre 48 sesiones artificiales: carecen de inferencia estadística sobre mercados reales.</p>'+
- head("FICHA TÉCNICA","Detalle y operaciones","Consulta la evolución del NAV, pesos, actividad y comisiones del método elegido.")+detail(current);
+ '<div class="table-scroll table-compact"><table><thead><tr><th>Algoritmo</th><th>Familia</th><th class="number">Rentabilidad</th><th class="number">DD máx.</th><th class="number">Vol.</th><th class="number">Sharpe</th><th>Actividad paper</th><th>Curva</th><th>Ficha</th></tr></thead><tbody>'+
+ rows.map(s=>{
+  const exposed=s.weights.filter(w=>w>0.005).length;
+  const activity=s.orders.length===0?"Sin operaciones":"Órdenes: "+s.orders.length;
+  return '<tr class="'+(s.id===current.id?"is-selected":"")+'"><td><strong>'+esc(s.name)+'</strong> <small class="inline-id">'+esc(s.id)+'</small></td><td>'+esc(s.group)+'</td><td class="number">'+pctText(s.returnPct)+'</td><td class="number">'+esc(fmt(s.drawdownPct))+' %</td><td class="number">'+(finite(s.volatilityPct)?esc(fmt(s.volatilityPct))+" %":"N/D")+'</td><td class="number">'+esc(fmt(s.sharpe))+'</td><td><span class="activity-main">'+esc(activity)+'</span><small class="activity-meta">'+exposed+' activos · '+esc(fmt(Math.max(0,s.cash)*100))+' % caja</small></td><td>'+sparkline(s.nav)+'</td><td>'+button("Ver","select",s.id)+'</td></tr>';
+ }).join("")+'</tbody></table></div>'+
+ '<p class="table-note">Una fila por algoritmo. Ordenes, posiciones, retornos y minigráficas corresponden únicamente a 48 sesiones artificiales. Los colores indican el signo, no una recomendación.</p>'+
+ head("FICHA TÉCNICA","Detalle y operaciones","Consulta el NAV, exposición, movimientos y costes del método seleccionado.")+detail(current);
 }
 function detail(s){
  const proxy=["linear","direction","crossrank","perceptron","memory","ensemble","weekly","daily","genetic"].includes(s.mode);
@@ -70,14 +85,38 @@ function thesisDetail(t){
  '<h3 class="minor-heading">Escenarios a cinco periodos ficticios</h3><div class="scenario-grid">'+["bear","base","bull"].map((k,i)=>'<div class="scenario-tile"><span class="label">'+["Bajista","Central","Alcista"][i]+'</span><strong>'+money(t.valuation[k].fair)+'</strong><span>CAGR '+formatPct(t.valuation[k].compound)+'</span><p>Crecimiento '+fmt(t.growth[k])+' % · Múltiplo '+fmt(t.multiples[k])+'×</p></div>').join("")+'</div>'+
  '<div class="section-grid three"><div><h3>Refutación</h3><p>'+esc(t.counter)+'</p></div><div><h3>Catalizadores</h3><p>'+esc(t.catalysts)+'</p></div><div><h3>Origen de los supuestos</h3><p>'+esc(t.evidence)+'</p></div></div>');
 }
-function theses(){
+function syntheticTheses(){
  const t=valuation(state.data.theses.find(x=>x.id===state.thesis)||state.data.theses[0]);
- return head("TESIS · SEGUIMIENTO","Hipótesis, escenarios y valoraciones","Cada tesis cuenta con condiciones de refutación, escenarios, supuestos y método. Se trata de entidades y cifras inventadas.")+
+ return button("← Volver a las empresas","issuer-mode","catalog","outline-btn")+head("TESIS DEMOSTRATIVAS","Hipótesis, escenarios y valoraciones","Cada tesis cuenta con condiciones de refutación, escenarios, supuestos y método. Se trata de entidades y cifras inventadas.")+
  '<div class="filters"><label>Buscar<input id="thesis-query" type="search" placeholder="Entidad o sector" value="'+esc(state.query)+'"></label><label>Ordenar<select id="thesis-sort">'+[["central","CAGR base"],["discountPct","Descuento"],["company","Nombre"],["price","Precio"]].map(([k,v])=>'<option value="'+esc(k)+'" '+(k===state.thesisSort?"selected":"")+'>'+esc(v)+'</option>').join("")+'</select></label>'+button("Exportar CSV","export","theses","outline-btn")+'</div>'+
  '<div class="table-scroll"><table><thead><tr><th>Entidad</th><th>Método</th><th>Estado</th><th class="number">Precio</th><th class="number">Valor base</th><th class="number">CAGR</th><th class="number">Descuento</th><th>Ficha</th></tr></thead><tbody id="thesis-rows">'+thesisTableRows()+'</tbody></table></div>'+
  head("ANÁLISIS","Ficha de tesis","Comparación de supuestos y criterios falsables.")+thesisDetail(t)+
  disclaimer("Ninguna ficha procede de una watchlist personal, trabajo académico o firma de análisis externa.");
 }
+
+function issuerTableRows(){
+ return filterIssuers(state.universe,state.issuerQuery,state.issuerSort).map(i=>
+ '<tr class="'+(state.issuerTicker===i.ticker?"is-selected":"")+'"><td><strong>'+esc(i.ticker)+'</strong></td><td><strong>'+esc(i.company)+'</strong><small class="smallline">'+esc(i.sector)+'</small></td><td>'+esc(i.market)+'</td><td class="number">N/D</td><td class="number perf-neutral">N/D</td><td class="number perf-neutral">N/D</td><td class="number perf-neutral">N/D</td><td class="number">N/D</td><td class="number">N/D</td><td>N/D</td><td>'+button("Ficha","issuer-select",i.ticker)+'</td></tr>'
+ ).join("");
+}
+function issuerDetail(){
+ const i=state.universe.issuers.find(x=>x.ticker===state.issuerTicker)||state.universe.issuers[0];
+ return card('<div class="panel-top"><div><span class="label">'+esc(i.ticker)+' · '+esc(i.market)+'</span><h3>'+esc(i.company)+'</h3></div><span class="status-chip">Pendiente de validación</span></div><p>'+esc(i.sector)+'</p>'+
+ '<div class="metric-strip">'+metric("Cotización verificable","N/D")+metric("Bear / Base / Bull","N/D")+metric("Precio para CAGR 15 %","N/D")+metric("Próximos resultados","N/D")+'</div>'+
+ '<h3 class="minor-heading">Control de publicación</h3><p>Identidad del emisor incorporada al catálogo. Para publicar una tesis hacen falta fuentes primarias, fecha y divisa de precio, escenarios reconstruidos, CAGR y una revisión independiente. No se traslada un dossier privado ni se enlaza a él.</p>');
+}
+function theses(){
+ if(state.issuerMode==="demo")return syntheticTheses();
+ return head("TESIS · CATÁLOGO PÚBLICO","Empresas analizadas y en seguimiento","Inventario de "+state.universe.issuers.length+" compañías y estudios. Se muestran sus nombres y mercados, pero ninguna valoración histórica se presenta como dato actual.")+
+ disclaimer("DATOS PENDIENTES · N/D significa que IDEA LAB no ha validado todavía una cotización puntual ni una tesis publicable de forma independiente. No equivale a rentabilidad cero.")+
+ '<div class="filters"><label>Buscar<input id="issuer-query" type="search" placeholder="Ticker, empresa o sector" value="'+esc(state.issuerQuery)+'"></label>'+
+ '<label>Ordenar<select id="issuer-sort">'+[["ticker","Ticker"],["company","Empresa"],["market","Mercado"],["sector","Sector"]].map(([k,n])=>'<option value="'+k+'" '+(k===state.issuerSort?"selected":"")+'>'+n+'</option>').join("")+'</select></label>'+
+ button("Exportar catálogo CSV","export","issuers","outline-btn")+button("Ver tesis ficticias","issuer-mode","demo","outline-btn")+'</div>'+
+ '<div class="table-scroll table-compact thesis-public-table"><table><thead><tr><th>Ticker</th><th>Empresa</th><th>Mercado</th><th class="number">Precio actual</th><th class="number">CAGR Bear 5a</th><th class="number">CAGR Base 5a</th><th class="number">CAGR Bull 5a</th><th class="number">Precio 15 %</th><th class="number">Objetivo 5a</th><th>Resultados</th><th>Informe</th></tr></thead><tbody id="issuer-rows">'+issuerTableRows()+'</tbody></table></div>'+
+ head("ANÁLISIS","Ficha pública de emisor","Fichas independientes: sin referencias privadas ni métricas financieras trasladadas sin auditoría.")+issuerDetail()+
+ disclaimer("El catálogo público no equivale a una migración documental. Los estados y objetivos históricos requieren reconstrucción y autorización de publicación independientes.");
+}
+
 function monitoring(){
  const s=active();
  return head("SEGUIMIENTO","Diario paper y salud de fuentes","Se conservan operaciones hipotéticas, reglas de costes y ausencia de fuentes verificadas. No existe conectividad con cuentas reales.")+
@@ -125,6 +164,7 @@ function exportData(what){
  if(what==="ranking"){download("midas-ranking-sintetico.csv",[["algoritmo","familia","retorno_pct","drawdown_pct","volatilidad_pct","sharpe","coste"],...rank(state.data,state.sort,state.asc,state.group).map(x=>[x.name,x.group,x.returnPct,x.drawdownPct,x.volatilityPct,x.sharpe,x.fees])]);}
  if(what==="nav"){download("midas-curva-paper-sintetica.csv",[["sesion","nav_base_100","capital_ficticio"],...active().points.map(p=>[p.session,p.nav,p.equity])]);}
  if(what==="journal"){download("midas-diario-sintetico.csv",[["sesion","activo","accion","precio","unidades","nocional","coste"],...active().orders.map(x=>[x.session,x.symbol,x.action,x.referencePrice,x.units,x.notional,x.cost])]);}
+ if(what==="issuers"){download("midas-emisores-publicos.csv",[["ticker","empresa","mercado","sector","precio_actual","cagr_bear_5y","cagr_base_5y","cagr_bull_5y","precio_15pct","objetivo_5y","proximos_resultados","estado"],...filterIssuers(state.universe,state.issuerQuery,state.issuerSort).map(i=>[i.ticker,i.company,i.market,i.sector,"N/D","N/D","N/D","N/D","N/D","N/D","N/D",i.status])]);}
  if(what==="theses"){download("midas-tesis-sinteticas.csv",[["entidad","sector","metodo","estado","cagr_central","valor_bajista","valor_central","valor_alcista"],...thesisRank(state.data).map(x=>[x.company,x.sector,x.method,x.status,x.central,x.valuation.bear.fair,x.valuation.base.fair,x.valuation.bull.fair])]);}
 }
 $("app").addEventListener("click",e=>{
@@ -132,7 +172,9 @@ $("app").addEventListener("click",e=>{
  if(action==="navigate")go(value);
  else if(action==="select"||action==="journal"){state.strategy=value;go(action==="journal"?"monitoring":"competition");}
  else if(action==="group"){state.group=value;go("competition");}
- else if(action==="thesis"){state.thesis=value;go("theses");}
+ else if(action==="thesis"){state.thesis=value;state.issuerMode="demo";go("theses");}
+ else if(action==="issuer-mode"){state.issuerMode=value==="demo"?"demo":"catalog";render();}
+ else if(action==="issuer-select"){state.issuerTicker=value;state.issuerMode="catalog";if(state.view!=="theses")go("theses");else render();}
  else if(action==="direction"){state.asc=!state.asc;render();}
  else if(action==="export")exportData(value);
 });
@@ -141,10 +183,12 @@ $("app").addEventListener("change",e=>{
  if(el.id==="group-select"){state.group=el.value;render();}
  if(el.id==="rank-select"){state.sort=el.value;render();}
  if(el.id==="thesis-sort"){state.thesisSort=el.value;render();}
+ if(el.id==="issuer-sort"){state.issuerSort=el.value;render();}
  if(el.id==="journal-select"){state.strategy=el.value;render();}
 });
 $("app").addEventListener("input",e=>{
  if(e.target.id==="thesis-query"){state.query=e.target.value;const tbody=$("thesis-rows");if(tbody)tbody.innerHTML=thesisTableRows();}
+ if(e.target.id==="issuer-query"){state.issuerQuery=e.target.value;const tbody=$("issuer-rows");if(tbody)tbody.innerHTML=issuerTableRows();}
 });
 $("app").addEventListener("submit",e=>{
  if(e.target.id!=="paper-form")return;e.preventDefault();
@@ -161,8 +205,8 @@ document.querySelectorAll(".product-tabs [data-view]").forEach(b=>b.addEventList
 window.addEventListener("popstate",()=>{const v=new URLSearchParams(location.search).get("view");state.view=viewNames.includes(v)?v:"overview";render();});
 async function init(){
  try{
-  const r=await fetch("./data/demo.json",{cache:"no-store"});if(!r.ok)throw Error("Dataset missing");const data=await r.json();verify(data);
-  state.data=data;const v=new URLSearchParams(location.search).get("view");state.view=viewNames.includes(v)?v:"overview";summary();render();
- }catch(e){$("app").textContent="No se ha podido cargar el registro sintético o no cumple el contrato de integridad.";}
+  const [r,u]=await Promise.all([fetch("./data/demo.json",{cache:"no-store"}),fetch("./data/universe.json",{cache:"no-store"})]);if(!r.ok||!u.ok)throw Error("Dataset missing");const [data,universe]=await Promise.all([r.json(),u.json()]);verify(data);verifyIssuerCatalog(universe);
+  state.data=data;state.universe=universe;const v=new URLSearchParams(location.search).get("view");state.view=viewNames.includes(v)?v:"overview";summary();render();
+ }catch(e){$("app").textContent="No se ha podido cargar el catálogo de emisores o el laboratorio sintético; no se muestran datos no verificados.";}
 }
 init();
