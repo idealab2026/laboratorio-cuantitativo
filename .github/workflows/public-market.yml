@@ -43,6 +43,8 @@ jobs:
       - name: Verify new prospective engine without downloading market data
         run: |
           python3 -m unittest discover -s scripts -p 'test_public_market_runner.py' -v
+          python3 -m unittest discover -s scripts -p 'test_classic_503.py' -v
+          python3 scripts/classic_503.py
           python3 scripts/public_market_runner.py --preflight
       - name: Disclose source permission gate
         run: |
@@ -77,6 +79,8 @@ jobs:
       - name: Reconfirm bounded source, paper and signature invariants
         run: |
           python3 -m unittest discover -s scripts -p 'test_public_market_runner.py' -v
+          python3 -m unittest discover -s scripts -p 'test_classic_503.py' -v
+          python3 scripts/classic_503.py
           python3 scripts/public_market_runner.py --preflight
       - name: Advance only prospective, rights-attested XNYS reference sessions
         run: python3 scripts/public_market_runner.py --execute
