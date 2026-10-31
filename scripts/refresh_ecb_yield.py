@@ -37,7 +37,7 @@ def parse(raw,received,today=None):
         day=date.fromisoformat(row["TIME_PERIOD"])
         val=str(row.get("OBS_VALUE") or "").strip()
         if not re.fullmatch(r"-?\d+(?:\.\d{1,9})?",val):
-            raise ValueError("Missing or invalid spot yield")
+            raise ValueError("Missing or invalid ECB spot yield: date="+repr(row.get("TIME_PERIOD"))+" literal="+repr(val[:45]))
         num=float(val)
         if not -5<=num<=15 or day>today or day.weekday()>=5:
             raise ValueError("Invalid fixing date or percentage range")
