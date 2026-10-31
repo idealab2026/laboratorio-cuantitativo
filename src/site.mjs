@@ -179,14 +179,28 @@ function issuerDetail(){
 
 function theses(){
  if(state.issuerMode==="demo")return syntheticTheses();
- return head("TESIS · CATÁLOGO PÚBLICO","Empresas analizadas y en seguimiento","Inventario de "+state.universe.issuers.length+" compañías y estudios. Se muestra un screening independiente cuando existe evidencia pública fechada; el resto de los datos permanece sin validar.")+
- disclaimer("DATOS PENDIENTES · Los valores publicados, si los hay, son screenings exploratorios independientes con fecha y fuentes explícitas. N/D significa ausencia de validación, no rentabilidad cero.")+
- '<div class="filters"><label>Buscar<input id="issuer-query" type="search" placeholder="Ticker, empresa o sector" value="'+esc(state.issuerQuery)+'"></label>'+
- '<label>Ordenar<select id="issuer-sort">'+[["ticker","Ticker"],["company","Empresa"],["market","Mercado"],["sector","Sector"]].map(([k,n])=>'<option value="'+k+'" '+(k===state.issuerSort?"selected":"")+'>'+n+'</option>').join("")+'</select></label>'+
- button("Exportar catálogo CSV","export","issuers","outline-btn")+button("Ver tesis ficticias","issuer-mode","demo","outline-btn")+'</div>'+
- '<div class="table-scroll table-compact thesis-public-table"><table><thead><tr><th>Ticker</th><th>Empresa</th><th>Mercado</th><th class="number">Precio ref. / fecha</th><th class="number">CAGR Bear 5a</th><th class="number">CAGR Base 5a</th><th class="number">CAGR Bull 5a</th><th class="number">Precio 15 %</th><th class="number">Objetivo 5a</th><th>Resultados</th><th>Informe</th></tr></thead><tbody id="issuer-rows">'+issuerTableRows()+'</tbody></table></div>'+
- head("ANÁLISIS","Ficha pública de emisor","Fichas independientes: sin referencias privadas ni métricas financieras trasladadas sin auditoría.")+issuerDetail()+
- disclaimer("El catálogo público no equivale a una migración documental. Los estados y objetivos históricos requieren reconstrucción y autorización de publicación independientes.");
+ const columns=[["ticker","Ticker"],["company","Nombre empresa"],["market","Mercado"],["price","Precio de referencia / fecha"],
+ ["bull","Bull 5a"],["bear","Bear 5a"],["base","Central 5a"],["entry","Precio 15 %"],
+ ["target","Objetivo 5a"],["earnings","Próx. resultados"],["report","Tesis / ficha"]];
+ const headers=columns.map(([key,label])=>'<th scope="col" aria-sort="'+(state.issuerSort===key?(state.issuerAsc?"ascending":"descending"):"none")+'"><button class="table-sort" type="button" data-action="issuer-column" data-value="'+key+'" aria-label="Ordenar por '+esc(label)+'">'+esc(label)+' <span aria-hidden="true">'+(state.issuerSort===key?(state.issuerAsc?"↑":"↓"):"↕")+'</span></button></th>').join("");
+ const found=publicIssuerReadModel(state.universe,{query:state.issuerQuery,sort:state.issuerSort,ascending:state.issuerAsc}).length;
+ const screens=state.universe.publicScreens?.length||0;
+ return head("TESIS · SEGUIMIENTO","Empresas y valoraciones","Inventario institucional de "+state.universe.issuers.length+" empresas. Solo se muestran escenarios cuantitativos cuando existe un cálculo público independiente, fechado y con sus fuentes.")+
+ '<div class="source-health-strip"><div><span class="label">Cobertura del catálogo</span><strong>'+state.universe.issuers.length+' empresas</strong><small>Identidades corporativas, no todas analizadas</small></div>'+
+ '<div><span class="label">Modelos públicos</span><strong>'+screens+' screening exploratorio</strong><small>No equivale a tesis auditada ni recomendación</small></div>'+
+ '<div><span class="label">Informes institucionales aprobados</span><strong>0</strong><small>Ningún documento privado trasladado</small></div></div>'+
+ disclaimer("Los CAGR y objetivos existentes son supuestos exploratorios y no una tesis de inversión ratificada. N/D significa desconocido o no publicado; no representa cero. Los precios etiquetados son observaciones históricas fechadas, no cotizaciones spot.")+
+ '<div class="filters"><label>Buscar ticker o empresa<input id="issuer-query" type="search" autocomplete="off" placeholder="Ej.: MSFT o Microsoft" value="'+esc(state.issuerQuery)+'"></label>'+
+ '<label>Ordenar<select id="issuer-sort">'+columns.map(([k,n])=>'<option value="'+k+'" '+(k===state.issuerSort?"selected":"")+'>'+esc(n)+'</option>').join("")+'</select></label>'+
+ button(state.issuerAsc?"↑ Ascendente":"↓ Descendente","issuer-direction","","outline-btn")+
+ button("Exportar CSV","export","issuers","outline-btn")+
+ button("Tesis ficticias · demo","issuer-mode","demo","outline-btn")+'</div>'+
+ '<p id="issuer-visible-count" class="table-note" aria-live="polite">'+found+' de '+state.universe.issuers.length+' empresas · Orden inicial: CAGR central descendente; sin cifras al final. Pulsa cualquier cabecera para ordenar.</p>'+
+ '<div class="table-scroll table-compact thesis-public-table"><table><thead><tr>'+headers+'</tr></thead><tbody id="issuer-rows">'+issuerTableRows()+'</tbody></table></div>'+
+ '<p id="issuer-empty" class="table-note" '+(found?'hidden':'')+'>No hay empresas coincidentes.</p>'+
+ head("ANÁLISIS","Ficha de tesis / empresa","Cada expediente público documenta qué fuentes y supuestos están acreditados y cuáles faltan.")+
+ issuerDetail()+
+ disclaimer("No hay acceso público a los documentos privados ni continuidad documental automática. Una ficha interna no equivale a una tesis íntegra publicada.");
 }
 
 function monitoring(){
