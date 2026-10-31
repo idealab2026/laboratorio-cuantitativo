@@ -413,3 +413,48 @@ export function verifyOfficialFx(doc,now=new Date()){
   count:doc.count,receivedAt:doc.received_at_utc,
   ageDays:Math.floor((time-previous)/86400000),referenceOnly:true};
 }
+
+
+// Read-model for source-gated, explicitly non-tradable prospective forecast events.
+// The stronger SHA-256 event-chain audit runs in CI using scripts/advance_fx.py.
+export function summarizeFxForecastLedger(data){
+ if(!data||data.schema!=="idea_lab_fx_forecast_events_v1"||
+   data.data_class!=="prospective_reference_forecasts_not_trades"||
+   data.series!=="D.USD.EUR.SP00.A"||
+   data.source!=="European Central Bank (ECB statistics)"||
+   data.notice!=="Prospective forecasts of ECB reference fixings only. No executable fills, investment P&L or broker positions."||
+   !Array.isArray(data.events)||data.events.length>10000)
+  throw Error("No independently verified FX forecast ledger");
+ const models=["unchanged","momentum_1","reversal_1"];
+ const seen=new Set(),issued=new Map(),resolutions=new Map();
+ let previous="0".repeat(64);
+ for(const event of data.events){
+  if(!event||!["issued","resolved"].includes(event.event_type)||
+     !/^[a-f0-9]{64}$/.test(event.hash||"")||
+     !/^[a-f0-9]{64}$/.test(event.source_sha256||"")||
+     event.previous_hash!==previous||
+     !/^\d{4}-\d\d-\d\d$/.test(event.fixing_date||"")||
+     !/^\d{4}-\d\d-\d\dT\d\d:\d\d:\d\dZ$/.test(event.recorded_at_utc||""))
+    throw Error("Forecast lineage absent or malformed");
+  if(event.event_type==="issued"){
+   if(seen.has(event.fixing_date)||!event.predictions||
+      !models.every(k=>/^\d+\.\d{1,8}$/.test(event.predictions[k]||""))||
+      Object.keys(event.predictions).length!==3)throw Error("Invalid issued forecast");
+   seen.add(event.fixing_date);issued.set(event.hash,event);
+  }else{
+   const original=issued.get(event.signal_hash);
+   if(!original||resolutions.has(event.signal_hash)||original.fixing_date!==event.fixing_date||
+     !(event.realized_fixing_date>event.fixing_date)||
+     !/^\d+\.\d{1,8}$/.test(event.realized_rate||"")||
+     !event.absolute_errors||Object.keys(event.absolute_errors).length!==3||
+     !models.every(k=>Math.abs(Number(event.absolute_errors[k])-Math.abs(Number(original.predictions[k])-Number(event.realized_rate)))<.0000011))
+    throw Error("Invalid forecast score or duplicate settlement");
+   resolutions.set(event.signal_hash,event);
+  }
+  previous=event.hash;
+ }
+ const rows=[...issued.values()].map(i=>({issued:i,settled:resolutions.get(i.hash)||null}));
+ const scored=[...resolutions.values()];
+ const mae=Object.fromEntries(models.map(k=>[k,scored.length?scored.reduce((sum,e)=>sum+Number(e.absolute_errors[k]),0)/scored.length:null]));
+ return {rows,modelMAE:mae,issuedCount:rows.length,resolvedCount:scored.length,unresolvedCount:rows.length-scored.length,headHash:previous};
+}
