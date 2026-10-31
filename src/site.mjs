@@ -145,15 +145,16 @@ const independentScreen=(ticker)=>{
  return s?evaluateIssuerScreen(s):null;
 };
 function issuerTableRows(){
- return filterIssuers(state.universe,state.issuerQuery,state.issuerSort).map(i=>{
-  const s=independentScreen(i.ticker);
+ return publicIssuerReadModel(state.universe,{query:state.issuerQuery,sort:state.issuerSort,ascending:state.issuerAsc}).map(({issuer:i,screen:s})=>{
   const close=s?fmt(s.quote.close)+" "+s.quote.currency+" · "+s.quote.closeDate:"N/D";
-  return '<tr class="'+(state.issuerTicker===i.ticker?"is-selected":"")+'"><td><strong>'+esc(i.ticker)+'</strong></td><td><strong>'+esc(i.company)+'</strong><small class="smallline">'+esc(i.sector)+'</small></td><td>'+esc(i.market)+'</td><td class="number">'+esc(close)+'</td>'+
-  '<td class="number">'+(s?pctText(s.scenarios.bear.cagrPct):"N/D")+'</td><td class="number">'+(s?pctText(s.scenarios.base.cagrPct):"N/D")+'</td><td class="number">'+(s?pctText(s.scenarios.bull.cagrPct):"N/D")+'</td>'+
+  return '<tr class="interactive-table-row '+(state.issuerTicker===i.ticker?"is-selected":"")+'" data-issuer-id="'+esc(i.ticker)+'" tabindex="0" aria-label="Abrir la ficha pública de '+esc(i.company)+'">'+
+  '<td><strong>'+esc(i.ticker)+'</strong></td><td><strong>'+esc(i.company)+'</strong><small class="smallline">'+esc(i.sector)+'</small></td><td>'+esc(i.market)+'</td><td class="number">'+esc(close)+'</td>'+
+  '<td class="number">'+(s?pctText(s.scenarios.bull.cagrPct):"N/D")+'</td><td class="number">'+(s?pctText(s.scenarios.bear.cagrPct):"N/D")+'</td><td class="number">'+(s?pctText(s.scenarios.base.cagrPct):"N/D")+'</td>'+
   '<td class="number">'+(s?esc(fmt(s.buyPrice15))+" USD":"N/D")+'</td><td class="number">'+(s?esc(fmt(s.scenarios.base.target))+" USD":"N/D")+'</td>'+
   '<td>N/D</td><td>'+button(s?"Screen":"Ficha","issuer-select",i.ticker)+'</td></tr>';
  }).join("");
 }
+
 function issuerDetail(){
  const i=state.universe.issuers.find(x=>x.ticker===state.issuerTicker)||state.universe.issuers[0];
  const s=independentScreen(i.ticker);
