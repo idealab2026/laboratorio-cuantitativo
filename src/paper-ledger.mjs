@@ -50,7 +50,7 @@ const stateOf=(config,panel)=>({
 });
 
 const riskOf=method=>method==="geneticFixed"?{stop:.0903,target:.2367}:
- ["hold","breakout20","breakout55"].includes(method)?{stop:null,target:null}:{stop:.08,target:.15};
+ ["hold","benchmark","breakout20","breakout55"].includes(method)?{stop:null,target:null}:{stop:.08,target:.15};
 function recordFill(book,symbol,side,bar,reference,config,reason,signalAt=null,allocation=null){
  const slip=config.slippageBps/10000,commission=config.feeBps/10000;
  const price=reference*(side==="BUY"?1+slip:1-slip);
@@ -197,17 +197,25 @@ export function campaignRanking(config,state){
 }
 
 export function artificialCampaignComparison(){
- const observations=artificialMethodBars().map(b=>({...b,volume:100000,dividend:0,split:0}));
+ const base=artificialMethodBars(),symbols="ABCDEFGHI".split("").map(x=>"SIM-"+x);
+ const universe=Object.fromEntries(symbols.map((symbol,assetIndex)=>[symbol,base.map((bar,i)=>{
+  const factor=1+.018*Math.sin(i*(.12+assetIndex*.014)+assetIndex);
+  const open=bar.open*factor,close=bar.close*factor;
+  return {session:bar.session,open,close,high:Math.max(open,close)*1.035,
+   low:Math.min(open,close)*.965,volume:100000,dividend:0,split:0};
+ })]));
  const config={schema:1,currency:"USD",capital:100000,feeBps:10,slippageBps:5,
-  investFraction:.95,maxPositions:1,
-  strategies:methodCatalog.map((method,index)=>({id:"M-"+(index+10),method:method.id,symbols:["SIM-A"]}))};
+  investFraction:.95,maxPositions:8,
+  strategies:methodCatalog.map((method,index)=>({id:"M-"+(index+10),method:method.id,
+   symbols:method.id==="benchmark"?["SIM-I"]:symbols.slice(0,8)}))};
  let state=null;
- for(let n=80;n<=observations.length;n++){
+ for(let n=80;n<=base.length;n++){
   const panel={source:"generated_research_ohlc_v1",synthetic:true,currency:"USD",
-   asOf:observations[n-1].session,bars:{"SIM-A":observations.slice(0,n)}};
+   asOf:base[n-1].session,
+   bars:Object.fromEntries(symbols.map(id=>[id,universe[id].slice(0,n)]))};
   state=advancePaperCampaign(config,panel,state).state;
  }
- return {class:"ARTIFICIAL_REPLAY_NOT_PROSPECTIVE",symbol:"SIM-A",
-  sampleSessions:observations.length,measuredSessions:observations.length-79,
+ return {class:"ARTIFICIAL_REPLAY_NOT_PROSPECTIVE",symbols,
+  sampleSessions:base.length,measuredSessions:base.length-79,
   config,ranking:campaignRanking(config,state),state};
 }
