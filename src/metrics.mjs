@@ -180,6 +180,7 @@ export function verifyIssuerCatalog(data){
   if(seen.has(issuer.ticker))throw Error("Duplicate issuer");
   seen.add(issuer.ticker);
   if(!issuer.company||typeof issuer.company!=="string"||issuer.company.length>100||!issuer.sector||!issuer.market)throw Error("Incomplete public company identity");
+  if(issuer.secCik!==undefined&&!/^\d{10}$/.test(issuer.secCik))throw Error("Invalid source registry identifier");
   if(!financialFields.every(field=>isBlank(issuer[field])))throw Error("Unverified financial claims in public catalogue");
   if(issuer.status!=="Pendiente de investigación pública")throw Error("Unverified editorial status");
  }
