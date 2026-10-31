@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="660" height="156" viewBox="0 0 660 156" role="img" aria-labelledby="title"><title id="title">IDEA LAB · Investigación y datos</title>
+  <g transform="translate(8 14)">
+  <rect width="128" height="128" rx="20" fill="#07304b"/>
+  <path d="M42 51 50 45 62 47 72 44 85 50 94 52 89 63 94 72 86 85 73 90 64 98 52 92 49 81 43 73 46 63 40 58Z" fill="#8bb7b0"/>
+  <g fill="none" stroke="#fff" stroke-width="6" stroke-linecap="round">
+    <path d="M18 69C25 34 49 18 73 18c23 0 39 20 43 42"/>
+    <path d="M25 44C47 27 83 35 108 58"/>
+    <path d="M19 90C43 113 84 109 111 73"/>
+    <path d="M55 17C30 42 33 88 72 114"/>
+    <path d="M78 18C104 44 100 86 75 112"/>
+    <path d="M16 78C44 89 82 81 113 60"/>
+  </g>
+  <circle cx="43" cy="33" r="10.5" fill="#fff"/>
+  <circle cx="43" cy="33" r="6.5" fill="#87b7b0"/>
+  <circle cx="28" cy="92" r="11" fill="#fff"/>
+  <circle cx="28" cy="92" r="7" fill="#87b7b0"/>
+  <circle cx="108" cy="58" r="12" fill="#fff"/>
+  <circle cx="108" cy="58" r="8" fill="#dca725"/></g>
+  <text x="155" y="114" font-family="Arial,Helvetica,sans-serif" font-size="98" font-weight="500" letter-spacing="-2.8" fill="#07304b">IDEA</text>
+  <text x="407" y="114" font-family="Arial,Helvetica,sans-serif" font-size="98" font-weight="500" letter-spacing="-2.8" fill="#d69f26">LAB</text>
+</svg>
