@@ -228,8 +228,12 @@ def preflight():
         raise ValueError("Public MIDAS strategy/source identity mismatch")
     if book["status"]=="not_started":
         validate_state(book)
-    else:
-        validate_state(book,os.environ.get("IDEALAB_PAPER_FEED_KEY"))
+    elif book["status"]!="prospective_paper" or book.get("config_sha256")!=CONFIG_SHA:
+        raise ValueError("Untrusted or incompatible existing public book")
+    elif os.environ.get("IDEALAB_PAPER_FEED_KEY"):
+        validate_state(book,os.environ["IDEALAB_PAPER_FEED_KEY"])
+    # Read-only CI without the signing secret cannot authenticate active state;
+    # the source-writing job and Pages signed-summary gate perform that check.
     return {"status":"source_gate_required" if book["status"]=="not_started" else "prospective_existing",
             "source":"Yahoo/yfinance original", "capital_reference_books":2,
             "universe_constituents":len(symbols),"broker_orders":0,
