@@ -93,3 +93,10 @@ Las fichas institucionales de ocho emisores con CIK verificado pueden incorporar
 ### Bloqueo real de SEC (31/10/2026)
 
 La primera ejecución institucional de la ingesta EDGAR fue rechazada por **HTTP 403 Forbidden** desde el runner de GitHub Actions. El estado continúa **not_collected**; ningún formulario ha sido importado. Para respetar la política de acceso de la SEC, se ha suspendido el cron y el disparador automático del colector: solo queda ejecución manual y requiere previamente configurar el secreto `SEC_CONTACT_EMAIL` con un contacto institucional **supervisado**. Se rechazan expresamente correos `noreply` y datos de contacto personales publicados en código. Disponer del contacto no garantiza que desaparezca el 403: debe comprobarse que la infraestructura tiene acceso permitido. La publicación de Pages y el seguimiento de divisas continúan sin depender de este colector.
+
+
+## Referencia oficial de curva AAA euro a 10 años
+
+El panel de seguimiento financiero incorpora un segundo origen público del BCE: `YC.B.U2.EUR.4F.G_N_A.SV_C_YM.SR_10Y`, la **tasa spot nominal a diez años de bonos soberanos AAA de la zona euro**, estimada mediante el modelo Svensson y expresada en porcentaje anual con capitalización continua. Los datos se descargan diariamente en cada construcción de Pages desde la API oficial del BCE, conservando fecha, valor literal, sello de recepción UTC y SHA-256 de la respuesta. La serie debe superar controles de identidad, unidad, antigüedad, fechas y límites antes de publicarse. No se utilizan servicios privados ni acceso a una cuenta personal.
+
+**Restricción:** esta referencia modelizada no es un bono individual negociable ni garantiza una inversión libre de riesgo. No representa la tasa sin riesgo de una valoración en USD y no entra automáticamente en ningún descuento de flujos, CAGR o precio objetivo. Las futuras tesis de inversión deberán justificar explícitamente su divisa, estructura de descuento y supuestos contables.
