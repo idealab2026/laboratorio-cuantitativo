@@ -1,9 +1,9 @@
 import unittest
-from datetime import date
+from datetime import date, datetime, timezone
 
 from yahoo_source import (
     BENCHMARK, MIN_COVERAGE, SCHEMA, SOURCE, UNIVERSE_SIZE,
-    normalize, prepare_snapshot, verify_snapshot, verify_universe, yahoo_symbol,
+    normalize, prepare_snapshot, verify_snapshot, verify_universe, yahoo_symbol, verify_closed_xnys_session,
 )
 
 SESSION = "2026-10-30"
@@ -97,6 +97,18 @@ class YahooSourceContractTest(unittest.TestCase):
         self.assertNotIn("drive.google.com", source)
         self.assertNotIn("github.com/mamg", source)
         self.assertIn('INSTITUTIONAL_YAHOO_INTERNAL_RIGHTS', source)
+
+
+    def test_unsafe_or_premature_nyse_capture_rejected(self):
+        with self.assertRaisesRegex(ValueError, "18:00 New York"):
+            verify_closed_xnys_session(
+                "2026-10-30", datetime(2026, 10, 30, 21, 30, tzinfo=timezone.utc))
+        with self.assertRaisesRegex(ValueError, "18:00 New York"):
+            verify_closed_xnys_session(
+                "2026-10-30", datetime(2026, 11, 1, 1, 30, tzinfo=timezone.utc))
+        with self.assertRaises(ValueError):
+            verify_closed_xnys_session(
+                "2026-10-31", datetime(2026, 10, 31, 23, 0, tzinfo=timezone.utc))
 
 
 if __name__ == "__main__":
