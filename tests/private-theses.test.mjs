@@ -43,11 +43,13 @@ test("Semicolon separated exported European decimal percentages are readable",()
  assert.equal(out.get("MSFT").bull,13.74);
 });
 
-test("Frontend keeps any uploaded archive separate from public issuer validation",()=>{
- const source=readFileSync(new URL("../src/site.mjs",import.meta.url),"utf8");
- assert.ok(source.includes("parseInstitutionalLocalArchive"));
- assert.ok(source.includes("theses-private-import"));
- assert.ok(source.includes("privateTheses:null"));
- assert.ok(source.includes("state.privateTheses=null"));
- assert.ok(source.includes("Archivo privado · histórico"));
+test("The local archive viewer never ships private records or sends uploads",()=>{
+ const html=readFileSync(new URL("../private-theses.html",import.meta.url),"utf8");
+ const js=readFileSync(new URL("../src/private-theses-view.mjs",import.meta.url),"utf8");
+ assert.ok(html.includes('id="private-file"'));
+ assert.ok(html.includes("private-theses-view.mjs"));
+ assert.ok(js.includes("parseInstitutionalLocalArchive"));
+ assert.ok(js.includes("file.text()"));
+ assert.ok(js.includes("replaceChildren"));
+ assert.ok(!/fetch\s*\(|localStorage|sessionStorage|indexedDB|XMLHttpRequest|navigator\.sendBeacon/.test(js));
 });
