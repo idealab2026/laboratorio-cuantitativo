@@ -30,6 +30,7 @@ export function validatePaperConfig(config,symbols){
    !valid(config.slippageBps)||config.slippageBps<0||config.slippageBps>100||
    !valid(config.investFraction)||config.investFraction<=0||config.investFraction>1||
    !Number.isInteger(config.maxPositions)||config.maxPositions<1||config.maxPositions>symbols.length||
+   (config.maxMissedSessions!==undefined&&(!Number.isInteger(config.maxMissedSessions)||config.maxMissedSessions<0||config.maxMissedSessions>10))||
    !Array.isArray(config.strategies)||config.strategies.length<1||config.strategies.length>20)
   throw Error("Invalid institutional campaign contract");
  const allowed=new Set(methodCatalog.map(x=>x.id)),names=new Set();
@@ -46,7 +47,7 @@ export function validatePaperConfig(config,symbols){
 const stateOf=(config,panel)=>({
  schema:1,status:"SYNTHETIC_PROSPECTIVE_ACCOUNTING_SANDBOX",source:panel.source,
  synthetic:true,currency:"USD",configuration:JSON.stringify(config),
- lastSession:null,historyPrefix:null,portfolios:Object.fromEntries(config.strategies.map(m=>[m.id,{
+ lastSession:null,historyPrefix:null,missedDecisions:[],portfolios:Object.fromEntries(config.strategies.map(m=>[m.id,{
   cash:config.capital,holdings:{},orders:{},events:[],equity:[],feeTotal:0,dividendTotal:0
  }]))
 });
@@ -138,46 +139,63 @@ function settleSession(book,methodRow,panel,config){
 export function advancePaperCampaign(config,panel,previous=null){
  const {symbols,timeline}=validatePanel(panel);
  validatePaperConfig(config,symbols);
- let state=previous?structuredClone(previous):stateOf(config,panel);
+ const state=previous?structuredClone(previous):stateOf(config,panel);
  if(state.schema!==1||state.status!=="SYNTHETIC_PROSPECTIVE_ACCOUNTING_SANDBOX"||
    state.configuration!==JSON.stringify(config)||state.source!==panel.source||state.synthetic!==true||
+   !Array.isArray(state.missedDecisions)||
    Object.keys(state.portfolios||{}).join(",")!==config.strategies.map(m=>m.id).join(","))
   throw Error("Changed campaign identity or strategy specification");
  const previousIndex=state.lastSession?timeline.indexOf(state.lastSession):-1;
  if(state.lastSession&&previousIndex<0)throw Error("Recorded session is missing from new source");
+ const currentIndex=timeline.length-1;
  if(state.lastSession===panel.asOf){
-  const current=JSON.stringify(symbols.map(s=>panel.bars[s]));
+  const current=JSON.stringify(symbols.map(x=>panel.bars[x]));
   if(state.historyPrefix!==current)throw Error("Already registered bars were revised");
   return {state,changed:false};
  }
- if(previous&&previousIndex!==timeline.length-2)
-  throw Error("Missing daily decisions: refuse retroactive entry signals");
- const currentIndex=timeline.length-1;
  if(previous){
-  const old=JSON.stringify(symbols.map(s=>panel.bars[s].slice(0,currentIndex)));
+  if(previousIndex>=currentIndex)throw Error("Out-of-order daily decision");
+  const old=JSON.stringify(symbols.map(x=>panel.bars[x].slice(0,previousIndex+1)));
   if(state.historyPrefix!==old)throw Error("Historical OHLC revised after decision");
+  const skipped=currentIndex-previousIndex-1;
+  if(skipped>(config.maxMissedSessions??0))
+   throw Error("Missing daily decisions: maximum missed-session allowance exceeded");
  }
- for(const method of config.strategies){
-  const book=state.portfolios[method.id];
-  if(previous)settleSession(book,method,panel,config);
-  const holdings=book.holdings;
-  const nav=book.cash+Object.entries(holdings)
-    .reduce((sum,[symbol,pos])=>sum+pos.units*panel.bars[symbol].at(-1).close,0);
-  if(!valid(nav)||nav<=0||book.cash<-.0001)throw Error("Invalid paper balance");
-  book.equity.push({session:panel.asOf,nav,cash:book.cash,positions:Object.keys(holdings).length});
-  for(const symbol of method.symbols){
-   const action=signalAtClose(method.method,panel.bars[symbol]);
-   if(action==="BUY"&&!holdings[symbol]){
-    book.orders[symbol]={side:"BUY",signalAt:panel.asOf};
-    book.events.push({type:"SIGNAL",date:panel.asOf,symbol,side:action});
-   }else if(action==="SELL"&&holdings[symbol]){
-    book.orders[symbol]={side:"SELL",signalAt:panel.asOf};
-    book.events.push({type:"SIGNAL",date:panel.asOf,symbol,side:action});
+ const startIndex=previous?previousIndex+1:currentIndex;
+ for(let idx=startIndex;idx<=currentIndex;idx++){
+  const date=timeline[idx],isCurrent=idx===currentIndex;
+  const dayPanel={source:panel.source,synthetic:true,currency:"USD",asOf:date,
+   bars:Object.fromEntries(symbols.map(symbol=>[symbol,panel.bars[symbol].slice(0,idx+1)]))};
+  if(!isCurrent)state.missedDecisions.push(date);
+  for(const method of config.strategies){
+   const book=state.portfolios[method.id];
+   if(previous)settleSession(book,method,dayPanel,config);
+   const holdings=book.holdings;
+   const nav=book.cash+Object.entries(holdings)
+     .reduce((sum,[symbol,pos])=>sum+pos.units*dayPanel.bars[symbol].at(-1).close,0);
+   if(!valid(nav)||nav<=0||book.cash<-.0001)
+    throw Error("Invalid paper balance");
+   book.equity.push({session:date,nav,cash:book.cash,
+    positions:Object.keys(holdings).length,decisionRecorded:isCurrent});
+   if(!isCurrent){
+    book.events.push({type:"DECISION_MISSED",date,recordedAt:panel.asOf});
+    continue;
+   }
+   // Only the latest closed session is permitted to create a fresh signal.
+   for(const symbol of method.symbols){
+    const action=signalAtClose(method.method,dayPanel.bars[symbol]);
+    if(action==="BUY"&&!holdings[symbol]){
+     book.orders[symbol]={side:"BUY",signalAt:date};
+     book.events.push({type:"SIGNAL",date,symbol,side:action});
+    }else if(action==="SELL"&&holdings[symbol]){
+     book.orders[symbol]={side:"SELL",signalAt:date};
+     book.events.push({type:"SIGNAL",date,symbol,side:action});
+    }
    }
   }
  }
  state.lastSession=panel.asOf;
- state.historyPrefix=JSON.stringify(symbols.map(s=>panel.bars[s]));
+ state.historyPrefix=JSON.stringify(symbols.map(symbol=>panel.bars[symbol]));
  return {state,changed:true};
 }
 export function campaignRanking(config,state){
@@ -195,6 +213,7 @@ export function campaignRanking(config,state){
    capital:config.capital,cash:book.cash,equity:latest.nav,
    returnPct:100*(latest.nav/config.capital-1),drawdownPct:worst,
    active:Object.keys(book.holdings),pending:Object.keys(book.orders),
+   missedDecisions:state.missedDecisions.length,
    fills:book.events.filter(x=>x.type==="FILL").length,
    fees:book.feeTotal,dividends:book.dividendTotal};
  });
@@ -209,7 +228,7 @@ export function artificialCampaignComparison(){
    low:Math.min(open,close)*.965,volume:100000,dividend:0,split:0};
  })]));
  const config={schema:1,currency:"USD",capital:100000,feeBps:10,slippageBps:5,
-  investFraction:.95,maxPositions:8,
+  investFraction:.95,maxPositions:8,maxMissedSessions:5,
   strategies:methodCatalog.map((method,index)=>({id:"M-"+(index+10),method:method.id,
    symbols:method.id==="benchmark"?["SIM-I"]:symbols.slice(0,8),
    entryWeight:method.id==="benchmark"?1:.15}))};
