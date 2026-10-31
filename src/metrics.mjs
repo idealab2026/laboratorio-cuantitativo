@@ -523,3 +523,34 @@ export function verifySecFilings(doc,catalog){
  }
  return {status:"verified_filings",byTicker,count,generatedAt:doc.generated_at_utc};
 }
+
+
+// Modelled euro-area AAA sovereign spot yield, sourced from ECB YC, NOT an equity discount rate.
+export function verifyOfficialYield(doc,now=new Date()){
+ const series="B.U2.EUR.4F.G_N_A.SV_C_YM.SR_10Y";
+ const uri="https://data-api.ecb.europa.eu/service/data/YC/"+series+"?lastNObservations=60&format=csvdata";
+ if(doc?.status!=="verified_ecb_macro_observations"||doc.data_class!=="official_aaa_euro_10y_spot_yield"||
+   doc.series!==series||doc.source!=="European Central Bank (ECB statistics)"||
+   doc.source_url!==uri||doc.unit!=="percent_per_annum"||
+   doc.notice!=="Euro area AAA government 10-year modelled spot yield, percent per annum, continuously compounded. Not a security quote, guaranteed risk-free rate, or automatic DCF assumption.")
+  throw Error("Invalid ECB yield source and classification");
+ if(!/^[0-9a-f]{64}$/.test(doc.raw_sha256||"")||
+   !/^\d{4}-\d\d-\d\dT\d\d:\d\d:\d\dZ$/.test(doc.received_at_utc||"")||
+   !Array.isArray(doc.observations)||doc.count!==doc.observations.length||
+   doc.count<20||doc.count>80)throw Error("Invalid ECB yield provenance");
+ const stamp=Date.parse(doc.received_at_utc),nowMs=now.getTime();
+ if(!Number.isFinite(stamp)||stamp>nowMs+60000)throw Error("Future ECB yield collection");
+ let prev=null;
+ for(const item of doc.observations){
+  if(!/^\d{4}-\d\d-\d\d$/.test(item.date||"")||!(/^-?\d+(?:\.\d{1,9})?$/.test(item.yield_pct||"")))
+   throw Error("Invalid yield observation literal");
+  const ms=Date.parse(item.date+"T00:00:00Z"),n=Number(item.yield_pct);
+  if(!Number.isFinite(ms)||ms>nowMs||!([1,2,3,4,5].includes(new Date(ms).getUTCDay()))||
+    !Number.isFinite(n)||n<-5||n>15||(prev!==null&&(ms<=prev||ms-prev>8*86400000)))
+   throw Error("Invalid spot percentage or calendar");
+  prev=ms;
+ }
+ if(doc.latest_date!==doc.observations.at(-1).date)throw Error("Source latest date mismatch");
+ return {ratePct:Number(doc.observations.at(-1).yield_pct),date:doc.latest_date,
+  ageDays:Math.floor((nowMs-prev)/86400000),count:doc.count,receivedAt:doc.received_at_utc,sourceSha:doc.raw_sha256};
+}
