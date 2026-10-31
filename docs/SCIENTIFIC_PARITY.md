@@ -83,3 +83,8 @@ SEC filing metadata does not imply approved valuation, next earnings calendar, a
 ### Observed SEC access block (2026-10-31)
 
 The first actual institution-only SEC EDGAR submissions retrieval from a hosted GitHub runner failed with HTTP **403 Forbidden**. No issuer result was stored: the public source status remains `not_collected` and no fake filings are shown. The weekday SEC job has been **disabled**, retaining only an explicit manual invocation. Further attempts require a monitored institutional contact in a GitHub Actions secret `SEC_CONTACT_EMAIL`; the collector rejects absent, malformed and no-reply addresses, and the secret is never committed. Such a contact does not guarantee network permission or circumvent SEC fair-access controls. The separate public site, ECB data and prospectively audited research journal are not dependent on this source. This is an operational blocker, not an implemented live SEC collection.
+
+
+## ECB AAA euro 10-year yield reference for future EUR valuation research
+
+The independent macro section now includes the ECB's public yield-curve key `YC.B.U2.EUR.4F.G_N_A.SV_C_YM.SR_10Y`, a modelled AAA euro sovereign zero-coupon 10-year spot yield in percentage per annum with continuous compounding. The original CSV source, observation date, unit, raw-response SHA-256 and receipt timestamp are retained. The static build fails closed on bad dimensions or out-of-window fixings; a successful build attests only to the observed macro reference data, not to a tradeable bond yield or financial performance. No USD-denominated issuer receives this rate as a default WACC or risk-free assumption and no existing company screens are recomputed.

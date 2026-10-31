@@ -1,7 +1,7 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 import {readFileSync} from "node:fs";
-import {verify,signal,simulate,rank,valuation,thesisRank,absentQuote,cumulative,maxDrawdown,formatPct,syntheticBarsFromDemo,nextOpenPaper,verifyIssuerCatalog,evaluateIssuerScreen,competitionReadModel,publicIssuerReadModel,verifyOfficialFx,summarizeFxForecastLedger,verifySecFilings} from "../src/metrics.mjs";
+import {verify,signal,simulate,rank,valuation,thesisRank,absentQuote,cumulative,maxDrawdown,formatPct,syntheticBarsFromDemo,nextOpenPaper,verifyIssuerCatalog,evaluateIssuerScreen,competitionReadModel,publicIssuerReadModel,verifyOfficialFx,summarizeFxForecastLedger,verifySecFilings,verifyOfficialYield} from "../src/metrics.mjs";
 const data=JSON.parse(readFileSync(new URL("../data/demo.json",import.meta.url),"utf8"));
 test("The independent public universe is strictly synthetic",()=>{
  assert.equal(verify(data),true);
@@ -392,4 +392,37 @@ test("Issuer source display cannot accept foreign links or fictitious document m
  assert.ok(src.includes("function secSourcePanel("));
  assert.ok(src.includes('fetch("./data/sec-filings.json"'));
  assert.ok(src.includes("No se han auditado automáticamente las cifras contables"));
+});
+
+
+test("Verified ECB euro AAA 10Y observations cannot be confused with stock valuations",()=>{
+ const values=[];
+ for(let t=Date.UTC(2026,9,1);t<=Date.UTC(2026,9,30);t+=86400000){
+  const day=new Date(t);
+  if(day.getUTCDay()>=1&&day.getUTCDay()<=5)
+   values.push({date:day.toISOString().slice(0,10),yield_pct:(3.1+values.length/100).toFixed(6)});
+ }
+ const doc={status:"verified_ecb_macro_observations",data_class:"official_aaa_euro_10y_spot_yield",
+  series:"B.U2.EUR.4F.G_N_A.SV_C_YM.SR_10Y",source:"European Central Bank (ECB statistics)",
+  source_url:"https://data-api.ecb.europa.eu/service/data/YC/B.U2.EUR.4F.G_N_A.SV_C_YM.SR_10Y?lastNObservations=60&format=csvdata",
+  raw_sha256:"e".repeat(64),received_at_utc:"2026-10-31T16:00:00Z",
+  latest_date:"2026-10-30",count:values.length,unit:"percent_per_annum",
+  notice:"Euro area AAA government 10-year modelled spot yield, percent per annum, continuously compounded. Not a security quote, guaranteed risk-free rate, or automatic DCF assumption.",
+  observations:values};
+ const observed=verifyOfficialYield(doc,new Date("2026-10-31T16:05:00Z"));
+ assert.equal(observed.ageDays,1);
+ assert.equal(observed.date,"2026-10-30");
+ assert.ok(observed.ratePct>3);
+ for(const change of [
+  x=>{x.unit="USD";},x=>{x.series="EXR";},x=>{x.count+=1;},
+  x=>{x.observations[0].yield_pct="30.000000";},
+  x=>{x.observations[0].date="2026-10-03";},
+  x=>{x.raw_sha256="invalid";}
+ ]){const bad=structuredClone(doc);change(bad);assert.throws(()=>verifyOfficialYield(bad,new Date("2026-10-31T16:05:00Z")));}
+ const site=readFileSync(new URL("../src/site.mjs",import.meta.url),"utf8");
+ assert.ok(site.includes("function officialYieldPanel()"));
+ assert.ok(site.includes("loadOfficialYield()"));
+ assert.ok(site.includes("NO se introduce automáticamente"));
+ const flow=readFileSync(new URL("../.github/workflows/pages.yml",import.meta.url),"utf8");
+ assert.ok(flow.includes("refresh_ecb_yield.py --validate"));
 });
