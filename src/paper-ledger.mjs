@@ -1,4 +1,4 @@
-import {signalAtClose,methodCatalog} from "./paper-methods.mjs";
+import {signalAtClose,methodCatalog,artificialMethodBars} from "./paper-methods.mjs";
 const valid=(x)=>typeof x==="number"&&Number.isFinite(x);
 const key=/^SIM-[A-Z]$/;
 export function validatePanel(panel){
@@ -189,4 +189,20 @@ export function campaignRanking(config,state){
    fills:book.events.filter(x=>x.type==="FILL").length,
    fees:book.feeTotal,dividends:book.dividendTotal};
  });
+}
+
+export function artificialCampaignComparison(){
+ const observations=artificialMethodBars().map(b=>({...b,volume:100000,dividend:0,split:0}));
+ const config={schema:1,currency:"USD",capital:100000,feeBps:10,slippageBps:5,
+  investFraction:.95,maxPositions:1,
+  strategies:methodCatalog.map((method,index)=>({id:"M-"+(index+10),method:method.id,symbols:["SIM-A"]}))};
+ let state=null;
+ for(let n=80;n<=observations.length;n++){
+  const panel={source:"generated_research_ohlc_v1",synthetic:true,currency:"USD",
+   asOf:observations[n-1].session,bars:{"SIM-A":observations.slice(0,n)}};
+  state=advancePaperCampaign(config,panel,state).state;
+ }
+ return {class:"ARTIFICIAL_REPLAY_NOT_PROSPECTIVE",symbol:"SIM-A",
+  sampleSessions:observations.length,measuredSessions:observations.length-79,
+  config,ranking:campaignRanking(config,state),state};
 }
