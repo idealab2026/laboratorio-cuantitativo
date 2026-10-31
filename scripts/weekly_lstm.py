@@ -177,7 +177,7 @@ def research_predict(rows,request,*,minimum=MINIMUM,embargo_days=1):
     model=fit(eligible,panel,minimum=minimum)
     if not _day(model["trained_labels_through"])<date-timedelta(days=embargo_days):
         raise ValueError("LSTM label leakage at decision close")
-    current=panel+[request]
+    current=[v for v in panel if (v["ticker"],v["feature_date"]) != (request["ticker"],request["feature_date"])]+[request]
     return {
         "status":"RESEARCH_LSTM_NOT_MARKET_CERTIFIED",
         "ticker":request["ticker"],"asof":request["feature_date"],
