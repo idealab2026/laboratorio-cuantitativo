@@ -88,3 +88,22 @@ The first actual institution-only SEC EDGAR submissions retrieval from a hosted 
 ## ECB AAA euro 10-year yield reference for future EUR valuation research
 
 The independent macro section now includes the ECB's public yield-curve key `YC.B.U2.EUR.4F.G_N_A.SV_C_YM.SR_10Y`, a modelled AAA euro sovereign zero-coupon 10-year spot yield in percentage per annum with continuous compounding. The original CSV source, observation date, unit, raw-response SHA-256 and receipt timestamp are retained. The static build fails closed on bad dimensions or out-of-window fixings; a successful build attests only to the observed macro reference data, not to a tradeable bond yield or financial performance. No USD-denominated issuer receives this rate as a default WACC or risk-free assumption and no existing company screens are recomputed.
+
+## Independently implemented technical signals and paper accounting (2026-10-31)
+
+Nine labelled research methods now have executable close-only signal functions: a buy-and-hold baseline, a 20-session moving average, fixed EMA/RSI, frozen genetic EMA/RSI parameters, MACD, RSI reversal, Bollinger, and two long breakout horizons. The institutional synthetic sandbox now maintains separate portfolios with immutable configuration, a synchronized OHLC contract, queued close-date signals, next-session open model fills, fees and slippage, corporate-action bookkeeping, a first-touch stop assumption and an inspectable NAV/event ledger. Source data are explicitly generated and the replay is **not** forward paper trading. Tests cover historical revision, idempotence, missing decisions, next-open timing, cash integrity, and portfolio isolation.
+
+**Feature-equality matrix, public release gate:**
+
+| Capability | Proven at this release | Still required for operational parity |
+| --- | --- | --- |
+| Close-only technical decisions | Nine independently implemented rules on artificial bars | Precise regression comparisons across all target universes, including different market calendars |
+| Execution model | Synthetic next-open fills, commissions, slippage, cash, splits and dividends | Independent persistent execution with actual legally reusable OHLC, timestamps, and portfolio reconciliations |
+| Competing strategies | Separate standalone nine-policy synthetic accounting; earlier 23 synthetic dashboard methods remain separate | Reconcile algorithm identities, versions, universes, schedules, activity, allocation and comparable actual returns; no silent merger |
+| Model classes | Simple real fitted forecasting algorithms trained exclusively on synthetic input | Verified point-in-time training, model registry, walk-forward evaluation and prospective equity predictions |
+| Fundamental theses | Issuer identity catalog and limited exploratory screening | Source-backed issuer filings, primary-statement normalization, per-company approved valuation scenarios and recurring updates |
+| Risk and history | Synthetic drawdown, model fees, source checks | Session-by-session immutable real feed snapshots, full drawdown attribution and verified historical continuity |
+| Independent automation | ECB reference ingestion and Git-versioned FX fixing forecasts | Separate scheduled equity engine with source licensing, writable ledger, missed-session alerts and recovery |
+| Privacy | New files are independently written and directly screened for personal identifiers | Full public-history review and external re-identification risk review; never claim guaranteed unlinkability |
+
+The benchmark replays use an artificially generated single symbol and 51 measured sessions after an 80-bar warm-up. They must **not** replace the existing 23-row competition, be treated as nine active trades, or be labelled market performance. Source code, real/private historical positions, personal research documents, secrets and account links have not been migrated. Functional correspondence is partial and cannot be declared exactly equal without the remaining acceptance gates.
