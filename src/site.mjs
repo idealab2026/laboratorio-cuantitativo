@@ -149,7 +149,7 @@ function secSourcePanel(ticker){
  if(!issuer?.secCik)return '<p class="small-note">No existe todavía una identidad SEC confirmada para esta entidad.</p>';
  const official='<a href="https://www.sec.gov/edgar/browse/?CIK='+esc(issuer.secCik)+'" target="_blank" rel="noopener noreferrer">Consultar EDGAR oficial</a>';
  const found=state.secRead?.byTicker.get(ticker);
- if(!found)return '<div class="research-note">El índice institucional de documentos SEC está '+(state.secStatus==="pending"?"cargando": "sin datos verificados")+'. '+official+'. No se inventan formularios ni fechas de presentación.</div>';
+ if(!found)return '<div class="research-note">El índice institucional de documentos SEC está '+(state.secStatus==="pending"?"cargando": "sin datos verificados")+'. En la prueba de GitHub Actions del 31/10/2026, la API de la SEC rechazó el colector con HTTP 403. Las consultas programadas permanecen suspendidas hasta disponer de un contacto institucional supervisado y acceso autorizado. '+official+'. No se inventan formularios ni fechas de presentación.</div>';
  return '<section class="sec-official-panel"><div class="panel-top"><h3>Documentación SEC · '+esc(ticker)+'</h3><span class="chip">Fuente oficial · '+esc(state.secRead.generatedAt.slice(0,10))+'</span></div>'+
  '<p>Registros EDGAR (10-K, 10-Q y 8-K) vinculados a sus documentos originales. No se han auditado automáticamente las cifras contables ni los supuestos de valoración. '+official+'.</p>'+
  '<div class="table-scroll table-compact"><table><thead><tr><th>Formulario</th><th>Presentado</th><th>Ejercicio / período</th><th>Documento SEC</th></tr></thead><tbody>'+

@@ -3,6 +3,7 @@
 import argparse
 import hashlib
 import json
+import os
 import re
 import time
 import urllib.request
@@ -17,7 +18,12 @@ ROSTER = {
 SOURCE = "U.S. Securities and Exchange Commission (EDGAR submissions)"
 ROOT = "https://data.sec.gov/submissions/"
 NOTICE = "Official filing metadata only. NOT audited financial calculations, a stock price, or an approved investment thesis."
-UA = "IDEA LAB Research 350414243+idealab2026@users.noreply.github.com (https://github.com/idealab2026/laboratorio-cuantitativo/issues)"
+def declared_user_agent():
+    """SEC fair access requires a genuinely monitored institutional contact."""
+    email = os.environ.get("SEC_CONTACT_EMAIL", "").strip()
+    if not re.fullmatch(r"[A-Za-z0-9._%+-]{1,64}@[A-Za-z0-9.-]{3,190}\.[A-Za-z]{2,24}", email) or "noreply" in email.lower():
+        raise RuntimeError("SEC monitored institutional contact is not configured; collection intentionally disabled")
+    return "IDEA LAB Research " + email + " (https://github.com/idealab2026/laboratorio-cuantitativo/issues)"
 FORMATS = ("10-K", "10-Q", "8-K")
 PATTERN = re.compile(r"^\d{10}$")
 ACC = re.compile(r"^\d{10}-\d{2}-\d{6}$")
@@ -168,12 +174,13 @@ def main():
         validate_document(json.loads(args.validate.read_text(encoding="utf-8")))
         print("SEC issuer archive structure validated")
         return
+    agent = declared_user_agent()
     received = datetime.now(timezone.utc).replace(microsecond=0).strftime("%Y-%m-%dT%H:%M:%SZ")
     issuers = []
     for ticker in sorted(ROSTER):
         url = source_url(ROSTER[ticker])
         req = urllib.request.Request(url, headers={
-            "User-Agent": UA, "Accept": "application/json"})
+            "User-Agent": agent, "Accept": "application/json"})
         with urllib.request.urlopen(req, timeout=24) as response:
             if response.status != 200 or response.geturl() != url:
                 raise RuntimeError(f"{ticker}: SEC source request did not return the expected endpoint")
