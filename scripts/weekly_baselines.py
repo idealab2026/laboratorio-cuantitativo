@@ -135,8 +135,9 @@ def fit(rows, kind, *, minimum=30):
             "training_rows":len(rows),
             "last_label_available":max(r["label_available_at"] for r in rows),
             "training_fingerprint":hashlib.sha256(json.dumps(
-                [(r["ticker"],r["feature_date"],r["label_available_at"],r["source_sha256"])
-                 for r in rows],sort_keys=True).encode()).hexdigest()}
+                [(r["ticker"],r["feature_date"],r["label_end"],r["label_available_at"],
+                  r["source_sha256"],r["features"],r["forward_return"])
+                 for r in rows],sort_keys=True,separators=(",",":"),allow_nan=False).encode()).hexdigest()}
 
 
 def infer(model, features):
