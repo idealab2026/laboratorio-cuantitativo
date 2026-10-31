@@ -1,9 +1,10 @@
+import {signalResearchSummary} from "./paper-methods.mjs";
 import {verify,simulate,rank,valuation,thesisRank,formatPct,money,finite,verifyIssuerCatalog,filterIssuers,syntheticBarsFromDemo,nextOpenPaper,evaluateIssuerScreen,competitionReadModel,publicIssuerReadModel,verifyOfficialFx,summarizeFxForecastLedger,verifySecFilings,verifyOfficialYield} from "./metrics.mjs";
 const $=id=>document.getElementById(id);
 const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 const fmt=n=>finite(n)?new Intl.NumberFormat("es-ES",{maximumFractionDigits:2}).format(n):"N/D";
 const state={data:null,universe:null,fx:null,fxCheck:null,fxStatus:"pending",forecastLedger:null,forecastSummary:null,forecastStatus:"pending",secStatus:"pending",secRead:null,secCatalog:null,yieldDoc:null,yieldCheck:null,yieldStatus:"pending",view:"overview",strategy:"P-01",group:"",sort:"returnPct",asc:false,detailOpen:false,thesis:"T-01",query:"",thesisSort:"central",issuerMode:"catalog",issuerQuery:"",issuerSort:"base",issuerAsc:false,issuerTicker:"MSFT"};
-const viewNames=["overview","competition","algorithms","theses","monitoring","method","archive"];
+const viewNames=["overview","competition","algorithms","theses","monitoring","method","archive","ported"];
 const button=(label,action,value,cls="smallbtn")=>'<button type="button" class="'+cls+'" data-action="'+esc(action)+'" data-value="'+esc(value)+'">'+esc(label)+'</button>';
 const head=(label,title,body)=>'<div class="section-heading"><div><span class="kicker">'+esc(label)+'</span><h2>'+esc(title)+'</h2><p class="section-context">'+esc(body)+'</p></div></div>';
 const card=(html)=>'<article class="panel">'+html+'</article>';
@@ -320,6 +321,25 @@ function monitoring(){
  ).join("")+'</tbody></table></div>'+
  disclaimer("Prototipo analítico next-open. No acredita precisión predictiva ni rentabilidad real; no hay broker, cotizaciones externas, motor de persistencia ni ejecución programada.");
 }
+function ported(){
+ const report=signalResearchSummary();
+ return head("MOTOR DE SEÑALES · AISLADO","Nueve reglas reproducibles","Implementación institucional independiente de políticas técnicas observadas en el catálogo. Esta vista calcula señales con 130 velas enteramente artificiales. No representa operaciones, rendimiento prospectivo ni equivalencia certificada del motor anterior.")+
+ '<div class="source-health-strip"><div><span class="label">Reglas verificables</span><strong>'+report.methods.length+'</strong><small>Al cierre, sin datos posteriores</small></div>'+
+ '<div><span class="label">Sesiones artificiales</span><strong>'+report.sessions+'</strong><small>'+esc(report.first)+' a '+esc(report.last)+' · calendario generado</small></div>'+
+ '<div><span class="label">Carteras ejecutadas en este módulo</span><strong>0</strong><small>Señales no conectadas a libro, proveedor ni broker</small></div></div>'+
+ disclaimer("La codificación de estas reglas técnicas ya puede revisarse y probarse en IDEA LAB. Aún NO se ha transferido el motor privado de ejecución, su historial, modelo entrenado ni cotización real; las 23 filas de la competición son otra simulación independiente.")+
+ '<div class="table-scroll table-compact"><table><thead><tr><th>Regla</th><th>Familia</th><th>Parámetros fijos</th><th>Última señal sintética</th><th class="number">Compras / 30</th><th class="number">Ventas / 30</th><th class="number">Mantener / 30</th><th>Operativa</th></tr></thead><tbody>'+
+ report.methods.map(m=>'<tr><td><strong>'+esc(m.name)+'</strong><small class="smallline">'+esc(m.id)+'</small></td>'+
+ '<td>'+esc(m.family)+'</td><td>'+esc(m.parameters)+'</td><td><strong>'+esc(m.currentSignal)+'</strong><small class="smallline">Simulación: '+esc(report.last)+'</small></td>'+
+ '<td class="number">'+m.recentBuy+'</td><td class="number">'+m.recentSell+'</td><td class="number">'+m.recentHold+'</td>'+
+ '<td>Solo regla · sin órdenes</td></tr>').join("")+'</tbody></table></div>'+
+ card('<h3>Contratos necesarios para la ejecución de las carteras</h3>'+
+ '<p>Una fuente independiente de OHLC completos y autorizados, fecha de disponibilidad verificable, campañas por divisa/calendario, costes y corporate actions conciliados, configuración inmutable por estrategia, señales grabadas antes de la siguiente apertura, diario persistente y control de sesiones omitidas.</p>'+
+ '<p>Hasta comprobar esas condiciones, este módulo expone exclusivamente lógica técnica; no calcula resultados bursátiles ficticios con nombres reales.</p>')+
+ button("Revisar simulador next-open existente","navigate","monitoring","outline-btn")+
+ button("Ver competición sintética","navigate","competition","outline-btn");
+}
+
 function archive(){
  const rows=all();
  const groupsInCatalog=groups();
@@ -359,7 +379,7 @@ function chart(){
 }
 function render(){
  if(!state.data)return;
- const pages={overview,competition,algorithms,theses,monitoring,archive,method:methodology};
+ const pages={overview,competition,algorithms,theses,monitoring,archive,ported,method:methodology};
  document.querySelectorAll(".product-tabs [data-view]").forEach(b=>{const active=b.dataset.view===state.view;b.classList.toggle("active",active);b.setAttribute("aria-pressed",String(active));});
  $("app").innerHTML=(pages[state.view]||overview)();chart();
 }
