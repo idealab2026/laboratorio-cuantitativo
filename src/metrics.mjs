@@ -277,3 +277,36 @@ export function nextOpenPaper(input,{rule="equal",initialCapital=100000,feeBps=1
   volatilityPct:gains.length>1?sd*Math.sqrt(252)*100:null,
   sharpe:sd>0?mean(gains)/sd*Math.sqrt(252):null};
 }
+
+
+// Narrow, separately sourced public screening. Do not convert an exploratory
+// EPS sensitivity into a ratified DCF, independent price target or live quote.
+export function evaluateIssuerScreen(screen){
+ if(!screen||screen.ticker!=="MSFT"||screen.status!=="EXPLORATORY_NOT_RATIFIED"||screen.horizonYears!==5)
+  throw Error("Unratified or unsupported issuer research");
+ const mustBe=[
+  ["quote.close",screen.quote?.close],["metric.adjustedEpsFY2026",screen.metric?.adjustedEpsFY2026],
+  ["catalyst.q1FY2027RevenueBillion",screen.catalyst?.q1FY2027RevenueBillion],
+  ["catalyst.azureGrowthYoyPct",screen.catalyst?.azureGrowthYoyPct]
+ ];
+ if(mustBe.some(([,value])=>!finite(value)||value<=0))throw Error("Invalid public screening input");
+ if(screen.quote.currency!=="USD"||screen.quote.closeDate!=="2026-10-30"||screen.asOf!=="2026-10-31"||screen.catalyst.date!=="2026-10-28")
+  throw Error("Missing dated source");
+ if(screen.quote.source!=="https://stockanalysis.com/stocks/msft/history/"
+   ||screen.metric.source!=="https://www.microsoft.com/investor/reports/ar26/"
+   ||screen.catalyst.source!=="https://www.microsoft.com/en-us/Investor/earnings/FY-2027-Q1/press-release-webcast")
+  throw Error("Unexpected screening evidence");
+ if(typeof screen.method!=="string"||screen.method.length<30||typeof screen.limitations!=="string"||screen.limitations.length<120)
+  throw Error("Incomplete model disclosure");
+ const output={};
+ for(const key of ["bear","base","bull"]){
+  const assumptions=screen.assumptions?.[key],growth=assumptions?.annualEpsGrowthPct,multiple=assumptions?.terminalPe;
+  if(!finite(growth)||growth<0||growth>30||!finite(multiple)||multiple<5||multiple>60)throw Error("Invalid screening assumptions");
+  const estimatedEps=screen.metric.adjustedEpsFY2026*(1+growth/100)**screen.horizonYears;
+  const target=estimatedEps*multiple;
+  output[key]={growthPct:growth,terminalPe:multiple,estimatedEps,target,cagrPct:100*((target/screen.quote.close)**(1/screen.horizonYears)-1)};
+ }
+ if(!(output.bear.target<output.base.target&&output.base.target<output.bull.target))
+  throw Error("Unordered public scenarios");
+ return {...screen,scenarios:output,buyPrice15:output.base.target/1.15**screen.horizonYears};
+}
