@@ -199,7 +199,7 @@ function theses(){
  '<div class="table-scroll table-compact thesis-public-table"><table><thead><tr>'+headers+'</tr></thead><tbody id="issuer-rows">'+issuerTableRows()+'</tbody></table></div>'+
  '<p id="issuer-empty" class="table-note" '+(found?'hidden':'')+'>No hay empresas coincidentes.</p>'+
  head("ANÁLISIS","Ficha de tesis / empresa","Cada expediente público documenta qué fuentes y supuestos están acreditados y cuáles faltan.")+
- issuerDetail()+
+ '<div id="issuer-ficha">'+issuerDetail()+'</div>'+
  disclaimer("No hay acceso público a los documentos privados ni continuidad documental automática. Una ficha interna no equivale a una tesis íntegra publicada.");
 }
 
@@ -270,7 +270,7 @@ function go(view){if(!viewNames.includes(view))return;state.view=view;const u=ne
 const asCSV=rows=>rows.map(row=>row.map(x=>'"'+String(x??"").replaceAll('"','""')+'"').join(",")).join("\n");
 function download(name,rows){const u=URL.createObjectURL(new Blob(["\ufeff"+asCSV(rows)],{type:"text/csv;charset=utf-8"}));const a=document.createElement("a");a.href=u;a.download=name;document.body.append(a);a.click();a.remove();URL.revokeObjectURL(u);}
 function exportData(what){
- if(what==="ranking"){download("midas-ranking-sintetico.csv",[["algoritmo","familia","retorno_pct","drawdown_pct","volatilidad_pct","sharpe","coste"],...rank(state.data,state.sort,state.asc,state.group).map(x=>[x.name,x.group,x.returnPct,x.drawdownPct,x.volatilityPct,x.sharpe,x.fees])]);}
+ if(what==="ranking"){download("midas-ranking-sintetico.csv",[["algoritmo","familia","retorno_pct","drawdown_pct","volatilidad_pct","sharpe","coste"],...competitionReadModel(state.data,{sort:state.sort,ascending:state.asc,group:state.group}).map(x=>[x.name,x.group,x.returnPct,x.drawdownPct,x.volatilityPct,x.sharpe,x.fees])]);}
  if(what==="nav"){download("midas-curva-paper-sintetica.csv",[["sesion","nav_base_100","capital_ficticio"],...active().points.map(p=>[p.session,p.nav,p.equity])]);}
  if(what==="next-open"){const a=causalLedger();download("midas-ordenes-next-open-sinteticas.csv",[["senal_al_cierre","fill_apertura_siguiente","activo","lado","apertura_sintetica","precio_paper","unidades","notional","comision","deslizamiento"],...a.orders.map(o=>[o.signalAt,o.fillAt,o.symbol,o.side,o.openPrice,o.fillPrice,o.units,o.notional,o.fee,o.slippage])]);}
  if(what==="journal"){download("midas-diario-sintetico.csv",[["sesion","activo","accion","precio","unidades","nocional","coste"],...active().orders.map(x=>[x.session,x.symbol,x.action,x.referencePrice,x.units,x.notional,x.cost])]);}
@@ -359,10 +359,10 @@ $("app").addEventListener("submit",e=>{
  }
  const id="P-"+String(Math.max(...all().map(x=>Number(x.id.slice(2))))+1).padStart(2,"0");
  state.data.strategies.push({id,name,group:"Carteras locales",mode:"manual",manualWeights:weights,rule:"Pesos elegidos en este navegador. Sin persistencia.",cost_bps:cost,status:"Local · sintético",coverage:100,initialCapital:100000});
- state.strategy=id;state.group="";state.sort="returnPct";summary();go("competition");
+ state.strategy=id;state.group="";state.sort="returnPct";state.detailOpen=true;summary();go("competition");
 });
-document.querySelectorAll(".product-tabs [data-view]").forEach(b=>b.addEventListener("click",()=>go(b.dataset.view)));
-window.addEventListener("popstate",()=>{const v=new URLSearchParams(location.search).get("view");state.view=viewNames.includes(v)?v:"overview";render();});
+document.querySelectorAll(".product-tabs [data-view]").forEach(b=>b.addEventListener("click",()=>{state.detailOpen=false;go(b.dataset.view);}));
+window.addEventListener("popstate",()=>{const v=new URLSearchParams(location.search).get("view");state.view=viewNames.includes(v)?v:"overview";state.detailOpen=false;render();});
 async function init(){
  try{
   const r=await fetch("./data/demo.json",{cache:"no-store"});if(!r.ok)throw Error("Dataset missing");const data=await r.json(),universe=data.issuerCatalog;verify(data);verifyIssuerCatalog(universe);
