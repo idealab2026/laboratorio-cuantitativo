@@ -95,7 +95,7 @@ class YahooSourceContractTest(unittest.TestCase):
         self.assertNotIn("alphavantage", source.lower())
         self.assertNotIn("alpha vantage", source.lower())
         self.assertNotIn("drive.google.com", source)
-        self.assertNotIn("github.com/mamg", source)
+        self.assertNotIn("github.com/", source)
         self.assertIn('INSTITUTIONAL_YAHOO_INTERNAL_RIGHTS', source)
 
 
