@@ -51,7 +51,7 @@ const stateOf=(config,panel)=>({
 
 const riskOf=method=>method==="geneticFixed"?{stop:.0903,target:.2367}:
  ["hold","breakout20","breakout55"].includes(method)?{stop:null,target:null}:{stop:.08,target:.15};
-function recordFill(book,symbol,side,bar,reference,config,reason,signalAt=null){
+function recordFill(book,symbol,side,bar,reference,config,reason,signalAt=null,allocation=null){
  const slip=config.slippageBps/10000,commission=config.feeBps/10000;
  const price=reference*(side==="BUY"?1+slip:1-slip);
  if(price<bar.low-0.00001||price>bar.high+0.00001)throw Error("Model fill outside OHLC");
@@ -66,8 +66,8 @@ function recordFill(book,symbol,side,bar,reference,config,reason,signalAt=null){
  }else{
   const n=Object.keys(book.holdings).length;
   if(book.holdings[symbol]||n>=config.maxPositions)return;
-  const budget=book.cash*config.investFraction/
-   Math.max(1,config.maxPositions-n);
+  const budget=allocation??book.cash*config.investFraction;
+  if(budget>book.cash+0.00001)throw Error("Cross-portfolio or leveraged spending forbidden");
   const units=budget/(price*(1+commission)),fee=units*price*commission;
   if(units<=0)return;
   book.cash-=units*price+fee;book.feeTotal+=fee;
@@ -105,11 +105,16 @@ function settleSession(book,methodRow,panel,config){
   if(order.side==="SELL"&&book.holdings[symbol]&&!exited.has(symbol))
    recordFill(book,symbol,"SELL",bar,bar.open,config,"PRIOR_CLOSE",order.signalAt);
  }
- for(const symbol of Object.keys(book.orders).sort()){
+ const eligible=Object.keys(book.orders).sort().filter(symbol=>
+  book.orders[symbol].side==="BUY"&&!book.holdings[symbol]&&!exited.has(symbol));
+ const allowed=eligible.slice(0,Math.max(0,config.maxPositions-Object.keys(book.holdings).length));
+ const budget=allowed.length?book.cash*config.investFraction/allowed.length:0;
+ for(const symbol of allowed){
   const order=book.orders[symbol],bar=barOf(symbol);
-  if(order.side==="BUY"&&!book.holdings[symbol]&&!exited.has(symbol))
-   recordFill(book,symbol,"BUY",bar,bar.open,config,"PRIOR_CLOSE",order.signalAt);
+  recordFill(book,symbol,"BUY",bar,bar.open,config,"PRIOR_CLOSE",order.signalAt,budget);
  }
+ for(const symbol of eligible.slice(allowed.length))
+  book.events.push({type:"SKIP",date:day,symbol,reason:"MAX_POSITIONS"});
  book.orders={};
  for(const symbol of Object.keys(book.holdings).sort()){
   const bar=barOf(symbol),holding=book.holdings[symbol];
