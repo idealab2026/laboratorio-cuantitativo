@@ -1,23 +1,54 @@
-# Laboratorio cuantitativo · IDEA LAB
+# MIDAS · Laboratorio cuantitativo de IDEA LAB
 
-Sitio público independiente para una competición de estrategias **paper**, comparadores y tesis de investigación falsables.
+Laboratorio público e independiente para comparar estrategias de inversión **paper** (ficticias), investigar modelos y formalizar tesis verificables. La aplicación se ejecuta completamente en el navegador y no utiliza datos personales ni infraestructura privada.
 
-**Estado de la versión:** aplicación interactiva con datos completamente sintéticos; ninguna cifra representa carteras, inversiones ni operaciones reales.
+**Estado científico: demostración sintética.** Ninguna cifra se obtiene de cotizaciones, operaciones o emisores reales. La versión pública no contiene históricos originales ni modelos entrenados de otros sistemas.
 
-## Arquitectura
-- Frontend estático: `index.html`, `styles.css`, `src/site.mjs`.
-- Contratos y estadísticas en `src/metrics.mjs`.
-- Muestra ficticia explícita en `data/demo.json`.
-- Pipeline gratuito GitHub Pages con pruebas, control de procedencia e inclusión explícita de artefactos.
+## Funcionalidades
 
-## Diseño experimental
-Cada estrategia exige reglas, una fecha de preregistro, universo, costes, divisa, NAV y benchmark. Una posición pendiente por ausencia de precio no es un fill. La comparación requiere ventana común, métricas verificables y documentación del sesgo retrospectivo.
+| Módulo | Contenido implementado |
+| --- | --- |
+| Inicio | KPIs, familias metodológicas y tesis destacadas |
+| Competición | 23 estrategias de seis familias, NAV, drawdown, volatilidad, Sharpe y costes |
+| Fichas de algoritmos | Reglas, curva de capital, pesos, exposición, operaciones paper |
+| Algoritmos | Catálogo y creación local de carteras con tres activos artificiales |
+| Tesis | Seis ejemplos con condiciones de refutación, tres escenarios, CAGR y descuento |
+| Seguimiento | Diario de compra/venta ficticia, costes, clasificación y exportaciones CSV |
+| Metodología | Reloj causal, limitaciones, comparabilidad y requisitos de publicación |
 
-## Política de datos
-No reutilizar código, históricos ni identificadores de ningún sistema previo. No conectar cuentas de inversión, operaciones reales, credenciales, servidores o hojas privadas. Antes de incorporar material no sintético, verificar permisos de distribución de cotizaciones y metodología de ejecución.
+### Algoritmos reconstruidos
 
-## Privacidad
-Todos los archivos y commits son institucionales. El paquete web utiliza una lista blanca; el pipeline bloquea datos inesperados. El anonimato absoluto ante correlaciones con información pública anterior no puede garantizarse.
+- Clásicos: equiponderación, referencias concentradas, momentum, reversión, baja volatilidad y control de liquidez.
+- Aprendizaje semanal: proxies deterministas de regresión, clasificación direccional, ranking, transformaciones no lineales y consenso.
+- Modelización temporal: reglas heurísticas sobre información de cierres anteriores.
+- Capital Cycle: propuestas de ciclo y valoración basadas en parámetros ficticios.
+- Buy The Dip: reglas condicionales y escalonadas de exposición ante retrocesos.
+- Modelos experimentales: multicriterio, ponderaciones fijas y control de estrés.
 
-## Licencia
-Todos los derechos reservados salvo indicación expresa en futuras incorporaciones.
+**No confundir los proxies de aprendizaje o temporales con modelos realmente entrenados**. No se han ejecutado modelos de árboles de gradiente, redes recurrentes, modelos fundacionales ni optimizadores evolutivos reales en esta versión.
+
+## Cálculo
+
+Las señales de la sesión `t` se deciden utilizando solo datos ficticios hasta `t - 1`, sin utilizar observaciones futuras para seleccionar exposiciones. Se actualiza el capital paper con costes proporcionales al cambio de peso y variación relativa de precios entre cierres. El motor genera un registro de órdenes con acciones, marcas, unidades e importes ficticios. La ausencia de cotización válida bloquea la simulación; no se crean fills ni valores liquidativos de respaldo.
+
+La muestra empieza con 100.000 unidades de capital imaginario y 48 sesiones sin fechas reales de mercado, por lo que anualizar volatilidad o Sharpe es **meramente ilustrativo**. Los escenarios de tesis usan flujos, múltiplos y tasas requeridas inventados; no equivalen a una valoración financiera.
+
+## Ejecución y pruebas
+
+No se requieren claves API, dependencias npm, cuentas ni servicios externos. Servir la carpeta con un servidor HTTP local; las restricciones de los navegadores pueden impedir cargar JSON con `file://`.
+
+```bash
+python3 -m http.server 8000
+node --test tests/metrics.test.mjs
+python3 scripts/audit_public.py
+```
+
+GitHub Actions publica exclusivamente los siete recursos estáticos admitidos (`index.html`, `styles.css`, `logo.svg`, `favicon.svg`, `src/site.mjs`, `src/metrics.mjs`, `data/demo.json`) después de pasar el control de identidad institucional y pruebas de integridad.
+
+## Frontera de publicación
+
+Para incorporar resultados reales será necesario reconstruir y validar métodos científicos con código nuevo, obtener cotizaciones licenciadas con su instante de disponibilidad, verificar el registro anticipado de estrategias, permitir costes operativos realistas, evaluar fuera de muestra y publicar todas las exclusiones o errores de datos. Las tesis exigirán fuentes primarias, cambios versionados, valoración con supuestos y seguimiento posterior.
+
+No se importan repositorios ni historiales de desarrollo personales. Se evita divulgar autores, trabajos académicos identificativos, datos bancarios, posiciones, opiniones personales o dependencias de fuentes privadas. **No puede garantizarse imposibilidad de atribución** por comparación con otros contenidos previamente públicos.
+
+© IDEA LAB. Todos los derechos reservados salvo indicación expresa.
