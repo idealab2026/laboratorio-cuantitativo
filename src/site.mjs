@@ -1,11 +1,12 @@
 import {signalResearchSummary,methodCatalog} from "./paper-methods.mjs";
 import {artificialCampaignComparison} from "./paper-ledger.mjs";
 import {verifyFullRoster,filterRoster} from "./competition-roster.mjs";
+import {verifyPaperFeed} from "./paper-feed.mjs";
 import {verify,simulate,rank,valuation,thesisRank,formatPct,money,finite,verifyIssuerCatalog,filterIssuers,syntheticBarsFromDemo,nextOpenPaper,evaluateIssuerScreen,competitionReadModel,publicIssuerReadModel,verifyOfficialFx,summarizeFxForecastLedger,verifySecFilings,verifyOfficialYield} from "./metrics.mjs";
 const $=id=>document.getElementById(id);
 const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 const fmt=n=>finite(n)?new Intl.NumberFormat("es-ES",{maximumFractionDigits:2}).format(n):"N/D";
-const state={data:null,universe:null,fx:null,fxCheck:null,fxStatus:"pending",forecastLedger:null,forecastSummary:null,forecastStatus:"pending",secStatus:"pending",secRead:null,secCatalog:null,yieldDoc:null,yieldCheck:null,yieldStatus:"pending",view:"overview",strategy:"P-01",group:"",sort:"returnPct",asc:false,detailOpen:false,thesis:"T-01",query:"",thesisSort:"central",issuerMode:"catalog",issuerQuery:"",issuerSort:"base",issuerAsc:false,issuerTicker:"MSFT",paperDetail:"M-10",fullRoster:null,fullRosterStatus:"pending",fullRosterGroup:"",fullRosterQuery:""};
+const state={data:null,universe:null,fx:null,fxCheck:null,fxStatus:"pending",forecastLedger:null,forecastSummary:null,forecastStatus:"pending",secStatus:"pending",secRead:null,secCatalog:null,yieldDoc:null,yieldCheck:null,yieldStatus:"pending",view:"overview",strategy:"P-01",group:"",sort:"returnPct",asc:false,detailOpen:false,thesis:"T-01",query:"",thesisSort:"central",issuerMode:"catalog",issuerQuery:"",issuerSort:"base",issuerAsc:false,issuerTicker:"MSFT",paperDetail:"M-10",fullRoster:null,fullRosterStatus:"pending",fullRosterGroup:"",fullRosterQuery:"",institutionalFeedStatus:"pending",paperFeed:null,paperFeedRead:null};
 const viewNames=["overview","competition","algorithms","theses","monitoring","method","archive","ported","full"];
 const button=(label,action,value,cls="smallbtn")=>'<button type="button" class="'+cls+'" data-action="'+esc(action)+'" data-value="'+esc(value)+'">'+esc(label)+'</button>';
 const head=(label,title,body)=>'<div class="section-heading"><div><span class="kicker">'+esc(label)+'</span><h2>'+esc(title)+'</h2><p class="section-context">'+esc(body)+'</p></div></div>';
@@ -370,13 +371,23 @@ function ported(){
 
 function fullRosterRows(){
  if(!state.fullRoster)return "";
- return filterRoster(state.fullRoster,{group:state.fullRosterGroup,query:state.fullRosterQuery}).map(item=>
- '<tr><td><strong>'+esc(item.name)+'</strong><small class="smallline">'+esc(item.slot)+'</small></td>'+
- '<td>'+esc(item.group)+'</td><td>Sin diario institucional</td>'+
- '<td>Sin datos</td><td>N/D</td><td class="number">N/D</td>'+
- '<td class="number">N/D</td><td class="number">N/D</td>'+
- '<td class="number">N/D</td><td class="number">N/D</td>'+
- '<td>Sin evidencia comparable</td><td class="number">—</td></tr>').join("");
+ return filterRoster(state.fullRoster,{group:state.fullRosterGroup,query:state.fullRosterQuery}).map(item=>{
+ const record=state.paperFeedRead?.bySlot.get(item.slot);
+ const active=record?
+   esc(record.activity)+(record.pending_orders?" · "+record.pending_orders+" pendiente(s)":""):
+   "Sin diario institucional";
+ const risks=record?.risk||{},label=record?.comparison?.eligible?"Misma referencia certificada":"Sin evidencia comparable";
+ const curve=record?sparkline(record.history.map(x=>x.nav)):"—";
+ return '<tr><td><strong>'+esc(item.name)+'</strong><small class="smallline">'+esc(item.slot)+'</small></td>'+
+  '<td>'+esc(item.group)+'</td><td>'+active+'</td>'+
+  '<td>'+esc(record?.last_session||"Sin datos")+'</td><td>'+esc(record?.currency||"N/D")+'</td>'+
+  '<td class="number">'+(record?pctText(record.return_pct):"N/D")+'</td>'+
+  '<td class="number">'+(record&&record.day_return_pct!==null?pctText(record.day_return_pct):"N/D")+'</td>'+
+  '<td class="number">'+(record&&risks.volatility_pct!==null?pctText(risks.volatility_pct):"N/D")+'</td>'+
+  '<td class="number">'+(record&&risks.max_drawdown_pct!==null?pctText(risks.max_drawdown_pct):"N/D")+'</td>'+
+  '<td class="number">'+(record?record.positions+" / "+record.pending_orders:"N/D")+'</td>'+
+  '<td>'+label+'</td><td>'+curve+'</td></tr>';
+ }).join("");
 }
 function full(){
  const d=state.fullRoster;
@@ -386,9 +397,9 @@ function full(){
  const meta=verifyFullRoster(d),visible=filterRoster(d,{group:state.fullRosterGroup,query:state.fullRosterQuery});
  return headText+
  '<div class="source-health-strip"><div><span class="label">Funciones registradas</span><strong>'+meta.count+'</strong><small>'+meta.groups.length+' grupos funcionales</small></div>'+
- '<div><span class="label">Diarios institucionales certificados</span><strong>'+meta.migrated+'</strong><small>Ningún histórico se ha traspasado sin procedencia</small></div>'+
- '<div><span class="label">Rentabilidades reales verificadas</span><strong>0</strong><small>Sin serie bursátil redistribuible ni libros nuevos</small></div></div>'+
- disclaimer("INVENTARIO FUNCIONAL. Los nombres están reformulados para el catálogo público y los identificadores son nuevos. Todas las filas quedan pendientes mientras no exista una fuente institucional autorizada, un diario independiente y sus validaciones; no son 64 estrategias activas.")+
+ '<div><span class="label">Diarios institucionales certificados</span><strong>'+(state.paperFeedRead?.count||0)+'</strong><small>'+(state.paperFeedRead?.status==="source_verified"?"Resumen institucional firmado y auditado":"Sin fuente institucional acreditada")+'</small></div>'+
+ '<div><span class="label">Fuente de sesión</span><strong>'+esc(state.paperFeedRead?.session||"Sin fuente")+'</strong><small>'+(state.paperFeedRead?.status==="source_verified"?"Agregados derivados validados; no órdenes de bróker":"Sin captura bursátil autenticada")+'</small></div></div>'+
+ disclaimer(state.paperFeedRead?.status==="source_verified"?"Las líneas con evidencia llevan resumen económico trazable a captura y libro firmados por un núcleo institucional. El resto permanece pendiente; no equivale a operativa con dinero real.":"INVENTARIO FUNCIONAL. Sin fuente institucional acreditada: las 64 líneas siguen pendientes. Ninguna rentabilidad o posición de las simulaciones sustituye un diario bursátil independiente.")+
  '<div class="filters"><label>Filtrar familia<select id="full-group-select"><option value="">Todas las familias</option>'+
  meta.groups.map(g=>'<option value="'+esc(g.name)+'" '+(g.name===state.fullRosterGroup?"selected":"")+'>'+esc(g.name)+' · '+g.count+'</option>').join("")+
  '</select></label><label>Buscar<input id="full-query" type="search" value="'+esc(state.fullRosterQuery)+'" placeholder="Algoritmo o familia"></label>'+
@@ -497,7 +508,7 @@ $("app").addEventListener("click",e=>{
  else if(action==="paper-select"){state.paperDetail=value;render();}
  else if(action==="full-export"){
   if(state.fullRoster){const rows=filterRoster(state.fullRoster,{group:state.fullRosterGroup,query:state.fullRosterQuery});
-   download("midas-64-funciones-pendientes.csv",[["ID","Nombre","Familia","Estado","Actividad","Rentabilidad","Riesgo","Comparabilidad"],...rows.map(x=>[x.slot,x.name,x.group,x.record_status,x.activity,"N/D","N/D","sin evidencia"])]);}
+   download("midas-64-funciones.csv",[["ID","Nombre","Familia","Estado","Actividad","Rentabilidad","Riesgo","Comparabilidad"],...rows.map(x=>{const r=state.paperFeedRead?.bySlot.get(x.slot);return [x.slot,x.name,x.group,r?"fuente_verificada":"pendiente",r?.activity||"N/D",r?.return_pct??"N/D",r?.risk?.max_drawdown_pct??"N/D",r?.comparison?.eligible?"misma referencia":"no comparable"];})]);}
  }
  else if(action==="issuer-column"){
   if(state.issuerSort===value)state.issuerAsc=!state.issuerAsc;
@@ -555,7 +566,7 @@ window.addEventListener("popstate",()=>{const v=new URLSearchParams(location.sea
 async function init(){
  try{
   const r=await fetch("./data/demo.json",{cache:"no-store"});if(!r.ok)throw Error("Dataset missing");const data=await r.json(),universe=data.issuerCatalog;verify(data);verifyIssuerCatalog(universe);
-  state.data=data;state.universe=universe;const v=new URLSearchParams(location.search).get("view");state.view=viewNames.includes(v)?v:"overview";summary();render();void loadOfficialFx();void loadForecastLedger();void loadSecFilings();void loadOfficialYield();void loadFullRoster();
+  state.data=data;state.universe=universe;const v=new URLSearchParams(location.search).get("view");state.view=viewNames.includes(v)?v:"overview";summary();render();void loadOfficialFx();void loadForecastLedger();void loadSecFilings();void loadOfficialYield();void loadFullRoster();void loadInstitutionalPaperFeed();
  }catch(e){$("app").textContent="No se ha podido cargar el catálogo de emisores o el laboratorio sintético; no se muestran datos no verificados.";}
 }
 async function loadOfficialFx(){
@@ -603,6 +614,23 @@ async function loadFullRoster(){
   verifyFullRoster(doc);
   state.fullRoster=doc;state.fullRosterStatus="ok";
  }catch(_error){state.fullRoster=null;state.fullRosterStatus="unavailable";}
+ if(state.view==="full"&&state.data)render();
+}
+async function loadInstitutionalPaperFeed(){
+ try{
+  const res=await fetch("./data/institutional-paper-feed.json",{cache:"no-store"});
+  if(!res.ok)throw Error("Institutional publication absent");
+  const doc=await res.json();
+  if(!state.fullRoster){
+   const rosterRes=await fetch("./data/competition-roster.json",{cache:"no-store"});
+   if(!rosterRes.ok)throw Error("No verified institutional strategy roster");
+   const roster=await rosterRes.json();
+   verifyFullRoster(roster);state.fullRoster=roster;
+  }
+  const verified=verifyPaperFeed(doc,state.fullRoster);
+  state.paperFeed=doc;state.paperFeedRead=verified;
+  state.institutionalFeedStatus=verified.status;
+ }catch(_error){state.paperFeed=null;state.paperFeedRead=null;state.institutionalFeedStatus="unavailable";}
  if(state.view==="full"&&state.data)render();
 }
 init();
