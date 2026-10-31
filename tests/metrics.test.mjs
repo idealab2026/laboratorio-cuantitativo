@@ -229,7 +229,7 @@ test("Institutional UI offers row inspection, column sorting, historic isolation
  const src=readFileSync(new URL("../src/site.mjs",import.meta.url),"utf8");
  const html=readFileSync(new URL("../index.html",import.meta.url),"utf8");
  const css=readFileSync(new URL("../styles.css",import.meta.url),"utf8");
- for(const text of ["data-competition-id","data-issuer-id","rank-column","issuer-column","openCompetitionRow","openIssuerRow","close-detail","function archive()","Sin histórico institucional importado","Sin alimentación real","Última sesión ficticia","Sin verificación operativa"]){
+ for(const text of ["data-competition-id","data-issuer-id","rank-column","issuer-column","openCompetitionRow","openIssuerRow","close-detail","function archive()","Sin histórico institucional importado","Sin alimentación real","Última sesión ficticia","Paper bursátil no activado"]){
   assert.ok(src.includes(text),text);
  }
  for(const label of ["Competición de algoritmos","Seguimiento de tesis","Catálogo / histórico"]){

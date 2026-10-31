@@ -301,9 +301,9 @@ function monitoring(){
  const s=active(),audit=causalLedger();
  return officialYieldPanel()+officialFxPanel()+prospectiveForecastPanel()+head("SALUD OPERATIVA · DIARIO","Procedencia, ejecución y operaciones","Diferencia entre disponibilidad de fuentes, ejecución del motor y estado de cada diario. Sin fuente y persistencia institucional no se declara funcionamiento autónomo.")+
  '<div class="source-health-strip">'+
- '<div><span class="label">OHLC diario externo</span><strong>Yahoo / yfinance · preparado</strong><small>Adaptador validable con OHLC RAW, dividendos y splits; sin captura institucional habilitada</small></div>'+
+ '<div><span class="label">OHLC diario externo</span><strong>Yahoo / yfinance · workflow preparado</strong><small>Fuente original, 503 + SPY, captura y paper con código público. Ingesta condicionada a derechos de uso.</small></div>'+
  '<div><span class="label">Cobertura del universo real</span><strong>N/D</strong><small>Instrumentos del experimento: 3 activos ficticios; cotizaciones de mercado ausentes</small></div>'+
- '<div><span class="label">Salud de automatismos</span><strong>Sin verificación operativa</strong><small>GitHub Pages despliega la web; no ejecuta ni persiste las 23 estrategias</small></div>'+
+ '<div><span class="label">Salud de automatismos</span><strong>Paper bursátil no activado</strong><small>GitHub Actions verifica el runner. Sin autorización de la fuente no crea sesiones ni rentabilidades; las 23 estrategias siguen sintéticas.</small></div>'+
  '</div>'+
  disclaimer("Fuente original identificada: Yahoo Finance mediante yfinance, con universo congelado de 503 acciones y SPY aparte. El contrato está preparado para validación offline, pero la colección institucional, la publicación de cotizaciones, los snapshots diarios y el productor paper NO están habilitados. No existe todavía un registro de cotizaciones reales en IDEA LAB.")+
  '<div class="section-grid three">'+
