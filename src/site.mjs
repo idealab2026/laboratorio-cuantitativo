@@ -299,11 +299,11 @@ function monitoring(){
  const s=active(),audit=causalLedger();
  return officialYieldPanel()+officialFxPanel()+prospectiveForecastPanel()+head("SALUD OPERATIVA · DIARIO","Procedencia, ejecución y operaciones","Diferencia entre disponibilidad de fuentes, ejecución del motor y estado de cada diario. Sin fuente y persistencia institucional no se declara funcionamiento autónomo.")+
  '<div class="source-health-strip">'+
- '<div><span class="label">OHLC diario externo</span><strong>No conectado</strong><small>No existe un proveedor de precios autorizados ni una sesión bursátil comprobada</small></div>'+
+ '<div><span class="label">OHLC diario externo</span><strong>Yahoo / yfinance · preparado</strong><small>Adaptador validable con OHLC RAW, dividendos y splits; sin captura institucional habilitada</small></div>'+
  '<div><span class="label">Cobertura del universo real</span><strong>N/D</strong><small>Instrumentos del experimento: 3 activos ficticios; cotizaciones de mercado ausentes</small></div>'+
  '<div><span class="label">Salud de automatismos</span><strong>Sin verificación operativa</strong><small>GitHub Pages despliega la web; no ejecuta ni persiste las 23 estrategias</small></div>'+
  '</div>'+
- disclaimer("Fuente de mercado desconocida, captura UTC ausente, cobertura real N/D, hashes de OHLC no registrados y productor periódico no habilitado. No se confunde ausencia de prueba con estado correcto.")+
+ disclaimer("Fuente original identificada: Yahoo Finance mediante yfinance, con universo congelado de 503 acciones y SPY aparte. El contrato está preparado para validación offline, pero la colección institucional, la publicación de cotizaciones, los snapshots diarios y el productor paper NO están habilitados. No existe todavía un registro de cotizaciones reales en IDEA LAB.")+
  '<div class="section-grid three">'+
  card('<span class="label">UNIVERSO DEMO</span><h3>3 activos artificiales</h3><p>La serie '+esc(state.data.dates[0])+'–'+esc(state.data.dates.at(-1))+' no equivale a un calendario de cotización. Origen: generador matemático.</p>')+
  card('<span class="label">ÓRDENES PAPER</span><h3>Sin persistencia</h3><p>Los libros se generan al abrir la página y no son prueba de una sesión automática ni de operaciones en mercado.</p>')+
