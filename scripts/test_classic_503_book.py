@@ -98,7 +98,7 @@ class OriginalSizedClassicBooks(unittest.TestCase):
             verify_book(altered,KEY)
         with self.assertRaisesRegex(ValueError,"Duplicate or reversed"):
             advance(book,source,history,key=KEY)
-        wrong=deepcopy(history);wrong["AAPL"][-1]["close"]*=1.02
+        wrong=deepcopy(history);wrong["AAPL"][-1]["close"]*=1.001
         with self.assertRaisesRegex(ValueError,"capture disagree"):
             advance(blank_state(),source,wrong,key=KEY)
         without=deepcopy(history);without.pop("SPY")
