@@ -7,8 +7,8 @@ import re
 import sys
 
 ROOT = Path(__file__).resolve().parents[1]
-RELEASE = {"index.html", "styles.css", "favicon.svg", "logo.svg", "src/site.mjs", "src/metrics.mjs", "data/demo.json"}
-REPOSITORY = RELEASE | {"README.md", "scripts/audit_public.py", "tests/metrics.test.mjs", ".github/workflows/pages.yml"}
+RELEASE = {"index.html", "research.html", "styles.css", "favicon.svg", "logo.svg", "src/site.mjs", "src/metrics.mjs", "src/learning.mjs", "src/learning-view.mjs", "data/demo.json"}
+REPOSITORY = RELEASE | {"README.md", "docs/SCIENTIFIC_PARITY.md", "scripts/audit_public.py", "tests/metrics.test.mjs", "tests/learning.test.mjs", ".github/workflows/pages.yml"}
 issues = []
 files = {str(p.relative_to(ROOT)) for p in ROOT.rglob("*") if p.is_file() and ".git" not in p.parts}
 if unknown := sorted(files - REPOSITORY):
@@ -23,10 +23,11 @@ class Links(HTMLParser):
         if tag in ("a","link","img","script"):
             u=a.get("href") or a.get("src")
             if u: self.references.append(u)
-if (ROOT/"index.html").exists():
-    links=Links()
-    links.feed((ROOT/"index.html").read_text(encoding="utf8"))
-    for url in links.references:
+for page in ("index.html", "research.html"):
+ if not (ROOT/page).exists(): continue
+ links=Links()
+ links.feed((ROOT/page).read_text(encoding="utf8"))
+ for url in links.references:
         if url.startswith("#"): continue
         if url.startswith("https://"):
             if not (url.startswith("https://idealab2026.github.io/") or url.startswith("https://github.com/idealab2026/")):
@@ -37,7 +38,7 @@ if (ROOT/"index.html").exists():
 for path in sorted(files):
     if path not in REPOSITORY: continue
     source=(ROOT/path).read_text(encoding="utf8")
-    if path in RELEASE or path == "README.md":
+    if path in RELEASE or path == "README.md" or path.startswith("docs/"):
         if re.search(r"[\w.+-]+@[\w.-]+\.[A-Za-z]{2,}",source):
             issues.append("Email address found in public content")
     if re.search(r"-----BEGIN [^-]+PRIVATE KEY-----|github_pat_[A-Za-z0-9_]{20,}|ghp_[A-Za-z0-9]{30,}",source):

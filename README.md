@@ -52,3 +52,13 @@ Para incorporar resultados reales será necesario reconstruir y validar métodos
 No se importan repositorios ni historiales de desarrollo personales. Se evita divulgar autores, trabajos académicos identificativos, datos bancarios, posiciones, opiniones personales o dependencias de fuentes privadas. **No puede garantizarse imposibilidad de atribución** por comparación con otros contenidos previamente públicos.
 
 © IDEA LAB. Todos los derechos reservados salvo indicación expresa.
+
+
+## Evaluación de aprendizaje realmente entrenado (solo laboratorio artificial)
+
+La página [Modelos entrenados](research.html) ajusta regresión regularizada y clasificación logística **en cada ventana cronológica**, con normalización estimada exclusivamente sobre la muestra de entrenamiento. Publica RMSE, Brier y acierto direccional fuera de muestra sobre los mismos activos ficticios. No publica rentabilidad, señales operables ni asegura haber recuperado modelos históricos. Véase [puertas científicas](docs/SCIENTIFIC_PARITY.md).
+
+```bash
+node --test tests/*.test.mjs
+python3 scripts/audit_public.py
+```
