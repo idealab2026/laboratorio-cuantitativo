@@ -1,0 +1,1672 @@
+{
+  "schema": "idea_lab_strategy_coverage_v1",
+  "data_class": "institutional_registry_without_market_results",
+  "notice": "Functional slots only. No live ledger, trade, prices, inferred returns or imported private research history.",
+  "expected": 64,
+  "entries": [
+    {
+      "slot": "IL-001",
+      "group": "US · Cartera original 8 activos",
+      "name": "SPY · benchmark",
+      "record_status": "not_migrated",
+      "activity": "unavailable",
+      "currency": null,
+      "first_session": null,
+      "last_session": null,
+      "initial_capital": null,
+      "last_equity": null,
+      "return_pct": null,
+      "day_return_pct": null,
+      "risk": {
+        "volatility_pct": null,
+        "max_drawdown_pct": null,
+        "sharpe_0rf": null
+      },
+      "positions": null,
+      "pending_orders": null,
+      "history": [],
+      "comparison": {
+        "eligible": false,
+        "universe_id": null
+      }
+    },
+    {
+      "slot": "IL-002",
+      "group": "US · Cartera original 8 activos",
+      "name": "Equiponderación 8",
+      "record_status": "not_migrated",
+      "activity": "unavailable",
+      "currency": null,
+      "first_session": null,
+      "last_session": null,
+      "initial_capital": null,
+      "last_equity": null,
+      "return_pct": null,
+      "day_return_pct": null,
+      "risk": {
+        "volatility_pct": null,
+        "max_drawdown_pct": null,
+        "sharpe_0rf": null
+      },
+      "positions": null,
+      "pending_orders": null,
+      "history": [],
+      "comparison": {
+        "eligible": false,
+        "universe_id": null
+      }
+    },
+    {
+      "slot": "IL-003",
+      "group": "US · Cartera original 8 activos",
+      "name": "EMA/RSI",
+      "record_status": "not_migrated",
+      "activity": "unavailable",
+      "currency": null,
+      "first_session": null,
+      "last_session": null,
+      "initial_capital": null,
+      "last_equity": null,
+      "return_pct": null,
+      "day_return_pct": null,
+      "risk": {
+        "volatility_pct": null,
+        "max_drawdown_pct": null,
+        "sharpe_0rf": null
+      },
+      "positions": null,
+      "pending_orders": null,
+      "history": [],
+      "comparison": {
+        "eligible": false,
+        "universe_id": null
+      }
+    },
+    {
+      "slot": "IL-004",
+      "group": "US · Cartera original 8 activos",
+      "name": "Genético congelado",
+      "record_status": "not_migrated",
+      "activity": "unavailable",
+      "currency": null,
+      "first_session": null,
+      "last_session": null,
+      "initial_capital": null,
+      "last_equity": null,
+      "return_pct": null,
+      "day_return_pct": null,
+      "risk": {
+        "volatility_pct": null,
+        "max_drawdown_pct": null,
+        "sharpe_0rf": null
+      },
+      "positions": null,
+      "pending_orders": null,
+      "history": [],
+      "comparison": {
+        "eligible": false,
+        "universe_id": null
+      }
+    },
+    {
+      "slot": "IL-005",
+      "group": "US · Cartera original 8 activos",
+      "name": "MACD",
+      "record_status": "not_migrated",
+      "activity": "unavailable",
+      "currency": null,
+      "first_session": null,
+      "last_session": null,
+      "initial_capital": null,
+      "last_equity": null,
+      "return_pct": null,
+      "day_return_pct": null,
+      "risk": {
+        "volatility_pct": null,
+        "max_drawdown_pct": null,
+        "sharpe_0rf": null
+      },
+      "positions": null,
+      "pending_orders": null,
+      "history": [],
+      "comparison": {
+        "eligible": false,
+        "universe_id": null
+      }
+    },
+    {
+      "slot": "IL-006",
+      "group": "US · Cartera original 8 activos",
+      "name": "RSI reversión",
+      "record_status": "not_migrated",
+      "activity": "unavailable",
+      "currency": null,
+      "first_session": null,
+      "last_session": null,
+      "initial_capital": null,
+      "last_equity": null,
+      "return_pct": null,
+      "day_return_pct": null,
+      "risk": {
+        "volatility_pct": null,
+        "max_drawdown_pct": null,
+        "sharpe_0rf": null
+      },
+      "positions": null,
+      "pending_orders": null,
+      "history": [],
+      "comparison": {
+        "eligible": false,
+        "universe_id": null
+      }
+    },
+    {
+      "slot": "IL-007",
+      "group": "US · Cartera original 8 activos",
+      "name": "Bollinger",
+      "record_status": "not_migrated",
+      "activity": "unavailable",
+      "currency": null,
+      "first_session": null,
+      "last_session": null,
+      "initial_capital": null,
+      "last_equity": null,
+      "return_pct": null,
+      "day_return_pct": null,
+      "risk": {
+        "volatility_pct": null,
+        "max_drawdown_pct": null,
+        "sharpe_0rf": null
+      },
+      "positions": null,
+      "pending_orders": null,
+      "history": [],
+      "comparison": {
+        "eligible": false,
+        "universe_id": null
+      }
+    },
+    {
+      "slot": "IL-008",
+      "group": "US · Cartera original 8 activos",
+      "name": "Ruptura 20/10",
+      "record_status": "not_migrated",
+      "activity": "unavailable",
+      "currency": null,
+      "first_session": null,
+      "last_session": null,
+      "initial_capital": null,
+      "last_equity": null,
+      "return_pct": null,
+      "day_return_pct": null,
+      "risk": {
+        "volatility_pct": null,
+        "max_drawdown_pct": null,
+        "sharpe_0rf": null
+      },
+      "positions": null,
+      "pending_orders": null,
+      "history": [],
+      "comparison": {
+        "eligible": false,
+        "universe_id": null
+      }
+    },
+    {
+      "slot": "IL-009",
+      "group": "US · Cartera original 8 activos",
+      "name": "Ruptura 55/20",
+      "record_status": "not_migrated",
+      "activity": "unavailable",
+      "currency": null,
+      "first_session": null,
+      "last_session": null,
+      "initial_capital": null,
+      "last_equity": null,
+      "return_pct": null,
+      "day_return_pct": null,
+      "risk": {
+        "volatility_pct": null,
+        "max_drawdown_pct": null,
+        "sharpe_0rf": null
+      },
+      "positions": null,
+      "pending_orders": null,
+      "history": [],
+      "comparison": {
+        "eligible": false,
+        "universe_id": null
+      }
+    },
+    {
+      "slot": "IL-010",
+      "group": "S&P 500 · cartera ampliada",
+      "name": "Equiponderación 503",
+      "record_status": "not_migrated",
+      "activity": "unavailable",
+      "currency": null,
+      "first_session": null,
+      "last_session": null,
+      "initial_capital": null,
+      "last_equity": null,
+      "return_pct": null,
+      "day_return_pct": null,
+      "risk": {
+        "volatility_pct": null,
+        "max_drawdown_pct": null,
+        "sharpe_0rf": null
+      },
+      "positions": null,
+      "pending_orders": null,
+      "history": [],
+      "comparison": {
+        "eligible": false,
+        "universe_id": null
+      }
+    },
+    {
+      "slot": "IL-011",
+      "group": "S&P 500 · cartera ampliada",
+      "name": "EMA/RSI",
+      "record_status": "not_migrated",
+      "activity": "unavailable",
+      "currency": null,
+      "first_session": null,
+      "last_session": null,
+      "initial_capital": null,
+      "last_equity": null,
+      "return_pct": null,
+      "day_return_pct": null,
+      "risk": {
+        "volatility_pct": null,
+        "max_drawdown_pct": null,
+        "sharpe_0rf": null
+      },
+      "positions": null,
+      "pending_orders": null,
+      "history": [],
+      "comparison": {
+        "eligible": false,
+        "universe_id": null
+      }
+    },
+    {
+      "slot": "IL-012",
+      "group": "S&P 500 · cartera ampliada",
+      "name": "Genético congelado",
+      "record_status": "not_migrated",
+      "activity": "unavailable",
+      "currency": null,
+      "first_session": null,
+      "last_session": null,
+      "initial_capital": null,
+      "last_equity": null,
+      "return_pct": null,
+      "day_return_pct": null,
+      "risk": {
+        "volatility_pct": null,
+        "max_drawdown_pct": null,
+        "sharpe_0rf": null
+      },
+      "positions": null,
+      "pending_orders": null,
+      "history": [],
+      "comparison": {
+        "eligible": false,
+        "universe_id": null
+      }
+    },
+    {
+      "slot": "IL-013",
+      "group": "S&P 500 · cartera ampliada",
+      "name": "MACD",
+      "record_status": "not_migrated",
+      "activity": "unavailable",
+      "currency": null,
+      "first_session": null,
+      "last_session": null,
+      "initial_capital": null,
+      "last_equity": null,
+      "return_pct": null,
+      "day_return_pct": null,
+      "risk": {
+        "volatility_pct": null,
+        "max_drawdown_pct": null,
+        "sharpe_0rf": null
+      },
+      "positions": null,
+      "pending_orders": null,
+      "history": [],
+      "comparison": {
+        "eligible": false,
+        "universe_id": null
+      }
+    },
+    {
+      "slot": "IL-014",
+      "group": "S&P 500 · cartera ampliada",
+      "name": "RSI reversión",
+      "record_status": "not_migrated",
+      "activity": "unavailable",
+      "currency": null,
+      "first_session": null,
+      "last_session": null,
+      "initial_capital": null,
+      "last_equity": null,
+      "return_pct": null,
+      "day_return_pct": null,
+      "risk": {
+        "volatility_pct": null,
+        "max_drawdown_pct": null,
+        "sharpe_0rf": null
+      },
+      "positions": null,
+      "pending_orders": null,
+      "history": [],
+      "comparison": {
+        "eligible": false,
+        "universe_id": null
+      }
+    },
+    {
+      "slot": "IL-015",
+      "group": "S&P 500 · cartera ampliada",
+      "name": "Bollinger",
+      "record_status": "not_migrated",
+      "activity": "unavailable",
+      "currency": null,
+      "first_session": null,
+      "last_session": null,
+      "initial_capital": null,
+      "last_equity": null,
+      "return_pct": null,
+      "day_return_pct": null,
+      "risk": {
+        "volatility_pct": null,
+        "max_drawdown_pct": null,
+        "sharpe_0rf": null
+      },
+      "positions": null,
+      "pending_orders": null,
+      "history": [],
+      "comparison": {
+        "eligible": false,
+        "universe_id": null
+      }
+    },
+    {
+      "slot": "IL-016",
+      "group": "S&P 500 · cartera ampliada",
+      "name": "Ruptura 20/10",
+      "record_status": "not_migrated",
+      "activity": "unavailable",
+      "currency": null,
+      "first_session": null,
+      "last_session": null,
+      "initial_capital": null,
+      "last_equity": null,
+      "return_pct": null,
+      "day_return_pct": null,
+      "risk": {
+        "volatility_pct": null,
+        "max_drawdown_pct": null,
+        "sharpe_0rf": null
+      },
+      "positions": null,
+      "pending_orders": null,
+      "history": [],
+      "comparison": {
+        "eligible": false,
+        "universe_id": null
+      }
+    },
+    {
+      "slot": "IL-017",
+      "group": "S&P 500 · cartera ampliada",
+      "name": "Ruptura 55/20",
+      "record_status": "not_migrated",
+      "activity": "unavailable",
+      "currency": null,
+      "first_session": null,
+      "last_session": null,
+      "initial_capital": null,
+      "last_equity": null,
+      "return_pct": null,
+      "day_return_pct": null,
+      "risk": {
+        "volatility_pct": null,
+        "max_drawdown_pct": null,
+        "sharpe_0rf": null
+      },
+      "positions": null,
+      "pending_orders": null,
+      "history": [],
+      "comparison": {
+        "eligible": false,
+        "universe_id": null
+      }
+    },
+    {
+      "slot": "IL-018",
+      "group": "S&P 500 · cartera ampliada",
+      "name": "SPY · benchmark",
+      "record_status": "not_migrated",
+      "activity": "unavailable",
+      "currency": null,
+      "first_session": null,
+      "last_session": null,
+      "initial_capital": null,
+      "last_equity": null,
+      "return_pct": null,
+      "day_return_pct": null,
+      "risk": {
+        "volatility_pct": null,
+        "max_drawdown_pct": null,
+        "sharpe_0rf": null
+      },
+      "positions": null,
+      "pending_orders": null,
+      "history": [],
+      "comparison": {
+        "eligible": false,
+        "universe_id": null
+      }
+    },
+    {
+      "slot": "IL-019",
+      "group": "ML semanal · vigente",
+      "name": "SPY · benchmark",
+      "record_status": "not_migrated",
+      "activity": "unavailable",
+      "currency": null,
+      "first_session": null,
+      "last_session": null,
+      "initial_capital": null,
+      "last_equity": null,
+      "return_pct": null,
+      "day_return_pct": null,
+      "risk": {
+        "volatility_pct": null,
+        "max_drawdown_pct": null,
+        "sharpe_0rf": null
+      },
+      "positions": null,
+      "pending_orders": null,
+      "history": [],
+      "comparison": {
+        "eligible": false,
+        "universe_id": null
+      }
+    },
+    {
+      "slot": "IL-020",
+      "group": "ML semanal · vigente",
+      "name": "RSP · benchmark",
+      "record_status": "not_migrated",
+      "activity": "unavailable",
+      "currency": null,
+      "first_session": null,
+      "last_session": null,
+      "initial_capital": null,
+      "last_equity": null,
+      "return_pct": null,
+      "day_return_pct": null,
+      "risk": {
+        "volatility_pct": null,
+        "max_drawdown_pct": null,
+        "sharpe_0rf": null
+      },
+      "positions": null,
+      "pending_orders": null,
+      "history": [],
+      "comparison": {
+        "eligible": false,
+        "universe_id": null
+      }
+    },
+    {
+      "slot": "IL-021",
+      "group": "ML semanal · vigente",
+      "name": "LightGBM rentabilidad",
+      "record_status": "not_migrated",
+      "activity": "unavailable",
+      "currency": null,
+      "first_session": null,
+      "last_session": null,
+      "initial_capital": null,
+      "last_equity": null,
+      "return_pct": null,
+      "day_return_pct": null,
+      "risk": {
+        "volatility_pct": null,
+        "max_drawdown_pct": null,
+        "sharpe_0rf": null
+      },
+      "positions": null,
+      "pending_orders": null,
+      "history": [],
+      "comparison": {
+        "eligible": false,
+        "universe_id": null
+      }
+    },
+    {
+      "slot": "IL-022",
+      "group": "ML semanal · vigente",
+      "name": "LightGBM dirección",
+      "record_status": "not_migrated",
+      "activity": "unavailable",
+      "currency": null,
+      "first_session": null,
+      "last_session": null,
+      "initial_capital": null,
+      "last_equity": null,
+      "return_pct": null,
+      "day_return_pct": null,
+      "risk": {
+        "volatility_pct": null,
+        "max_drawdown_pct": null,
+        "sharpe_0rf": null
+      },
+      "positions": null,
+      "pending_orders": null,
+      "history": [],
+      "comparison": {
+        "eligible": false,
+        "universe_id": null
+      }
+    },
+    {
+      "slot": "IL-023",
+      "group": "ML semanal · vigente",
+      "name": "LightGBM ranking",
+      "record_status": "not_migrated",
+      "activity": "unavailable",
+      "currency": null,
+      "first_session": null,
+      "last_session": null,
+      "initial_capital": null,
+      "last_equity": null,
+      "return_pct": null,
+      "day_return_pct": null,
+      "risk": {
+        "volatility_pct": null,
+        "max_drawdown_pct": null,
+        "sharpe_0rf": null
+      },
+      "positions": null,
+      "pending_orders": null,
+      "history": [],
+      "comparison": {
+        "eligible": false,
+        "universe_id": null
+      }
+    },
+    {
+      "slot": "IL-024",
+      "group": "ML semanal · vigente",
+      "name": "MLP",
+      "record_status": "not_migrated",
+      "activity": "unavailable",
+      "currency": null,
+      "first_session": null,
+      "last_session": null,
+      "initial_capital": null,
+      "last_equity": null,
+      "return_pct": null,
+      "day_return_pct": null,
+      "risk": {
+        "volatility_pct": null,
+        "max_drawdown_pct": null,
+        "sharpe_0rf": null
+      },
+      "positions": null,
+      "pending_orders": null,
+      "history": [],
+      "comparison": {
+        "eligible": false,
+        "universe_id": null
+      }
+    },
+    {
+      "slot": "IL-025",
+      "group": "ML semanal · vigente",
+      "name": "LSTM",
+      "record_status": "not_migrated",
+      "activity": "unavailable",
+      "currency": null,
+      "first_session": null,
+      "last_session": null,
+      "initial_capital": null,
+      "last_equity": null,
+      "return_pct": null,
+      "day_return_pct": null,
+      "risk": {
+        "volatility_pct": null,
+        "max_drawdown_pct": null,
+        "sharpe_0rf": null
+      },
+      "positions": null,
+      "pending_orders": null,
+      "history": [],
+      "comparison": {
+        "eligible": false,
+        "universe_id": null
+      }
+    },
+    {
+      "slot": "IL-026",
+      "group": "ML semanal · vigente",
+      "name": "ARIMA",
+      "record_status": "not_migrated",
+      "activity": "unavailable",
+      "currency": null,
+      "first_session": null,
+      "last_session": null,
+      "initial_capital": null,
+      "last_equity": null,
+      "return_pct": null,
+      "day_return_pct": null,
+      "risk": {
+        "volatility_pct": null,
+        "max_drawdown_pct": null,
+        "sharpe_0rf": null
+      },
+      "positions": null,
+      "pending_orders": null,
+      "history": [],
+      "comparison": {
+        "eligible": false,
+        "universe_id": null
+      }
+    },
+    {
+      "slot": "IL-027",
+      "group": "ML semanal · vigente",
+      "name": "Ensemble",
+      "record_status": "not_migrated",
+      "activity": "unavailable",
+      "currency": null,
+      "first_session": null,
+      "last_session": null,
+      "initial_capital": null,
+      "last_equity": null,
+      "return_pct": null,
+      "day_return_pct": null,
+      "risk": {
+        "volatility_pct": null,
+        "max_drawdown_pct": null,
+        "sharpe_0rf": null
+      },
+      "positions": null,
+      "pending_orders": null,
+      "history": [],
+      "comparison": {
+        "eligible": false,
+        "universe_id": null
+      }
+    },
+    {
+      "slot": "IL-028",
+      "group": "ML semanal · legado",
+      "name": "SPY · referencia diferida",
+      "record_status": "not_migrated",
+      "activity": "unavailable",
+      "currency": null,
+      "first_session": null,
+      "last_session": null,
+      "initial_capital": null,
+      "last_equity": null,
+      "return_pct": null,
+      "day_return_pct": null,
+      "risk": {
+        "volatility_pct": null,
+        "max_drawdown_pct": null,
+        "sharpe_0rf": null
+      },
+      "positions": null,
+      "pending_orders": null,
+      "history": [],
+      "comparison": {
+        "eligible": false,
+        "universe_id": null
+      }
+    },
+    {
+      "slot": "IL-029",
+      "group": "ML semanal · legado",
+      "name": "RSP · referencia diferida",
+      "record_status": "not_migrated",
+      "activity": "unavailable",
+      "currency": null,
+      "first_session": null,
+      "last_session": null,
+      "initial_capital": null,
+      "last_equity": null,
+      "return_pct": null,
+      "day_return_pct": null,
+      "risk": {
+        "volatility_pct": null,
+        "max_drawdown_pct": null,
+        "sharpe_0rf": null
+      },
+      "positions": null,
+      "pending_orders": null,
+      "history": [],
+      "comparison": {
+        "eligible": false,
+        "universe_id": null
+      }
+    },
+    {
+      "slot": "IL-030",
+      "group": "ML semanal · legado",
+      "name": "LightGBM rentabilidad diferida",
+      "record_status": "not_migrated",
+      "activity": "unavailable",
+      "currency": null,
+      "first_session": null,
+      "last_session": null,
+      "initial_capital": null,
+      "last_equity": null,
+      "return_pct": null,
+      "day_return_pct": null,
+      "risk": {
+        "volatility_pct": null,
+        "max_drawdown_pct": null,
+        "sharpe_0rf": null
+      },
+      "positions": null,
+      "pending_orders": null,
+      "history": [],
+      "comparison": {
+        "eligible": false,
+        "universe_id": null
+      }
+    },
+    {
+      "slot": "IL-031",
+      "group": "ML semanal · legado",
+      "name": "LightGBM dirección diferida",
+      "record_status": "not_migrated",
+      "activity": "unavailable",
+      "currency": null,
+      "first_session": null,
+      "last_session": null,
+      "initial_capital": null,
+      "last_equity": null,
+      "return_pct": null,
+      "day_return_pct": null,
+      "risk": {
+        "volatility_pct": null,
+        "max_drawdown_pct": null,
+        "sharpe_0rf": null
+      },
+      "positions": null,
+      "pending_orders": null,
+      "history": [],
+      "comparison": {
+        "eligible": false,
+        "universe_id": null
+      }
+    },
+    {
+      "slot": "IL-032",
+      "group": "ML semanal · legado",
+      "name": "LightGBM ranking diferido",
+      "record_status": "not_migrated",
+      "activity": "unavailable",
+      "currency": null,
+      "first_session": null,
+      "last_session": null,
+      "initial_capital": null,
+      "last_equity": null,
+      "return_pct": null,
+      "day_return_pct": null,
+      "risk": {
+        "volatility_pct": null,
+        "max_drawdown_pct": null,
+        "sharpe_0rf": null
+      },
+      "positions": null,
+      "pending_orders": null,
+      "history": [],
+      "comparison": {
+        "eligible": false,
+        "universe_id": null
+      }
+    },
+    {
+      "slot": "IL-033",
+      "group": "ML semanal · legado",
+      "name": "MLP diferido",
+      "record_status": "not_migrated",
+      "activity": "unavailable",
+      "currency": null,
+      "first_session": null,
+      "last_session": null,
+      "initial_capital": null,
+      "last_equity": null,
+      "return_pct": null,
+      "day_return_pct": null,
+      "risk": {
+        "volatility_pct": null,
+        "max_drawdown_pct": null,
+        "sharpe_0rf": null
+      },
+      "positions": null,
+      "pending_orders": null,
+      "history": [],
+      "comparison": {
+        "eligible": false,
+        "universe_id": null
+      }
+    },
+    {
+      "slot": "IL-034",
+      "group": "ML semanal · legado",
+      "name": "LSTM diferido",
+      "record_status": "not_migrated",
+      "activity": "unavailable",
+      "currency": null,
+      "first_session": null,
+      "last_session": null,
+      "initial_capital": null,
+      "last_equity": null,
+      "return_pct": null,
+      "day_return_pct": null,
+      "risk": {
+        "volatility_pct": null,
+        "max_drawdown_pct": null,
+        "sharpe_0rf": null
+      },
+      "positions": null,
+      "pending_orders": null,
+      "history": [],
+      "comparison": {
+        "eligible": false,
+        "universe_id": null
+      }
+    },
+    {
+      "slot": "IL-035",
+      "group": "ML semanal · legado",
+      "name": "ARIMA diferido",
+      "record_status": "not_migrated",
+      "activity": "unavailable",
+      "currency": null,
+      "first_session": null,
+      "last_session": null,
+      "initial_capital": null,
+      "last_equity": null,
+      "return_pct": null,
+      "day_return_pct": null,
+      "risk": {
+        "volatility_pct": null,
+        "max_drawdown_pct": null,
+        "sharpe_0rf": null
+      },
+      "positions": null,
+      "pending_orders": null,
+      "history": [],
+      "comparison": {
+        "eligible": false,
+        "universe_id": null
+      }
+    },
+    {
+      "slot": "IL-036",
+      "group": "ML semanal · legado",
+      "name": "Ensemble diferido",
+      "record_status": "not_migrated",
+      "activity": "unavailable",
+      "currency": null,
+      "first_session": null,
+      "last_session": null,
+      "initial_capital": null,
+      "last_equity": null,
+      "return_pct": null,
+      "day_return_pct": null,
+      "risk": {
+        "volatility_pct": null,
+        "max_drawdown_pct": null,
+        "sharpe_0rf": null
+      },
+      "positions": null,
+      "pending_orders": null,
+      "history": [],
+      "comparison": {
+        "eligible": false,
+        "universe_id": null
+      }
+    },
+    {
+      "slot": "IL-037",
+      "group": "TFG · multicriterio",
+      "name": "Técnico + AHP + riesgo MAD",
+      "record_status": "not_migrated",
+      "activity": "unavailable",
+      "currency": null,
+      "first_session": null,
+      "last_session": null,
+      "initial_capital": null,
+      "last_equity": null,
+      "return_pct": null,
+      "day_return_pct": null,
+      "risk": {
+        "volatility_pct": null,
+        "max_drawdown_pct": null,
+        "sharpe_0rf": null
+      },
+      "positions": null,
+      "pending_orders": null,
+      "history": [],
+      "comparison": {
+        "eligible": false,
+        "universe_id": null
+      }
+    },
+    {
+      "slot": "IL-038",
+      "group": "Ciclo de capital",
+      "name": "Infra-inversión y mejora fundamental",
+      "record_status": "not_migrated",
+      "activity": "unavailable",
+      "currency": null,
+      "first_session": null,
+      "last_session": null,
+      "initial_capital": null,
+      "last_equity": null,
+      "return_pct": null,
+      "day_return_pct": null,
+      "risk": {
+        "volatility_pct": null,
+        "max_drawdown_pct": null,
+        "sharpe_0rf": null
+      },
+      "positions": null,
+      "pending_orders": null,
+      "history": [],
+      "comparison": {
+        "eligible": false,
+        "universe_id": null
+      }
+    },
+    {
+      "slot": "IL-039",
+      "group": "Compra en caídas",
+      "name": "Valoración y situaciones especiales",
+      "record_status": "not_migrated",
+      "activity": "unavailable",
+      "currency": null,
+      "first_session": null,
+      "last_session": null,
+      "initial_capital": null,
+      "last_equity": null,
+      "return_pct": null,
+      "day_return_pct": null,
+      "risk": {
+        "volatility_pct": null,
+        "max_drawdown_pct": null,
+        "sharpe_0rf": null
+      },
+      "positions": null,
+      "pending_orders": null,
+      "history": [],
+      "comparison": {
+        "eligible": false,
+        "universe_id": null
+      }
+    },
+    {
+      "slot": "IL-040",
+      "group": "TimesFM · semanal",
+      "name": "TimesFM pronóstico semanal",
+      "record_status": "not_migrated",
+      "activity": "unavailable",
+      "currency": null,
+      "first_session": null,
+      "last_session": null,
+      "initial_capital": null,
+      "last_equity": null,
+      "return_pct": null,
+      "day_return_pct": null,
+      "risk": {
+        "volatility_pct": null,
+        "max_drawdown_pct": null,
+        "sharpe_0rf": null
+      },
+      "positions": null,
+      "pending_orders": null,
+      "history": [],
+      "comparison": {
+        "eligible": false,
+        "universe_id": null
+      }
+    },
+    {
+      "slot": "IL-041",
+      "group": "TimesFM · semanal",
+      "name": "SPY EUR · referencia",
+      "record_status": "not_migrated",
+      "activity": "unavailable",
+      "currency": null,
+      "first_session": null,
+      "last_session": null,
+      "initial_capital": null,
+      "last_equity": null,
+      "return_pct": null,
+      "day_return_pct": null,
+      "risk": {
+        "volatility_pct": null,
+        "max_drawdown_pct": null,
+        "sharpe_0rf": null
+      },
+      "positions": null,
+      "pending_orders": null,
+      "history": [],
+      "comparison": {
+        "eligible": false,
+        "universe_id": null
+      }
+    },
+    {
+      "slot": "IL-042",
+      "group": "TimesFM · diario",
+      "name": "TimesFM pronóstico diario",
+      "record_status": "not_migrated",
+      "activity": "unavailable",
+      "currency": null,
+      "first_session": null,
+      "last_session": null,
+      "initial_capital": null,
+      "last_equity": null,
+      "return_pct": null,
+      "day_return_pct": null,
+      "risk": {
+        "volatility_pct": null,
+        "max_drawdown_pct": null,
+        "sharpe_0rf": null
+      },
+      "positions": null,
+      "pending_orders": null,
+      "history": [],
+      "comparison": {
+        "eligible": false,
+        "universe_id": null
+      }
+    },
+    {
+      "slot": "IL-043",
+      "group": "TimesFM · diario",
+      "name": "SPY EUR · referencia",
+      "record_status": "not_migrated",
+      "activity": "unavailable",
+      "currency": null,
+      "first_session": null,
+      "last_session": null,
+      "initial_capital": null,
+      "last_equity": null,
+      "return_pct": null,
+      "day_return_pct": null,
+      "risk": {
+        "volatility_pct": null,
+        "max_drawdown_pct": null,
+        "sharpe_0rf": null
+      },
+      "positions": null,
+      "pending_orders": null,
+      "history": [],
+      "comparison": {
+        "eligible": false,
+        "universe_id": null
+      }
+    },
+    {
+      "slot": "IL-044",
+      "group": "Genético · histórico",
+      "name": "Algoritmo genético S&P 500",
+      "record_status": "not_migrated",
+      "activity": "unavailable",
+      "currency": null,
+      "first_session": null,
+      "last_session": null,
+      "initial_capital": null,
+      "last_equity": null,
+      "return_pct": null,
+      "day_return_pct": null,
+      "risk": {
+        "volatility_pct": null,
+        "max_drawdown_pct": null,
+        "sharpe_0rf": null
+      },
+      "positions": null,
+      "pending_orders": null,
+      "history": [],
+      "comparison": {
+        "eligible": false,
+        "universe_id": null
+      }
+    },
+    {
+      "slot": "IL-045",
+      "group": "TFM · cuatro modelos",
+      "name": "LightGBM",
+      "record_status": "not_migrated",
+      "activity": "unavailable",
+      "currency": null,
+      "first_session": null,
+      "last_session": null,
+      "initial_capital": null,
+      "last_equity": null,
+      "return_pct": null,
+      "day_return_pct": null,
+      "risk": {
+        "volatility_pct": null,
+        "max_drawdown_pct": null,
+        "sharpe_0rf": null
+      },
+      "positions": null,
+      "pending_orders": null,
+      "history": [],
+      "comparison": {
+        "eligible": false,
+        "universe_id": null
+      }
+    },
+    {
+      "slot": "IL-046",
+      "group": "TFM · cuatro modelos",
+      "name": "MLP",
+      "record_status": "not_migrated",
+      "activity": "unavailable",
+      "currency": null,
+      "first_session": null,
+      "last_session": null,
+      "initial_capital": null,
+      "last_equity": null,
+      "return_pct": null,
+      "day_return_pct": null,
+      "risk": {
+        "volatility_pct": null,
+        "max_drawdown_pct": null,
+        "sharpe_0rf": null
+      },
+      "positions": null,
+      "pending_orders": null,
+      "history": [],
+      "comparison": {
+        "eligible": false,
+        "universe_id": null
+      }
+    },
+    {
+      "slot": "IL-047",
+      "group": "TFM · cuatro modelos",
+      "name": "LSTM",
+      "record_status": "not_migrated",
+      "activity": "unavailable",
+      "currency": null,
+      "first_session": null,
+      "last_session": null,
+      "initial_capital": null,
+      "last_equity": null,
+      "return_pct": null,
+      "day_return_pct": null,
+      "risk": {
+        "volatility_pct": null,
+        "max_drawdown_pct": null,
+        "sharpe_0rf": null
+      },
+      "positions": null,
+      "pending_orders": null,
+      "history": [],
+      "comparison": {
+        "eligible": false,
+        "universe_id": null
+      }
+    },
+    {
+      "slot": "IL-048",
+      "group": "TFM · cuatro modelos",
+      "name": "ARIMA",
+      "record_status": "not_migrated",
+      "activity": "unavailable",
+      "currency": null,
+      "first_session": null,
+      "last_session": null,
+      "initial_capital": null,
+      "last_equity": null,
+      "return_pct": null,
+      "day_return_pct": null,
+      "risk": {
+        "volatility_pct": null,
+        "max_drawdown_pct": null,
+        "sharpe_0rf": null
+      },
+      "positions": null,
+      "pending_orders": null,
+      "history": [],
+      "comparison": {
+        "eligible": false,
+        "universe_id": null
+      }
+    },
+    {
+      "slot": "IL-049",
+      "group": "Investigación histórica",
+      "name": "AHP histórico",
+      "record_status": "not_migrated",
+      "activity": "unavailable",
+      "currency": null,
+      "first_session": null,
+      "last_session": null,
+      "initial_capital": null,
+      "last_equity": null,
+      "return_pct": null,
+      "day_return_pct": null,
+      "risk": {
+        "volatility_pct": null,
+        "max_drawdown_pct": null,
+        "sharpe_0rf": null
+      },
+      "positions": null,
+      "pending_orders": null,
+      "history": [],
+      "comparison": {
+        "eligible": false,
+        "universe_id": null
+      }
+    },
+    {
+      "slot": "IL-050",
+      "group": "Investigación histórica",
+      "name": "Cripto en R",
+      "record_status": "not_migrated",
+      "activity": "unavailable",
+      "currency": null,
+      "first_session": null,
+      "last_session": null,
+      "initial_capital": null,
+      "last_equity": null,
+      "return_pct": null,
+      "day_return_pct": null,
+      "risk": {
+        "volatility_pct": null,
+        "max_drawdown_pct": null,
+        "sharpe_0rf": null
+      },
+      "positions": null,
+      "pending_orders": null,
+      "history": [],
+      "comparison": {
+        "eligible": false,
+        "universe_id": null
+      }
+    },
+    {
+      "slot": "IL-051",
+      "group": "Investigación histórica",
+      "name": "LightGBM retorno previo",
+      "record_status": "not_migrated",
+      "activity": "unavailable",
+      "currency": null,
+      "first_session": null,
+      "last_session": null,
+      "initial_capital": null,
+      "last_equity": null,
+      "return_pct": null,
+      "day_return_pct": null,
+      "risk": {
+        "volatility_pct": null,
+        "max_drawdown_pct": null,
+        "sharpe_0rf": null
+      },
+      "positions": null,
+      "pending_orders": null,
+      "history": [],
+      "comparison": {
+        "eligible": false,
+        "universe_id": null
+      }
+    },
+    {
+      "slot": "IL-052",
+      "group": "Investigación histórica",
+      "name": "LightGBM dirección previa",
+      "record_status": "not_migrated",
+      "activity": "unavailable",
+      "currency": null,
+      "first_session": null,
+      "last_session": null,
+      "initial_capital": null,
+      "last_equity": null,
+      "return_pct": null,
+      "day_return_pct": null,
+      "risk": {
+        "volatility_pct": null,
+        "max_drawdown_pct": null,
+        "sharpe_0rf": null
+      },
+      "positions": null,
+      "pending_orders": null,
+      "history": [],
+      "comparison": {
+        "eligible": false,
+        "universe_id": null
+      }
+    },
+    {
+      "slot": "IL-053",
+      "group": "Investigación histórica",
+      "name": "LightGBM precio previo",
+      "record_status": "not_migrated",
+      "activity": "unavailable",
+      "currency": null,
+      "first_session": null,
+      "last_session": null,
+      "initial_capital": null,
+      "last_equity": null,
+      "return_pct": null,
+      "day_return_pct": null,
+      "risk": {
+        "volatility_pct": null,
+        "max_drawdown_pct": null,
+        "sharpe_0rf": null
+      },
+      "positions": null,
+      "pending_orders": null,
+      "history": [],
+      "comparison": {
+        "eligible": false,
+        "universe_id": null
+      }
+    },
+    {
+      "slot": "IL-054",
+      "group": "Investigación histórica",
+      "name": "Filtro combinado semanal",
+      "record_status": "not_migrated",
+      "activity": "unavailable",
+      "currency": null,
+      "first_session": null,
+      "last_session": null,
+      "initial_capital": null,
+      "last_equity": null,
+      "return_pct": null,
+      "day_return_pct": null,
+      "risk": {
+        "volatility_pct": null,
+        "max_drawdown_pct": null,
+        "sharpe_0rf": null
+      },
+      "positions": null,
+      "pending_orders": null,
+      "history": [],
+      "comparison": {
+        "eligible": false,
+        "universe_id": null
+      }
+    },
+    {
+      "slot": "IL-055",
+      "group": "Investigación histórica",
+      "name": "Genético individual",
+      "record_status": "not_migrated",
+      "activity": "unavailable",
+      "currency": null,
+      "first_session": null,
+      "last_session": null,
+      "initial_capital": null,
+      "last_equity": null,
+      "return_pct": null,
+      "day_return_pct": null,
+      "risk": {
+        "volatility_pct": null,
+        "max_drawdown_pct": null,
+        "sharpe_0rf": null
+      },
+      "positions": null,
+      "pending_orders": null,
+      "history": [],
+      "comparison": {
+        "eligible": false,
+        "universe_id": null
+      }
+    },
+    {
+      "slot": "IL-056",
+      "group": "Investigación histórica",
+      "name": "RSI largo/corto",
+      "record_status": "not_migrated",
+      "activity": "unavailable",
+      "currency": null,
+      "first_session": null,
+      "last_session": null,
+      "initial_capital": null,
+      "last_equity": null,
+      "return_pct": null,
+      "day_return_pct": null,
+      "risk": {
+        "volatility_pct": null,
+        "max_drawdown_pct": null,
+        "sharpe_0rf": null
+      },
+      "positions": null,
+      "pending_orders": null,
+      "history": [],
+      "comparison": {
+        "eligible": false,
+        "universe_id": null
+      }
+    },
+    {
+      "slot": "IL-057",
+      "group": "Investigación histórica",
+      "name": "Ichimoku",
+      "record_status": "not_migrated",
+      "activity": "unavailable",
+      "currency": null,
+      "first_session": null,
+      "last_session": null,
+      "initial_capital": null,
+      "last_equity": null,
+      "return_pct": null,
+      "day_return_pct": null,
+      "risk": {
+        "volatility_pct": null,
+        "max_drawdown_pct": null,
+        "sharpe_0rf": null
+      },
+      "positions": null,
+      "pending_orders": null,
+      "history": [],
+      "comparison": {
+        "eligible": false,
+        "universe_id": null
+      }
+    },
+    {
+      "slot": "IL-058",
+      "group": "Investigación histórica",
+      "name": "Apertura-cierre intradía",
+      "record_status": "not_migrated",
+      "activity": "unavailable",
+      "currency": null,
+      "first_session": null,
+      "last_session": null,
+      "initial_capital": null,
+      "last_equity": null,
+      "return_pct": null,
+      "day_return_pct": null,
+      "risk": {
+        "volatility_pct": null,
+        "max_drawdown_pct": null,
+        "sharpe_0rf": null
+      },
+      "positions": null,
+      "pending_orders": null,
+      "history": [],
+      "comparison": {
+        "eligible": false,
+        "universe_id": null
+      }
+    },
+    {
+      "slot": "IL-059",
+      "group": "Investigación histórica",
+      "name": "Ruptura corta 20/10",
+      "record_status": "not_migrated",
+      "activity": "unavailable",
+      "currency": null,
+      "first_session": null,
+      "last_session": null,
+      "initial_capital": null,
+      "last_equity": null,
+      "return_pct": null,
+      "day_return_pct": null,
+      "risk": {
+        "volatility_pct": null,
+        "max_drawdown_pct": null,
+        "sharpe_0rf": null
+      },
+      "positions": null,
+      "pending_orders": null,
+      "history": [],
+      "comparison": {
+        "eligible": false,
+        "universe_id": null
+      }
+    },
+    {
+      "slot": "IL-060",
+      "group": "Investigación histórica",
+      "name": "Ruptura corta 55/20",
+      "record_status": "not_migrated",
+      "activity": "unavailable",
+      "currency": null,
+      "first_session": null,
+      "last_session": null,
+      "initial_capital": null,
+      "last_equity": null,
+      "return_pct": null,
+      "day_return_pct": null,
+      "risk": {
+        "volatility_pct": null,
+        "max_drawdown_pct": null,
+        "sharpe_0rf": null
+      },
+      "positions": null,
+      "pending_orders": null,
+      "history": [],
+      "comparison": {
+        "eligible": false,
+        "universe_id": null
+      }
+    },
+    {
+      "slot": "IL-061",
+      "group": "Investigación histórica",
+      "name": "Momentum mensual",
+      "record_status": "not_migrated",
+      "activity": "unavailable",
+      "currency": null,
+      "first_session": null,
+      "last_session": null,
+      "initial_capital": null,
+      "last_equity": null,
+      "return_pct": null,
+      "day_return_pct": null,
+      "risk": {
+        "volatility_pct": null,
+        "max_drawdown_pct": null,
+        "sharpe_0rf": null
+      },
+      "positions": null,
+      "pending_orders": null,
+      "history": [],
+      "comparison": {
+        "eligible": false,
+        "universe_id": null
+      }
+    },
+    {
+      "slot": "IL-062",
+      "group": "Investigación histórica",
+      "name": "Bot cripto",
+      "record_status": "not_migrated",
+      "activity": "unavailable",
+      "currency": null,
+      "first_session": null,
+      "last_session": null,
+      "initial_capital": null,
+      "last_equity": null,
+      "return_pct": null,
+      "day_return_pct": null,
+      "risk": {
+        "volatility_pct": null,
+        "max_drawdown_pct": null,
+        "sharpe_0rf": null
+      },
+      "positions": null,
+      "pending_orders": null,
+      "history": [],
+      "comparison": {
+        "eligible": false,
+        "universe_id": null
+      }
+    },
+    {
+      "slot": "IL-063",
+      "group": "Investigación histórica",
+      "name": "Asignación Markowitz",
+      "record_status": "not_migrated",
+      "activity": "unavailable",
+      "currency": null,
+      "first_session": null,
+      "last_session": null,
+      "initial_capital": null,
+      "last_equity": null,
+      "return_pct": null,
+      "day_return_pct": null,
+      "risk": {
+        "volatility_pct": null,
+        "max_drawdown_pct": null,
+        "sharpe_0rf": null
+      },
+      "positions": null,
+      "pending_orders": null,
+      "history": [],
+      "comparison": {
+        "eligible": false,
+        "universe_id": null
+      }
+    },
+    {
+      "slot": "IL-064",
+      "group": "Investigación histórica",
+      "name": "Filtro fundamental",
+      "record_status": "not_migrated",
+      "activity": "unavailable",
+      "currency": null,
+      "first_session": null,
+      "last_session": null,
+      "initial_capital": null,
+      "last_equity": null,
+      "return_pct": null,
+      "day_return_pct": null,
+      "risk": {
+        "volatility_pct": null,
+        "max_drawdown_pct": null,
+        "sharpe_0rf": null
+      },
+      "positions": null,
+      "pending_orders": null,
+      "history": [],
+      "comparison": {
+        "eligible": false,
+        "universe_id": null
+      }
+    }
+  ]
+}
