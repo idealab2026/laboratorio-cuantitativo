@@ -1,8 +1,8 @@
-import {verify,simulate,rank,valuation,thesisRank,formatPct,money,finite,verifyIssuerCatalog,filterIssuers,syntheticBarsFromDemo,nextOpenPaper,evaluateIssuerScreen,competitionReadModel,publicIssuerReadModel,verifyOfficialFx,summarizeFxForecastLedger,verifySecFilings} from "./metrics.mjs";
+import {verify,simulate,rank,valuation,thesisRank,formatPct,money,finite,verifyIssuerCatalog,filterIssuers,syntheticBarsFromDemo,nextOpenPaper,evaluateIssuerScreen,competitionReadModel,publicIssuerReadModel,verifyOfficialFx,summarizeFxForecastLedger,verifySecFilings,verifyOfficialYield} from "./metrics.mjs";
 const $=id=>document.getElementById(id);
 const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 const fmt=n=>finite(n)?new Intl.NumberFormat("es-ES",{maximumFractionDigits:2}).format(n):"N/D";
-const state={data:null,universe:null,fx:null,fxCheck:null,fxStatus:"pending",forecastLedger:null,forecastSummary:null,forecastStatus:"pending",secStatus:"pending",secRead:null,secCatalog:null,view:"overview",strategy:"P-01",group:"",sort:"returnPct",asc:false,detailOpen:false,thesis:"T-01",query:"",thesisSort:"central",issuerMode:"catalog",issuerQuery:"",issuerSort:"base",issuerAsc:false,issuerTicker:"MSFT"};
+const state={data:null,universe:null,fx:null,fxCheck:null,fxStatus:"pending",forecastLedger:null,forecastSummary:null,forecastStatus:"pending",secStatus:"pending",secRead:null,secCatalog:null,yieldDoc:null,yieldCheck:null,yieldStatus:"pending",view:"overview",strategy:"P-01",group:"",sort:"returnPct",asc:false,detailOpen:false,thesis:"T-01",query:"",thesisSort:"central",issuerMode:"catalog",issuerQuery:"",issuerSort:"base",issuerAsc:false,issuerTicker:"MSFT"};
 const viewNames=["overview","competition","algorithms","theses","monitoring","method","archive"];
 const button=(label,action,value,cls="smallbtn")=>'<button type="button" class="'+cls+'" data-action="'+esc(action)+'" data-value="'+esc(value)+'">'+esc(label)+'</button>';
 const head=(label,title,body)=>'<div class="section-heading"><div><span class="kicker">'+esc(label)+'</span><h2>'+esc(title)+'</h2><p class="section-context">'+esc(body)+'</p></div></div>';
@@ -247,6 +247,22 @@ function officialFxPanel(){
  history.slice(-12).reverse().map(row=>'<tr><td>'+esc(row.date)+'</td><td class="number">'+esc(row.usd_per_eur)+'</td><td>Referencia oficial · no transable</td></tr>').join("")+'</tbody></table></div>'+
  '<p class="table-note">Huella SHA-256 de la respuesta oficial: <code>'+esc(d.source_sha256)+'</code>. <a href="'+source+'" target="_blank" rel="noopener noreferrer">Consultar fuente BCE</a> · <a href="./data/official-fx.json" target="_blank" rel="noopener noreferrer">Ver dataset publicado</a>. Reutilización de estadísticas públicas con atribución al BCE.</p>';
 }
+function officialYieldPanel(){
+ const title=head("TIPOS DE INTERÉS · BCE","Curva AAA de deuda soberana a 10 años","Rentabilidad spot modelizada, nominal y compuesta continuamente para deuda soberana AAA de la zona euro. Referencia de investigación macroeconómica, no bono concreto ni tasa para valorar automáticamente acciones.");
+ const uri="https://data-api.ecb.europa.eu/service/data/YC/B.U2.EUR.4F.G_N_A.SV_C_YM.SR_10Y?lastNObservations=60&format=csvdata";
+ if(state.yieldStatus!=="ok"||!state.yieldCheck||!state.yieldDoc)
+  return title+card('<h3>Serie no disponible o pendiente de validación</h3><p>No se muestra ninguna rentabilidad 10Y inventada. <a href="'+uri+'" target="_blank" rel="noopener noreferrer">Comprobar la fuente oficial del BCE</a>.</p>');
+ const checked=state.yieldCheck,values=state.yieldDoc.observations,stale=checked.ageDays>4;
+ return title+
+ '<div class="source-health-strip"><div><span class="label">Tipo spot · AAA · 10 años</span><strong>'+esc(checked.ratePct.toFixed(3))+' % anual</strong><small>Fecha BCE: '+esc(checked.date)+'</small></div>'+
+ '<div><span class="label">Número de observaciones</span><strong>'+checked.count+'</strong><small>Curva Svensson nominal</small></div>'+
+ '<div><span class="label">Integridad</span><strong class="'+(stale?"perf-negative":"perf-positive")+'">'+(stale?"Desactualizada":"Origen comprobado")+'</strong><small>Recepción UTC: '+esc(checked.receivedAt)+'</small></div></div>'+
+ disclaimer("La curva del BCE modeliza el rendimiento spot de emisores soberanos AAA. No equivale al rendimiento de un instrumento individual, no es tasa libre de riesgo garantizada y NO se introduce automáticamente en los descuentos de flujos, especialmente de empresas en USD.")+
+ '<div class="table-scroll table-compact"><table><thead><tr><th>Fecha</th><th class="number">Tipo spot 10Y</th><th>Medición</th></tr></thead><tbody>'+
+ values.slice(-10).reverse().map(x=>'<tr><td>'+esc(x.date)+'</td><td class="number">'+esc(x.yield_pct)+' %</td><td>Modelo AAA euro · BCE</td></tr>').join("")+'</tbody></table></div>'+
+ '<p class="table-note">Source: ECB statistics · <a href="'+uri+'" target="_blank" rel="noopener noreferrer">Fuente original BCE</a> · <a href="./data/official-eur-yield.json" target="_blank" rel="noopener noreferrer">Datos y hash público</a> · SHA-256 <code>'+esc(checked.sourceSha)+'</code>.</p>';
+}
+
 function prospectiveForecastPanel(){
  const title=head("EXPERIMENTO PROSPECTIVO · REFERENCIAS BCE","Registro independiente de señales","Previsiones sobre el próximo fixing oficial EUR/USD, emitidas después de recibir el dato actual. Se evalúan cuando llega la siguiente referencia, sin reconstruir pronósticos a posteriori.");
  if(state.forecastStatus!=="ok"||!state.forecastSummary)
@@ -279,7 +295,7 @@ function prospectiveForecastPanel(){
 
 function monitoring(){
  const s=active(),audit=causalLedger();
- return officialFxPanel()+prospectiveForecastPanel()+head("SALUD OPERATIVA · DIARIO","Procedencia, ejecución y operaciones","Diferencia entre disponibilidad de fuentes, ejecución del motor y estado de cada diario. Sin fuente y persistencia institucional no se declara funcionamiento autónomo.")+
+ return officialYieldPanel()+officialFxPanel()+prospectiveForecastPanel()+head("SALUD OPERATIVA · DIARIO","Procedencia, ejecución y operaciones","Diferencia entre disponibilidad de fuentes, ejecución del motor y estado de cada diario. Sin fuente y persistencia institucional no se declara funcionamiento autónomo.")+
  '<div class="source-health-strip">'+
  '<div><span class="label">OHLC diario externo</span><strong>No conectado</strong><small>No existe un proveedor de precios autorizados ni una sesión bursátil comprobada</small></div>'+
  '<div><span class="label">Cobertura del universo real</span><strong>N/D</strong><small>Instrumentos del experimento: 3 activos ficticios; cotizaciones de mercado ausentes</small></div>'+
@@ -453,7 +469,7 @@ window.addEventListener("popstate",()=>{const v=new URLSearchParams(location.sea
 async function init(){
  try{
   const r=await fetch("./data/demo.json",{cache:"no-store"});if(!r.ok)throw Error("Dataset missing");const data=await r.json(),universe=data.issuerCatalog;verify(data);verifyIssuerCatalog(universe);
-  state.data=data;state.universe=universe;const v=new URLSearchParams(location.search).get("view");state.view=viewNames.includes(v)?v:"overview";summary();render();void loadOfficialFx();void loadForecastLedger();void loadSecFilings();
+  state.data=data;state.universe=universe;const v=new URLSearchParams(location.search).get("view");state.view=viewNames.includes(v)?v:"overview";summary();render();void loadOfficialFx();void loadForecastLedger();void loadSecFilings();void loadOfficialYield();
  }catch(e){$("app").textContent="No se ha podido cargar el catálogo de emisores o el laboratorio sintético; no se muestran datos no verificados.";}
 }
 async function loadOfficialFx(){
@@ -483,5 +499,14 @@ async function loadSecFilings(){
   state.secRead=read;state.secCatalog=doc;state.secStatus=read.status==="verified_filings"?"ok":"not_collected";
  }catch(_error){state.secRead=null;state.secCatalog=null;state.secStatus="unavailable";}
  if(state.view==="theses"&&state.data)render();
+}
+async function loadOfficialYield(){
+ try{
+  const response=await fetch("./data/official-eur-yield.json",{cache:"no-store"});
+  if(!response.ok)throw Error("No verified euro yield curve");
+  const doc=await response.json(),check=verifyOfficialYield(doc);
+  state.yieldDoc=doc;state.yieldCheck=check;state.yieldStatus="ok";
+ }catch(_error){state.yieldDoc=null;state.yieldCheck=null;state.yieldStatus="unavailable";}
+ if(state.view==="monitoring"&&state.data)render();
 }
 init();
