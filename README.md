@@ -241,3 +241,8 @@ El módulo `scripts/weekly_lightgbm.py` utiliza la **biblioteca oficial LightGBM
 Se incorpora `scripts/weekly_lstm.py`, un entrenamiento recurrente genuino de memoria corta/larga con NumPy y retropropagación temporal (*backpropagation through time*). Entrena las matrices de las cuatro puertas y la salida con ventanas semanales consecutivas de tres observaciones, sin cargar datos de cotizaciones externos. La media, la escala y los pesos se determinan exclusivamente con etiquetas maduras anteriores a cada fecha de predicción. El emisor, las fechas de disponibilidad, los gaps y la huella del entrenamiento quedan sometidos a pruebas automáticas. Las muestras son sintéticas.
 
 **No es el LSTM histórico original de MIDAS**, ni su hiperparametrización está homologada, ni existe evaluación de mercado fuera de muestra. Tampoco están activados libros paper nuevos, algoritmos bursátiles o valores de cartera. Se preservan íntegramente las restricciones de derechos de datos y privacidad institucional.
+
+
+## Auditoría LSTM cronológica de investigación
+
+La evaluación temporal del LSTM se implementa en `scripts/lstm_walkforward.py` y prueba ventanas de entrenamiento fechadas, embargo de disponibilidad, predicciones fuera de muestra sintéticas y métricas de error frente a un predictor nulo. La evaluación es acotada y revela explícitamente las fechas examinadas, sin atribuir resultados a precios bursátiles reales. No modifica los 64 registros de actividad económica ni acredita rendimientos.
