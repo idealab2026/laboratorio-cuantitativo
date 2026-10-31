@@ -1,7 +1,7 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 import {artificialMethodBars,methodCatalog} from "../src/paper-methods.mjs";
-import {advancePaperCampaign,campaignRanking,validatePanel} from "../src/paper-ledger.mjs";
+import {advancePaperCampaign,campaignRanking,validatePanel,artificialCampaignComparison} from "../src/paper-ledger.mjs";
 
 const config=()=>({schema:1,currency:"USD",capital:100000,feeBps:10,
  slippageBps:5,investFraction:.95,maxPositions:1,
@@ -61,4 +61,24 @@ test("All nine policies can keep isolated accounts in the same synthetic campaig
  assert.notEqual(next.portfolios["M-10"],next.portfolios["M-11"]);
  const source=panel(80);source.synthetic=false;
  assert.throws(()=>validatePanel(source),/Only labelled synthetic/);
+});
+
+test("Distinct synthetic index and eight-asset equal-weight holdings have independent cash",()=>{
+ const run=artificialCampaignComparison();
+ assert.equal(run.class,"ARTIFICIAL_REPLAY_NOT_PROSPECTIVE");
+ assert.equal(run.symbols.length,9);
+ assert.equal(run.ranking.length,9);
+ const benchmark=run.config.strategies.find(x=>x.method==="benchmark");
+ const equal=run.config.strategies.find(x=>x.method==="hold");
+ assert.deepEqual(benchmark.symbols,["SIM-I"]);
+ assert.equal(equal.symbols.length,8);
+ assert.ok(equal.symbols.every(x=>x!=="SIM-I"));
+ const benchmarkBook=run.state.portfolios[benchmark.id];
+ const equalBook=run.state.portfolios[equal.id];
+ assert.equal(benchmarkBook.events.filter(e=>e.type==="FILL"&&e.side==="BUY").length,1);
+ assert.equal(equalBook.events.filter(e=>e.type==="FILL"&&e.side==="BUY").length,8);
+ assert.ok(Math.abs(equalBook.cash-5000)<.1);
+ assert.ok(Math.abs(benchmarkBook.cash-5000)<.1);
+ assert.ok(run.ranking.every(x=>Number.isFinite(x.returnPct)));
+ assert.ok(run.ranking.every(x=>x.status==="SYNTHETIC_ONLY"));
 });

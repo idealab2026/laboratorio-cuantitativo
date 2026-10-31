@@ -1,4 +1,4 @@
-import {signalResearchSummary} from "./paper-methods.mjs";
+import {signalResearchSummary,methodCatalog} from "./paper-methods.mjs";
 import {artificialCampaignComparison} from "./paper-ledger.mjs";
 import {verify,simulate,rank,valuation,thesisRank,formatPct,money,finite,verifyIssuerCatalog,filterIssuers,syntheticBarsFromDemo,nextOpenPaper,evaluateIssuerScreen,competitionReadModel,publicIssuerReadModel,verifyOfficialFx,summarizeFxForecastLedger,verifySecFilings,verifyOfficialYield} from "./metrics.mjs";
 const $=id=>document.getElementById(id);
@@ -329,15 +329,15 @@ function paperAccountingView(){
  const chosen=run.config.strategies.find(x=>x.id===state.paperDetail)||run.config.strategies[0];
  const book=run.state.portfolios[chosen.id];
  return head("CONTABILIDAD · EXPERIMENTO ARTIFICIAL","Nueve carteras paper aisladas","Señales al cierre y ejecución modelizada en la apertura posterior, con efectivo, comisiones, stops, objetivos y apuntes. Los datos han sido generados matemáticamente; la curva NO es una rentabilidad bursátil ni un diario prospectivo.")+
- '<div class="source-health-strip"><div><span class="label">Carteras independientes</span><strong>'+rows.length+'</strong><small>Capital inicial: 100.000 USD artificiales por cartera</small></div>'+
+ '<div class="source-health-strip"><div><span class="label">Carteras independientes</span><strong>'+rows.length+'</strong><small>Capital inicial: 100.000 USD artificiales por cartera · 8 activos y un índice ficticios</small></div>'+
  '<div><span class="label">Sesiones de cálculo</span><strong>'+run.measuredSessions+'</strong><small>Las primeras 79 velas se usan exclusivamente como precalentamiento</small></div>'+
  '<div><span class="label">Capital real invertido</span><strong>0 USD</strong><small>Sin broker, sin órdenes bursátiles y sin registro externo</small></div></div>'+
- '<div class="table-scroll table-compact"><table><thead><tr><th>Regla</th><th class="number">Capital simulado</th><th class="number">Rendimiento</th><th class="number">Drawdown</th><th class="number">Comisiones</th><th class="number">Fills</th><th>Actividad</th><th>Ficha</th></tr></thead><tbody>'+
- rows.map(r=>'<tr><td><strong>'+esc(run.config.strategies.find(x=>x.id===r.id)?.method||r.id)+'</strong></td>'+
+ '<div class="table-scroll table-compact"><table><thead><tr><th>Regla</th><th class="number">Capital simulado</th><th class="number">Rendimiento</th><th class="number">Drawdown</th><th class="number">Comisiones</th><th class="number">Fills</th><th>Actividad</th><th>Ficha</th><th>Curva</th></tr></thead><tbody>'+
+ rows.map(r=>'<tr><td><strong>'+esc(methodCatalog.find(x=>x.id===r.method)?.name||r.id)+'</strong></td>'+
  '<td class="number">'+esc(fmt(r.equity))+' USD</td><td class="number">'+pctText(r.returnPct)+'</td>'+
  '<td class="number">'+pctText(r.drawdownPct)+'</td><td class="number">'+esc(fmt(r.fees))+'</td><td class="number">'+r.fills+'</td>'+
  '<td>'+esc(r.active.join(", ")||"Sin posición")+(r.pending.length?" · Orden pendiente":"")+'</td><td>'+
- button("Ver diario","paper-select",r.id)+'</td></tr>').join("")+'</tbody></table></div>'+
+ button("Ver diario","paper-select",r.id)+'</td><td>'+sparkline(run.state.portfolios[r.id].equity.map(x=>x.nav))+'</td></tr>').join("")+'</tbody></table></div>'+
  card('<h3>Diario artificial · '+esc(chosen.method)+'</h3>'+
  '<p>Órdenes contabilizadas: '+book.events.filter(x=>x.type==="FILL").length+'. Posiciones: '+Object.keys(book.holdings).length+
  '. Comisiones acumuladas: '+esc(fmt(book.feeTotal))+' USD. Los eventos se muestran para comprobar la causalidad, no como transacciones de bolsa.</p>'+

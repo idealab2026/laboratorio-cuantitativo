@@ -50,8 +50,8 @@ const stateOf=(config,panel)=>({
 });
 
 const riskOf=method=>method==="geneticFixed"?{stop:.0903,target:.2367}:
- ["hold","breakout20","breakout55"].includes(method)?{stop:null,target:null}:{stop:.08,target:.15};
-function recordFill(book,symbol,side,bar,reference,config,reason,signalAt=null){
+ ["hold","benchmark","breakout20","breakout55"].includes(method)?{stop:null,target:null}:{stop:.08,target:.15};
+function recordFill(book,symbol,side,bar,reference,config,reason,signalAt=null,allocation=null){
  const slip=config.slippageBps/10000,commission=config.feeBps/10000;
  const price=reference*(side==="BUY"?1+slip:1-slip);
  if(price<bar.low-0.00001||price>bar.high+0.00001)throw Error("Model fill outside OHLC");
@@ -66,8 +66,8 @@ function recordFill(book,symbol,side,bar,reference,config,reason,signalAt=null){
  }else{
   const n=Object.keys(book.holdings).length;
   if(book.holdings[symbol]||n>=config.maxPositions)return;
-  const budget=book.cash*config.investFraction/
-   Math.max(1,config.maxPositions-n);
+  const budget=allocation??book.cash*config.investFraction;
+  if(budget>book.cash+0.00001)throw Error("Cross-portfolio or leveraged spending forbidden");
   const units=budget/(price*(1+commission)),fee=units*price*commission;
   if(units<=0)return;
   book.cash-=units*price+fee;book.feeTotal+=fee;
@@ -105,11 +105,16 @@ function settleSession(book,methodRow,panel,config){
   if(order.side==="SELL"&&book.holdings[symbol]&&!exited.has(symbol))
    recordFill(book,symbol,"SELL",bar,bar.open,config,"PRIOR_CLOSE",order.signalAt);
  }
- for(const symbol of Object.keys(book.orders).sort()){
+ const eligible=Object.keys(book.orders).sort().filter(symbol=>
+  book.orders[symbol].side==="BUY"&&!book.holdings[symbol]&&!exited.has(symbol));
+ const allowed=eligible.slice(0,Math.max(0,config.maxPositions-Object.keys(book.holdings).length));
+ const budget=allowed.length?book.cash*config.investFraction/allowed.length:0;
+ for(const symbol of allowed){
   const order=book.orders[symbol],bar=barOf(symbol);
-  if(order.side==="BUY"&&!book.holdings[symbol]&&!exited.has(symbol))
-   recordFill(book,symbol,"BUY",bar,bar.open,config,"PRIOR_CLOSE",order.signalAt);
+  recordFill(book,symbol,"BUY",bar,bar.open,config,"PRIOR_CLOSE",order.signalAt,budget);
  }
+ for(const symbol of eligible.slice(allowed.length))
+  book.events.push({type:"SKIP",date:day,symbol,reason:"MAX_POSITIONS"});
  book.orders={};
  for(const symbol of Object.keys(book.holdings).sort()){
   const bar=barOf(symbol),holding=book.holdings[symbol];
@@ -192,17 +197,25 @@ export function campaignRanking(config,state){
 }
 
 export function artificialCampaignComparison(){
- const observations=artificialMethodBars().map(b=>({...b,volume:100000,dividend:0,split:0}));
+ const base=artificialMethodBars(),symbols="ABCDEFGHI".split("").map(x=>"SIM-"+x);
+ const universe=Object.fromEntries(symbols.map((symbol,assetIndex)=>[symbol,base.map((bar,i)=>{
+  const factor=1+.018*Math.sin(i*(.12+assetIndex*.014)+assetIndex);
+  const open=bar.open*factor,close=bar.close*factor;
+  return {session:bar.session,open,close,high:Math.max(open,close)*1.035,
+   low:Math.min(open,close)*.965,volume:100000,dividend:0,split:0};
+ })]));
  const config={schema:1,currency:"USD",capital:100000,feeBps:10,slippageBps:5,
-  investFraction:.95,maxPositions:1,
-  strategies:methodCatalog.map((method,index)=>({id:"M-"+(index+10),method:method.id,symbols:["SIM-A"]}))};
+  investFraction:.95,maxPositions:8,
+  strategies:methodCatalog.map((method,index)=>({id:"M-"+(index+10),method:method.id,
+   symbols:method.id==="benchmark"?["SIM-I"]:symbols.slice(0,8)}))};
  let state=null;
- for(let n=80;n<=observations.length;n++){
+ for(let n=80;n<=base.length;n++){
   const panel={source:"generated_research_ohlc_v1",synthetic:true,currency:"USD",
-   asOf:observations[n-1].session,bars:{"SIM-A":observations.slice(0,n)}};
+   asOf:base[n-1].session,
+   bars:Object.fromEntries(symbols.map(id=>[id,universe[id].slice(0,n)]))};
   state=advancePaperCampaign(config,panel,state).state;
  }
- return {class:"ARTIFICIAL_REPLAY_NOT_PROSPECTIVE",symbol:"SIM-A",
-  sampleSessions:observations.length,measuredSessions:observations.length-79,
+ return {class:"ARTIFICIAL_REPLAY_NOT_PROSPECTIVE",symbols,
+  sampleSessions:base.length,measuredSessions:base.length-79,
   config,ranking:campaignRanking(config,state),state};
 }

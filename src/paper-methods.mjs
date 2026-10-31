@@ -37,8 +37,8 @@ const strength=(prices,length)=>{
 const upCross=(oldX,oldY,newX,newY)=>oldX<=oldY&&newX>newY;
 const downCross=(oldX,oldY,newX,newY)=>oldX>=oldY&&newX<newY;
 export const methodCatalog=Object.freeze([
- {id:"hold",name:"Buy & hold",family:"Referencia",parameters:"Sin señales posteriores"},
- {id:"momentum20",name:"Media móvil 20",family:"Técnicas",parameters:"Cruce sobre la media 20"},
+ {id:"hold",name:"Cartera equiponderada",family:"Referencia",parameters:"Ocho activos artificiales · compra y mantenimiento"},
+ {id:"benchmark",name:"Benchmark sintético",family:"Referencia",parameters:"Índice ficticio independiente · no SPY"},
  {id:"emaRsi",name:"EMA 12/26 + RSI 14",family:"Técnicas",parameters:"Umbrales 30 / 70"},
  {id:"geneticFixed",name:"EMA 4/22 + RSI 6",family:"Modelo congelado",parameters:"Umbrales 20 / 72; sin reentrenamiento"},
  {id:"macd",name:"MACD 12/26/9",family:"Técnicas",parameters:"Cruce de línea MACD y señal"},
@@ -53,7 +53,7 @@ export function signalAtClose(method,bars){
  if(!Array.isArray(bars)||bars.length<1||bars.some(b=>typeof b.close!=="number"||!Number.isFinite(b.close)||b.close<=0))
   throw Error("Invalid daily series");
  const close=bars.map(b=>b.close),n=close.length;
- if(method==="hold")return "BUY";
+ if(method==="hold"||method==="benchmark")return "BUY";
  if(method==="momentum20"||method==="breakout20")return closePolicy(method,bars);
  if(method==="breakout55"){
   if(n<57)return "HOLD";
