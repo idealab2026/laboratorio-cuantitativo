@@ -58,6 +58,7 @@ jobs:
           python3 scripts/classic_503.py
           python3 scripts/monthly_selection.py
           python3 scripts/monthly_paper.py
+          python3 scripts/monthly_factors.py
       - name: Verify the institutional frozen 503-ticker Yahoo contract without querying Yahoo
         run: python3 scripts/yahoo_source.py --check-contract
       - name: Validate future signed institutional paper feed only with private CI secret
