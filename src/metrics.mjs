@@ -319,3 +319,65 @@ export function evaluateIssuerScreen(screen){
   throw Error("Unordered public scenarios");
  return {...screen,scenarios:output,buyPrice15:output.base.target/1.15**screen.horizonYears};
 }
+
+
+// Public read-model only. All returns are artificial, and different histories
+// must never be compared as if they shared the same calendar.
+export function competitionReadModel(data,filters={}){
+ const sort=filters.sort||"returnPct",ascending=filters.ascending===true,group=filters.group||"";
+ const allowed=new Set(["name","group","activity","assets","returnPct","dayReturnPct","sessions","lastSession","drawdownPct","volatilityPct","sharpe"]);
+ if(!allowed.has(sort))throw Error("Unsupported competition sort");
+ const rows=rank(data,"name",true,group).map(item=>{
+  const active=Object.keys(data.market).filter((k,i)=>item.weights[i]>0.005);
+  const dayReturnPct=item.nav.length>1?100*(item.nav.at(-1)/item.nav.at(-2)-1):null;
+  const windowPct=(period)=>item.nav.length>period?100*(item.nav.at(-1)/item.nav.at(-1-period)-1):null;
+  return {...item,activity:item.orders.length===0?"Sin órdenes":"Órdenes paper: "+item.orders.length,
+   assets:active.join(", "),activeAssets:active,dayReturnPct,
+   lastSession:data.dates.at(-1),periodReturns:{five:windowPct(5),twentyOne:windowPct(21),sixtyThree:windowPct(63)},
+   experimentStatus:"SIMULACION_SINTETICA",executionVerified:false,marketDataVerified:false};
+ });
+ const numeric=new Set(["returnPct","dayReturnPct","sessions","drawdownPct","volatilityPct","sharpe"]);
+ const value=r=>sort==="name"?r.name:sort==="group"?r.group:sort==="activity"?r.orders.length:sort==="assets"?r.activeAssets.length:r[sort];
+ const sortNumeric=numeric.has(sort)||["activity","assets"].includes(sort);
+ return rows.sort((a,b)=>{
+  const x=value(a),y=value(b);
+  const missingA=x===null||x===undefined||x===""||sortNumeric&&!finite(x);
+  const missingB=y===null||y===undefined||y===""||sortNumeric&&!finite(y);
+  if(missingA!==missingB)return missingA?1:-1;
+  const comparison=missingA?0:sortNumeric?x-y:String(x).localeCompare(String(y),"es",{numeric:true,sensitivity:"base"});
+  return (ascending?comparison:-comparison)||a.name.localeCompare(b.name,"es");
+ });
+}
+export function publicIssuerReadModel(data,{query="",sort="base",ascending=false}={}){
+ verifyIssuerCatalog(data);
+ const columns=new Set(["ticker","company","market","price","bear","base","bull","entry","target","earnings","report"]);
+ if(!columns.has(sort))throw Error("Unsupported issuer sort");
+ const matched=data.issuers.filter(i=>[i.ticker,i.company,i.market,i.sector].join(" ").toLocaleLowerCase("es").includes(String(query).trim().toLocaleLowerCase("es")));
+ const rows=matched.map(i=>({issuer:i,screen:data.publicScreens?.find(s=>s.ticker===i.ticker)||null}))
+  .map(row=>({...row,screen:row.screen?evaluateIssuerScreen(row.screen):null}));
+ const value=r=>{
+  const i=r.issuer,s=r.screen;
+  switch(sort){
+   case "ticker":return i.ticker;
+   case "company":return i.company;
+   case "market":return i.market;
+   case "price":return s?.quote.close??null;
+   case "bear":return s?.scenarios.bear.cagrPct??null;
+   case "base":return s?.scenarios.base.cagrPct??null;
+   case "bull":return s?.scenarios.bull.cagrPct??null;
+   case "entry":return s?.buyPrice15??null;
+   case "target":return s?.scenarios.base.target??null;
+   case "earnings":return null; // No verified future financial-reporting dates in public feed.
+   case "report":return null; // No institutional company reports approved for publication.
+   default:throw Error("Sort out of bounds");
+  }
+ };
+ const textual=new Set(["ticker","company","market","earnings"]);
+ return rows.sort((a,b)=>{
+  const x=value(a),y=value(b);
+  const emptyA=x===null||x===undefined||x==="",emptyB=y===null||y===undefined||y==="";
+  if(emptyA!==emptyB)return emptyA?1:-1;
+  const diff=emptyA?0:textual.has(sort)?String(x).localeCompare(String(y),"es",{numeric:true}):x-y;
+  return (ascending?diff:-diff)||a.issuer.ticker.localeCompare(b.issuer.ticker,"es");
+ });
+}
