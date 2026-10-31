@@ -58,7 +58,7 @@ class Classic503SignalsTest(unittest.TestCase):
         report=decisions(feed,SESSION)
         empty={slot:[] for slot in MODELS}
         orders=frozen_intents(report,empty)
-        self.assertEqual(len(orders["IL-010"]),8)
+        self.assertEqual(len(orders["IL-010"]),503)
         self.assertEqual(orders["IL-010"][0]["side"],"buy")
         self.assertEqual(len(orders["IL-018"]),1)
         self.assertEqual(orders["IL-018"][0]["ticker"],"SPY")
