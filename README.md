@@ -213,3 +213,10 @@ Pendientes verificables: derechos de uso de datos; reconciliación de puntuacion
 Se añade un validador independiente para los nueve identificadores semanales: dos referencias bursátiles y siete salidas predictivas. Exige cobertura fechada del universo, ausencia de datos futuros, muestras históricas suficientes, cierre semanal acreditado y decisiones congeladas para la siguiente apertura. La selección teórica restringe cada modelo a diez títulos, 12 % máximo por título y 95 % de inversión; las pruebas se ejecutan exclusivamente con series artificiales.
 
 **No hay modelos entrenados ni carteras semanales activas en IDEA LAB por este cambio.** Sus predicciones externas siguen siendo entradas sin certificación independiente y todavía faltan entrenamiento walk-forward, pruebas fuera de muestra, persistencia firmada de operaciones y permisos de cotización. Véase `docs/SCIENTIFIC_PARITY.md`.
+
+
+## Evaluación real de dos estimadores básicos — laboratorio sintético
+
+El módulo independiente `scripts/weekly_baselines.py` ajusta **regresión ridge y regresión logística**, y realiza evaluaciones *walk-forward* con transformación de variables ajustada exclusivamente sobre cada ventana histórica de entrenamiento. El orden de disponibilidad de etiquetas futuras se comprueba antes de cada predicción; se aplica un embargo temporal y se compara el error con una referencia nula calculada en la misma ventana. La validación funciona con datos artificiales de prueba y no necesita servicios externos.
+
+Estas dos regresiones son **baselines nuevos**, no sustituyen ni acreditan como entrenados los modelos LightGBM, MLP, LSTM, ARIMA, TimesFM o ensemble de las 64 estrategias. No se han creado pesos bursátiles, posiciones, rendimientos reales ni un backtest de mercado. No se conecta este módulo al sistema de operaciones hasta disponer de fuentes autorizadas, modelos propios contrastados y controles independientes de validación económica.
