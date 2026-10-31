@@ -1,7 +1,7 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 import {readFileSync} from "node:fs";
-import {verify,signal,simulate,rank,valuation,thesisRank,absentQuote,cumulative,maxDrawdown,formatPct,syntheticBarsFromDemo,nextOpenPaper,verifyIssuerCatalog,evaluateIssuerScreen} from "../src/metrics.mjs";
+import {verify,signal,simulate,rank,valuation,thesisRank,absentQuote,cumulative,maxDrawdown,formatPct,syntheticBarsFromDemo,nextOpenPaper,verifyIssuerCatalog,evaluateIssuerScreen,competitionReadModel,publicIssuerReadModel} from "../src/metrics.mjs";
 const data=JSON.parse(readFileSync(new URL("../data/demo.json",import.meta.url),"utf8"));
 test("The independent public universe is strictly synthetic",()=>{
  assert.equal(verify(data),true);
@@ -180,4 +180,61 @@ test("Unverified screen tampering cannot silently inject financial claims",()=>{
   modify(altered.publicScreens[0]);
   assert.throws(()=>verifyIssuerCatalog(altered));
  }
+});
+
+
+test("Competition read-model contains same synthetic campaign count and is row-sortable",()=>{
+ const rows=competitionReadModel(data);
+ assert.equal(rows.length,23);
+ assert.ok(rows.every(r=>r.experimentStatus==="SIMULACION_SINTETICA"));
+ assert.ok(rows.every(r=>r.executionVerified===false&&r.marketDataVerified===false));
+ assert.ok(rows.every(r=>r.sessions===48&&r.lastSession==="S48"));
+ assert.ok(rows.every(r=>r.activeAssets.every(k=>Object.keys(data.market).includes(k))));
+ for(let i=1;i<rows.length;i++)assert.ok(rows[i-1].returnPct>=rows[i].returnPct);
+ assert.deepEqual(competitionReadModel(data,{sort:"name",ascending:true}).map(x=>x.name),
+  [...rows].map(x=>x.name).sort((a,b)=>a.localeCompare(b,"es",{numeric:true,sensitivity:"base"})));
+ assert.throws(()=>competitionReadModel(data,{sort:"secret"}),/Unsupported/);
+});
+test("Competition windows measure 5 and 21 comparable artificial sessions only",()=>{
+ const row=competitionReadModel(data).find(r=>r.id==="P-01");
+ const nav=row.nav;
+ const calc=n=>100*(nav.at(-1)/nav.at(-1-n)-1);
+ assert.ok(Math.abs(row.periodReturns.five-calc(5))<1e-9);
+ assert.ok(Math.abs(row.periodReturns.twentyOne-calc(21))<1e-9);
+ assert.equal(row.periodReturns.sixtyThree,null);
+ assert.ok(Math.abs(row.dayReturnPct-calc(1))<1e-9);
+ const shorter=structuredClone(data);
+ shorter.dates=shorter.dates.slice(0,20);
+ for(const k of Object.keys(shorter.market))shorter.market[k]=shorter.market[k].slice(0,20);
+ const sample=competitionReadModel(shorter)[0];
+ assert.equal(sample.periodReturns.twentyOne,null);
+ assert.equal(sample.periodReturns.sixtyThree,null);
+});
+test("Public company sorting keeps unknown values last and returns only approved screen metrics",()=>{
+ const rows=publicIssuerReadModel(data.issuerCatalog);
+ assert.equal(rows.length,25);
+ assert.equal(rows[0].issuer.ticker,"MSFT");
+ assert.ok(rows[0].screen.scenarios.base.cagrPct>0);
+ assert.ok(rows.slice(1).every(r=>r.screen===null));
+ const ascending=publicIssuerReadModel(data.issuerCatalog,{sort:"base",ascending:true});
+ assert.equal(ascending[0].issuer.ticker,"MSFT");
+ assert.ok(ascending.slice(1).every(r=>r.screen===null));
+ const negative=publicIssuerReadModel(data.issuerCatalog,{sort:"bear"});
+ assert.equal(negative[0].issuer.ticker,"MSFT");
+ assert.deepEqual(publicIssuerReadModel(data.issuerCatalog,{query:"Cloudflare"}).map(x=>x.issuer.ticker),["NET"]);
+ assert.deepEqual(publicIssuerReadModel(data.issuerCatalog,{query:"not-a-company"}),[]);
+ assert.throws(()=>publicIssuerReadModel(data.issuerCatalog,{sort:"personal_document"}),/Unsupported/);
+});
+test("Institutional UI offers row inspection, column sorting, historic isolation and honest source health",()=>{
+ const src=readFileSync(new URL("../src/site.mjs",import.meta.url),"utf8");
+ const html=readFileSync(new URL("../index.html",import.meta.url),"utf8");
+ const css=readFileSync(new URL("../styles.css",import.meta.url),"utf8");
+ for(const text of ["data-competition-id","data-issuer-id","rank-column","issuer-column","openCompetitionRow","openIssuerRow","close-detail","function archive()","Sin histórico institucional importado","Sin alimentación real","Última sesión ficticia","Sin verificación operativa"]){
+  assert.ok(src.includes(text),text);
+ }
+ for(const label of ["Competición de algoritmos","Seguimiento de tesis","Catálogo / histórico"]){
+  assert.ok(html.includes(label),label);
+ }
+ assert.ok(css.includes(".interactive-table-row:focus-visible"));
+ assert.ok(src.includes("periodReturns")); // Only synthetic NAV windows; no claim of actual trading sessions.
 });

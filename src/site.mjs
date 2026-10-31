@@ -1,9 +1,9 @@
-import {verify,simulate,rank,valuation,thesisRank,formatPct,money,finite,verifyIssuerCatalog,filterIssuers,syntheticBarsFromDemo,nextOpenPaper,evaluateIssuerScreen} from "./metrics.mjs";
+import {verify,simulate,rank,valuation,thesisRank,formatPct,money,finite,verifyIssuerCatalog,filterIssuers,syntheticBarsFromDemo,nextOpenPaper,evaluateIssuerScreen,competitionReadModel,publicIssuerReadModel} from "./metrics.mjs";
 const $=id=>document.getElementById(id);
 const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 const fmt=n=>finite(n)?new Intl.NumberFormat("es-ES",{maximumFractionDigits:2}).format(n):"N/D";
-const state={data:null,universe:null,view:"overview",strategy:"P-01",group:"",sort:"returnPct",asc:false,thesis:"T-01",query:"",thesisSort:"central",issuerMode:"catalog",issuerQuery:"",issuerSort:"ticker",issuerTicker:"MSFT"};
-const viewNames=["overview","competition","algorithms","theses","monitoring","method"];
+const state={data:null,universe:null,view:"overview",strategy:"P-01",group:"",sort:"returnPct",asc:false,detailOpen:false,thesis:"T-01",query:"",thesisSort:"central",issuerMode:"catalog",issuerQuery:"",issuerSort:"base",issuerAsc:false,issuerTicker:"MSFT"};
+const viewNames=["overview","competition","algorithms","theses","monitoring","method","archive"];
 const button=(label,action,value,cls="smallbtn")=>'<button type="button" class="'+cls+'" data-action="'+esc(action)+'" data-value="'+esc(value)+'">'+esc(label)+'</button>';
 const head=(label,title,body)=>'<div class="section-heading"><div><span class="kicker">'+esc(label)+'</span><h2>'+esc(title)+'</h2><p class="section-context">'+esc(body)+'</p></div></div>';
 const card=(html)=>'<article class="panel">'+html+'</article>';
@@ -41,31 +41,77 @@ function overview(){
  disclaimer("No existe migración completa de los motores ni de los expedientes de inversión. Sin cotizaciones actualizadas, no se muestran CAGR históricos como pronósticos vigentes.");
 }
 function competition(){
- const rows=rank(state.data,state.sort,state.asc,state.group);
- const current=active();
- return head("COMPETICIÓN PAPER","Clasificación de algoritmos","Tabla compacta: un algoritmo por fila, actividad, rentabilidad y curva de NAV. Todo el registro es sintético, no histórico de mercado.")+
- disclaimer("SIMULACIÓN SINTÉTICA · Las rentabilidades, órdenes y curvas no son resultados de inversión reales ni operaciones verificadas.")+
+ const rows=competitionReadModel(state.data,{sort:state.sort,ascending:state.asc,group:state.group});
+ const headers=[["name","Algoritmo"],["group","Bloque"],["activity","Actividad actual"],["assets","Activos"],["returnPct","Rent. acum."],["sessions","Sesiones"],["lastSession","Última sesión"],["drawdownPct","DD máx."]];
+ const headcells=headers.map(([key,title])=>'<th scope="col" aria-sort="'+(state.sort===key?(state.asc?"ascending":"descending"):"none")+'"><button type="button" class="table-sort" data-action="rank-column" data-value="'+key+'" title="Ordenar por '+esc(title)+'">'+esc(title)+' <span aria-hidden="true">'+(state.sort===key?(state.asc?"↑":"↓"):"↕")+'</span></button></th>').join("");
+ if(state.detailOpen){
+  const selected=rows.find(r=>r.id===state.strategy)||competitionReadModel(state.data).find(r=>r.id===state.strategy);
+  if(!selected){state.detailOpen=false;return competition();}
+  return button("← Volver a la competición","close-detail","","outline-btn")+
+   head("DETALLE · "+selected.id,selected.name,"Ficha ampliada con actividad, riesgo, exposición, retornos por período y evolución. Los datos siguen siendo ficticios.")+
+   disclaimer("La rentabilidad es sintética. Las sesiones no representan fechas bursátiles y los fills heredados son ilustrativos; no corresponden a la contabilidad causal next-open.")+
+   detail(selected);
+ }
+ const original=state.data.meta;
+ return head("COMPETICIÓN PAPER","Comportamiento de los algoritmos","Una fila por método y una ficha accesible pulsando su nombre o la fila. Las estrategias comparten las mismas 48 sesiones ficticias; no existen campañas públicas prospectivas comparables.")+
+ '<div class="source-health-strip" aria-label="Integridad y operación institucional">'+
+ '<div><span class="label">Fuente OHLC</span><strong>Sin alimentación real</strong><small>3 activos sintéticos · sin capturas de mercado</small></div>'+
+ '<div><span class="label">Estado de ejecución</span><strong>Solo navegador</strong><small>Sin diario persistido ni planificación paper institucional</small></div>'+
+ '<div><span class="label">Cierre real verificado</span><strong>N/D</strong><small>Última sesión ficticia: '+esc(state.data.dates.at(-1))+' · generación '+esc(original.asof)+'</small></div>'+
+ '</div>'+
+ disclaimer("Estas 23 estrategias son prototipos: la clasificación es retrospectiva sobre datos inventados, no un resultado forward, un histórico validado ni una señal de compra.")+
  '<div class="filters"><label>Familia<select id="group-select"><option value="">Todas</option>'+groups().map(g=>'<option value="'+esc(g)+'" '+(state.group===g?"selected":"")+'>'+esc(g)+'</option>').join("")+'</select></label>'+
- '<label>Ordenar<select id="rank-select">'+[["returnPct","Rentabilidad"],["drawdownPct","Drawdown"],["volatilityPct","Volatilidad"],["sharpe","Sharpe"],["name","Nombre"]].map(([v,n])=>'<option value="'+esc(v)+'" '+(state.sort===v?"selected":"")+'>'+esc(n)+'</option>').join("")+'</select></label>'+
- button(state.asc?"↑ Ascendente":"↓ Descendente","direction","","outline-btn")+button("Exportar CSV","export","ranking","outline-btn")+'</div>'+
- '<div class="table-scroll table-compact"><table><thead><tr><th>Algoritmo</th><th>Familia</th><th class="number">Rentabilidad</th><th class="number">DD máx.</th><th class="number">Vol.</th><th class="number">Sharpe</th><th>Actividad paper</th><th>Curva</th><th>Ficha</th></tr></thead><tbody>'+
- rows.map(s=>{
-  const exposed=s.weights.filter(w=>w>0.005).length;
-  const activity=s.orders.length===0?"Sin operaciones":"Órdenes: "+s.orders.length;
-  return '<tr class="'+(s.id===current.id?"is-selected":"")+'"><td><strong>'+esc(s.name)+'</strong> <small class="inline-id">'+esc(s.id)+'</small></td><td>'+esc(s.group)+'</td><td class="number">'+pctText(s.returnPct)+'</td><td class="number">'+esc(fmt(s.drawdownPct))+' %</td><td class="number">'+(finite(s.volatilityPct)?esc(fmt(s.volatilityPct))+" %":"N/D")+'</td><td class="number">'+esc(fmt(s.sharpe))+'</td><td><span class="activity-main">'+esc(activity)+'</span><small class="activity-meta">'+exposed+' activos · '+esc(fmt(Math.max(0,s.cash)*100))+' % caja</small></td><td>'+sparkline(s.nav)+'</td><td>'+button("Ver","select",s.id)+'</td></tr>';
+ '<label>Ordenar<select id="rank-select">'+headers.map(([k,n])=>'<option value="'+k+'" '+(state.sort===k?"selected":"")+'>'+esc(n)+'</option>').join("")+'</select></label>'+
+ button(state.asc?"↑ Ascendente":"↓ Descendente","direction","","outline-btn")+button("Exportar CSV","export","ranking","outline-btn")+
+ '</div><p class="table-note">'+rows.length+' métodos · Pulsa las cabeceras para ordenar. Valores ausentes siempre al final. Ficha por fila mediante ratón o teclado.</p>'+
+ '<div class="table-scroll table-compact"><table class="competition-parity-table"><thead><tr>'+headcells+'<th scope="col">Curva</th></tr></thead><tbody>'+
+ rows.map(r=>{
+  const assets=r.activeAssets.length?'<span class="asset-chipset">'+r.activeAssets.map(x=>'<b>'+esc(x)+'</b>').join("")+'</span>':'<span class="perf-neutral">Efectivo</span>';
+  return '<tr class="interactive-table-row '+(r.id===state.strategy?"is-selected":"")+'" data-competition-id="'+esc(r.id)+'" tabindex="0" aria-label="Abrir la ficha del algoritmo '+esc(r.name)+'">'+
+   '<td><strong>'+esc(r.name)+'</strong><small class="smallline">'+esc(r.id)+' · Simulación sin validar</small></td>'+
+   '<td>'+esc(r.group)+'</td><td><strong>'+esc(r.activity)+'</strong><small class="smallline">Sin operativa real</small></td>'+
+   '<td>'+assets+'</td><td class="number">'+pctText(r.returnPct)+'</td><td class="number">'+r.sessions+'</td>'+
+   '<td>'+esc(r.lastSession)+'<small class="smallline">No es fecha real</small></td>'+
+   '<td class="number">'+esc(fmt(r.drawdownPct))+' %</td><td>'+sparkline(r.nav)+'</td></tr>';
  }).join("")+'</tbody></table></div>'+
- '<p class="table-note">Una fila por algoritmo. Ordenes, posiciones, retornos y minigráficas corresponden únicamente a 48 sesiones artificiales. Los colores indican el signo, no una recomendación.</p>'+
- head("FICHA TÉCNICA","Detalle y operaciones","Consulta el NAV, exposición, movimientos y costes del método seleccionado.")+detail(current);
+ '<p class="table-note">Verde: positivo · rojo: negativo · gris: sin variación o sin datos. No se oculta ningún modelo por ausencia de órdenes, pero tampoco se interpretan las órdenes simuladas como compras ejecutadas.</p>'+
+ button("Ver historial y versiones","navigate","archive","outline-btn")+
+ button("Comprobar libro causal","navigate","monitoring","outline-btn");
 }
 function detail(s){
  const proxy=["linear","direction","crossrank","perceptron","memory","ensemble","weekly","daily","genetic"].includes(s.mode);
- return '<div class="strategy-detail"><article class="panel"><div class="panel-top"><div><span class="label">'+esc(s.group)+' · '+esc(s.id)+'</span><h3>'+esc(s.name)+'</h3></div><span class="chip">PAPER · SINTÉTICO</span></div><p>'+esc(s.rule)+'</p>'+
- '<div class="metric-strip">'+metric("Variación",formatPct(s.returnPct))+metric("DD máximo",fmt(s.drawdownPct)+" %")+metric("Volatilidad",fmt(s.volatilityPct)+" %")+metric("Sharpe",fmt(s.sharpe))+'</div>'+
- '<div class="chart-hdr"><strong>Curva del NAV simulado</strong><small>Base 100 · '+s.sessions+' sesiones</small></div><svg id="nav-chart" viewBox="0 0 760 290" role="img" aria-label="Curva de capital paper"></svg>'+
- (proxy?disclaimer("Proxy matemático: no se ha entrenado ni ejecutado el modelo externo de esta familia."):"")+'</article>'+
- '<aside class="panel"><div class="label">CARTERA PAPER</div><h3>'+esc(s.name)+'</h3>'+metric("Capital ficticio final",money(s.points.at(-1).equity))+metric("Costes teóricos",money(s.fees))+metric("Operaciones simuladas",String(s.orders.length))+
- '<div class="minor-heading">Exposición al último cierre</div>'+Object.keys(state.data.market).map((k,i)=>'<div class="bar-label"><span>'+esc(k)+'</span><strong>'+fmt(s.weights[i]*100)+' %</strong></div><div class="exposure-bar"><i style="width:'+Math.max(0,Math.min(100,s.weights[i]*100))+'%"></i></div>').join("")+
- '<p class="small-note">Coste asumido: '+fmt(s.cost_bps)+' puntos básicos por unidad negociada. Sin conexión a ningún broker.</p>'+button("Diario de órdenes","journal",s.id,"outline-btn")+button("Exportar NAV","export","nav","outline-btn")+'</aside></div>';
+ const r=s.periodReturns||{};
+ const last=s.points.at(-1);
+ const act=s.activeAssets||Object.keys(state.data.market).filter((k,i)=>s.weights[i]>0.005);
+ const sourceState=proxy?"Modelo proxy no entrenado":"Regla de demostración";
+ return '<div class="strategy-detail"><article class="panel">'+
+ '<div class="panel-top"><div><span class="label">'+esc(s.group)+' · '+esc(s.id)+'</span><h3>'+esc(s.name)+'</h3></div><span class="chip">PAPER · SOLO SINTÉTICO</span></div>'+
+ '<p>'+esc(s.rule)+'</p>'+
+ '<div class="metric-strip">'+
+ metric("Rentabilidad acumulada",formatPct(s.returnPct))+
+ metric("Última sesión",formatPct(s.dayReturnPct))+
+ metric("Máximo drawdown",fmt(s.drawdownPct)+" %")+
+ metric("Volatilidad anualizada",fmt(s.volatilityPct)+" %")+
+ metric("Sharpe (rf=0)",fmt(s.sharpe))+
+ metric("Número de sesiones",String(s.sessions))+
+ metric("Último cierre ficticio",esc(s.lastSession||state.data.dates.at(-1)))+
+ metric("Patrimonio ficticio",money(last.equity))+
+ '</div>'+
+ '<h3 class="minor-heading">Retornos por ventana homogénea, solo sintéticos</h3>'+
+ '<div class="metric-strip">'+metric("5 sesiones",formatPct(r.five))+metric("21 sesiones",formatPct(r.twentyOne))+metric("63 sesiones",formatPct(r.sixtyThree))+metric("Ejecución forward","Sin verificar")+'</div>'+
+ '<div class="chart-hdr"><strong>Curva completa · NAV base 100</strong><small>'+esc(String(s.sessions))+' sesiones · no hay datos de mercado</small></div>'+
+ '<svg id="nav-chart" viewBox="0 0 760 290" role="img" aria-label="Curva del patrimonio sintético"></svg>'+
+ '<p class="small-note">'+esc(sourceState)+'. La cifra de la última sesión es una variación sintética entre dos marcas, no una rentabilidad bursátil diaria registrada.</p>'+
+ (proxy?disclaimer("Este método usa una función proxy. Su nombre no demuestra que LightGBM, LSTM, TimesFM u otro modelo externo se haya entrenado o ejecutado."):"")+
+ '</article><aside class="panel">'+
+ '<span class="label">ACTIVIDAD Y POSICIONES · SINTÉTICAS</span><h3>'+esc(s.name)+'</h3>'+
+ '<div class="metric-strip aside-metrics">'+metric("Actividad actual",s.orders.length+" órdenes")+metric("Activos expuestos",String(act.length))+metric("Efectivo",fmt(Math.max(0,s.cash)*100)+" %")+metric("Costes",money(s.fees))+'</div>'+
+ '<h3 class="minor-heading">Posiciones al último cierre</h3>'+
+ (act.length?Object.keys(state.data.market).map((k,i)=>'<div class="bar-label"><span>'+esc(k)+'</span><strong>'+esc(fmt(s.weights[i]*100))+' %</strong></div><div class="exposure-bar"><i style="width:'+Math.max(0,Math.min(100,s.weights[i]*100))+'%"></i></div>').join(""):'<p>Sin exposición a instrumentos; cartera ficticia en efectivo.</p>')+
+ '<h3 class="minor-heading">Procedencia y ejecución</h3><p class="small-note">Versión: escenario inventado. Última sesión '+esc(state.data.dates.at(-1))+'. Sin hash de fuente bursátil, orden de broker, registro persistente ni ejecución programada. El motor anterior usa cierres previos como referencia de fill.</p>'+
+ button("Abrir diario sintético","journal",s.id,"outline-btn")+
+ button("Exportar NAV","export","nav","outline-btn")+
+ button("Volver a la tabla","close-detail","","outline-btn")+'</aside></div>';
 }
 function algorithms(){
  return head("CATÁLOGO DE MÉTODOS","Algoritmos y familias","Reglas reconstruidas para la versión institucional, sin códigos, pesos entrenados ni configuraciones personales.")+
@@ -99,15 +145,16 @@ const independentScreen=(ticker)=>{
  return s?evaluateIssuerScreen(s):null;
 };
 function issuerTableRows(){
- return filterIssuers(state.universe,state.issuerQuery,state.issuerSort).map(i=>{
-  const s=independentScreen(i.ticker);
+ return publicIssuerReadModel(state.universe,{query:state.issuerQuery,sort:state.issuerSort,ascending:state.issuerAsc}).map(({issuer:i,screen:s})=>{
   const close=s?fmt(s.quote.close)+" "+s.quote.currency+" · "+s.quote.closeDate:"N/D";
-  return '<tr class="'+(state.issuerTicker===i.ticker?"is-selected":"")+'"><td><strong>'+esc(i.ticker)+'</strong></td><td><strong>'+esc(i.company)+'</strong><small class="smallline">'+esc(i.sector)+'</small></td><td>'+esc(i.market)+'</td><td class="number">'+esc(close)+'</td>'+
-  '<td class="number">'+(s?pctText(s.scenarios.bear.cagrPct):"N/D")+'</td><td class="number">'+(s?pctText(s.scenarios.base.cagrPct):"N/D")+'</td><td class="number">'+(s?pctText(s.scenarios.bull.cagrPct):"N/D")+'</td>'+
+  return '<tr class="interactive-table-row '+(state.issuerTicker===i.ticker?"is-selected":"")+'" data-issuer-id="'+esc(i.ticker)+'" tabindex="0" aria-label="Abrir la ficha pública de '+esc(i.company)+'">'+
+  '<td><strong>'+esc(i.ticker)+'</strong></td><td><strong>'+esc(i.company)+'</strong><small class="smallline">'+esc(i.sector)+'</small></td><td>'+esc(i.market)+'</td><td class="number">'+esc(close)+'</td>'+
+  '<td class="number">'+(s?pctText(s.scenarios.bull.cagrPct):"N/D")+'</td><td class="number">'+(s?pctText(s.scenarios.bear.cagrPct):"N/D")+'</td><td class="number">'+(s?pctText(s.scenarios.base.cagrPct):"N/D")+'</td>'+
   '<td class="number">'+(s?esc(fmt(s.buyPrice15))+" USD":"N/D")+'</td><td class="number">'+(s?esc(fmt(s.scenarios.base.target))+" USD":"N/D")+'</td>'+
   '<td>N/D</td><td>'+button(s?"Screen":"Ficha","issuer-select",i.ticker)+'</td></tr>';
  }).join("");
 }
+
 function issuerDetail(){
  const i=state.universe.issuers.find(x=>x.ticker===state.issuerTicker)||state.universe.issuers[0];
  const s=independentScreen(i.ticker);
@@ -132,22 +179,43 @@ function issuerDetail(){
 
 function theses(){
  if(state.issuerMode==="demo")return syntheticTheses();
- return head("TESIS · CATÁLOGO PÚBLICO","Empresas analizadas y en seguimiento","Inventario de "+state.universe.issuers.length+" compañías y estudios. Se muestra un screening independiente cuando existe evidencia pública fechada; el resto de los datos permanece sin validar.")+
- disclaimer("DATOS PENDIENTES · Los valores publicados, si los hay, son screenings exploratorios independientes con fecha y fuentes explícitas. N/D significa ausencia de validación, no rentabilidad cero.")+
- '<div class="filters"><label>Buscar<input id="issuer-query" type="search" placeholder="Ticker, empresa o sector" value="'+esc(state.issuerQuery)+'"></label>'+
- '<label>Ordenar<select id="issuer-sort">'+[["ticker","Ticker"],["company","Empresa"],["market","Mercado"],["sector","Sector"]].map(([k,n])=>'<option value="'+k+'" '+(k===state.issuerSort?"selected":"")+'>'+n+'</option>').join("")+'</select></label>'+
- button("Exportar catálogo CSV","export","issuers","outline-btn")+button("Ver tesis ficticias","issuer-mode","demo","outline-btn")+'</div>'+
- '<div class="table-scroll table-compact thesis-public-table"><table><thead><tr><th>Ticker</th><th>Empresa</th><th>Mercado</th><th class="number">Precio ref. / fecha</th><th class="number">CAGR Bear 5a</th><th class="number">CAGR Base 5a</th><th class="number">CAGR Bull 5a</th><th class="number">Precio 15 %</th><th class="number">Objetivo 5a</th><th>Resultados</th><th>Informe</th></tr></thead><tbody id="issuer-rows">'+issuerTableRows()+'</tbody></table></div>'+
- head("ANÁLISIS","Ficha pública de emisor","Fichas independientes: sin referencias privadas ni métricas financieras trasladadas sin auditoría.")+issuerDetail()+
- disclaimer("El catálogo público no equivale a una migración documental. Los estados y objetivos históricos requieren reconstrucción y autorización de publicación independientes.");
+ const columns=[["ticker","Ticker"],["company","Nombre empresa"],["market","Mercado"],["price","Precio de referencia / fecha"],
+ ["bull","Bull 5a"],["bear","Bear 5a"],["base","Central 5a"],["entry","Precio 15 %"],
+ ["target","Objetivo 5a"],["earnings","Próx. resultados"],["report","Tesis / ficha"]];
+ const headers=columns.map(([key,label])=>'<th scope="col" aria-sort="'+(state.issuerSort===key?(state.issuerAsc?"ascending":"descending"):"none")+'"><button class="table-sort" type="button" data-action="issuer-column" data-value="'+key+'" aria-label="Ordenar por '+esc(label)+'">'+esc(label)+' <span aria-hidden="true">'+(state.issuerSort===key?(state.issuerAsc?"↑":"↓"):"↕")+'</span></button></th>').join("");
+ const found=publicIssuerReadModel(state.universe,{query:state.issuerQuery,sort:state.issuerSort,ascending:state.issuerAsc}).length;
+ const screens=state.universe.publicScreens?.length||0;
+ return head("TESIS · SEGUIMIENTO","Empresas y valoraciones","Inventario institucional de "+state.universe.issuers.length+" empresas. Solo se muestran escenarios cuantitativos cuando existe un cálculo público independiente, fechado y con sus fuentes.")+
+ '<div class="source-health-strip"><div><span class="label">Cobertura del catálogo</span><strong>'+state.universe.issuers.length+' empresas</strong><small>Identidades corporativas, no todas analizadas</small></div>'+
+ '<div><span class="label">Modelos públicos</span><strong>'+screens+' screening exploratorio</strong><small>No equivale a tesis auditada ni recomendación</small></div>'+
+ '<div><span class="label">Informes institucionales aprobados</span><strong>0</strong><small>Ningún documento privado trasladado</small></div></div>'+
+ disclaimer("Los CAGR y objetivos existentes son supuestos exploratorios y no una tesis de inversión ratificada. N/D significa desconocido o no publicado; no representa cero. Los precios etiquetados son observaciones históricas fechadas, no cotizaciones spot.")+
+ '<div class="filters"><label>Buscar ticker o empresa<input id="issuer-query" type="search" autocomplete="off" placeholder="Ej.: MSFT o Microsoft" value="'+esc(state.issuerQuery)+'"></label>'+
+ '<label>Ordenar<select id="issuer-sort">'+columns.map(([k,n])=>'<option value="'+k+'" '+(k===state.issuerSort?"selected":"")+'>'+esc(n)+'</option>').join("")+'</select></label>'+
+ button(state.issuerAsc?"↑ Ascendente":"↓ Descendente","issuer-direction","","outline-btn")+
+ button("Exportar CSV","export","issuers","outline-btn")+
+ button("Tesis ficticias · demo","issuer-mode","demo","outline-btn")+'</div>'+
+ '<p id="issuer-visible-count" class="table-note" aria-live="polite">'+found+' de '+state.universe.issuers.length+' empresas · Orden inicial: CAGR central descendente; sin cifras al final. Pulsa cualquier cabecera para ordenar.</p>'+
+ '<div class="table-scroll table-compact thesis-public-table"><table><thead><tr>'+headers+'</tr></thead><tbody id="issuer-rows">'+issuerTableRows()+'</tbody></table></div>'+
+ '<p id="issuer-empty" class="table-note" '+(found?'hidden':'')+'>No hay empresas coincidentes.</p>'+
+ head("ANÁLISIS","Ficha de tesis / empresa","Cada expediente público documenta qué fuentes y supuestos están acreditados y cuáles faltan.")+
+ '<div id="issuer-ficha">'+issuerDetail()+'</div>'+
+ disclaimer("No hay acceso público a los documentos privados ni continuidad documental automática. Una ficha interna no equivale a una tesis íntegra publicada.");
 }
 
 function monitoring(){
  const s=active(),audit=causalLedger();
- return head("SEGUIMIENTO","Diario paper y salud de fuentes","Se conservan operaciones hipotéticas, reglas de costes y ausencia de fuentes verificadas. No existe conectividad con cuentas reales.")+
- '<div class="section-grid three">'+card('<span class="label">PROCEDENCIA</span><h3>Datos sintéticos</h3><p>Tres activos ficticios. Ningún proveedor de cotizaciones.</p>')+
- card('<span class="label">COTIZACIONES AUSENTES</span><h3>0 en el ejemplo</h3><p>Si un precio es inválido, la simulación no fabrica un fill ni un NAV.</p>')+
- card('<span class="label">ESTADO FINANCIERO</span><h3>Sin operaciones reales</h3><p>Solo operaciones paper calculadas en el navegador.</p>')+'</div>'+
+ return head("SALUD OPERATIVA · DIARIO","Procedencia, ejecución y operaciones","Diferencia entre disponibilidad de fuentes, ejecución del motor y estado de cada diario. Sin fuente y persistencia institucional no se declara funcionamiento autónomo.")+
+ '<div class="source-health-strip">'+
+ '<div><span class="label">OHLC diario externo</span><strong>No conectado</strong><small>No existe un proveedor de precios autorizados ni una sesión bursátil comprobada</small></div>'+
+ '<div><span class="label">Cobertura del universo real</span><strong>N/D</strong><small>Instrumentos del experimento: 3 activos ficticios; cotizaciones de mercado ausentes</small></div>'+
+ '<div><span class="label">Salud de automatismos</span><strong>Sin verificación operativa</strong><small>GitHub Pages despliega la web; no ejecuta ni persiste las 23 estrategias</small></div>'+
+ '</div>'+
+ disclaimer("Fuente de mercado desconocida, captura UTC ausente, cobertura real N/D, hashes de OHLC no registrados y productor periódico no habilitado. No se confunde ausencia de prueba con estado correcto.")+
+ '<div class="section-grid three">'+
+ card('<span class="label">UNIVERSO DEMO</span><h3>3 activos artificiales</h3><p>La serie '+esc(state.data.dates[0])+'–'+esc(state.data.dates.at(-1))+' no equivale a un calendario de cotización. Origen: generador matemático.</p>')+
+ card('<span class="label">ÓRDENES PAPER</span><h3>Sin persistencia</h3><p>Los libros se generan al abrir la página y no son prueba de una sesión automática ni de operaciones en mercado.</p>')+
+ card('<span class="label">ÚLTIMA EVIDENCIA VERIFICADA</span><h3>No disponible</h3><p>No se informa de runs, cierres bursátiles ni actualización de carteras sin confirmar ambos registros.</p>')+'</div>'+
  head("OPERACIONES","Diario de órdenes simuladas","El libro de órdenes documenta compra o venta, unidades, referencia y coste por sesión.")+
  '<div class="filters"><label>Algoritmo<select id="journal-select">'+all().map(x=>'<option value="'+esc(x.id)+'" '+(x.id===state.strategy?"selected":"")+'>'+esc(x.name)+'</option>').join("")+'</select></label>'+button("Exportar diario CSV","export","journal","outline-btn")+'</div>'+
  '<div class="metric-strip spaced">'+metric("Órdenes",String(s.orders.length))+metric("Valor final",money(s.points.at(-1).equity))+metric("Costes",money(s.fees))+metric("Cobertura","100 %")+'</div>'+
@@ -162,6 +230,21 @@ function monitoring(){
  ).join("")+'</tbody></table></div>'+
  disclaimer("Prototipo analítico next-open. No acredita precisión predictiva ni rentabilidad real; no hay broker, cotizaciones externas, motor de persistencia ni ejecución programada.");
 }
+function archive(){
+ const rows=all();
+ const groupsInCatalog=groups();
+ return head("CATÁLOGO · HISTÓRICO","Métodos, familias y versiones","Un inventario no equivale a un histórico de operaciones. Las campañas reales, diarios antiguos y versiones prospectivas necesitan ingestión y trazabilidad institucional propias.")+
+ '<div class="source-health-strip"><div><span class="label">Prototipos disponibles</span><strong>'+rows.length+'</strong><small>Reglas independientes con datos sintéticos</small></div>'+
+ '<div><span class="label">Campañas forward verificadas</span><strong>0</strong><small>Sin ejecución programada ni capturas inmutables</small></div>'+
+ '<div><span class="label">Diarios antiguos importados</span><strong>0</strong><small>No se fusionan con el ranking activo</small></div></div>'+
+ disclaimer("No se han importado resultados históricos ni se han reconstruido operaciones antiguas. La continuidad y el estado real de los algoritmos de otro entorno no pueden inferirse de esta demostración.")+
+ '<div class="family-grid">'+groupsInCatalog.map(g=>card('<div class="panel-top"><h3>'+esc(g)+'</h3><span class="chip">'+rows.filter(r=>r.group===g).length+' prototipos</span></div>'+
+ '<p>'+esc(family(g))+'</p><ul class="algorithm-list">'+rows.filter(r=>r.group===g).map(r=>'<li><span>'+esc(r.name)+' <small class="inline-id">'+esc(r.id)+'</small></span>'+button("Ficha","select",r.id,"text-btn")+'</li>').join("")+'</ul>')).join("")+'</div>'+
+ head("VERSIONES Y CAMPAÑAS","Histórico aislado","El historial sin fuente verificable no debe aparecer como rentabilidad acumulada de una estrategia operativa.")+
+ card('<h3>Sin histórico institucional importado</h3><p>Para habilitar campañas independientes hacen falta fechas reales de inicio, identificadores estables de estrategia y versión, señales previas a cada fill, libro de órdenes, valoración por cierre, costes, capital, posiciones, ausencias de cotización y registro inmutable por sesión. Las campañas anteriores deben quedar separadas del experimento activo.</p>')+
+ button("Volver a la clasificación","navigate","competition","outline-btn");
+}
+
 function methodology(){
  return head("MÉTODO Y LÍMITES","Evaluación reproducible","La infraestructura pública reproduce la experiencia funcional de un laboratorio cuantitativo, pero no ha importado ni los resultados ni los motores entrenados de ningún sistema externo.")+
  '<div class="method-grid">'+[
@@ -186,7 +269,7 @@ function chart(){
 }
 function render(){
  if(!state.data)return;
- const pages={overview,competition,algorithms,theses,monitoring,method:methodology};
+ const pages={overview,competition,algorithms,theses,monitoring,archive,method:methodology};
  document.querySelectorAll(".product-tabs [data-view]").forEach(b=>{const active=b.dataset.view===state.view;b.classList.toggle("active",active);b.setAttribute("aria-pressed",String(active));});
  $("app").innerHTML=(pages[state.view]||overview)();chart();
 }
@@ -194,35 +277,91 @@ function go(view){if(!viewNames.includes(view))return;state.view=view;const u=ne
 const asCSV=rows=>rows.map(row=>row.map(x=>'"'+String(x??"").replaceAll('"','""')+'"').join(",")).join("\n");
 function download(name,rows){const u=URL.createObjectURL(new Blob(["\ufeff"+asCSV(rows)],{type:"text/csv;charset=utf-8"}));const a=document.createElement("a");a.href=u;a.download=name;document.body.append(a);a.click();a.remove();URL.revokeObjectURL(u);}
 function exportData(what){
- if(what==="ranking"){download("midas-ranking-sintetico.csv",[["algoritmo","familia","retorno_pct","drawdown_pct","volatilidad_pct","sharpe","coste"],...rank(state.data,state.sort,state.asc,state.group).map(x=>[x.name,x.group,x.returnPct,x.drawdownPct,x.volatilityPct,x.sharpe,x.fees])]);}
+ if(what==="ranking"){download("midas-ranking-sintetico.csv",[["algoritmo","familia","retorno_pct","drawdown_pct","volatilidad_pct","sharpe","coste"],...competitionReadModel(state.data,{sort:state.sort,ascending:state.asc,group:state.group}).map(x=>[x.name,x.group,x.returnPct,x.drawdownPct,x.volatilityPct,x.sharpe,x.fees])]);}
  if(what==="nav"){download("midas-curva-paper-sintetica.csv",[["sesion","nav_base_100","capital_ficticio"],...active().points.map(p=>[p.session,p.nav,p.equity])]);}
  if(what==="next-open"){const a=causalLedger();download("midas-ordenes-next-open-sinteticas.csv",[["senal_al_cierre","fill_apertura_siguiente","activo","lado","apertura_sintetica","precio_paper","unidades","notional","comision","deslizamiento"],...a.orders.map(o=>[o.signalAt,o.fillAt,o.symbol,o.side,o.openPrice,o.fillPrice,o.units,o.notional,o.fee,o.slippage])]);}
  if(what==="journal"){download("midas-diario-sintetico.csv",[["sesion","activo","accion","precio","unidades","nocional","coste"],...active().orders.map(x=>[x.session,x.symbol,x.action,x.referencePrice,x.units,x.notional,x.cost])]);}
- if(what==="issuers"){download("midas-emisores-publicos.csv",[["ticker","empresa","mercado","sector","precio_actual","cagr_bear_5y","cagr_base_5y","cagr_bull_5y","precio_15pct","objetivo_5y","proximos_resultados","estado"],...filterIssuers(state.universe,state.issuerQuery,state.issuerSort).map(i=>[i.ticker,i.company,i.market,i.sector,"N/D","N/D","N/D","N/D","N/D","N/D","N/D",i.status])]);}
+ if(what==="issuers"){
+  const rows=publicIssuerReadModel(state.universe,{query:state.issuerQuery,sort:state.issuerSort,ascending:state.issuerAsc});
+  download("midas-seguimiento-publico-fechado.csv",[
+   ["ticker","empresa","mercado","sector","cierre_observado","fecha_cierre","divisa","cagr_bull_5y","cagr_bear_5y","cagr_base_5y","precio_15pct","objetivo_base_5y","resultados_verificados","informe_institucional","estado_analitico"],
+   ...rows.map(({issuer:i,screen:s})=>[i.ticker,i.company,i.market,i.sector,s?.quote.close??"N/D",s?.quote.closeDate??"N/D",s?.quote.currency??"N/D",s?.scenarios.bull.cagrPct??"N/D",s?.scenarios.bear.cagrPct??"N/D",s?.scenarios.base.cagrPct??"N/D",s?.buyPrice15??"N/D",s?.scenarios.base.target??"N/D","N/D","N/D",s?"Screening exploratorio · no ratificado":"Sin valoración pública validada"])
+  ]);
+ }
  if(what==="theses"){download("midas-tesis-sinteticas.csv",[["entidad","sector","metodo","estado","cagr_central","valor_bajista","valor_central","valor_alcista"],...thesisRank(state.data).map(x=>[x.company,x.sector,x.method,x.status,x.central,x.valuation.bear.fair,x.valuation.base.fair,x.valuation.bull.fair])]);}
 }
+function openCompetitionRow(id){
+ if(!all().some(s=>s.id===id))return;
+ state.strategy=id;
+ state.detailOpen=true;
+ if(state.view==="competition")render();
+ else go("competition");
+ window.scrollTo({top:0,behavior:"auto"});
+}
+function openIssuerRow(id){
+ if(!state.universe.issuers.some(i=>i.ticker===id))return;
+ state.issuerTicker=id;
+ state.issuerMode="catalog";
+ if(state.view==="theses")render();else go("theses");
+ document.querySelector("#issuer-ficha")?.scrollIntoView({block:"start",behavior:"auto"});
+}
 $("app").addEventListener("click",e=>{
- const b=e.target.closest("button[data-action]");if(!b)return;const {action,value}=b.dataset;
- if(action==="navigate")go(value);
- else if(action==="select"||action==="journal"){state.strategy=value;go(action==="journal"?"monitoring":"competition");}
- else if(action==="group"){state.group=value;go("competition");}
+ const b=e.target.closest("button[data-action]");
+ if(!b){
+  const row=e.target.closest("tr[data-competition-id]");
+  if(row){openCompetitionRow(row.dataset.competitionId);return;}
+  const issuer=e.target.closest("tr[data-issuer-id]");
+  if(issuer)openIssuerRow(issuer.dataset.issuerId);
+  return;
+ }
+ const {action,value}=b.dataset;
+ if(action==="navigate"){state.detailOpen=false;go(value);}
+ else if(action==="select")openCompetitionRow(value);
+ else if(action==="journal"){state.strategy=value;state.detailOpen=false;go("monitoring");}
+ else if(action==="group"){state.group=value;state.detailOpen=false;go("competition");}
+ else if(action==="close-detail"){state.detailOpen=false;render();}
+ else if(action==="rank-column"){
+  if(state.sort===value)state.asc=!state.asc;
+  else{state.sort=value;state.asc=["name","group"].includes(value);}
+  state.detailOpen=false;render();
+ }
+ else if(action==="issuer-column"){
+  if(state.issuerSort===value)state.issuerAsc=!state.issuerAsc;
+  else{state.issuerSort=value;state.issuerAsc=["ticker","company","market"].includes(value);}
+  render();
+ }
  else if(action==="thesis"){state.thesis=value;state.issuerMode="demo";go("theses");}
  else if(action==="issuer-mode"){state.issuerMode=value==="demo"?"demo":"catalog";render();}
- else if(action==="issuer-select"){state.issuerTicker=value;state.issuerMode="catalog";if(state.view!=="theses")go("theses");else render();}
+ else if(action==="issuer-select")openIssuerRow(value);
  else if(action==="direction"){state.asc=!state.asc;render();}
+ else if(action==="issuer-direction"){state.issuerAsc=!state.issuerAsc;render();}
  else if(action==="export")exportData(value);
+});
+$("app").addEventListener("keydown",e=>{
+ if(e.key!=="Enter"&&e.key!==" ")return;
+ if(e.target.closest("button,select,input,a,textarea"))return;
+ const row=e.target.closest("tr[data-competition-id]");
+ if(row){e.preventDefault();openCompetitionRow(row.dataset.competitionId);return;}
+ const issuer=e.target.closest("tr[data-issuer-id]");
+ if(issuer){e.preventDefault();openIssuerRow(issuer.dataset.issuerId);}
 });
 $("app").addEventListener("change",e=>{
  const el=e.target;
- if(el.id==="group-select"){state.group=el.value;render();}
- if(el.id==="rank-select"){state.sort=el.value;render();}
+ if(el.id==="group-select"){state.group=el.value;state.detailOpen=false;render();}
+ if(el.id==="rank-select"){state.sort=el.value;state.asc=["name","group"].includes(el.value);state.detailOpen=false;render();}
  if(el.id==="thesis-sort"){state.thesisSort=el.value;render();}
- if(el.id==="issuer-sort"){state.issuerSort=el.value;render();}
+ if(el.id==="issuer-sort"){state.issuerSort=el.value;state.issuerAsc=["ticker","company","market"].includes(el.value);render();}
  if(el.id==="journal-select"){state.strategy=el.value;render();}
 });
 $("app").addEventListener("input",e=>{
  if(e.target.id==="thesis-query"){state.query=e.target.value;const tbody=$("thesis-rows");if(tbody)tbody.innerHTML=thesisTableRows();}
- if(e.target.id==="issuer-query"){state.issuerQuery=e.target.value;const tbody=$("issuer-rows");if(tbody)tbody.innerHTML=issuerTableRows();}
+ if(e.target.id==="issuer-query"){
+  state.issuerQuery=e.target.value;
+  const tbody=$("issuer-rows");if(tbody)tbody.innerHTML=issuerTableRows();
+  const count=publicIssuerReadModel(state.universe,{query:state.issuerQuery,sort:state.issuerSort,ascending:state.issuerAsc}).length;
+  const text=$("issuer-visible-count");if(text)text.textContent=count+" de "+state.universe.issuers.length+" empresas";
+  const empty=$("issuer-empty");if(empty)empty.hidden=count!==0;
+ }
 });
 $("app").addEventListener("submit",e=>{
  if(e.target.id!=="paper-form")return;e.preventDefault();
@@ -233,10 +372,10 @@ $("app").addEventListener("submit",e=>{
  }
  const id="P-"+String(Math.max(...all().map(x=>Number(x.id.slice(2))))+1).padStart(2,"0");
  state.data.strategies.push({id,name,group:"Carteras locales",mode:"manual",manualWeights:weights,rule:"Pesos elegidos en este navegador. Sin persistencia.",cost_bps:cost,status:"Local · sintético",coverage:100,initialCapital:100000});
- state.strategy=id;state.group="";state.sort="returnPct";summary();go("competition");
+ state.strategy=id;state.group="";state.sort="returnPct";state.detailOpen=true;summary();go("competition");
 });
-document.querySelectorAll(".product-tabs [data-view]").forEach(b=>b.addEventListener("click",()=>go(b.dataset.view)));
-window.addEventListener("popstate",()=>{const v=new URLSearchParams(location.search).get("view");state.view=viewNames.includes(v)?v:"overview";render();});
+document.querySelectorAll(".product-tabs [data-view]").forEach(b=>b.addEventListener("click",()=>{state.detailOpen=false;go(b.dataset.view);}));
+window.addEventListener("popstate",()=>{const v=new URLSearchParams(location.search).get("view");state.view=viewNames.includes(v)?v:"overview";state.detailOpen=false;render();});
 async function init(){
  try{
   const r=await fetch("./data/demo.json",{cache:"no-store"});if(!r.ok)throw Error("Dataset missing");const data=await r.json(),universe=data.issuerCatalog;verify(data);verifyIssuerCatalog(universe);
