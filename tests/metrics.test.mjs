@@ -1,7 +1,7 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 import {readFileSync} from "node:fs";
-import {verify,signal,simulate,rank,valuation,thesisRank,absentQuote,cumulative,maxDrawdown,formatPct} from "../src/metrics.mjs";
+import {verify,signal,simulate,rank,valuation,thesisRank,absentQuote,cumulative,maxDrawdown,formatPct,syntheticBarsFromDemo,nextOpenPaper,verifyIssuerCatalog} from "../src/metrics.mjs";
 const data=JSON.parse(readFileSync(new URL("../data/demo.json",import.meta.url),"utf8"));
 test("The independent public universe is strictly synthetic",()=>{
  assert.equal(verify(data),true);
@@ -77,4 +77,76 @@ test("Navigation exposes all institutional functional sections",()=>{
  assert.ok(html.includes('src="./src/site.mjs"'));
  assert.ok(js.includes("paper-form"));
  assert.ok(js.includes("journal-select"));
+});
+
+
+test("Next-open paper signals precede fills and cash remains collateralized",()=>{
+ const bars=syntheticBarsFromDemo(data);
+ const p=nextOpenPaper(bars,{rule:"equal",feeBps:10,slippageBps:5});
+ assert.equal(p.status,"PAPER_SYNTHETIC_NEXT_OPEN");
+ assert.equal(p.points.length,48);
+ assert.ok(p.orders.length>0);
+ assert.ok(p.orders.every(o=>o.status==="PAPER_NEXT_OPEN"));
+ for(const order of p.orders){
+  const signalIndex=data.dates.indexOf(order.signalAt);
+  const fillIndex=data.dates.indexOf(order.fillAt);
+  assert.equal(fillIndex,signalIndex+1);
+  assert.equal(order.openPrice,bars.find(b=>b.symbol===order.symbol).bars[fillIndex].open);
+  assert.ok(order.fillPrice>0&&order.fee>=0&&order.slippage>=0);
+ }
+ assert.ok(p.points.every(x=>x.cash>=0&&Number.isFinite(x.equity)&&x.equity>0));
+ assert.ok(p.shares.every(x=>x>=0));
+ assert.ok(p.fees>0&&p.slippage>0);
+});
+test("Next-open ledger rejects absent candles, missing open and inconsistent calendar",()=>{
+ const valid=syntheticBarsFromDemo(data);
+ for(const modify of [
+  x=>x[0].bars[10].open=null,
+  x=>x[0].bars[3].high=x[0].bars[3].low/2,
+  x=>x[1].bars[10].session="OTHER",
+  x=>x[1].bars.pop()
+ ]){
+  const bad=structuredClone(valid);
+  modify(bad);
+  assert.throws(()=>nextOpenPaper(bad,{rule:"trend"}));
+ }
+ assert.throws(()=>nextOpenPaper(valid,{feeBps:-1}));
+ assert.throws(()=>nextOpenPaper(valid,{slippageBps:50}));
+});
+test("Changing a later close cannot change prior fills or equity",()=>{
+ const original=syntheticBarsFromDemo(data);
+ const modified=structuredClone(original);
+ const last=modified[0].bars.at(-1);
+ last.close*=1.18;
+ last.high=Math.max(last.high,last.close)*1.01;
+ const a=nextOpenPaper(original,{rule:"trend"});
+ const b=nextOpenPaper(modified,{rule:"trend"});
+ assert.deepEqual(a.orders,b.orders);
+ assert.deepEqual(a.points.slice(0,-1),b.points.slice(0,-1));
+ assert.notEqual(a.points.at(-1).equity,b.points.at(-1).equity);
+});
+test("Cash policy creates no fills and independent ledger does not overwrite old simulator",()=>{
+ const bars=syntheticBarsFromDemo(data);
+ const paper=nextOpenPaper(bars,{rule:"cash"});
+ assert.equal(paper.orders.length,0);
+ assert.equal(paper.returnPct,0);
+ assert.equal(paper.points.at(-1).cash,data.meta.initialCapital);
+ const legacy=simulate(data,"P-01");
+ assert.ok(legacy.orders.every(o=>o.status==="SIMULATED"));
+});
+
+
+test("Only SEC-verified issuers expose source identifiers",()=>{
+ const issuers=data.issuerCatalog.issuers;
+ const verified=issuers.filter(x=>x.secCik);
+ assert.equal(verified.length,8);
+ assert.ok(verified.every(x=>/^\d{10}$/.test(x.secCik)));
+ const tampered=structuredClone(data.issuerCatalog);
+ tampered.issuers[0].secCik="malicious/redirect";
+ assert.throws(()=>verifyIssuerCatalog(tampered),/Invalid source registry/);
+ const src=readFileSync(new URL("../src/site.mjs",import.meta.url),"utf8");
+ assert.ok(src.includes("www.sec.gov/edgar/browse/?CIK="));
+ assert.ok(src.includes('rel="noopener noreferrer"'));
+ assert.ok(src.includes("Exportar libro causal CSV"));
+ assert.ok(src.includes("Ejecución paper en apertura siguiente"));
 });
