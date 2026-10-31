@@ -111,6 +111,21 @@ class BaselineTemporalValidation(unittest.TestCase):
         with self.assertRaises(ValueError):
             infer({"method":"ridge_baseline"}, {"momentum20":2})
 
+    def test_training_fingerprint_changes_when_mature_label_or_feature_changes(self):
+        request={"ticker":"AAPL","feature_date":self.end,
+                 "feature_available_at":self.end,
+                 "features":dict(self.rows[0]["features"]),
+                 "source_sha256":"c"*64}
+        original=research_prediction(self.rows,request,"ridge_baseline")
+        altered=deepcopy(self.rows)
+        altered[0]["forward_return"]+=.10
+        new=research_prediction(altered,request,"ridge_baseline")
+        self.assertNotEqual(original["training_fingerprint"],new["training_fingerprint"])
+        altered=deepcopy(self.rows)
+        altered[0]["features"]["momentum20"]+=.4
+        new=research_prediction(altered,request,"ridge_baseline")
+        self.assertNotEqual(original["training_fingerprint"],new["training_fingerprint"])
+
     def test_pending_labels_not_in_training_inference(self):
         d=self.end
         request={"ticker":"AAPL","feature_date":d,
