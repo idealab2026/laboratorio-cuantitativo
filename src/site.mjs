@@ -114,7 +114,7 @@ function chart(){
 }
 function render(){
  if(!state.data)return;
- const pages={overview,competition,algorithms,theses,monitoring,methodology};
+ const pages={overview,competition,algorithms,theses,monitoring,method:methodology};
  document.querySelectorAll(".product-tabs [data-view]").forEach(b=>{const active=b.dataset.view===state.view;b.classList.toggle("active",active);b.setAttribute("aria-pressed",String(active));});
  $("app").innerHTML=(pages[state.view]||overview)();chart();
 }
