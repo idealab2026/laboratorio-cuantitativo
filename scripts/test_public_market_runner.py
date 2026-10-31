@@ -24,7 +24,7 @@ def source_snapshot(session, stamp, close=100.0, skip=None):
             continue
         price=200 if symbol=="SPY" else close
         feeds[symbol]={"date":session,"open":price,"high":price*1.05,
-                       "low":price*.95,"close":price*1.005,
+                       "low":price*.95,"close":price*(1.01 if symbol=="SPY" else 1.005),
                        "volume":100000,"dividend":0,"split":0}
     return prepare_snapshot(UNIVERSE,session,feeds,stamp)
 
