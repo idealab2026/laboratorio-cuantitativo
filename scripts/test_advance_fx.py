@@ -64,7 +64,9 @@ class ProspectiveFXTests(unittest.TestCase):
         self.assertEqual(resolved["realized_fixing_date"],whole["latest_observation"])
         self.assertEqual(next_issue["event_type"],"issued")
         self.assertEqual(next_issue["fixing_date"],whole["latest_observation"])
-        self.assertEqual(resolved["absolute_errors"]["unchanged"],"0.000100")
+        self.assertEqual(resolved["absolute_errors"]["unchanged"],
+                         format(abs(Decimal(pending["predictions"]["unchanged"]) -
+                                    Decimal(whole["observations"][-1]["usd_per_eur"])), ".6f"))
         self.assertTrue(verify_ledger(ledger))
         self.assertEqual(advance(ledger,whole),0)
 
