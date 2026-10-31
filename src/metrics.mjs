@@ -2,7 +2,7 @@
 // Signals at session t use *only* observations up to t-1.
 // No brokerage, external data, actual ML training or actual holdings.
 export const finite = x => typeof x === "number" && Number.isFinite(x);
-const MODES=new Set(["equal","cap","trend","reversion","lowvol","defensive","rank","cash","linear","direction","crossrank","perceptron","memory","ensemble","weekly","daily","cycle","value","dip","ladder","ahp","genetic","stress"]);
+const MODES=new Set(["equal","cap","trend","reversion","lowvol","defensive","rank","cash","linear","direction","crossrank","perceptron","memory","ensemble","weekly","daily","cycle","value","dip","ladder","ahp","genetic","stress","manual"]);
 export function verify(data){
  if(data?.meta?.data_class!=="synthetic")throw Error("Only synthetic sources admitted");
  if(!Array.isArray(data.dates)||data.dates.length<12||new Set(data.dates).size!==data.dates.length)throw Error("Invalid sessions");
@@ -46,13 +46,14 @@ function weighted(raw,exposure=1){
  const positive=raw.map(x=>Math.max(0,finite(x)?x:0)),sum=positive.reduce((a,b)=>a+b,0);
  return sum>0?positive.map(x=>clip(exposure)*x/sum):[0,0,0];
 }
-export function signal(mode,market,idx){
+export function signal(mode,market,idx,manualWeights=null){
  const s=Object.values(market),m4=s.map(p=>returnAt(p,idx,4)),m9=s.map(p=>returnAt(p,idx,9));
  const vol=s.map(p=>Math.max(0.002,volatility(p,idx)));
  const gains=s.map(p=>p[idx]/Math.max(0.01,mean(p.slice(Math.max(0,idx-9),idx+1)))-1);
  const ranked=[0,1,2].sort((a,b)=>m4[b]-m4[a]);const top=ranked[0];
  const base=[1,1,1];
  switch(mode){
+  case "manual":{if(!Array.isArray(manualWeights)||manualWeights.length!==3||manualWeights.some(x=>!finite(x)||x<0)||manualWeights.reduce((a,b)=>a+b,0)>1.000001)throw Error("Invalid manual exposure");return [...manualWeights];}
   case "equal":return [1/3,1/3,1/3];
   case "cap":return [.65,.25,.10];
   case "trend":return weighted(m4.map(v=>Math.max(0,v+.008)));
@@ -99,7 +100,7 @@ export function simulate(data,strategy){
   const current=Object.values(data.market).map(p=>p[t]);
   if([...prev,...current].some(x=>!finite(x)||x<=0))throw Error("Missing market quote: do not fabricate a NAV");
   if(t===1||!weeklyModes.has(s.mode)||(t-1)%5===0){
-   const goal=signal(s.mode,data.market,t-1);
+   const goal=signal(s.mode,data.market,t-1,s.manualWeights);
    if(goal.some(x=>!finite(x)||x<0)||goal.reduce((a,b)=>a+b,0)>1.000001)throw Error("Invalid target portfolio");
    const turnover=goal.reduce((a,w,i)=>a+Math.abs(w-weights[i]),0);
    if(turnover>1e-6){
