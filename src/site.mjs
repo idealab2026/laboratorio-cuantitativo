@@ -1,8 +1,8 @@
-import {verify,simulate,rank,valuation,thesisRank,formatPct,money,finite,verifyIssuerCatalog,filterIssuers,syntheticBarsFromDemo,nextOpenPaper,evaluateIssuerScreen,competitionReadModel,publicIssuerReadModel} from "./metrics.mjs";
+import {verify,simulate,rank,valuation,thesisRank,formatPct,money,finite,verifyIssuerCatalog,filterIssuers,syntheticBarsFromDemo,nextOpenPaper,evaluateIssuerScreen,competitionReadModel,publicIssuerReadModel,verifyOfficialFx} from "./metrics.mjs";
 const $=id=>document.getElementById(id);
 const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 const fmt=n=>finite(n)?new Intl.NumberFormat("es-ES",{maximumFractionDigits:2}).format(n):"N/D";
-const state={data:null,universe:null,view:"overview",strategy:"P-01",group:"",sort:"returnPct",asc:false,detailOpen:false,thesis:"T-01",query:"",thesisSort:"central",issuerMode:"catalog",issuerQuery:"",issuerSort:"base",issuerAsc:false,issuerTicker:"MSFT"};
+const state={data:null,universe:null,fx:null,fxCheck:null,fxStatus:"pending",view:"overview",strategy:"P-01",group:"",sort:"returnPct",asc:false,detailOpen:false,thesis:"T-01",query:"",thesisSort:"central",issuerMode:"catalog",issuerQuery:"",issuerSort:"base",issuerAsc:false,issuerTicker:"MSFT"};
 const viewNames=["overview","competition","algorithms","theses","monitoring","method","archive"];
 const button=(label,action,value,cls="smallbtn")=>'<button type="button" class="'+cls+'" data-action="'+esc(action)+'" data-value="'+esc(value)+'">'+esc(label)+'</button>';
 const head=(label,title,body)=>'<div class="section-heading"><div><span class="kicker">'+esc(label)+'</span><h2>'+esc(title)+'</h2><p class="section-context">'+esc(body)+'</p></div></div>';
@@ -203,9 +203,35 @@ function theses(){
  disclaimer("No hay acceso público a los documentos privados ni continuidad documental automática. Una ficha interna no equivale a una tesis íntegra publicada.");
 }
 
+function officialFxPanel(){
+ const source="https://data-api.ecb.europa.eu/service/data/EXR/D.USD.EUR.SP00.A?lastNObservations=80&format=csvdata";
+ const intro=head("FUENTE PRIMARIA · BCE","EUR/USD · referencia oficial diaria","Primera serie institucional adquirida mediante API del Banco Central Europeo. Un fixing informativo no es una cotización ejecutable, ni valida las estrategias con acciones.");
+ if(state.fxStatus!=="ok"||!state.fx||!state.fxCheck)
+  return intro+card('<div class="panel-top"><h3>Estado de la serie: '+esc(state.fxStatus==="pending"?"Comprobando fuente":"No disponible o no validada")+'</h3><span class="status-chip">Sin observaciones verificadas</span></div>'+
+  '<p>El gráfico y la tabla de datos reales permanecen bloqueados hasta que exista una captura oficial publicada con fecha, dimensiones y hash correctos. No se sustituyen por números simulados.</p>')+
+  '<p class="table-note">Origen esperado: <a href="'+source+'" target="_blank" rel="noopener noreferrer">BCE · serie D.USD.EUR.SP00.A</a>. Última publicación institucional no certificada en esta carga.</p>';
+ const d=state.fx, v=state.fxCheck, history=d.observations;
+ const latest=history.at(-1),previous=history.length>1?history.at(-2):null;
+ const change=previous?100*(Number(latest.usd_per_eur)/Number(previous.usd_per_eur)-1):null;
+ const stale=v.ageDays>4;
+ return intro+
+ '<div class="source-health-strip">'+
+ '<div><span class="label">Última referencia oficial</span><strong>'+esc(latest.usd_per_eur)+' USD/EUR</strong><small>Fecha de referencia: '+esc(v.date)+'</small></div>'+
+ '<div><span class="label">Cobertura aceptada</span><strong>'+v.count+' observaciones</strong><small>ECB EXR · clase referencia diaria</small></div>'+
+ '<div><span class="label">Disponibilidad</span><strong class="'+(stale?"perf-negative":"perf-positive")+'">'+(stale?"Fuente desactualizada":"Origen validado")+'</strong><small>Recibida '+esc(v.receivedAt)+' · hace '+v.ageDays+' días</small></div>'+
+ '</div>'+
+ disclaimer("SOURCE: ECB statistics · Los tipos de cambio de referencia no son precios ejecutables ni implican la posibilidad de operar sin diferencial o comisiones. Esta serie NO alimenta todavía los 23 modelos paper de acciones.")+
+ '<div class="metric-strip spaced">'+metric("Último cambio entre fixings",formatPct(change))+
+ metric("Primera fecha de muestra",history[0].date)+
+ metric("Instrumento", "EUR/USD · 1 EUR en USD")+
+ metric("Trazabilidad","SHA-256 publicado")+'</div>'+
+ '<div class="table-scroll table-compact"><table><thead><tr><th>Fecha BCE</th><th class="number">USD por 1 EUR</th><th>Clase</th></tr></thead><tbody>'+
+ history.slice(-12).reverse().map(row=>'<tr><td>'+esc(row.date)+'</td><td class="number">'+esc(row.usd_per_eur)+'</td><td>Referencia oficial · no transable</td></tr>').join("")+'</tbody></table></div>'+
+ '<p class="table-note">Huella SHA-256 de la respuesta oficial: <code>'+esc(d.source_sha256)+'</code>. <a href="'+source+'" target="_blank" rel="noopener noreferrer">Consultar fuente BCE</a> · <a href="./data/official-fx.json" target="_blank" rel="noopener noreferrer">Ver dataset publicado</a>. Reutilización de estadísticas públicas con atribución al BCE.</p>';
+}
 function monitoring(){
  const s=active(),audit=causalLedger();
- return head("SALUD OPERATIVA · DIARIO","Procedencia, ejecución y operaciones","Diferencia entre disponibilidad de fuentes, ejecución del motor y estado de cada diario. Sin fuente y persistencia institucional no se declara funcionamiento autónomo.")+
+ return officialFxPanel()+head("SALUD OPERATIVA · DIARIO","Procedencia, ejecución y operaciones","Diferencia entre disponibilidad de fuentes, ejecución del motor y estado de cada diario. Sin fuente y persistencia institucional no se declara funcionamiento autónomo.")+
  '<div class="source-health-strip">'+
  '<div><span class="label">OHLC diario externo</span><strong>No conectado</strong><small>No existe un proveedor de precios autorizados ni una sesión bursátil comprobada</small></div>'+
  '<div><span class="label">Cobertura del universo real</span><strong>N/D</strong><small>Instrumentos del experimento: 3 activos ficticios; cotizaciones de mercado ausentes</small></div>'+
@@ -379,7 +405,16 @@ window.addEventListener("popstate",()=>{const v=new URLSearchParams(location.sea
 async function init(){
  try{
   const r=await fetch("./data/demo.json",{cache:"no-store"});if(!r.ok)throw Error("Dataset missing");const data=await r.json(),universe=data.issuerCatalog;verify(data);verifyIssuerCatalog(universe);
-  state.data=data;state.universe=universe;const v=new URLSearchParams(location.search).get("view");state.view=viewNames.includes(v)?v:"overview";summary();render();
+  state.data=data;state.universe=universe;const v=new URLSearchParams(location.search).get("view");state.view=viewNames.includes(v)?v:"overview";summary();render();void loadOfficialFx();
  }catch(e){$("app").textContent="No se ha podido cargar el catálogo de emisores o el laboratorio sintético; no se muestran datos no verificados.";}
+}
+async function loadOfficialFx(){
+ try{
+  const res=await fetch("./data/official-fx.json",{cache:"no-store"});
+  if(!res.ok)throw Error("Official dataset absent");
+  const doc=await res.json(),verified=verifyOfficialFx(doc);
+  state.fx=doc;state.fxCheck=verified;state.fxStatus="ok";
+ }catch(_error){state.fx=null;state.fxCheck=null;state.fxStatus="unavailable";}
+ if(state.view==="monitoring"&&state.data)render();
 }
 init();
