@@ -274,7 +274,13 @@ function exportData(what){
  if(what==="nav"){download("midas-curva-paper-sintetica.csv",[["sesion","nav_base_100","capital_ficticio"],...active().points.map(p=>[p.session,p.nav,p.equity])]);}
  if(what==="next-open"){const a=causalLedger();download("midas-ordenes-next-open-sinteticas.csv",[["senal_al_cierre","fill_apertura_siguiente","activo","lado","apertura_sintetica","precio_paper","unidades","notional","comision","deslizamiento"],...a.orders.map(o=>[o.signalAt,o.fillAt,o.symbol,o.side,o.openPrice,o.fillPrice,o.units,o.notional,o.fee,o.slippage])]);}
  if(what==="journal"){download("midas-diario-sintetico.csv",[["sesion","activo","accion","precio","unidades","nocional","coste"],...active().orders.map(x=>[x.session,x.symbol,x.action,x.referencePrice,x.units,x.notional,x.cost])]);}
- if(what==="issuers"){download("midas-emisores-publicos.csv",[["ticker","empresa","mercado","sector","precio_actual","cagr_bear_5y","cagr_base_5y","cagr_bull_5y","precio_15pct","objetivo_5y","proximos_resultados","estado"],...filterIssuers(state.universe,state.issuerQuery,state.issuerSort).map(i=>[i.ticker,i.company,i.market,i.sector,"N/D","N/D","N/D","N/D","N/D","N/D","N/D",i.status])]);}
+ if(what==="issuers"){
+  const rows=publicIssuerReadModel(state.universe,{query:state.issuerQuery,sort:state.issuerSort,ascending:state.issuerAsc});
+  download("midas-seguimiento-publico-fechado.csv",[
+   ["ticker","empresa","mercado","sector","cierre_observado","fecha_cierre","divisa","cagr_bull_5y","cagr_bear_5y","cagr_base_5y","precio_15pct","objetivo_base_5y","resultados_verificados","informe_institucional","estado_analitico"],
+   ...rows.map(({issuer:i,screen:s})=>[i.ticker,i.company,i.market,i.sector,s?.quote.close??"N/D",s?.quote.closeDate??"N/D",s?.quote.currency??"N/D",s?.scenarios.bull.cagrPct??"N/D",s?.scenarios.bear.cagrPct??"N/D",s?.scenarios.base.cagrPct??"N/D",s?.buyPrice15??"N/D",s?.scenarios.base.target??"N/D","N/D","N/D",s?"Screening exploratorio · no ratificado":"Sin valoración pública validada"])
+  ]);
+ }
  if(what==="theses"){download("midas-tesis-sinteticas.csv",[["entidad","sector","metodo","estado","cagr_central","valor_bajista","valor_central","valor_alcista"],...thesisRank(state.data).map(x=>[x.company,x.sector,x.method,x.status,x.central,x.valuation.bear.fair,x.valuation.base.fair,x.valuation.bull.fair])]);}
 }
 function openCompetitionRow(id){
