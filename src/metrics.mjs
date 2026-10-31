@@ -542,7 +542,7 @@ export function verifyOfficialYield(doc,now=new Date()){
  if(!Number.isFinite(stamp)||stamp>nowMs+60000)throw Error("Future ECB yield collection");
  let prev=null;
  for(const item of doc.observations){
-  if(!/^\d{4}-\d\d-\d\d$/.test(item.date||"")||!(/^-?\d+(?:\.\d{1,9})?$/.test(item.yield_pct||"")))
+  if(!/^\d{4}-\d\d-\d\d$/.test(item.date||"")||!(/^-?\d+(?:\.\d{1,20})?$/.test(item.yield_pct||"")))
    throw Error("Invalid yield observation literal");
   const ms=Date.parse(item.date+"T00:00:00Z"),n=Number(item.yield_pct);
   if(!Number.isFinite(ms)||ms>nowMs||!([1,2,3,4,5].includes(new Date(ms).getUTCDay()))||
