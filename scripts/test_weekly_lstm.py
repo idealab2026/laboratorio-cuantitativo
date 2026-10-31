@@ -32,7 +32,7 @@ class LstmCausalResearchTest(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         cls.data=fixture()
-        cls.day=(date(2025,1,6)+timedelta(days=7*34)).isoformat()
+        cls.day=(date(2025,1,6)+timedelta(days=7*32)).isoformat()
         cls.current={"ticker":"AAA","feature_date":cls.day,
                      "feature_available_at":cls.day,
                      "features":{"momentum20":.31,"volatility20":.04,"reversal5":-.2},
