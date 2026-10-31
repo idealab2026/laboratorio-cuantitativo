@@ -351,12 +351,18 @@ test("A reversed-rate signal cannot be scored without immutable invalidation",()
 });
 
 
-test("Public SEC catalog is empty until a real EDGAR collection is verified",()=>{
+test("Public SEC catalog is source-checked whether pending or successfully collected",()=>{
  const doc=JSON.parse(readFileSync(new URL("../data/sec-filings.json",import.meta.url),"utf8"));
  const result=verifySecFilings(doc,data.issuerCatalog);
- assert.equal(result.status,"not_collected");
- assert.equal(result.count,0);
- assert.equal(result.byTicker.size,0);
+ if(doc.status==="not_collected"){
+  assert.equal(result.status,"not_collected");
+  assert.equal(result.count,0);
+  assert.equal(result.byTicker.size,0);
+ }else{
+  assert.equal(result.status,"verified_filings");
+  assert.equal(result.byTicker.size,8);
+  assert.ok(result.count>=16);
+ }
 });
 test("Issuer source display cannot accept foreign links or fictitious document metadata",()=>{
  const issuerData=data.issuerCatalog;
