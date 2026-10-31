@@ -15,6 +15,7 @@ import os
 import re
 from datetime import date, datetime, timedelta, timezone
 from pathlib import Path
+from zoneinfo import ZoneInfo
 
 SCHEMA = "idealab.xnys_ohlc.v1"
 UNIVERSE_SIZE = 503
@@ -131,6 +132,24 @@ def verify_snapshot(doc: dict, universe: list[str]) -> bool:
     return True
 
 
+
+def verify_closed_xnys_session(session: str, now=None):
+    """Avoid claiming a partial current bar, weekends or NYSE holidays."""
+    now = now or datetime.now(timezone.utc)
+    if now.tzinfo is None:
+        raise ValueError("Source check requires timezone-aware UTC")
+    local = now.astimezone(ZoneInfo("America/New_York"))
+    market_day = date_literal(session)
+    if local.date() != market_day or local.hour < 18:
+        raise ValueError("Daily Yahoo bar cannot be treated as complete before 18:00 New York")
+    import pandas_market_calendars as calendars
+    market = calendars.get_calendar("NYSE")
+    schedule = market.schedule(start_date=session, end_date=session)
+    if schedule.empty:
+        raise ValueError("NYSE closed on requested date")
+    return True
+
+
 def download_yahoo(universe: list[str], session: str) -> dict:
     """Batch Yahoo via yfinance, exact-session raw OHLC/actions. No stale fallback."""
     import yfinance as yf  # Optional dependency; offline CI never queries Yahoo.
@@ -197,6 +216,7 @@ def main():
         print(json.dumps({"status": "preexisting_internal_snapshot_verified",
                           "session": args.session, "sha256": original["sha256"]}))
         return
+    verify_closed_xnys_session(args.session)
     readings = download_yahoo(universe, args.session)
     doc = prepare_snapshot(universe, args.session, readings,
                            datetime.now(timezone.utc).isoformat())
