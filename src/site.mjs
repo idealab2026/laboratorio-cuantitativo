@@ -277,28 +277,78 @@ function exportData(what){
  if(what==="issuers"){download("midas-emisores-publicos.csv",[["ticker","empresa","mercado","sector","precio_actual","cagr_bear_5y","cagr_base_5y","cagr_bull_5y","precio_15pct","objetivo_5y","proximos_resultados","estado"],...filterIssuers(state.universe,state.issuerQuery,state.issuerSort).map(i=>[i.ticker,i.company,i.market,i.sector,"N/D","N/D","N/D","N/D","N/D","N/D","N/D",i.status])]);}
  if(what==="theses"){download("midas-tesis-sinteticas.csv",[["entidad","sector","metodo","estado","cagr_central","valor_bajista","valor_central","valor_alcista"],...thesisRank(state.data).map(x=>[x.company,x.sector,x.method,x.status,x.central,x.valuation.bear.fair,x.valuation.base.fair,x.valuation.bull.fair])]);}
 }
+function openCompetitionRow(id){
+ if(!all().some(s=>s.id===id))return;
+ state.strategy=id;
+ state.detailOpen=true;
+ if(state.view==="competition")render();
+ else go("competition");
+ window.scrollTo({top:0,behavior:"auto"});
+}
+function openIssuerRow(id){
+ if(!state.universe.issuers.some(i=>i.ticker===id))return;
+ state.issuerTicker=id;
+ state.issuerMode="catalog";
+ if(state.view==="theses")render();else go("theses");
+ document.querySelector("#issuer-ficha")?.scrollIntoView({block:"start",behavior:"auto"});
+}
 $("app").addEventListener("click",e=>{
- const b=e.target.closest("button[data-action]");if(!b)return;const {action,value}=b.dataset;
- if(action==="navigate")go(value);
- else if(action==="select"||action==="journal"){state.strategy=value;go(action==="journal"?"monitoring":"competition");}
- else if(action==="group"){state.group=value;go("competition");}
+ const b=e.target.closest("button[data-action]");
+ if(!b){
+  const row=e.target.closest("tr[data-competition-id]");
+  if(row){openCompetitionRow(row.dataset.competitionId);return;}
+  const issuer=e.target.closest("tr[data-issuer-id]");
+  if(issuer)openIssuerRow(issuer.dataset.issuerId);
+  return;
+ }
+ const {action,value}=b.dataset;
+ if(action==="navigate"){state.detailOpen=false;go(value);}
+ else if(action==="select")openCompetitionRow(value);
+ else if(action==="journal"){state.strategy=value;state.detailOpen=false;go("monitoring");}
+ else if(action==="group"){state.group=value;state.detailOpen=false;go("competition");}
+ else if(action==="close-detail"){state.detailOpen=false;render();}
+ else if(action==="rank-column"){
+  if(state.sort===value)state.asc=!state.asc;
+  else{state.sort=value;state.asc=["name","group"].includes(value);}
+  state.detailOpen=false;render();
+ }
+ else if(action==="issuer-column"){
+  if(state.issuerSort===value)state.issuerAsc=!state.issuerAsc;
+  else{state.issuerSort=value;state.issuerAsc=["ticker","company","market"].includes(value);}
+  render();
+ }
  else if(action==="thesis"){state.thesis=value;state.issuerMode="demo";go("theses");}
  else if(action==="issuer-mode"){state.issuerMode=value==="demo"?"demo":"catalog";render();}
- else if(action==="issuer-select"){state.issuerTicker=value;state.issuerMode="catalog";if(state.view!=="theses")go("theses");else render();}
+ else if(action==="issuer-select")openIssuerRow(value);
  else if(action==="direction"){state.asc=!state.asc;render();}
+ else if(action==="issuer-direction"){state.issuerAsc=!state.issuerAsc;render();}
  else if(action==="export")exportData(value);
+});
+$("app").addEventListener("keydown",e=>{
+ if(e.key!=="Enter"&&e.key!==" ")return;
+ if(e.target.closest("button,select,input,a,textarea"))return;
+ const row=e.target.closest("tr[data-competition-id]");
+ if(row){e.preventDefault();openCompetitionRow(row.dataset.competitionId);return;}
+ const issuer=e.target.closest("tr[data-issuer-id]");
+ if(issuer){e.preventDefault();openIssuerRow(issuer.dataset.issuerId);}
 });
 $("app").addEventListener("change",e=>{
  const el=e.target;
- if(el.id==="group-select"){state.group=el.value;render();}
- if(el.id==="rank-select"){state.sort=el.value;render();}
+ if(el.id==="group-select"){state.group=el.value;state.detailOpen=false;render();}
+ if(el.id==="rank-select"){state.sort=el.value;state.asc=["name","group"].includes(el.value);state.detailOpen=false;render();}
  if(el.id==="thesis-sort"){state.thesisSort=el.value;render();}
- if(el.id==="issuer-sort"){state.issuerSort=el.value;render();}
+ if(el.id==="issuer-sort"){state.issuerSort=el.value;state.issuerAsc=["ticker","company","market"].includes(el.value);render();}
  if(el.id==="journal-select"){state.strategy=el.value;render();}
 });
 $("app").addEventListener("input",e=>{
  if(e.target.id==="thesis-query"){state.query=e.target.value;const tbody=$("thesis-rows");if(tbody)tbody.innerHTML=thesisTableRows();}
- if(e.target.id==="issuer-query"){state.issuerQuery=e.target.value;const tbody=$("issuer-rows");if(tbody)tbody.innerHTML=issuerTableRows();}
+ if(e.target.id==="issuer-query"){
+  state.issuerQuery=e.target.value;
+  const tbody=$("issuer-rows");if(tbody)tbody.innerHTML=issuerTableRows();
+  const count=publicIssuerReadModel(state.universe,{query:state.issuerQuery,sort:state.issuerSort,ascending:state.issuerAsc}).length;
+  const text=$("issuer-visible-count");if(text)text.textContent=count+" de "+state.universe.issuers.length+" empresas";
+  const empty=$("issuer-empty");if(empty)empty.hidden=count!==0;
+ }
 });
 $("app").addEventListener("submit",e=>{
  if(e.target.id!=="paper-form")return;e.preventDefault();
