@@ -80,13 +80,38 @@ function competition(){
 }
 function detail(s){
  const proxy=["linear","direction","crossrank","perceptron","memory","ensemble","weekly","daily","genetic"].includes(s.mode);
- return '<div class="strategy-detail"><article class="panel"><div class="panel-top"><div><span class="label">'+esc(s.group)+' · '+esc(s.id)+'</span><h3>'+esc(s.name)+'</h3></div><span class="chip">PAPER · SINTÉTICO</span></div><p>'+esc(s.rule)+'</p>'+
- '<div class="metric-strip">'+metric("Variación",formatPct(s.returnPct))+metric("DD máximo",fmt(s.drawdownPct)+" %")+metric("Volatilidad",fmt(s.volatilityPct)+" %")+metric("Sharpe",fmt(s.sharpe))+'</div>'+
- '<div class="chart-hdr"><strong>Curva del NAV simulado</strong><small>Base 100 · '+s.sessions+' sesiones</small></div><svg id="nav-chart" viewBox="0 0 760 290" role="img" aria-label="Curva de capital paper"></svg>'+
- (proxy?disclaimer("Proxy matemático: no se ha entrenado ni ejecutado el modelo externo de esta familia."):"")+'</article>'+
- '<aside class="panel"><div class="label">CARTERA PAPER</div><h3>'+esc(s.name)+'</h3>'+metric("Capital ficticio final",money(s.points.at(-1).equity))+metric("Costes teóricos",money(s.fees))+metric("Operaciones simuladas",String(s.orders.length))+
- '<div class="minor-heading">Exposición al último cierre</div>'+Object.keys(state.data.market).map((k,i)=>'<div class="bar-label"><span>'+esc(k)+'</span><strong>'+fmt(s.weights[i]*100)+' %</strong></div><div class="exposure-bar"><i style="width:'+Math.max(0,Math.min(100,s.weights[i]*100))+'%"></i></div>').join("")+
- '<p class="small-note">Coste asumido: '+fmt(s.cost_bps)+' puntos básicos por unidad negociada. Sin conexión a ningún broker.</p>'+button("Diario de órdenes","journal",s.id,"outline-btn")+button("Exportar NAV","export","nav","outline-btn")+'</aside></div>';
+ const r=s.periodReturns||{};
+ const last=s.points.at(-1);
+ const act=s.activeAssets||Object.keys(state.data.market).filter((k,i)=>s.weights[i]>0.005);
+ const sourceState=proxy?"Modelo proxy no entrenado":"Regla de demostración";
+ return '<div class="strategy-detail"><article class="panel">'+
+ '<div class="panel-top"><div><span class="label">'+esc(s.group)+' · '+esc(s.id)+'</span><h3>'+esc(s.name)+'</h3></div><span class="chip">PAPER · SOLO SINTÉTICO</span></div>'+
+ '<p>'+esc(s.rule)+'</p>'+
+ '<div class="metric-strip">'+
+ metric("Rentabilidad acumulada",formatPct(s.returnPct))+
+ metric("Última sesión",formatPct(s.dayReturnPct))+
+ metric("Máximo drawdown",fmt(s.drawdownPct)+" %")+
+ metric("Volatilidad anualizada",fmt(s.volatilityPct)+" %")+
+ metric("Sharpe (rf=0)",fmt(s.sharpe))+
+ metric("Número de sesiones",String(s.sessions))+
+ metric("Último cierre ficticio",esc(s.lastSession||state.data.dates.at(-1)))+
+ metric("Patrimonio ficticio",money(last.equity))+
+ '</div>'+
+ '<h3 class="minor-heading">Retornos por ventana homogénea, solo sintéticos</h3>'+
+ '<div class="metric-strip">'+metric("5 sesiones",formatPct(r.five))+metric("21 sesiones",formatPct(r.twentyOne))+metric("63 sesiones",formatPct(r.sixtyThree))+metric("Ejecución forward","Sin verificar")+'</div>'+
+ '<div class="chart-hdr"><strong>Curva completa · NAV base 100</strong><small>'+esc(String(s.sessions))+' sesiones · no hay datos de mercado</small></div>'+
+ '<svg id="nav-chart" viewBox="0 0 760 290" role="img" aria-label="Curva del patrimonio sintético"></svg>'+
+ '<p class="small-note">'+esc(sourceState)+'. La cifra de la última sesión es una variación sintética entre dos marcas, no una rentabilidad bursátil diaria registrada.</p>'+
+ (proxy?disclaimer("Este método usa una función proxy. Su nombre no demuestra que LightGBM, LSTM, TimesFM u otro modelo externo se haya entrenado o ejecutado."):"")+
+ '</article><aside class="panel">'+
+ '<span class="label">ACTIVIDAD Y POSICIONES · SINTÉTICAS</span><h3>'+esc(s.name)+'</h3>'+
+ '<div class="metric-strip aside-metrics">'+metric("Actividad actual",s.orders.length+" órdenes")+metric("Activos expuestos",String(act.length))+metric("Efectivo",fmt(Math.max(0,s.cash)*100)+" %")+metric("Costes",money(s.fees))+'</div>'+
+ '<h3 class="minor-heading">Posiciones al último cierre</h3>'+
+ (act.length?Object.keys(state.data.market).map((k,i)=>'<div class="bar-label"><span>'+esc(k)+'</span><strong>'+esc(fmt(s.weights[i]*100))+' %</strong></div><div class="exposure-bar"><i style="width:'+Math.max(0,Math.min(100,s.weights[i]*100))+'%"></i></div>').join(""):'<p>Sin exposición a instrumentos; cartera ficticia en efectivo.</p>')+
+ '<h3 class="minor-heading">Procedencia y ejecución</h3><p class="small-note">Versión: escenario inventado. Última sesión '+esc(state.data.dates.at(-1))+'. Sin hash de fuente bursátil, orden de broker, registro persistente ni ejecución programada. El motor anterior usa cierres previos como referencia de fill.</p>'+
+ button("Abrir diario sintético","journal",s.id,"outline-btn")+
+ button("Exportar NAV","export","nav","outline-btn")+
+ button("Volver a la tabla","close-detail","","outline-btn")+'</aside></div>';
 }
 function algorithms(){
  return head("CATÁLOGO DE MÉTODOS","Algoritmos y familias","Reglas reconstruidas para la versión institucional, sin códigos, pesos entrenados ni configuraciones personales.")+
