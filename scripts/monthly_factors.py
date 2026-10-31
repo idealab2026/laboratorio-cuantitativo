@@ -175,7 +175,7 @@ def annual_financials(packet,sector,session):
   "net_debt_to_ocf":debt_ocf,"interest_coverage":coverage,
   "book_to_market":book_to_market,
   "earnings_yield":income_yield,"positive_profit":profitable,
-  "roe":quality_metric,"net_cash_to_cap":net_cash/market_cap,
+  "roe":quality_metric,"net_cash_to_cap":None if sector=="Financials" else net_cash/market_cap,
   "buyback_yield":buyback,"issuance_yield":issuance,
   "revenue_growth":revenue_growth,
   "fundamental_votes":votes,
@@ -278,6 +278,8 @@ def score_monthly(slot,candidates,benchmark,session):
                     (rank("interest_coverage"),.15)))
     allocation=wmean(((rank("buyback_yield"),.45),(rank("issuance_yield",True),.30),
                       (rank("net_cash_to_cap"),.25)))
+    if allocation is None:
+     allocation=wmean(((rank("buyback_yield"),.60),(rank("issuance_yield",True),.40)))
     dislocation=wmean(((rank("relative",True),.55),(rank("drawdown",True),.45)))
     votes=r["price_votes"]+r["fundamental_votes"]
     catalyst=100*votes/5
