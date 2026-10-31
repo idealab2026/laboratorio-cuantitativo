@@ -156,6 +156,8 @@ def download_yahoo(universe: list[str], session: str) -> dict:
                     field: row.get(name, 0 if field in ("dividend", "split") else None)
                     for field, name in zip(FIELDS, ("Open", "High", "Low", "Close",
                                                    "Volume", "Dividends", "Stock Splits"))}}
+                entry = {k: (float(v) if k != "date" and v is not None else v)
+                         for k, v in entry.items()}
                 output[ticker] = normalize(ticker, session, entry)
             except (KeyError, TypeError, ValueError):
                 continue
@@ -186,15 +188,19 @@ def main():
     if target.is_relative_to(REPO_ROOT) or not target.exists():
         raise ValueError("Internal-only storage must already exist outside the public repository")
     universe = json.loads(args.universe_json.read_text(encoding="utf8"))
+    verify_universe(universe)
+    date_literal(args.session)
+    filename = target / (args.session + ".json")
+    if filename.exists():
+        original = json.loads(filename.read_text(encoding="utf8"))
+        verify_snapshot(original, universe)
+        print(json.dumps({"status": "preexisting_internal_snapshot_verified",
+                          "session": args.session, "sha256": original["sha256"]}))
+        return
     readings = download_yahoo(universe, args.session)
     doc = prepare_snapshot(universe, args.session, readings,
                            datetime.now(timezone.utc).isoformat())
     verify_snapshot(doc, universe)
-    filename = target / (doc["session"] + ".json")
-    if filename.exists():
-        if json.loads(filename.read_text(encoding="utf8")) != doc:
-            raise ValueError("Existing session is immutable; refuse silent overwrite")
-        return
     filename.write_text(json.dumps(doc, ensure_ascii=False, indent=2) + "\n", encoding="utf8")
     print(json.dumps({"status": "internal_snapshot_written", "session": doc["session"],
                       "sha256": doc["sha256"], "coverage": doc["coverage"]}))
