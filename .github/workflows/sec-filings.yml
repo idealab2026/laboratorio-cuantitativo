@@ -16,6 +16,7 @@ jobs:
     timeout-minutes: 12
     env:
       PYTHONDONTWRITEBYTECODE: '1'
+      SEC_CONTACT_EMAIL: ${{ secrets.SEC_CONTACT_EMAIL }}
     steps:
       - uses: actions/checkout@v4
         with:
