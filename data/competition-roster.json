@@ -942,7 +942,7 @@
     },
     {
       "slot": "IL-037",
-      "group": "TFG · multicriterio",
+      "group": "Selección multicriterio · riesgo",
       "name": "Técnico + AHP + riesgo MAD",
       "record_status": "not_migrated",
       "activity": "unavailable",
@@ -1150,7 +1150,7 @@
     },
     {
       "slot": "IL-045",
-      "group": "TFM · cuatro modelos",
+      "group": "Predicción cuantitativa · cuatro enfoques",
       "name": "LightGBM",
       "record_status": "not_migrated",
       "activity": "unavailable",
@@ -1176,7 +1176,7 @@
     },
     {
       "slot": "IL-046",
-      "group": "TFM · cuatro modelos",
+      "group": "Predicción cuantitativa · cuatro enfoques",
       "name": "MLP",
       "record_status": "not_migrated",
       "activity": "unavailable",
@@ -1202,7 +1202,7 @@
     },
     {
       "slot": "IL-047",
-      "group": "TFM · cuatro modelos",
+      "group": "Predicción cuantitativa · cuatro enfoques",
       "name": "LSTM",
       "record_status": "not_migrated",
       "activity": "unavailable",
@@ -1228,7 +1228,7 @@
     },
     {
       "slot": "IL-048",
-      "group": "TFM · cuatro modelos",
+      "group": "Predicción cuantitativa · cuatro enfoques",
       "name": "ARIMA",
       "record_status": "not_migrated",
       "activity": "unavailable",

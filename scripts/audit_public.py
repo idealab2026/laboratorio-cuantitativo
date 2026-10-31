@@ -41,6 +41,9 @@ for path in sorted(files):
     if path in RELEASE or path == "README.md" or path.startswith("docs/"):
         if re.search(r"[\w.+-]+@[\w.-]+\.[A-Za-z]{2,}",source):
             issues.append("Email address found in public content")
+    if path in RELEASE or path == "README.md" or path.startswith("docs/"):
+        if re.search(r"\bTF[GM]\b|\bpersonal_[a-z0-9_]+\b|\bsegundo[\s_-]+cerebro\b|\bmamg[0-9]{2}\b", source, re.I):
+            issues.append("Noninstitutional origin label found in public output")
     if re.search(r"-----BEGIN [^-]+PRIVATE KEY-----|github_pat_[A-Za-z0-9_]{20,}|ghp_[A-Za-z0-9]{30,}",source):
         issues.append("Credential-like content")
     if re.search(r"https?://(?:localhost|127\.0\.0\.1|[^\s/]*\.workers\.dev)",source,re.I):

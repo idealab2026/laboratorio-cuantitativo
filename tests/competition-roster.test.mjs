@@ -51,3 +51,14 @@ test("The 64-row UI is distinct from the existing synthetic competitions",()=>{
  assert.ok(workflow.includes("data/competition-roster.json data/institutional-paper-feed.json dist/data/"));
  assert.ok(site.includes("function paperAccountingView(){"));
 });
+
+test("Academic origin labels are absent from institutional public output",()=>{
+ const groups=new Set(doc.entries.map(x=>x.group));
+ assert.ok(groups.has("Selección multicriterio · riesgo"));
+ assert.ok(groups.has("Predicción cuantitativa · cuatro enfoques"));
+ const readme=readFileSync(new URL("../README.md",import.meta.url),"utf8");
+ const manifest=readFileSync(new URL("../data/competition-roster.json",import.meta.url),"utf8");
+ const originPattern=/\bTF[GM]\b|\bpersonal_[a-z0-9_]+\b|\bsegundo[\s_-]+cerebro\b|\bmamg[0-9]{2}\b/i;
+ assert.doesNotMatch(readme,originPattern);
+ assert.doesNotMatch(manifest,originPattern);
+});
