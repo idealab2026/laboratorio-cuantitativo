@@ -54,6 +54,8 @@ jobs:
         run: |
           node --test tests/*.test.mjs
           python3 -m unittest discover -s scripts -p 'test_*.py' -v
+      - name: Verify the institutional frozen 503-ticker Yahoo contract without querying Yahoo
+        run: python3 scripts/yahoo_source.py --check-contract
       - name: Build allowlisted static package
         run: |
           mkdir -p dist/src dist/data
