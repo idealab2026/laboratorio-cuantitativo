@@ -201,10 +201,8 @@ def advance(state,snapshot,history,*,key):
     report=decisions(history,session)
     if report["eligible"]<453:
         raise ValueError("Insufficient investable historical coverage")
-    # Reject revised or conflicting OHLC across independent pulls of the same day.
-    for symbol in report["missing"]:
-        if symbol in snapshot["bars"] and symbol in history and history[symbol]:
-            raise ValueError("Historical provider row disagrees with canonical source eligibility")
+    # Check only eligible dated histories; a newly listed constituent with
+    # fewer than 80 rows is missing from the *signal* coverage, not a fabricated bar.
     for symbol in snapshot["bars"]:
         if symbol in history and len(history[symbol])>=80:
             row=ordered_history(history[symbol],session,symbol)[-1]
