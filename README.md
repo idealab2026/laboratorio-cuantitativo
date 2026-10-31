@@ -135,3 +135,10 @@ Para obtener equivalencia operativa faltan la base de precios Yahoo/yfinance con
 Se ha inmovilizado un catálogo institucional nuevo de `503` tickers de mercado XNYS para la composición de referencia del **29/09/2026**, con `SPY` definido por separado. El archivo `data/universe-xnys.json` contiene únicamente identificadores públicos de instrumentos y no incluye información personal ni operaciones. Los identificadores `BRK-B` y `BF-B` se mantienen en su notación válida para Yahoo; el identificador histórico `PSKY` se traduce al símbolo de proveedor `SKYD` únicamente para sesiones a partir del 06/10/2026. Esto evita errores por cambios de denominación de un mismo valor.
 
 La compilación institucional valida el universo completo, sin descargar Yahoo ni publicar su serie OHLC. Para usos locales con derechos suficientes, el fichero `scripts/requirements-yahoo.txt` define el conjunto de dependencias del adaptador existente. La migración no está completa hasta verificar una captura real diaria y los libros de cada algoritmo en el nuevo entorno.
+
+
+## Recuperación causal de sesiones omitidas
+
+La contabilidad paper incorpora la misma regla estructural del motor de referencia: límite configurable de hasta **cinco sesiones omitidas** para una campaña, actualización de patrimonio y eventos con las barras correspondientes y ejecución modelizada de órdenes registradas antes de esas sesiones. Cada cierre no ejecutado se anota como `DECISION_MISSED` y **no se fabrica ninguna señal del cierre perdido**. Si excede el límite, falta alguna barra obligatoria, hay modificación de datos ya registrados o cambia la configuración, se bloquea la actualización. El ranking muestra el número de decisiones omitidas por cartera.
+
+La recuperación utiliza retrospectivamente el OHLC para estimar los fills pasivos: no equivale a una operación aceptada por un bróker. Las pruebas emplean datos artificiales y no convierten el simulador en una competición real.
