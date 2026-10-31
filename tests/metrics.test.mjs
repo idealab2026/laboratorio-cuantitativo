@@ -293,16 +293,20 @@ test("ECB observatory is displayed separately from the preexisting synthetic str
 });
 
 
-test("Prospective official journal starts empty, not retroactively populated",()=>{
+test("First actual issued signal is explicitly invalidated rather than scored",()=>{
  const ledger=JSON.parse(readFileSync(new URL("../data/fx-forecast-ledger.json",import.meta.url),"utf8"));
  const result=summarizeFxForecastLedger(ledger);
- assert.equal(result.issuedCount,0);
+ assert.equal(result.issuedCount,1);
+ assert.equal(result.validCount,0);
+ assert.equal(result.invalidatedCount,1);
  assert.equal(result.resolvedCount,0);
  assert.equal(result.unresolvedCount,0);
- assert.equal(result.headHash,"0".repeat(64));
+ assert.ok(result.rows[0].invalidated);
+ assert.equal(result.headHash,ledger.events.at(-1).hash);
 });
 test("Prospective forecast evaluation uses realized next reference, not paper P&L",()=>{
  const obj=JSON.parse(readFileSync(new URL("../data/fx-forecast-ledger.json",import.meta.url),"utf8"));
+ obj.events=[]; // Deliberately isolated mathematical fixture; never alter the canonical record.
  const stamp="2026-10-31T15:10:00Z",a="a".repeat(64),b="b".repeat(64);
  obj.events.push({event_type:"issued",fixing_date:"2026-10-30",recorded_at_utc:stamp,
   observed_rate:"1.1500",predictions:{unchanged:"1.150000",momentum_1:"1.151000",reversal_1:"1.149000"},
@@ -315,6 +319,7 @@ test("Prospective forecast evaluation uses realized next reference, not paper P&
  assert.equal(stats.issuedCount,1);
  assert.equal(stats.resolvedCount,1);
  assert.equal(stats.unresolvedCount,0);
+ assert.equal(stats.invalidatedCount,0);
  assert.ok(Math.abs(stats.modelMAE.reversal_1-.0015)<1e-12);
  assert.equal(stats.headHash,b);
  obj.events[1].previous_hash="f".repeat(64);
@@ -332,4 +337,15 @@ test("Official independent forecast journal is scheduled and available as an aud
  assert.ok(site.includes("function prospectiveForecastPanel()"));
  assert.ok(site.includes('fetch("./data/fx-forecast-ledger.json"'));
  assert.ok(site.includes("No son operaciones financieras"));
+});
+
+
+test("A reversed-rate signal cannot be scored without immutable invalidation",()=>{
+ const fixture=JSON.parse(readFileSync(new URL("../data/fx-forecast-ledger.json",import.meta.url),"utf8"));
+ const clone=structuredClone(fixture);
+ clone.events.pop();
+ assert.throws(()=>summarizeFxForecastLedger(clone),/explicitly invalidated/);
+ const site=readFileSync(new URL("../src/site.mjs",import.meta.url),"utf8");
+ assert.ok(site.includes("ANULADA · error de fórmula"));
+ assert.ok(site.includes("summary.invalidatedCount"));
 });
