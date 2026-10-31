@@ -1,0 +1,64 @@
+name: Auditoria y publicacion institucional
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+  pull_request:
+    branches: [main]
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+concurrency:
+  group: pages-institutional
+  cancel-in-progress: true
+jobs:
+  quality:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: Verify institutional commit identity
+        run: |
+          git log --all --format='%an|%ae|%cn|%ce' | while IFS='|' read -r author email committer commit_email; do
+            test "$author" = "Idea Lab"
+            test "$committer" = "Idea Lab"
+            case "$email" in *+idealab2026@users.noreply.github.com) ;; *) exit 1 ;; esac
+            case "$commit_email" in *+idealab2026@users.noreply.github.com) ;; *) exit 1 ;; esac
+          done
+      - name: Check publication boundary
+        run: python3 scripts/audit_public.py
+      - name: Unit tests
+        run: node --test tests/metrics.test.mjs
+      - name: Build allowlisted static package
+        run: |
+          mkdir -p dist/src dist/data
+          cp index.html styles.css logo.svg favicon.svg dist/
+          cp src/site.mjs src/metrics.mjs dist/src/
+          cp data/demo.json dist/data/
+          test "$(find dist -type f | wc -l)" -eq 7
+      - uses: actions/upload-artifact@v4
+        with:
+          name: audited-site
+          path: dist/
+          retention-days: 1
+  deploy:
+    if: github.event_name != 'pull_request'
+    needs: quality
+    runs-on: ubuntu-latest
+    environment: github-pages
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: audited-site
+          path: dist/
+      - uses: actions/configure-pages@v5
+      - uses: actions/upload-pages-artifact@v4
+        with:
+          path: dist/
+      - uses: actions/deploy-pages@v4
