@@ -1,0 +1,11 @@
+import test from "node:test";
+import assert from "node:assert/strict";
+import {readFileSync} from "node:fs";
+import {verify,cumulative,maxDrawdown,table,formatPct} from "../src/metrics.mjs";
+const data=JSON.parse(readFileSync(new URL("../data/demo.json",import.meta.url),"utf8"));
+test("Demo accepts only synthetic source",()=>{assert.equal(data.meta.data_class,"synthetic");assert.equal(verify(data),true);});
+test("Every strategy has a complete NAV history",()=>{for(const s of data.strategies){assert.equal(s.nav.length,data.dates.length);assert.ok(s.nav.every(n=>Number.isFinite(n)&&n>0));}});
+test("Return and drawdown calculations",()=>{assert.ok(Math.abs(cumulative([100,105,110])-10)<1e-9);assert.ok(Math.abs(maxDrawdown([100,110,88])-20)<1e-9);assert.equal(maxDrawdown([100,101,102]),0);});
+test("Common horizon competition is ranked",()=>{const rows=table(data);assert.equal(rows[0].name,"Consenso de señales");assert.equal(rows.at(-1).returnPct,0);assert.equal(rows.length,5);});
+test("Reject non-synthetic and broken ledgers",()=>{assert.throws(()=>verify({...data,meta:{data_class:"real"}}));assert.throws(()=>verify({...data,strategies:[{...data.strategies[0],nav:[100]}]}));});
+test("Readable percent formatting",()=>assert.match(formatPct(1.234),/%/));
