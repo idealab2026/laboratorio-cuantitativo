@@ -1,4 +1,4 @@
-import {verify,simulate,rank,valuation,thesisRank,formatPct,money,finite,verifyIssuerCatalog,filterIssuers,syntheticBarsFromDemo,nextOpenPaper} from "./metrics.mjs";
+import {verify,simulate,rank,valuation,thesisRank,formatPct,money,finite,verifyIssuerCatalog,filterIssuers,syntheticBarsFromDemo,nextOpenPaper,evaluateIssuerScreen} from "./metrics.mjs";
 const $=id=>document.getElementById(id);
 const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 const fmt=n=>finite(n)?new Intl.NumberFormat("es-ES",{maximumFractionDigits:2}).format(n):"N/D";
@@ -37,7 +37,7 @@ function overview(){
  head("CATÁLOGO","Familias de estrategias","Las simulaciones siguen siendo demostraciones; los modelos entrenados de la sección de investigación no están conectados a esta competición.")+
  '<div class="family-grid">'+groups().map(g=>card('<div class="panel-top"><h3>'+esc(g)+'</h3><span class="chip">'+all().filter(x=>x.group===g).length+' métodos</span></div><p>'+esc(family(g))+'</p>'+button("Examinar","group",g))).join("")+'</div>'+
  head("EMPRESAS","Seguimiento por emisor","Nombres reales y mercados de referencia; fichas públicas en preparación, sin replicar documentos externos ni carteras privadas.")+
- '<div class="section-grid three">'+featured.map(t=>card('<span class="label">'+esc(t.ticker)+' · '+esc(t.market)+'</span><h3>'+esc(t.company)+'</h3><p>'+esc(t.sector)+'</p><p>Valoración pública independiente: pendiente de validación.</p>'+button("Ver ficha","issuer-select",t.ticker))).join("")+'</div>'+
+ '<div class="section-grid three">'+featured.map(t=>card('<span class="label">'+esc(t.ticker)+' · '+esc(t.market)+'</span><h3>'+esc(t.company)+'</h3><p>'+esc(t.sector)+'</p><p>'+(independentScreen(t.ticker)?'Screening exploratorio independiente disponible; no ratificado.':'Valoración pública independiente pendiente de validación.')+'</p>'+button("Ver ficha","issuer-select",t.ticker))).join("")+'</div>'+
  disclaimer("No existe migración completa de los motores ni de los expedientes de inversión. Sin cotizaciones actualizadas, no se muestran CAGR históricos como pronósticos vigentes.");
 }
 function competition(){
@@ -94,26 +94,50 @@ function syntheticTheses(){
  disclaimer("Ninguna ficha procede de una watchlist personal, trabajo académico o firma de análisis externa.");
 }
 
+const independentScreen=(ticker)=>{
+ const s=state.universe.publicScreens?.find(x=>x.ticker===ticker);
+ return s?evaluateIssuerScreen(s):null;
+};
 function issuerTableRows(){
- return filterIssuers(state.universe,state.issuerQuery,state.issuerSort).map(i=>
- '<tr class="'+(state.issuerTicker===i.ticker?"is-selected":"")+'"><td><strong>'+esc(i.ticker)+'</strong></td><td><strong>'+esc(i.company)+'</strong><small class="smallline">'+esc(i.sector)+'</small></td><td>'+esc(i.market)+'</td><td class="number">N/D</td><td class="number perf-neutral">N/D</td><td class="number perf-neutral">N/D</td><td class="number perf-neutral">N/D</td><td class="number">N/D</td><td class="number">N/D</td><td>N/D</td><td>'+button("Ficha","issuer-select",i.ticker)+'</td></tr>'
- ).join("");
+ return filterIssuers(state.universe,state.issuerQuery,state.issuerSort).map(i=>{
+  const s=independentScreen(i.ticker);
+  const close=s?fmt(s.quote.close)+" "+s.quote.currency+" · "+s.quote.closeDate:"N/D";
+  return '<tr class="'+(state.issuerTicker===i.ticker?"is-selected":"")+'"><td><strong>'+esc(i.ticker)+'</strong></td><td><strong>'+esc(i.company)+'</strong><small class="smallline">'+esc(i.sector)+'</small></td><td>'+esc(i.market)+'</td><td class="number">'+esc(close)+'</td>'+
+  '<td class="number">'+(s?pctText(s.scenarios.bear.cagrPct):"N/D")+'</td><td class="number">'+(s?pctText(s.scenarios.base.cagrPct):"N/D")+'</td><td class="number">'+(s?pctText(s.scenarios.bull.cagrPct):"N/D")+'</td>'+
+  '<td class="number">'+(s?esc(fmt(s.buyPrice15))+" USD":"N/D")+'</td><td class="number">'+(s?esc(fmt(s.scenarios.base.target))+" USD":"N/D")+'</td>'+
+  '<td>N/D</td><td>'+button(s?"Screen":"Ficha","issuer-select",i.ticker)+'</td></tr>';
+ }).join("");
 }
 function issuerDetail(){
  const i=state.universe.issuers.find(x=>x.ticker===state.issuerTicker)||state.universe.issuers[0];
- return card('<div class="panel-top"><div><span class="label">'+esc(i.ticker)+' · '+esc(i.market)+'</span><h3>'+esc(i.company)+'</h3></div><span class="status-chip">Pendiente de validación</span></div><p>'+esc(i.sector)+'</p>'+
- '<div class="metric-strip">'+metric("Cotización verificable","N/D")+metric("Bear / Base / Bull","N/D")+metric("Precio para CAGR 15 %","N/D")+metric("Próximos resultados","N/D")+'</div>'+
- '<h3 class="minor-heading">Fuentes oficiales</h3>'+(i.secCik?'<p>Expediente regulatorio verificado de la SEC: <a href="https://www.sec.gov/edgar/browse/?CIK='+esc(i.secCik)+'" target="_blank" rel="noopener noreferrer">Consultar formularios SEC (10-K, 10-Q, 8-K)</a>. Esto no implica que las cuentas y supuestos de valoración se hayan auditado.</p>':'<p>Identificador de expediente regulatorio pendiente de contrastar.</p>')+
- '<h3 class="minor-heading">Control de publicación</h3><p>Identidad del emisor incorporada al catálogo. Para publicar una tesis hacen falta fuentes primarias, fecha y divisa de precio, escenarios reconstruidos, CAGR y una revisión independiente. No se traslada un dossier privado ni se enlaza a él.</p>');
+ const s=independentScreen(i.ticker);
+ const source=i.secCik?'<p>Expediente regulatorio SEC: <a href="https://www.sec.gov/edgar/browse/?CIK='+esc(i.secCik)+'" target="_blank" rel="noopener noreferrer">10-K, 10-Q y 8-K oficiales</a>. Los enlaces no prueban por sí solos las hipótesis financieras.</p>':'<p>Identificador de expediente regulatorio pendiente de contrastar.</p>';
+ const base=card('<div class="panel-top"><div><span class="label">'+esc(i.ticker)+' · '+esc(i.market)+'</span><h3>'+esc(i.company)+'</h3></div><span class="status-chip">'+(s?"Screening exploratorio":"Pendiente de validación")+'</span></div><p>'+esc(i.sector)+'</p>'+
+ '<div class="metric-strip">'+metric("Precio documentado",s?fmt(s.quote.close)+" USD · "+s.quote.closeDate:"N/D")+metric("CAGR central",s?formatPct(s.scenarios.base.cagrPct):"N/D")+metric("Precio 15 % anual",s?fmt(s.buyPrice15)+" USD":"N/D")+metric("Próximos resultados","N/D")+'</div>'+
+ '<h3 class="minor-heading">Fuentes oficiales</h3>'+source+
+ '<h3 class="minor-heading">Control de publicación</h3><p>La identidad corporativa no constituye una tesis aprobada. Los valores disponibles son escenarios exploratorios, no precio objetivo recomendado ni recomendación de inversión. No se traslada ningún expediente privado.</p>');
+ if(!s)return base;
+ const scenarios=["bear","base","bull"].map((key,index)=>{
+  const v=s.scenarios[key];
+  return '<div class="scenario-tile"><span class="label">'+["Bajista","Central","Alcista"][index]+'</span><strong>'+esc(fmt(v.target))+' USD</strong><span class="performance '+tone(v.cagrPct)+'">CAGR '+esc(formatPct(v.cagrPct))+'</span><p>EPS +'+esc(fmt(v.growthPct))+' % anual · PER terminal '+esc(fmt(v.terminalPe))+'×</p></div>';
+ }).join("");
+ return base+
+ head("MODELO INDEPENDIENTE · SCREENING","Sensibilidad EPS–PER a cinco años","Supuestos hipotéticos explícitos, no una valoración DCF completa ni una actualización del informe histórico.")+
+ card('<div class="metric-strip">'+metric("EPS ajustado FY2026",fmt(s.metric.adjustedEpsFY2026)+" USD")+metric("Cierre 30/10/2026",fmt(s.quote.close)+" USD")+metric("Crecimiento Azure FY27 Q1",fmt(s.catalyst.azureGrowthYoyPct)+" % interanual")+metric("Ingresos FY27 Q1",fmt(s.catalyst.q1FY2027RevenueBillion)+" miles MUSD")+'</div>'+
+ '<div class="scenario-grid">'+scenarios+'</div>'+
+ '<p><strong>Fórmula:</strong> precio 2031 = EPS ajustado FY2026 × (1 + crecimiento anual supuesto)^5 × PER terminal supuesto. CAGR = (precio 2031 / cierre de referencia)^(1/5) − 1. Entrada para obtener 15 % anual = precio central 2031 / (1,15)^5.</p>'+
+ '<p><strong>Limitaciones:</strong> '+esc(s.limitations)+'</p>'+
+ '<p class="small-note">Documentos públicos: <a href="'+esc(s.metric.source)+'" target="_blank" rel="noopener noreferrer">informe anual FY2026</a> · <a href="'+esc(s.catalyst.source)+'" target="_blank" rel="noopener noreferrer">resultados FY27 Q1</a> · <a href="'+esc(s.quote.source)+'" target="_blank" rel="noopener noreferrer">cierre bursátil histórico de 30/10/2026</a>. No hay cotización en tiempo real ni sincronización automática.</p>');
 }
+
 function theses(){
  if(state.issuerMode==="demo")return syntheticTheses();
- return head("TESIS · CATÁLOGO PÚBLICO","Empresas analizadas y en seguimiento","Inventario de "+state.universe.issuers.length+" compañías y estudios. Se muestran sus nombres y mercados, pero ninguna valoración histórica se presenta como dato actual.")+
- disclaimer("DATOS PENDIENTES · N/D significa que IDEA LAB no ha validado todavía una cotización puntual ni una tesis publicable de forma independiente. No equivale a rentabilidad cero.")+
+ return head("TESIS · CATÁLOGO PÚBLICO","Empresas analizadas y en seguimiento","Inventario de "+state.universe.issuers.length+" compañías y estudios. Se muestra un screening independiente cuando existe evidencia pública fechada; el resto de los datos permanece sin validar.")+
+ disclaimer("DATOS PENDIENTES · Los valores publicados, si los hay, son screenings exploratorios independientes con fecha y fuentes explícitas. N/D significa ausencia de validación, no rentabilidad cero.")+
  '<div class="filters"><label>Buscar<input id="issuer-query" type="search" placeholder="Ticker, empresa o sector" value="'+esc(state.issuerQuery)+'"></label>'+
  '<label>Ordenar<select id="issuer-sort">'+[["ticker","Ticker"],["company","Empresa"],["market","Mercado"],["sector","Sector"]].map(([k,n])=>'<option value="'+k+'" '+(k===state.issuerSort?"selected":"")+'>'+n+'</option>').join("")+'</select></label>'+
  button("Exportar catálogo CSV","export","issuers","outline-btn")+button("Ver tesis ficticias","issuer-mode","demo","outline-btn")+'</div>'+
- '<div class="table-scroll table-compact thesis-public-table"><table><thead><tr><th>Ticker</th><th>Empresa</th><th>Mercado</th><th class="number">Precio actual</th><th class="number">CAGR Bear 5a</th><th class="number">CAGR Base 5a</th><th class="number">CAGR Bull 5a</th><th class="number">Precio 15 %</th><th class="number">Objetivo 5a</th><th>Resultados</th><th>Informe</th></tr></thead><tbody id="issuer-rows">'+issuerTableRows()+'</tbody></table></div>'+
+ '<div class="table-scroll table-compact thesis-public-table"><table><thead><tr><th>Ticker</th><th>Empresa</th><th>Mercado</th><th class="number">Precio ref. / fecha</th><th class="number">CAGR Bear 5a</th><th class="number">CAGR Base 5a</th><th class="number">CAGR Bull 5a</th><th class="number">Precio 15 %</th><th class="number">Objetivo 5a</th><th>Resultados</th><th>Informe</th></tr></thead><tbody id="issuer-rows">'+issuerTableRows()+'</tbody></table></div>'+
  head("ANÁLISIS","Ficha pública de emisor","Fichas independientes: sin referencias privadas ni métricas financieras trasladadas sin auditoría.")+issuerDetail()+
  disclaimer("El catálogo público no equivale a una migración documental. Los estados y objetivos históricos requieren reconstrucción y autorización de publicación independientes.");
 }
