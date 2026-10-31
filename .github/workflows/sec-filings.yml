@@ -1,0 +1,50 @@
+name: Collect institutional SEC EDGAR filings
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/sec-filings.yml'
+  schedule:
+    - cron: '15 16 * * 1-5'
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency:
+  group: institutional-sec-filing-index
+  cancel-in-progress: false
+jobs:
+  collect:
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    env:
+      PYTHONDONTWRITEBYTECODE: '1'
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 1
+          persist-credentials: true
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Validate local issuer contracts before accessing SEC
+        run: python3 -m unittest discover -s scripts -p 'test_*.py' -v
+      - name: Collect eight official filing indexes with fair-access request pacing
+        run: |
+          python3 scripts/refresh_sec.py --out "$RUNNER_TEMP/sec-filings.json"
+          python3 scripts/refresh_sec.py --validate "$RUNNER_TEMP/sec-filings.json"
+          cp "$RUNNER_TEMP/sec-filings.json" data/sec-filings.json
+      - name: Commit SEC-derived metadata only, with institutional identity
+        run: |
+          set -euo pipefail
+          if git diff --quiet -- data/sec-filings.json; then
+            echo "No changes in SEC filings snapshot"
+            exit 0
+          fi
+          test -z "$(git status --porcelain | grep -v 'data/sec-filings.json' || true)"
+          git config user.name "Idea Lab"
+          git config user.email "350414243+idealab2026@users.noreply.github.com"
+          git add -- data/sec-filings.json
+          git commit -m "Update eight verified SEC issuer filing indexes"
+          git push origin HEAD:main
