@@ -119,3 +119,12 @@ La validación offline está incluida en las pruebas del repositorio y puede eje
 Esta distinción importa porque la documentación de `yfinance` advierte que la API subyacente de Yahoo está destinada al uso personal, y la licencia del código no confiere por sí sola derechos para republicar los datos. Para una web institucional accesible públicamente hay que verificar los derechos de explotación y publicación antes de habilitar esa exposición. No implica la contratación ni sustitución del proveedor por otro.
 
 La equivalencia restante exige un universo institucional verificado y no identificable con un repositorio personal, calendario de capturas, almacenamiento de OHLC con acceso restringido, recuperación acotada de barras ausentes, distribución a los algoritmos, ejecución prospectiva y auditoría de los libros. Ninguna rentabilidad artificial debe pasar por resultado bursátil real.
+
+
+## Comparativa íntegra de funcionalidades — 64 líneas
+
+La pestaña **Inventario completo · 64** registra las familias del sistema de inversión que se pretende migrar: dos generaciones de clásicos, modelos semanales y heredados, TFG/AHP, TFM, TimesFM diario y semanal, estrategias de ciclo, compra en caídas e ideas de investigación histórica. La nomenclatura es institucional y los ID son nuevos para evitar reutilizar identificadores privados. La tabla está preparada para actividad, órdenes, posiciones, fechas, divisa, rentabilidad, volatilidad, drawdown, comparación homogénea y mini-histórico. Incluye filtros por familia, búsqueda y exportación CSV.
+
+**Esto es cobertura de funciones, no importación de resultados.** Las 64 líneas comienzan expresamente como `not_migrated` con todos los resultados económicos en `null`, sin histórico y sin actividad real. El validador bloquea el intento de presentar una fila pendiente como cartera activa. Las 23 estrategias matemáticas de la demostración, las nueve carteras artificiales y el registro prospectivo del BCE siguen siendo módulos distintos, no equivalentes a ese universo de 64.
+
+Para obtener equivalencia operativa faltan la base de precios Yahoo/yfinance con permisos de uso y almacenamiento institucional no público, los libros prospectivos independientes, las mismas versiones de modelos, la lógica de señales y las auditorías reales, además de la ingestión de documentación empresarial y la continuidad de tesis. No se puede deducir una fecha, un precio o un rendimiento del mero inventario.
