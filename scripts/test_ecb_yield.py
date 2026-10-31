@@ -30,7 +30,7 @@ class ECBYieldCurveTests(unittest.TestCase):
         for broken in [
             body.replace("G_N_A","G_N_C",1),
             body.replace("3.000000",""),
-            body.replace("2026-10-29","2026-10-30"),
+            body.replace("2026-10-29","2026-10-31"),
             body.replace("2026-10-29","2027-10-29"),
             body.replace("3.000000","55.000000"),
         ]:
