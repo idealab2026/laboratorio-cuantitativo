@@ -205,10 +205,17 @@ function theses(){
 
 function monitoring(){
  const s=active(),audit=causalLedger();
- return head("SEGUIMIENTO","Diario paper y salud de fuentes","Se conservan operaciones hipotéticas, reglas de costes y ausencia de fuentes verificadas. No existe conectividad con cuentas reales.")+
- '<div class="section-grid three">'+card('<span class="label">PROCEDENCIA</span><h3>Datos sintéticos</h3><p>Tres activos ficticios. Ningún proveedor de cotizaciones.</p>')+
- card('<span class="label">COTIZACIONES AUSENTES</span><h3>0 en el ejemplo</h3><p>Si un precio es inválido, la simulación no fabrica un fill ni un NAV.</p>')+
- card('<span class="label">ESTADO FINANCIERO</span><h3>Sin operaciones reales</h3><p>Solo operaciones paper calculadas en el navegador.</p>')+'</div>'+
+ return head("SALUD OPERATIVA · DIARIO","Procedencia, ejecución y operaciones","Diferencia entre disponibilidad de fuentes, ejecución del motor y estado de cada diario. Sin fuente y persistencia institucional no se declara funcionamiento autónomo.")+
+ '<div class="source-health-strip">'+
+ '<div><span class="label">OHLC diario externo</span><strong>No conectado</strong><small>No existe un proveedor de precios autorizados ni una sesión bursátil comprobada</small></div>'+
+ '<div><span class="label">Cobertura del universo real</span><strong>N/D</strong><small>Instrumentos del experimento: 3 activos ficticios; cotizaciones de mercado ausentes</small></div>'+
+ '<div><span class="label">Salud de automatismos</span><strong>Sin verificación operativa</strong><small>GitHub Pages despliega la web; no ejecuta ni persiste las 23 estrategias</small></div>'+
+ '</div>'+
+ disclaimer("Fuente de mercado desconocida, captura UTC ausente, cobertura real N/D, hashes de OHLC no registrados y productor periódico no habilitado. No se confunde ausencia de prueba con estado correcto.")+
+ '<div class="section-grid three">'+
+ card('<span class="label">UNIVERSO DEMO</span><h3>3 activos artificiales</h3><p>La serie '+esc(state.data.dates[0])+'–'+esc(state.data.dates.at(-1))+' no equivale a un calendario de cotización. Origen: generador matemático.</p>')+
+ card('<span class="label">ÓRDENES PAPER</span><h3>Sin persistencia</h3><p>Los libros se generan al abrir la página y no son prueba de una sesión automática ni de operaciones en mercado.</p>')+
+ card('<span class="label">ÚLTIMA EVIDENCIA VERIFICADA</span><h3>No disponible</h3><p>No se informa de runs, cierres bursátiles ni actualización de carteras sin confirmar ambos registros.</p>')+'</div>'+
  head("OPERACIONES","Diario de órdenes simuladas","El libro de órdenes documenta compra o venta, unidades, referencia y coste por sesión.")+
  '<div class="filters"><label>Algoritmo<select id="journal-select">'+all().map(x=>'<option value="'+esc(x.id)+'" '+(x.id===state.strategy?"selected":"")+'>'+esc(x.name)+'</option>').join("")+'</select></label>'+button("Exportar diario CSV","export","journal","outline-btn")+'</div>'+
  '<div class="metric-strip spaced">'+metric("Órdenes",String(s.orders.length))+metric("Valor final",money(s.points.at(-1).equity))+metric("Costes",money(s.fees))+metric("Cobertura","100 %")+'</div>'+
