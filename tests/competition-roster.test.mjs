@@ -10,7 +10,7 @@ test("Institutional full-coverage manifest has exactly 64 independent functional
  assert.equal(result.groups.length,12);
  assert.equal(result.migrated,0);
  assert.equal(result.withReturns,0);
- assert.deepEqual(result.groups.map(x=>x.count).sort((a,b)=>a-b),[1,1,1,1,1,2,2,4,9,9,9,9,16].slice().sort((a,b)=>a-b));
+ assert.deepEqual(result.groups.map(x=>x.count).sort((a,b)=>a-b),[1,1,1,1,2,2,4,9,9,9,9,16]);
  assert.equal(new Set(doc.entries.map(x=>x.slot)).size,64);
  assert.ok(doc.entries.every(x=>x.record_status==="not_migrated"&&x.last_equity===null&&x.history.length===0));
 });
