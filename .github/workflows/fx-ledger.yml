@@ -1,0 +1,48 @@
+name: Prospective ECB reference-forecast ledger
+on:
+  schedule:
+    - cron: '40 17 * * 1-5'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: institutional-fx-forecast-ledger
+  cancel-in-progress: false
+
+jobs:
+  advance:
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    timeout-minutes: 7
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 1
+          persist-credentials: true
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Verify offline prospective contract
+        run: python3 -m unittest discover -s scripts -p 'test_*.py' -v
+      - name: Fetch dated official ECB fixing and advance public prediction ledger
+        run: |
+          python3 scripts/refresh_ecb.py --output "$RUNNER_TEMP/fx-observations.json"
+          python3 scripts/refresh_ecb.py --validate "$RUNNER_TEMP/fx-observations.json"
+          python3 scripts/advance_fx.py --official "$RUNNER_TEMP/fx-observations.json" --ledger data/fx-forecast-ledger.json
+          python3 -c "import json,sys;sys.path.insert(0,'scripts');from advance_fx import verify_ledger;verify_ledger(json.load(open('data/fx-forecast-ledger.json',encoding='utf8')))"
+      - name: Store only verified institutional journal revisions
+        run: |
+          set -euo pipefail
+          if git diff --quiet -- data/fx-forecast-ledger.json; then
+            echo "No fresh official fixing: journal unchanged"
+            exit 0
+          fi
+          test -z "$(git status --porcelain | grep -v 'data/fx-forecast-ledger.json' || true)"
+          git config user.name "Idea Lab"
+          git config user.email "350414243+idealab2026@users.noreply.github.com"
+          git add -- data/fx-forecast-ledger.json
+          git commit -m "Record audited prospective ECB fixing signal"
+          git push origin HEAD:main
