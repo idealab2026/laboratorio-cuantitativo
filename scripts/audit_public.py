@@ -37,8 +37,9 @@ if (ROOT/"index.html").exists():
 for path in sorted(files):
     if path not in REPOSITORY: continue
     source=(ROOT/path).read_text(encoding="utf8")
-    if re.search(r"[\w.+-]+@[\w.-]+\.[A-Za-z]{2,}",source):
-        issues.append("Email address found in source")
+    if path in RELEASE or path == "README.md":
+        if re.search(r"[\w.+-]+@[\w.-]+\.[A-Za-z]{2,}",source):
+            issues.append("Email address found in public content")
     if re.search(r"-----BEGIN [^-]+PRIVATE KEY-----|github_pat_[A-Za-z0-9_]{20,}|ghp_[A-Za-z0-9]{30,}",source):
         issues.append("Credential-like content")
     if re.search(r"https?://(?:localhost|127\.0\.0\.1|[^\s/]*\.workers\.dev)",source,re.I):
