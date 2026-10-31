@@ -33,6 +33,10 @@ jobs:
           done
       - name: Check publication boundary
         run: python3 scripts/audit_public.py
+      - name: Check client and engine syntax
+        run: |
+          node --check src/site.mjs
+          node --check src/metrics.mjs
       - name: Unit tests
         run: node --test tests/metrics.test.mjs
       - name: Build allowlisted static package
