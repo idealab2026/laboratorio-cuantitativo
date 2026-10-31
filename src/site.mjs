@@ -244,16 +244,17 @@ function prospectiveForecastPanel(){
  '<div><span class="label">Señales emitidas</span><strong>'+summary.issuedCount+'</strong><small>Tras adquirir una referencia oficial</small></div>'+
  '<div><span class="label">Señales resueltas</span><strong>'+summary.resolvedCount+'</strong><small>Confirmadas con fixing posterior</small></div>'+
  '<div><span class="label">Pendientes</span><strong>'+summary.unresolvedCount+'</strong><small>Nunca se contabilizan como aciertos</small></div></div>'+
+ (summary.invalidatedCount?disclaimer("Control de calidad: "+summary.invalidatedCount+" señal(es) anulada(s) por invertir el orden de las observaciones al calcular el primer pronóstico. Se conserva la evidencia original y la invalidación; no se puntúa."):"")+
  disclaimer("Fuente: ECB statistics. Estadísticas de pronóstico en unidades USD/EUR; MAE no mide rentabilidad, riesgo, ejecución ni alfa. El hash de eventos se valida en CI y se ancla al historial institucional de Git.")+
  '<div class="metric-strip spaced">'+metric("MAE · Sin cambio",measure("unchanged"))+
  metric("MAE · Momentum 1",measure("momentum_1"))+metric("MAE · Reversión 1",measure("reversal_1"))+
- metric("Horizonte", "Siguiente fixing oficial")+'</div>'+
+ metric("Horizonte", "Siguiente fixing oficial")+metric("Anuladas",String(summary.invalidatedCount))+'</div>'+
  '<div class="table-scroll table-compact"><table><thead><tr><th>Emisión: fecha fixing</th><th>Registrado UTC</th><th class="number">Referencia inicial</th><th class="number">Sin cambio</th><th class="number">Momentum</th><th class="number">Reversión</th><th>Evaluación</th><th class="number">Referencia posterior</th></tr></thead><tbody>'+
  rows.slice(-20).reverse().map(row=>{
-  const i=row.issued,o=row.settled;
+  const i=row.issued,o=row.settled,invalid=row.invalidated;
   return '<tr><td>'+esc(i.fixing_date)+'</td><td>'+esc(i.recorded_at_utc)+'</td><td class="number">'+esc(i.observed_rate)+'</td>'+
    '<td class="number">'+esc(i.predictions.unchanged)+'</td><td class="number">'+esc(i.predictions.momentum_1)+'</td><td class="number">'+esc(i.predictions.reversal_1)+'</td>'+
-   '<td>'+esc(o?"Evaluado · "+o.realized_fixing_date:"Pendiente · sin resultado")+'</td><td class="number">'+esc(o?o.realized_rate:"N/D")+'</td></tr>';
+   '<td>'+esc(invalid?"ANULADA · error de fórmula":o?"Evaluado · "+o.realized_fixing_date:"Pendiente · sin resultado")+'</td><td class="number">'+esc(o?o.realized_rate:"N/D")+'</td></tr>';
  }).join("")+'</tbody></table></div>'+
  '<p class="table-note">Registro completo: <a href="./data/fx-forecast-ledger.json" target="_blank" rel="noopener noreferrer">JSON de eventos y hashes</a>. No son operaciones financieras y no se incorporan a la clasificación de las 23 estrategias.</p>';
 }
