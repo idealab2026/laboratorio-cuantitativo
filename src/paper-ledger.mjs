@@ -125,3 +125,68 @@ function settleSession(book,methodRow,panel,config){
  }
  return exited;
 }
+
+export function advancePaperCampaign(config,panel,previous=null){
+ const {symbols,timeline}=validatePanel(panel);
+ validatePaperConfig(config,symbols);
+ let state=previous?structuredClone(previous):stateOf(config,panel);
+ if(state.schema!==1||state.status!=="SYNTHETIC_PROSPECTIVE_ACCOUNTING_SANDBOX"||
+   state.configuration!==JSON.stringify(config)||state.source!==panel.source||state.synthetic!==true||
+   Object.keys(state.portfolios||{}).join(",")!==config.strategies.map(m=>m.id).join(","))
+  throw Error("Changed campaign identity or strategy specification");
+ const previousIndex=state.lastSession?timeline.indexOf(state.lastSession):-1;
+ if(state.lastSession&&previousIndex<0)throw Error("Recorded session is missing from new source");
+ if(state.lastSession===panel.asOf){
+  const current=JSON.stringify(symbols.map(s=>panel.bars[s]));
+  if(state.historyPrefix!==current)throw Error("Already registered bars were revised");
+  return {state,changed:false};
+ }
+ if(previous&&previousIndex!==timeline.length-2)
+  throw Error("Missing daily decisions: refuse retroactive entry signals");
+ const currentIndex=timeline.length-1;
+ if(previous){
+  const old=JSON.stringify(symbols.map(s=>panel.bars[s].slice(0,currentIndex)));
+  if(state.historyPrefix!==old)throw Error("Historical OHLC revised after decision");
+ }
+ for(const method of config.strategies){
+  const book=state.portfolios[method.id];
+  if(previous)settleSession(book,method,panel,config);
+  const holdings=book.holdings;
+  const nav=book.cash+Object.entries(holdings)
+    .reduce((sum,[symbol,pos])=>sum+pos.units*panel.bars[symbol].at(-1).close,0);
+  if(!valid(nav)||nav<=0||book.cash<-.0001)throw Error("Invalid paper balance");
+  book.equity.push({session:panel.asOf,nav,cash:book.cash,positions:Object.keys(holdings).length});
+  for(const symbol of method.symbols){
+   const action=signalAtClose(method.method,panel.bars[symbol]);
+   if(action==="BUY"&&!holdings[symbol]){
+    book.orders[symbol]={side:"BUY",signalAt:panel.asOf};
+    book.events.push({type:"SIGNAL",date:panel.asOf,symbol,side:action});
+   }else if(action==="SELL"&&holdings[symbol]){
+    book.orders[symbol]={side:"SELL",signalAt:panel.asOf};
+    book.events.push({type:"SIGNAL",date:panel.asOf,symbol,side:action});
+   }
+  }
+ }
+ state.lastSession=panel.asOf;
+ state.historyPrefix=JSON.stringify(symbols.map(s=>panel.bars[s]));
+ return {state,changed:true};
+}
+export function campaignRanking(config,state){
+ if(!state||state.status!=="SYNTHETIC_PROSPECTIVE_ACCOUNTING_SANDBOX"||
+    state.configuration!==JSON.stringify(config))throw Error("Invalid campaign provenance");
+ return config.strategies.map(method=>{
+  const book=state.portfolios[method.id],latest=book.equity.at(-1);
+  if(!latest)throw Error("No paper session");
+  let peak=config.capital,worst=0;
+  for(const point of book.equity){
+   peak=Math.max(peak,point.nav);
+   worst=Math.min(worst,100*(point.nav/peak-1));
+  }
+  return {id:method.id,method:method.method,status:"SYNTHETIC_ONLY",lastSession:latest.session,
+   capital:config.capital,cash:book.cash,equity:latest.nav,
+   returnPct:100*(latest.nav/config.capital-1),drawdownPct:worst,
+   active:Object.keys(book.holdings),pending:Object.keys(book.orders),
+   fills:book.events.filter(x=>x.type==="FILL").length,
+   fees:book.feeTotal,dividends:book.dividendTotal};
+ });
+}
