@@ -8,7 +8,7 @@ from unittest.mock import patch
 
 from public_market_runner import (
     CONFIG_SHA, EIGHT, CAPITAL, PORTFOLIOS, empty_state,
-    advance, validate_state, preflight, seal
+    advance, validate_state, preflight, seal, is_exchange_session
 )
 from yahoo_source import DEFAULT_UNIVERSE, prepare_snapshot
 
@@ -99,6 +99,17 @@ class PublicYahooExecutionTests(unittest.TestCase):
             validate_state(bad,SECRET)
         with self.assertRaisesRegex(ValueError,"signature"):
             validate_state(state,"wrong-institution-secret-longer-than-32-chars")
+
+
+    def test_genuine_nyse_holidays_are_not_algorithm_failures(self):
+        class Closed:
+            def schedule(self, **kwargs):
+                return SimpleNamespace(empty=True)
+        class Active:
+            def schedule(self, **kwargs):
+                return SimpleNamespace(empty=False)
+        self.assertFalse(is_exchange_session("2026-12-25",Closed()))
+        self.assertTrue(is_exchange_session("2026-12-24",Active()))
 
     def test_fail_closed_for_skipped_exchange_sessions(self):
         first=source_snapshot("2026-10-28","2026-10-28T23:20:00Z")
