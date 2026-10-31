@@ -1,5 +1,10 @@
 name: Prospective ECB reference-forecast ledger
 on:
+  # One deployment-safe bootstrap; journal commits themselves do not retrigger this workflow.
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/fx-ledger.yml'
   schedule:
     - cron: '40 17 * * 1-5'
   workflow_dispatch:
