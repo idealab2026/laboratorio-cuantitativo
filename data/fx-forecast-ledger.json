@@ -4,5 +4,20 @@
   "series": "D.USD.EUR.SP00.A",
   "source": "European Central Bank (ECB statistics)",
   "notice": "Prospective forecasts of ECB reference fixings only. No executable fills, investment P&L or broker positions.",
-  "events": []
+  "events": [
+    {
+      "event_type": "issued",
+      "fixing_date": "2026-10-30",
+      "recorded_at_utc": "2026-10-31T15:51:19Z",
+      "source_sha256": "0412a8bf8dff5a56751053602bf58d87e4666ed55605b4fda51e18ffcb45c06f",
+      "observed_rate": "1.1172",
+      "predictions": {
+        "unchanged": "1.113000",
+        "momentum_1": "1.108800",
+        "reversal_1": "1.117200"
+      },
+      "previous_hash": "0000000000000000000000000000000000000000000000000000000000000000",
+      "hash": "7f5829bba23df074a6780afb0b6fe39ffee18dbe023c64d052f68b40e86db9f7"
+    }
+  ]
 }
