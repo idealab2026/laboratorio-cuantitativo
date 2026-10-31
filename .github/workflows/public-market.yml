@@ -1,5 +1,10 @@
 name: MIDAS institutional public-code Yahoo paper runtime
 on:
+  push:
+    branches: [main]
+    # One isolated launch after workflow is installed; source/book commits never retrigger it.
+    paths:
+      - '.github/workflows/public-market.yml'
   schedule:
     # Same market-data capture clock as the original common XNYS workflow.
     - cron: '07 23 * * 1-5'
