@@ -1,8 +1,8 @@
-import {verify,simulate,rank,valuation,thesisRank,formatPct,money,finite,verifyIssuerCatalog,filterIssuers,syntheticBarsFromDemo,nextOpenPaper,evaluateIssuerScreen,competitionReadModel,publicIssuerReadModel,verifyOfficialFx} from "./metrics.mjs";
+import {verify,simulate,rank,valuation,thesisRank,formatPct,money,finite,verifyIssuerCatalog,filterIssuers,syntheticBarsFromDemo,nextOpenPaper,evaluateIssuerScreen,competitionReadModel,publicIssuerReadModel,verifyOfficialFx,summarizeFxForecastLedger} from "./metrics.mjs";
 const $=id=>document.getElementById(id);
 const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 const fmt=n=>finite(n)?new Intl.NumberFormat("es-ES",{maximumFractionDigits:2}).format(n):"N/D";
-const state={data:null,universe:null,fx:null,fxCheck:null,fxStatus:"pending",view:"overview",strategy:"P-01",group:"",sort:"returnPct",asc:false,detailOpen:false,thesis:"T-01",query:"",thesisSort:"central",issuerMode:"catalog",issuerQuery:"",issuerSort:"base",issuerAsc:false,issuerTicker:"MSFT"};
+const state={data:null,universe:null,fx:null,fxCheck:null,fxStatus:"pending",forecastLedger:null,forecastSummary:null,forecastStatus:"pending",view:"overview",strategy:"P-01",group:"",sort:"returnPct",asc:false,detailOpen:false,thesis:"T-01",query:"",thesisSort:"central",issuerMode:"catalog",issuerQuery:"",issuerSort:"base",issuerAsc:false,issuerTicker:"MSFT"};
 const viewNames=["overview","competition","algorithms","theses","monitoring","method","archive"];
 const button=(label,action,value,cls="smallbtn")=>'<button type="button" class="'+cls+'" data-action="'+esc(action)+'" data-value="'+esc(value)+'">'+esc(label)+'</button>';
 const head=(label,title,body)=>'<div class="section-heading"><div><span class="kicker">'+esc(label)+'</span><h2>'+esc(title)+'</h2><p class="section-context">'+esc(body)+'</p></div></div>';
@@ -229,9 +229,38 @@ function officialFxPanel(){
  history.slice(-12).reverse().map(row=>'<tr><td>'+esc(row.date)+'</td><td class="number">'+esc(row.usd_per_eur)+'</td><td>Referencia oficial · no transable</td></tr>').join("")+'</tbody></table></div>'+
  '<p class="table-note">Huella SHA-256 de la respuesta oficial: <code>'+esc(d.source_sha256)+'</code>. <a href="'+source+'" target="_blank" rel="noopener noreferrer">Consultar fuente BCE</a> · <a href="./data/official-fx.json" target="_blank" rel="noopener noreferrer">Ver dataset publicado</a>. Reutilización de estadísticas públicas con atribución al BCE.</p>';
 }
+function prospectiveForecastPanel(){
+ const title=head("EXPERIMENTO PROSPECTIVO · REFERENCIAS BCE","Registro independiente de señales","Previsiones sobre el próximo fixing oficial EUR/USD, emitidas después de recibir el dato actual. Se evalúan cuando llega la siguiente referencia, sin reconstruir pronósticos a posteriori.");
+ if(state.forecastStatus!=="ok"||!state.forecastSummary)
+  return title+card('<h3>'+esc(state.forecastStatus==="pending"?"Comprobando el diario de investigación":"Registro no disponible o no verificable")+'</h3><p>Las previsiones y las puntuaciones permanecen ocultas sin un registro público validado. No se reconstruyen sesiones pasadas ni se crean rentabilidades de inversión ficticias.</p>');
+ const summary=state.forecastSummary,rows=summary.rows;
+ if(!rows.length)
+  return title+card('<h3>Pendiente de primera emisión programada</h3><p>El libro ya está versionado y vacío deliberadamente. La primera ejecución institucional registrará solo una previsión pendiente; la exactitud no puede calcularse hasta observar un fixing posterior. No existen resultados prospectivos históricos previos.</p>'+
+   '<p class="small-note">Proceso independiente de lunes a viernes: <a href="https://github.com/idealab2026/laboratorio-cuantitativo/actions/workflows/fx-ledger.yml" target="_blank" rel="noopener noreferrer">consultar ejecuciones del diario institucional</a>.</p>');
+ const errors=summary.modelMAE;
+ const measure=key=>errors[key]===null?"N/D":errors[key].toFixed(6)+" USD/EUR";
+ return title+
+ '<div class="source-health-strip">'+
+ '<div><span class="label">Señales emitidas</span><strong>'+summary.issuedCount+'</strong><small>Tras adquirir una referencia oficial</small></div>'+
+ '<div><span class="label">Señales resueltas</span><strong>'+summary.resolvedCount+'</strong><small>Confirmadas con fixing posterior</small></div>'+
+ '<div><span class="label">Pendientes</span><strong>'+summary.unresolvedCount+'</strong><small>Nunca se contabilizan como aciertos</small></div></div>'+
+ disclaimer("Fuente: ECB statistics. Estadísticas de pronóstico en unidades USD/EUR; MAE no mide rentabilidad, riesgo, ejecución ni alfa. El hash de eventos se valida en CI y se ancla al historial institucional de Git.")+
+ '<div class="metric-strip spaced">'+metric("MAE · Sin cambio",measure("unchanged"))+
+ metric("MAE · Momentum 1",measure("momentum_1"))+metric("MAE · Reversión 1",measure("reversal_1"))+
+ metric("Horizonte", "Siguiente fixing oficial")+'</div>'+
+ '<div class="table-scroll table-compact"><table><thead><tr><th>Emisión: fecha fixing</th><th>Registrado UTC</th><th class="number">Referencia inicial</th><th class="number">Sin cambio</th><th class="number">Momentum</th><th class="number">Reversión</th><th>Evaluación</th><th class="number">Referencia posterior</th></tr></thead><tbody>'+
+ rows.slice(-20).reverse().map(row=>{
+  const i=row.issued,o=row.settled;
+  return '<tr><td>'+esc(i.fixing_date)+'</td><td>'+esc(i.recorded_at_utc)+'</td><td class="number">'+esc(i.observed_rate)+'</td>'+
+   '<td class="number">'+esc(i.predictions.unchanged)+'</td><td class="number">'+esc(i.predictions.momentum_1)+'</td><td class="number">'+esc(i.predictions.reversal_1)+'</td>'+
+   '<td>'+esc(o?"Evaluado · "+o.realized_fixing_date:"Pendiente · sin resultado")+'</td><td class="number">'+esc(o?o.realized_rate:"N/D")+'</td></tr>';
+ }).join("")+'</tbody></table></div>'+
+ '<p class="table-note">Registro completo: <a href="./data/fx-forecast-ledger.json" target="_blank" rel="noopener noreferrer">JSON de eventos y hashes</a>. No son operaciones financieras y no se incorporan a la clasificación de las 23 estrategias.</p>';
+}
+
 function monitoring(){
  const s=active(),audit=causalLedger();
- return officialFxPanel()+head("SALUD OPERATIVA · DIARIO","Procedencia, ejecución y operaciones","Diferencia entre disponibilidad de fuentes, ejecución del motor y estado de cada diario. Sin fuente y persistencia institucional no se declara funcionamiento autónomo.")+
+ return officialFxPanel()+prospectiveForecastPanel()+head("SALUD OPERATIVA · DIARIO","Procedencia, ejecución y operaciones","Diferencia entre disponibilidad de fuentes, ejecución del motor y estado de cada diario. Sin fuente y persistencia institucional no se declara funcionamiento autónomo.")+
  '<div class="source-health-strip">'+
  '<div><span class="label">OHLC diario externo</span><strong>No conectado</strong><small>No existe un proveedor de precios autorizados ni una sesión bursátil comprobada</small></div>'+
  '<div><span class="label">Cobertura del universo real</span><strong>N/D</strong><small>Instrumentos del experimento: 3 activos ficticios; cotizaciones de mercado ausentes</small></div>'+
@@ -405,7 +434,7 @@ window.addEventListener("popstate",()=>{const v=new URLSearchParams(location.sea
 async function init(){
  try{
   const r=await fetch("./data/demo.json",{cache:"no-store"});if(!r.ok)throw Error("Dataset missing");const data=await r.json(),universe=data.issuerCatalog;verify(data);verifyIssuerCatalog(universe);
-  state.data=data;state.universe=universe;const v=new URLSearchParams(location.search).get("view");state.view=viewNames.includes(v)?v:"overview";summary();render();void loadOfficialFx();
+  state.data=data;state.universe=universe;const v=new URLSearchParams(location.search).get("view");state.view=viewNames.includes(v)?v:"overview";summary();render();void loadOfficialFx();void loadForecastLedger();
  }catch(e){$("app").textContent="No se ha podido cargar el catálogo de emisores o el laboratorio sintético; no se muestran datos no verificados.";}
 }
 async function loadOfficialFx(){
@@ -415,6 +444,15 @@ async function loadOfficialFx(){
   const doc=await res.json(),verified=verifyOfficialFx(doc);
   state.fx=doc;state.fxCheck=verified;state.fxStatus="ok";
  }catch(_error){state.fx=null;state.fxCheck=null;state.fxStatus="unavailable";}
+ if(state.view==="monitoring"&&state.data)render();
+}
+async function loadForecastLedger(){
+ try{
+  const response=await fetch("./data/fx-forecast-ledger.json",{cache:"no-store"});
+  if(!response.ok)throw Error("Prospective ledger absent");
+  const doc=await response.json(),stats=summarizeFxForecastLedger(doc);
+  state.forecastLedger=doc;state.forecastSummary=stats;state.forecastStatus="ok";
+ }catch(_error){state.forecastLedger=null;state.forecastSummary=null;state.forecastStatus="unavailable";}
  if(state.view==="monitoring"&&state.data)render();
 }
 init();
