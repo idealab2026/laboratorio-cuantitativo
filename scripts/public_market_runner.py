@@ -18,6 +18,9 @@ from pathlib import Path
 from zoneinfo import ZoneInfo
 
 from paper_feed import DATA_SOURCE, SCHEMA as FEED_SCHEMA, mac as feed_mac, validate as validate_feed
+from classic_503 import yahoo_historical_panel
+from classic_503_book import (advance as advance_classic, summary_rows as classic_summary_rows,
+                              verify_book as verify_classic_book)
 from yahoo_source import (
     DEFAULT_UNIVERSE, prepare_snapshot, verify_universe,
     verify_closed_xnys_session, download_yahoo, verify_snapshot,
@@ -27,6 +30,7 @@ ROOT = Path(__file__).resolve().parents[1]
 STATE_PATH = ROOT / "data" / "public-paper-book.json"
 FEED_PATH = ROOT / "data" / "institutional-paper-feed.json"
 ROSTER_PATH = ROOT / "data" / "competition-roster.json"
+CLASSIC_PATH = ROOT / "data" / "classic-503-book.json"
 VERSION = "idealab_public_paper_book_v1"
 CAPITAL = 100000.0
 SPREAD = .0005
@@ -226,6 +230,13 @@ def preflight():
     book=json.loads(STATE_PATH.read_text(encoding="utf8"))
     if len(symbols)!=503 or not set(PORTFOLIOS).issubset({x["slot"] for x in roster["entries"]}):
         raise ValueError("Public MIDAS strategy/source identity mismatch")
+    classic=json.loads(CLASSIC_PATH.read_text(encoding="utf8"))
+    if classic["status"]=="not_started":
+        verify_classic_book(classic)
+    elif classic.get("status")!="prospective_paper":
+        raise ValueError("Untrusted classical paper state")
+    elif os.environ.get("IDEALAB_PAPER_FEED_KEY"):
+        verify_classic_book(classic,os.environ["IDEALAB_PAPER_FEED_KEY"])
     if book["status"]=="not_started":
         validate_state(book)
     elif book["status"]!="prospective_paper" or book.get("config_sha256")!=CONFIG_SHA:
@@ -237,7 +248,8 @@ def preflight():
     return {"status":"source_gate_required" if book["status"]=="not_started" else "prospective_existing",
             "source":"Yahoo/yfinance original", "capital_reference_books":2,
             "universe_constituents":len(symbols),"broker_orders":0,
-            "public_raw_prices_written":False}
+            "public_raw_prices_written":False,
+            "classic_503_reference_books":9}
 
 
 def is_exchange_session(session, calendar=None):
@@ -264,6 +276,7 @@ def run():
         # A retry must not fetch a mutable quote or repeat an order.
         validate_feed(json.loads(FEED_PATH.read_text(encoding="utf8")),
                       secret=key,roster=json.loads(ROSTER_PATH.read_text(encoding="utf8")))
+        verify_classic_book(json.loads(CLASSIC_PATH.read_text(encoding="utf8")),key)
         return {"status":"existing_session_unchanged","session":today,"changed":False}
     roster=json.loads(ROSTER_PATH.read_text(encoding="utf8"))
     universe=json.loads(DEFAULT_UNIVERSE.read_text(encoding="utf8"))["symbols"]
@@ -271,12 +284,21 @@ def run():
     stamp=datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
     snapshot=prepare_snapshot(universe,today,readings,stamp)
     state,feed=advance(old,snapshot,key=key,roster=roster,issued_at=stamp)
+    classic_previous=json.loads(CLASSIC_PATH.read_text(encoding="utf8"))
+    # No original historical diary is ever reconstructed or backfilled.
+    historic=yahoo_historical_panel(today,rights_attested=True)
+    classic_new=advance_classic(classic_previous,snapshot,historic,key=key)
+    feed["tracks"].extend(classic_summary_rows(classic_new,snapshot,key=key))
+    feed["signature"]=feed_mac(feed,key)
+    validate_feed(feed,secret=key,roster=roster)
+    # All three candidates are checked before any file is persisted.
     # Only post-source-verified derived research bookkeeping is persisted.
     STATE_PATH.write_text(json.dumps(state,indent=2,ensure_ascii=False)+"\n",encoding="utf8")
     FEED_PATH.write_text(json.dumps(feed,indent=2,ensure_ascii=False)+"\n",encoding="utf8")
+    CLASSIC_PATH.write_text(json.dumps(classic_new,indent=2,ensure_ascii=False)+"\n",encoding="utf8")
     return {"status":"new_source_verified_paper_session","session":today,"changed":True,
             "constituent_coverage":snapshot["coverage"]["constituents_observed"],
-            "active_reference_books":2,"raw_ohlc_persisted":False}
+            "active_reference_books":2,"classic_503_books":9,"raw_ohlc_persisted":False}
 
 
 def main():
