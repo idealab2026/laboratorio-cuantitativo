@@ -1,11 +1,8 @@
 name: Collect institutional SEC EDGAR filings
+# SEC EDGAR returns HTTP 403 to hosted GitHub runners. Paused until
+# an institutionally monitored contact and an officially permitted access
+# path are established. The prior run must not be retried automatically.
 on:
-  push:
-    branches: [main]
-    paths:
-      - '.github/workflows/sec-filings.yml'
-  schedule:
-    - cron: '15 16 * * 1-5'
   workflow_dispatch:
 permissions:
   contents: write
