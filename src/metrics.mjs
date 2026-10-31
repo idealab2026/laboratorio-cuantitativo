@@ -184,6 +184,15 @@ export function verifyIssuerCatalog(data){
   if(!financialFields.every(field=>isBlank(issuer[field])))throw Error("Unverified financial claims in public catalogue");
   if(issuer.status!=="Pendiente de investigación pública")throw Error("Unverified editorial status");
  }
+ if(data.publicScreens!==undefined){
+  if(!Array.isArray(data.publicScreens)||data.publicScreens.length>3)throw Error("Invalid independent-screen list");
+  const covered=new Set();
+  for(const screen of data.publicScreens){
+   if(covered.has(screen.ticker)||!seen.has(screen.ticker))throw Error("Unknown or duplicate public issuer screen");
+   covered.add(screen.ticker);
+   evaluateIssuerScreen(screen);
+  }
+ }
  return true;
 }
 export function filterIssuers(data,query="",sort="ticker"){
