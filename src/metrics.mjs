@@ -192,3 +192,87 @@ export function filterIssuers(data,query="",sort="ticker"){
  const field=["ticker","company","market","sector"].includes(sort)?sort:"ticker";
  return [...selected].sort((a,b)=>a[field].localeCompare(b[field],"es")||a.ticker.localeCompare(b.ticker,"es"));
 }
+
+
+// Separate, experimental next-session-open paper ledger. Never execute at the signal close.
+// Public research demonstration only: bars are explicitly generated from synthetic inputs.
+export function syntheticBarsFromDemo(data){
+ verify(data);
+ const symbols=Object.keys(data.market);
+ return symbols.map((symbol,i)=>({
+  symbol,
+  bars:data.dates.map((session,t)=>{
+   const close=data.market[symbol][t];
+   const open=t===0?close:data.market[symbol][t-1]*(1+0.0018*Math.sin((t+1)*(i+2)));
+   return {session,open,high:Math.max(open,close)*1.005,low:Math.min(open,close)*.995,close};
+  })
+ }));
+}
+function checkedBar(b){
+ return b&&["open","high","low","close"].every(key=>finite(b[key])&&b[key]>0)
+  && b.low<=Math.min(b.open,b.close) && b.high>=Math.max(b.open,b.close)
+  && b.high>=b.low && typeof b.session==="string" && b.session.length>0;
+}
+export function nextOpenPaper(input,{rule="equal",initialCapital=100000,feeBps=10,slippageBps=5,lookback=4}={}){
+ if(!Array.isArray(input)||input.length<1||input.length>20)throw Error("Invalid instrument count");
+ if(!["equal","trend","cash"].includes(rule)||!Number.isInteger(lookback)||lookback<2||lookback>90)throw Error("Invalid strategy policy");
+ if(!finite(initialCapital)||initialCapital<=0||!finite(feeBps)||feeBps<0||feeBps>100||!finite(slippageBps)||slippageBps<0||slippageBps>20)throw Error("Invalid cash or costs");
+ const size=input[0]?.bars?.length;
+ if(!Number.isInteger(size)||size<3||size>5000)throw Error("Invalid market history");
+ const symbols=input.map(row=>row.symbol);
+ if(new Set(symbols).size!==symbols.length||symbols.some(x=>typeof x!=="string"||!/^SIM-[A-Z]$/.test(x)))throw Error("Only independent synthetic symbols are allowed");
+ const dates=input[0].bars.map(b=>b.session);
+ if(new Set(dates).size!==size)throw Error("Duplicate sessions");
+ for(const stream of input){
+  if(!Array.isArray(stream.bars)||stream.bars.length!==size)throw Error("Unequal histories");
+  stream.bars.forEach((bar,t)=>{
+   if(!checkedBar(bar)||bar.session!==dates[t])throw Error("Missing, inconsistent or untradeable OHLC");
+  });
+ }
+ let cash=initialCapital,shares=Array(input.length).fill(0),totalFees=0,totalSlippage=0;
+ const orders=[],points=[{session:dates[0],nav:100,equity:initialCapital,cash,signalAt:null}];
+ for(let t=1;t<size;t++){
+  const signalAt=dates[t-1],fillAt=dates[t];
+  const target=Array(input.length).fill(0);
+  if(rule==="equal")target.fill(1/input.length);
+  if(rule==="trend"&&t-1>=lookback){
+   const strengths=input.map(row=>Math.max(0,row.bars[t-1].close/row.bars[t-1-lookback].close-1));
+   const total=strengths.reduce((a,b)=>a+b,0);
+   if(total>0)strengths.forEach((v,i)=>target[i]=v/total);
+  }
+  const open=input.map(row=>row.bars[t].open);
+  const preEquity=cash+shares.reduce((sum,qty,i)=>sum+qty*open[i],0);
+  if(!finite(preEquity)||preEquity<=0)throw Error("Invalid pretrade value");
+  const desired=target.map((w,i)=>preEquity*w/open[i]);
+  function record(i,side,qty){
+   if(qty<=1e-10)return;
+   const sign=side==="BUY"?1:-1,fill=open[i]*(1+sign*slippageBps/10000);
+   if(fill<input[i].bars[t].low-1e-8||fill>input[i].bars[t].high+1e-8)throw Error("Synthetic fill outside OHLC bounds");
+   const notional=qty*fill,fee=notional*feeBps/10000,slip=qty*Math.abs(fill-open[i]);
+   if(side==="BUY"){shares[i]+=qty;cash-=notional+fee;}
+   else{shares[i]-=qty;cash+=notional-fee;}
+   totalFees+=fee;totalSlippage+=slip;
+   orders.push({signalAt,fillAt,symbol:symbols[i],side,units:qty,openPrice:open[i],fillPrice:fill,notional,fee,slippage:slip,status:"PAPER_NEXT_OPEN"});
+  }
+  // Disposals precede purchases, to make a cash-only portfolio feasible.
+  shares.forEach((qty,i)=>{if(qty>desired[i]+1e-10)record(i,"SELL",qty-desired[i]);});
+  const needs=shares.map((qty,i)=>Math.max(0,desired[i]-qty));
+  const required=needs.reduce((sum,qty,i)=>sum+qty*open[i]*(1+slippageBps/10000)*(1+feeBps/10000),0);
+  const scale=required>0?Math.min(1,Math.max(0,cash)/required):0;
+  needs.forEach((qty,i)=>record(i,"BUY",qty*scale));
+  if(cash<-1e-7)throw Error("Insufficient cash or hidden leverage");
+  if(cash<0)cash=0;
+  const equity=cash+shares.reduce((sum,qty,i)=>sum+qty*input[i].bars[t].close,0);
+  if(!finite(equity)||equity<=0)throw Error("Invalid closing equity");
+  points.push({session:fillAt,nav:100*equity/initialCapital,equity,cash,signalAt});
+ }
+ const nav=points.map(x=>x.nav);
+ const gains=changeSeries(nav).slice(1).map(x=>x/100);
+ const sd=deviations(gains);
+ return {status:"PAPER_SYNTHETIC_NEXT_OPEN",rule,feeBps,slippageBps,
+  signalTiming:"PREVIOUS_SESSION_CLOSE",fillTiming:"NEXT_SESSION_OPEN",
+  points,orders,shares,cash,fees:totalFees,slippage:totalSlippage,
+  returnPct:cumulative(nav),drawdownPct:maxDrawdown(nav),
+  volatilityPct:gains.length>1?sd*Math.sqrt(252)*100:null,
+  sharpe:sd>0?mean(gains)/sd*Math.sqrt(252):null};
+}
