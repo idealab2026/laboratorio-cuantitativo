@@ -240,6 +240,14 @@ def preflight():
             "public_raw_prices_written":False}
 
 
+def is_exchange_session(session, calendar=None):
+    """NYSE calendar, not UTC weekdays, decides whether a source run is due."""
+    if calendar is None:
+        import pandas_market_calendars as calendars
+        calendar=calendars.get_calendar("NYSE")
+    return not calendar.schedule(start_date=session,end_date=session).empty
+
+
 def run():
     if os.environ.get("MIDAS_YAHOO_RIGHTS_CONFIRMED")!="true":
         raise RuntimeError("Explicit institutional Yahoo data-use rights attestation required")
@@ -247,6 +255,8 @@ def run():
     if not key or len(key)<32:
         raise RuntimeError("Missing institution-owned summary and book authentication secret")
     today=datetime.now(timezone.utc).astimezone(ZoneInfo("America/New_York")).date().isoformat()
+    if not is_exchange_session(today):
+        return {"status":"exchange_closed","session":today,"changed":False}
     verify_closed_xnys_session(today)
     old=json.loads(STATE_PATH.read_text(encoding="utf8"))
     validate_state(old,key)
