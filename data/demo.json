@@ -1139,6 +1139,47 @@
         "reportUrl": null,
         "status": "Pendiente de investigación pública"
       }
+    ],
+    "publicScreens": [
+      {
+        "ticker": "MSFT",
+        "status": "EXPLORATORY_NOT_RATIFIED",
+        "method": "Illustrative adjusted-EPS terminal-P/E sensitivity; no free-cash-flow or reinvestment verification",
+        "asOf": "2026-10-31",
+        "quote": {
+          "close": 521.91,
+          "closeDate": "2026-10-30",
+          "currency": "USD",
+          "source": "https://stockanalysis.com/stocks/msft/history/"
+        },
+        "metric": {
+          "adjustedEpsFY2026": 17.28,
+          "unit": "USD/share",
+          "source": "https://www.microsoft.com/investor/reports/ar26/"
+        },
+        "catalyst": {
+          "q1FY2027RevenueBillion": 92.3,
+          "azureGrowthYoyPct": 48,
+          "date": "2026-10-28",
+          "source": "https://www.microsoft.com/en-us/Investor/earnings/FY-2027-Q1/press-release-webcast"
+        },
+        "assumptions": {
+          "bear": {
+            "annualEpsGrowthPct": 7,
+            "terminalPe": 20
+          },
+          "base": {
+            "annualEpsGrowthPct": 13,
+            "terminalPe": 27
+          },
+          "bull": {
+            "annualEpsGrowthPct": 18,
+            "terminalPe": 34
+          }
+        },
+        "horizonYears": 5,
+        "limitations": "Screening, not a full DCF or an approved investment thesis. No dividends, dilution stress, lease/CapEx normalization, tax bridge or terminal multiple independent peer audit. Inputs are documented assumptions, not guidance. Historical close does not update automatically."
+      }
     ]
   }
 }
