@@ -189,11 +189,17 @@ def frozen_intents(report, existing):
     orders = {}
     for slot,model in MODELS.items():
         held = existing[slot]
-        if not isinstance(held, list) or len(held) > MAX_HOLDINGS or len(set(held)) != len(held):
+        limit = 503 if model == "equal_hold" else MAX_HOLDINGS
+        if not isinstance(held, list) or len(held) > limit or len(set(held)) != len(held):
             raise ValueError("Invalid frozen holdings")
         owns = set(held)
         if model == "benchmark":
             orders[slot] = [{"ticker":"SPY","side":"buy","signalAt":report["session"]}] if "SPY" not in owns else []
+            continue
+        if model == "equal_hold":
+            orders[slot] = [{"ticker":item["ticker"],"side":"buy","signalAt":report["session"]}
+                            for item in report["strategies"][slot]
+                            if item["action"]=="buy" and item["ticker"] not in owns]
             continue
         ranked = report["strategies"][slot]
         sells = [item["ticker"] for item in ranked if item["action"]=="sell" and item["ticker"] in owns]
