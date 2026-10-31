@@ -41,21 +41,42 @@ function overview(){
  disclaimer("No existe migración completa de los motores ni de los expedientes de inversión. Sin cotizaciones actualizadas, no se muestran CAGR históricos como pronósticos vigentes.");
 }
 function competition(){
- const rows=rank(state.data,state.sort,state.asc,state.group);
- const current=active();
- return head("COMPETICIÓN PAPER","Clasificación de algoritmos","Tabla compacta: un algoritmo por fila, actividad, rentabilidad y curva de NAV. Todo el registro es sintético, no histórico de mercado.")+
- disclaimer("SIMULACIÓN SINTÉTICA · Las rentabilidades, órdenes y curvas no son resultados de inversión reales ni operaciones verificadas.")+
+ const rows=competitionReadModel(state.data,{sort:state.sort,ascending:state.asc,group:state.group});
+ const headers=[["name","Algoritmo"],["group","Bloque"],["activity","Actividad actual"],["assets","Activos"],["returnPct","Rent. acum."],["sessions","Sesiones"],["lastSession","Última sesión"],["drawdownPct","DD máx."]];
+ const headcells=headers.map(([key,title])=>'<th scope="col" aria-sort="'+(state.sort===key?(state.asc?"ascending":"descending"):"none")+'"><button type="button" class="table-sort" data-action="rank-column" data-value="'+key+'" title="Ordenar por '+esc(title)+'">'+esc(title)+' <span aria-hidden="true">'+(state.sort===key?(state.asc?"↑":"↓"):"↕")+'</span></button></th>').join("");
+ if(state.detailOpen){
+  const selected=rows.find(r=>r.id===state.strategy)||competitionReadModel(state.data).find(r=>r.id===state.strategy);
+  if(!selected){state.detailOpen=false;return competition();}
+  return button("← Volver a la competición","close-detail","","outline-btn")+
+   head("DETALLE · "+selected.id,selected.name,"Ficha ampliada con actividad, riesgo, exposición, retornos por período y evolución. Los datos siguen siendo ficticios.")+
+   disclaimer("La rentabilidad es sintética. Las sesiones no representan fechas bursátiles y los fills heredados son ilustrativos; no corresponden a la contabilidad causal next-open.")+
+   detail(selected);
+ }
+ const original=state.data.meta;
+ return head("COMPETICIÓN PAPER","Comportamiento de los algoritmos","Una fila por método y una ficha accesible pulsando su nombre o la fila. Las estrategias comparten las mismas 48 sesiones ficticias; no existen campañas públicas prospectivas comparables.")+
+ '<div class="source-health-strip" aria-label="Integridad y operación institucional">'+
+ '<div><span class="label">Fuente OHLC</span><strong>Sin alimentación real</strong><small>3 activos sintéticos · sin capturas de mercado</small></div>'+
+ '<div><span class="label">Estado de ejecución</span><strong>Solo navegador</strong><small>Sin diario persistido ni planificación paper institucional</small></div>'+
+ '<div><span class="label">Cierre real verificado</span><strong>N/D</strong><small>Última sesión ficticia: '+esc(state.data.dates.at(-1))+' · generación '+esc(original.asof)+'</small></div>'+
+ '</div>'+
+ disclaimer("Estas 23 estrategias son prototipos: la clasificación es retrospectiva sobre datos inventados, no un resultado forward, un histórico validado ni una señal de compra.")+
  '<div class="filters"><label>Familia<select id="group-select"><option value="">Todas</option>'+groups().map(g=>'<option value="'+esc(g)+'" '+(state.group===g?"selected":"")+'>'+esc(g)+'</option>').join("")+'</select></label>'+
- '<label>Ordenar<select id="rank-select">'+[["returnPct","Rentabilidad"],["drawdownPct","Drawdown"],["volatilityPct","Volatilidad"],["sharpe","Sharpe"],["name","Nombre"]].map(([v,n])=>'<option value="'+esc(v)+'" '+(state.sort===v?"selected":"")+'>'+esc(n)+'</option>').join("")+'</select></label>'+
- button(state.asc?"↑ Ascendente":"↓ Descendente","direction","","outline-btn")+button("Exportar CSV","export","ranking","outline-btn")+'</div>'+
- '<div class="table-scroll table-compact"><table><thead><tr><th>Algoritmo</th><th>Familia</th><th class="number">Rentabilidad</th><th class="number">DD máx.</th><th class="number">Vol.</th><th class="number">Sharpe</th><th>Actividad paper</th><th>Curva</th><th>Ficha</th></tr></thead><tbody>'+
- rows.map(s=>{
-  const exposed=s.weights.filter(w=>w>0.005).length;
-  const activity=s.orders.length===0?"Sin operaciones":"Órdenes: "+s.orders.length;
-  return '<tr class="'+(s.id===current.id?"is-selected":"")+'"><td><strong>'+esc(s.name)+'</strong> <small class="inline-id">'+esc(s.id)+'</small></td><td>'+esc(s.group)+'</td><td class="number">'+pctText(s.returnPct)+'</td><td class="number">'+esc(fmt(s.drawdownPct))+' %</td><td class="number">'+(finite(s.volatilityPct)?esc(fmt(s.volatilityPct))+" %":"N/D")+'</td><td class="number">'+esc(fmt(s.sharpe))+'</td><td><span class="activity-main">'+esc(activity)+'</span><small class="activity-meta">'+exposed+' activos · '+esc(fmt(Math.max(0,s.cash)*100))+' % caja</small></td><td>'+sparkline(s.nav)+'</td><td>'+button("Ver","select",s.id)+'</td></tr>';
+ '<label>Ordenar<select id="rank-select">'+headers.map(([k,n])=>'<option value="'+k+'" '+(state.sort===k?"selected":"")+'>'+esc(n)+'</option>').join("")+'</select></label>'+
+ button(state.asc?"↑ Ascendente":"↓ Descendente","direction","","outline-btn")+button("Exportar CSV","export","ranking","outline-btn")+
+ '</div><p class="table-note">'+rows.length+' métodos · Pulsa las cabeceras para ordenar. Valores ausentes siempre al final. Ficha por fila mediante ratón o teclado.</p>'+
+ '<div class="table-scroll table-compact"><table class="competition-parity-table"><thead><tr>'+headcells+'<th scope="col">Curva</th></tr></thead><tbody>'+
+ rows.map(r=>{
+  const assets=r.activeAssets.length?'<span class="asset-chipset">'+r.activeAssets.map(x=>'<b>'+esc(x)+'</b>').join("")+'</span>':'<span class="perf-neutral">Efectivo</span>';
+  return '<tr class="interactive-table-row '+(r.id===state.strategy?"is-selected":"")+'" data-competition-id="'+esc(r.id)+'" tabindex="0" aria-label="Abrir la ficha del algoritmo '+esc(r.name)+'">'+
+   '<td><strong>'+esc(r.name)+'</strong><small class="smallline">'+esc(r.id)+' · Simulación sin validar</small></td>'+
+   '<td>'+esc(r.group)+'</td><td><strong>'+esc(r.activity)+'</strong><small class="smallline">Sin operativa real</small></td>'+
+   '<td>'+assets+'</td><td class="number">'+pctText(r.returnPct)+'</td><td class="number">'+r.sessions+'</td>'+
+   '<td>'+esc(r.lastSession)+'<small class="smallline">No es fecha real</small></td>'+
+   '<td class="number">'+esc(fmt(r.drawdownPct))+' %</td><td>'+sparkline(r.nav)+'</td></tr>';
  }).join("")+'</tbody></table></div>'+
- '<p class="table-note">Una fila por algoritmo. Ordenes, posiciones, retornos y minigráficas corresponden únicamente a 48 sesiones artificiales. Los colores indican el signo, no una recomendación.</p>'+
- head("FICHA TÉCNICA","Detalle y operaciones","Consulta el NAV, exposición, movimientos y costes del método seleccionado.")+detail(current);
+ '<p class="table-note">Verde: positivo · rojo: negativo · gris: sin variación o sin datos. No se oculta ningún modelo por ausencia de órdenes, pero tampoco se interpretan las órdenes simuladas como compras ejecutadas.</p>'+
+ button("Ver historial y versiones","navigate","archive","outline-btn")+
+ button("Comprobar libro causal","navigate","monitoring","outline-btn");
 }
 function detail(s){
  const proxy=["linear","direction","crossrank","perceptron","memory","ensemble","weekly","daily","genetic"].includes(s.mode);
