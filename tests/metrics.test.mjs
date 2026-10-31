@@ -1,7 +1,7 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 import {readFileSync} from "node:fs";
-import {verify,signal,simulate,rank,valuation,thesisRank,absentQuote,cumulative,maxDrawdown,formatPct,syntheticBarsFromDemo,nextOpenPaper,verifyIssuerCatalog,evaluateIssuerScreen,competitionReadModel,publicIssuerReadModel,verifyOfficialFx} from "../src/metrics.mjs";
+import {verify,signal,simulate,rank,valuation,thesisRank,absentQuote,cumulative,maxDrawdown,formatPct,syntheticBarsFromDemo,nextOpenPaper,verifyIssuerCatalog,evaluateIssuerScreen,competitionReadModel,publicIssuerReadModel,verifyOfficialFx,summarizeFxForecastLedger} from "../src/metrics.mjs";
 const data=JSON.parse(readFileSync(new URL("../data/demo.json",import.meta.url),"utf8"));
 test("The independent public universe is strictly synthetic",()=>{
  assert.equal(verify(data),true);
@@ -288,6 +288,48 @@ test("ECB observatory is displayed separately from the preexisting synthetic str
  assert.ok(src.includes("Esta serie NO alimenta todavía los 23 modelos paper"));
  assert.ok(src.includes("Sin alimentación real")); // Equity OHLC must remain clearly unavailable.
  const workflow=readFileSync(new URL("../.github/workflows/pages.yml",import.meta.url),"utf8");
- assert.ok(workflow.includes("cron: '25 17 * * 1-5'"));
+ assert.ok(workflow.includes("cron: '25 18 * * 1-5'"));
  assert.ok(workflow.includes("refresh_ecb.py --validate"));
+});
+
+
+test("Prospective official journal starts empty, not retroactively populated",()=>{
+ const ledger=JSON.parse(readFileSync(new URL("../data/fx-forecast-ledger.json",import.meta.url),"utf8"));
+ const result=summarizeFxForecastLedger(ledger);
+ assert.equal(result.issuedCount,0);
+ assert.equal(result.resolvedCount,0);
+ assert.equal(result.unresolvedCount,0);
+ assert.equal(result.headHash,"0".repeat(64));
+});
+test("Prospective forecast evaluation uses realized next reference, not paper P&L",()=>{
+ const obj=JSON.parse(readFileSync(new URL("../data/fx-forecast-ledger.json",import.meta.url),"utf8"));
+ const stamp="2026-10-31T15:10:00Z",a="a".repeat(64),b="b".repeat(64);
+ obj.events.push({event_type:"issued",fixing_date:"2026-10-30",recorded_at_utc:stamp,
+  observed_rate:"1.1500",predictions:{unchanged:"1.150000",momentum_1:"1.151000",reversal_1:"1.149000"},
+  source_sha256:"d".repeat(64),previous_hash:"0".repeat(64),hash:a});
+ obj.events.push({event_type:"resolved",fixing_date:"2026-10-30",realized_fixing_date:"2026-11-02",
+  recorded_at_utc:"2026-11-02T18:00:00Z",realized_rate:"1.1505",signal_hash:a,
+  absolute_errors:{unchanged:"0.000500",momentum_1:"0.000500",reversal_1:"0.001500"},
+  source_sha256:"c".repeat(64),previous_hash:a,hash:b});
+ let stats=summarizeFxForecastLedger(obj);
+ assert.equal(stats.issuedCount,1);
+ assert.equal(stats.resolvedCount,1);
+ assert.equal(stats.unresolvedCount,0);
+ assert.ok(Math.abs(stats.modelMAE.reversal_1-.0015)<1e-12);
+ assert.equal(stats.headHash,b);
+ obj.events[1].previous_hash="f".repeat(64);
+ assert.throws(()=>summarizeFxForecastLedger(obj),/lineage/);
+});
+test("Official independent forecast journal is scheduled and available as an audited static artifact",()=>{
+ const yaml=readFileSync(new URL("../.github/workflows/fx-ledger.yml",import.meta.url),"utf8");
+ const pages=readFileSync(new URL("../.github/workflows/pages.yml",import.meta.url),"utf8");
+ const site=readFileSync(new URL("../src/site.mjs",import.meta.url),"utf8");
+ assert.ok(yaml.includes("contents: write"));
+ assert.ok(yaml.includes("cron: '40 17 * * 1-5'"));
+ assert.ok(yaml.includes("Record audited prospective ECB fixing signal"));
+ assert.ok(yaml.includes("PYTHONDONTWRITEBYTECODE"));
+ assert.ok(pages.includes("cp data/demo.json data/fx-forecast-ledger.json dist/data/"));
+ assert.ok(site.includes("function prospectiveForecastPanel()"));
+ assert.ok(site.includes('fetch("./data/fx-forecast-ledger.json"'));
+ assert.ok(site.includes("No son operaciones financieras"));
 });

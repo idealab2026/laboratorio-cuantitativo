@@ -14,7 +14,7 @@ Status: PARTIAL. This document tracks independent institutional functionality wi
 | Capital allocation and drawdown-aware families | Demonstration rules | EXPERIMENTAL | Parameters and validation not independently established |
 | Company research and scenarios | 25 public issuer identities, eight SEC indexes, one independently sourced dated MSFT EPS–PER exploratory screen and six fictitious demonstrations | PARTIAL | No validated DCF, current-price feed, corporate action handling or approved forecasts; historic MSFT close is not live |
 | Historical orders and performance | No transferred observations | EXCLUDED | Reproduction, rights and attribution reviews |
-| Scheduled scientific operation | Weekday GitHub Actions ECB observations before static publication | PARTIAL | Need observed schedule runs; no persistent prospective strategy ledger |
+| Scheduled scientific operation | Separate institutional weekday forecast-ledger persistence plus source-validated ECB publication | EXPERIMENTAL | Await first successful scheduled write and public release; no equity forecasts, broker ledger or stock OHLC |
 | Source quality, privacy and identity gates | Allowlisted static build and institutional author checks | PARTIAL | External cross-correlation review not certifiable automatically |
 
 ## Mandatory evidence for a production claim
@@ -61,6 +61,13 @@ Public issuer counts reflect identified companies, not approved dossiers. A prel
 
 ## ECB official-source data pilot
 
-The institutional CI captures daily ECB USD-per-EUR reference fixings (EXR/D.USD.EUR.SP00.A), retaining a raw-response SHA-256 digest, UTC retrieval timestamp, source URL, exact numeric literals and dated observations. It rejects missing or stale dates, inconsistent dimensions, weekends, duplicates and implausible values. Statistics are reused with the explicit attribution **Source: ECB statistics** and the ECB published reuse policy. The scheduled action is weekdays 17:25 UTC, but a declared schedule does not prove any future successful execution.
+The institutional CI captures daily ECB USD-per-EUR reference fixings (EXR/D.USD.EUR.SP00.A), retaining a raw-response SHA-256 digest, UTC retrieval timestamp, source URL, exact numeric literals and dated observations. It rejects missing or stale dates, inconsistent dimensions, weekends, duplicates and implausible values. Statistics are reused with the explicit attribution **Source: ECB statistics** and the ECB published reuse policy. The ECB Pages scheduled action is weekdays 18:25 UTC, but a declared schedule does not prove any future successful execution.
 
 These are **statistical reference observations**, not transaction prices, corporate-action-adjusted equity data, broker marks, executable opening prices or paper-order fills. The daily fixing feed is kept separate from all 23 synthetic equity strategies. No historical private data, source projects, broker positions or investment dossiers are copied. Errors prevent deployment rather than replace the data with invented observations.
+
+
+## Source-gated prospective research journal
+
+The institutional journal initially holds **zero historical events**, deliberately avoiding invented prospective records. The first natural successful run will issue one prediction after source receipt. After a subsequent distinct official fixing, the machine adds a separate outcome event referring to the original signal hash. Only then does a forecast become scoreable. Rules are fixed one-step baselines (no-change, momentum and reversal), and errors are measured as absolute USD/EUR deviations. They are not simulated profit, tradable fills, or investment recommendations. The 23 existing equity paper strategies remain entirely synthetic.
+
+The journal checks chronological order, unique fixing dates, source digests, an event hash chain and model-score reconciliation. Failed downloads, missing source windows, invalid rates, branch restrictions or insufficient GitHub token permissions must stop the update without inventing observations. The expected schedule is 17:40 UTC on weekdays for persistence and 18:25 UTC for Pages; GitHub scheduling can be delayed or skipped. The first scheduled write and publication must be verified separately. A hash chain only provides tamper evidence anchored by trusted Git history; an authorized complete rewrite of that history remains possible.

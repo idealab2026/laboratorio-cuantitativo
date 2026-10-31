@@ -1,0 +1,8 @@
+{
+  "schema": "idea_lab_fx_forecast_events_v1",
+  "data_class": "prospective_reference_forecasts_not_trades",
+  "series": "D.USD.EUR.SP00.A",
+  "source": "European Central Bank (ECB statistics)",
+  "notice": "Prospective forecasts of ECB reference fixings only. No executable fills, investment P&L or broker positions.",
+  "events": []
+}

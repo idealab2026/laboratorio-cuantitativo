@@ -67,3 +67,12 @@ python3 scripts/audit_public.py
 ## Piloto de datos oficiales
 
 El panel «Salud operativa / diario» presenta la referencia EUR/USD del BCE, fecha, edad del dato, cobertura y hash SHA-256 de la respuesta; los datos son informativos, **no ejecutables ni convertibles en rentabilidad paper**. La fuente es [ECB Data Portal](https://data.ecb.europa.eu/help/api/data-examples), reutilizada con atribución «Source: ECB statistics». Si falla la ingesta o su contrato, la publicación se bloquea. La integración no implica que las 23 estrategias estén funcionando prospectivamente ni que exista un feed OHLC de acciones.
+
+
+## Diario prospectivo institucional (BCE, sin posiciones)
+
+Separado de los 23 algoritmos bursátiles sintéticos, el laboratorio incorpora un registro de predicciones del siguiente fixing EUR/USD. La fuente es exclusivamente la serie oficial del BCE, no un precio negociable. Tres reglas fijas —sin cambio, momentum de una referencia y reversión de una referencia— emiten una predicción después de recibir el último fixing. Cuando llega el siguiente dato, se incorpora un evento posterior con el error absoluto de cada modelo. No se fabrican señales anteriores al inicio del registro ni beneficios financieros.
+
+El diario público está versionado en `data/fx-forecast-ledger.json`. La automatización `.github/workflows/fx-ledger.yml`, con permiso restringido a escritura de contenidos, está programada de lunes a viernes a las 17:40 UTC. Comprueba fuente, fechas, cadena de hashes y puntuación. Si falla la fuente, no hay suficientes fechas o el token no tiene permisos, no escribe datos y debe notificar error. Pages se publica posteriormente a las 18:25 UTC si sus comprobaciones pasan. Ni la puntualidad ni el éxito de las ejecuciones programadas están aún demostrados.
+
+La cadena SHA-256 hace detectable la alteración de eventos sin rehacerla; no impide que un administrador autorizado reescriba el historial completo. La auditoría debe corroborarse con los commits de Git.
