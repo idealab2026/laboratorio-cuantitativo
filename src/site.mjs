@@ -1,6 +1,6 @@
 import {signalResearchSummary,methodCatalog} from "./paper-methods.mjs";
 import {artificialCampaignComparison} from "./paper-ledger.mjs";
-import {verifyFullRoster,filterRoster} from "./competition-roster.mjs";
+import {verifyFullRoster,filterRoster,technicalStage,technicalCoverage} from "./competition-roster.mjs";
 import {verifyPaperFeed} from "./paper-feed.mjs";
 import {verify,simulate,rank,valuation,thesisRank,formatPct,money,finite,verifyIssuerCatalog,filterIssuers,syntheticBarsFromDemo,nextOpenPaper,evaluateIssuerScreen,competitionReadModel,publicIssuerReadModel,verifyOfficialFx,summarizeFxForecastLedger,verifySecFilings,verifyOfficialYield} from "./metrics.mjs";
 const $=id=>document.getElementById(id);
@@ -378,7 +378,7 @@ function fullRosterRows(){
    "Sin diario institucional";
  const risks=record?.risk||{},label=record?.comparison?.eligible?"Misma referencia certificada":"Sin evidencia comparable";
  const curve=record?sparkline(record.history.map(x=>x.nav)):"—";
- return '<tr><td><strong>'+esc(item.name)+'</strong><small class="smallline">'+esc(item.slot)+'</small></td>'+
+ return '<tr><td><strong>'+esc(item.name)+'</strong><small class="smallline">'+esc(item.slot)+' · '+esc(technicalStage(item.slot).label)+'</small></td>'+
   '<td>'+esc(item.group)+'</td><td>'+active+'</td>'+
   '<td>'+esc(record?.last_session||"Sin datos")+'</td><td>'+esc(record?.currency||"N/D")+'</td>'+
   '<td class="number">'+(record?pctText(record.return_pct):"N/D")+'</td>'+
@@ -395,6 +395,7 @@ function full(){
  "Cobertura funcional de las familias del laboratorio con columnas de actividad, rentabilidad, riesgo y comparabilidad. El inventario no transfiere ni certifica los diarios del sistema anterior.");
  if(!d)return headText+card('<h3>Inventario no verificable</h3><p>El registro institucional está pendiente de carga o ha fallado su validación. No se sustituyen datos perdidos por simulaciones.</p>');
  const meta=verifyFullRoster(d),visible=filterRoster(d,{group:state.fullRosterGroup,query:state.fullRosterQuery});
+ const technical=technicalCoverage(d);
  return headText+
  '<div class="source-health-strip"><div><span class="label">Funciones registradas</span><strong>'+meta.count+'</strong><small>'+meta.groups.length+' grupos funcionales</small></div>'+
  '<div><span class="label">Diarios institucionales certificados</span><strong>'+(state.paperFeedRead?.count||0)+'</strong><small>'+(state.paperFeedRead?.status==="source_verified"?"Resumen institucional firmado y auditado":"Sin fuente institucional acreditada")+'</small></div>'+
@@ -404,6 +405,7 @@ function full(){
  meta.groups.map(g=>'<option value="'+esc(g.name)+'" '+(g.name===state.fullRosterGroup?"selected":"")+'>'+esc(g.name)+' · '+g.count+'</option>').join("")+
  '</select></label><label>Buscar<input id="full-query" type="search" value="'+esc(state.fullRosterQuery)+'" placeholder="Algoritmo o familia"></label>'+
  button("Exportar inventario CSV","full-export","csv","outline-btn")+'</div>'+
+ '<p class="table-note">Cobertura de código: '+technical.book_unstarted+' libros paper preparados sin iniciar · '+technical.signal_contract+' contratos semanales sin modelos certificados · '+technical.pending+' implementaciones pendientes. Esto no mide actividad bursátil ni resultados.</p>'+
  '<p class="table-note"><span id="full-count">'+visible.length+'</span> de '+meta.count+' entradas · el valor N/D significa información no verificada, no una rentabilidad cero</p>'+
  '<div class="table-scroll table-compact"><table><thead><tr><th>Estrategia / ID</th><th>Familia</th><th>Actividad</th><th>Fecha</th><th>Divisa</th><th class="number">P/L acumulado</th><th class="number">P/L día</th><th class="number">Volatilidad</th><th class="number">Drawdown</th><th class="number">Posiciones / órdenes</th><th>Comparabilidad</th><th>Curva</th></tr></thead><tbody id="full-rows">'+fullRosterRows()+'</tbody></table></div>'+
  card('<h3>Condiciones de publicación de cada diario</h3><p>Para activar una línea se debe verificar la fuente de cotizaciones y sus permisos, la fecha exacta de cada señal, su ejecución al siguiente mercado, el historial de NAV, la divisa y los metadatos de comparabilidad. Las carteras de distinta fecha de inicio o universo no se ordenarán como si compitieran en igualdad de condiciones.</p>')+
@@ -508,7 +510,7 @@ $("app").addEventListener("click",e=>{
  else if(action==="paper-select"){state.paperDetail=value;render();}
  else if(action==="full-export"){
   if(state.fullRoster){const rows=filterRoster(state.fullRoster,{group:state.fullRosterGroup,query:state.fullRosterQuery});
-   download("midas-64-funciones.csv",[["ID","Nombre","Familia","Estado","Actividad","Rentabilidad","Riesgo","Comparabilidad"],...rows.map(x=>{const r=state.paperFeedRead?.bySlot.get(x.slot);return [x.slot,x.name,x.group,r?"fuente_verificada":"pendiente",r?.activity||"N/D",r?.return_pct??"N/D",r?.risk?.max_drawdown_pct??"N/D",r?.comparison?.eligible?"misma referencia":"no comparable"];})]);}
+   download("midas-64-funciones.csv",[["ID","Nombre","Familia","Fase técnica","Estado económico","Actividad","Rentabilidad","Riesgo","Comparabilidad"],...rows.map(x=>{const r=state.paperFeedRead?.bySlot.get(x.slot);return [x.slot,x.name,x.group,technicalStage(x.slot).label,r?"fuente_verificada":"pendiente",r?.activity||"N/D",r?.return_pct??"N/D",r?.risk?.max_drawdown_pct??"N/D",r?.comparison?.eligible?"misma referencia":"no comparable"];})]);}
  }
  else if(action==="issuer-column"){
   if(state.issuerSort===value)state.issuerAsc=!state.issuerAsc;

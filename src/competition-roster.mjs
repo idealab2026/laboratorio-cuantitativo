@@ -61,3 +61,25 @@ export function filterRoster(doc,{group="",query=""}={}){
  return doc.entries.filter(x=>(!group||x.group===group)&&
   (!q||[x.slot,x.group,x.name].some(v=>v.toLocaleLowerCase("es").includes(q))));
 }
+
+/* Technical readiness is a separate axis from source-attested economic activity.
+ * Counts describe installed code paths only; no positions or returns are inferred.
+ */
+export function technicalStage(slot){
+ if(!IDENTIFIER.test(slot)||Number(slot.slice(3))<1||Number(slot.slice(3))>64)
+  throw Error("Unknown institutional strategy slot");
+ const id=Number(slot.slice(3));
+ if(id<=2||(id>=10&&id<=18)||id===38||id===39)
+  return {id:"book_unstarted",label:"Motor paper preparado · sin iniciar"};
+ if(id>=19&&id<=27)
+  return {id:"signal_contract",label:"Contrato semanal · sin modelos certificados"};
+ return {id:"pending",label:"Implementación pendiente"};
+}
+export function technicalCoverage(roster){
+ verifyFullRoster(roster);
+ const totals={book_unstarted:0,signal_contract:0,pending:0};
+ for(const x of roster.entries)totals[technicalStage(x.slot).id]++;
+ if(totals.book_unstarted!==13||totals.signal_contract!==9||
+    totals.pending!==42)throw Error("Unexpected 64-line technical readiness");
+ return totals;
+}
