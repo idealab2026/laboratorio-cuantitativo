@@ -1,0 +1,157 @@
+{
+  "meta": {
+    "data_class": "synthetic",
+    "version": "0.1.0",
+    "currency": "EUR",
+    "horizon": "8 sesiones ficticias",
+    "publication": "Muestra sintética, no operaciones ni recomendaciones reales",
+    "data_asof": "2026-10-31"
+  },
+  "dates": [
+    "S1",
+    "S2",
+    "S3",
+    "S4",
+    "S5",
+    "S6",
+    "S7",
+    "S8"
+  ],
+  "strategies": [
+    {
+      "id": "P-01",
+      "name": "Referencia diversificada",
+      "category": "Benchmark",
+      "rule": "Exposición constante hipotética a un índice diversificado.",
+      "start": "S1",
+      "cost_bps": 5,
+      "coverage": 100,
+      "nav": [
+        100,
+        101,
+        100,
+        103,
+        102,
+        104,
+        105,
+        104
+      ],
+      "status": "Simulación"
+    },
+    {
+      "id": "P-02",
+      "name": "Tendencia",
+      "category": "Técnica",
+      "rule": "Exposición condicionada a una señal ficticia de tendencia y filtro de riesgo.",
+      "start": "S1",
+      "cost_bps": 12,
+      "coverage": 100,
+      "nav": [
+        100,
+        102,
+        103,
+        102,
+        104,
+        106,
+        105,
+        107
+      ],
+      "status": "Simulación"
+    },
+    {
+      "id": "P-03",
+      "name": "Reversión",
+      "category": "Estadística",
+      "rule": "Cartera simulada que pondera anomalías de corto plazo en datos sintéticos.",
+      "start": "S1",
+      "cost_bps": 15,
+      "coverage": 100,
+      "nav": [
+        100,
+        99,
+        101,
+        100,
+        98,
+        100,
+        103,
+        102
+      ],
+      "status": "Simulación"
+    },
+    {
+      "id": "P-04",
+      "name": "Consenso de señales",
+      "category": "Ensemble",
+      "rule": "Promedio de señales independientes construidas exclusivamente para esta demostración.",
+      "start": "S1",
+      "cost_bps": 18,
+      "coverage": 100,
+      "nav": [
+        100,
+        100,
+        102,
+        104,
+        103,
+        105,
+        106,
+        108
+      ],
+      "status": "Simulación"
+    },
+    {
+      "id": "P-05",
+      "name": "Liquidez",
+      "category": "Control",
+      "rule": "Capital ficticio sin posiciones; benchmark de no asumir riesgo.",
+      "start": "S1",
+      "cost_bps": 0,
+      "coverage": 100,
+      "nav": [
+        100,
+        100,
+        100,
+        100,
+        100,
+        100,
+        100,
+        100
+      ],
+      "status": "Simulación"
+    }
+  ],
+  "theses": [
+    {
+      "id": "T-01",
+      "subject": "Activo ficticio A",
+      "kind": "Hipótesis fundamental",
+      "status": "Abierta",
+      "issued_at": "2026-10-01",
+      "hypothesis": "El margen operativo hipotético mejora en un escenario de normalización de costes.",
+      "counter": "La mejora desaparece si aumenta el coste de capital.",
+      "test": "Contrastar un margen simulado en tres escenarios y documentar sensibilidad.",
+      "evidence": "Ejemplo sintético, sin emisor real."
+    },
+    {
+      "id": "T-02",
+      "subject": "Universo ficticio B",
+      "kind": "Hipótesis estadística",
+      "status": "En evaluación",
+      "issued_at": "2026-10-03",
+      "hypothesis": "Una señal de tendencia puede superar una referencia constante bajo ciertas hipótesis.",
+      "counter": "El coste de transacción elimina la posible ventaja.",
+      "test": "Comparar walk-forward con baseline y costes documentados.",
+      "evidence": "Ejemplo sintético; ningún resultado prospectivo."
+    },
+    {
+      "id": "T-03",
+      "subject": "Escenario macro ficticio",
+      "kind": "Riesgo de escenario",
+      "status": "Protocolo",
+      "issued_at": "2026-10-07",
+      "hypothesis": "La concentración aumenta las pérdidas simuladas bajo un choque común.",
+      "counter": "La diversificación de factores reduce la concentración estimada.",
+      "test": "Ensayo de sensibilidad sobre correlación hipotética.",
+      "evidence": "Ejemplo sintético, sin datos económicos reales."
+    }
+  ]
+}
