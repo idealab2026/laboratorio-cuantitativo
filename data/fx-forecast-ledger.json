@@ -18,6 +18,16 @@
       },
       "previous_hash": "0000000000000000000000000000000000000000000000000000000000000000",
       "hash": "7f5829bba23df074a6780afb0b6fe39ffee18dbe023c64d052f68b40e86db9f7"
+    },
+    {
+      "event_type": "invalidated",
+      "fixing_date": "2026-10-30",
+      "recorded_at_utc": "2026-10-31T15:53:10Z",
+      "source_sha256": "0412a8bf8dff5a56751053602bf58d87e4666ed55605b4fda51e18ffcb45c06f",
+      "signal_hash": "7f5829bba23df074a6780afb0b6fe39ffee18dbe023c64d052f68b40e86db9f7",
+      "reason": "prediction_input_order_bug_v1",
+      "previous_hash": "7f5829bba23df074a6780afb0b6fe39ffee18dbe023c64d052f68b40e86db9f7",
+      "hash": "e00e355f2ae99c3bf2e4214d665a2942a5fbc0ca3c83b8f7be97b52d1fca423e"
     }
   ]
 }

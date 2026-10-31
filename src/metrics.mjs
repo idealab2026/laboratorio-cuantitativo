@@ -426,10 +426,10 @@ export function summarizeFxForecastLedger(data){
    !Array.isArray(data.events)||data.events.length>10000)
   throw Error("No independently verified FX forecast ledger");
  const models=["unchanged","momentum_1","reversal_1"];
- const seen=new Set(),issued=new Map(),resolutions=new Map();
+ const seen=new Set(),issued=new Map(),resolutions=new Map(),invalidations=new Map(),inconsistent=new Set();
  let previous="0".repeat(64);
  for(const event of data.events){
-  if(!event||!["issued","resolved"].includes(event.event_type)||
+  if(!event||!["issued","resolved","invalidated"].includes(event.event_type)||
      !/^[a-f0-9]{64}$/.test(event.hash||"")||
      !/^[a-f0-9]{64}$/.test(event.source_sha256||"")||
      event.previous_hash!==previous||
@@ -438,13 +438,25 @@ export function summarizeFxForecastLedger(data){
     throw Error("Forecast lineage absent or malformed");
   if(event.event_type==="issued"){
    if(seen.has(event.fixing_date)||!event.predictions||
+      !/^\d+\.\d{1,8}$/.test(event.observed_rate||"")||
       !models.every(k=>/^\d+\.\d{1,8}$/.test(event.predictions[k]||""))||
       Object.keys(event.predictions).length!==3)throw Error("Invalid issued forecast");
    seen.add(event.fixing_date);issued.set(event.hash,event);
+   const reference=Number(event.observed_rate),b=Number(event.predictions.unchanged);
+   if(Math.abs(reference-b)>0.0000005 ||
+      Math.abs(Number(event.predictions.momentum_1)+Number(event.predictions.reversal_1)-2*reference)>0.0000021)
+     inconsistent.add(event.hash);
+  }else if(event.event_type==="invalidated"){
+   const original=issued.get(event.signal_hash);
+   if(!original||original.fixing_date!==event.fixing_date||invalidations.has(event.signal_hash)||
+      resolutions.has(event.signal_hash)||!inconsistent.has(event.signal_hash)||
+      event.reason!=="prediction_input_order_bug_v1")
+    throw Error("Unsupported prospective forecast invalidation");
+   invalidations.set(event.signal_hash,event);
   }else{
    const original=issued.get(event.signal_hash);
-   if(!original||resolutions.has(event.signal_hash)||original.fixing_date!==event.fixing_date||
-     !(event.realized_fixing_date>event.fixing_date)||
+   if(!original||resolutions.has(event.signal_hash)||invalidations.has(event.signal_hash)||
+     original.fixing_date!==event.fixing_date||!(event.realized_fixing_date>event.fixing_date)||
      !/^\d+\.\d{1,8}$/.test(event.realized_rate||"")||
      !event.absolute_errors||Object.keys(event.absolute_errors).length!==3||
      !models.every(k=>Math.abs(Number(event.absolute_errors[k])-Math.abs(Number(original.predictions[k])-Number(event.realized_rate)))<.0000011))
@@ -453,8 +465,12 @@ export function summarizeFxForecastLedger(data){
   }
   previous=event.hash;
  }
- const rows=[...issued.values()].map(i=>({issued:i,settled:resolutions.get(i.hash)||null}));
+ if(inconsistent.size!==invalidations.size || [...inconsistent].some(x=>!invalidations.has(x)))
+  throw Error("Distorted signals must be explicitly invalidated");
+ const rows=[...issued.values()].map(i=>({issued:i,settled:resolutions.get(i.hash)||null,invalidated:invalidations.has(i.hash)}));
  const scored=[...resolutions.values()];
  const mae=Object.fromEntries(models.map(k=>[k,scored.length?scored.reduce((sum,e)=>sum+Number(e.absolute_errors[k]),0)/scored.length:null]));
- return {rows,modelMAE:mae,issuedCount:rows.length,resolvedCount:scored.length,unresolvedCount:rows.length-scored.length,headHash:previous};
+ return {rows,modelMAE:mae,issuedCount:rows.length,validCount:rows.length-invalidations.size,
+  invalidatedCount:invalidations.size,resolvedCount:scored.length,
+  unresolvedCount:rows.length-invalidations.size-scored.length,headHash:previous};
 }

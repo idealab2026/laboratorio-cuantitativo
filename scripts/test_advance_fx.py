@@ -4,8 +4,9 @@ import json
 import unittest
 from datetime import datetime, timedelta, timezone
 from decimal import Decimal
+from pathlib import Path
 
-from advance_fx import advance, empty_ledger, event_hash, verify_ledger
+from advance_fx import advance, empty_ledger, event_hash, verify_ledger, forecasts, append_event
 from refresh_ecb import SERIES, SOURCE, URL, NOTICE, validate_document
 
 
@@ -120,6 +121,45 @@ class ProspectiveFXTests(unittest.TestCase):
         self.assertGreater(len(data["observations"]),15)
         self.assertNotIn("positions",ledger)
         self.assertNotIn("brokers",ledger)
+
+
+    def test_last_observation_is_baseline_and_momentum_uses_only_previous_delta(self):
+        obs=official_fixture()["observations"]
+        p,c=Decimal(obs[-2]["usd_per_eur"]),Decimal(obs[-1]["usd_per_eur"])
+        expected=forecasts(obs)
+        self.assertEqual(expected["unchanged"],format(c,".6f"))
+        self.assertEqual(expected["momentum_1"],format(c+(c-p),".6f"))
+        self.assertEqual(expected["reversal_1"],format(c-(c-p),".6f"))
+        self.assertNotEqual(expected["unchanged"],format(p,".6f"))
+
+    def test_real_initial_fault_is_invalidated_preserved_and_not_scored(self):
+        path=Path(__file__).resolve().parents[1] / "data/fx-forecast-ledger.json"
+        canonical=json.loads(path.read_text(encoding="utf8"))
+        self.assertTrue(verify_ledger(canonical))
+        issue=canonical["events"][0]
+        void=canonical["events"][1]
+        self.assertEqual(issue["fixing_date"],"2026-10-30")
+        self.assertEqual(void["event_type"],"invalidated")
+        self.assertEqual(void["signal_hash"],issue["hash"])
+        self.assertEqual(void["reason"],"prediction_input_order_bug_v1")
+        self.assertNotEqual(issue["predictions"]["unchanged"],
+                            format(Decimal(issue["observed_rate"]),".6f"))
+        again=copy.deepcopy(canonical)
+        self.assertGreaterEqual(advance(again,official_fixture()),0)
+        self.assertFalse(any(e["event_type"]=="resolved" and e["signal_hash"]==issue["hash"]
+                             for e in again["events"]))
+
+    def test_bad_issue_without_matching_invalidation_must_fail(self):
+        canonical=json.loads((Path(__file__).resolve().parents[1] / "data/fx-forecast-ledger.json").read_text(encoding="utf8"))
+        missing=copy.deepcopy(canonical)
+        missing["events"].pop()
+        with self.assertRaisesRegex(ValueError,"explicitly invalidated"):
+            verify_ledger(missing)
+        tampered=copy.deepcopy(canonical)
+        tampered["events"][1]["reason"]="undocumented"
+        tampered["events"][1]["hash"]=event_hash(tampered["events"][1])
+        with self.assertRaises(ValueError):
+            verify_ledger(tampered)
 
 
 if __name__=="__main__":
