@@ -223,6 +223,21 @@ function monitoring(){
  ).join("")+'</tbody></table></div>'+
  disclaimer("Prototipo analítico next-open. No acredita precisión predictiva ni rentabilidad real; no hay broker, cotizaciones externas, motor de persistencia ni ejecución programada.");
 }
+function archive(){
+ const rows=all();
+ const groupsInCatalog=groups();
+ return head("CATÁLOGO · HISTÓRICO","Métodos, familias y versiones","Un inventario no equivale a un histórico de operaciones. Las campañas reales, diarios antiguos y versiones prospectivas necesitan ingestión y trazabilidad institucional propias.")+
+ '<div class="source-health-strip"><div><span class="label">Prototipos disponibles</span><strong>'+rows.length+'</strong><small>Reglas independientes con datos sintéticos</small></div>'+
+ '<div><span class="label">Campañas forward verificadas</span><strong>0</strong><small>Sin ejecución programada ni capturas inmutables</small></div>'+
+ '<div><span class="label">Diarios antiguos importados</span><strong>0</strong><small>No se fusionan con el ranking activo</small></div></div>'+
+ disclaimer("No se han importado resultados históricos ni se han reconstruido operaciones antiguas. La continuidad y el estado real de los algoritmos de otro entorno no pueden inferirse de esta demostración.")+
+ '<div class="family-grid">'+groupsInCatalog.map(g=>card('<div class="panel-top"><h3>'+esc(g)+'</h3><span class="chip">'+rows.filter(r=>r.group===g).length+' prototipos</span></div>'+
+ '<p>'+esc(family(g))+'</p><ul class="algorithm-list">'+rows.filter(r=>r.group===g).map(r=>'<li><span>'+esc(r.name)+' <small class="inline-id">'+esc(r.id)+'</small></span>'+button("Ficha","select",r.id,"text-btn")+'</li>').join("")+'</ul>')).join("")+'</div>'+
+ head("VERSIONES Y CAMPAÑAS","Histórico aislado","El historial sin fuente verificable no debe aparecer como rentabilidad acumulada de una estrategia operativa.")+
+ card('<h3>Sin histórico institucional importado</h3><p>Para habilitar campañas independientes hacen falta fechas reales de inicio, identificadores estables de estrategia y versión, señales previas a cada fill, libro de órdenes, valoración por cierre, costes, capital, posiciones, ausencias de cotización y registro inmutable por sesión. Las campañas anteriores deben quedar separadas del experimento activo.</p>')+
+ button("Volver a la clasificación","navigate","competition","outline-btn");
+}
+
 function methodology(){
  return head("MÉTODO Y LÍMITES","Evaluación reproducible","La infraestructura pública reproduce la experiencia funcional de un laboratorio cuantitativo, pero no ha importado ni los resultados ni los motores entrenados de ningún sistema externo.")+
  '<div class="method-grid">'+[
@@ -247,7 +262,7 @@ function chart(){
 }
 function render(){
  if(!state.data)return;
- const pages={overview,competition,algorithms,theses,monitoring,method:methodology};
+ const pages={overview,competition,algorithms,theses,monitoring,archive,method:methodology};
  document.querySelectorAll(".product-tabs [data-view]").forEach(b=>{const active=b.dataset.view===state.view;b.classList.toggle("active",active);b.setAttribute("aria-pressed",String(active));});
  $("app").innerHTML=(pages[state.view]||overview)();chart();
 }
