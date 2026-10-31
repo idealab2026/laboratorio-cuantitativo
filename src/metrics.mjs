@@ -63,7 +63,7 @@ export function signal(mode,market,idx){
   case "cash":return [0,0,0];
   case "linear":return weighted(m4.map((v,i)=>Math.max(0,.7*v+.3*m9[i]+.01)));
   case "direction":return weighted(m4.map(v=>v>0?1:0),.85);
-  case "crossrank":return [0,1,2].map(j=>j===ranked[0]?.75:j===ranked[1]?.25:0);
+  case "crossrank":return [0,1,2].map(j=>j===ranked[0] ? 0.75 : j===ranked[1] ? 0.25 : 0);
   case "perceptron":return weighted(m4.map((v,i)=>clip((1+Math.tanh(v*28-m9[i]*9))/2)));
   case "memory":return weighted(m9.map((v,i)=>Math.max(0,1+v*15+m4[i]*7)));
   case "ensemble":return weighted(m4.map((v,i)=>Math.max(0,1+v*8-m9[i]*3+1/(vol[i]*100))));
