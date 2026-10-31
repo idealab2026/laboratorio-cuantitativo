@@ -109,3 +109,13 @@ Este módulo se mantiene separado de la competición original de 23 prototipos. 
 
 
 El benchmark artificial se simula sobre un noveno símbolo ficticio y la referencia equiponderada sobre ocho símbolos ficticios distintos. La distribución de efectivo en las compras concurrentes se calcula a partir del efectivo disponible antes de ejecutar las órdenes, evitando pesos decrecientes por el orden de procesamiento. **Esta referencia no reproduce todavía SPY, sus dividendos ni un índice real:** los importes y porcentajes son simulaciones sin uso inversor.
+
+## Fuente OHLC de acciones — política de continuidad
+
+El proveedor de cotizaciones históricas elegido para MIDAS IDEA LAB es **Yahoo Finance**, leído con **`yfinance`**, sin cambiar a Alpha Vantage ni a otra API. El módulo `scripts/yahoo_source.py` recoge el contrato de investigación: barras RAW diarias de mercado XNYS, `interval="1d"`, `auto_adjust=False`, `actions=True`, volumen, dividendos y splits; 503 símbolos de un universo institucional congelado e independiente y `SPY` como benchmark separado; cobertura mínima del 90 % y un hash SHA-256 del snapshot exacto. Las fechas, la estructura y el proveedor se verifican; una cotización ausente nunca se sustituye por una fecha anterior.
+
+La validación offline está incluida en las pruebas del repositorio y puede ejecutarse con `python3 scripts/yahoo_source.py --check-contract`. La función de descarga utiliza `yf.download` bajo demanda, pero **la aplicación pública no ingiere ni distribuye todavía series Yahoo**. La captura privada de investigación requiere habilitación deliberada y un almacenamiento ya existente fuera del repositorio público. Las ejecuciones previstas de Yahoo no se activan automáticamente por publicar el código. No se han transferido snapshots, posiciones, historiales, fuentes personales ni nombres de cuentas externas.
+
+Esta distinción importa porque la documentación de `yfinance` advierte que la API subyacente de Yahoo está destinada al uso personal, y la licencia del código no confiere por sí sola derechos para republicar los datos. Para una web institucional accesible públicamente hay que verificar los derechos de explotación y publicación antes de habilitar esa exposición. No implica la contratación ni sustitución del proveedor por otro.
+
+La equivalencia restante exige un universo institucional verificado y no identificable con un repositorio personal, calendario de capturas, almacenamiento de OHLC con acceso restringido, recuperación acotada de barras ausentes, distribución a los algoritmos, ejecución prospectiva y auditoría de los libros. Ninguna rentabilidad artificial debe pasar por resultado bursátil real.
