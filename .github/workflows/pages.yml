@@ -51,6 +51,8 @@ jobs:
           node --check src/paper-ledger.mjs
           node --check src/competition-roster.mjs
           node --check src/paper-feed.mjs
+      - name: Install exact research-only LightGBM runtime
+        run: python3 -m pip install --disable-pip-version-check -r scripts/requirements-research.txt
       - name: Unit tests
         run: |
           node --test tests/*.test.mjs
