@@ -10,11 +10,11 @@ Status: PARTIAL. This document tracks independent institutional functionality wi
 | Statistical forecasting | Locally fitted linear and logistic estimators with forward-only tests | EXPERIMENTAL | Only artificial observations; no financial OOS evaluation |
 | Larger neural and temporal model families | None independently reimplemented | BLOCKED | Reproducible datasets, computation and evaluation protocol |
 | Parameter-search and evolutionary methods | Fixed example weights only | BLOCKED | Real optimizers and untouched test periods |
-| Market data and corporate actions | No externally connected source | BLOCKED | License, availability timestamps and split/dividend policy |
+| Market data and corporate actions | Daily ECB EUR/USD reference observations with source digest and UTC provenance; no stock OHLC | PARTIAL | ECB fixing is not executable, no equity feed or corporate-action adjustments |
 | Capital allocation and drawdown-aware families | Demonstration rules | EXPERIMENTAL | Parameters and validation not independently established |
 | Company research and scenarios | 25 public issuer identities, eight SEC indexes, one independently sourced dated MSFT EPS–PER exploratory screen and six fictitious demonstrations | PARTIAL | No validated DCF, current-price feed, corporate action handling or approved forecasts; historic MSFT close is not live |
 | Historical orders and performance | No transferred observations | EXCLUDED | Reproduction, rights and attribution reviews |
-| Scheduled scientific operation | Static-page CI and publication workflow only | PARTIAL | Independent institutional data and persistence |
+| Scheduled scientific operation | Weekday GitHub Actions ECB observations before static publication | PARTIAL | Need observed schedule runs; no persistent prospective strategy ledger |
 | Source quality, privacy and identity gates | Allowlisted static build and institutional author checks | PARTIAL | External cross-correlation review not certifiable automatically |
 
 ## Mandatory evidence for a production claim
@@ -57,3 +57,10 @@ This institutionally developed interface has three distinct functional surfaces:
 **Not yet equivalent to a prospective production quantitative service:** no real provider OHLC freshness report, no verified natural-run GitHub Actions chain, no scheduled model training or state persistence, no independently migrated individual strategy rules, no verifiable 503-member market universe, no real open orders or positions, no adjusted portfolio histories, and no externally approved public investment reports. The institution displays a fail-closed "source unavailable" state rather than synthesizing healthy runtime telemetry. The separate next-open paper harness remains experimental and is not silently substituted into the earlier 23-method ranking.
 
 Public issuer counts reflect identified companies, not approved dossiers. A preliminary EPS sensitivity is not a full valuation. Public feature parity does not justify importing private notes or execution journals, and it does not prove identity unlinkability.
+
+
+## ECB official-source data pilot
+
+The institutional CI captures daily ECB USD-per-EUR reference fixings (EXR/D.USD.EUR.SP00.A), retaining a raw-response SHA-256 digest, UTC retrieval timestamp, source URL, exact numeric literals and dated observations. It rejects missing or stale dates, inconsistent dimensions, weekends, duplicates and implausible values. Statistics are reused with the explicit attribution **Source: ECB statistics** and the ECB published reuse policy. The scheduled action is weekdays 17:25 UTC, but a declared schedule does not prove any future successful execution.
+
+These are **statistical reference observations**, not transaction prices, corporate-action-adjusted equity data, broker marks, executable opening prices or paper-order fills. The daily fixing feed is kept separate from all 23 synthetic equity strategies. No historical private data, source projects, broker positions or investment dossiers are copied. Errors prevent deployment rather than replace the data with invented observations.

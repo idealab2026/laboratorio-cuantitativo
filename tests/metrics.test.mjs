@@ -1,7 +1,7 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 import {readFileSync} from "node:fs";
-import {verify,signal,simulate,rank,valuation,thesisRank,absentQuote,cumulative,maxDrawdown,formatPct,syntheticBarsFromDemo,nextOpenPaper,verifyIssuerCatalog,evaluateIssuerScreen,competitionReadModel,publicIssuerReadModel} from "../src/metrics.mjs";
+import {verify,signal,simulate,rank,valuation,thesisRank,absentQuote,cumulative,maxDrawdown,formatPct,syntheticBarsFromDemo,nextOpenPaper,verifyIssuerCatalog,evaluateIssuerScreen,competitionReadModel,publicIssuerReadModel,verifyOfficialFx} from "../src/metrics.mjs";
 const data=JSON.parse(readFileSync(new URL("../data/demo.json",import.meta.url),"utf8"));
 test("The independent public universe is strictly synthetic",()=>{
  assert.equal(verify(data),true);
@@ -237,4 +237,57 @@ test("Institutional UI offers row inspection, column sorting, historic isolation
  }
  assert.ok(css.includes(".interactive-table-row:focus-visible"));
  assert.ok(src.includes("periodReturns")); // Only synthetic NAV windows; no claim of actual trading sessions.
+});
+
+
+function exampleOfficialFx(){
+ const observations=[];
+ for(let t=Date.UTC(2026,9,1);t<=Date.UTC(2026,9,30);t+=86400000){
+  const date=new Date(t);
+  if(date.getUTCDay()>=1&&date.getUTCDay()<=5)
+   observations.push({date:date.toISOString().slice(0,10),usd_per_eur:(1.12+observations.length/10000).toFixed(4)});
+ }
+ return {
+  status:"verified_observations",data_class:"official_fx_reference_only",series:"D.USD.EUR.SP00.A",
+  quote_currency:"USD",base_currency:"EUR",source:"European Central Bank (ECB statistics)",
+  source_url:"https://data-api.ecb.europa.eu/service/data/EXR/D.USD.EUR.SP00.A?lastNObservations=80&format=csvdata",
+  source_sha256:"a".repeat(64),received_at_utc:"2026-10-31T14:00:00Z",latest_observation:"2026-10-30",
+  count:observations.length,not_tradable:true,
+  notice:"ECB reference rate: US dollars per one euro, NOT a transaction, bid/ask, open or close.",
+  observations};
+}
+test("Official ECB observations retain dated provenance without implying executable prices",()=>{
+ const doc=exampleOfficialFx(),result=verifyOfficialFx(doc,new Date("2026-10-31T15:00:00Z"));
+ assert.equal(result.referenceOnly,true);
+ assert.equal(result.ageDays,1);
+ assert.equal(result.date,"2026-10-30");
+ assert.equal(result.count,22);
+ assert.ok(result.rate>=1.12);
+});
+test("Official FX validator rejects altered source, weekend, future values and stale provenance",()=>{
+ const example=exampleOfficialFx();
+ for(const modify of [
+  x=>{x.source_url="https://fake.test/rates";},
+  x=>{x.not_tradable=false;},
+  x=>{x.count++;},
+  x=>{x.observations[2].usd_per_eur="0.0001";},
+  x=>{x.observations[2].date="2026-12-30";},
+  x=>{x.observations[2].date="2026-10-03";},
+  x=>{x.observations[2].date=x.observations[1].date;},
+  x=>{x.received_at_utc="2027-01-01T00:00:00Z";},
+ ]){
+  const doc=structuredClone(example);modify(doc);
+  assert.throws(()=>verifyOfficialFx(doc,new Date("2026-10-31T15:00:00Z")));
+ }
+});
+test("ECB observatory is displayed separately from the preexisting synthetic strategy competition",()=>{
+ const src=readFileSync(new URL("../src/site.mjs",import.meta.url),"utf8");
+ assert.ok(src.includes("function officialFxPanel()"));
+ assert.ok(src.includes("loadOfficialFx()"));
+ assert.ok(src.includes('fetch("./data/official-fx.json"'));
+ assert.ok(src.includes("Esta serie NO alimenta todavía los 23 modelos paper"));
+ assert.ok(src.includes("Sin alimentación real")); // Equity OHLC must remain clearly unavailable.
+ const workflow=readFileSync(new URL("../.github/workflows/pages.yml",import.meta.url),"utf8");
+ assert.ok(workflow.includes("cron: '25 17 * * 1-5'"));
+ assert.ok(workflow.includes("refresh_ecb.py --validate"));
 });

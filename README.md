@@ -2,7 +2,7 @@
 
 Laboratorio público e independiente para comparar estrategias de inversión **paper** (ficticias), investigar modelos y formalizar tesis verificables. La aplicación se ejecuta completamente en el navegador y no utiliza datos personales ni infraestructura privada.
 
-**Estado científico: demostración sintética.** Ninguna cifra se obtiene de cotizaciones, operaciones o emisores reales. La versión pública no contiene históricos originales ni modelos entrenados de otros sistemas.
+**Estado científico: competición sintética y fuentes primarias separadas.** Los 23 resultados paper siguen basándose en activos ficticios. El piloto independiente del BCE ofrece observaciones oficiales de EUR/USD (referencias, no precios de operaciones), y existe un primer screening público fechado de una empresa. No se importan historiales ni modelos personales.
 
 ## Funcionalidades
 
@@ -35,7 +35,7 @@ La muestra empieza con 100.000 unidades de capital imaginario y 48 sesiones sin 
 
 ## Ejecución y pruebas
 
-No se requieren claves API, dependencias npm, cuentas ni servicios externos. Servir la carpeta con un servidor HTTP local; las restricciones de los navegadores pueden impedir cargar JSON con `file://`.
+El cliente no necesita cuentas ni claves API, pero la compilación institucional consulta el servicio público del BCE. Servir la carpeta con un servidor HTTP local; las restricciones de los navegadores pueden impedir cargar JSON con `file://`.
 
 ```bash
 python3 -m http.server 8000
@@ -43,7 +43,7 @@ node --test tests/metrics.test.mjs
 python3 scripts/audit_public.py
 ```
 
-GitHub Actions publica exclusivamente los siete recursos estáticos admitidos (`index.html`, `styles.css`, `logo.svg`, `favicon.svg`, `src/site.mjs`, `src/metrics.mjs`, `data/demo.json`) después de pasar el control de identidad institucional y pruebas de integridad.
+GitHub Actions publica un paquete estático autorizado más el archivo validado `dist/data/official-fx.json`, descargado exclusivamente de la API oficial BCE. El flujo está programado de lunes a viernes a las 17:25 UTC y en cada push, pero las ejecuciones futuras necesitan comprobación individual.
 
 ## Frontera de publicación
 
@@ -62,3 +62,8 @@ La página [Modelos entrenados](research.html) ajusta regresión regularizada y 
 node --test tests/*.test.mjs
 python3 scripts/audit_public.py
 ```
+
+
+## Piloto de datos oficiales
+
+El panel «Salud operativa / diario» presenta la referencia EUR/USD del BCE, fecha, edad del dato, cobertura y hash SHA-256 de la respuesta; los datos son informativos, **no ejecutables ni convertibles en rentabilidad paper**. La fuente es [ECB Data Portal](https://data.ecb.europa.eu/help/api/data-examples), reutilizada con atribución «Source: ECB statistics». Si falla la ingesta o su contrato, la publicación se bloquea. La integración no implica que las 23 estrategias estén funcionando prospectivamente ni que exista un feed OHLC de acciones.

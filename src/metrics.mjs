@@ -381,3 +381,35 @@ export function publicIssuerReadModel(data,{query="",sort="base",ascending=false
   return (ascending?diff:-diff)||a.issuer.ticker.localeCompare(b.issuer.ticker,"es");
  });
 }
+
+
+// Public ECB observations are informational. They are not tradable execution marks,
+// equity OHLC candles, portfolio valuations, or broker evidence.
+export function verifyOfficialFx(doc,now=new Date()){
+ const source="https://data-api.ecb.europa.eu/service/data/EXR/D.USD.EUR.SP00.A?lastNObservations=80&format=csvdata";
+ if(doc?.status!=="verified_observations" || doc.data_class!=="official_fx_reference_only" ||
+    doc.series!=="D.USD.EUR.SP00.A" || doc.source!=="European Central Bank (ECB statistics)" ||
+    doc.source_url!==source || doc.quote_currency!=="USD" || doc.base_currency!=="EUR" ||
+    doc.not_tradable!==true || typeof doc.notice!=="string" || !doc.notice.includes("NOT a transaction"))
+  throw Error("No independently verified ECB reference-data contract");
+ if(!/^[a-f0-9]{64}$/.test(doc.source_sha256||"") || !/^\d{4}-\d\d-\d\dT\d\d:\d\d:\d\dZ$/.test(doc.received_at_utc||""))
+  throw Error("Missing ECB provenance, source digest or arrival time");
+ if(!Array.isArray(doc.observations) || doc.count!==doc.observations.length || doc.count<15||doc.count>100)
+  throw Error("Invalid ECB observation coverage");
+ const at=Date.parse(doc.received_at_utc),time=now.getTime();
+ if(!Number.isFinite(at)||at>time+60_000)throw Error("ECB observations stamped in the future");
+ let previous=null;
+ for(const row of doc.observations){
+  if(!/^\d{4}-\d{2}-\d{2}$/.test(row.date||"") || !/^\d+\.\d{1,8}$/.test(row.usd_per_eur||""))
+   throw Error("Invalid ECB observation literal");
+  const d=Date.parse(row.date+"T00:00:00Z"),rate=Number(row.usd_per_eur);
+  if(!Number.isFinite(d)||d>time||![1,2,3,4,5].includes(new Date(d).getUTCDay())||rate<.6||rate>2)
+   throw Error("Unverified ECB daily fixing");
+  if(previous!==null&&(d<=previous||d-previous>8*86400000))throw Error("ECB gaps or duplicates");
+  previous=d;
+ }
+ if(doc.latest_observation!==doc.observations.at(-1).date)throw Error("ECB latest date differs");
+ return {rate:Number(doc.observations.at(-1).usd_per_eur),date:doc.latest_observation,
+  count:doc.count,receivedAt:doc.received_at_utc,
+  ageDays:Math.floor((time-previous)/86400000),referenceOnly:true};
+}

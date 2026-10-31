@@ -3,6 +3,9 @@ on:
   push:
     branches: [main]
   workflow_dispatch:
+  schedule:
+    # After the ECB reference fixing on normal business days; UTC, no weekend runs.
+    - cron: '25 17 * * 1-5'
   pull_request:
     branches: [main]
 permissions:
@@ -45,7 +48,9 @@ jobs:
           node --check src/learning.mjs
           node --check src/learning-view.mjs
       - name: Unit tests
-        run: node --test tests/*.test.mjs
+        run: |
+          node --test tests/*.test.mjs
+          python3 -m unittest discover -s scripts -p 'test_*.py' -v
       - name: Build allowlisted static package
         run: |
           mkdir -p dist/src dist/data
@@ -53,6 +58,11 @@ jobs:
           cp src/site.mjs src/metrics.mjs src/learning.mjs src/learning-view.mjs dist/src/
           cp data/demo.json dist/data/
           test "$(find dist -type f | wc -l)" -eq 10
+      - name: Acquire official ECB reference observations (not tradable quotes)
+        run: |
+          python3 scripts/refresh_ecb.py --output dist/data/official-fx.json
+          python3 scripts/refresh_ecb.py --validate dist/data/official-fx.json
+          test "$(find dist -type f | wc -l)" -eq 11
       - uses: actions/upload-artifact@v4
         with:
           name: audited-site

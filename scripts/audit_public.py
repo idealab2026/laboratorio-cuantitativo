@@ -8,7 +8,7 @@ import sys
 
 ROOT = Path(__file__).resolve().parents[1]
 RELEASE = {"index.html", "research.html", "styles.css", "favicon.svg", "logo.svg", "src/site.mjs", "src/metrics.mjs", "src/learning.mjs", "src/learning-view.mjs", "data/demo.json"}
-REPOSITORY = RELEASE | {"README.md", "docs/SCIENTIFIC_PARITY.md", "scripts/audit_public.py", "tests/metrics.test.mjs", "tests/learning.test.mjs", ".github/workflows/pages.yml"}
+REPOSITORY = RELEASE | {"README.md", "docs/SCIENTIFIC_PARITY.md", "scripts/audit_public.py", "scripts/refresh_ecb.py", "scripts/test_ecb.py", "tests/metrics.test.mjs", "tests/learning.test.mjs", ".github/workflows/pages.yml"}
 issues = []
 files = {str(p.relative_to(ROOT)) for p in ROOT.rglob("*") if p.is_file() and ".git" not in p.parts}
 if unknown := sorted(files - REPOSITORY):
