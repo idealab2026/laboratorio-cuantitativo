@@ -1,7 +1,7 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 import {readFileSync} from "node:fs";
-import {verify,signal,simulate,rank,valuation,thesisRank,absentQuote,cumulative,maxDrawdown,formatPct,syntheticBarsFromDemo,nextOpenPaper,verifyIssuerCatalog} from "../src/metrics.mjs";
+import {verify,signal,simulate,rank,valuation,thesisRank,absentQuote,cumulative,maxDrawdown,formatPct,syntheticBarsFromDemo,nextOpenPaper,verifyIssuerCatalog,evaluateIssuerScreen} from "../src/metrics.mjs";
 const data=JSON.parse(readFileSync(new URL("../data/demo.json",import.meta.url),"utf8"));
 test("The independent public universe is strictly synthetic",()=>{
  assert.equal(verify(data),true);
@@ -149,4 +149,35 @@ test("Only SEC-verified issuers expose source identifiers",()=>{
  assert.ok(src.includes('rel="noopener noreferrer"'));
  assert.ok(src.includes("Exportar libro causal CSV"));
  assert.ok(src.includes("Ejecución paper en apertura siguiente"));
+});
+
+
+test("First issuer screen uses independently sourced dated EPS and last observed close",()=>{
+ const s=data.issuerCatalog.publicScreens[0];
+ assert.equal(s.ticker,"MSFT");
+ assert.equal(s.status,"EXPLORATORY_NOT_RATIFIED");
+ assert.equal(s.quote.closeDate,"2026-10-30");
+ assert.equal(s.quote.close,521.91);
+ assert.equal(s.metric.adjustedEpsFY2026,17.28);
+ const v=evaluateIssuerScreen(s);
+ assert.ok(Math.abs(v.scenarios.bear.target-484.72)<.02);
+ assert.ok(Math.abs(v.scenarios.base.target-859.61)<.02);
+ assert.ok(Math.abs(v.scenarios.bull.target-1344.10)<.02);
+ assert.ok(Math.abs(v.buyPrice15-427.38)<.03);
+ assert.ok(v.scenarios.bear.cagrPct<0);
+ assert.ok(v.scenarios.base.cagrPct>0&&v.scenarios.base.cagrPct<15);
+ assert.equal(verifyIssuerCatalog(data.issuerCatalog),true);
+});
+test("Unverified screen tampering cannot silently inject financial claims",()=>{
+ for(const modify of [
+  s=>s.quote.close=null,
+  s=>s.quote.source="https://example.org/unsourced",
+  s=>s.status="APPROVED",
+  s=>s.assumptions.bull.terminalPe=100,
+  s=>s.metric.adjustedEpsFY2026=-10
+ ]){
+  const altered=structuredClone(data.issuerCatalog);
+  modify(altered.publicScreens[0]);
+  assert.throws(()=>verifyIssuerCatalog(altered));
+ }
 });
