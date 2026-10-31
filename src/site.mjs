@@ -1,11 +1,12 @@
 import {signalResearchSummary,methodCatalog} from "./paper-methods.mjs";
 import {artificialCampaignComparison} from "./paper-ledger.mjs";
+import {verifyFullRoster,filterRoster} from "./competition-roster.mjs";
 import {verify,simulate,rank,valuation,thesisRank,formatPct,money,finite,verifyIssuerCatalog,filterIssuers,syntheticBarsFromDemo,nextOpenPaper,evaluateIssuerScreen,competitionReadModel,publicIssuerReadModel,verifyOfficialFx,summarizeFxForecastLedger,verifySecFilings,verifyOfficialYield} from "./metrics.mjs";
 const $=id=>document.getElementById(id);
 const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 const fmt=n=>finite(n)?new Intl.NumberFormat("es-ES",{maximumFractionDigits:2}).format(n):"N/D";
-const state={data:null,universe:null,fx:null,fxCheck:null,fxStatus:"pending",forecastLedger:null,forecastSummary:null,forecastStatus:"pending",secStatus:"pending",secRead:null,secCatalog:null,yieldDoc:null,yieldCheck:null,yieldStatus:"pending",view:"overview",strategy:"P-01",group:"",sort:"returnPct",asc:false,detailOpen:false,thesis:"T-01",query:"",thesisSort:"central",issuerMode:"catalog",issuerQuery:"",issuerSort:"base",issuerAsc:false,issuerTicker:"MSFT",paperDetail:"M-10"};
-const viewNames=["overview","competition","algorithms","theses","monitoring","method","archive","ported"];
+const state={data:null,universe:null,fx:null,fxCheck:null,fxStatus:"pending",forecastLedger:null,forecastSummary:null,forecastStatus:"pending",secStatus:"pending",secRead:null,secCatalog:null,yieldDoc:null,yieldCheck:null,yieldStatus:"pending",view:"overview",strategy:"P-01",group:"",sort:"returnPct",asc:false,detailOpen:false,thesis:"T-01",query:"",thesisSort:"central",issuerMode:"catalog",issuerQuery:"",issuerSort:"base",issuerAsc:false,issuerTicker:"MSFT",paperDetail:"M-10",fullRoster:null,fullRosterStatus:"pending",fullRosterGroup:"",fullRosterQuery:""};
+const viewNames=["overview","competition","algorithms","theses","monitoring","method","archive","ported","full"];
 const button=(label,action,value,cls="smallbtn")=>'<button type="button" class="'+cls+'" data-action="'+esc(action)+'" data-value="'+esc(value)+'">'+esc(label)+'</button>';
 const head=(label,title,body)=>'<div class="section-heading"><div><span class="kicker">'+esc(label)+'</span><h2>'+esc(title)+'</h2><p class="section-context">'+esc(body)+'</p></div></div>';
 const card=(html)=>'<article class="panel">'+html+'</article>';
@@ -367,6 +368,37 @@ function ported(){
  button("Ver competición sintética","navigate","competition","outline-btn");
 }
 
+function fullRosterRows(){
+ if(!state.fullRoster)return "";
+ return filterRoster(state.fullRoster,{group:state.fullRosterGroup,query:state.fullRosterQuery}).map(item=>
+ '<tr><td><strong>'+esc(item.name)+'</strong><small class="smallline">'+esc(item.slot)+'</small></td>'+
+ '<td>'+esc(item.group)+'</td><td>Sin diario institucional</td>'+
+ '<td>Sin datos</td><td>N/D</td><td class="number">N/D</td>'+
+ '<td class="number">N/D</td><td class="number">N/D</td>'+
+ '<td class="number">N/D</td><td class="number">N/D</td>'+
+ '<td>Sin evidencia comparable</td><td class="number">—</td></tr>').join("");
+}
+function full(){
+ const d=state.fullRoster;
+ const headText=head("COMPETICIÓN COMPLETA · CONTRATO DE MIGRACIÓN","Inventario de 64 líneas de MIDAS",
+ "Cobertura funcional de las familias del laboratorio con columnas de actividad, rentabilidad, riesgo y comparabilidad. El inventario no transfiere ni certifica los diarios del sistema anterior.");
+ if(!d)return headText+card('<h3>Inventario no verificable</h3><p>El registro institucional está pendiente de carga o ha fallado su validación. No se sustituyen datos perdidos por simulaciones.</p>');
+ const meta=verifyFullRoster(d),visible=filterRoster(d,{group:state.fullRosterGroup,query:state.fullRosterQuery});
+ return headText+
+ '<div class="source-health-strip"><div><span class="label">Funciones registradas</span><strong>'+meta.count+'</strong><small>'+meta.groups.length+' grupos funcionales</small></div>'+
+ '<div><span class="label">Diarios institucionales certificados</span><strong>'+meta.migrated+'</strong><small>Ningún histórico se ha traspasado sin procedencia</small></div>'+
+ '<div><span class="label">Rentabilidades reales verificadas</span><strong>0</strong><small>Sin serie bursátil redistribuible ni libros nuevos</small></div></div>'+
+ disclaimer("INVENTARIO FUNCIONAL. Los nombres están reformulados para el catálogo público y los identificadores son nuevos. Todas las filas quedan pendientes mientras no exista una fuente institucional autorizada, un diario independiente y sus validaciones; no son 64 estrategias activas.")+
+ '<div class="filters"><label>Filtrar familia<select id="full-group-select"><option value="">Todas las familias</option>'+
+ meta.groups.map(g=>'<option value="'+esc(g.name)+'" '+(g.name===state.fullRosterGroup?"selected":"")+'>'+esc(g.name)+' · '+g.count+'</option>').join("")+
+ '</select></label><label>Buscar<input id="full-query" type="search" value="'+esc(state.fullRosterQuery)+'" placeholder="Algoritmo o familia"></label>'+
+ button("Exportar inventario CSV","full-export","csv","outline-btn")+'</div>'+
+ '<p class="table-note"><span id="full-count">'+visible.length+'</span> de '+meta.count+' entradas · el valor N/D significa información no verificada, no una rentabilidad cero</p>'+
+ '<div class="table-scroll table-compact"><table><thead><tr><th>Estrategia / ID</th><th>Familia</th><th>Actividad</th><th>Fecha</th><th>Divisa</th><th class="number">P/L acumulado</th><th class="number">P/L día</th><th class="number">Volatilidad</th><th class="number">Drawdown</th><th class="number">Posiciones / órdenes</th><th>Comparabilidad</th><th>Curva</th></tr></thead><tbody id="full-rows">'+fullRosterRows()+'</tbody></table></div>'+
+ card('<h3>Condiciones de publicación de cada diario</h3><p>Para activar una línea se debe verificar la fuente de cotizaciones y sus permisos, la fecha exacta de cada señal, su ejecución al siguiente mercado, el historial de NAV, la divisa y los metadatos de comparabilidad. Las carteras de distinta fecha de inicio o universo no se ordenarán como si compitieran en igualdad de condiciones.</p>')+
+ button("Ver las nueve carteras técnicas simuladas","navigate","ported","outline-btn");
+}
+
 function archive(){
  const rows=all();
  const groupsInCatalog=groups();
@@ -406,7 +438,7 @@ function chart(){
 }
 function render(){
  if(!state.data)return;
- const pages={overview,competition,algorithms,theses,monitoring,archive,ported,method:methodology};
+ const pages={overview,competition,algorithms,theses,monitoring,archive,ported,full,method:methodology};
  document.querySelectorAll(".product-tabs [data-view]").forEach(b=>{const active=b.dataset.view===state.view;b.classList.toggle("active",active);b.setAttribute("aria-pressed",String(active));});
  $("app").innerHTML=(pages[state.view]||overview)();chart();
 }
@@ -463,6 +495,10 @@ $("app").addEventListener("click",e=>{
   state.detailOpen=false;render();
  }
  else if(action==="paper-select"){state.paperDetail=value;render();}
+ else if(action==="full-export"){
+  if(state.fullRoster){const rows=filterRoster(state.fullRoster,{group:state.fullRosterGroup,query:state.fullRosterQuery});
+   download("midas-64-funciones-pendientes.csv",[["ID","Nombre","Familia","Estado","Actividad","Rentabilidad","Riesgo","Comparabilidad"],...rows.map(x=>[x.slot,x.name,x.group,x.record_status,x.activity,"N/D","N/D","sin evidencia"])]);}
+ }
  else if(action==="issuer-column"){
   if(state.issuerSort===value)state.issuerAsc=!state.issuerAsc;
   else{state.issuerSort=value;state.issuerAsc=["ticker","company","market"].includes(value);}
@@ -486,12 +522,14 @@ $("app").addEventListener("keydown",e=>{
 $("app").addEventListener("change",e=>{
  const el=e.target;
  if(el.id==="group-select"){state.group=el.value;state.detailOpen=false;render();}
+ if(el.id==="full-group-select"){state.fullRosterGroup=el.value;render();}
  if(el.id==="rank-select"){state.sort=el.value;state.asc=["name","group"].includes(el.value);state.detailOpen=false;render();}
  if(el.id==="thesis-sort"){state.thesisSort=el.value;render();}
  if(el.id==="issuer-sort"){state.issuerSort=el.value;state.issuerAsc=["ticker","company","market"].includes(el.value);render();}
  if(el.id==="journal-select"){state.strategy=el.value;render();}
 });
 $("app").addEventListener("input",e=>{
+ if(e.target.id==="full-query"){state.fullRosterQuery=e.target.value;const tbody=$("full-rows");if(tbody)tbody.innerHTML=fullRosterRows();const n=$("full-count");if(n&&state.fullRoster)n.textContent=filterRoster(state.fullRoster,{group:state.fullRosterGroup,query:state.fullRosterQuery}).length;}
  if(e.target.id==="thesis-query"){state.query=e.target.value;const tbody=$("thesis-rows");if(tbody)tbody.innerHTML=thesisTableRows();}
  if(e.target.id==="issuer-query"){
   state.issuerQuery=e.target.value;
@@ -517,7 +555,7 @@ window.addEventListener("popstate",()=>{const v=new URLSearchParams(location.sea
 async function init(){
  try{
   const r=await fetch("./data/demo.json",{cache:"no-store"});if(!r.ok)throw Error("Dataset missing");const data=await r.json(),universe=data.issuerCatalog;verify(data);verifyIssuerCatalog(universe);
-  state.data=data;state.universe=universe;const v=new URLSearchParams(location.search).get("view");state.view=viewNames.includes(v)?v:"overview";summary();render();void loadOfficialFx();void loadForecastLedger();void loadSecFilings();void loadOfficialYield();
+  state.data=data;state.universe=universe;const v=new URLSearchParams(location.search).get("view");state.view=viewNames.includes(v)?v:"overview";summary();render();void loadOfficialFx();void loadForecastLedger();void loadSecFilings();void loadOfficialYield();void loadFullRoster();
  }catch(e){$("app").textContent="No se ha podido cargar el catálogo de emisores o el laboratorio sintético; no se muestran datos no verificados.";}
 }
 async function loadOfficialFx(){
@@ -556,5 +594,15 @@ async function loadOfficialYield(){
   state.yieldDoc=doc;state.yieldCheck=check;state.yieldStatus="ok";
  }catch(_error){state.yieldDoc=null;state.yieldCheck=null;state.yieldStatus="unavailable";}
  if(state.view==="monitoring"&&state.data)render();
+}
+async function loadFullRoster(){
+ try{
+  const response=await fetch("./data/competition-roster.json",{cache:"no-store"});
+  if(!response.ok)throw Error("Missing institution-only roster");
+  const doc=await response.json();
+  verifyFullRoster(doc);
+  state.fullRoster=doc;state.fullRosterStatus="ok";
+ }catch(_error){state.fullRoster=null;state.fullRosterStatus="unavailable";}
+ if(state.view==="full"&&state.data)render();
 }
 init();
