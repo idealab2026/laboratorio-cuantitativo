@@ -7,8 +7,8 @@ import re
 import sys
 
 ROOT = Path(__file__).resolve().parents[1]
-RELEASE = {"index.html", "research.html", "styles.css", "favicon.svg", "logo.svg", "src/site.mjs", "src/metrics.mjs", "src/learning.mjs", "src/learning-view.mjs", "data/demo.json", "data/fx-forecast-ledger.json", "data/sec-filings.json"}
-REPOSITORY = RELEASE | {"README.md", "docs/SCIENTIFIC_PARITY.md", "scripts/audit_public.py", "scripts/refresh_ecb.py", "scripts/test_ecb.py", "scripts/advance_fx.py", "scripts/test_advance_fx.py", "scripts/refresh_sec.py", "scripts/test_sec.py", "scripts/refresh_ecb_yield.py", "scripts/test_ecb_yield.py", "tests/metrics.test.mjs", "tests/learning.test.mjs", ".github/workflows/pages.yml", ".github/workflows/fx-ledger.yml", ".github/workflows/sec-filings.yml"}
+RELEASE = {"index.html", "research.html", "styles.css", "favicon.svg", "logo.svg", "src/site.mjs", "src/metrics.mjs", "src/learning.mjs", "src/learning-view.mjs", "src/paper-methods.mjs", "data/demo.json", "data/fx-forecast-ledger.json", "data/sec-filings.json"}
+REPOSITORY = RELEASE | {"README.md", "docs/SCIENTIFIC_PARITY.md", "scripts/audit_public.py", "scripts/refresh_ecb.py", "scripts/test_ecb.py", "scripts/advance_fx.py", "scripts/test_advance_fx.py", "scripts/refresh_sec.py", "scripts/test_sec.py", "scripts/refresh_ecb_yield.py", "scripts/test_ecb_yield.py", "tests/metrics.test.mjs", "tests/learning.test.mjs", "tests/paper-methods.test.mjs", ".github/workflows/pages.yml", ".github/workflows/fx-ledger.yml", ".github/workflows/sec-filings.yml"}
 issues = []
 files = {str(p.relative_to(ROOT)) for p in ROOT.rglob("*") if p.is_file() and ".git" not in p.parts}
 if unknown := sorted(files - REPOSITORY):
