@@ -94,3 +94,32 @@ export function signalAtClose(method,bars){
  }
  throw Error("Strategy catalog and evaluator disagree");
 }
+
+export function artificialMethodBars(){
+ const bars=[];
+ let close=100;
+ const start=Date.UTC(2026,0,5);
+ for(let offset=0;bars.length<130;offset++){
+  const d=new Date(start+offset*86400000);
+  if(d.getUTCDay()===0||d.getUTCDay()===6)continue;
+  const n=bars.length,open=close*(1+0.002*Math.sin(n*0.83));
+  close=Math.max(15,open*(1+0.005*Math.sin(n*0.42)+0.004*Math.cos(n*0.13)+0.0003));
+  bars.push({session:d.toISOString().slice(0,10),open,close,
+   low:Math.min(open,close)*0.987,high:Math.max(open,close)*1.013});
+ }
+ return bars;
+}
+export function signalResearchSummary(){
+ const bars=artificialMethodBars();
+ return {status:"ARTIFICIAL_SIGNALS_NO_EXECUTION",source:"generated_no_market_data",
+  sessions:bars.length,first:bars[0].session,last:bars.at(-1).session,
+  methods:methodCatalog.map(method=>{
+   const history=bars.map((_,i)=>signalAtClose(method.id,bars.slice(0,i+1)));
+   const window=history.slice(-30);
+   return {id:method.id,name:method.name,family:method.family,
+    parameters:method.parameters,currentSignal:history.at(-1),
+    recentBuy:window.filter(s=>s==="BUY").length,
+    recentSell:window.filter(s=>s==="SELL").length,
+    recentHold:window.filter(s=>s==="HOLD").length};
+  })};
+}
