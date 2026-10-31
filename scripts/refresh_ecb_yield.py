@@ -36,7 +36,7 @@ def parse(raw,received,today=None):
             raise ValueError("Not AAA euro area ten-year spot series")
         day=date.fromisoformat(row["TIME_PERIOD"])
         val=str(row.get("OBS_VALUE") or "").strip()
-        if not re.fullmatch(r"-?\d+(?:\.\d{1,9})?",val):
+        if not re.fullmatch(r"-?\d+(?:\.\d{1,20})?",val):
             raise ValueError("Missing or invalid ECB spot yield: date="+repr(row.get("TIME_PERIOD"))+" literal="+repr(val[:45]))
         num=float(val)
         if not -5<=num<=15 or day>today or day.weekday()>=5:
