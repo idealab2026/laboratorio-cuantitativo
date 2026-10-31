@@ -1,8 +1,8 @@
-import {verify,simulate,rank,valuation,thesisRank,formatPct,money,finite,verifyIssuerCatalog,filterIssuers,syntheticBarsFromDemo,nextOpenPaper,evaluateIssuerScreen,competitionReadModel,publicIssuerReadModel,verifyOfficialFx,summarizeFxForecastLedger} from "./metrics.mjs";
+import {verify,simulate,rank,valuation,thesisRank,formatPct,money,finite,verifyIssuerCatalog,filterIssuers,syntheticBarsFromDemo,nextOpenPaper,evaluateIssuerScreen,competitionReadModel,publicIssuerReadModel,verifyOfficialFx,summarizeFxForecastLedger,verifySecFilings} from "./metrics.mjs";
 const $=id=>document.getElementById(id);
 const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 const fmt=n=>finite(n)?new Intl.NumberFormat("es-ES",{maximumFractionDigits:2}).format(n):"N/D";
-const state={data:null,universe:null,fx:null,fxCheck:null,fxStatus:"pending",forecastLedger:null,forecastSummary:null,forecastStatus:"pending",view:"overview",strategy:"P-01",group:"",sort:"returnPct",asc:false,detailOpen:false,thesis:"T-01",query:"",thesisSort:"central",issuerMode:"catalog",issuerQuery:"",issuerSort:"base",issuerAsc:false,issuerTicker:"MSFT"};
+const state={data:null,universe:null,fx:null,fxCheck:null,fxStatus:"pending",forecastLedger:null,forecastSummary:null,forecastStatus:"pending",secStatus:"pending",secRead:null,secCatalog:null,view:"overview",strategy:"P-01",group:"",sort:"returnPct",asc:false,detailOpen:false,thesis:"T-01",query:"",thesisSort:"central",issuerMode:"catalog",issuerQuery:"",issuerSort:"base",issuerAsc:false,issuerTicker:"MSFT"};
 const viewNames=["overview","competition","algorithms","theses","monitoring","method","archive"];
 const button=(label,action,value,cls="smallbtn")=>'<button type="button" class="'+cls+'" data-action="'+esc(action)+'" data-value="'+esc(value)+'">'+esc(label)+'</button>';
 const head=(label,title,body)=>'<div class="section-heading"><div><span class="kicker">'+esc(label)+'</span><h2>'+esc(title)+'</h2><p class="section-context">'+esc(body)+'</p></div></div>';
@@ -144,14 +144,30 @@ const independentScreen=(ticker)=>{
  const s=state.universe.publicScreens?.find(x=>x.ticker===ticker);
  return s?evaluateIssuerScreen(s):null;
 };
+function secSourcePanel(ticker){
+ const issuer=state.universe.issuers.find(x=>x.ticker===ticker);
+ if(!issuer?.secCik)return '<p class="small-note">No existe todavía una identidad SEC confirmada para esta entidad.</p>';
+ const official='<a href="https://www.sec.gov/edgar/browse/?CIK='+esc(issuer.secCik)+'" target="_blank" rel="noopener noreferrer">Consultar EDGAR oficial</a>';
+ const found=state.secRead?.byTicker.get(ticker);
+ if(!found)return '<div class="research-note">El índice institucional de documentos SEC está '+(state.secStatus==="pending"?"cargando": "sin datos verificados")+'. '+official+'. No se inventan formularios ni fechas de presentación.</div>';
+ return '<section class="sec-official-panel"><div class="panel-top"><h3>Documentación SEC · '+esc(ticker)+'</h3><span class="chip">Fuente oficial · '+esc(state.secRead.generatedAt.slice(0,10))+'</span></div>'+
+ '<p>Registros EDGAR (10-K, 10-Q y 8-K) vinculados a sus documentos originales. No se han auditado automáticamente las cifras contables ni los supuestos de valoración. '+official+'.</p>'+
+ '<div class="table-scroll table-compact"><table><thead><tr><th>Formulario</th><th>Presentado</th><th>Ejercicio / período</th><th>Documento SEC</th></tr></thead><tbody>'+
+ found.filings.map(item=>'<tr><td><strong>'+esc(item.form)+'</strong></td><td>'+esc(item.filed)+'</td><td>'+esc(item.report_date||"N/D")+'</td>'+
+ '<td><a href="'+esc(item.url)+'" target="_blank" rel="noopener noreferrer">Abrir '+esc(item.accession)+'</a></td></tr>').join("")+'</tbody></table></div>'+
+ '<p class="small-note">Origen y comprobación: <a href="'+esc(found.source_url)+'" target="_blank" rel="noopener noreferrer">SEC submissions JSON</a> · SHA-256 <code>'+esc(found.source_sha256)+'</code>. Archivo <a href="./data/sec-filings.json" target="_blank" rel="noopener noreferrer">institucional de metadatos</a>.</p></section>';
+}
+
 function issuerTableRows(){
  return publicIssuerReadModel(state.universe,{query:state.issuerQuery,sort:state.issuerSort,ascending:state.issuerAsc}).map(({issuer:i,screen:s})=>{
   const close=s?fmt(s.quote.close)+" "+s.quote.currency+" · "+s.quote.closeDate:"N/D";
+  const filings=state.secRead?.byTicker.get(i.ticker);
+  const filingSummary=filings?.filings?.[0];
   return '<tr class="interactive-table-row '+(state.issuerTicker===i.ticker?"is-selected":"")+'" data-issuer-id="'+esc(i.ticker)+'" tabindex="0" aria-label="Abrir la ficha pública de '+esc(i.company)+'">'+
   '<td><strong>'+esc(i.ticker)+'</strong></td><td><strong>'+esc(i.company)+'</strong><small class="smallline">'+esc(i.sector)+'</small></td><td>'+esc(i.market)+'</td><td class="number">'+esc(close)+'</td>'+
   '<td class="number">'+(s?pctText(s.scenarios.bull.cagrPct):"N/D")+'</td><td class="number">'+(s?pctText(s.scenarios.bear.cagrPct):"N/D")+'</td><td class="number">'+(s?pctText(s.scenarios.base.cagrPct):"N/D")+'</td>'+
   '<td class="number">'+(s?esc(fmt(s.buyPrice15))+" USD":"N/D")+'</td><td class="number">'+(s?esc(fmt(s.scenarios.base.target))+" USD":"N/D")+'</td>'+
-  '<td>N/D</td><td>'+button(s?"Screen":"Ficha","issuer-select",i.ticker)+'</td></tr>';
+  '<td>N/D</td><td>'+button(s?"Screen":"Ficha","issuer-select",i.ticker)+(filingSummary?'<small class="smallline">SEC '+esc(filingSummary.form)+' · '+esc(filingSummary.filed)+'</small>':'')+'</td></tr>';
  }).join("");
 }
 
@@ -161,7 +177,7 @@ function issuerDetail(){
  const source=i.secCik?'<p>Expediente regulatorio SEC: <a href="https://www.sec.gov/edgar/browse/?CIK='+esc(i.secCik)+'" target="_blank" rel="noopener noreferrer">10-K, 10-Q y 8-K oficiales</a>. Los enlaces no prueban por sí solos las hipótesis financieras.</p>':'<p>Identificador de expediente regulatorio pendiente de contrastar.</p>';
  const base=card('<div class="panel-top"><div><span class="label">'+esc(i.ticker)+' · '+esc(i.market)+'</span><h3>'+esc(i.company)+'</h3></div><span class="status-chip">'+(s?"Screening exploratorio":"Pendiente de validación")+'</span></div><p>'+esc(i.sector)+'</p>'+
  '<div class="metric-strip">'+metric("Precio documentado",s?fmt(s.quote.close)+" USD · "+s.quote.closeDate:"N/D")+metric("CAGR central",s?formatPct(s.scenarios.base.cagrPct):"N/D")+metric("Precio 15 % anual",s?fmt(s.buyPrice15)+" USD":"N/D")+metric("Próximos resultados","N/D")+'</div>'+
- '<h3 class="minor-heading">Fuentes oficiales</h3>'+source+
+ '<h3 class="minor-heading">Fuentes oficiales</h3>'+source+secSourcePanel(i.ticker)+
  '<h3 class="minor-heading">Control de publicación</h3><p>La identidad corporativa no constituye una tesis aprobada. Los valores disponibles son escenarios exploratorios, no precio objetivo recomendado ni recomendación de inversión. No se traslada ningún expediente privado.</p>');
  if(!s)return base;
  const scenarios=["bear","base","bull"].map((key,index)=>{
@@ -185,11 +201,13 @@ function theses(){
  const headers=columns.map(([key,label])=>'<th scope="col" aria-sort="'+(state.issuerSort===key?(state.issuerAsc?"ascending":"descending"):"none")+'"><button class="table-sort" type="button" data-action="issuer-column" data-value="'+key+'" aria-label="Ordenar por '+esc(label)+'">'+esc(label)+' <span aria-hidden="true">'+(state.issuerSort===key?(state.issuerAsc?"↑":"↓"):"↕")+'</span></button></th>').join("");
  const found=publicIssuerReadModel(state.universe,{query:state.issuerQuery,sort:state.issuerSort,ascending:state.issuerAsc}).length;
  const screens=state.universe.publicScreens?.length||0;
+ const indexed=state.secRead?.byTicker.size||0;
  return head("TESIS · SEGUIMIENTO","Empresas y valoraciones","Inventario institucional de "+state.universe.issuers.length+" empresas. Solo se muestran escenarios cuantitativos cuando existe un cálculo público independiente, fechado y con sus fuentes.")+
  '<div class="source-health-strip"><div><span class="label">Cobertura del catálogo</span><strong>'+state.universe.issuers.length+' empresas</strong><small>Identidades corporativas, no todas analizadas</small></div>'+
  '<div><span class="label">Modelos públicos</span><strong>'+screens+' screening exploratorio</strong><small>No equivale a tesis auditada ni recomendación</small></div>'+
  '<div><span class="label">Informes institucionales aprobados</span><strong>0</strong><small>Ningún documento privado trasladado</small></div></div>'+
  disclaimer("Los CAGR y objetivos existentes son supuestos exploratorios y no una tesis de inversión ratificada. N/D significa desconocido o no publicado; no representa cero. Los precios etiquetados son observaciones históricas fechadas, no cotizaciones spot.")+
+ '<p class="table-note">Metadatos documentales SEC verificados: '+indexed+' de 8 emisores seleccionados. Los demás mercados requieren otros organismos reguladores. El número de documentos no mide calidad de la tesis.</p>'+
  '<div class="filters"><label>Buscar ticker o empresa<input id="issuer-query" type="search" autocomplete="off" placeholder="Ej.: MSFT o Microsoft" value="'+esc(state.issuerQuery)+'"></label>'+
  '<label>Ordenar<select id="issuer-sort">'+columns.map(([k,n])=>'<option value="'+k+'" '+(k===state.issuerSort?"selected":"")+'>'+esc(n)+'</option>').join("")+'</select></label>'+
  button(state.issuerAsc?"↑ Ascendente":"↓ Descendente","issuer-direction","","outline-btn")+
@@ -435,7 +453,7 @@ window.addEventListener("popstate",()=>{const v=new URLSearchParams(location.sea
 async function init(){
  try{
   const r=await fetch("./data/demo.json",{cache:"no-store"});if(!r.ok)throw Error("Dataset missing");const data=await r.json(),universe=data.issuerCatalog;verify(data);verifyIssuerCatalog(universe);
-  state.data=data;state.universe=universe;const v=new URLSearchParams(location.search).get("view");state.view=viewNames.includes(v)?v:"overview";summary();render();void loadOfficialFx();void loadForecastLedger();
+  state.data=data;state.universe=universe;const v=new URLSearchParams(location.search).get("view");state.view=viewNames.includes(v)?v:"overview";summary();render();void loadOfficialFx();void loadForecastLedger();void loadSecFilings();
  }catch(e){$("app").textContent="No se ha podido cargar el catálogo de emisores o el laboratorio sintético; no se muestran datos no verificados.";}
 }
 async function loadOfficialFx(){
@@ -455,5 +473,15 @@ async function loadForecastLedger(){
   state.forecastLedger=doc;state.forecastSummary=stats;state.forecastStatus="ok";
  }catch(_error){state.forecastLedger=null;state.forecastSummary=null;state.forecastStatus="unavailable";}
  if(state.view==="monitoring"&&state.data)render();
+}
+async function loadSecFilings(){
+ try{
+  const response=await fetch("./data/sec-filings.json",{cache:"no-store"});
+  if(!response.ok)throw Error("No SEC metadata dataset");
+  const doc=await response.json();
+  const read=verifySecFilings(doc,state.universe);
+  state.secRead=read;state.secCatalog=doc;state.secStatus=read.status==="verified_filings"?"ok":"not_collected";
+ }catch(_error){state.secRead=null;state.secCatalog=null;state.secStatus="unavailable";}
+ if(state.view==="theses"&&state.data)render();
 }
 init();
