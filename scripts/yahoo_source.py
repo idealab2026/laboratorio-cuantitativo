@@ -25,16 +25,21 @@ SOURCE = {"vendor": "Yahoo Finance", "client": "yfinance",
           "interval": "1d", "auto_adjust": False, "actions": True}
 FIELDS = ("open", "high", "low", "close", "volume", "dividend", "split")
 REPO_ROOT = Path(__file__).resolve().parents[1]
+DEFAULT_UNIVERSE = REPO_ROOT / "data" / "universe-xnys.json"
+SYMBOL_SWITCH = {"PSKY": ("SKYD", "2026-10-06")}
 
 
 def canonical_symbol(value: str) -> str:
-    if not isinstance(value, str) or not re.fullmatch(r"[A-Z][A-Z0-9.]{0,9}", value):
+    if not isinstance(value, str) or not re.fullmatch(r"[A-Z][A-Z0-9.-]{0,9}", value):
         raise ValueError("Unrecognized canonical Yahoo symbol")
     return value
 
 
-def yahoo_symbol(value: str) -> str:
-    return canonical_symbol(value).replace(".", "-")
+def yahoo_symbol(value: str, session: str | None = None) -> str:
+    ticker = canonical_symbol(value)
+    if session and ticker in SYMBOL_SWITCH and session >= SYMBOL_SWITCH[ticker][1]:
+        return SYMBOL_SWITCH[ticker][0]
+    return ticker.replace(".", "-")
 
 
 def verify_universe(symbols: list[str]) -> list[str]:
@@ -59,7 +64,7 @@ def normalize(symbol: str, session: str, row: dict) -> dict:
     date_literal(session)
     if not isinstance(row, dict) or row.get("date") != session:
         raise ValueError("Wrong-date or missing Yahoo daily bar")
-    record = {"date": session, "provider_symbol": yahoo_symbol(symbol)}
+    record = {"date": session, "provider_symbol": yahoo_symbol(symbol, session)}
     for key in FIELDS:
         value = row.get(key, 0 if key in ("dividend", "split") else None)
         if isinstance(value, bool) or not isinstance(value, (int, float)) or not math.isfinite(value):
@@ -160,7 +165,7 @@ def download_yahoo(universe: list[str], session: str) -> dict:
     output = {}
     for start in range(0, len(companies) + 1, 40):
         canonical = sorted(companies + [BENCHMARK])[start:start + 40]
-        provider = [yahoo_symbol(s) for s in canonical]
+        provider = [yahoo_symbol(s, session) for s in canonical]
         frame = yf.download(provider, start=begin, end=end, interval="1d",
                             auto_adjust=False, actions=True, group_by="ticker",
                             threads=False, progress=False)
@@ -189,9 +194,13 @@ def main():
     ap.add_argument("--check-contract", action="store_true")
     ap.add_argument("--capture-internal", action="store_true")
     ap.add_argument("--session")
-    ap.add_argument("--universe-json", type=Path)
+    ap.add_argument("--universe-json", type=Path, default=DEFAULT_UNIVERSE)
     ap.add_argument("--output-dir", type=Path)
     args = ap.parse_args()
+    source = json.loads(args.universe_json.read_text(encoding="utf8"))
+    if not isinstance(source, dict) or source.get("schema") != "institutional_xnys_universe_v1" or source.get("frozen_on") != "2026-09-29" or source.get("market") != "XNYS" or source.get("data_class") != "public_index_constituent_symbols_only" or source.get("benchmark") != BENCHMARK or source.get("count") != UNIVERSE_SIZE:
+        raise ValueError("Official research universe manifest missing or mismatched")
+    universe = verify_universe(source["symbols"])
     if args.check_contract and not args.capture_internal:
         print(json.dumps({"status": "source_contract_verified_offline",
                           "vendor": SOURCE["vendor"], "client": SOURCE["client"],
@@ -206,7 +215,6 @@ def main():
     target = args.output_dir.resolve()
     if target.is_relative_to(REPO_ROOT) or not target.exists():
         raise ValueError("Internal-only storage must already exist outside the public repository")
-    universe = json.loads(args.universe_json.read_text(encoding="utf8"))
     verify_universe(universe)
     date_literal(args.session)
     filename = target / (args.session + ".json")

@@ -1,9 +1,11 @@
 import unittest
+import json
+from pathlib import Path
 from datetime import date, datetime, timezone
 
 from yahoo_source import (
     BENCHMARK, MIN_COVERAGE, SCHEMA, SOURCE, UNIVERSE_SIZE,
-    normalize, prepare_snapshot, verify_snapshot, verify_universe, yahoo_symbol, verify_closed_xnys_session,
+    normalize, prepare_snapshot, verify_snapshot, verify_universe, yahoo_symbol, verify_closed_xnys_session, DEFAULT_UNIVERSE,
 )
 
 SESSION = "2026-10-30"
@@ -109,6 +111,23 @@ class YahooSourceContractTest(unittest.TestCase):
         with self.assertRaises(ValueError):
             verify_closed_xnys_session(
                 "2026-10-31", datetime(2026, 10, 31, 23, 0, tzinfo=timezone.utc))
+
+
+    def test_exact_public_constituent_universe_and_ticker_transition(self):
+        manifest = json.loads(DEFAULT_UNIVERSE.read_text(encoding="utf8"))
+        self.assertEqual(manifest["schema"], "institutional_xnys_universe_v1")
+        self.assertEqual(manifest["frozen_on"], "2026-09-29")
+        self.assertEqual(manifest["count"], 503)
+        self.assertEqual(len(verify_universe(manifest["symbols"])), 503)
+        self.assertIn("BRK-B", manifest["symbols"])
+        self.assertIn("BF-B", manifest["symbols"])
+        self.assertIn("PSKY", manifest["symbols"])
+        self.assertNotIn("SPY", manifest["symbols"])
+        self.assertEqual(yahoo_symbol("BRK-B", "2026-10-30"), "BRK-B")
+        self.assertEqual(yahoo_symbol("BRK.B", "2026-10-30"), "BRK-B")
+        self.assertEqual(yahoo_symbol("PSKY", "2026-10-05"), "PSKY")
+        self.assertEqual(yahoo_symbol("PSKY", "2026-10-06"), "SKYD")
+        self.assertEqual(normalize("PSKY", "2026-10-30", bar())["provider_symbol"], "SKYD")
 
 
 if __name__ == "__main__":
