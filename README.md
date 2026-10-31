@@ -128,3 +128,10 @@ La pestaña **Inventario completo · 64** registra las familias del sistema de i
 **Esto es cobertura de funciones, no importación de resultados.** Las 64 líneas comienzan expresamente como `not_migrated` con todos los resultados económicos en `null`, sin histórico y sin actividad real. El validador bloquea el intento de presentar una fila pendiente como cartera activa. Las 23 estrategias matemáticas de la demostración, las nueve carteras artificiales y el registro prospectivo del BCE siguen siendo módulos distintos, no equivalentes a ese universo de 64.
 
 Para obtener equivalencia operativa faltan la base de precios Yahoo/yfinance con permisos de uso y almacenamiento institucional no público, los libros prospectivos independientes, las mismas versiones de modelos, la lógica de señales y las auditorías reales, además de la ingestión de documentación empresarial y la continuidad de tesis. No se puede deducir una fecha, un precio o un rendimiento del mero inventario.
+
+
+## Universo de acciones idéntico al mercado de referencia
+
+Se ha inmovilizado un catálogo institucional nuevo de `503` tickers de mercado XNYS para la composición de referencia del **29/09/2026**, con `SPY` definido por separado. El archivo `data/universe-xnys.json` contiene únicamente identificadores públicos de instrumentos y no incluye información personal ni operaciones. Los identificadores `BRK-B` y `BF-B` se mantienen en su notación válida para Yahoo; el identificador histórico `PSKY` se traduce al símbolo de proveedor `SKYD` únicamente para sesiones a partir del 06/10/2026. Esto evita errores por cambios de denominación de un mismo valor.
+
+La compilación institucional valida el universo completo, sin descargar Yahoo ni publicar su serie OHLC. Para usos locales con derechos suficientes, el fichero `scripts/requirements-yahoo.txt` define el conjunto de dependencias del adaptador existente. La migración no está completa hasta verificar una captura real diaria y los libros de cada algoritmo en el nuevo entorno.
