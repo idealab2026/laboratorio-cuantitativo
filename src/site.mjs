@@ -1,5 +1,4 @@
-import {verify,simulate,rank,valuation,thesisRank,formatPct,money,finite} from "./metrics.mjs";
-import {verifyIssuerCatalog,filterIssuers} from "./catalog.mjs";
+import {verify,simulate,rank,valuation,thesisRank,formatPct,money,finite,verifyIssuerCatalog,filterIssuers} from "./metrics.mjs";
 const $=id=>document.getElementById(id);
 const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 const fmt=n=>finite(n)?new Intl.NumberFormat("es-ES",{maximumFractionDigits:2}).format(n):"N/D";
@@ -205,7 +204,7 @@ document.querySelectorAll(".product-tabs [data-view]").forEach(b=>b.addEventList
 window.addEventListener("popstate",()=>{const v=new URLSearchParams(location.search).get("view");state.view=viewNames.includes(v)?v:"overview";render();});
 async function init(){
  try{
-  const [r,u]=await Promise.all([fetch("./data/demo.json",{cache:"no-store"}),fetch("./data/universe.json",{cache:"no-store"})]);if(!r.ok||!u.ok)throw Error("Dataset missing");const [data,universe]=await Promise.all([r.json(),u.json()]);verify(data);verifyIssuerCatalog(universe);
+  const r=await fetch("./data/demo.json",{cache:"no-store"});if(!r.ok)throw Error("Dataset missing");const data=await r.json(),universe=data.issuerCatalog;verify(data);verifyIssuerCatalog(universe);
   state.data=data;state.universe=universe;const v=new URLSearchParams(location.search).get("view");state.view=viewNames.includes(v)?v:"overview";summary();render();
  }catch(e){$("app").textContent="No se ha podido cargar el catálogo de emisores o el laboratorio sintético; no se muestran datos no verificados.";}
 }
