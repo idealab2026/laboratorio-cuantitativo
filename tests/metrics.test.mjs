@@ -1,7 +1,7 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 import {readFileSync} from "node:fs";
-import {verify,signal,simulate,rank,valuation,thesisRank,absentQuote,cumulative,maxDrawdown,formatPct,syntheticBarsFromDemo,nextOpenPaper} from "../src/metrics.mjs";
+import {verify,signal,simulate,rank,valuation,thesisRank,absentQuote,cumulative,maxDrawdown,formatPct,syntheticBarsFromDemo,nextOpenPaper,verifyIssuerCatalog} from "../src/metrics.mjs";
 const data=JSON.parse(readFileSync(new URL("../data/demo.json",import.meta.url),"utf8"));
 test("The independent public universe is strictly synthetic",()=>{
  assert.equal(verify(data),true);
@@ -133,4 +133,20 @@ test("Cash policy creates no fills and independent ledger does not overwrite old
  assert.equal(paper.points.at(-1).cash,data.meta.initialCapital);
  const legacy=simulate(data,"P-01");
  assert.ok(legacy.orders.every(o=>o.status==="SIMULATED"));
+});
+
+
+test("Only SEC-verified issuers expose source identifiers",()=>{
+ const issuers=data.issuerCatalog.issuers;
+ const verified=issuers.filter(x=>x.secCik);
+ assert.equal(verified.length,8);
+ assert.ok(verified.every(x=>/^\d{10}$/.test(x.secCik)));
+ const tampered=structuredClone(data.issuerCatalog);
+ tampered.issuers[0].secCik="malicious/redirect";
+ assert.throws(()=>verifyIssuerCatalog(tampered),/Invalid source registry/);
+ const src=readFileSync(new URL("../src/site.mjs",import.meta.url),"utf8");
+ assert.ok(src.includes("www.sec.gov/edgar/browse/?CIK="));
+ assert.ok(src.includes('rel="noopener noreferrer"'));
+ assert.ok(src.includes("Exportar libro causal CSV"));
+ assert.ok(src.includes("Ejecución paper en apertura siguiente"));
 });
