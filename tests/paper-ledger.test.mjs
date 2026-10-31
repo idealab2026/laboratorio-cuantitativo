@@ -82,3 +82,18 @@ test("Distinct synthetic index and eight-asset equal-weight holdings have indepe
  assert.ok(run.ranking.every(x=>Number.isFinite(x.returnPct)));
  assert.ok(run.ranking.every(x=>x.status==="SYNTHETIC_ONLY"));
 });
+
+test("A lone technical paper entry is limited to 15% NAV, unlike the benchmark target",()=>{
+ const first=advancePaperCampaign(config(),panel(80)).state;
+ const next=advancePaperCampaign(config(),panel(81),first).state.portfolios["M-HOLD"];
+ const fill=next.events.find(e=>e.type==="FILL");
+ assert.ok(Math.abs(fill.price*fill.units+fill.fee-15000)<.01);
+ assert.ok(Math.abs(next.cash-85000)<.01);
+ const benchmark={...config(),strategies:[{id:"M-INDEX",method:"benchmark",symbols:["SIM-A"],entryWeight:1}]};
+ const initial=advancePaperCampaign(benchmark,panel(80)).state;
+ const after=advancePaperCampaign(benchmark,panel(81),initial).state.portfolios["M-INDEX"];
+ assert.ok(Math.abs(after.cash-5000)<.01);
+ const invalid=config();
+ invalid.strategies[0].entryWeight=1.2;
+ assert.throws(()=>advancePaperCampaign(invalid,panel(80)),/maximum entry weight/);
+});
