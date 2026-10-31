@@ -18,6 +18,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
           persist-credentials: false
           fetch-depth: 0
       - uses: actions/setup-node@v4
@@ -37,15 +38,17 @@ jobs:
         run: |
           node --check src/site.mjs
           node --check src/metrics.mjs
+          node --check src/learning.mjs
+          node --check src/learning-view.mjs
       - name: Unit tests
-        run: node --test tests/metrics.test.mjs
+        run: node --test tests/*.test.mjs
       - name: Build allowlisted static package
         run: |
           mkdir -p dist/src dist/data
-          cp index.html styles.css logo.svg favicon.svg dist/
-          cp src/site.mjs src/metrics.mjs dist/src/
+          cp index.html research.html styles.css logo.svg favicon.svg dist/
+          cp src/site.mjs src/metrics.mjs src/learning.mjs src/learning-view.mjs dist/src/
           cp data/demo.json dist/data/
-          test "$(find dist -type f | wc -l)" -eq 7
+          test "$(find dist -type f | wc -l)" -eq 10
       - uses: actions/upload-artifact@v4
         with:
           name: audited-site
