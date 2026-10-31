@@ -38,6 +38,8 @@ export function validatePaperConfig(config,symbols){
      names.has(row.id)||!allowed.has(row.method)||!Array.isArray(row.symbols)||!row.symbols.length||
      row.symbols.some(x=>!symbols.includes(x))||new Set(row.symbols).size!==row.symbols.length)
    throw Error("Unknown or duplicate paper method");
+  if(row.entryWeight!==undefined&&(!valid(row.entryWeight)||row.entryWeight<=0||row.entryWeight>1))
+   throw Error("Invalid per-method maximum entry weight");
   names.add(row.id);
  }
 }
@@ -108,7 +110,9 @@ function settleSession(book,methodRow,panel,config){
  const eligible=Object.keys(book.orders).sort().filter(symbol=>
   book.orders[symbol].side==="BUY"&&!book.holdings[symbol]&&!exited.has(symbol));
  const allowed=eligible.slice(0,Math.max(0,config.maxPositions-Object.keys(book.holdings).length));
- const budget=allowed.length?book.cash*config.investFraction/allowed.length:0;
+ const openEquity=book.cash+Object.entries(book.holdings).reduce((sum,[symbol,pos])=>sum+pos.units*barOf(symbol).open,0);
+ const maximum=methodRow.entryWeight??(methodRow.method==="benchmark"?1:.15);
+ const budget=allowed.length?Math.min(book.cash*config.investFraction/allowed.length,openEquity*maximum):0;
  for(const symbol of allowed){
   const order=book.orders[symbol],bar=barOf(symbol);
   recordFill(book,symbol,"BUY",bar,bar.open,config,"PRIOR_CLOSE",order.signalAt,budget);
@@ -207,7 +211,8 @@ export function artificialCampaignComparison(){
  const config={schema:1,currency:"USD",capital:100000,feeBps:10,slippageBps:5,
   investFraction:.95,maxPositions:8,
   strategies:methodCatalog.map((method,index)=>({id:"M-"+(index+10),method:method.id,
-   symbols:method.id==="benchmark"?["SIM-I"]:symbols.slice(0,8)}))};
+   symbols:method.id==="benchmark"?["SIM-I"]:symbols.slice(0,8),
+   entryWeight:method.id==="benchmark"?1:.15}))};
  let state=null;
  for(let n=80;n<=base.length;n++){
   const panel={source:"generated_research_ohlc_v1",synthetic:true,currency:"USD",
