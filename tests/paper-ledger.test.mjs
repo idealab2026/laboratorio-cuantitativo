@@ -97,3 +97,34 @@ test("A lone technical paper entry is limited to 15% NAV, unlike the benchmark t
  invalid.strategies[0].entryWeight=1.2;
  assert.throws(()=>advancePaperCampaign(invalid,panel(80)),/maximum entry weight/);
 });
+
+test("Recover missed dates only for already pending orders and record no retrospective signal",()=>{
+ const cfg={...config(),maxMissedSessions:5};
+ const initial=advancePaperCampaign(cfg,panel(80)).state;
+ const later=advancePaperCampaign(cfg,panel(83),initial);
+ const state=later.state,book=state.portfolios["M-HOLD"];
+ assert.equal(state.lastSession,bars[82].session);
+ assert.deepEqual(state.missedDecisions,[bars[80].session,bars[81].session]);
+ assert.equal(book.equity.length,4);
+ assert.equal(book.events.filter(x=>x.type==="DECISION_MISSED").length,2);
+ assert.deepEqual(book.equity.map(x=>x.decisionRecorded),[true,false,false,true]);
+ const fills=book.events.filter(x=>x.type==="FILL");
+ assert.equal(fills.length,1);
+ assert.equal(fills[0].date,bars[80].session);
+ assert.equal(fills[0].signalAt,bars[79].session);
+ assert.equal(book.events.filter(x=>x.type==="SIGNAL").length,1);
+ assert.equal(campaignRanking(cfg,state)[0].missedDecisions,2);
+ const repeat=advancePaperCampaign(cfg,panel(83),state);
+ assert.equal(repeat.changed,false);
+ assert.deepEqual(repeat.state,state);
+});
+test("More than five missing sessions, falsified history or malformed caps block safely",()=>{
+ const cfg={...config(),maxMissedSessions:5};
+ const initial=advancePaperCampaign(cfg,panel(80)).state;
+ assert.throws(()=>advancePaperCampaign(cfg,panel(87),initial),/maximum missed-session allowance/);
+ const corrupt=panel(83);
+ corrupt.bars["SIM-A"][15].high+=12;
+ assert.throws(()=>advancePaperCampaign(cfg,corrupt,initial),/Historical OHLC revised/);
+ const invalid={...cfg,maxMissedSessions:12};
+ assert.throws(()=>advancePaperCampaign(invalid,panel(80)),/Invalid institutional campaign/);
+});
