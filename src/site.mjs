@@ -37,7 +37,7 @@ function overview(){
  head("CATÁLOGO","Familias de estrategias","Las simulaciones siguen siendo demostraciones; los modelos entrenados de la sección de investigación no están conectados a esta competición.")+
  '<div class="family-grid">'+groups().map(g=>card('<div class="panel-top"><h3>'+esc(g)+'</h3><span class="chip">'+all().filter(x=>x.group===g).length+' métodos</span></div><p>'+esc(family(g))+'</p>'+button("Examinar","group",g))).join("")+'</div>'+
  head("EMPRESAS","Seguimiento por emisor","Nombres reales y mercados de referencia; fichas públicas en preparación, sin replicar documentos externos ni carteras privadas.")+
- '<div class="section-grid three">'+featured.map(t=>card('<span class="label">'+esc(t.ticker)+' · '+esc(t.market)+'</span><h3>'+esc(t.company)+'</h3><p>'+esc(t.sector)+'</p><p>Valoración pública independiente: pendiente de validación.</p>'+button("Ver ficha","issuer-select",t.ticker))).join("")+'</div>'+
+ '<div class="section-grid three">'+featured.map(t=>card('<span class="label">'+esc(t.ticker)+' · '+esc(t.market)+'</span><h3>'+esc(t.company)+'</h3><p>'+esc(t.sector)+'</p><p>'+(independentScreen(t.ticker)?'Screening exploratorio independiente disponible; no ratificado.':'Valoración pública independiente pendiente de validación.')+'</p>'+button("Ver ficha","issuer-select",t.ticker))).join("")+'</div>'+
  disclaimer("No existe migración completa de los motores ni de los expedientes de inversión. Sin cotizaciones actualizadas, no se muestran CAGR históricos como pronósticos vigentes.");
 }
 function competition(){
@@ -137,7 +137,7 @@ function theses(){
  '<div class="filters"><label>Buscar<input id="issuer-query" type="search" placeholder="Ticker, empresa o sector" value="'+esc(state.issuerQuery)+'"></label>'+
  '<label>Ordenar<select id="issuer-sort">'+[["ticker","Ticker"],["company","Empresa"],["market","Mercado"],["sector","Sector"]].map(([k,n])=>'<option value="'+k+'" '+(k===state.issuerSort?"selected":"")+'>'+n+'</option>').join("")+'</select></label>'+
  button("Exportar catálogo CSV","export","issuers","outline-btn")+button("Ver tesis ficticias","issuer-mode","demo","outline-btn")+'</div>'+
- '<div class="table-scroll table-compact thesis-public-table"><table><thead><tr><th>Ticker</th><th>Empresa</th><th>Mercado</th><th class="number">Precio actual</th><th class="number">CAGR Bear 5a</th><th class="number">CAGR Base 5a</th><th class="number">CAGR Bull 5a</th><th class="number">Precio 15 %</th><th class="number">Objetivo 5a</th><th>Resultados</th><th>Informe</th></tr></thead><tbody id="issuer-rows">'+issuerTableRows()+'</tbody></table></div>'+
+ '<div class="table-scroll table-compact thesis-public-table"><table><thead><tr><th>Ticker</th><th>Empresa</th><th>Mercado</th><th class="number">Precio ref. / fecha</th><th class="number">CAGR Bear 5a</th><th class="number">CAGR Base 5a</th><th class="number">CAGR Bull 5a</th><th class="number">Precio 15 %</th><th class="number">Objetivo 5a</th><th>Resultados</th><th>Informe</th></tr></thead><tbody id="issuer-rows">'+issuerTableRows()+'</tbody></table></div>'+
  head("ANÁLISIS","Ficha pública de emisor","Fichas independientes: sin referencias privadas ni métricas financieras trasladadas sin auditoría.")+issuerDetail()+
  disclaimer("El catálogo público no equivale a una migración documental. Los estados y objetivos históricos requieren reconstrucción y autorización de publicación independientes.");
 }
