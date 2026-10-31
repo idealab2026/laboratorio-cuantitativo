@@ -1,9 +1,10 @@
 import {signalResearchSummary} from "./paper-methods.mjs";
+import {artificialCampaignComparison} from "./paper-ledger.mjs";
 import {verify,simulate,rank,valuation,thesisRank,formatPct,money,finite,verifyIssuerCatalog,filterIssuers,syntheticBarsFromDemo,nextOpenPaper,evaluateIssuerScreen,competitionReadModel,publicIssuerReadModel,verifyOfficialFx,summarizeFxForecastLedger,verifySecFilings,verifyOfficialYield} from "./metrics.mjs";
 const $=id=>document.getElementById(id);
 const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 const fmt=n=>finite(n)?new Intl.NumberFormat("es-ES",{maximumFractionDigits:2}).format(n):"N/D";
-const state={data:null,universe:null,fx:null,fxCheck:null,fxStatus:"pending",forecastLedger:null,forecastSummary:null,forecastStatus:"pending",secStatus:"pending",secRead:null,secCatalog:null,yieldDoc:null,yieldCheck:null,yieldStatus:"pending",view:"overview",strategy:"P-01",group:"",sort:"returnPct",asc:false,detailOpen:false,thesis:"T-01",query:"",thesisSort:"central",issuerMode:"catalog",issuerQuery:"",issuerSort:"base",issuerAsc:false,issuerTicker:"MSFT"};
+const state={data:null,universe:null,fx:null,fxCheck:null,fxStatus:"pending",forecastLedger:null,forecastSummary:null,forecastStatus:"pending",secStatus:"pending",secRead:null,secCatalog:null,yieldDoc:null,yieldCheck:null,yieldStatus:"pending",view:"overview",strategy:"P-01",group:"",sort:"returnPct",asc:false,detailOpen:false,thesis:"T-01",query:"",thesisSort:"central",issuerMode:"catalog",issuerQuery:"",issuerSort:"base",issuerAsc:false,issuerTicker:"MSFT",paperDetail:"M-10"};
 const viewNames=["overview","competition","algorithms","theses","monitoring","method","archive","ported"];
 const button=(label,action,value,cls="smallbtn")=>'<button type="button" class="'+cls+'" data-action="'+esc(action)+'" data-value="'+esc(value)+'">'+esc(label)+'</button>';
 const head=(label,title,body)=>'<div class="section-heading"><div><span class="kicker">'+esc(label)+'</span><h2>'+esc(title)+'</h2><p class="section-context">'+esc(body)+'</p></div></div>';
@@ -321,12 +322,37 @@ function monitoring(){
  ).join("")+'</tbody></table></div>'+
  disclaimer("Prototipo analítico next-open. No acredita precisión predictiva ni rentabilidad real; no hay broker, cotizaciones externas, motor de persistencia ni ejecución programada.");
 }
+let replayCache=null;
+const replay=()=>replayCache||(replayCache=artificialCampaignComparison());
+function paperAccountingView(){
+ const run=replay(),rows=[...run.ranking].sort((a,b)=>b.returnPct-a.returnPct);
+ const chosen=run.config.strategies.find(x=>x.id===state.paperDetail)||run.config.strategies[0];
+ const book=run.state.portfolios[chosen.id];
+ return head("CONTABILIDAD · EXPERIMENTO ARTIFICIAL","Nueve carteras paper aisladas","Señales al cierre y ejecución modelizada en la apertura posterior, con efectivo, comisiones, stops, objetivos y apuntes. Los datos han sido generados matemáticamente; la curva NO es una rentabilidad bursátil ni un diario prospectivo.")+
+ '<div class="source-health-strip"><div><span class="label">Carteras independientes</span><strong>'+rows.length+'</strong><small>Capital inicial: 100.000 USD artificiales por cartera</small></div>'+
+ '<div><span class="label">Sesiones de cálculo</span><strong>'+run.measuredSessions+'</strong><small>Las primeras 79 velas se usan exclusivamente como precalentamiento</small></div>'+
+ '<div><span class="label">Capital real invertido</span><strong>0 USD</strong><small>Sin broker, sin órdenes bursátiles y sin registro externo</small></div></div>'+
+ '<div class="table-scroll table-compact"><table><thead><tr><th>Regla</th><th class="number">Capital simulado</th><th class="number">Rendimiento</th><th class="number">Drawdown</th><th class="number">Comisiones</th><th class="number">Fills</th><th>Actividad</th><th>Ficha</th></tr></thead><tbody>'+
+ rows.map(r=>'<tr><td><strong>'+esc(run.config.strategies.find(x=>x.id===r.id)?.method||r.id)+'</strong></td>'+
+ '<td class="number">'+esc(fmt(r.equity))+' USD</td><td class="number">'+pctText(r.returnPct)+'</td>'+
+ '<td class="number">'+pctText(r.drawdownPct)+'</td><td class="number">'+esc(fmt(r.fees))+'</td><td class="number">'+r.fills+'</td>'+
+ '<td>'+esc(r.active.join(", ")||"Sin posición")+(r.pending.length?" · Orden pendiente":"")+'</td><td>'+
+ button("Ver diario","paper-select",r.id)+'</td></tr>').join("")+'</tbody></table></div>'+
+ card('<h3>Diario artificial · '+esc(chosen.method)+'</h3>'+
+ '<p>Órdenes contabilizadas: '+book.events.filter(x=>x.type==="FILL").length+'. Posiciones: '+Object.keys(book.holdings).length+
+ '. Comisiones acumuladas: '+esc(fmt(book.feeTotal))+' USD. Los eventos se muestran para comprobar la causalidad, no como transacciones de bolsa.</p>'+
+ '<div class="table-scroll table-compact"><table><thead><tr><th>Sesión</th><th>Tipo</th><th>Activo</th><th>Origen señal</th><th class="number">Precio de fill</th><th class="number">Comisión</th></tr></thead><tbody>'+
+ book.events.slice(-12).reverse().map(e=>'<tr><td>'+esc(e.date)+'</td><td>'+esc(e.type+(e.side?" · "+e.side:""))+'</td>'+
+ '<td>'+esc(e.symbol)+'</td><td>'+esc(e.signalAt||"—")+'</td><td class="number">'+(e.price===undefined?"—":esc(fmt(e.price)))+
+ '</td><td class="number">'+(e.fee===undefined?"—":esc(fmt(e.fee)))+'</td></tr>').join("")+'</tbody></table></div>')+
+ disclaimer("ESTADO: reproducción artificial retroactiva para comprobar funcionamiento. No se importan ni sustituyen las posiciones, las estrategias de la clasificación principal ni el histórico privado.");
+}
 function ported(){
  const report=signalResearchSummary();
  return head("MOTOR DE SEÑALES · AISLADO","Nueve reglas reproducibles","Implementación institucional independiente de políticas técnicas observadas en el catálogo. Esta vista calcula señales con 130 velas enteramente artificiales. No representa operaciones, rendimiento prospectivo ni equivalencia certificada del motor anterior.")+
  '<div class="source-health-strip"><div><span class="label">Reglas verificables</span><strong>'+report.methods.length+'</strong><small>Al cierre, sin datos posteriores</small></div>'+
  '<div><span class="label">Sesiones artificiales</span><strong>'+report.sessions+'</strong><small>'+esc(report.first)+' a '+esc(report.last)+' · calendario generado</small></div>'+
- '<div><span class="label">Carteras ejecutadas en este módulo</span><strong>0</strong><small>Señales no conectadas a libro, proveedor ni broker</small></div></div>'+
+ '<div><span class="label">Carteras en replay artificial</span><strong>9</strong><small>Contabilidad simulada; sin fuente real ni broker</small></div></div>'+
  disclaimer("La codificación de estas reglas técnicas ya puede revisarse y probarse en IDEA LAB. Aún NO se ha transferido el motor privado de ejecución, su historial, modelo entrenado ni cotización real; las 23 filas de la competición son otra simulación independiente.")+
  '<div class="table-scroll table-compact"><table><thead><tr><th>Regla</th><th>Familia</th><th>Parámetros fijos</th><th>Última señal sintética</th><th class="number">Compras / 30</th><th class="number">Ventas / 30</th><th class="number">Mantener / 30</th><th>Operativa</th></tr></thead><tbody>'+
  report.methods.map(m=>'<tr><td><strong>'+esc(m.name)+'</strong><small class="smallline">'+esc(m.id)+'</small></td>'+
@@ -336,7 +362,8 @@ function ported(){
  card('<h3>Contratos necesarios para la ejecución de las carteras</h3>'+
  '<p>Una fuente independiente de OHLC completos y autorizados, fecha de disponibilidad verificable, campañas por divisa/calendario, costes y corporate actions conciliados, configuración inmutable por estrategia, señales grabadas antes de la siguiente apertura, diario persistente y control de sesiones omitidas.</p>'+
  '<p>Hasta comprobar esas condiciones, este módulo expone exclusivamente lógica técnica; no calcula resultados bursátiles ficticios con nombres reales.</p>')+
- button("Revisar simulador next-open existente","navigate","monitoring","outline-btn")+
+ paperAccountingView()+
+  button("Revisar simulador next-open existente","navigate","monitoring","outline-btn")+
  button("Ver competición sintética","navigate","competition","outline-btn");
 }
 
@@ -435,6 +462,7 @@ $("app").addEventListener("click",e=>{
   else{state.sort=value;state.asc=["name","group"].includes(value);}
   state.detailOpen=false;render();
  }
+ else if(action==="paper-select"){state.paperDetail=value;render();}
  else if(action==="issuer-column"){
   if(state.issuerSort===value)state.issuerAsc=!state.issuerAsc;
   else{state.issuerSort=value;state.issuerAsc=["ticker","company","market"].includes(value);}
