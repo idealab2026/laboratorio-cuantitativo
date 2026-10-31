@@ -1,7 +1,7 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 import {readFileSync} from "node:fs";
-import {verify,signal,simulate,rank,valuation,thesisRank,absentQuote,cumulative,maxDrawdown,formatPct,syntheticBarsFromDemo,nextOpenPaper,verifyIssuerCatalog,evaluateIssuerScreen,competitionReadModel,publicIssuerReadModel,verifyOfficialFx,summarizeFxForecastLedger} from "../src/metrics.mjs";
+import {verify,signal,simulate,rank,valuation,thesisRank,absentQuote,cumulative,maxDrawdown,formatPct,syntheticBarsFromDemo,nextOpenPaper,verifyIssuerCatalog,evaluateIssuerScreen,competitionReadModel,publicIssuerReadModel,verifyOfficialFx,summarizeFxForecastLedger,verifySecFilings} from "../src/metrics.mjs";
 const data=JSON.parse(readFileSync(new URL("../data/demo.json",import.meta.url),"utf8"));
 test("The independent public universe is strictly synthetic",()=>{
  assert.equal(verify(data),true);
@@ -333,7 +333,7 @@ test("Official independent forecast journal is scheduled and available as an aud
  assert.ok(yaml.includes("cron: '40 17 * * 1-5'"));
  assert.ok(yaml.includes("Record audited prospective ECB fixing signal"));
  assert.ok(yaml.includes("PYTHONDONTWRITEBYTECODE"));
- assert.ok(pages.includes("cp data/demo.json data/fx-forecast-ledger.json dist/data/"));
+ assert.ok(pages.includes("cp data/demo.json data/fx-forecast-ledger.json data/sec-filings.json dist/data/"));
  assert.ok(site.includes("function prospectiveForecastPanel()"));
  assert.ok(site.includes('fetch("./data/fx-forecast-ledger.json"'));
  assert.ok(site.includes("No son operaciones financieras"));
@@ -348,4 +348,48 @@ test("A reversed-rate signal cannot be scored without immutable invalidation",()
  const site=readFileSync(new URL("../src/site.mjs",import.meta.url),"utf8");
  assert.ok(site.includes("ANULADA · error de fórmula"));
  assert.ok(site.includes("summary.invalidatedCount"));
+});
+
+
+test("Public SEC catalog is source-checked whether pending or successfully collected",()=>{
+ const doc=JSON.parse(readFileSync(new URL("../data/sec-filings.json",import.meta.url),"utf8"));
+ const result=verifySecFilings(doc,data.issuerCatalog);
+ if(doc.status==="not_collected"){
+  assert.equal(result.status,"not_collected");
+  assert.equal(result.count,0);
+  assert.equal(result.byTicker.size,0);
+ }else{
+  assert.equal(result.status,"verified_filings");
+  assert.equal(result.byTicker.size,8);
+  assert.ok(result.count>=16);
+ }
+});
+test("Issuer source display cannot accept foreign links or fictitious document metadata",()=>{
+ const issuerData=data.issuerCatalog;
+ const doc=JSON.parse(readFileSync(new URL("../data/sec-filings.json",import.meta.url),"utf8"));
+ const tickerSet=issuerData.issuers.filter(i=>i.secCik);
+ const records=tickerSet.map(i=>{
+  const accession=i.secCik+"-26-000001",document="report.htm";
+  const path="https://www.sec.gov/Archives/edgar/data/"+Number(i.secCik)+"/"+accession.replaceAll("-","")+"/"+document;
+  const filing={form:"10-K",accession,filed:"2026-08-01",report_date:"2026-06-30",primary_document:document,url:path};
+  const quarter={...filing,form:"10-Q",accession:i.secCik+"-26-000002",
+   filed:"2026-10-30",report_date:"2026-09-30",
+   url:"https://www.sec.gov/Archives/edgar/data/"+Number(i.secCik)+"/"+(i.secCik+"-26-000002").replaceAll("-","")+"/"+document};
+  return {ticker:i.ticker,cik:i.secCik,sec_name:i.company,source_url:"https://data.sec.gov/submissions/CIK"+i.secCik+".json",
+   source_sha256:"a".repeat(64),retrieved_at_utc:"2026-10-31T16:00:00Z",filings:[quarter,filing]};
+ });
+ const valid={...doc,status:"verified_filings",generated_at_utc:"2026-10-31T16:00:00Z",issuers:records};
+ const result=verifySecFilings(valid,issuerData);
+ assert.equal(result.byTicker.size,8);
+ assert.equal(result.count,16);
+ for(const modify of [
+  v=>{v.issuers[0].filings[0].url="https://untrusted.example/false";},
+  v=>{v.issuers[0].cik="0000000000";},
+  v=>{v.issuers[0].filings[0].form="ANALYST";},
+  v=>{v.issuers.pop();},
+ ]){const altered=structuredClone(valid);modify(altered);assert.throws(()=>verifySecFilings(altered,issuerData));}
+ const src=readFileSync(new URL("../src/site.mjs",import.meta.url),"utf8");
+ assert.ok(src.includes("function secSourcePanel("));
+ assert.ok(src.includes('fetch("./data/sec-filings.json"'));
+ assert.ok(src.includes("No se han auditado automáticamente las cifras contables"));
 });

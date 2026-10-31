@@ -1,0 +1,9 @@
+{
+  "schema": "sec_filing_catalog_v1",
+  "data_class": "official_sec_filings_only",
+  "status": "not_collected",
+  "generated_at_utc": null,
+  "source": "U.S. Securities and Exchange Commission (EDGAR submissions)",
+  "notice": "Official filing metadata only. NOT audited financial calculations, a stock price, or an approved investment thesis.",
+  "issuers": []
+}

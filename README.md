@@ -79,3 +79,12 @@ La cadena SHA-256 hace detectable la alteración de eventos sin rehacerla; no im
 
 
 **Incidencia de calidad 31/10/2026:** la primera señal emitida con fecha de fixing 30/10/2026 tenía invertido el orden de las dos últimas observaciones. Por ello el pronóstico «sin cambio» no coincidía con el valor contemporáneo. La señal original se conserva y se ha añadido un evento de **invalidación** enlazado por hash; no se puntúa y no cuenta como observación de éxito. Se ha corregido el orden cronológico y se han añadido pruebas de consistencia matemática. Los resultados evaluables solo empiezan a partir de una nueva señal válida emitida posteriormente.
+
+
+## Fuente primaria SEC · informes 10-K, 10-Q y 8-K
+
+Las fichas institucionales de ocho emisores con CIK verificado pueden incorporar un índice de hasta doce documentos recientes por entidad, extraído directamente de la API pública de EDGAR. El archivo `data/sec-filings.json` conserva ticker, CIK, nombre legal SEC, tipo de formulario, fecha de presentación, fecha de período y enlace al documento oficial; conserva además fecha de recuperación en UTC y SHA-256 de la respuesta SEC. La colección comienza con estado **not_collected**, por lo que no se inventan resultados ni documentos antes de una captura real.
+
+`.github/workflows/sec-filings.yml` verifica ocho fuentes con un único request por emisor, pausa entre peticiones y el agente declarado **IDEA LAB Research**, con referencia exclusiva a la cuenta institucional. La tarea está programada para lunes a viernes a las 16:15 UTC y dispone de un primer disparador controlado al integrar el workflow. Los nuevos datos se guardan mediante commits institucionales en el archivo permitido. Si la SEC bloquea el acceso, falta alguna fuente, se incumple el esquema o GitHub no permite la escritura, el job debe **fallar** sin cambiar el catálogo. La web conserva el último estado validado y Pages lo incluye en su siguiente despliegue. Un commit hecho con `GITHUB_TOKEN` no implica necesariamente que el workflow de Pages se dispare en ese mismo instante.
+
+**Límite:** metadatos de formularios no equivalen a cifras financieras auditadas por el laboratorio. Todavía faltan extracción XBRL, coherencia entre períodos, márgenes, flujo de caja libre, valoraciones Bear/Base/Bull e ingestión autorizada de cotizaciones históricas. Para los demás emisores se consultarán los organismos reguladores competentes, no se atribuirán formularios SEC de otra sociedad.
