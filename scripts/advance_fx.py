@@ -47,7 +47,7 @@ def rounded(value):
 def forecasts(observations):
     if len(observations) < 3:
         raise ValueError("Insufficient chronologically known history")
-    current, previous = [rate_literal(r["usd_per_eur"]) for r in observations[-2:]]
+    previous, current = [rate_literal(r["usd_per_eur"]) for r in observations[-2:]]
     change = current - previous
     return {MODELS[0]: rounded(current),
             MODELS[1]: rounded(current + change),
@@ -71,7 +71,7 @@ def verify_ledger(ledger):
     events = ledger["events"]
     if not isinstance(events, list) or len(events) > 10000:
         raise ValueError("Invalid prospective event sequence")
-    issued, resolved = {}, set()
+    issued, resolved, invalidated, inconsistent = {}, set(), set(), set()
     prev = ZERO
     last_time = None
     for event in events:
@@ -81,6 +81,8 @@ def verify_ledger(ledger):
             required |= {"observed_rate", "predictions"}
         elif kind == "resolved":
             required |= {"signal_hash", "realized_rate", "realized_fixing_date", "absolute_errors"}
+        elif kind == "invalidated":
+            required |= {"signal_hash", "reason"}
         else:
             raise ValueError("Unknown event class")
         if set(event) != required or event["previous_hash"] != prev:
@@ -105,10 +107,22 @@ def verify_ledger(ledger):
                 raise ValueError("Unexpected forecast algorithm")
             for value in pred.values():
                 rate_literal(value)
+            baseline = rounded(rate_literal(event["observed_rate"]))
+            symmetric = abs(Decimal(pred["momentum_1"]) + Decimal(pred["reversal_1"]) - 2 * Decimal(baseline)) <= Decimal(".000002")
+            if pred["unchanged"] != baseline or not symmetric:
+                inconsistent.add(event["hash"])
             issued[event["fixing_date"]] = event
+        elif kind == "invalidated":
+            prior = issued.get(event["fixing_date"])
+            if (not prior or prior["hash"] != event["signal_hash"] or
+                    event["signal_hash"] in resolved or event["signal_hash"] in invalidated or
+                    event["signal_hash"] not in inconsistent or
+                    event["reason"] != "prediction_input_order_bug_v1"):
+                raise ValueError("Unknown or unsupported forecast invalidation")
+            invalidated.add(event["signal_hash"])
         else:
             prior = issued.get(event["fixing_date"])
-            if not prior or event["signal_hash"] != prior["hash"] or event["signal_hash"] in resolved:
+            if not prior or event["signal_hash"] != prior["hash"] or event["signal_hash"] in resolved or event["signal_hash"] in invalidated:
                 raise ValueError("Unknown or duplicate resolved signal")
             settled_on = date.fromisoformat(event["realized_fixing_date"])
             if settled_on <= fixing or settled_on > dt.date() or settled_on.weekday() >= 5:
@@ -122,6 +136,8 @@ def verify_ledger(ledger):
                     raise ValueError("Score does not reconcile with observed fixing")
             resolved.add(event["signal_hash"])
         prev = event["hash"]
+    if inconsistent != invalidated:
+        raise ValueError("Forecast input-order error must be explicitly invalidated")
     return True
 
 
@@ -137,7 +153,7 @@ def advance(ledger, official):
     observations = official["observations"]
     date_to_index = {r["date"]: index for index, r in enumerate(observations)}
     existing = {event["fixing_date"]: event for event in ledger["events"] if event["event_type"] == "issued"}
-    resolved = {event["signal_hash"] for event in ledger["events"] if event["event_type"] == "resolved"}
+    resolved = {event["signal_hash"] for event in ledger["events"] if event["event_type"] in ("resolved", "invalidated")}
     stamp, source_hash = official["received_at_utc"], official["source_sha256"]
     added = 0
     for fixing_date, issue in existing.items():
