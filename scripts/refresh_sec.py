@@ -42,7 +42,7 @@ def empty():
 def parse_submission(ticker, raw, received, current_day=None):
     current_day = current_day or datetime.now(timezone.utc).date()
     cik = ROSTER[ticker]
-    if not isinstance(raw, bytes) or not (1000 < len(raw) < 8_000_000):
+    if not isinstance(raw, bytes) or not (200 < len(raw) < 8_000_000):
         raise ValueError("Empty or unbounded official response")
     if not STAMP.fullmatch(received):
         raise ValueError("Invalid UTC collection time")
