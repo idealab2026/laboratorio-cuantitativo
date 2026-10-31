@@ -206,3 +206,10 @@ Las estrategias mensuales de escasez de capital y compra en caídas tienen selec
 En la revisión institucional de las 20:10 UTC, el workflow de mercado terminó `validate=success`, `execute=skipped`; Pages publicó correctamente. Los archivos `data/public-paper-book.json`, `data/classic-503-book.json` y `data/monthly-paper-book.json` siguen con `not_started`, y el resumen público `data/institutional-paper-feed.json` sigue con `not_connected`. No hay rentabilidad bursátil prospectiva acreditada.
 
 Pendientes verificables: derechos de uso de datos; reconciliación de puntuaciones por sector frente a datos fechados; acoplar factores y libros mensuales al mismo flujo causal; implementar aprendizaje semanal y series temporales con validación fuera de muestra; completar tesis y documentación oficial. No se inventan operaciones anteriores ni se marca como activa una cartera sin una captura válida.
+
+
+## Contrato semanal de modelos predictivos — investigación, sin operaciones
+
+Se añade un validador independiente para los nueve identificadores semanales: dos referencias bursátiles y siete salidas predictivas. Exige cobertura fechada del universo, ausencia de datos futuros, muestras históricas suficientes, cierre semanal acreditado y decisiones congeladas para la siguiente apertura. La selección teórica restringe cada modelo a diez títulos, 12 % máximo por título y 95 % de inversión; las pruebas se ejecutan exclusivamente con series artificiales.
+
+**No hay modelos entrenados ni carteras semanales activas en IDEA LAB por este cambio.** Sus predicciones externas siguen siendo entradas sin certificación independiente y todavía faltan entrenamiento walk-forward, pruebas fuera de muestra, persistencia firmada de operaciones y permisos de cotización. Véase `docs/SCIENTIFIC_PARITY.md`.
