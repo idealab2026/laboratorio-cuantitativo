@@ -47,6 +47,7 @@ jobs:
           node --check src/metrics.mjs
           node --check src/learning.mjs
           node --check src/learning-view.mjs
+          node --check src/paper-methods.mjs
       - name: Unit tests
         run: |
           node --test tests/*.test.mjs
@@ -55,21 +56,21 @@ jobs:
         run: |
           mkdir -p dist/src dist/data
           cp index.html research.html styles.css logo.svg favicon.svg dist/
-          cp src/site.mjs src/metrics.mjs src/learning.mjs src/learning-view.mjs dist/src/
+          cp src/site.mjs src/metrics.mjs src/learning.mjs src/learning-view.mjs src/paper-methods.mjs dist/src/
           cp data/demo.json data/fx-forecast-ledger.json data/sec-filings.json dist/data/
           python3 scripts/refresh_sec.py --validate dist/data/sec-filings.json
-          test "$(find dist -type f | wc -l)" -eq 12
+          test "$(find dist -type f | wc -l)" -eq 13
       - name: Acquire official ECB reference observations (not tradable quotes)
         run: |
           python3 scripts/refresh_ecb.py --output dist/data/official-fx.json
           python3 scripts/refresh_ecb.py --validate dist/data/official-fx.json
           python3 -c "import json,sys;sys.path.insert(0,'scripts');from advance_fx import verify_ledger;verify_ledger(json.load(open('dist/data/fx-forecast-ledger.json',encoding='utf8')))"
-          test "$(find dist -type f | wc -l)" -eq 13
+          test "$(find dist -type f | wc -l)" -eq 14
       - name: Acquire independently checked ECB euro area AAA ten-year model yield
         run: |
           python3 scripts/refresh_ecb_yield.py --out dist/data/official-eur-yield.json
           python3 scripts/refresh_ecb_yield.py --validate dist/data/official-eur-yield.json
-          test "$(find dist -type f | wc -l)" -eq 14
+          test "$(find dist -type f | wc -l)" -eq 15
       - uses: actions/upload-artifact@v4
         with:
           name: audited-site
