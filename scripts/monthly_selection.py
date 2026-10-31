@@ -107,6 +107,8 @@ def _verify_candidates(slot,rows,session):
    raise ValueError("Missing composite score")
   row=dict(item,composite_score=computed)
   if slot=="IL-038":
+   if not number(item.get("capex_intensity")) or item["capex_intensity"]<0:
+    raise ValueError("Missing capex-to-revenue intensity")
    votes=item.get("inflection_votes")
    scarcity=item.get("sector_scarcity_score")
    if type(votes) is not int or not 0<=votes<=3 or not number(scarcity) or not 0<=scarcity<=100:
@@ -166,7 +168,8 @@ def choose(slot,rows,positions,session):
  """Select next-month long target weights from attested prospective scored rows."""
  ranked=_verify_candidates(slot,rows,session)
  spec=SPECS[slot]; lookup={x["ticker"]:x for x in ranked}
- _safe_positions(positions,lookup,session)
+ from yahoo_source import DEFAULT_UNIVERSE
+ _safe_positions(positions,set(json.loads(DEFAULT_UNIVERSE.read_text(encoding="utf8"))["symbols"]),session)
  picked=[];sectors=Counter();exits={}
  def add(row,*,strict=False):
   if len(picked)>=spec["max_positions"] or sectors[row["sector"]]>=spec["max_sector_positions"]:
@@ -177,7 +180,9 @@ def choose(slot,rows,positions,session):
  if slot=="IL-038":
   keep=[]
   for ticker,pos in sorted(positions.items()):
-   row=lookup[ticker]
+   row=lookup.get(ticker)
+   if row is None:
+    exits[ticker]="data_missing";continue
    held=months_between(pos["entry_date"],session)
    if row["hard_exit"]:exits[ticker]="hard_cycle_or_quality_exit"
    elif held>=spec["hold_months"] and row["composite_score"]<spec["retention"]:
