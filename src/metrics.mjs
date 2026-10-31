@@ -474,3 +474,52 @@ export function summarizeFxForecastLedger(data){
   invalidatedCount:invalidations.size,resolvedCount:scored.length,
   unresolvedCount:rows.length-invalidations.size-scored.length,headHash:previous};
 }
+
+
+// Public issuer filings are SEC metadata, NOT prices, investment theses, or earnings forecasts.
+export function verifySecFilings(doc,catalog){
+ verifyIssuerCatalog(catalog);
+ const fixed={"schema":"sec_filing_catalog_v1","data_class":"official_sec_filings_only",
+  "source":"U.S. Securities and Exchange Commission (EDGAR submissions)",
+  "notice":"Official filing metadata only. NOT audited financial calculations, a stock price, or an approved investment thesis."};
+ if(!doc||Object.entries(fixed).some(([k,v])=>doc[k]!==v))throw Error("Invalid SEC source category");
+ if(doc.status==="not_collected"){
+  if(doc.generated_at_utc!==null||!Array.isArray(doc.issuers)||doc.issuers.length!==0)
+   throw Error("Uncollected SEC metadata cannot include issuer documents");
+  return {status:"not_collected",byTicker:new Map(),count:0,generatedAt:null};
+ }
+ if(doc.status!=="verified_filings"||!/^\d{4}-\d\d-\d\dT\d\d:\d\d:\d\dZ$/.test(doc.generated_at_utc||""))
+  throw Error("No source-verified SEC collection");
+ const mapped=catalog.issuers.filter(i=>i.secCik);
+ if(!Array.isArray(doc.issuers)||doc.issuers.length!==mapped.length)
+  throw Error("Unverified SEC collection coverage");
+ const byTicker=new Map();
+ let count=0;
+ for(const issuer of doc.issuers){
+  const source=mapped.find(i=>i.ticker===issuer.ticker);
+  if(!source||source.secCik!==issuer.cik||byTicker.has(issuer.ticker)||
+     issuer.source_url!=="https://data.sec.gov/submissions/CIK"+issuer.cik+".json"||
+     !/^[a-f0-9]{64}$/.test(issuer.source_sha256||"")||
+     !/^\d{4}-\d\d-\d\dT\d\d:\d\d:\d\dZ$/.test(issuer.retrieved_at_utc||"")||
+     !Array.isArray(issuer.filings)||issuer.filings.length<2||issuer.filings.length>12)
+    throw Error("SEC issuer identity or provenance invalid");
+  const seen=new Set();
+  for(const filing of issuer.filings){
+   if(!["10-K","10-Q","8-K"].includes(filing.form)||
+      !/^\d{10}-\d\d-\d{6}$/.test(filing.accession||"")||
+      !/^\d{4}-\d\d-\d\d$/.test(filing.filed||"")||
+      (filing.report_date!==null&&!/^\d{4}-\d\d-\d\d$/.test(filing.report_date||""))||
+      !/^[A-Za-z0-9][A-Za-z0-9._-]{0,119}$/.test(filing.primary_document||"")||
+      filing.primary_document.includes("..")||seen.has(filing.accession))
+     throw Error("Unsafe SEC filing metadata");
+   seen.add(filing.accession);
+   const url="https://www.sec.gov/Archives/edgar/data/"+Number(issuer.cik)+"/"+filing.accession.replaceAll("-","")+"/"+filing.primary_document;
+   if(filing.url!==url)throw Error("SEC document URL outside official archive");
+  }
+  if(!issuer.filings.some(x=>x.form==="10-K")||!issuer.filings.some(x=>x.form==="10-Q"))
+   throw Error("Missing required source forms");
+  byTicker.set(issuer.ticker,issuer);
+  count+=issuer.filings.length;
+ }
+ return {status:"verified_filings",byTicker,count,generatedAt:doc.generated_at_utc};
+}
