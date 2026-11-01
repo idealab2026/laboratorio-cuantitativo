@@ -37,8 +37,8 @@ function percent(value){
 }
 
 export function parseInstitutionalLocalArchive(text,allowedTickers){
- if(!(allowedTickers instanceof Set)||allowedTickers.size<1)
-  throw Error("No hay catálogo institucional verificado");
+ if(allowedTickers!==undefined&&(!(allowedTickers instanceof Set)||allowedTickers.size<1))
+  throw Error("Conjunto de emisores inválido");
  const rows=rowsOf(text);
  if(rows.length<2)throw Error("Archivo CSV sin filas");
  const h=rows[0].map(x=>x.trim());
@@ -47,7 +47,9 @@ export function parseInstitutionalLocalArchive(text,allowedTickers){
  const seen=new Map();
  for(const row of rows.slice(1)){
   const ticker=field(row,"Ticker");
-  if(!allowedTickers.has(ticker)||seen.has(ticker))throw Error("Ticker extraño o duplicado");
+  if(!/^[A-Z0-9]{1,8}(?:\.[A-Z]{1,3})?$/.test(ticker)||
+     (allowedTickers&&!allowedTickers.has(ticker))||seen.has(ticker))
+    throw Error("Ticker extraño o duplicado");
   const date=field(row,"Última revisión");
   if(!/^\d{4}-\d{2}-\d{2}$/.test(date)||!Number.isFinite(Date.parse(date+"T00:00:00Z")))
    throw Error("Revisión no fechada");
