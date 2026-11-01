@@ -7,7 +7,7 @@ const money=(v,r)=>num(v)?fmt(v)+(r.currency?" "+esc(r.currency):""):"N/D";
 const date=v=>typeof v==="string"&&(/^\d{4}-\d{2}-\d{2}$/.test(v)||v==="");
 const TITLES=["ticker","company","theme","lastReview","studyDate","market","currency","priceDate","earningsRecord","thesisStatus","valuationStatus","summary","drivers","risks"];
 const AMOUNTS=["recordedPrice","referencePrice","bearCagr","baseCagr","bullCagr","bearTarget","baseTarget","bullTarget","priceFor15"];
-const PRIVATE=/(?:https?:\/\/|[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}|segundo[\s_-]*cerebro|personal_mamg|mamg97|github_pat_|ghp_|refresh_token|private_key|iban)/i;
+const PRIVATE=/(?:https?:\/\/|[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}|segundo[\s_-]*cerebro|github_pat_|ghp_|refresh_token|private_key|iban)/i;
 export function verifyPublicTheses(doc){
  if(!doc||doc.schema!=="midas_public_theses_v1"||
     doc.data_class!=="author_approved_public_research_snapshot"||
