@@ -1,4 +1,5 @@
 import {signalResearchSummary,methodCatalog} from "./paper-methods.mjs";
+import {parseLocalCagr2031} from "./private-theses.mjs";
 import {artificialCampaignComparison} from "./paper-ledger.mjs";
 import {verifyFullRoster,filterRoster,technicalStage,technicalCoverage} from "./competition-roster.mjs";
 import {verifyPaperFeed} from "./paper-feed.mjs";
@@ -6,7 +7,7 @@ import {verify,simulate,rank,valuation,thesisRank,formatPct,money,finite,verifyI
 const $=id=>document.getElementById(id);
 const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 const fmt=n=>finite(n)?new Intl.NumberFormat("es-ES",{maximumFractionDigits:2}).format(n):"N/D";
-const state={data:null,universe:null,fx:null,fxCheck:null,fxStatus:"pending",forecastLedger:null,forecastSummary:null,forecastStatus:"pending",secStatus:"pending",secRead:null,secCatalog:null,yieldDoc:null,yieldCheck:null,yieldStatus:"pending",view:"overview",strategy:"P-01",group:"",sort:"returnPct",asc:false,detailOpen:false,thesis:"T-01",query:"",thesisSort:"central",issuerMode:"catalog",issuerQuery:"",issuerSort:"base",issuerAsc:false,issuerTicker:"MSFT",paperDetail:"M-10",fullRoster:null,fullRosterStatus:"pending",fullRosterGroup:"",fullRosterQuery:"",institutionalFeedStatus:"pending",paperFeed:null,paperFeedRead:null};
+const state={data:null,universe:null,fx:null,fxCheck:null,fxStatus:"pending",forecastLedger:null,forecastSummary:null,forecastStatus:"pending",secStatus:"pending",secRead:null,secCatalog:null,yieldDoc:null,yieldCheck:null,yieldStatus:"pending",view:"overview",strategy:"P-01",group:"",sort:"returnPct",asc:false,detailOpen:false,thesis:"T-01",query:"",thesisSort:"central",issuerMode:"catalog",issuerQuery:"",issuerSort:"base",issuerAsc:false,issuerTicker:"MSFT",paperDetail:"M-10",fullRoster:null,fullRosterStatus:"pending",fullRosterGroup:"",fullRosterQuery:"",institutionalFeedStatus:"pending",paperFeed:null,paperFeedRead:null,localCagr:new Map(),localCagrError:""};
 const viewNames=["overview","competition","algorithms","theses","monitoring","method","archive","ported","full"];
 const button=(label,action,value,cls="smallbtn")=>'<button type="button" class="'+cls+'" data-action="'+esc(action)+'" data-value="'+esc(value)+'">'+esc(label)+'</button>';
 const head=(label,title,body)=>'<div class="section-heading"><div><span class="kicker">'+esc(label)+'</span><h2>'+esc(title)+'</h2><p class="section-context">'+esc(body)+'</p></div></div>';
@@ -164,25 +165,30 @@ function secSourcePanel(ticker){
 
 function issuerTableRows(){
  return publicIssuerReadModel(state.universe,{query:state.issuerQuery,sort:state.issuerSort,ascending:state.issuerAsc}).map(({issuer:i,screen:s})=>{
-  const close=s?fmt(s.quote.close)+" "+s.quote.currency+" · "+s.quote.closeDate:"N/D";
+  const local=state.localCagr.get(i.ticker);
+  // Never mix an imported historical CAGR with an unrelated current-date quote/target.
+  const close=local?"N/D · archivo local":s?fmt(s.quote.close)+" "+s.quote.currency+" · "+s.quote.closeDate:"N/D";
   const filings=state.secRead?.byTicker.get(i.ticker);
   const filingSummary=filings?.filings?.[0];
-  return '<tr class="interactive-table-row '+(state.issuerTicker===i.ticker?"is-selected":"")+'" data-issuer-id="'+esc(i.ticker)+'" tabindex="0" aria-label="Abrir la ficha pública de '+esc(i.company)+'">'+
+  const val=(field,source)=>local?(local[field]===null?"N/D":pctText(local[field])):(s?pctText(s.scenarios[source].cagrPct):"N/D");
+  return '<tr class="interactive-table-row '+(state.issuerTicker===i.ticker?"is-selected":"")+'" data-issuer-id="'+esc(i.ticker)+'" tabindex="0" aria-label="Abrir la ficha de '+esc(i.company)+'">'+
   '<td><strong>'+esc(i.ticker)+'</strong></td><td><strong>'+esc(i.company)+'</strong><small class="smallline">'+esc(i.sector)+'</small></td><td>'+esc(i.market)+'</td><td class="number">'+esc(close)+'</td>'+
-  '<td class="number">'+(s?pctText(s.scenarios.bull.cagrPct):"N/D")+'</td><td class="number">'+(s?pctText(s.scenarios.bear.cagrPct):"N/D")+'</td><td class="number">'+(s?pctText(s.scenarios.base.cagrPct):"N/D")+'</td>'+
-  '<td class="number">'+(s?esc(fmt(s.buyPrice15))+" USD":"N/D")+'</td><td class="number">'+(s?esc(fmt(s.scenarios.base.target))+" USD":"N/D")+'</td>'+
-  '<td>N/D</td><td>'+button(s?"Screen":"Ficha","issuer-select",i.ticker)+(filingSummary?'<small class="smallline">SEC '+esc(filingSummary.form)+' · '+esc(filingSummary.filed)+'</small>':'')+'</td></tr>';
+  '<td class="number">'+val("bull","bull")+'</td><td class="number">'+val("bear","bear")+'</td><td class="number">'+val("base","base")+'</td>'+
+  '<td class="number">'+(!local&&s?esc(fmt(s.buyPrice15))+" USD":"N/D")+'</td><td class="number">'+(!local&&s?esc(fmt(s.scenarios.base.target))+" USD":"N/D")+'</td>'+
+  '<td>N/D</td><td>'+button(local?"Archivo local":s?"Screen":"Ficha","issuer-select",i.ticker)+(local?'<small class="smallline">Histórico · no publicado</small>':filingSummary?'<small class="smallline">SEC '+esc(filingSummary.form)+' · '+esc(filingSummary.filed)+'</small>':'')+'</td></tr>';
  }).join("");
 }
 
 function issuerDetail(){
  const i=state.universe.issuers.find(x=>x.ticker===state.issuerTicker)||state.universe.issuers[0];
  const s=independentScreen(i.ticker);
+ const local=state.localCagr.get(i.ticker);
  const source=i.secCik?'<p>Expediente regulatorio SEC: <a href="https://www.sec.gov/edgar/browse/?CIK='+esc(i.secCik)+'" target="_blank" rel="noopener noreferrer">10-K, 10-Q y 8-K oficiales</a>. Los enlaces no prueban por sí solos las hipótesis financieras.</p>':'<p>Identificador de expediente regulatorio pendiente de contrastar.</p>';
- const base=card('<div class="panel-top"><div><span class="label">'+esc(i.ticker)+' · '+esc(i.market)+'</span><h3>'+esc(i.company)+'</h3></div><span class="status-chip">'+(s?"Screening exploratorio":"Pendiente de validación")+'</span></div><p>'+esc(i.sector)+'</p>'+
- '<div class="metric-strip">'+metric("Precio documentado",s?fmt(s.quote.close)+" USD · "+s.quote.closeDate:"N/D")+metric("CAGR central",s?formatPct(s.scenarios.base.cagrPct):"N/D")+metric("Precio 15 % anual",s?fmt(s.buyPrice15)+" USD":"N/D")+metric("Próximos resultados","N/D")+'</div>'+
+ const base=card('<div class="panel-top"><div><span class="label">'+esc(i.ticker)+' · '+esc(i.market)+'</span><h3>'+esc(i.company)+'</h3></div><span class="status-chip">'+(local?"CAGR histórico local":s?"Screening exploratorio":"Pendiente de validación")+'</span></div><p>'+esc(i.sector)+'</p>'+
+ '<div class="metric-strip">'+metric("Precio documentado",local?"N/D · no sincronizado":s?fmt(s.quote.close)+" USD · "+s.quote.closeDate:"N/D")+metric("CAGR central",local?(local.base===null?"N/D":formatPct(local.base)):s?formatPct(s.scenarios.base.cagrPct):"N/D")+metric("Precio 15 % anual",local?"N/D":s?fmt(s.buyPrice15)+" USD":"N/D")+metric("Próximos resultados","N/D")+'</div>'+
  '<h3 class="minor-heading">Fuentes oficiales</h3>'+source+secSourcePanel(i.ticker)+
  '<h3 class="minor-heading">Control de publicación</h3><p>La identidad corporativa no constituye una tesis aprobada. Los valores disponibles son escenarios exploratorios, no precio objetivo recomendado ni recomendación de inversión. No se traslada ningún expediente privado.</p>');
+ if(local)return base+card('<h3>CAGR históricos importados · no publicados</h3><div class="metric-strip">'+metric("Bear",local.bear===null?"N/D":formatPct(local.bear))+metric("Central",local.base===null?"N/D":formatPct(local.base))+metric("Bull",local.bull===null?"N/D":formatPct(local.bull))+'</div><p>Fecha de estudio: '+esc(local.date||"sin fecha")+' · Estado de archivo: '+esc(local.status)+'. Estas cifras no son rentabilidades realizadas ni cotizaciones vigentes. Datos cargados únicamente en este navegador.</p>');
  if(!s)return base;
  const scenarios=["bear","base","bull"].map((key,index)=>{
   const v=s.scenarios[key];
@@ -212,6 +218,7 @@ function theses(){
  '<div><span class="label">Informes institucionales aprobados</span><strong>0</strong><small>Ningún documento privado trasladado</small></div></div>'+
  disclaimer("Los CAGR y objetivos existentes son supuestos exploratorios y no una tesis de inversión ratificada. N/D significa desconocido o no publicado; no representa cero. Los precios etiquetados son observaciones históricas fechadas, no cotizaciones spot.")+
  '<p class="table-note">Metadatos documentales SEC verificados: '+indexed+' de 8 emisores seleccionados. Los demás mercados requieren otros organismos reguladores. El número de documentos no mide calidad de la tesis.</p>'+
+ '<div class="panel"><label><strong>Cargar CAGR históricos privados (CSV CAGR2031)</strong><input id="cagr-file" type="file" accept=".csv,text/csv"></label><p class="small-note">Exporta únicamente la pestaña CAGR2031 de tu Sheet, selecciona el CSV aquí. Se lee en memoria local; no se transmite, guarda ni publica. En esta vista nunca se mezclan cotizaciones públicas y escenarios de fechas distintas.</p><p role="status">'+(state.localCagrError?esc(state.localCagrError):state.localCagr.size?state.localCagr.size+" registros históricos cargados en este dispositivo.":"Sin archivo privado cargado.")+'</p>'+(state.localCagr.size?button("Descartar CAGR locales","issuer-local-clear","","outline-btn"):"")+'</div>'+
  '<div class="filters"><label>Buscar ticker o empresa<input id="issuer-query" type="search" autocomplete="off" placeholder="Ej.: MSFT o Microsoft" value="'+esc(state.issuerQuery)+'"></label>'+
  '<label>Ordenar<select id="issuer-sort">'+columns.map(([k,n])=>'<option value="'+k+'" '+(k===state.issuerSort?"selected":"")+'>'+esc(n)+'</option>').join("")+'</select></label>'+
  button(state.issuerAsc?"↑ Ascendente":"↓ Descendente","issuer-direction","","outline-btn")+
@@ -520,6 +527,7 @@ $("app").addEventListener("click",e=>{
  else if(action==="thesis"){state.thesis=value;state.issuerMode="demo";go("theses");}
  else if(action==="issuer-mode"){state.issuerMode=value==="demo"?"demo":"catalog";render();}
  else if(action==="issuer-select")openIssuerRow(value);
+ else if(action==="issuer-local-clear"){state.localCagr=new Map();state.localCagrError="";render();}
  else if(action==="direction"){state.asc=!state.asc;render();}
  else if(action==="issuer-direction"){state.issuerAsc=!state.issuerAsc;render();}
  else if(action==="export")exportData(value);
@@ -534,6 +542,20 @@ $("app").addEventListener("keydown",e=>{
 });
 $("app").addEventListener("change",e=>{
  const el=e.target;
+ if(el.id==="cagr-file"){
+  const file=el.files?.[0];
+  if(!file)return;
+  void (async()=>{
+   try{
+    if(file.size>1000000)throw Error("CSV demasiado grande");
+    const allowed=new Set(state.universe.issuers.map(x=>x.ticker));
+    const map=parseLocalCagr2031(await file.text(),allowed);
+    state.localCagr=map;state.localCagrError="";
+   }catch(error){state.localCagr=new Map();state.localCagrError="Archivo rechazado: "+error.message;}
+   render();
+  })();
+  return;
+ }
  if(el.id==="group-select"){state.group=el.value;state.detailOpen=false;render();}
  if(el.id==="full-group-select"){state.fullRosterGroup=el.value;render();}
  if(el.id==="rank-select"){state.sort=el.value;state.asc=["name","group"].includes(el.value);state.detailOpen=false;render();}
