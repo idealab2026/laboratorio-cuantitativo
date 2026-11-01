@@ -212,7 +212,15 @@ test("Competition windows measure 5 and 21 comparable artificial sessions only",
 });
 test("Public company sorting keeps unknown values last and returns only approved screen metrics",()=>{
  const rows=publicIssuerReadModel(data.issuerCatalog);
- assert.equal(rows.length,25);
+ assert.equal(rows.length,26);
+  const issuerRKLB=data.issuerCatalog.issuers.find(x=>x.ticker==="RKLB");
+  assert.ok(issuerRKLB);
+  assert.equal(issuerRKLB.company,"Rocket Lab Corporation");
+  assert.equal(issuerRKLB.market,"NASDAQ");
+  assert.equal(issuerRKLB.price,null);
+  assert.equal(issuerRKLB.baseCagr,null);
+  assert.equal(issuerRKLB.reportUrl,null);
+  assert.equal(issuerRKLB.secCik,undefined);
  assert.equal(rows[0].issuer.ticker,"MSFT");
  assert.ok(rows[0].screen.scenarios.base.cagrPct>0);
  assert.ok(rows.slice(1).every(r=>r.screen===null));
