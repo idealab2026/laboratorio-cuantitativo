@@ -262,3 +262,10 @@ Para consultar el archivo privado de competición, hay que descargar **por separ
 Para tesis, se importa la pestaña `Tesis históricas` del archivo privado y se ven los CAGR históricos Bear/Base/Bull, sin pretender que sean revisiones con cotización actual. El CSV y los resultados son descartables cerrando la pestaña o pulsando Borrar.
 
 **Límite operativo**: estos visores resuelven el acceso manual privado a los históricos. No implementan acceso autenticado automático, sincronización de mercado, reanudación autónoma ni negociación de verdad. Las pruebas del repositorio emplean símbolos e importes ficticios; no se publica el contenido ni la composición exacta de las tesis previas. La competición independiente requiere un feed autorizado y un libro prospectivo firmado antes de activar nuevos resultados.
+
+
+## Operación de la competición en el repositorio público
+
+El código permanece en este repositorio público de IDEA LAB. La auditoría operativa se ejecuta automáticamente y publica un informe de estado, **no una rentabilidad ficticia**. La tarea programada de cotizaciones solo realiza operaciones paper cuando existe un feed autorizado y la firma institucional requerida.
+
+[Instrucciones de activación y verificación](docs/RUNBOOK_PRODUCCION.md). El corte del servicio previo no está autorizado mientras falten pruebas de sesiones reales, equivalencia de estrategias y continuidad.
