@@ -47,7 +47,8 @@ test("The 64-row UI is distinct from the existing synthetic competitions",()=>{
  assert.ok(site.includes('full-group-select'));
  assert.ok(site.includes('full-export'));
  assert.ok(site.includes("Sin evidencia comparable"));
- assert.ok(html.includes('data-view="full"'));
+ assert.ok(html.includes('data-view="competition"'));
+ assert.ok(site.includes("function competition(){return full();}"));
  assert.ok(workflow.includes("data/competition-roster.json data/institutional-paper-feed.json dist/data/"));
  assert.ok(site.includes("function paperAccountingView(){"));
 });

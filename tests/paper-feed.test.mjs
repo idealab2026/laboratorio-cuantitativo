@@ -46,7 +46,8 @@ test("Registered client viewer differentiates disabled feed from synthetic demo"
  assert.ok(site.includes("institutional-paper-feed.json"));
  assert.ok(site.includes("verifyPaperFeed("));
  assert.ok(site.includes("Sin fuente institucional acreditada"));
- assert.ok(html.includes('data-view="full"'));
+ assert.ok(html.includes('data-view="competition"'));
+ assert.ok(site.includes("function competition(){return full();}"));
  const build=readFileSync(new URL("../.github/workflows/pages.yml",import.meta.url),"utf8");
  assert.ok(build.includes("paper_feed.py --validate"));
 });

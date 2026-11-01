@@ -8,7 +8,7 @@ const $=id=>document.getElementById(id);
 const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 const fmt=n=>finite(n)?new Intl.NumberFormat("es-ES",{maximumFractionDigits:2}).format(n):"N/D";
 const state={data:null,universe:null,fx:null,fxCheck:null,fxStatus:"pending",forecastLedger:null,forecastSummary:null,forecastStatus:"pending",secStatus:"pending",secRead:null,secCatalog:null,yieldDoc:null,yieldCheck:null,yieldStatus:"pending",view:"overview",strategy:"P-01",group:"",sort:"returnPct",asc:false,detailOpen:false,thesis:"T-01",query:"",thesisSort:"central",issuerMode:"catalog",issuerQuery:"",issuerSort:"base",issuerAsc:false,issuerTicker:"MSFT",paperDetail:"M-10",fullRoster:null,fullRosterStatus:"pending",fullRosterGroup:"",fullRosterQuery:"",institutionalFeedStatus:"pending",paperFeed:null,paperFeedRead:null,localCagr:new Map(),localCagrError:""};
-const viewNames=["overview","competition","algorithms","theses","monitoring","method","archive","ported","full"];
+const viewNames=["overview","competition","algorithms","theses","monitoring","method","archive","ported","full","synthetic"];
 const button=(label,action,value,cls="smallbtn")=>'<button type="button" class="'+cls+'" data-action="'+esc(action)+'" data-value="'+esc(value)+'">'+esc(label)+'</button>';
 const head=(label,title,body)=>'<div class="section-heading"><div><span class="kicker">'+esc(label)+'</span><h2>'+esc(title)+'</h2><p class="section-context">'+esc(body)+'</p></div></div>';
 const card=(html)=>'<article class="panel">'+html+'</article>';
@@ -45,13 +45,13 @@ function overview(){
  '<div class="section-grid three">'+featured.map(t=>card('<span class="label">'+esc(t.ticker)+' · '+esc(t.market)+'</span><h3>'+esc(t.company)+'</h3><p>'+esc(t.sector)+'</p><p>'+(independentScreen(t.ticker)?'Screening exploratorio independiente disponible; no ratificado.':'Valoración pública independiente pendiente de validación.')+'</p>'+button("Ver ficha","issuer-select",t.ticker))).join("")+'</div>'+
  disclaimer("No existe migración completa de los motores ni de los expedientes de inversión. Sin cotizaciones actualizadas, no se muestran CAGR históricos como pronósticos vigentes.");
 }
-function competition(){
+function syntheticCompetition(){
  const rows=competitionReadModel(state.data,{sort:state.sort,ascending:state.asc,group:state.group});
  const headers=[["name","Algoritmo"],["group","Bloque"],["activity","Actividad actual"],["assets","Activos"],["returnPct","Rent. acum."],["sessions","Sesiones"],["lastSession","Última sesión"],["drawdownPct","DD máx."]];
  const headcells=headers.map(([key,title])=>'<th scope="col" aria-sort="'+(state.sort===key?(state.asc?"ascending":"descending"):"none")+'"><button type="button" class="table-sort" data-action="rank-column" data-value="'+key+'" title="Ordenar por '+esc(title)+'">'+esc(title)+' <span aria-hidden="true">'+(state.sort===key?(state.asc?"↑":"↓"):"↕")+'</span></button></th>').join("");
  if(state.detailOpen){
   const selected=rows.find(r=>r.id===state.strategy)||competitionReadModel(state.data).find(r=>r.id===state.strategy);
-  if(!selected){state.detailOpen=false;return competition();}
+  if(!selected){state.detailOpen=false;return syntheticCompetition();}
   return button("← Volver a la competición","close-detail","","outline-btn")+
    head("DETALLE · "+selected.id,selected.name,"Ficha ampliada con actividad, riesgo, exposición, retornos por período y evolución. Los datos siguen siendo ficticios.")+
    disclaimer("La rentabilidad es sintética. Las sesiones no representan fechas bursátiles y los fills heredados son ilustrativos; no corresponden a la contabilidad causal next-open.")+
@@ -83,6 +83,8 @@ function competition(){
  button("Ver historial y versiones","navigate","archive","outline-btn")+
  button("Comprobar libro causal","navigate","monitoring","outline-btn");
 }
+function competition(){return full();}
+
 function detail(s){
  const proxy=["linear","direction","crossrank","perceptron","memory","ensemble","weekly","daily","genetic"].includes(s.mode);
  const r=s.periodReturns||{};
@@ -437,7 +439,7 @@ function full(){
  '<p class="table-note"><span id="full-count">'+visible.length+'</span> de '+meta.count+' entradas · el valor N/D significa información no verificada, no una rentabilidad cero</p>'+
  '<div class="table-scroll table-compact"><table><thead><tr><th>Estrategia / ID</th><th>Familia</th><th>Actividad</th><th>Fecha</th><th>Divisa</th><th class="number">P/L acumulado</th><th class="number">P/L día</th><th class="number">Volatilidad</th><th class="number">Drawdown</th><th class="number">Posiciones / órdenes</th><th>Comparabilidad</th><th>Curva</th></tr></thead><tbody id="full-rows">'+fullRosterRows()+'</tbody></table></div>'+
  card('<h3>Condiciones de publicación de cada diario</h3><p>Para activar una línea se debe verificar la fuente de cotizaciones y sus permisos, la fecha exacta de cada señal, su ejecución al siguiente mercado, el historial de NAV, la divisa y los metadatos de comparabilidad. Las carteras de distinta fecha de inicio o universo no se ordenarán como si compitieran en igualdad de condiciones.</p>')+
- button("Ver las nueve carteras técnicas simuladas","navigate","ported","outline-btn");
+ button("Ver las 23 simulaciones sintéticas","navigate","synthetic","outline-btn")+button("Ver nueve estrategias técnicas","navigate","ported","outline-btn");
 }
 
 function archive(){
@@ -479,7 +481,7 @@ function chart(){
 }
 function render(){
  if(!state.data)return;
- const pages={overview,competition,algorithms,theses,monitoring,archive,ported,full,method:methodology};
+ const pages={overview,competition,synthetic:syntheticCompetition,algorithms,theses,monitoring,archive,ported,full,method:methodology};
  document.querySelectorAll(".product-tabs [data-view]").forEach(b=>{const active=b.dataset.view===state.view;b.classList.toggle("active",active);b.setAttribute("aria-pressed",String(active));});
  $("app").innerHTML=(pages[state.view]||overview)();chart();
 }
@@ -514,8 +516,8 @@ function openCompetitionRow(id){
  if(!all().some(s=>s.id===id))return;
  state.strategy=id;
  state.detailOpen=true;
- if(state.view==="competition")render();
- else go("competition");
+ if(state.view==="synthetic")render();
+ else go("synthetic");
  window.scrollTo({top:0,behavior:"auto"});
 }
 function openIssuerRow(id){
@@ -538,7 +540,7 @@ $("app").addEventListener("click",e=>{
  if(action==="navigate"){state.detailOpen=false;go(value);}
  else if(action==="select")openCompetitionRow(value);
  else if(action==="journal"){state.strategy=value;state.detailOpen=false;go("monitoring");}
- else if(action==="group"){state.group=value;state.detailOpen=false;go("competition");}
+ else if(action==="group"){state.group=value;state.detailOpen=false;go("synthetic");}
  else if(action==="close-detail"){state.detailOpen=false;render();}
  else if(action==="rank-column"){
   if(state.sort===value)state.asc=!state.asc;
