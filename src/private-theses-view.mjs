@@ -1,5 +1,4 @@
 import {parseInstitutionalLocalArchive} from "./private-theses.mjs";
-const allowed=new Set(["PLTR","CAT","NFLX","MSFT","ASTS","6324","NOVT","NVEC","6268","ZEG.L","ADBE","ACS.MC","AMZN","VIST","VST","AEP","DTE","FE","CMS","XE","NET","META","MOG.A","MP","SYM"]);
 const table=document.getElementById("table");
 const count=document.getElementById("count");
 const message=document.getElementById("message");
@@ -22,7 +21,7 @@ input.addEventListener("change",async()=>{
  if(!file)return;
  try{
   if(file.size>1000000)throw Error("CSV demasiado grande");
-  const rows=parseInstitutionalLocalArchive(await file.text(),allowed);
+  const rows=parseInstitutionalLocalArchive(await file.text());
   for(const record of rows.values()){
    const tr=document.createElement("tr");
    for(const value of [record.ticker,record.date,record.status,record.horizon,
