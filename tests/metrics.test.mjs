@@ -445,3 +445,13 @@ test("Main competition route serves 64 institutional statuses, not fictitious 23
  assert.ok(html.includes('data-view="synthetic">Simulación ficticia · 23'));
  assert.ok(!html.includes('data-view="full">Inventario completo'));
 });
+
+test("Public thesis catalogue explains why private completed theses remain N/D",()=>{
+ const code=readFileSync(new URL("../src/site.mjs",import.meta.url),"utf8");
+ assert.ok(code.includes("NO está conectada automáticamente a las tesis históricas"));
+ assert.ok(code.includes("los N/D indican que la valoración no se ha publicado aquí"));
+ assert.ok(code.includes("NO sustituye a la valoración histórica canónica"));
+ assert.ok(code.includes("Seleccionar CSV privado · pestaña CAGR2031"));
+ assert.ok(code.includes("NO es sincronización automática"));
+ assert.ok(!code.includes("segundo-cerebro.mamg97.workers.dev"));
+});
