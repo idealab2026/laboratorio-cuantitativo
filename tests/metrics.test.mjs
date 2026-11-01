@@ -341,7 +341,7 @@ test("Official independent forecast journal is scheduled and available as an aud
  assert.ok(yaml.includes("cron: '40 17 * * 1-5'"));
  assert.ok(yaml.includes("Record audited prospective ECB fixing signal"));
  assert.ok(yaml.includes("PYTHONDONTWRITEBYTECODE"));
- assert.ok(pages.includes("cp data/demo.json data/fx-forecast-ledger.json data/sec-filings.json data/competition-roster.json data/institutional-paper-feed.json dist/data/"));
+ assert.ok(pages.includes("cp data/demo.json data/public-theses.json data/fx-forecast-ledger.json data/sec-filings.json data/competition-roster.json data/institutional-paper-feed.json dist/data/"));
  assert.ok(site.includes("function prospectiveForecastPanel()"));
  assert.ok(site.includes('fetch("./data/fx-forecast-ledger.json"'));
  assert.ok(site.includes("No son operaciones financieras"));
@@ -446,12 +446,11 @@ test("Main competition route serves 64 institutional statuses, not fictitious 23
  assert.ok(!html.includes('data-view="full">Inventario completo'));
 });
 
-test("Public thesis catalogue explains why private completed theses remain N/D",()=>{
+test("Author-approved thesis catalogue is public and does not publish personal document links",()=>{
  const code=readFileSync(new URL("../src/site.mjs",import.meta.url),"utf8");
- assert.ok(code.includes("NO está conectada automáticamente a las tesis históricas"));
- assert.ok(code.includes("los N/D indican que la valoración no se ha publicado aquí"));
- assert.ok(code.includes("NO sustituye a la valoración histórica canónica"));
- assert.ok(code.includes("Seleccionar CSV privado · pestaña CAGR2031"));
- assert.ok(code.includes("NO es sincronización automática"));
+ assert.ok(code.includes("Tesis y valoraciones documentadas"));
+ assert.ok(code.includes('fetch("./data/public-theses.json"'));
+ assert.ok(code.includes("publicThesisTableRows"));
+ assert.ok(code.includes("nueve CAGR cuantificados"));
  assert.ok(!code.includes("segundo-cerebro.mamg97.workers.dev"));
 });
