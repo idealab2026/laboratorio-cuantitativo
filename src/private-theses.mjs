@@ -65,3 +65,29 @@ export function parseInstitutionalLocalArchive(text,allowedTickers){
  }
  return seen;
 }
+
+/** Read a user-selected CAGR2031 CSV entirely in RAM; never transmit or persist. */
+export function parseLocalCagr2031(text,allowedTickers){
+ const rows=rowsOf(text);
+ if(rows.length<2)throw Error("CSV sin filas de empresas");
+ const headers=rows[0].map(x=>x.trim().toLowerCase());
+ const fields=["ticker","cagr_bear_2031","cagr_base_2031","cagr_bull_2031","estado"];
+ for(const name of fields)if(!headers.includes(name))throw Error("Falta columna "+name+" de CAGR2031");
+ const pick=(row,key)=>String(row[headers.indexOf(key)]??"").trim();
+ const out=new Map();
+ for(const row of rows.slice(1)){
+  const ticker=pick(row,"ticker").toUpperCase();
+  if(!/^[A-Z0-9]{1,8}(?:\.[A-Z]{1,3})?$/.test(ticker)||
+     (allowedTickers&&!allowedTickers.has(ticker))||out.has(ticker))
+   throw Error("Ticker no reconocido o duplicado");
+  const status=pick(row,"estado").slice(0,180);
+  if(!status)throw Error("Estado documental ausente");
+  const date=headers.includes("fecha_estudio")?pick(row,"fecha_estudio"):"";
+  if(date&&!/^\d{4}-\d{2}-\d{2}$/.test(date))throw Error("Fecha de estudio inválida");
+  out.set(ticker,{ticker,date,status,
+   bear:percent(pick(row,"cagr_bear_2031")),
+   base:percent(pick(row,"cagr_base_2031")),
+   bull:percent(pick(row,"cagr_bull_2031"))});
+ }
+ return out;
+}
