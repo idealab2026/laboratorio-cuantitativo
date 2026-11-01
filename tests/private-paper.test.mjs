@@ -15,7 +15,7 @@ const csv=r=>r.map(a=>a.map(v=>'"'+String(v??"").replaceAll('"','""')+'"').join(
 function fixture(){
  const results=[R],curves=[C];
  for(let i=1;i<=64;i++){
-  const id="IL-"+String(i).padStart(3,"0"),valid=i<=47,days=i===47?22:11;
+  const id="IL-"+String(i).padStart(3,"0"),valid=i<=31,days=i===31?17:10;
   const dates=Array.from({length:days},(_,n)=>"2026-10-"+String(n+1).padStart(2,"0"));
   const lastNav=valid?100000+100*i+days:undefined;
   const ret=valid?(lastNav/100000-1)*100:undefined;
@@ -33,17 +33,17 @@ function fixture(){
  }
  return {results,curves};
 }
-test("Verify 64 originals, 47 dated paper diaries and 528 NAV rows",()=>{
+test("Verify 64 originals, 31 dated paper diaries and 317 sample NAV rows",()=>{
  const raw=fixture();
  const results=parseLocalPaperResults(csv(raw.results));
  assert.equal(results.size,64);
  assert.equal(results.get("IL-048").pct,null);
- assert.equal(results.get("IL-047").sessions,22);
+ assert.equal(results.get("IL-031").sessions,17);
  const curves=parseLocalPaperCurves(csv(raw.curves),results);
  const summary=summarizePrivatePaper(results,curves);
- assert.deepEqual(summary,{algorithms:64,withNav:47,pending:17,
-   curveObservations:528,latest:"2026-10-22"});
- assert.equal(curves.get("IL-047").at(-1).nav,104722);
+ assert.deepEqual(summary,{algorithms:64,withNav:31,pending:33,
+   curveObservations:317,latest:"2026-10-17"});
+ assert.equal(curves.get("IL-031").at(-1).nav,103117);
 });
 test("Refuse unknown ID, duplicate ID, invented P/L, and inconsistent NAV",()=>{
  let x=fixture();
@@ -58,7 +58,7 @@ test("Refuse unknown ID, duplicate ID, invented P/L, and inconsistent NAV",()=>{
 });
 test("Reject incomplete curves, future gap in chronological order, and NAV mismatch",()=>{
  const x=fixture(),results=parseLocalPaperResults(csv(x.results));
- assert.throws(()=>parseLocalPaperCurves(csv(x.curves.slice(0,-1)),results),/528/);
+ assert.throws(()=>parseLocalPaperCurves(csv(x.curves.slice(0,-1)),results),/Sesiones incompletas/);
  const duplicate=structuredClone(x.curves);duplicate[2][1]=duplicate[1][1];
  assert.throws(()=>parseLocalPaperCurves(csv(duplicate),results),/fuera de orden/);
  const corrupted=structuredClone(x.curves);corrupted.at(-1)[2]=1;
@@ -66,10 +66,10 @@ test("Reject incomplete curves, future gap in chronological order, and NAV misma
 });
 test("Handle localized Spanish decimals and decimal comma, not scientific notation",()=>{
  const x=fixture();
- x.results[1][9]="100.111,00";
- x.results[1][10]="0,111";
+ x.results[1][9]="100.110,00";
+ x.results[1][10]="0,11";
  const r=parseLocalPaperResults(csv(x.results));
- assert.equal(r.get("IL-001").nav,100111);
+ assert.equal(r.get("IL-001").nav,100110);
  const invalid=fixture();invalid.results[1][9]="1e50";
  assert.throws(()=>parseLocalPaperResults(csv(invalid.results)),/Cifra inválida/);
 });
