@@ -37,7 +37,7 @@ function render(){
   box.append(tr);
  }
  $("summary").textContent=show.length+" estrategias visibles de "+rows.size+
-  " · 47 con NAV documentado · 17 sin diario comparable · archivo histórico no sincronizado";
+  " · "+[...rows.values()].filter(x=>x.active).length+" con NAV · "+[...rows.values()].filter(x=>!x.active).length+" sin diario · archivo histórico no sincronizado";
  if(selected&&rows.has(selected))draw(selected);
 }
 function textNode(tag,value,parent){
