@@ -81,7 +81,20 @@ export function parseLocalPaperResults(text){
   if(active){
    if(!first||!last||date(first)>date(last)||!(capital>0)||nav===null||pct===null||sessions<1)
     throw Error("Diario sin capital, fechas o NAV");
-   if(Math.abs(100*(nav/capital-1)-pct)>0.00004)throw Error("NAV y retorno inconsistentes");
+   // CSV exporters may round displayed EUR/USD and percent cells differently.
+   // Use the original displayed precision as the tightest defensible tolerance.
+   const decimals=value=>{
+     const s=String(value??"").trim().replace(/[% ]/g,"");
+     const m=s.match(/[.,](\d+)$/);
+     return m?Math.min(m[1].length,10):0;
+   };
+   const pText=at(row,"Rentabilidad acumulada (%)");
+   const nText=at(row,"NAV último");
+   const pctRound=0.5*Math.pow(10,-decimals(pText));
+   const navRound=0.5*Math.pow(10,-decimals(nText));
+   const maxError=pctRound+100*navRound/capital+0.000001;
+   if(Math.abs(100*(nav/capital-1)-pct)>maxError)
+    throw Error("NAV y retorno inconsistentes");
   }else if(capital!==null||nav!==null||pct!==null||sessions!==0||first||last){
    throw Error("Una estrategia sin diario contiene rentabilidad atribuida");
   }
