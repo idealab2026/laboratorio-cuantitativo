@@ -35,7 +35,7 @@ test("Public research UI maintains distinct ported-method diagnostics and no exe
  const {readFileSync}=await import("node:fs");
  const site=readFileSync(new URL("../src/site.mjs",import.meta.url),"utf8");
  assert.ok(site.includes('function ported(){'));
- assert.ok(site.includes('const pages={overview,competition,algorithms,theses,monitoring,archive,ported'));
+ assert.ok(site.includes('const pages={overview,competition,synthetic:syntheticCompetition,algorithms,theses,monitoring,archive,ported'));
  assert.ok(site.includes("Carteras en replay artificial"));
  assert.ok(site.includes("Solo regla · sin órdenes"));
  assert.ok(site.includes("paperAccountingView()"));
