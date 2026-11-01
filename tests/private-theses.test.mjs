@@ -53,3 +53,22 @@ test("The local archive viewer never ships private records or sends uploads",()=
  assert.ok(js.includes("replaceChildren"));
  assert.ok(!/fetch\s*\(|localStorage|sessionStorage|indexedDB|XMLHttpRequest|navigator\.sendBeacon/.test(js));
 });
+
+test("CAGR2031 private Sheet export overlays only historical numeric scenarios",async()=>{
+ const {parseLocalCagr2031}=await import("../src/private-theses.mjs");
+ const h="ticker,empresa,fecha_estudio,cagr_bear_2031,cagr_base_2031,cagr_bull_2031,estado";
+ const d=h+"\nMSFT,Microsoft,2026-10-29,\"−16,50%\",\"−0,90%\",\"+13,74%\",VALORADA"+
+ "\nPLTR,Palantir,2026-10-12,,, ,PENDIENTE";
+ const map=parseLocalCagr2031(d,new Set(["MSFT","PLTR"]));
+ assert.equal(map.get("MSFT").base,-.9);
+ assert.equal(map.get("MSFT").bull,13.74);
+ assert.equal(map.get("PLTR").base,null);
+ assert.throws(()=>parseLocalCagr2031(d,new Set(["MSFT"])));
+ assert.throws(()=>parseLocalCagr2031(h+"\nMSFT,Microsoft,2026-10-29,10,15,25,A\nMSFT,Microsoft,2026-10-29,10,15,25,B",new Set(["MSFT"])));
+});
+test("Public site never hardcodes canonical private CAGR values",()=>{
+ const code=readFileSync(new URL("../src/site.mjs",import.meta.url),"utf8");
+ assert.ok(code.includes('id="cagr-file"'));
+ assert.ok(code.includes("parseLocalCagr2031"));
+ assert.ok(!code.includes("−16,50%"));
+});
