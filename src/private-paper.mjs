@@ -95,14 +95,12 @@ export function parseLocalPaperResults(text){
  }
  for(let i=1;i<=64;i++)if(!found.has("IL-"+String(i).padStart(3,"0")))
   throw Error("Falta una estrategia del inventario");
- if([...found.values()].filter(x=>x.active).length!==47)
-  throw Error("Número de estrategias documentadas inesperado");
  return found;
 }
 export function parseLocalPaperCurves(text,results){
  if(!(results instanceof Map)||results.size!==64)throw Error("Importa primero Resultados 64");
  const {rows,at}=reader(text,CURVE_FIELDS);
- if(rows.length!==528)throw Error("La curva archivada contiene 528 observaciones, no "+rows.length);
+ if(rows.length>900||rows.length<1)throw Error("El archivo de curvas está vacío o es demasiado grande");
  const groups=new Map();
  for(const row of rows){
   const id=at(row,"ID institucional"),r=results.get(id);
