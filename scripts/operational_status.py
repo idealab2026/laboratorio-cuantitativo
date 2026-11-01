@@ -2,7 +2,7 @@
 """Read-only MIDAS operational check; no market calls or private source data."""
 import json
 import os
-from datetime import date
+from datetime import date, datetime, timezone
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1] / "data"
@@ -24,13 +24,21 @@ def evaluate(roster, feed, reference, classic, monthly, *, rights=False, signed=
     source = feed["status"]
     if source not in {"not_connected", "source_verified"}:
         raise ValueError("Unrecognized feed status")
-    running = source == "source_verified" and rights and signed
+    source_day = feed.get("source", {}).get("session") if isinstance(feed.get("source"), dict) else None
+    try:
+        last_age = (datetime.now(timezone.utc).date() - date.fromisoformat(source_day)).days
+        fresh = 0 <= last_age <= 4
+    except (ValueError, TypeError):
+        fresh = False
+    running = source == "source_verified" and rights and signed and fresh
     ready = running and books["reference"] == "prospective_paper" and books["classic"] == "prospective_paper"
     observed = len(feed["tracks"]) if ready else 0
     return {
         "schema": "idealab_paper_operational_audit_v1",
         "registered_strategies": len(slots),
         "market_feed": source,
+        "last_source_session": source_day,
+        "source_recent": fresh,
         "book_status": books,
         "market_data_rights": "confirmed" if rights else "unconfirmed",
         "signing_key": "configured" if signed else "missing",
@@ -42,12 +50,22 @@ def evaluate(roster, feed, reference, classic, monthly, *, rights=False, signed=
 
 def main():
     key = os.environ.get("IDEALAB_PAPER_FEED_KEY", "")
+    feed = load("institutional-paper-feed.json")
+    reference = load("public-paper-book.json")
+    classic = load("classic-503-book.json")
+    monthly = load("monthly-paper-book.json")
+    if feed["status"] == "source_verified":
+        if len(key) < 32:
+            raise ValueError("Active market feed requires institutional signing key")
+        from paper_feed import validate
+        from public_market_runner import validate_state
+        from classic_503_book import verify_book
+        validate(feed, secret=key, roster=load("competition-roster.json"))
+        validate_state(reference, key)
+        verify_book(classic, key)
     report = evaluate(
         load("competition-roster.json"),
-        load("institutional-paper-feed.json"),
-        load("public-paper-book.json"),
-        load("classic-503-book.json"),
-        load("monthly-paper-book.json"),
+        feed, reference, classic, monthly,
         rights=os.environ.get("MIDAS_YAHOO_RIGHTS_CONFIRMED") == "true",
         signed=len(key) >= 32)
     print(json.dumps(report, indent=2, sort_keys=True))
