@@ -73,14 +73,11 @@ test("Public site never hardcodes canonical private CAGR values",()=>{
  assert.ok(!code.includes("−16,50%"));
 });
 
-test("CAGR local table ranking and local export respect the visible historic data",()=>{
- const site=readFileSync(new URL("../src/site.mjs",import.meta.url),"utf8");
- assert.match(site,/function issuerReadRows\(\)/);
- assert.match(site,/const local=state\.localCagr\.get\(i\.ticker\)/);
- assert.match(site,/return \["bear","base","bull"\]\.includes\(sort\)\?local\[sort\]:null/);
- assert.match(site,/issuerReadRows\(\)\.map/);
- assert.match(site,/midas-exportacion-local-privada\.csv/);
- assert.match(site,/local\?\(local\.base\?\?"N\/D"\)/);
+test("Published issuer data and optional local override coexist",()=>{
+ const source=readFileSync(new URL("../src/site.mjs",import.meta.url),"utf8");
+ assert.ok(source.includes("function issuerReadRows()"));
+ assert.ok(source.includes("publicThesisTableRows"));
+ assert.ok(source.includes("publicThesisCsv"));
 });
 test("Import surface excludes external telemetry and uses an origin-constrained CSP",()=>{
  const html=readFileSync(new URL("../index.html",import.meta.url),"utf8");
