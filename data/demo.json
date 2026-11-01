@@ -657,11 +657,11 @@
     },
     "issuers": [
       {
-        "ticker": "6324",
-        "company": "Harmonic Drive Systems",
+        "ticker": "6268",
+        "company": "Nabtesco",
         "market": "TSE",
         "currency": "JPY",
-        "sector": "Robótica y actuadores",
+        "sector": "Robótica industrial",
         "price": null,
         "priceAsOf": null,
         "bearCagr": null,
@@ -676,11 +676,11 @@
         "status": "Pendiente de investigación pública"
       },
       {
-        "ticker": "6268",
-        "company": "Nabtesco",
+        "ticker": "6324",
+        "company": "Harmonic Drive Systems",
         "market": "TSE",
         "currency": "JPY",
-        "sector": "Robótica industrial",
+        "sector": "Robótica y actuadores",
         "price": null,
         "priceAsOf": null,
         "bearCagr": null,
@@ -1043,6 +1043,25 @@
         "reportUrl": null,
         "status": "Pendiente de investigación pública",
         "secCik": "0001321655"
+      },
+      {
+        "ticker": "RKLB",
+        "company": "Rocket Lab Corporation",
+        "market": "NASDAQ",
+        "currency": "USD",
+        "sector": "Lanzamientos y sistemas espaciales",
+        "price": null,
+        "priceAsOf": null,
+        "bearCagr": null,
+        "baseCagr": null,
+        "bullCagr": null,
+        "bearTarget": null,
+        "baseTarget": null,
+        "bullTarget": null,
+        "buyPrice15": null,
+        "nextEarnings": null,
+        "reportUrl": null,
+        "status": "Pendiente de investigación pública"
       },
       {
         "ticker": "SYM",

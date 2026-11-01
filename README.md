@@ -246,3 +246,8 @@ Se incorpora `scripts/weekly_lstm.py`, un entrenamiento recurrente genuino de me
 ## Auditoría LSTM cronológica de investigación
 
 La evaluación temporal del LSTM se implementa en `scripts/lstm_walkforward.py` y prueba ventanas de entrenamiento fechadas, embargo de disponibilidad, predicciones fuera de muestra sintéticas y métricas de error frente a un predictor nulo. La evaluación es acotada y revela explícitamente las fechas examinadas, sin atribuir resultados a precios bursátiles reales. No modifica los 64 registros de actividad económica ni acredita rendimientos.
+
+
+## Cobertura pública adicional: Rocket Lab
+
+Se añade Rocket Lab Corporation (NASDAQ: RKLB) exclusivamente como **identidad bursátil contrastada independientemente**. La fuente primaria es [Rocket Lab Investor FAQs](https://investors.rocketlabcorp.com/resources/investor-faqs) y la reorganización societaria figura en el [aviso oficial Nasdaq de mayo de 2025](https://www.nasdaqtrader.com/TraderNews.aspx?id=ECA2025-264). No se han importado tesis, parámetros históricos, vínculos privados, precios bursátiles, CAGR ni objetivos para este emisor. Su estado permanece pendiente de investigación y no cuenta como informe aprobado.
