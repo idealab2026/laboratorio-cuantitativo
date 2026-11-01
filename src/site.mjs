@@ -163,8 +163,28 @@ function secSourcePanel(ticker){
  '<p class="small-note">Origen y comprobación: <a href="'+esc(found.source_url)+'" target="_blank" rel="noopener noreferrer">SEC submissions JSON</a> · SHA-256 <code>'+esc(found.source_sha256)+'</code>. Archivo <a href="./data/sec-filings.json" target="_blank" rel="noopener noreferrer">institucional de metadatos</a>.</p></section>';
 }
 
+function issuerReadRows(){
+ const rows=publicIssuerReadModel(state.universe,{query:state.issuerQuery,sort:state.issuerSort,ascending:state.issuerAsc});
+ if(!state.localCagr.size||!["bear","base","bull","price","entry","target"].includes(state.issuerSort))return rows;
+ const sort=state.issuerSort;
+ const value=({issuer:i,screen:s})=>{
+  const local=state.localCagr.get(i.ticker);
+  if(local)return ["bear","base","bull"].includes(sort)?local[sort]:null;
+  if(!s)return null;
+  if(["bear","base","bull"].includes(sort))return s.scenarios[sort].cagrPct;
+  if(sort==="price")return s.quote.close;
+  if(sort==="entry")return s.buyPrice15;
+  return s.scenarios.base.target;
+ };
+ return rows.sort((a,b)=>{
+  const x=value(a),y=value(b),emptyX=x===null||!Number.isFinite(x),emptyY=y===null||!Number.isFinite(y);
+  if(emptyX!==emptyY)return emptyX?1:-1;
+  return (emptyX?0:(state.issuerAsc?x-y:y-x))||a.issuer.ticker.localeCompare(b.issuer.ticker,"es");
+ });
+}
+
 function issuerTableRows(){
- return publicIssuerReadModel(state.universe,{query:state.issuerQuery,sort:state.issuerSort,ascending:state.issuerAsc}).map(({issuer:i,screen:s})=>{
+ return issuerReadRows().map(({issuer:i,screen:s})=>{
   const local=state.localCagr.get(i.ticker);
   // Never mix an imported historical CAGR with an unrelated current-date quote/target.
   const close=local?"N/D · archivo local":s?fmt(s.quote.close)+" "+s.quote.currency+" · "+s.quote.closeDate:"N/D";
@@ -211,6 +231,7 @@ function theses(){
  const headers=columns.map(([key,label])=>'<th scope="col" aria-sort="'+(state.issuerSort===key?(state.issuerAsc?"ascending":"descending"):"none")+'"><button class="table-sort" type="button" data-action="issuer-column" data-value="'+key+'" aria-label="Ordenar por '+esc(label)+'">'+esc(label)+' <span aria-hidden="true">'+(state.issuerSort===key?(state.issuerAsc?"↑":"↓"):"↕")+'</span></button></th>').join("");
  const found=publicIssuerReadModel(state.universe,{query:state.issuerQuery,sort:state.issuerSort,ascending:state.issuerAsc}).length;
  const screens=state.universe.publicScreens?.length||0;
+ const historicWithCagr=[...state.localCagr.values()].filter(x=>Number.isFinite(x.base)).length;
  const indexed=state.secRead?.byTicker.size||0;
  return head("TESIS · SEGUIMIENTO","Empresas y valoraciones","Inventario institucional de "+state.universe.issuers.length+" empresas. Solo se muestran escenarios cuantitativos cuando existe un cálculo público independiente, fechado y con sus fuentes.")+
  '<div class="source-health-strip"><div><span class="label">Cobertura del catálogo</span><strong>'+state.universe.issuers.length+' empresas</strong><small>Identidades corporativas, no todas analizadas</small></div>'+
@@ -218,7 +239,7 @@ function theses(){
  '<div><span class="label">Informes institucionales aprobados</span><strong>0</strong><small>Ningún documento privado trasladado</small></div></div>'+
  disclaimer("Los CAGR y objetivos existentes son supuestos exploratorios y no una tesis de inversión ratificada. N/D significa desconocido o no publicado; no representa cero. Los precios etiquetados son observaciones históricas fechadas, no cotizaciones spot.")+
  '<p class="table-note">Metadatos documentales SEC verificados: '+indexed+' de 8 emisores seleccionados. Los demás mercados requieren otros organismos reguladores. El número de documentos no mide calidad de la tesis.</p>'+
- '<div class="panel"><label><strong>Cargar CAGR históricos privados (CSV CAGR2031)</strong><input id="cagr-file" type="file" accept=".csv,text/csv"></label><p class="small-note">Exporta únicamente la pestaña CAGR2031 de tu Sheet, selecciona el CSV aquí. Se lee en memoria local; no se transmite, guarda ni publica. En esta vista nunca se mezclan cotizaciones públicas y escenarios de fechas distintas.</p><p role="status">'+(state.localCagrError?esc(state.localCagrError):state.localCagr.size?state.localCagr.size+" registros históricos cargados en este dispositivo.":"Sin archivo privado cargado.")+'</p>'+(state.localCagr.size?button("Descartar CAGR locales","issuer-local-clear","","outline-btn"):"")+'</div>'+
+ '<div class="panel"><label><strong>Cargar CAGR históricos privados (CSV CAGR2031)</strong><input id="cagr-file" type="file" accept=".csv,text/csv"></label><p class="small-note">Exporta únicamente la pestaña CAGR2031 de tu Sheet y selecciona el CSV. No hay analítica externa; el archivo solo se lee en memoria del navegador y se descarta al cerrar la página. Con historial local, los CAGR se ordenan por las cifras visibles y el CSV exportado se etiqueta privado. Cotizaciones y objetivos no se mezclan con escenarios de otra fecha.</p><p role="status">'+(state.localCagrError?esc(state.localCagrError):state.localCagr.size?state.localCagr.size+" registros locales, "+historicWithCagr+" con CAGR central. Ordenación por cifras mostradas.":"Sin archivo privado cargado.")+'</p>'+(state.localCagr.size?button("Descartar CAGR locales","issuer-local-clear","","outline-btn"):"")+'</div>'+
  '<div class="filters"><label>Buscar ticker o empresa<input id="issuer-query" type="search" autocomplete="off" placeholder="Ej.: MSFT o Microsoft" value="'+esc(state.issuerQuery)+'"></label>'+
  '<label>Ordenar<select id="issuer-sort">'+columns.map(([k,n])=>'<option value="'+k+'" '+(k===state.issuerSort?"selected":"")+'>'+esc(n)+'</option>').join("")+'</select></label>'+
  button(state.issuerAsc?"↑ Ascendente":"↓ Descendente","issuer-direction","","outline-btn")+
@@ -471,10 +492,20 @@ function exportData(what){
  if(what==="next-open"){const a=causalLedger();download("midas-ordenes-next-open-sinteticas.csv",[["senal_al_cierre","fill_apertura_siguiente","activo","lado","apertura_sintetica","precio_paper","unidades","notional","comision","deslizamiento"],...a.orders.map(o=>[o.signalAt,o.fillAt,o.symbol,o.side,o.openPrice,o.fillPrice,o.units,o.notional,o.fee,o.slippage])]);}
  if(what==="journal"){download("midas-diario-sintetico.csv",[["sesion","activo","accion","precio","unidades","nocional","coste"],...active().orders.map(x=>[x.session,x.symbol,x.action,x.referencePrice,x.units,x.notional,x.cost])]);}
  if(what==="issuers"){
-  const rows=publicIssuerReadModel(state.universe,{query:state.issuerQuery,sort:state.issuerSort,ascending:state.issuerAsc});
-  download("midas-seguimiento-publico-fechado.csv",[
+  const rows=issuerReadRows();
+  const privateData=state.localCagr.size>0;
+  download(privateData?"midas-exportacion-local-privada.csv":"midas-seguimiento-publico-fechado.csv",[
    ["ticker","empresa","mercado","sector","cierre_observado","fecha_cierre","divisa","cagr_bull_5y","cagr_bear_5y","cagr_base_5y","precio_15pct","objetivo_base_5y","resultados_verificados","informe_institucional","estado_analitico"],
-   ...rows.map(({issuer:i,screen:s})=>[i.ticker,i.company,i.market,i.sector,s?.quote.close??"N/D",s?.quote.closeDate??"N/D",s?.quote.currency??"N/D",s?.scenarios.bull.cagrPct??"N/D",s?.scenarios.bear.cagrPct??"N/D",s?.scenarios.base.cagrPct??"N/D",s?.buyPrice15??"N/D",s?.scenarios.base.target??"N/D","N/D","N/D",s?"Screening exploratorio · no ratificado":"Sin valoración pública validada"])
+   ...rows.map(({issuer:i,screen:s})=>{
+    const local=state.localCagr.get(i.ticker);
+    return [i.ticker,i.company,i.market,i.sector,local?"N/D":s?.quote.close??"N/D",
+      local?"N/D":s?.quote.closeDate??"N/D",local?"N/D":s?.quote.currency??"N/D",
+      local?(local.bull??"N/D"):s?.scenarios.bull.cagrPct??"N/D",
+      local?(local.bear??"N/D"):s?.scenarios.bear.cagrPct??"N/D",
+      local?(local.base??"N/D"):s?.scenarios.base.cagrPct??"N/D",
+      local?"N/D":s?.buyPrice15??"N/D",local?"N/D":s?.scenarios.base.target??"N/D",
+      "N/D","N/D",local?"CAGR histórico local · "+local.status:s?"Screening exploratorio · no ratificado":"Sin valoración pública validada"];
+   })
   ]);
  }
  if(what==="theses"){download("midas-tesis-sinteticas.csv",[["entidad","sector","metodo","estado","cagr_central","valor_bajista","valor_central","valor_alcista"],...thesisRank(state.data).map(x=>[x.company,x.sector,x.method,x.status,x.central,x.valuation.bear.fair,x.valuation.base.fair,x.valuation.bull.fair])]);}
