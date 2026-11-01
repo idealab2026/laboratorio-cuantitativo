@@ -434,3 +434,14 @@ test("Verified ECB euro AAA 10Y observations cannot be confused with stock valua
  const flow=readFileSync(new URL("../.github/workflows/pages.yml",import.meta.url),"utf8");
  assert.ok(flow.includes("refresh_ecb_yield.py --validate"));
 });
+
+test("Main competition route serves 64 institutional statuses, not fictitious 23-strategy returns",()=>{
+ const src=readFileSync(new URL("../src/site.mjs",import.meta.url),"utf8");
+ const html=readFileSync(new URL("../index.html",import.meta.url),"utf8");
+ assert.ok(src.includes("function competition(){return full();}"));
+ assert.ok(src.includes("synthetic:syntheticCompetition"));
+ assert.ok(src.includes('go("synthetic")'));
+ assert.ok(html.includes('data-view="competition">Competición de algoritmos'));
+ assert.ok(html.includes('data-view="synthetic">Simulación ficticia · 23'));
+ assert.ok(!html.includes('data-view="full">Inventario completo'));
+});
