@@ -25,7 +25,7 @@ function fixture(){
     valid?"USD":"",valid?dates[0]:"",valid?dates.at(-1):"",
     valid?100000:"",valid?lastNav:"",valid?ret:"",valid?"0":"",
     valid?days:0,valid?1:"",valid?0:"",valid?"-2":"",
-    "2026-10-31T11:28:13Z","PAPER NO REAL"]);
+    "2026-08-18T12:00:00Z","PAPER NO REAL"]);
   if(valid)for(let j=0;j<days;j++){
    const nav=j===days-1?lastNav:100000+i+j;
    curves.push([id,dates[j],nav,100000,(nav/100000-1)*100,"USD","PAPER"]);
@@ -70,6 +70,10 @@ test("Handle localized Spanish decimals and decimal comma, not scientific notati
  x.results[1][10]="0,11";
  const r=parseLocalPaperResults(csv(x.results));
  assert.equal(r.get("IL-001").nav,100110);
+ const rounded=fixture();
+ rounded.results[1][9]="100.110,00";
+ rounded.results[1][10]="0,11";
+ assert.equal(parseLocalPaperResults(csv(rounded.results)).get("IL-001").nav,100110);
  const invalid=fixture();invalid.results[1][9]="1e50";
  assert.throws(()=>parseLocalPaperResults(csv(invalid.results)),/Cifra inválida/);
 });
