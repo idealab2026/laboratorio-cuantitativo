@@ -73,14 +73,11 @@ test("Public site never hardcodes canonical private CAGR values",()=>{
  assert.ok(!code.includes("−16,50%"));
 });
 
-test("CAGR local table ranking and local export respect the visible historic data",()=>{
- const site=readFileSync(new URL("../src/site.mjs",import.meta.url),"utf8");
- assert.match(site,/function issuerReadRows\(\)/);
- assert.match(site,/const local=state\.localCagr\.get\(i\.ticker\)/);
- assert.match(site,/return \["bear","base","bull"\]\.includes\(sort\)\?local\[sort\]:null/);
- assert.match(site,/issuerReadRows\(\)\.map/);
- assert.match(site,/midas-exportacion-local-privada\.csv/);
- assert.match(site,/local\?\(local\.base\?\?"N\/D"\)/);
+test("Published issuer data and optional local override coexist",()=>{
+ const source=readFileSync(new URL("../src/site.mjs",import.meta.url),"utf8");
+ assert.ok(source.includes("function issuerReadRows()"));
+ assert.ok(source.includes("publicThesisTableRows"));
+ assert.ok(source.includes("publicThesisCsv"));
 });
 test("Import surface excludes external telemetry and uses an origin-constrained CSP",()=>{
  const html=readFileSync(new URL("../index.html",import.meta.url),"utf8");
@@ -88,4 +85,26 @@ test("Import surface excludes external telemetry and uses an origin-constrained 
  assert.match(html,/connect-src 'self'/);
  assert.ok(!html.includes("static.cloudflareinsights.com"));
  assert.ok(!html.includes("data-cf-beacon"));
+});
+
+test("Published historical research uses only author-approved public issuer extracts",async()=>{
+ const {verifyPublicTheses,orderedThesisRows,publicThesisCsv}=await import("../src/public-theses.mjs");
+ const doc=JSON.parse(readFileSync(new URL("../data/public-theses.json",import.meta.url),"utf8"));
+ const stats=verifyPublicTheses(doc);
+ assert.deepEqual(stats,{count:25,withCagr:9,withPrice:7});
+ const map=new Map(doc.records.map(r=>[r.ticker,r]));
+ assert.equal(map.get("ADBE").baseCagr,17.26);
+ assert.equal(map.get("META").baseTarget,585.72);
+ assert.equal(map.get("MSFT").baseCagr,-.9);
+ assert.equal(map.get("AMZN").baseCagr,null);
+ const ordered=orderedThesisRows([{issuer:{ticker:"MSFT"}},{issuer:{ticker:"ADBE"}},{issuer:{ticker:"META"}}],map,new Map(),"base",false);
+ assert.deepEqual(ordered.map(x=>x.issuer.ticker),["ADBE","MSFT","META"]);
+ assert.equal(publicThesisCsv(ordered,map,new Map()).length,4);
+ assert.throws(()=>verifyPublicTheses({...doc,records:doc.records.map((r,i)=>i? r:{...r,summary:"https://example.org/private"})}));
+ const site=readFileSync(new URL("../src/site.mjs",import.meta.url),"utf8");
+ assert.match(site,/fetch\("\.\/data\/public-theses\.json"/);
+ assert.match(site,/publicThesisTableRows/);
+ const wf=readFileSync(new URL("../.github/workflows/pages.yml",import.meta.url),"utf8");
+ assert.ok(wf.includes("data/public-theses.json"));
+ assert.ok(!JSON.stringify(doc).includes("docs.google.com"));
 });
