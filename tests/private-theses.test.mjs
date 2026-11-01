@@ -72,3 +72,20 @@ test("Public site never hardcodes canonical private CAGR values",()=>{
  assert.ok(code.includes("parseLocalCagr2031"));
  assert.ok(!code.includes("−16,50%"));
 });
+
+test("CAGR local table ranking and local export respect the visible historic data",()=>{
+ const site=readFileSync(new URL("../src/site.mjs",import.meta.url),"utf8");
+ assert.match(site,/function issuerReadRows\(\)/);
+ assert.match(site,/const local=state\.localCagr\.get\(i\.ticker\)/);
+ assert.match(site,/return \["bear","base","bull"\]\.includes\(sort\)\?local\[sort\]:null/);
+ assert.match(site,/issuerReadRows\(\)\.map/);
+ assert.match(site,/midas-exportacion-local-privada\.csv/);
+ assert.match(site,/local\?\(local\.base\?\?"N\/D"\)/);
+});
+test("Import surface excludes external telemetry and uses an origin-constrained CSP",()=>{
+ const html=readFileSync(new URL("../index.html",import.meta.url),"utf8");
+ assert.match(html,/script-src 'self'/);
+ assert.match(html,/connect-src 'self'/);
+ assert.ok(!html.includes("static.cloudflareinsights.com"));
+ assert.ok(!html.includes("data-cf-beacon"));
+});
