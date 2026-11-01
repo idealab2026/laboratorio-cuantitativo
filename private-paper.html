@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self'; connect-src 'none'; object-src 'none'; form-action 'none'; base-uri 'none'">
+<meta name="robots" content="noindex,nofollow"><meta name="referrer" content="no-referrer">
+<link rel="stylesheet" href="./styles.css"><link rel="icon" href="./favicon.svg">
+<title>MIDAS · Consulta paper privada y local · IDEA LAB</title></head>
+<body><header class="topbar"><div class="shell topinner"><a class="brand" href="./index.html"><img src="./logo.svg" alt="IDEA LAB" width="145" height="36"><span>MIDAS · consulta privada</span></a>
+<nav class="global-nav"><a href="./private-theses.html">Tesis históricas</a><a href="./index.html">Volver a MIDAS público</a></nav></div></header>
+<main class="shell"><section class="hero"><span class="kicker">IDEA LAB · ARCHIVO INSTITUCIONAL</span>
+<h1>Competición paper <span class="hero-subtitle">consulta local privada</span></h1>
+<p class="lead">Aquí se pueden revisar las 64 estrategias y su evolución NAV recuperada. Los CSV se leen <strong>solo en este navegador</strong>, sin subida al servidor, almacenamiento local ni conexión a cuentas externas. Cierra esta pestaña o pulsa Borrar para descartarlos.</p>
+</section>
+<section class="panel"><h2>Importar los dos CSV del archivo institucional</h2>
+<p>Abre el archivo privado «Competición PAPER — DIARIOS ORIGINALES» en tu cuenta institucional. Descarga por separado las pestañas <strong>Resultados 64</strong> y <strong>Curvas NAV</strong> mediante Archivo → Descargar → Valores separados por comas (.csv). No hace falta cambiar ningún dato.</p>
+<div class="summary"><label class="stat">1 · Resultados 64 <input id="paper-results" type="file" accept=".csv,text/csv" aria-label="Importar resultados de las 64 estrategias"></label>
+<label class="stat">2 · Curvas NAV <input id="paper-curves" type="file" accept=".csv,text/csv" disabled aria-label="Importar las 528 observaciones históricas"></label>
+</div>
+<button id="clear" type="button" class="smallbtn" disabled>Borrar datos de esta vista</button>
+<p id="status" role="status">Sin datos cargados.</p>
+<div class="research-note">Los valores son operaciones paper sobre datos bursátiles de mercado y se han conservado como un corte histórico. <strong>No son resultados de dinero real ni una actualización en vivo</strong>. No compare directamente rentabilidades de campañas, fechas de inicio o divisas diferentes.</div>
+</section>
+<section class="panel">
+<h2>Inventario económico histórico</h2>
+<div class="summary"><label class="stat">Buscar estrategia <input id="query" type="search" placeholder="Ticker, nombre, familia o IL-038"></label>
+<label class="stat">Familia <select id="group"><option value="">Todas las familias</option></select></label></div>
+<p id="summary">No hay datos importados.</p>
+<div class="table-scroll"><table class="table-compact"><thead><tr><th>ID</th><th>Algoritmo</th><th>Grupo</th><th>Último cierre</th><th>Posiciones</th><th>Pendientes</th><th>Rent. acum.</th><th>NAV</th></tr></thead><tbody id="body"></tbody></table></div>
+</section>
+<section id="detail" class="panel" aria-live="polite"></section>
+</main><footer class="footer"><div class="shell">IDEA LAB · Investigación cuantitativa independiente · Archivo paper local</div></footer>
+<script type="module" src="./src/private-paper-view.mjs"></script></body></html>
