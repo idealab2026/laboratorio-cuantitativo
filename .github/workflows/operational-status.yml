@@ -1,0 +1,45 @@
+name: MIDAS operational state audit
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/operational-status.yml'
+      - 'scripts/operational_status.py'
+      - 'data/institutional-paper-feed.json'
+      - 'data/public-paper-book.json'
+      - 'data/classic-503-book.json'
+      - 'data/monthly-paper-book.json'
+  pull_request:
+    paths:
+      - '.github/workflows/operational-status.yml'
+      - 'scripts/operational_status.py'
+      - 'scripts/test_operational_status.py'
+  schedule:
+    - cron: '47 23 * * 1-5'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Verify readiness evaluator without network
+        run: python3 -m unittest discover -s scripts -p test_operational_status.py -v
+      - name: Evaluate institutional paper status
+        env:
+          MIDAS_YAHOO_RIGHTS_CONFIRMED: ${{ vars.MIDAS_YAHOO_RIGHTS_CONFIRMED }}
+          IDEALAB_PAPER_FEED_KEY: ${{ secrets.IDEALAB_PAPER_FEED_KEY }}
+        run: |
+          python3 scripts/operational_status.py > operational.json
+          echo "## MIDAS | operational readiness" >> "$GITHUB_STEP_SUMMARY"
+          echo '~~~json' >> "$GITHUB_STEP_SUMMARY"
+          cat operational.json >> "$GITHUB_STEP_SUMMARY"
+          echo '~~~' >> "$GITHUB_STEP_SUMMARY"
+          echo "Passing this audit proves state integrity only, not that paper trading has started." >> "$GITHUB_STEP_SUMMARY"
