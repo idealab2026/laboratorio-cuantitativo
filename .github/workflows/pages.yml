@@ -51,6 +51,10 @@ jobs:
           node --check src/paper-ledger.mjs
           node --check src/competition-roster.mjs
           node --check src/paper-feed.mjs
+          node --check src/private-paper.mjs
+          node --check src/private-paper-view.mjs
+          node --check src/private-theses.mjs
+          node --check src/private-theses-view.mjs
       - name: Install exact research-only LightGBM runtime
         run: python3 -m pip install --disable-pip-version-check -r scripts/requirements-research.txt
       - name: Unit tests
@@ -70,23 +74,23 @@ jobs:
       - name: Build allowlisted static package
         run: |
           mkdir -p dist/src dist/data
-          cp index.html research.html styles.css logo.svg favicon.svg dist/
-          cp src/site.mjs src/metrics.mjs src/learning.mjs src/learning-view.mjs src/paper-methods.mjs src/paper-ledger.mjs src/competition-roster.mjs src/paper-feed.mjs dist/src/
+          cp index.html research.html private-paper.html private-theses.html styles.css logo.svg favicon.svg dist/
+          cp src/site.mjs src/metrics.mjs src/learning.mjs src/learning-view.mjs src/paper-methods.mjs src/paper-ledger.mjs src/competition-roster.mjs src/paper-feed.mjs src/private-paper.mjs src/private-paper-view.mjs src/private-theses.mjs src/private-theses-view.mjs dist/src/
           cp data/demo.json data/fx-forecast-ledger.json data/sec-filings.json data/competition-roster.json data/institutional-paper-feed.json dist/data/
           python3 scripts/refresh_sec.py --validate dist/data/sec-filings.json
           python3 scripts/paper_feed.py --validate dist/data/institutional-paper-feed.json
-          test "$(find dist -type f | wc -l)" -eq 18
+          test "$(find dist -type f | wc -l)" -eq 24
       - name: Acquire official ECB reference observations (not tradable quotes)
         run: |
           python3 scripts/refresh_ecb.py --output dist/data/official-fx.json
           python3 scripts/refresh_ecb.py --validate dist/data/official-fx.json
           python3 -c "import json,sys;sys.path.insert(0,'scripts');from advance_fx import verify_ledger;verify_ledger(json.load(open('dist/data/fx-forecast-ledger.json',encoding='utf8')))"
-          test "$(find dist -type f | wc -l)" -eq 19
+          test "$(find dist -type f | wc -l)" -eq 25
       - name: Acquire independently checked ECB euro area AAA ten-year model yield
         run: |
           python3 scripts/refresh_ecb_yield.py --out dist/data/official-eur-yield.json
           python3 scripts/refresh_ecb_yield.py --validate dist/data/official-eur-yield.json
-          test "$(find dist -type f | wc -l)" -eq 20
+          test "$(find dist -type f | wc -l)" -eq 26
       - uses: actions/upload-artifact@v4
         with:
           name: audited-site

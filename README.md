@@ -251,3 +251,14 @@ La evaluación temporal del LSTM se implementa en `scripts/lstm_walkforward.py` 
 ## Cobertura pública adicional: Rocket Lab
 
 Se añade Rocket Lab Corporation (NASDAQ: RKLB) exclusivamente como **identidad bursátil contrastada independientemente**. La fuente primaria es [Rocket Lab Investor FAQs](https://investors.rocketlabcorp.com/resources/investor-faqs) y la reorganización societaria figura en el [aviso oficial Nasdaq de mayo de 2025](https://www.nasdaqtrader.com/TraderNews.aspx?id=ECA2025-264). No se han importado tesis, parámetros históricos, vínculos privados, precios bursátiles, CAGR ni objetivos para este emisor. Su estado permanece pendiente de investigación y no cuenta como informe aprobado.
+
+
+## Consulta privada de históricos: publicación segura sin transferir datos
+
+Se ofrecen dos **visores locales sin telemetría**: `private-paper.html` y `private-theses.html`. Ambos son páginas públicamente accesibles, **pero no contienen ni descargan** los expedientes privados. Procesan archivos CSV seleccionados por el usuario en memoria, sin solicitudes de red, almacenamiento persistente ni URL de Google Drive. Los visores aplican una política de seguridad `connect-src 'none'`.
+
+Para consultar el archivo privado de competición, hay que descargar **por separado** las pestañas `Resultados 64` y `Curvas NAV` desde el Google Sheet de la cuenta institucional (Archivo → Descargar → CSV) y cargarlas en ese orden. El parser valida los 64 identificadores institucionales, la consistencia de NAV inicial/final y retorno, los estados sin diario, las cantidades, las fechas, los conteos por estrategia y la correspondencia completa de sesiones; rechaza cualquier fichero incoherente. Cada estrategia muestra su grupo, posición, órdenes pendientes, retorno simulado y gráfico NAV. Los expedientes sin diario nunca reciben rendimiento cero atribuido.
+
+Para tesis, se importa la pestaña `Tesis históricas` del archivo privado y se ven los CAGR históricos Bear/Base/Bull, sin pretender que sean revisiones con cotización actual. El CSV y los resultados son descartables cerrando la pestaña o pulsando Borrar.
+
+**Límite operativo**: estos visores resuelven el acceso manual privado a los históricos. No implementan acceso autenticado automático, sincronización de mercado, reanudación autónoma ni negociación de verdad. Las pruebas del repositorio emplean símbolos e importes ficticios; no se publica el contenido ni la composición exacta de las tesis previas. La competición independiente requiere un feed autorizado y un libro prospectivo firmado antes de activar nuevos resultados.

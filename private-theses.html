@@ -1,0 +1,23 @@
+<!doctype html>
+<html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self'; connect-src 'none'; object-src 'none'; form-action 'none'; base-uri 'none'">
+<meta name="robots" content="noindex,nofollow"><meta name="referrer" content="no-referrer">
+<link rel="stylesheet" href="./styles.css"><link rel="icon" href="./favicon.svg">
+<title>MIDAS · Tesis históricas locales · IDEA LAB</title></head>
+<body><header class="topbar"><div class="shell topinner"><a class="brand" href="./index.html"><img src="./logo.svg" alt="IDEA LAB" width="145" height="36"><span>MIDAS · tesis privadas</span></a>
+<nav class="global-nav"><a href="./private-paper.html">Competición paper privada</a><a href="./index.html">Volver a MIDAS público</a></nav></div></header>
+<main class="shell"><section class="hero"><span class="kicker">IDEA LAB · CONSULTA INSTITUCIONAL LOCAL</span>
+<h1>Archivo de tesis <span class="hero-subtitle">histórico y privado</span></h1>
+<p class="lead">Importa una copia CSV de la pestaña «Tesis históricas» de tu archivo institucional. Los datos se procesan en memoria en este dispositivo. La página no los envía, guarda ni publica.</p></section>
+<section class="panel"><h2>Importar archivo histórico</h2>
+<p>Desde el Sheet privado, abre la pestaña <strong>Tesis históricas</strong> y selecciona Archivo → Descargar → Valores separados por comas (.csv). Después selecciona ese archivo aquí.</p>
+<input id="private-file" type="file" accept=".csv,text/csv" aria-label="Seleccionar CSV privado de las tesis históricas">
+<button id="clear" type="button" class="smallbtn">Borrar datos de esta vista</button>
+<p id="message" role="status">No hay datos históricos cargados.</p>
+<div class="research-note"><strong>Atención:</strong> los escenarios son históricos y no se han recalculado con cotizaciones actuales. Una tesis conservada no implica una recomendación ni una aprobación institucional vigente. Esta página es pública; el archivo privado no lo es.</div>
+</section>
+<section class="panel"><h2>Escenarios históricos por empresa</h2>
+<p id="count">0 empresas importadas</p>
+<div class="table-scroll"><table class="table-compact"><thead><tr><th>Ticker</th><th>Fecha revisión</th><th>Estado documental</th><th>Horizonte</th><th>Bear CAGR</th><th>Central CAGR</th><th>Bull CAGR</th></tr></thead><tbody id="table"></tbody></table></div>
+</section></main><footer class="footer"><div class="shell">IDEA LAB · Archivo de investigación histórico · Lectura local efímera</div></footer>
+<script type="module" src="./src/private-theses-view.mjs"></script></body></html>
