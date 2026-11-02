@@ -49,7 +49,7 @@ test("The 64-row UI is distinct from the existing synthetic competitions",()=>{
  assert.ok(site.includes("Sin evidencia comparable"));
  assert.ok(html.includes('data-view="competition"'));
  assert.ok(site.includes("function competition(){return full();}"));
- assert.ok(workflow.includes("data/competition-roster.json data/institutional-paper-feed.json dist/data/"));
+ assert.ok(workflow.includes("data/competition-roster.json data/strategy-candidates.json data/institutional-paper-feed.json dist/data/"));
  assert.ok(site.includes("function paperAccountingView(){"));
 });
 
@@ -106,5 +106,5 @@ test("Satellite Alternative Data registers as research-only 65th candidate, not 
  assert.ok(site.includes("state.strategyCandidates"));
  assert.ok(site.includes("65 · "));
  const release=readFileSync(new URL("../.github/workflows/pages.yml",import.meta.url),"utf8");
- assert.ok(release.includes("data/strategy-candidates.json dist/data/"));
+ assert.ok(release.includes("data/strategy-candidates.json data/institutional-paper-feed.json dist/data/"));
 });
