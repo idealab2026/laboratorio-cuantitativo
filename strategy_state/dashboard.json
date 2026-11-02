@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "generated_at_utc": "2026-11-02T23:39:40.185087+00:00",
+  "generated_at_utc": "2026-11-02T23:39:43.219357+00:00",
   "principle": "Comparar rentabilidad acumulada y riesgo observado; no ordenar carteras con distintas fechas de inicio o supuestos de ejecución.",
   "counts": {
     "paper_with_diary": 18,
@@ -3050,11 +3050,11 @@
       "group": "capital_cycle_demo",
       "status": "demo_con_diario",
       "first_session": "2026-09-30",
-      "last_session": "2026-10-30",
+      "last_session": "2026-11-02",
       "initial_capital": 100000.0,
-      "last_equity": 106397.81643808546,
-      "return_pct": 6.397816,
-      "day_return_pct": -0.402964,
+      "last_equity": 105656.22537779695,
+      "return_pct": 5.656225,
+      "day_return_pct": -0.696998,
       "currency": "USD",
       "equity_history": [
         {
@@ -3148,11 +3148,15 @@
         {
           "date": "2026-10-30",
           "nav": 106397.81643808546
+        },
+        {
+          "date": "2026-11-02",
+          "nav": 105656.22537779695
         }
       ],
       "note": "Capital Cycle v1: underinvestment multianual + calidad + valoración normalizada + confirmación 6/12 meses; rebalance mensual y fills next-open.",
-      "activity_state": "active_pending",
-      "activity_label": "12 posiciones · 4 órdenes pendientes",
+      "activity_state": "active",
+      "activity_label": "12 posiciones abiertas",
       "activity_tickers": [
         "ADI",
         "CF",
@@ -3168,15 +3172,15 @@
         "SWKS"
       ],
       "open_positions_count": 12,
-      "pending_orders_count": 4,
+      "pending_orders_count": 0,
       "comparison_eligible": true,
       "comparison_universe_id": "SP500_2026-09-29_503",
       "comparison_universe_symbols": 503,
       "comparison_exclusion_reason": null,
-      "risk_observations": 23,
-      "annualized_volatility_pct": 11.106182,
+      "risk_observations": 24,
+      "annualized_volatility_pct": 11.326864,
       "max_drawdown_pct": -1.325499,
-      "sharpe_0rf": 6.457876
+      "sharpe_0rf": 5.38254
     },
     {
       "id": "buy_the_dip_corpus_2026_v0",
