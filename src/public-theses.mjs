@@ -1,4 +1,4 @@
-// Public research requires an independent publication contract. Historical archives stay private.
+// Reviewed institutional research preserves historical assumptions and dates.
 const esc=x=>String(x??"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;").replace(/'/g,"&#39;");
 const num=v=>typeof v==="number"&&Number.isFinite(v);
 const fmt=v=>v===null||!num(v)?"N/D":new Intl.NumberFormat("es-ES",{maximumFractionDigits:2,minimumFractionDigits:2}).format(v);
@@ -10,8 +10,8 @@ const AMOUNTS=["recordedPrice","referencePrice","bearCagr","baseCagr","bullCagr"
 const PRIVATE=/(?:https?:\/\/|[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}|github_pat_|ghp_|refresh_token|private_key|iban)/i;
 export function verifyPublicTheses(doc){
  if(!doc||doc.schema!=="midas_public_theses_v1"||
-    doc.data_class!=="independent_public_research_only"||
-    !date(doc.published_as_of)||!Array.isArray(doc.records)||doc.records.length!==0)
+    !["independent_public_research_only","author_approved_public_research_snapshot"].includes(doc.data_class)||
+    !date(doc.published_as_of)||!Array.isArray(doc.records)||doc.records.length>1000)
   throw Error("Catálogo publicado ausente o alterado");
  const ids=new Set();
  for(const r of doc.records){
@@ -41,15 +41,15 @@ function thesisValues(row,records,local){
  return {ticker:i.ticker,company:r?.company||i.company,market:r?.market||i.market,
   theme:r?.theme||i.sector,currency:r?.currency||i.currency,record:r,
   status:l?"Archivo local":r?r.valuationStatus||r.thesisStatus:s?"Screening exploratorio":"Sin tesis pública",
-  date:l?l.date||"":r?.studyDate||s?.asOf||"",
-  price:l?null:r?.recordedPrice??s?.quote.close??null,
-  priceDate:l?l.date||"":r?.priceDate||s?.quote.closeDate||"",
-  reference:l?null:r?.referencePrice??s?.quote.close??null,
-  base:l?l.base??null:r?.baseCagr??s?.scenarios.base.cagrPct??null,
-  bear:l?l.bear??null:r?.bearCagr??s?.scenarios.bear.cagrPct??null,
-  bull:l?l.bull??null:r?.bullCagr??s?.scenarios.bull.cagrPct??null,
-  entry:l?null:r?.priceFor15??s?.buyPrice15??null,
-  target:l?null:r?.baseTarget??s?.scenarios.base.target??null,
+  date:l?l.date||"":r?r.studyDate:s?.asOf||"",
+  price:l?null:r?r.recordedPrice:s?.quote.close??null,
+  priceDate:l?l.date||"":r?r.priceDate:s?.quote.closeDate||"",
+  reference:l?null:r?r.referencePrice:s?.quote.close??null,
+  base:l?l.base??null:r?r.baseCagr:s?.scenarios.base.cagrPct??null,
+  bear:l?l.bear??null:r?r.bearCagr:s?.scenarios.bear.cagrPct??null,
+  bull:l?l.bull??null:r?r.bullCagr:s?.scenarios.bull.cagrPct??null,
+  entry:l?null:r?r.priceFor15:s?.buyPrice15??null,
+  target:l?null:r?r.baseTarget:s?.scenarios.base.target??null,
   earnings:r?.earningsRecord||null,report:r?.summary?"Sí":s?"Modelo exploratorio":null};
 }
 export function orderedThesisRows(rows,records,local,sort,ascending){
@@ -102,4 +102,11 @@ export function publicThesisCsv(rows,records,local){
   ...rows.map(row=>{const v=thesisValues(row,records,local);
    return [v.ticker,v.company,v.market,v.price??"N/D",v.priceDate||"N/D",v.currency||"N/D",v.reference??"N/D",v.bull??"N/D",v.bear??"N/D",v.base??"N/D",v.entry??"N/D",v.target??"N/D",v.status,v.date||"N/D",v.earnings||"N/D"];
   })];
+}
+
+export function publicResearchRows(catalogRows,records,{query="",sort="base",ascending=false}={}){
+ const all=new Map(catalogRows.map(row=>[row.issuer.ticker,row]));
+ for(const r of records.values())if(!all.has(r.ticker))all.set(r.ticker,{issuer:{ticker:r.ticker,company:r.company,market:r.market,currency:r.currency,sector:r.theme},screen:null});
+ const q=String(query).trim().toLocaleLowerCase("es");
+ return orderedThesisRows([...all.values()].filter(row=>{const r=records.get(row.issuer.ticker);return !q||[row.issuer.ticker,r?.company||row.issuer.company,r?.theme||row.issuer.sector].some(x=>String(x||"").toLocaleLowerCase("es").includes(q));}),records,new Map(),sort,ascending);
 }

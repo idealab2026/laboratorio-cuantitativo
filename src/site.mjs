@@ -1,6 +1,6 @@
 import {signalResearchSummary,methodCatalog} from "./paper-methods.mjs";
 import {parseLocalCagr2031} from "./private-theses.mjs";
-import {verifyPublicTheses,orderedThesisRows,publicThesisTableRows,publicThesisDetail,publicThesisCsv} from "./public-theses.mjs?v=990b7d2ffc1b";
+import {verifyPublicTheses,publicResearchRows,orderedThesisRows,publicThesisTableRows,publicThesisDetail,publicThesisCsv} from "./public-theses.mjs?v=cd025a606c62";
 import {artificialCampaignComparison} from "./paper-ledger.mjs";
 import {verifyFullRoster,filterRoster,technicalStage,technicalCoverage,verifyStrategyCandidates,filterStrategyCandidates} from "./competition-roster.mjs";
 import {verifyPaperFeed} from "./paper-feed.mjs";
@@ -31,7 +31,7 @@ const family=(g)=>({"Clásicas":"Equiponderación, tendencia, reversión, menor 
 function summary(){
  $("stat-strategies").textContent=all().length;
  $("stat-groups").textContent=groups().length;
- $("stat-theses").textContent=state.universe.issuers.length;
+ $("stat-theses").textContent=researchIssuerCount();
  $("stat-sessions").textContent=state.data.dates.length;
 }
 function overview(){
@@ -39,7 +39,7 @@ function overview(){
  const featured=["MSFT","META","PLTR"].map(t=>state.universe.issuers.find(i=>i.ticker===t)).filter(Boolean);
  return head("INICIO · INVESTIGACIÓN","Laboratorio cuantitativo","Comparación reproducible de métodos y catálogo público de compañías. Las clasificaciones son sintéticas; no se atribuyen rentabilidades bursátiles reales.")+
  '<div class="section-grid">'+card('<span class="label">Variación simulada más alta</span><h3>'+esc(first.name)+'</h3><div class="headline-value '+tone(first.returnPct)+'">'+esc(formatPct(first.returnPct))+'</div><p>Resultado exclusivamente sintético; no existen operaciones en bolsa.</p>'+button("Abrir ficha","select",first.id))+
- card('<span class="label">Universo de empresas</span><h3>'+state.universe.issuers.length+' emisores y estudios identificados</h3><p>Empresas reales, sin publicar precios ni valoraciones no verificados; investigación institucional pendiente.</p>'+button("Ver empresas","navigate","theses"))+'</div>'+
+ card('<span class="label">Universo de empresas</span><h3>'+researchIssuerCount()+' emisores y estudios identificados</h3><p>Expedientes históricos y modelos exploratorios, con sus fechas, hipótesis y límites.</p>'+button("Ver empresas","navigate","theses"))+'</div>'+
  head("CATÁLOGO","Familias de estrategias","Las simulaciones siguen siendo demostraciones; los modelos entrenados de la sección de investigación no están conectados a esta competición.")+
  '<div class="family-grid">'+groups().map(g=>card('<div class="panel-top"><h3>'+esc(g)+'</h3><span class="chip">'+all().filter(x=>x.group===g).length+' métodos</span></div><p>'+esc(family(g))+'</p>'+button("Examinar","group",g))).join("")+'</div>'+
  head("EMPRESAS","Seguimiento por emisor","Nombres reales y mercados de referencia; fichas públicas en preparación, sin replicar documentos externos ni carteras privadas.")+
@@ -167,9 +167,10 @@ function secSourcePanel(ticker){
 }
 
 function issuerReadRows(){
- return orderedThesisRows(publicIssuerReadModel(state.universe,{query:state.issuerQuery,sort:state.issuerSort,ascending:state.issuerAsc}),
-  state.publicTheses,state.localCagr,state.issuerSort,state.issuerAsc);
+ const rows=publicResearchRows(publicIssuerReadModel(state.universe),state.publicTheses,{query:state.issuerQuery,sort:state.issuerSort,ascending:state.issuerAsc});
+ return orderedThesisRows(rows,state.publicTheses,state.localCagr,state.issuerSort,state.issuerAsc);
 }
+function researchIssuerCount(){return new Set([...state.universe.issuers.map(x=>x.ticker),...state.publicTheses.keys()]).size;}
 function issuerTableRows(){
  return publicThesisTableRows(issuerReadRows(),state.publicTheses,state.localCagr,state.issuerTicker);
 }
@@ -210,11 +211,11 @@ function theses(){
  const screens=state.universe.publicScreens?.length||0;
  const secExpected=state.universe.issuers.filter(i=>i.secCik).length;
  const indexed=state.secRead?.byTicker.size||0;
- return head("TESIS · SEGUIMIENTO PÚBLICO","Investigación de empresas","El catálogo muestra identidades de emisores y fuentes oficiales. Las tesis completas y sus escenarios históricos están en el archivo privado. Las futuras publicaciones requieren investigación independiente y revisión de procedencia.")+
- '<div class="source-health-strip"><div><span class="label">Empresas analizadas</span><strong>'+state.publicTheses.size+' tesis</strong><small>Publicaciones independientes admitidas</small></div>'+
+ return head("TESIS · SEGUIMIENTO PÚBLICO","Investigación de empresas","Tesis, hipótesis y escenarios históricos de Idea Lab. Cada ficha conserva las fechas y cifras de su estudio; no son cotizaciones actuales ni rentabilidades obtenidas.")+
+ '<div class="source-health-strip"><div><span class="label">Empresas analizadas</span><strong>'+state.publicTheses.size+' tesis</strong><small>Expedientes históricos publicados</small></div>'+
  '<div><span class="label">Modelos exploratorios</span><strong>'+screens+' modelos</strong><small>Escenarios independientes; no tesis aprobadas</small></div>'+
  '<div><span class="label">Corte documental</span><strong>'+esc(state.publicThesesMetadata?.published_as_of||"N/D")+'</strong><small>Los datos no se recalculan en tiempo real</small></div></div>'+
- disclaimer("N/D indica que no hay una valoración pública independiente admitida. Puedes consultar las tesis históricas en el visor privado local; sus cifras y narrativas no forman parte de este paquete público.")+
+ disclaimer("N/D indica que el expediente no contiene esa cifra. Los escenarios históricos se conservan con su fecha y sus reservas; el modelo exploratorio independiente se identifica por separado.")+
  '<p class="table-note">Metadatos SEC contrastados: '+indexed+' de '+secExpected+' emisores con identidad SEC contrastada. Los demás expedientes conservan sus pendientes.</p>'+
  '<details class="panel"><summary>Comparar con un CSV local (solo durante esta sesión)</summary><label><strong>CSV local de CAGR2031</strong><input id="cagr-file" type="file" accept=".csv,text/csv"></label><p class="small-note">Lectura temporal y local del archivo, sin envíos al servidor ni alteración de los datos públicos.</p><p role="status">'+(state.localCagrError?esc(state.localCagrError):state.localCagr.size?state.localCagr.size+" registros locales cargados":"Sin CSV adicional")+'</p>'+
  (state.localCagr.size?button("Descartar CAGR locales","issuer-local-clear","","outline-btn"):"")+'</details>'+
@@ -223,7 +224,7 @@ function theses(){
  button(state.issuerAsc?"↑ Ascendente":"↓ Descendente","issuer-direction","","outline-btn")+
  button("Exportar CSV","export","issuers","outline-btn")+
  button("Tesis ficticias · demo","issuer-mode","demo","outline-btn")+'</div>'+
- '<p id="issuer-visible-count" class="table-note" aria-live="polite">'+found+' de '+state.universe.issuers.length+' empresas · CAGR central (2031) descendente; sin cifras al final.</p>'+
+ '<p id="issuer-visible-count" class="table-note" aria-live="polite">'+found+' de '+researchIssuerCount()+' empresas · CAGR central (2031) descendente; sin cifras al final.</p>'+
  '<div class="table-scroll table-compact thesis-public-table"><table><thead><tr>'+headers+'</tr></thead><tbody id="issuer-rows">'+issuerTableRows()+'</tbody></table></div>'+
  '<p id="issuer-empty" class="table-note" '+(found?'hidden':'')+'>No hay empresas coincidentes.</p>'+
  head("ANÁLISIS","Ficha de tesis / empresa","Cada expediente público documenta qué fuentes y supuestos están acreditados y cuáles faltan.")+
@@ -592,7 +593,7 @@ $("app").addEventListener("input",e=>{
   state.issuerQuery=e.target.value;
   const tbody=$("issuer-rows");if(tbody)tbody.innerHTML=issuerTableRows();
   const count=publicIssuerReadModel(state.universe,{query:state.issuerQuery,sort:state.issuerSort,ascending:state.issuerAsc}).length;
-  const text=$("issuer-visible-count");if(text)text.textContent=count+" de "+state.universe.issuers.length+" empresas";
+  const text=$("issuer-visible-count");if(text)text.textContent=count+" de "+researchIssuerCount()+" empresas";
   const empty=$("issuer-empty");if(empty)empty.hidden=count!==0;
  }
 });

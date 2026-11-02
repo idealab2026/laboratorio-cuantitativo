@@ -87,20 +87,17 @@ test("Import surface excludes external telemetry and uses an origin-constrained 
  assert.ok(!html.includes("data-cf-beacon"));
 });
 
-test("Public package excludes historical thesis fingerprints and rejects their reintroduction",async()=>{
- const {verifyPublicTheses,orderedThesisRows,publicThesisCsv}=await import("../src/public-theses.mjs");
+test("Reviewed historical research is rendered without inventing absent values or accepting private links",async()=>{
+ const {verifyPublicTheses,publicResearchRows,publicThesisCsv,publicThesisTableRows}=await import("../src/public-theses.mjs");
  const doc=JSON.parse(readFileSync(new URL("../data/public-theses.json",import.meta.url),"utf8"));
- assert.deepEqual(verifyPublicTheses(doc),{count:0,withCagr:0,withPrice:0});
- assert.deepEqual(doc.records,[]);
- assert.throws(()=>verifyPublicTheses({...doc,data_class:"author_approved_public_research_snapshot"}));
- assert.throws(()=>verifyPublicTheses({...doc,records:[{ticker:"EXAMPLE",baseCagr:1.234}]}));
- const rows=[{issuer:{ticker:"EXA",company:"Example A",market:"TEST"}}];
- const csv=publicThesisCsv(rows,new Map(),new Map());
- assert.equal(csv.length,2);
- assert.equal(csv[1][3],"N/D");
- const site=readFileSync(new URL("../src/site.mjs",import.meta.url),"utf8");
- assert.match(site,/archivo privado/);
- assert.doesNotMatch(site,/25 fichas y nueve CAGR/);
+ assert.deepEqual(verifyPublicTheses(doc),{count:25,withCagr:9,withPrice:7});
+ const records=new Map(doc.records.map(r=>[r.ticker,r])),rows=publicResearchRows([],records);
+ assert.equal(rows.length,25);assert.equal(publicThesisCsv(rows,records,new Map()).length,26);
+ assert.equal((publicThesisTableRows(rows,records,new Map(),"MSFT").match(/<tr /g)||[]).length,25);
+ assert.equal(publicResearchRows([],records,{query:"Caterpillar"})[0].issuer.ticker,"CAT");
+ for(const edit of [r=>{r.summary="https://invalid.example"},r=>{r.account="secret"}]){const bad=structuredClone(doc);edit(bad.records[0]);assert.throws(()=>verifyPublicTheses(bad));}
+ assert.throws(()=>verifyPublicTheses({...doc,records:[...doc.records,doc.records[0]]}));
+ const pending=doc.records.find(r=>r.baseCagr===null);const row=publicThesisCsv([{issuer:{ticker:pending.ticker},screen:{scenarios:{base:{cagrPct:99}}}}],records,new Map())[1];assert.equal(row[9],"N/D");
 });
 
 
