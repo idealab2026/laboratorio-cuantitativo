@@ -152,7 +152,10 @@ class ProspectiveFXTests(unittest.TestCase):
     def test_bad_issue_without_matching_invalidation_must_fail(self):
         canonical=json.loads((Path(__file__).resolve().parents[1] / "data/fx-forecast-ledger.json").read_text(encoding="utf8"))
         missing=copy.deepcopy(canonical)
-        missing["events"].pop()
+        invalidation_index=next(i for i,e in enumerate(missing["events"])
+                                if e["event_type"]=="invalidated")
+        self.assertGreater(invalidation_index,0)
+        missing["events"]=missing["events"][:invalidation_index]
         with self.assertRaisesRegex(ValueError,"explicitly invalidated"):
             verify_ledger(missing)
         tampered=copy.deepcopy(canonical)
