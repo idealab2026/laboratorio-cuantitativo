@@ -530,8 +530,15 @@ $("app").addEventListener("click",e=>{
  }
  else if(action==="paper-select"){state.paperDetail=value;render();}
  else if(action==="full-export"){
-  if(state.fullRoster){const rows=filterRoster(state.fullRoster,{group:state.fullRosterGroup,query:state.fullRosterQuery});
-   download("midas-64-funciones.csv",[["ID","Nombre","Familia","Fase técnica","Estado económico","Actividad","Rentabilidad","Riesgo","Comparabilidad"],...rows.map(x=>{const r=state.paperFeedRead?.bySlot.get(x.slot);return [x.slot,x.name,x.group,technicalStage(x.slot).label,r?"fuente_verificada":"pendiente",r?.activity||"N/D",r?.return_pct??"N/D",r?.risk?.max_drawdown_pct??"N/D",r?.comparison?.eligible?"misma referencia":"no comparable"];})]);}
+  if(state.fullRoster){
+   const rows=filterRoster(state.fullRoster,{group:state.fullRosterGroup,query:state.fullRosterQuery});
+   const proposals=state.strategyCandidates?filterStrategyCandidates(state.strategyCandidates,{group:state.fullRosterGroup,query:state.fullRosterQuery}):[];
+   download("midas-competicion-64-y-propuestas.csv",[
+    ["ID","Nombre","Familia","Fase técnica","Estado económico","Actividad","Rentabilidad","Riesgo","Comparabilidad"],
+    ...rows.map(x=>{const r=state.paperFeedRead?.bySlot.get(x.slot);return [x.slot,x.name,x.group,technicalStage(x.slot).label,r?"fuente_verificada":"pendiente",r?.activity||"N/D",r?.return_pct??"N/D",r?.risk?.max_drawdown_pct??"N/D",r?.comparison?.eligible?"misma referencia":"no comparable"];}),
+    ...proposals.map(c=>[c.id,c.name,c.group,"Investigación sin feed satelital","No iniciado",c.status,"N/D","N/D","no comparable"])
+   ]);
+  }
  }
  else if(action==="issuer-column"){
   if(state.issuerSort===value)state.issuerAsc=!state.issuerAsc;
