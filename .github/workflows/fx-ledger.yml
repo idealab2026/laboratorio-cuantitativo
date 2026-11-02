@@ -32,6 +32,8 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
+      - name: Install exact research test dependencies
+        run: python3 -m pip install --disable-pip-version-check -r scripts/requirements-research.txt
       - name: Verify offline prospective contract
         run: python3 -m unittest discover -s scripts -p 'test_*.py' -v
       - name: Fetch dated official ECB fixing and advance public prediction ledger
