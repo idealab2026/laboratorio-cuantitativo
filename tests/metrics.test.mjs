@@ -74,7 +74,7 @@ test("Navigation exposes all institutional functional sections",()=>{
  const js=readFileSync(new URL("../src/site.mjs",import.meta.url),"utf8");
  const html=readFileSync(new URL("../index.html",import.meta.url),"utf8");
  for(const v of ["overview","competition","algorithms","theses","monitoring","method"])assert.ok(js.includes(v));
- assert.ok(html.includes('src="./src/site.mjs"'));
+ assert.match(html,/src="\.\/src\/site\.mjs\?v=[a-f0-9]{12}"/);
  assert.ok(js.includes("paper-form"));
  assert.ok(js.includes("journal-select"));
 });

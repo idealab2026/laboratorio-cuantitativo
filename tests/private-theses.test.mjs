@@ -131,3 +131,13 @@ test("The public issuer table and CSV keep independently evaluated screens when 
  assert.equal(historical[10],"N/D");
  assert.equal(historical[12],"Archivo local");
 });
+
+
+test("The served module URLs change with the exact issuer-rendering code",async()=>{
+ const {createHash}=await import("node:crypto");
+ const digest=path=>createHash("sha256").update(readFileSync(new URL(path,import.meta.url))).digest("hex").slice(0,12);
+ const html=readFileSync(new URL("../index.html",import.meta.url),"utf8");
+ const site=readFileSync(new URL("../src/site.mjs",import.meta.url),"utf8");
+ assert.ok(html.includes('src="./src/site.mjs?v='+digest("../src/site.mjs")+'"'));
+ assert.ok(site.includes('"./public-theses.mjs?v='+digest("../src/public-theses.mjs")+'"'));
+});

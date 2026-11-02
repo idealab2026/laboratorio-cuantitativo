@@ -1,6 +1,6 @@
 import {signalResearchSummary,methodCatalog} from "./paper-methods.mjs";
 import {parseLocalCagr2031} from "./private-theses.mjs";
-import {verifyPublicTheses,orderedThesisRows,publicThesisTableRows,publicThesisDetail,publicThesisCsv} from "./public-theses.mjs";
+import {verifyPublicTheses,orderedThesisRows,publicThesisTableRows,publicThesisDetail,publicThesisCsv} from "./public-theses.mjs?v=990b7d2ffc1b";
 import {artificialCampaignComparison} from "./paper-ledger.mjs";
 import {verifyFullRoster,filterRoster,technicalStage,technicalCoverage,verifyStrategyCandidates,filterStrategyCandidates} from "./competition-roster.mjs";
 import {verifyPaperFeed} from "./paper-feed.mjs";

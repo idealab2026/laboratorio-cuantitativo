@@ -40,7 +40,9 @@ for page in ("index.html", "research.html", "private-paper.html", "private-these
             if not (url.startswith("https://idealab2026.github.io/") or url.startswith("https://github.com/idealab2026/")):
                 issues.append("Non-institutional external link")
         elif url.startswith("./"):
-            if url[2:] not in RELEASE: issues.append("Dependency not on release allowlist")
+            local_path, separator, query = url[2:].partition("?")
+            if local_path not in RELEASE or (separator and not re.fullmatch(r"v=[a-f0-9]{12}", query)):
+                issues.append("Dependency not on release allowlist")
         else: issues.append("Unexpected link or source type")
 for path in sorted(files):
     if path not in REPOSITORY: continue
