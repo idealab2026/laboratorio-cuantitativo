@@ -269,3 +269,18 @@ Para tesis, se importa la pestaña `Tesis históricas` del archivo privado y se 
 El código permanece en este repositorio público de IDEA LAB. La auditoría operativa se ejecuta automáticamente y publica un informe de estado, **no una rentabilidad ficticia**. La tarea programada de cotizaciones solo realiza operaciones paper cuando existe un feed autorizado y la firma institucional requerida.
 
 [Instrucciones de activación y verificación](docs/RUNBOOK_PRODUCCION.md). El corte del servicio previo no está autorizado mientras falten pruebas de sesiones reales, equivalencia de estrategias y continuidad.
+
+## Propuesta 65 - Satellite Alternative Data (2026-11-02)
+Una nueva propuesta de investigación independiente IL-R001 sigue a los 64 contratos
+paper del laboratorio. No se altera su inventario, ni se asignan órdenes o
+rendimientos a la nueva propuesta.
+
+Hipótesis: contar automóviles en aparcamientos minoristas a partir de imágenes
+submétricas recurrentes; normalizar por tienda, día y hora y estimar sorpresa
+de ventas con pruebas walk-forward. Piloto WMT, TGT y COST.
+Fuente: Katona et al., Journal of Financial and Quantitative Analysis, 2025,
+doi:10.1017/S0022109023001448.
+Sentinel-2 de 10m no distingue coches; NAIP con 0,3-0,6m tiene cadencia
+de 2-3 años y no sirve para adelantar resultados trimestrales.
+Sin un proveedor comercial autorizado, inferencia validada ni ledger
+prospectivo, permanece pendiente con métricas N/D.
