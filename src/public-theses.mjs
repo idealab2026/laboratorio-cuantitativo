@@ -73,7 +73,7 @@ export function publicThesisTableRows(rows,records,local,selected){
    '<td class="number">'+percent(v.bull)+'</td><td class="number">'+percent(v.bear)+'</td><td class="number">'+percent(v.base)+'</td>'+
    '<td class="number">'+money(v.entry,v)+'</td><td class="number">'+money(v.target,v)+'</td>'+
    '<td><small>'+esc(v.earnings||"N/D")+'</small></td>'+
-   '<td><button type="button" class="smallbtn" data-action="issuer-select" data-value="'+esc(v.ticker)+'">'+(v.record?"Ver tesis":row.screen?"Ver modelo":"Ficha")+'</button>'+
+   '<td><button type="button" class="smallbtn" data-action="issuer-select" data-value="'+esc(v.ticker)+'">'+(v.record?"Ver ficha":row.screen?"Ver modelo":"Ficha")+'</button>'+
    '<small class="smallline">'+esc(v.status)+'</small></td></tr>';
  }).join("");
 }
@@ -95,7 +95,7 @@ export function publicThesisDetail(r,l){
   (r.drivers?'<h3>Hipótesis y catalizadores</h3><p>'+esc(r.drivers)+'</p>':"")+
   (r.risks?'<h3>Riesgos</h3><p>'+esc(r.risks)+'</p>':"")+
   '<p><strong>Resultados (registro documental):</strong> '+esc(r.earningsRecord||"No documentados")+'</p>'+
-  '<p class="small-note">Extracto público de la tesis original. Los documentos internos y sus enlaces no se publican. CAGR, hipótesis y precios proceden de diferentes fechas históricas; no hay actualización bursátil en tiempo real ni recomendación de inversión.</p></article>';
+  '<p class="small-note">Esta vista es un extracto de la tesis original. El informe ejecutivo completo, con sus gráficas y anexos, todavía no está incorporado a esta web. CAGR, hipótesis y precios conservan sus fechas históricas; no hay actualización bursátil en tiempo real.</p></article>';
 }
 export function publicThesisCsv(rows,records,local){
  return [["ticker","empresa","mercado","precio_registrado","fecha_precio","divisa","precio_referencia_estudio","bull_2031_cagr","bear_2031_cagr","central_2031_cagr","precio_15pct","objetivo_central_2031","estado","fecha_estudio","resultados_registrados"],

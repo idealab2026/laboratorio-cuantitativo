@@ -2,7 +2,7 @@ import {verifyOriginalPaper} from "./original-paper.mjs";
 import {parseLocalPaperResults,parseLocalPaperCurves,summarizePrivatePaper} from "./private-paper.mjs?v=4baff08a2202";
 import {signalResearchSummary,methodCatalog} from "./paper-methods.mjs";
 import {parseLocalCagr2031} from "./private-theses.mjs";
-import {verifyPublicTheses,publicResearchRows,orderedThesisRows,publicThesisTableRows,publicThesisDetail,publicThesisCsv} from "./public-theses.mjs?v=cd025a606c62";
+import {verifyPublicTheses,publicResearchRows,orderedThesisRows,publicThesisTableRows,publicThesisDetail,publicThesisCsv} from "./public-theses.mjs?v=24b9692353a2";
 import {artificialCampaignComparison} from "./paper-ledger.mjs";
 import {verifyFullRoster,filterRoster,technicalStage,technicalCoverage,verifyStrategyCandidates,filterStrategyCandidates} from "./competition-roster.mjs";
 import {verifyPaperFeed} from "./paper-feed.mjs";
