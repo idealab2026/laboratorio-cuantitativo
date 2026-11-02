@@ -1,6 +1,6 @@
 # MIDAS: todas las ideas en paralelo
 
-Actualizado: 2026-11-02T23:40:52.541435+00:00. El tablero distingue resultados observados de ideas aún no ejecutadas.
+Actualizado: 2026-11-02T23:44:42.365959+00:00. El tablero distingue resultados observados de ideas aún no ejecutadas.
 
 La comparación principal sigue **rentabilidad acumulada + riesgo realizado**. Las campañas diarias, TFM, Weekly ML, TFG corregido, Capital Cycle, Buy The Dip y el diario genético antiguo **no forman una clasificación común** si sus fechas, divisas o reglas difieren.
 
@@ -47,8 +47,8 @@ La comparación principal sigue **rentabilidad acumulada + riesgo realizado**. L
 | Buy The Dip corpus v0 · deep value + special situations | MIDAS 2026 · Buy The Dip corpus v0 · deep value + special situations | demo_con_diario | 10 posiciones abiertas | 2026-10-01 | 2026-11-02 | 2.35 % | 7.63 % | 22.19 % | -5.76 % | 3.91 |
 | TimesFM 2.5 · zero-shot semanal · EUR | MIDAS 2026 · TimesFM 2.5 5 sesiones · S&P 500 503 símbolos · EUR | demo_con_diario | 8 posiciones abiertas | 2026-10-16 | 2026-11-02 | 0.62 % | 4.91 % | 16.68 % | -1.34 % | 6.68 |
 | Referencia SPY · EUR · inicio TimesFM | Referencia SPY buy & hold convertida a EUR · mismas fechas | demo_con_diario | 1 posición abierta | 2026-10-16 | 2026-11-02 | -0.44 % | -1.54 % | 11.59 % | -2.52 % | -3.01 |
-| TimesFM 2.5 · diario · S&P 500 · EUR | MIDAS 2026 · TimesFM 2.5 1 sesión · S&P 500 503 símbolos · EUR | demo_con_diario | 1 compra paper para próxima apertura | 2026-10-12 | 2026-10-30 | -0.19 % | 0.61 % | 4.75 % | -0.80 % | 2.33 |
-| Referencia SPY · EUR · inicio TimesFM diario | Referencia SPY en EUR, misma fecha y costes que TimesFM diario | demo_con_diario | 1 posición abierta | 2026-10-12 | 2026-10-30 | -1.61 % | -2.19 % | 12.58 % | -2.45 % | -3.11 |
+| TimesFM 2.5 · diario · S&P 500 · EUR | MIDAS 2026 · TimesFM 2.5 1 sesión · S&P 500 503 símbolos · EUR | demo_con_diario | 1 compra paper para próxima apertura | 2026-10-12 | 2026-11-02 | 0.52 % | 1.14 % | 4.99 % | -0.80 % | 3.84 |
+| Referencia SPY · EUR · inicio TimesFM diario | Referencia SPY en EUR, misma fecha y costes que TimesFM diario | demo_con_diario | 1 posición abierta | 2026-10-12 | 2026-11-02 | -0.44 % | -2.62 % | 12.18 % | -2.88 % | -3.60 |
 | Genético original S&P 500 | Agente genético S&P 500 original · 2026 | sin_diario_disponible | Actividad actual no enlazada | — | — | — | — | — | — | — |
 | TFG 2021: filtros técnicos, AHP y rentabilidad/riesgo | TFG 2021 · MIDAS en R | sin_ejecucion_comparable | Actividad actual no enlazada | — | — | — | — | — | — | — |
 | MIDAS R cripto | MIDAS en R · experimento cripto | sin_ejecucion_comparable | Actividad actual no enlazada | — | — | — | — | — | — | — |
