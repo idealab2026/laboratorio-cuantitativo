@@ -22,11 +22,11 @@ const groups=()=>[...new Set(all().map(s=>s.group))];
 const causalLedger=()=>nextOpenPaper(syntheticBarsFromDemo(state.data),{rule:"trend",feeBps:10,slippageBps:5,lookback:4});
 const tone=(n)=>finite(n)?n>0?"perf-positive":n<0?"perf-negative":"perf-flat":"perf-neutral";
 const pctText=(n)=>'<span class="performance '+tone(n)+'">'+esc(formatPct(n))+'</span>';
-function sparkline(nav){
+function sparkline(nav,label="Evolución con precios artificiales"){
  if(!Array.isArray(nav)||nav.length<2||nav.some(n=>!finite(n)))return "N/D";
  const lo=Math.min(...nav),hi=Math.max(...nav),span=Math.max(hi-lo,.01);
  const points=nav.map((n,i)=>(3+i*110/(nav.length-1)).toFixed(1)+","+(27-(n-lo)*23/span).toFixed(1)).join(" ");
- return '<svg class="mini-chart '+tone(nav.at(-1)-nav[0])+'" viewBox="0 0 116 32" width="116" height="32" role="img" aria-label="Evolución sintética del capital"><polyline points="'+points+'" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linejoin="round"/></svg>';
+ return '<svg class="mini-chart '+tone(nav.at(-1)-nav[0])+'" viewBox="0 0 116 32" width="116" height="32" role="img" aria-label="'+esc(label)+'"><polyline points="'+points+'" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linejoin="round"/></svg>';
 }
 const metric=(label,value)=>'<div class="metric"><strong>'+esc(value)+'</strong><small>'+esc(label)+'</small></div>';
 const family=(g)=>({"Clásicas":"Equiponderación, tendencia, reversión, menor variabilidad y control en efectivo.","Aprendizaje semanal":"Proxies de métodos supervisados; no se han entrenado modelos reales.","Predicción temporal":"Modelos temporales de referencia; no se ha ejecutado TimesFM.","Capital Cycle":"Ciclo de inversión y disciplina de valoración con supuestos observables.","Buy The Dip":"Escalonamiento de exposición tras caídas, con reserva de liquidez.","Modelos experimentales":"Multicriterio, parámetros fijos y filtro de estrés."})[g]||"Prototipo de estrategia paper.";
@@ -396,7 +396,7 @@ function fullRosterRows(){
    esc(record.activity)+(record.pending_orders?" · "+record.pending_orders+" pendiente(s)":""):
    state.historicalPaper?.has(item.slot)?"Sin diario histórico":"Sin diario institucional";
  const risks=record?.risk||{},label=record?.historical?"Corte histórico · cohortes separadas":record?.comparison?.eligible?"Misma referencia certificada":"Sin evidencia comparable";
- const curve=record?sparkline(record.history.map(x=>x.nav)):"—";
+ const curve=record?sparkline(record.history.map(x=>x.nav),"Evolución del capital virtual · diario paper"):"—";
  return '<tr><td><strong>'+esc(item.name)+'</strong><small class="smallline">'+esc(item.slot)+' · '+esc(record?.original?"Diario del motor migrado":record?.historical?"Diario histórico recuperado":technicalStage(item.slot).label)+'</small></td>'+
   '<td>'+esc(item.group)+'</td><td>'+active+'</td>'+
   '<td>'+esc(record?.last_session||"Sin datos")+'</td><td>'+esc(record?.currency||"N/D")+'</td>'+
@@ -422,7 +422,7 @@ function full(){
  "Cobertura funcional de las familias del laboratorio con columnas de actividad, rentabilidad, riesgo y comparabilidad. Los diarios históricos recuperados se muestran con sus fechas originales y se distinguen de la nueva operación institucional.");
  if(!d)return headText+card('<h3>Inventario no verificable</h3><p>El registro institucional está pendiente de carga o ha fallado su validación. No se sustituyen datos perdidos por simulaciones.</p>');
  const meta=verifyFullRoster(d),visible=filterRoster(d,{group:state.fullRosterGroup,query:state.fullRosterQuery});
- const technical=technicalCoverage(d);
+ 
  const proposals=state.strategyCandidates?filterStrategyCandidates(state.strategyCandidates,{group:state.fullRosterGroup,query:state.fullRosterQuery}):[];
  const candidate=state.strategyCandidates?.candidates?.[0]||null;
  return headText+
@@ -435,7 +435,7 @@ function full(){
  (candidate?'<option value="'+esc(candidate.group)+'" '+(candidate.group===state.fullRosterGroup?"selected":"")+'>'+esc(candidate.group)+' · propuesta 65</option>':"")+
  '</select></label><label>Buscar<input id="full-query" type="search" value="'+esc(state.fullRosterQuery)+'" placeholder="Algoritmo o familia"></label>'+
  button("Exportar inventario CSV","full-export","csv","outline-btn")+'</div>'+
- '<p class="table-note">Preparación del motor institucional nuevo: '+technical.book_unstarted+' libros paper preparados sin iniciar · '+technical.signal_contract+' contratos semanales sin modelos certificados · '+technical.pending+' implementaciones pendientes. Esto no mide actividad bursátil ni resultados.</p>'+
+ '<p class="table-note">Operaciones simuladas con capital virtual y precios de mercado. Cada fila indica su último cierre; una fecha antigua o una valoración pausada no acredita actualización diaria.</p>'+
  '<p class="table-note"><span id="full-count">'+(visible.length+proposals.length)+'</span> de '+(meta.count+(state.strategyCandidates?.candidates.length||0))+' entradas (64 funciones + propuestas independientes) · N/D significa no verificado, nunca rentabilidad cero</p>'+
  '<div class="table-scroll table-compact"><table><thead><tr><th>Estrategia / ID</th><th>Familia</th><th>Actividad</th><th>Fecha</th><th>Divisa</th><th class="number">P/L acumulado</th><th class="number">P/L día</th><th class="number">Volatilidad</th><th class="number">Drawdown</th><th class="number">Posiciones / órdenes</th><th>Comparabilidad</th><th>Curva</th></tr></thead><tbody id="full-rows">'+fullRosterRows()+'</tbody></table></div>'+
  (candidate?card('<h3>65 · '+esc(candidate.name)+' — propuesta experimental</h3>'+
@@ -451,28 +451,26 @@ function full(){
 }
 
 function archive(){
- const rows=all();
- const groupsInCatalog=groups();
- return head("CATÁLOGO · HISTÓRICO","Métodos, familias y versiones","Un inventario no equivale a un histórico de operaciones. Las campañas reales, diarios antiguos y versiones prospectivas necesitan ingestión y trazabilidad institucional propias.")+
- '<div class="source-health-strip"><div><span class="label">Prototipos disponibles</span><strong>'+rows.length+'</strong><small>Reglas independientes con datos sintéticos</small></div>'+
- '<div><span class="label">Campañas forward verificadas</span><strong>0</strong><small>Sin ejecución programada ni capturas inmutables</small></div>'+
- '<div><span class="label">Diarios antiguos importados</span><strong>0</strong><small>No se fusionan con el ranking activo</small></div></div>'+
- disclaimer("No se han importado resultados históricos ni se han reconstruido operaciones antiguas. La continuidad y el estado real de los algoritmos de otro entorno no pueden inferirse de esta demostración.")+
- '<div class="family-grid">'+groupsInCatalog.map(g=>card('<div class="panel-top"><h3>'+esc(g)+'</h3><span class="chip">'+rows.filter(r=>r.group===g).length+' prototipos</span></div>'+
- '<p>'+esc(family(g))+'</p><ul class="algorithm-list">'+rows.filter(r=>r.group===g).map(r=>'<li><span>'+esc(r.name)+' <small class="inline-id">'+esc(r.id)+'</small></span>'+button("Ficha","select",r.id,"text-btn")+'</li>').join("")+'</ul>')).join("")+'</div>'+
- head("VERSIONES Y CAMPAÑAS","Histórico aislado","El historial sin fuente verificable no debe aparecer como rentabilidad acumulada de una estrategia operativa.")+
- card('<h3>Sin histórico institucional importado</h3><p>Para habilitar campañas independientes hacen falta fechas reales de inicio, identificadores estables de estrategia y versión, señales previas a cada fill, libro de órdenes, valoración por cierre, costes, capital, posiciones, ausencias de cotización y registro inmutable por sesión. Las campañas anteriores deben quedar separadas del experimento activo.</p>')+
- button("Volver a la clasificación","navigate","competition","outline-btn");
+ const groupsInCatalog=state.fullRoster?verifyFullRoster(state.fullRoster).groups:[];
+ const count=state.originalPaper?.count||(state.historicalPaper?[...state.historicalPaper.values()].filter(x=>x.active).length:0);
+ return head("CATÁLOGO · HISTÓRICO","Estrategias y campañas paper","Los diarios originales se conservan con su capital virtual, fechas y universos. Las campañas separadas no se fusionan como una sola rentabilidad.")+
+ '<div class="source-health-strip"><div><span class="label">Estrategias registradas</span><strong>64</strong><small>12 familias metodológicas</small></div>'+
+ '<div><span class="label">Diarios paper recuperados</span><strong>'+count+'</strong><small>Operaciones simuladas con datos de mercado</small></div>'+
+ '<div><span class="label">Último cierre disponible</span><strong>'+esc(state.originalPaper?.latest||"—")+'</strong><small>Consultar fecha y estado de cada estrategia</small></div></div>'+
+ disclaimer("La disponibilidad de los diarios históricos y del código no prueba por sí sola la continuidad automática de todas las estrategias desde Idea Lab. Las valoraciones pausadas y las ausencias de cotización se conservan explícitamente.")+
+ '<div class="family-grid">'+groupsInCatalog.map(g=>card('<h3>'+esc(g.name)+'</h3><p>'+g.count+' estrategias registradas.</p>'+button("Ver diarios de esta familia","navigate","competition","outline-btn"))).join("")+'</div>'+
+ '<details class="panel"><summary>Ejemplos didácticos con precios artificiales</summary><p>Los 23 prototipos didácticos se conservan aparte; sus resultados no pertenecen a los diarios paper de mercado.</p>'+button("Abrir demo didáctica","navigate","synthetic","outline-btn")+'</details>'+
+ button("Volver a la competición paper","navigate","competition","outline-btn");
 }
 
 function methodology(){
- return head("MÉTODO Y LÍMITES","Evaluación reproducible","La infraestructura pública reproduce la experiencia funcional de un laboratorio cuantitativo, pero no ha importado ni los resultados ni los motores entrenados de ningún sistema externo.")+
+ return head("MÉTODO Y LÍMITES","Evaluación reproducible","Los motores originales y sus diarios paper están publicados. La ejecución automática desde Idea Lab se verifica por separado; disponer de código e históricos no demuestra que todos los modelos estén actualizados.")+
  '<div class="method-grid">'+[
- ["Reloj causal","Cada señal se genera con los datos sintéticos disponibles hasta la sesión anterior; no se usan retornos futuros para seleccionar la cartera."],
- ["Contabilidad paper","Cambios de exposición, comisiones teóricas, curva de capital y riesgo calculados de manera determinista."],
- ["Comparaciones","Ventana común y supuestos declarados. No anualizar una demostración breve para afirmar resultados reales."],
+ ["Reloj causal","Cada motor conserva su contrato temporal y sus controles de disponibilidad. Una operación paper debe respetar la fecha de señal y la siguiente apertura; no se reconstruyen decisiones con información posterior."],
+ ["Contabilidad paper","El dinero es virtual. Los diarios de mercado registran posiciones, órdenes y valoración; costes, divisa y reglas dependen de cada campaña. La demo didáctica usa precios artificiales y se muestra aparte."],
+ ["Comparaciones","Comparar sólo campañas con fechas, universo, referencia y reglas compatibles. No mezclar cohortes históricas ni presentar una simulación como rentabilidad con dinero real."],
  ["Tesis","Valoraciones bajo hipótesis, crecimiento, múltiplos y rentabilidad requerida, con criterios de refutación."],
- ["Modelos pendientes","Entrenamiento real de modelos de árboles, redes, modelos de series y evolución paramétrica no implementado."],
+ ["Estado de los modelos","El código migrado incluye motores clásicos, aprendizaje semanal, series temporales y evolución paramétrica. Cada estrategia conserva su estado; los modelos o datos ausentes no se sustituyen por resultados inventados."],
  ["Auditoría pública","Datos licenciados, fuentes temporales, validación fuera de muestra, trazabilidad y monitorización antes de atribuir capacidad predictiva."]
  ].map(([a,b])=>card('<h3>'+esc(a)+'</h3><p>'+esc(b)+'</p>')).join("")+'</div>'+
  disclaimer("Todos los activos del sitio se publican mediante una lista blanca. Que los archivos nuevos carezcan de referencias personales no demuestra anonimato absoluto si existe material anterior correlacionable.");

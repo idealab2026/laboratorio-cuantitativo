@@ -81,7 +81,8 @@ test("Readiness taxonomy counts only code and never declares economic activity",
  assert.equal(technicalStage("IL-045").id,"pending");
  assert.throws(()=>technicalStage("IL-999"));
  const site=readFileSync(new URL("../src/site.mjs",import.meta.url),"utf8");
- assert.ok(site.includes("technicalCoverage(d)"));
+ assert.ok(!site.includes("Preparación del motor institucional nuevo:"));
+ assert.ok(site.includes("record?.original?"));
  assert.ok(site.includes("technicalStage(item.slot).label"));
  assert.ok(site.includes('"Fase técnica"'));
 });
