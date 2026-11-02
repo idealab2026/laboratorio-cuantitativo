@@ -41,7 +41,7 @@ for page in ("index.html", "research.html", "private-paper.html", "private-these
                 issues.append("Non-institutional external link")
         elif url.startswith("./"):
             local_path, separator, query = url[2:].partition("?")
-            if local_path not in RELEASE or (separator and not re.fullmatch(r"v=[a-f0-9]{12}", query)):
+            if local_path not in RELEASE or (separator and not (re.fullmatch(r"v=[a-f0-9]{12}", query) or local_path == "index.html" and query in {"view=competition", "view=theses"})):
                 issues.append("Dependency not on release allowlist")
         else: issues.append("Unexpected link or source type")
 for path in sorted(files):

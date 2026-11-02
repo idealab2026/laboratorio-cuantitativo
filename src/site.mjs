@@ -30,22 +30,18 @@ function sparkline(nav){
 const metric=(label,value)=>'<div class="metric"><strong>'+esc(value)+'</strong><small>'+esc(label)+'</small></div>';
 const family=(g)=>({"Clásicas":"Equiponderación, tendencia, reversión, menor variabilidad y control en efectivo.","Aprendizaje semanal":"Proxies de métodos supervisados; no se han entrenado modelos reales.","Predicción temporal":"Modelos temporales de referencia; no se ha ejecutado TimesFM.","Capital Cycle":"Ciclo de inversión y disciplina de valoración con supuestos observables.","Buy The Dip":"Escalonamiento de exposición tras caídas, con reserva de liquidez.","Modelos experimentales":"Multicriterio, parámetros fijos y filtro de estrés."})[g]||"Prototipo de estrategia paper.";
 function summary(){
- $("stat-strategies").textContent=all().length;
- $("stat-groups").textContent=groups().length;
- $("stat-theses").textContent=researchIssuerCount();
- $("stat-sessions").textContent=state.data.dates.length;
+ $("stat-strategies").textContent=state.fullRoster?.expected||"64";
+ $("stat-groups").textContent=state.fullRoster?verifyFullRoster(state.fullRoster).groups.length:"—";
+ $("stat-theses").textContent=state.publicTheses.size;
+ $("stat-sessions").textContent=state.historicalPaper?summarizePrivatePaper(state.historicalPaper,state.historicalCurves).latest:"—";
 }
 function overview(){
- const first=rank(state.data)[0];
- const featured=["MSFT","META","PLTR"].map(t=>state.universe.issuers.find(i=>i.ticker===t)).filter(Boolean);
- return head("INICIO · INVESTIGACIÓN","Laboratorio cuantitativo","Comparación reproducible de métodos y catálogo público de compañías. Las clasificaciones son sintéticas; no se atribuyen rentabilidades bursátiles reales.")+
- '<div class="section-grid">'+card('<span class="label">Variación simulada más alta</span><h3>'+esc(first.name)+'</h3><div class="headline-value '+tone(first.returnPct)+'">'+esc(formatPct(first.returnPct))+'</div><p>Resultado exclusivamente sintético; no existen operaciones en bolsa.</p>'+button("Abrir ficha","select",first.id))+
- card('<span class="label">Universo de empresas</span><h3>'+researchIssuerCount()+' emisores y estudios identificados</h3><p>Expedientes históricos y modelos exploratorios, con sus fechas, hipótesis y límites.</p>'+button("Ver empresas","navigate","theses"))+'</div>'+
- head("CATÁLOGO","Familias de estrategias","Las simulaciones siguen siendo demostraciones; los modelos entrenados de la sección de investigación no están conectados a esta competición.")+
- '<div class="family-grid">'+groups().map(g=>card('<div class="panel-top"><h3>'+esc(g)+'</h3><span class="chip">'+all().filter(x=>x.group===g).length+' métodos</span></div><p>'+esc(family(g))+'</p>'+button("Examinar","group",g))).join("")+'</div>'+
- head("EMPRESAS","Seguimiento por emisor","Nombres reales y mercados de referencia; fichas públicas en preparación, sin replicar documentos externos ni carteras privadas.")+
- '<div class="section-grid three">'+featured.map(t=>card('<span class="label">'+esc(t.ticker)+' · '+esc(t.market)+'</span><h3>'+esc(t.company)+'</h3><p>'+esc(t.sector)+'</p><p>'+(independentScreen(t.ticker)?'Screening exploratorio independiente disponible; no ratificado.':'Valoración pública independiente pendiente de validación.')+'</p>'+button("Ver ficha","issuer-select",t.ticker))).join("")+'</div>'+
- disclaimer("No existe migración completa de los motores ni de los expedientes de inversión. Sin cotizaciones actualizadas, no se muestran CAGR históricos como pronósticos vigentes.");
+ const archive=state.historicalPaper?summarizePrivatePaper(state.historicalPaper,state.historicalCurves):null;
+ return head("INICIO · LABORATORIO PAPER","Competición de algoritmos","Compras y ventas simuladas con capital virtual. Los diarios históricos se conservan con las fechas, los datos de mercado y las condiciones de cada campaña.")+
+ '<div class="section-grid">'+card('<h3>Diarios de estrategias</h3><p>'+(archive?archive.withNav+" diarios históricos y "+archive.pending+" estrategias sin histórico comparable. Último cierre del archivo: "+archive.latest:"Comprobando el archivo de 64 estrategias.")+'</p>'+button("Abrir competición y curvas","navigate","competition"))+
+ card('<h3>Tesis y escenarios</h3><p>'+state.publicTheses.size+' expedientes históricos publicados. Se conservan los supuestos y las fechas de cada estudio.</p>'+button("Abrir tesis","navigate","theses"))+'</div>'+
+ '<h3>Estado de la continuidad</h3><p>El histórico ya está disponible. La ejecución y actualización diaria desde Idea Lab aún se están verificando; las automatizaciones de origen se mantienen hasta completar la sustitución.</p>'+
+ '<details class="panel"><summary>Ejemplos didácticos y herramientas de prueba</summary><p>Estos ejemplos usan precios artificiales para comprobar reglas e interfaces. Sus resultados no forman parte de la competición con datos de mercado.</p>'+button("Demo técnica · datos artificiales","navigate","synthetic","outline-btn")+button("Métodos de la demo","navigate","algorithms","outline-btn")+button("Pruebas de nueve reglas técnicas","navigate","ported","outline-btn")+'</details>';
 }
 function syntheticCompetition(){
  const rows=competitionReadModel(state.data,{sort:state.sort,ascending:state.asc,group:state.group});
@@ -444,7 +440,7 @@ function full(){
  '<p><strong>Limitaciones:</strong> '+esc(candidate.limitations)+'</p>'+
  '<p class="small-note">Fuente académica: <a href="'+esc(candidate.source)+'" target="_blank" rel="noopener noreferrer">'+esc(candidate.source_name)+'</a>. Datos públicos exploratorios: <a href="'+esc(candidate.data_reference)+'" target="_blank" rel="noopener noreferrer">USDA NAIP</a>. Estado económico: no iniciada; retorno, posiciones y curva N/D.</p>'):"")+
  card('<h3>Condiciones de publicación de cada diario</h3><p>Para activar una línea se debe verificar la fuente de cotizaciones y sus permisos, la fecha exacta de cada señal, su ejecución al siguiente mercado, el historial de NAV, la divisa y los metadatos de comparabilidad. Las carteras de distinta fecha de inicio o universo no se ordenarán como si compitieran en igualdad de condiciones.</p>')+
- button("Ver las 23 simulaciones sintéticas","navigate","synthetic","outline-btn")+button("Ver nueve estrategias técnicas","navigate","ported","outline-btn");
+ button("Ver metodología y condiciones","navigate","method","outline-btn");
 }
 
 function archive(){
@@ -684,7 +680,7 @@ async function loadHistoricalPaper(){
   if(res.some(r=>!r.ok))throw Error("Archivo histórico no disponible");
   const [results,nav]=await Promise.all(res.map(r=>r.text()));
   const rows=parseLocalPaperResults(results),curves=parseLocalPaperCurves(nav,rows);
-  state.historicalPaper=rows;state.historicalCurves=curves;state.historicalPaperStatus="ok";
+  state.historicalPaper=rows;state.historicalCurves=curves;state.historicalPaperStatus="ok";if(state.data)summary();
  }catch(_error){state.historicalPaper=null;state.historicalCurves=null;state.historicalPaperStatus="unavailable";}
  if(["full","competition"].includes(state.view)&&state.data)render();
 }
@@ -694,7 +690,7 @@ async function loadFullRoster(){
   if(!response.ok)throw Error("Missing institution-only roster");
   const doc=await response.json();
   verifyFullRoster(doc);
-  state.fullRoster=doc;state.fullRosterStatus="ok";
+  state.fullRoster=doc;state.fullRosterStatus="ok";if(state.data)summary();
  }catch(_error){state.fullRoster=null;state.fullRosterStatus="unavailable";}
  if(["full","competition"].includes(state.view)&&state.data)render();
 }
