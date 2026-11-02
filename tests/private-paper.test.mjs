@@ -87,3 +87,10 @@ test("Isolate private viewer: no upload/network/storage and strict CSP",()=>{
  assert.match(html,/src="\.\/src\/private-paper-view\.mjs"/);
  assert.ok(!/static\.cloudflareinsights|data-cf-beacon|https?:\/\/docs\.google/.test(html));
 });
+
+test("Public historical archive reconciles all 64 rows with 47 dated diaries and 528 original NAV observations",()=>{
+ const results=parseLocalPaperResults(readFileSync(new URL("../data/historical-paper-results.csv",import.meta.url),"utf8"));
+ const curves=parseLocalPaperCurves(readFileSync(new URL("../data/historical-paper-curves.csv",import.meta.url),"utf8"),results);
+ assert.deepEqual(summarizePrivatePaper(results,curves),{algorithms:64,withNav:47,pending:17,curveObservations:528,latest:"2026-10-30"});
+ for(const r of results.values()){if(r.active)assert.equal(curves.get(r.id).at(-1).nav,r.nav);else assert.equal(r.pct,null);}
+});

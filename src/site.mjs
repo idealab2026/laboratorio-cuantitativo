@@ -1,3 +1,4 @@
+import {parseLocalPaperResults,parseLocalPaperCurves,summarizePrivatePaper} from "./private-paper.mjs?v=4baff08a2202";
 import {signalResearchSummary,methodCatalog} from "./paper-methods.mjs";
 import {parseLocalCagr2031} from "./private-theses.mjs";
 import {verifyPublicTheses,publicResearchRows,orderedThesisRows,publicThesisTableRows,publicThesisDetail,publicThesisCsv} from "./public-theses.mjs?v=cd025a606c62";
@@ -8,7 +9,7 @@ import {verify,simulate,rank,valuation,thesisRank,formatPct,money,finite,verifyI
 const $=id=>document.getElementById(id);
 const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 const fmt=n=>finite(n)?new Intl.NumberFormat("es-ES",{maximumFractionDigits:2}).format(n):"N/D";
-const state={data:null,universe:null,fx:null,fxCheck:null,fxStatus:"pending",forecastLedger:null,forecastSummary:null,forecastStatus:"pending",secStatus:"pending",secRead:null,secCatalog:null,yieldDoc:null,yieldCheck:null,yieldStatus:"pending",view:"overview",strategy:"P-01",group:"",sort:"returnPct",asc:false,detailOpen:false,thesis:"T-01",query:"",thesisSort:"central",issuerMode:"catalog",issuerQuery:"",issuerSort:"base",issuerAsc:false,issuerTicker:"MSFT",paperDetail:"M-10",fullRoster:null,fullRosterStatus:"pending",strategyCandidates:null,strategyCandidatesStatus:"pending",fullRosterGroup:"",fullRosterQuery:"",institutionalFeedStatus:"pending",paperFeed:null,paperFeedRead:null,localCagr:new Map(),localCagrError:"",publicTheses:new Map(),publicThesesMetadata:null};
+const state={data:null,universe:null,fx:null,fxCheck:null,fxStatus:"pending",forecastLedger:null,forecastSummary:null,forecastStatus:"pending",secStatus:"pending",secRead:null,secCatalog:null,yieldDoc:null,yieldCheck:null,yieldStatus:"pending",view:"overview",strategy:"P-01",group:"",sort:"returnPct",asc:false,detailOpen:false,thesis:"T-01",query:"",thesisSort:"central",issuerMode:"catalog",issuerQuery:"",issuerSort:"base",issuerAsc:false,issuerTicker:"MSFT",paperDetail:"M-10",historicalPaper:null,historicalCurves:null,historicalPaperStatus:"pending",fullRoster:null,fullRosterStatus:"pending",strategyCandidates:null,strategyCandidatesStatus:"pending",fullRosterGroup:"",fullRosterQuery:"",institutionalFeedStatus:"pending",paperFeed:null,paperFeedRead:null,localCagr:new Map(),localCagrError:"",publicTheses:new Map(),publicThesesMetadata:null};
 const viewNames=["overview","competition","algorithms","theses","monitoring","method","archive","ported","full","synthetic"];
 const button=(label,action,value,cls="smallbtn")=>'<button type="button" class="'+cls+'" data-action="'+esc(action)+'" data-value="'+esc(value)+'">'+esc(label)+'</button>';
 const head=(label,title,body)=>'<div class="section-heading"><div><span class="kicker">'+esc(label)+'</span><h2>'+esc(title)+'</h2><p class="section-context">'+esc(body)+'</p></div></div>';
@@ -376,16 +377,24 @@ function ported(){
  button("Ver competición sintética","navigate","competition","outline-btn");
 }
 
+function economicPaperRecord(slot){
+ const current=state.paperFeedRead?.bySlot.get(slot);if(current)return current;
+ const h=state.historicalPaper?.get(slot);if(!h?.active)return null;
+ return {activity:"Archivo paper · "+h.activity,currency:h.currency,last_session:h.last,
+  return_pct:h.pct,day_return_pct:h.dayPct,positions:h.positions,pending_orders:h.pending,
+  risk:{volatility_pct:null,max_drawdown_pct:h.drawdown},comparison:{eligible:false},
+  history:state.historicalCurves.get(slot)||[],historical:true};
+}
 function fullRosterRows(){
  if(!state.fullRoster)return "";
  const existing=filterRoster(state.fullRoster,{group:state.fullRosterGroup,query:state.fullRosterQuery}).map(item=>{
- const record=state.paperFeedRead?.bySlot.get(item.slot);
+ const record=economicPaperRecord(item.slot);
  const active=record?
    esc(record.activity)+(record.pending_orders?" · "+record.pending_orders+" pendiente(s)":""):
-   "Sin diario institucional";
- const risks=record?.risk||{},label=record?.comparison?.eligible?"Misma referencia certificada":"Sin evidencia comparable";
+   state.historicalPaper?.has(item.slot)?"Sin diario histórico":"Sin diario institucional";
+ const risks=record?.risk||{},label=record?.historical?"Corte histórico · cohortes separadas":record?.comparison?.eligible?"Misma referencia certificada":"Sin evidencia comparable";
  const curve=record?sparkline(record.history.map(x=>x.nav)):"—";
- return '<tr><td><strong>'+esc(item.name)+'</strong><small class="smallline">'+esc(item.slot)+' · '+esc(technicalStage(item.slot).label)+'</small></td>'+
+ return '<tr><td><strong>'+esc(item.name)+'</strong><small class="smallline">'+esc(item.slot)+' · '+esc(record?.historical?"Diario histórico recuperado":technicalStage(item.slot).label)+'</small></td>'+
   '<td>'+esc(item.group)+'</td><td>'+active+'</td>'+
   '<td>'+esc(record?.last_session||"Sin datos")+'</td><td>'+esc(record?.currency||"N/D")+'</td>'+
   '<td class="number">'+(record?pctText(record.return_pct):"N/D")+'</td>'+
@@ -407,7 +416,7 @@ function fullRosterRows(){
 function full(){
  const d=state.fullRoster;
  const headText=head("COMPETICIÓN COMPLETA · CONTRATO DE MIGRACIÓN","MIDAS · 64 estrategias + 1 nueva propuesta satelital",
- "Cobertura funcional de las familias del laboratorio con columnas de actividad, rentabilidad, riesgo y comparabilidad. El inventario no transfiere ni certifica los diarios del sistema anterior.");
+ "Cobertura funcional de las familias del laboratorio con columnas de actividad, rentabilidad, riesgo y comparabilidad. Los diarios históricos recuperados se muestran con sus fechas originales y se distinguen de la nueva operación institucional.");
  if(!d)return headText+card('<h3>Inventario no verificable</h3><p>El registro institucional está pendiente de carga o ha fallado su validación. No se sustituyen datos perdidos por simulaciones.</p>');
  const meta=verifyFullRoster(d),visible=filterRoster(d,{group:state.fullRosterGroup,query:state.fullRosterQuery});
  const technical=technicalCoverage(d);
@@ -415,15 +424,15 @@ function full(){
  const candidate=state.strategyCandidates?.candidates?.[0]||null;
  return headText+
  '<div class="source-health-strip"><div><span class="label">Funciones registradas</span><strong>'+meta.count+'</strong><small>'+meta.groups.length+' grupos funcionales</small></div>'+
- '<div><span class="label">Diarios institucionales certificados</span><strong>'+(state.paperFeedRead?.count||0)+'</strong><small>'+(state.paperFeedRead?.status==="source_verified"?"Resumen institucional firmado y auditado":"Sin fuente institucional acreditada")+'</small></div>'+
+ '<div><span class="label">Diarios históricos recuperados</span><strong>'+(state.historicalPaper?[...state.historicalPaper.values()].filter(x=>x.active).length:0)+'</strong><small>'+(state.historicalPaper?"528 observaciones NAV · corte 30/10/2026":"Archivo pendiente de validación")+'</small></div>'+
  '<div><span class="label">Propuestas en investigación</span><strong>'+(state.strategyCandidates?.candidates.length??"—")+'</strong><small>Sin operaciones, sin NAV y fuera del ranking económico</small></div></div>'+
- disclaimer(state.paperFeedRead?.status==="source_verified"?"Las líneas con evidencia llevan resumen económico trazable a captura y libro firmados por un núcleo institucional. El resto permanece pendiente; no equivale a operativa con dinero real.":"INVENTARIO FUNCIONAL. Sin fuente institucional acreditada: las 64 líneas siguen pendientes. Ninguna rentabilidad o posición de las simulaciones sustituye un diario bursátil independiente.")+
+ disclaimer(state.paperFeedRead?.status==="source_verified"?"Las líneas con evidencia llevan resumen económico trazable a captura y libro firmados por un núcleo institucional. El resto permanece pendiente; no equivale a operativa con dinero real.":state.historicalPaper?"ARCHIVO HISTÓRICO PAPER. Sin fuente institucional acreditada para el motor nuevo. 47 estrategias conservan diario y 17 no tienen histórico comparable. Se mantienen los errores, las omisiones y las diferencias entre cohortes; estos datos no acreditan que el motor nuevo ya esté operando.":"Archivo histórico no disponible o no verificable. No se sustituyen diarios ausentes por simulaciones.")+
  '<div class="filters"><label>Filtrar familia<select id="full-group-select"><option value="">Todas las familias</option>'+
  meta.groups.map(g=>'<option value="'+esc(g.name)+'" '+(g.name===state.fullRosterGroup?"selected":"")+'>'+esc(g.name)+' · '+g.count+'</option>').join("")+
  (candidate?'<option value="'+esc(candidate.group)+'" '+(candidate.group===state.fullRosterGroup?"selected":"")+'>'+esc(candidate.group)+' · propuesta 65</option>':"")+
  '</select></label><label>Buscar<input id="full-query" type="search" value="'+esc(state.fullRosterQuery)+'" placeholder="Algoritmo o familia"></label>'+
  button("Exportar inventario CSV","full-export","csv","outline-btn")+'</div>'+
- '<p class="table-note">Cobertura de código: '+technical.book_unstarted+' libros paper preparados sin iniciar · '+technical.signal_contract+' contratos semanales sin modelos certificados · '+technical.pending+' implementaciones pendientes. Esto no mide actividad bursátil ni resultados.</p>'+
+ '<p class="table-note">Preparación del motor institucional nuevo: '+technical.book_unstarted+' libros paper preparados sin iniciar · '+technical.signal_contract+' contratos semanales sin modelos certificados · '+technical.pending+' implementaciones pendientes. Esto no mide actividad bursátil ni resultados.</p>'+
  '<p class="table-note"><span id="full-count">'+(visible.length+proposals.length)+'</span> de '+(meta.count+(state.strategyCandidates?.candidates.length||0))+' entradas (64 funciones + propuestas independientes) · N/D significa no verificado, nunca rentabilidad cero</p>'+
  '<div class="table-scroll table-compact"><table><thead><tr><th>Estrategia / ID</th><th>Familia</th><th>Actividad</th><th>Fecha</th><th>Divisa</th><th class="number">P/L acumulado</th><th class="number">P/L día</th><th class="number">Volatilidad</th><th class="number">Drawdown</th><th class="number">Posiciones / órdenes</th><th>Comparabilidad</th><th>Curva</th></tr></thead><tbody id="full-rows">'+fullRosterRows()+'</tbody></table></div>'+
  (candidate?card('<h3>65 · '+esc(candidate.name)+' — propuesta experimental</h3>'+
@@ -537,7 +546,7 @@ $("app").addEventListener("click",e=>{
    const proposals=state.strategyCandidates?filterStrategyCandidates(state.strategyCandidates,{group:state.fullRosterGroup,query:state.fullRosterQuery}):[];
    download("midas-competicion-64-y-propuestas.csv",[
     ["ID","Nombre","Familia","Fase técnica","Estado económico","Actividad","Rentabilidad","Riesgo","Comparabilidad"],
-    ...rows.map(x=>{const r=state.paperFeedRead?.bySlot.get(x.slot);return [x.slot,x.name,x.group,technicalStage(x.slot).label,r?"fuente_verificada":"pendiente",r?.activity||"N/D",r?.return_pct??"N/D",r?.risk?.max_drawdown_pct??"N/D",r?.comparison?.eligible?"misma referencia":"no comparable"];}),
+    ...rows.map(x=>{const r=economicPaperRecord(x.slot);return [x.slot,x.name,x.group,technicalStage(x.slot).label,r?.historical?"archivo_historico":r?"fuente_verificada":"sin_diario",r?.activity||"N/D",r?.return_pct??"N/D",r?.risk?.max_drawdown_pct??"N/D",r?.comparison?.eligible?"misma referencia":"no comparable"];}),
     ...proposals.map(c=>[c.id,c.name,c.group,"Investigación sin feed satelital","No iniciado",c.status,"N/D","N/D","no comparable"])
    ]);
   }
@@ -621,7 +630,7 @@ async function init(){
   if(publication.records.some(x=>!allowed.has(x.ticker)))throw Error("Noncatalogued public ticker");
   state.publicTheses=new Map(publication.records.map(x=>[x.ticker,x]));
   state.publicThesesMetadata={...stats,published_as_of:publication.published_as_of};
-  state.data=data;state.universe=universe;const v=new URLSearchParams(location.search).get("view");state.view=viewNames.includes(v)?v:"overview";summary();render();void loadOfficialFx();void loadForecastLedger();void loadSecFilings();void loadOfficialYield();void loadFullRoster();void loadStrategyCandidates();void loadInstitutionalPaperFeed();
+  state.data=data;state.universe=universe;const v=new URLSearchParams(location.search).get("view");state.view=viewNames.includes(v)?v:"overview";summary();render();void loadOfficialFx();void loadForecastLedger();void loadSecFilings();void loadOfficialYield();void loadHistoricalPaper();void loadFullRoster();void loadStrategyCandidates();void loadInstitutionalPaperFeed();
  }catch(e){$("app").textContent="No se ha podido cargar el catálogo de emisores o el laboratorio sintético; no se muestran datos no verificados.";}
 }
 async function loadOfficialFx(){
@@ -669,6 +678,16 @@ async function loadStrategyCandidates(){
   verifyStrategyCandidates(doc);
   state.strategyCandidates=doc;state.strategyCandidatesStatus="ok";
  }catch(_error){state.strategyCandidates=null;state.strategyCandidatesStatus="unavailable";}
+ if(["full","competition"].includes(state.view)&&state.data)render();
+}
+async function loadHistoricalPaper(){
+ try{
+  const res=await Promise.all([fetch("./data/historical-paper-results.csv",{cache:"no-store"}),fetch("./data/historical-paper-curves.csv",{cache:"no-store"})]);
+  if(res.some(r=>!r.ok))throw Error("Archivo histórico no disponible");
+  const [results,nav]=await Promise.all(res.map(r=>r.text()));
+  const rows=parseLocalPaperResults(results),curves=parseLocalPaperCurves(nav,rows);
+  state.historicalPaper=rows;state.historicalCurves=curves;state.historicalPaperStatus="ok";
+ }catch(_error){state.historicalPaper=null;state.historicalCurves=null;state.historicalPaperStatus="unavailable";}
  if(["full","competition"].includes(state.view)&&state.data)render();
 }
 async function loadFullRoster(){

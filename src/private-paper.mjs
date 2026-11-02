@@ -101,6 +101,7 @@ export function parseLocalPaperResults(text){
   const currency=at(row,"Divisa");
   if(active&&!["EUR","USD"].includes(currency))throw Error("Divisa no permitida");
   found.set(id,{id,model,family,status,active,currency,first,last,capital,nav,pct,sessions,
+    dayPct:number(at(row,"Cambio último día (%)"),{nullable:true}),
     positions:number(at(row,"Posiciones abiertas"),{nullable:true,nonnegative:true}),
     pending:number(at(row,"Órdenes pendientes"),{nullable:true,nonnegative:true}),
     drawdown:number(at(row,"Drawdown máximo (%)"),{nullable:true}),
