@@ -77,21 +77,21 @@ jobs:
           mkdir -p dist/src dist/data
           cp index.html research.html private-paper.html private-theses.html styles.css logo.svg favicon.svg dist/
           cp src/site.mjs src/metrics.mjs src/learning.mjs src/learning-view.mjs src/paper-methods.mjs src/paper-ledger.mjs src/competition-roster.mjs src/paper-feed.mjs src/private-paper.mjs src/private-paper-view.mjs src/private-theses.mjs src/private-theses-view.mjs src/public-theses.mjs dist/src/
-          cp data/demo.json data/public-theses.json data/fx-forecast-ledger.json data/sec-filings.json data/competition-roster.json data/institutional-paper-feed.json dist/data/
+          cp data/demo.json data/public-theses.json data/fx-forecast-ledger.json data/sec-filings.json data/competition-roster.json data/strategy-candidates.json data/institutional-paper-feed.json dist/data/
           python3 scripts/refresh_sec.py --validate dist/data/sec-filings.json
           python3 scripts/paper_feed.py --validate dist/data/institutional-paper-feed.json
-          test "$(find dist -type f | wc -l)" -eq 26
+          test "$(find dist -type f | wc -l)" -eq 27
       - name: Acquire official ECB reference observations (not tradable quotes)
         run: |
           python3 scripts/refresh_ecb.py --output dist/data/official-fx.json
           python3 scripts/refresh_ecb.py --validate dist/data/official-fx.json
           python3 -c "import json,sys;sys.path.insert(0,'scripts');from advance_fx import verify_ledger;verify_ledger(json.load(open('dist/data/fx-forecast-ledger.json',encoding='utf8')))"
-          test "$(find dist -type f | wc -l)" -eq 27
+          test "$(find dist -type f | wc -l)" -eq 28
       - name: Acquire independently checked ECB euro area AAA ten-year model yield
         run: |
           python3 scripts/refresh_ecb_yield.py --out dist/data/official-eur-yield.json
           python3 scripts/refresh_ecb_yield.py --validate dist/data/official-eur-yield.json
-          test "$(find dist -type f | wc -l)" -eq 28
+          test "$(find dist -type f | wc -l)" -eq 29
       - uses: actions/upload-artifact@v4
         with:
           name: audited-site
