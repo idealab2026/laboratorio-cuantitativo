@@ -102,3 +102,32 @@ test("Public package excludes historical thesis fingerprints and rejects their r
  assert.match(site,/archivo privado/);
  assert.doesNotMatch(site,/25 fichas y nueve CAGR/);
 });
+
+
+test("The public issuer table and CSV keep independently evaluated screens when the historic publication is empty",async()=>{
+ const {publicIssuerReadModel}=await import("../src/metrics.mjs");
+ const {publicThesisTableRows,publicThesisCsv,orderedThesisRows}=await import("../src/public-theses.mjs");
+ const data=JSON.parse(readFileSync(new URL("../data/demo.json",import.meta.url),"utf8"));
+ const rows=publicIssuerReadModel(data.issuerCatalog),s=rows.find(r=>r.screen).screen;
+ const csv=publicThesisCsv(rows,new Map(),new Map());
+ const valued=csv.find(row=>row[0]==="MSFT"),pending=csv.find(row=>row[0]==="RKLB");
+ assert.equal(valued[3],s.quote.close);
+ assert.equal(valued[4],s.quote.closeDate);
+ assert.equal(valued[9],s.scenarios.base.cagrPct);
+ assert.equal(valued[10],s.buyPrice15);
+ assert.equal(valued[12],"Screening exploratorio");
+ assert.equal(pending[3],"N/D");
+ const html=publicThesisTableRows(rows,new Map(),new Map(),"MSFT");
+ assert.ok(html.includes("2026-10-30"));
+ assert.ok(html.includes("Screening exploratorio"));
+ for(const ascending of [true,false]){
+  assert.equal(orderedThesisRows([...rows],new Map(),new Map(),"base",ascending)[0].issuer.ticker,"MSFT");
+ }
+ const local=new Map([["MSFT",{bear:null,base:4,bull:6,date:"2020-01-01"}]]);
+ const historical=publicThesisCsv(rows,new Map(),local).find(row=>row[0]==="MSFT");
+ assert.equal(historical[9],4);
+ assert.equal(historical[8],"N/D");
+ assert.equal(historical[3],"N/D");
+ assert.equal(historical[10],"N/D");
+ assert.equal(historical[12],"Archivo local");
+});

@@ -36,40 +36,45 @@ export function verifyPublicTheses(doc){
  }
  return {count:doc.records.length,withCagr:doc.records.filter(r=>r.baseCagr!==null).length,withPrice:doc.records.filter(r=>r.recordedPrice!==null).length};
 }
+function thesisValues(row,records,local){
+ const i=row.issuer,r=records.get(i.ticker),l=local.get(i.ticker),s=row.screen;
+ return {ticker:i.ticker,company:r?.company||i.company,market:r?.market||i.market,
+  theme:r?.theme||i.sector,currency:r?.currency||i.currency,record:r,
+  status:l?"Archivo local":r?r.valuationStatus||r.thesisStatus:s?"Screening exploratorio":"Sin tesis pública",
+  date:l?l.date||"":r?.studyDate||s?.asOf||"",
+  price:l?null:r?.recordedPrice??s?.quote.close??null,
+  priceDate:l?l.date||"":r?.priceDate||s?.quote.closeDate||"",
+  reference:l?null:r?.referencePrice??s?.quote.close??null,
+  base:l?l.base??null:r?.baseCagr??s?.scenarios.base.cagrPct??null,
+  bear:l?l.bear??null:r?.bearCagr??s?.scenarios.bear.cagrPct??null,
+  bull:l?l.bull??null:r?.bullCagr??s?.scenarios.bull.cagrPct??null,
+  entry:l?null:r?.priceFor15??s?.buyPrice15??null,
+  target:l?null:r?.baseTarget??s?.scenarios.base.target??null,
+  earnings:r?.earningsRecord||null,report:r?.summary?"Sí":s?"Modelo exploratorio":null};
+}
 export function orderedThesisRows(rows,records,local,sort,ascending){
- const value=({issuer:i})=>{
-  const r=records.get(i.ticker),l=local.get(i.ticker);
-  if(["base","bear","bull"].includes(sort))return l?.[sort]??r?.[sort+"Cagr"]??null;
-  if(sort==="price")return r?.recordedPrice??null;
-  if(sort==="entry")return r?.priceFor15??null;
-  if(sort==="target")return r?.baseTarget??null;
-  if(sort==="earnings")return r?.earningsRecord||null;
-  if(sort==="report")return r?.summary?"Sí":null;
-  if(sort==="company")return r?.company||i.company;
-  if(sort==="market")return r?.market||i.market;
-  return i.ticker;
- };
+ const values=new Map(rows.map(row=>[row.issuer.ticker,thesisValues(row,records,local)]));
  const texts=new Set(["ticker","company","market","earnings","report"]);
  return rows.sort((a,b)=>{
-  const x=value(a),y=value(b),aNull=x===null||x===undefined||x==="",bNull=y===null||y===undefined||y==="";
+  const x=values.get(a.issuer.ticker)[sort],y=values.get(b.issuer.ticker)[sort];
+  const aNull=x===null||x===undefined||x==="",bNull=y===null||y===undefined||y==="";
   if(aNull!==bNull)return aNull?1:-1;
   const delta=aNull?0:texts.has(sort)?String(x).localeCompare(String(y),"es",{numeric:true}):x-y;
   return (ascending?delta:-delta)||a.issuer.ticker.localeCompare(b.issuer.ticker,"es");
  });
 }
 export function publicThesisTableRows(rows,records,local,selected){
- return rows.map(({issuer:i})=>{
-  const r=records.get(i.ticker),l=local.get(i.ticker);
-  const field=k=>l?.[k]??r?.[k+"Cagr"]??null;
-  const price=r?.recordedPrice!==null&&r?money(r.recordedPrice,r)+" · "+esc(r.priceDate):"N/D";
-  return '<tr class="interactive-table-row '+(selected===i.ticker?"is-selected":"")+'" data-issuer-id="'+esc(i.ticker)+'" tabindex="0">'+
-   '<td><strong>'+esc(i.ticker)+'</strong></td><td><strong>'+esc(r?.company||i.company)+'</strong><small class="smallline">'+esc(r?.theme||i.sector)+'</small></td>'+
-   '<td>'+esc(r?.market||i.market)+'</td><td class="number">'+price+'</td>'+
-   '<td class="number">'+percent(field("bull"))+'</td><td class="number">'+percent(field("bear"))+'</td><td class="number">'+percent(field("base"))+'</td>'+
-   '<td class="number">'+(r?money(r.priceFor15,r):"N/D")+'</td><td class="number">'+(r?money(r.baseTarget,r):"N/D")+'</td>'+
-   '<td><small>'+esc(r?.earningsRecord||"N/D")+'</small></td>'+
-   '<td><button type="button" class="smallbtn" data-action="issuer-select" data-value="'+esc(i.ticker)+'">'+(r?"Ver tesis":"Ficha")+'</button>'+
-   (r?'<small class="smallline">'+esc(r.valuationStatus||r.thesisStatus)+'</small>':"")+'</td></tr>';
+ return rows.map(row=>{
+  const v=thesisValues(row,records,local);
+  const price=num(v.price)?money(v.price,v)+" · "+esc(v.priceDate):"N/D";
+  return '<tr class="interactive-table-row '+(selected===v.ticker?"is-selected":"")+'" data-issuer-id="'+esc(v.ticker)+'" tabindex="0">'+
+   '<td><strong>'+esc(v.ticker)+'</strong></td><td><strong>'+esc(v.company)+'</strong><small class="smallline">'+esc(v.theme)+'</small></td>'+
+   '<td>'+esc(v.market)+'</td><td class="number">'+price+'</td>'+
+   '<td class="number">'+percent(v.bull)+'</td><td class="number">'+percent(v.bear)+'</td><td class="number">'+percent(v.base)+'</td>'+
+   '<td class="number">'+money(v.entry,v)+'</td><td class="number">'+money(v.target,v)+'</td>'+
+   '<td><small>'+esc(v.earnings||"N/D")+'</small></td>'+
+   '<td><button type="button" class="smallbtn" data-action="issuer-select" data-value="'+esc(v.ticker)+'">'+(v.record?"Ver tesis":row.screen?"Ver modelo":"Ficha")+'</button>'+
+   '<small class="smallline">'+esc(v.status)+'</small></td></tr>';
  }).join("");
 }
 export function publicThesisDetail(r,l){
@@ -94,7 +99,7 @@ export function publicThesisDetail(r,l){
 }
 export function publicThesisCsv(rows,records,local){
  return [["ticker","empresa","mercado","precio_registrado","fecha_precio","divisa","precio_referencia_estudio","bull_2031_cagr","bear_2031_cagr","central_2031_cagr","precio_15pct","objetivo_central_2031","estado","fecha_estudio","resultados_registrados"],
-  ...rows.map(({issuer:i})=>{const r=records.get(i.ticker),l=local.get(i.ticker);
-  return r?[i.ticker,r.company,r.market,r.recordedPrice??"N/D",r.priceDate,r.currency||"N/D",r.referencePrice??"N/D",l?.bull??r.bullCagr??"N/D",l?.bear??r.bearCagr??"N/D",l?.base??r.baseCagr??"N/D",r.priceFor15??"N/D",r.baseTarget??"N/D",r.valuationStatus,r.studyDate,r.earningsRecord]:
-  [i.ticker,i.company,i.market,"N/D","N/D","N/D","N/D","N/D","N/D","N/D","N/D","N/D","Sin tesis pública","N/D","N/D"];})];
+  ...rows.map(row=>{const v=thesisValues(row,records,local);
+   return [v.ticker,v.company,v.market,v.price??"N/D",v.priceDate||"N/D",v.currency||"N/D",v.reference??"N/D",v.bull??"N/D",v.bear??"N/D",v.base??"N/D",v.entry??"N/D",v.target??"N/D",v.status,v.date||"N/D",v.earnings||"N/D"];
+  })];
 }

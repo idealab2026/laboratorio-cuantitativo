@@ -207,14 +207,15 @@ function theses(){
  ["target","Objetivo 5a"],["earnings","Resultados (registro)"],["report","Ficha pública"]];
  const headers=columns.map(([key,label])=>'<th scope="col" aria-sort="'+(state.issuerSort===key?(state.issuerAsc?"ascending":"descending"):"none")+'"><button class="table-sort" type="button" data-action="issuer-column" data-value="'+key+'" aria-label="Ordenar por '+esc(label)+'">'+esc(label)+' <span aria-hidden="true">'+(state.issuerSort===key?(state.issuerAsc?"↑":"↓"):"↕")+'</span></button></th>').join("");
  const found=issuerReadRows().length;
- const screens=state.publicThesesMetadata?.withCagr||0;
+ const screens=state.universe.publicScreens?.length||0;
+ const secExpected=state.universe.issuers.filter(i=>i.secCik).length;
  const indexed=state.secRead?.byTicker.size||0;
  return head("TESIS · SEGUIMIENTO PÚBLICO","Investigación de empresas","El catálogo muestra identidades de emisores y fuentes oficiales. Las tesis completas y sus escenarios históricos están en el archivo privado. Las futuras publicaciones requieren investigación independiente y revisión de procedencia.")+
  '<div class="source-health-strip"><div><span class="label">Empresas analizadas</span><strong>'+state.publicTheses.size+' tesis</strong><small>Publicaciones independientes admitidas</small></div>'+
- '<div><span class="label">CAGR cuantificados</span><strong>'+screens+' valoraciones</strong><small>Con fuente y revisión de publicación</small></div>'+
+ '<div><span class="label">Modelos exploratorios</span><strong>'+screens+' modelos</strong><small>Escenarios independientes; no tesis aprobadas</small></div>'+
  '<div><span class="label">Corte documental</span><strong>'+esc(state.publicThesesMetadata?.published_as_of||"N/D")+'</strong><small>Los datos no se recalculan en tiempo real</small></div></div>'+
  disclaimer("N/D indica que no hay una valoración pública independiente admitida. Puedes consultar las tesis históricas en el visor privado local; sus cifras y narrativas no forman parte de este paquete público.")+
- '<p class="table-note">Metadatos SEC contrastados: '+indexed+' de 8 emisores seleccionados. Los demás mercados requieren sus reguladores correspondientes.</p>'+
+ '<p class="table-note">Metadatos SEC contrastados: '+indexed+' de '+secExpected+' emisores con identidad SEC contrastada. Los demás expedientes conservan sus pendientes.</p>'+
  '<details class="panel"><summary>Comparar con un CSV local (solo durante esta sesión)</summary><label><strong>CSV local de CAGR2031</strong><input id="cagr-file" type="file" accept=".csv,text/csv"></label><p class="small-note">Lectura temporal y local del archivo, sin envíos al servidor ni alteración de los datos públicos.</p><p role="status">'+(state.localCagrError?esc(state.localCagrError):state.localCagr.size?state.localCagr.size+" registros locales cargados":"Sin CSV adicional")+'</p>'+
  (state.localCagr.size?button("Descartar CAGR locales","issuer-local-clear","","outline-btn"):"")+'</details>'+
  '<div class="filters"><label>Buscar ticker o empresa<input id="issuer-query" type="search" autocomplete="off" placeholder="Ej.: MSFT o Microsoft" value="'+esc(state.issuerQuery)+'"></label>'+
