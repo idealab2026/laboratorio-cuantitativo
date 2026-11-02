@@ -2,13 +2,13 @@ import {signalResearchSummary,methodCatalog} from "./paper-methods.mjs";
 import {parseLocalCagr2031} from "./private-theses.mjs";
 import {verifyPublicTheses,orderedThesisRows,publicThesisTableRows,publicThesisDetail,publicThesisCsv} from "./public-theses.mjs";
 import {artificialCampaignComparison} from "./paper-ledger.mjs";
-import {verifyFullRoster,filterRoster,technicalStage,technicalCoverage} from "./competition-roster.mjs";
+import {verifyFullRoster,filterRoster,technicalStage,technicalCoverage,verifyStrategyCandidates,filterStrategyCandidates} from "./competition-roster.mjs";
 import {verifyPaperFeed} from "./paper-feed.mjs";
 import {verify,simulate,rank,valuation,thesisRank,formatPct,money,finite,verifyIssuerCatalog,filterIssuers,syntheticBarsFromDemo,nextOpenPaper,evaluateIssuerScreen,competitionReadModel,publicIssuerReadModel,verifyOfficialFx,summarizeFxForecastLedger,verifySecFilings,verifyOfficialYield} from "./metrics.mjs";
 const $=id=>document.getElementById(id);
 const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 const fmt=n=>finite(n)?new Intl.NumberFormat("es-ES",{maximumFractionDigits:2}).format(n):"N/D";
-const state={data:null,universe:null,fx:null,fxCheck:null,fxStatus:"pending",forecastLedger:null,forecastSummary:null,forecastStatus:"pending",secStatus:"pending",secRead:null,secCatalog:null,yieldDoc:null,yieldCheck:null,yieldStatus:"pending",view:"overview",strategy:"P-01",group:"",sort:"returnPct",asc:false,detailOpen:false,thesis:"T-01",query:"",thesisSort:"central",issuerMode:"catalog",issuerQuery:"",issuerSort:"base",issuerAsc:false,issuerTicker:"MSFT",paperDetail:"M-10",fullRoster:null,fullRosterStatus:"pending",fullRosterGroup:"",fullRosterQuery:"",institutionalFeedStatus:"pending",paperFeed:null,paperFeedRead:null,localCagr:new Map(),localCagrError:"",publicTheses:new Map(),publicThesesMetadata:null};
+const state={data:null,universe:null,fx:null,fxCheck:null,fxStatus:"pending",forecastLedger:null,forecastSummary:null,forecastStatus:"pending",secStatus:"pending",secRead:null,secCatalog:null,yieldDoc:null,yieldCheck:null,yieldStatus:"pending",view:"overview",strategy:"P-01",group:"",sort:"returnPct",asc:false,detailOpen:false,thesis:"T-01",query:"",thesisSort:"central",issuerMode:"catalog",issuerQuery:"",issuerSort:"base",issuerAsc:false,issuerTicker:"MSFT",paperDetail:"M-10",fullRoster:null,fullRosterStatus:"pending",strategyCandidates:null,strategyCandidatesStatus:"pending",fullRosterGroup:"",fullRosterQuery:"",institutionalFeedStatus:"pending",paperFeed:null,paperFeedRead:null,localCagr:new Map(),localCagrError:"",publicTheses:new Map(),publicThesesMetadata:null};
 const viewNames=["overview","competition","algorithms","theses","monitoring","method","archive","ported","full","synthetic"];
 const button=(label,action,value,cls="smallbtn")=>'<button type="button" class="'+cls+'" data-action="'+esc(action)+'" data-value="'+esc(value)+'">'+esc(label)+'</button>';
 const head=(label,title,body)=>'<div class="section-heading"><div><span class="kicker">'+esc(label)+'</span><h2>'+esc(title)+'</h2><p class="section-context">'+esc(body)+'</p></div></div>';
@@ -376,7 +376,7 @@ function ported(){
 
 function fullRosterRows(){
  if(!state.fullRoster)return "";
- return filterRoster(state.fullRoster,{group:state.fullRosterGroup,query:state.fullRosterQuery}).map(item=>{
+ const existing=filterRoster(state.fullRoster,{group:state.fullRosterGroup,query:state.fullRosterQuery}).map(item=>{
  const record=state.paperFeedRead?.bySlot.get(item.slot);
  const active=record?
    esc(record.activity)+(record.pending_orders?" · "+record.pending_orders+" pendiente(s)":""):
@@ -393,26 +393,45 @@ function fullRosterRows(){
   '<td class="number">'+(record?record.positions+" / "+record.pending_orders:"N/D")+'</td>'+
   '<td>'+label+'</td><td>'+curve+'</td></tr>';
  }).join("");
+ const proposals=state.strategyCandidates?filterStrategyCandidates(state.strategyCandidates,{group:state.fullRosterGroup,query:state.fullRosterQuery}):[];
+ return existing+proposals.map(c=>
+  '<tr><td><strong>'+esc(c.name)+'</strong><small class="smallline">N.º '+c.ordinal+' · '+esc(c.id)+' · Investigación nueva</small></td>'+
+  '<td>'+esc(c.group)+'</td><td>'+esc(c.status)+'</td>'+
+  '<td>Sin primera señal</td><td>N/D</td><td class="number">N/D</td><td class="number">N/D</td>'+
+  '<td class="number">N/D</td><td class="number">N/D</td><td class="number">N/D</td>'+
+  '<td>Sin datos comparables</td><td>—</td></tr>'
+ ).join("");
 }
 function full(){
  const d=state.fullRoster;
- const headText=head("COMPETICIÓN COMPLETA · CONTRATO DE MIGRACIÓN","Inventario de 64 líneas de MIDAS",
+ const headText=head("COMPETICIÓN COMPLETA · CONTRATO DE MIGRACIÓN","MIDAS · 64 estrategias + 1 nueva propuesta satelital",
  "Cobertura funcional de las familias del laboratorio con columnas de actividad, rentabilidad, riesgo y comparabilidad. El inventario no transfiere ni certifica los diarios del sistema anterior.");
  if(!d)return headText+card('<h3>Inventario no verificable</h3><p>El registro institucional está pendiente de carga o ha fallado su validación. No se sustituyen datos perdidos por simulaciones.</p>');
  const meta=verifyFullRoster(d),visible=filterRoster(d,{group:state.fullRosterGroup,query:state.fullRosterQuery});
  const technical=technicalCoverage(d);
+ const proposals=state.strategyCandidates?filterStrategyCandidates(state.strategyCandidates,{group:state.fullRosterGroup,query:state.fullRosterQuery}):[];
+ const candidate=state.strategyCandidates?.candidates?.[0]||null;
  return headText+
  '<div class="source-health-strip"><div><span class="label">Funciones registradas</span><strong>'+meta.count+'</strong><small>'+meta.groups.length+' grupos funcionales</small></div>'+
  '<div><span class="label">Diarios institucionales certificados</span><strong>'+(state.paperFeedRead?.count||0)+'</strong><small>'+(state.paperFeedRead?.status==="source_verified"?"Resumen institucional firmado y auditado":"Sin fuente institucional acreditada")+'</small></div>'+
- '<div><span class="label">Fuente de sesión</span><strong>'+esc(state.paperFeedRead?.session||"Sin fuente")+'</strong><small>'+(state.paperFeedRead?.status==="source_verified"?"Agregados derivados validados; no órdenes de bróker":"Sin captura bursátil autenticada")+'</small></div></div>'+
+ '<div><span class="label">Propuestas en investigación</span><strong>'+(state.strategyCandidates?.candidates.length??"—")+'</strong><small>Sin operaciones, sin NAV y fuera del ranking económico</small></div></div>'+
  disclaimer(state.paperFeedRead?.status==="source_verified"?"Las líneas con evidencia llevan resumen económico trazable a captura y libro firmados por un núcleo institucional. El resto permanece pendiente; no equivale a operativa con dinero real.":"INVENTARIO FUNCIONAL. Sin fuente institucional acreditada: las 64 líneas siguen pendientes. Ninguna rentabilidad o posición de las simulaciones sustituye un diario bursátil independiente.")+
  '<div class="filters"><label>Filtrar familia<select id="full-group-select"><option value="">Todas las familias</option>'+
  meta.groups.map(g=>'<option value="'+esc(g.name)+'" '+(g.name===state.fullRosterGroup?"selected":"")+'>'+esc(g.name)+' · '+g.count+'</option>').join("")+
+ (candidate?'<option value="'+esc(candidate.group)+'" '+(candidate.group===state.fullRosterGroup?"selected":"")+'>'+esc(candidate.group)+' · propuesta 65</option>':"")+
  '</select></label><label>Buscar<input id="full-query" type="search" value="'+esc(state.fullRosterQuery)+'" placeholder="Algoritmo o familia"></label>'+
  button("Exportar inventario CSV","full-export","csv","outline-btn")+'</div>'+
  '<p class="table-note">Cobertura de código: '+technical.book_unstarted+' libros paper preparados sin iniciar · '+technical.signal_contract+' contratos semanales sin modelos certificados · '+technical.pending+' implementaciones pendientes. Esto no mide actividad bursátil ni resultados.</p>'+
- '<p class="table-note"><span id="full-count">'+visible.length+'</span> de '+meta.count+' entradas · el valor N/D significa información no verificada, no una rentabilidad cero</p>'+
+ '<p class="table-note"><span id="full-count">'+(visible.length+proposals.length)+'</span> de '+(meta.count+(state.strategyCandidates?.candidates.length||0))+' entradas (64 funciones + propuestas independientes) · N/D significa no verificado, nunca rentabilidad cero</p>'+
  '<div class="table-scroll table-compact"><table><thead><tr><th>Estrategia / ID</th><th>Familia</th><th>Actividad</th><th>Fecha</th><th>Divisa</th><th class="number">P/L acumulado</th><th class="number">P/L día</th><th class="number">Volatilidad</th><th class="number">Drawdown</th><th class="number">Posiciones / órdenes</th><th>Comparabilidad</th><th>Curva</th></tr></thead><tbody id="full-rows">'+fullRosterRows()+'</tbody></table></div>'+
+ (candidate?card('<h3>65 · '+esc(candidate.name)+' — propuesta experimental</h3>'+
+ '<p><strong>Objetivo:</strong> '+esc(candidate.subject)+'</p>'+
+ '<p><strong>Método:</strong> '+esc(candidate.method)+'</p>'+
+ '<p><strong>Diseño de señal:</strong> '+esc(candidate.rule)+'</p>'+
+ '<p><strong>Datos necesarios:</strong> '+esc(candidate.research_requirements)+'</p>'+
+ '<p><strong>Validación:</strong> '+esc(candidate.validation)+'</p>'+
+ '<p><strong>Limitaciones:</strong> '+esc(candidate.limitations)+'</p>'+
+ '<p class="small-note">Fuente académica: <a href="'+esc(candidate.source)+'" target="_blank" rel="noopener noreferrer">'+esc(candidate.source_name)+'</a>. Datos públicos exploratorios: <a href="'+esc(candidate.data_reference)+'" target="_blank" rel="noopener noreferrer">USDA NAIP</a>. Estado económico: no iniciada; retorno, posiciones y curva N/D.</p>'):"")+
  card('<h3>Condiciones de publicación de cada diario</h3><p>Para activar una línea se debe verificar la fuente de cotizaciones y sus permisos, la fecha exacta de cada señal, su ejecución al siguiente mercado, el historial de NAV, la divisa y los metadatos de comparabilidad. Las carteras de distinta fecha de inicio o universo no se ordenarán como si compitieran en igualdad de condiciones.</p>')+
  button("Ver las 23 simulaciones sintéticas","navigate","synthetic","outline-btn")+button("Ver nueve estrategias técnicas","navigate","ported","outline-btn");
 }
@@ -511,8 +530,15 @@ $("app").addEventListener("click",e=>{
  }
  else if(action==="paper-select"){state.paperDetail=value;render();}
  else if(action==="full-export"){
-  if(state.fullRoster){const rows=filterRoster(state.fullRoster,{group:state.fullRosterGroup,query:state.fullRosterQuery});
-   download("midas-64-funciones.csv",[["ID","Nombre","Familia","Fase técnica","Estado económico","Actividad","Rentabilidad","Riesgo","Comparabilidad"],...rows.map(x=>{const r=state.paperFeedRead?.bySlot.get(x.slot);return [x.slot,x.name,x.group,technicalStage(x.slot).label,r?"fuente_verificada":"pendiente",r?.activity||"N/D",r?.return_pct??"N/D",r?.risk?.max_drawdown_pct??"N/D",r?.comparison?.eligible?"misma referencia":"no comparable"];})]);}
+  if(state.fullRoster){
+   const rows=filterRoster(state.fullRoster,{group:state.fullRosterGroup,query:state.fullRosterQuery});
+   const proposals=state.strategyCandidates?filterStrategyCandidates(state.strategyCandidates,{group:state.fullRosterGroup,query:state.fullRosterQuery}):[];
+   download("midas-competicion-64-y-propuestas.csv",[
+    ["ID","Nombre","Familia","Fase técnica","Estado económico","Actividad","Rentabilidad","Riesgo","Comparabilidad"],
+    ...rows.map(x=>{const r=state.paperFeedRead?.bySlot.get(x.slot);return [x.slot,x.name,x.group,technicalStage(x.slot).label,r?"fuente_verificada":"pendiente",r?.activity||"N/D",r?.return_pct??"N/D",r?.risk?.max_drawdown_pct??"N/D",r?.comparison?.eligible?"misma referencia":"no comparable"];}),
+    ...proposals.map(c=>[c.id,c.name,c.group,"Investigación sin feed satelital","No iniciado",c.status,"N/D","N/D","no comparable"])
+   ]);
+  }
  }
  else if(action==="issuer-column"){
   if(state.issuerSort===value)state.issuerAsc=!state.issuerAsc;
@@ -559,7 +585,7 @@ $("app").addEventListener("change",e=>{
  if(el.id==="journal-select"){state.strategy=el.value;render();}
 });
 $("app").addEventListener("input",e=>{
- if(e.target.id==="full-query"){state.fullRosterQuery=e.target.value;const tbody=$("full-rows");if(tbody)tbody.innerHTML=fullRosterRows();const n=$("full-count");if(n&&state.fullRoster)n.textContent=filterRoster(state.fullRoster,{group:state.fullRosterGroup,query:state.fullRosterQuery}).length;}
+ if(e.target.id==="full-query"){state.fullRosterQuery=e.target.value;const tbody=$("full-rows");if(tbody)tbody.innerHTML=fullRosterRows();const n=$("full-count");if(n&&state.fullRoster)n.textContent=filterRoster(state.fullRoster,{group:state.fullRosterGroup,query:state.fullRosterQuery}).length+(state.strategyCandidates?filterStrategyCandidates(state.strategyCandidates,{group:state.fullRosterGroup,query:state.fullRosterQuery}).length:0);}
  if(e.target.id==="thesis-query"){state.query=e.target.value;const tbody=$("thesis-rows");if(tbody)tbody.innerHTML=thesisTableRows();}
  if(e.target.id==="issuer-query"){
   state.issuerQuery=e.target.value;
@@ -593,7 +619,7 @@ async function init(){
   if(publication.records.some(x=>!allowed.has(x.ticker)))throw Error("Noncatalogued public ticker");
   state.publicTheses=new Map(publication.records.map(x=>[x.ticker,x]));
   state.publicThesesMetadata={...stats,published_as_of:publication.published_as_of};
-  state.data=data;state.universe=universe;const v=new URLSearchParams(location.search).get("view");state.view=viewNames.includes(v)?v:"overview";summary();render();void loadOfficialFx();void loadForecastLedger();void loadSecFilings();void loadOfficialYield();void loadFullRoster();void loadInstitutionalPaperFeed();
+  state.data=data;state.universe=universe;const v=new URLSearchParams(location.search).get("view");state.view=viewNames.includes(v)?v:"overview";summary();render();void loadOfficialFx();void loadForecastLedger();void loadSecFilings();void loadOfficialYield();void loadFullRoster();void loadStrategyCandidates();void loadInstitutionalPaperFeed();
  }catch(e){$("app").textContent="No se ha podido cargar el catálogo de emisores o el laboratorio sintético; no se muestran datos no verificados.";}
 }
 async function loadOfficialFx(){
@@ -633,6 +659,16 @@ async function loadOfficialYield(){
  }catch(_error){state.yieldDoc=null;state.yieldCheck=null;state.yieldStatus="unavailable";}
  if(state.view==="monitoring"&&state.data)render();
 }
+async function loadStrategyCandidates(){
+ try{
+  const response=await fetch("./data/strategy-candidates.json",{cache:"no-store"});
+  if(!response.ok)throw Error("Missing strategy research register");
+  const doc=await response.json();
+  verifyStrategyCandidates(doc);
+  state.strategyCandidates=doc;state.strategyCandidatesStatus="ok";
+ }catch(_error){state.strategyCandidates=null;state.strategyCandidatesStatus="unavailable";}
+ if(["full","competition"].includes(state.view)&&state.data)render();
+}
 async function loadFullRoster(){
  try{
   const response=await fetch("./data/competition-roster.json",{cache:"no-store"});
@@ -641,7 +677,7 @@ async function loadFullRoster(){
   verifyFullRoster(doc);
   state.fullRoster=doc;state.fullRosterStatus="ok";
  }catch(_error){state.fullRoster=null;state.fullRosterStatus="unavailable";}
- if(state.view==="full"&&state.data)render();
+ if(["full","competition"].includes(state.view)&&state.data)render();
 }
 async function loadInstitutionalPaperFeed(){
  try{
@@ -658,6 +694,6 @@ async function loadInstitutionalPaperFeed(){
   state.paperFeed=doc;state.paperFeedRead=verified;
   state.institutionalFeedStatus=verified.status;
  }catch(_error){state.paperFeed=null;state.paperFeedRead=null;state.institutionalFeedStatus="unavailable";}
- if(state.view==="full"&&state.data)render();
+ if(["full","competition"].includes(state.view)&&state.data)render();
 }
 init();

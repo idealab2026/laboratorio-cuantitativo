@@ -341,7 +341,7 @@ test("Official independent forecast journal is scheduled and available as an aud
  assert.ok(yaml.includes("cron: '40 17 * * 1-5'"));
  assert.ok(yaml.includes("Record audited prospective ECB fixing signal"));
  assert.ok(yaml.includes("PYTHONDONTWRITEBYTECODE"));
- assert.ok(pages.includes("cp data/demo.json data/public-theses.json data/fx-forecast-ledger.json data/sec-filings.json data/competition-roster.json data/institutional-paper-feed.json dist/data/"));
+ assert.ok(pages.includes("cp data/demo.json data/public-theses.json data/fx-forecast-ledger.json data/sec-filings.json data/competition-roster.json data/strategy-candidates.json data/institutional-paper-feed.json dist/data/"));
  assert.ok(site.includes("function prospectiveForecastPanel()"));
  assert.ok(site.includes('fetch("./data/fx-forecast-ledger.json"'));
  assert.ok(site.includes("No son operaciones financieras"));

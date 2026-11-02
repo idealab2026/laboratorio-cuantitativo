@@ -1,7 +1,7 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 import {readFileSync} from "node:fs";
-import {verifyFullRoster,filterRoster,technicalStage,technicalCoverage} from "../src/competition-roster.mjs";
+import {verifyFullRoster,filterRoster,technicalStage,technicalCoverage,verifyStrategyCandidates,filterStrategyCandidates} from "../src/competition-roster.mjs";
 
 const doc=JSON.parse(readFileSync(new URL("../data/competition-roster.json",import.meta.url),"utf8"));
 test("Institutional full-coverage manifest has exactly 64 independent functional slots",()=>{
@@ -49,7 +49,7 @@ test("The 64-row UI is distinct from the existing synthetic competitions",()=>{
  assert.ok(site.includes("Sin evidencia comparable"));
  assert.ok(html.includes('data-view="competition"'));
  assert.ok(site.includes("function competition(){return full();}"));
- assert.ok(workflow.includes("data/competition-roster.json data/institutional-paper-feed.json dist/data/"));
+ assert.ok(workflow.includes("data/competition-roster.json data/strategy-candidates.json data/institutional-paper-feed.json dist/data/"));
  assert.ok(site.includes("function paperAccountingView(){"));
 });
 
@@ -84,4 +84,27 @@ test("Readiness taxonomy counts only code and never declares economic activity",
  assert.ok(site.includes("technicalCoverage(d)"));
  assert.ok(site.includes("technicalStage(item.slot).label"));
  assert.ok(site.includes('"Fase técnica"'));
+});
+
+test("Satellite Alternative Data registers as research-only 65th candidate, not a 65th signed paper slot",()=>{
+ const candidate=JSON.parse(readFileSync(new URL("../data/strategy-candidates.json",import.meta.url),"utf8"));
+ assert.deepEqual(verifyStrategyCandidates(candidate),{candidates:1,registeredPaperSlots:64});
+ assert.equal(verifyFullRoster(doc).count,64);
+ assert.equal(candidate.candidates[0].ordinal,65);
+ assert.equal(candidate.candidates[0].id,"IL-R001");
+ assert.equal(candidate.candidates[0].return_pct,null);
+ assert.equal(filterStrategyCandidates(candidate,{query:"satellite"}).length,1);
+ assert.equal(filterStrategyCandidates(candidate,{query:"WMT"}).length,1);
+ assert.equal(filterStrategyCandidates(candidate,{query:"cacao"}).length,0);
+ const tampered=structuredClone(candidate);tampered.candidates[0].return_pct=25;
+ assert.throws(()=>verifyStrategyCandidates(tampered));
+ const changed=structuredClone(candidate);changed.candidates[0].first_signal_at="2026-11-02";
+ assert.throws(()=>verifyStrategyCandidates(changed));
+ const site=readFileSync(new URL("../src/site.mjs",import.meta.url),"utf8");
+ assert.ok(site.includes('fetch("./data/strategy-candidates.json"'));
+ assert.ok(site.includes("verifyStrategyCandidates(doc)"));
+ assert.ok(site.includes("state.strategyCandidates"));
+ assert.ok(site.includes("65 · "));
+ const release=readFileSync(new URL("../.github/workflows/pages.yml",import.meta.url),"utf8");
+ assert.ok(release.includes("data/strategy-candidates.json data/institutional-paper-feed.json dist/data/"));
 });
