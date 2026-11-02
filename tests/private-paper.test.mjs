@@ -100,6 +100,21 @@ test("Migrated original engine reconciles 64 slots with dated accounting and rej
  const doc=JSON.parse(readFileSync(new URL("../strategy_state/dashboard.json",import.meta.url),"utf8"));
  const map=JSON.parse(readFileSync(new URL("../data/original-track-map.json",import.meta.url),"utf8"));
  const result=verifyOriginalPaper(doc,map);assert.equal(result.bySlot.size,47);assert.equal(result.latest,"2026-10-30");
+ const historic=parseLocalPaperResults(readFileSync(new URL("../data/historical-paper-results.csv",import.meta.url),"utf8"));
+ // The source report interleaves live/legacy weekly rows; the public roster groups them.
+ // Reconcile independently exported accounting for every named strategy, not array order.
+ for(const [slot,h] of historic){
+  const r=result.bySlot.get(slot);
+  if(!h.active){assert.equal(r,undefined,slot+" must not acquire another algorithm's diary");continue;}
+  assert.ok(r,slot+" missing original diary");
+  assert.equal(r.currency,h.currency,slot+" currency");
+  const atCut=r.history.find(p=>p.date===h.last);assert.ok(atCut,slot+" historic date");
+  assert.ok(Math.abs(atCut.nav-h.nav)<0.00001,slot+" must retain its own NAV");
+ }
+ assert.equal(map.weekly_ml_benchmark_rsp,"IL-020");
+ assert.equal(map.weekly_legacy_weekly_ml_benchmark_spy,"IL-028");
+ assert.equal(map.tfm_lgbm_2023,"IL-045");
+ assert.equal(map.tfg_midas_r_2021,"IL-049");
  const bad=structuredClone(doc);bad.tracks[0].last_equity=1;assert.throws(()=>verifyOriginalPaper(bad,map));
  const missing=structuredClone(doc);missing.tracks.pop();assert.throws(()=>verifyOriginalPaper(missing,map));
 });
