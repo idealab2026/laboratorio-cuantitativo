@@ -1,7 +1,7 @@
 {
   "benchmark_first_close": 763.989990234375,
-  "benchmark_last_close": 755.719970703125,
-  "cash": 5082.175454763751,
+  "benchmark_last_close": 752.0999755859375,
+  "cash": 5284.2642121888675,
   "config_hash": "125dabd8eaf1ea4c31f2b26c78d7bd80cb7b3499de37442f9ac881a9b20d1f2f",
   "currency": "USD",
   "equity": [
@@ -158,6 +158,13 @@
       "date": "2026-10-30",
       "nav": 105159.52883115194,
       "positions": 10
+    },
+    {
+      "benchmark_close": 752.0999755859375,
+      "cash": 5284.2642121888675,
+      "date": "2026-11-02",
+      "nav": 107628.44890185431,
+      "positions": 10
     }
   ],
   "events": [
@@ -291,11 +298,119 @@
       "targets": 10,
       "ticker": null,
       "type": "signal"
+    },
+    {
+      "date": "2026-11-02",
+      "fee": 0.07093340417154312,
+      "price": 153.82304389953615,
+      "quantity": 0.46113639655883193,
+      "reason": "monthly_rotation",
+      "side": "sell",
+      "ticker": "ALGN",
+      "type": "fill"
+    },
+    {
+      "date": "2026-11-02",
+      "fee": 1.3211503265082132,
+      "price": 64.86755152511597,
+      "quantity": 20.366890617054953,
+      "reason": "monthly_rotation",
+      "side": "sell",
+      "ticker": "CTSH",
+      "type": "fill"
+    },
+    {
+      "date": "2026-11-02",
+      "fee": 0.8153282632136623,
+      "price": 421.12932633972173,
+      "quantity": 1.9360519731554942,
+      "reason": "monthly_rotation",
+      "side": "sell",
+      "ticker": "ELV",
+      "type": "fill"
+    },
+    {
+      "date": "2026-11-02",
+      "fee": 1.0299386694845822,
+      "price": 140.92950000000002,
+      "quantity": 7.308183662643961,
+      "reason": "monthly_rotation",
+      "side": "sell",
+      "ticker": "EPAM",
+      "type": "fill"
+    },
+    {
+      "date": "2026-11-02",
+      "fee": 2.337491142403323,
+      "price": 262.5786364593506,
+      "quantity": 8.902061393578705,
+      "reason": "monthly_rotation",
+      "side": "sell",
+      "ticker": "PAYC",
+      "type": "fill"
+    },
+    {
+      "date": "2026-11-02",
+      "fee": 0.44577421195722994,
+      "price": 57.55121183013917,
+      "quantity": 7.74569635949492,
+      "reason": "monthly_rotation",
+      "side": "sell",
+      "ticker": "PYPL",
+      "type": "fill"
+    },
+    {
+      "date": "2026-11-02",
+      "fee": 0.5393803127329825,
+      "price": 63.901933931350705,
+      "quantity": 8.440751,
+      "reason": "monthly_rotation",
+      "side": "buy",
+      "ticker": "AOS",
+      "type": "fill"
+    },
+    {
+      "date": "2026-11-02",
+      "fee": 3.036598042870041,
+      "price": 11.615804656505585,
+      "quantity": 261.419517,
+      "reason": "monthly_rotation",
+      "side": "buy",
+      "ticker": "CTVA",
+      "type": "fill"
+    },
+    {
+      "date": "2026-11-02",
+      "fee": 0.4132758121317885,
+      "price": 82.07101377868652,
+      "quantity": 5.035588,
+      "reason": "monthly_rotation",
+      "side": "buy",
+      "ticker": "DECK",
+      "type": "fill"
+    },
+    {
+      "date": "2026-11-02",
+      "fee": 1.817445776616537,
+      "price": 26.293140686988828,
+      "quantity": 69.12243,
+      "reason": "monthly_rotation",
+      "side": "buy",
+      "ticker": "ENPH",
+      "type": "fill"
+    },
+    {
+      "date": "2026-11-02",
+      "reason": "next_open",
+      "signal_date": "2026-10-30",
+      "targets": 10,
+      "ticker": null,
+      "type": "rebalance_filled"
     }
   ],
   "first_session": "2026-10-01",
   "first_signal_session": "2026-10-01",
-  "last_session": "2026-10-30",
+  "last_session": "2026-11-02",
   "last_signal_session": "2026-10-30",
   "market_hashes": {
     "2026-10-01": "93e8a01065ee5b97ed93450b123f2b28d1ce61e8cd6800fb4602afa8c1fe0487",
@@ -319,96 +434,70 @@
     "2026-10-27": "79fb87b7b44a36662e52d3a77e6775d4726228f819762f9bf50f68755d1979fb",
     "2026-10-28": "c7238c6a9c2251327fae027d9b5d8432216509cc1623006707e18e3153d05844",
     "2026-10-29": "5d9cb1fd01961603e5237463165b2c0c8468032c85da2575c5150f96f7061f62",
-    "2026-10-30": "833cefcaa9fd4e0150753bb6308941c3bcdd24a6932eb297e2e65e73610d123f"
+    "2026-10-30": "833cefcaa9fd4e0150753bb6308941c3bcdd24a6932eb297e2e65e73610d123f",
+    "2026-11-02": "a05506e27d221d27ec1096cfcab53919d7ef954bac3c98e95defbfb366634630"
   },
-  "nav": 105159.52883115194,
-  "pending": {
-    "expected_fill_session": "2026-11-02",
-    "sectors": {
-      "ALGN": "Health Care",
-      "AOS": "Industrials",
-      "CTSH": "Information Technology",
-      "CTVA": "Materials",
-      "DECK": "Consumer Discretionary",
-      "ELV": "Health Care",
-      "ENPH": "Information Technology",
-      "EPAM": "Information Technology",
-      "PAYC": "Industrials",
-      "PYPL": "Financials"
-    },
-    "signal_date": "2026-10-30",
-    "target_weights": {
-      "ALGN": 0.09397274044670055,
-      "AOS": 0.13567211232302134,
-      "CTSH": 0.09186512908015662,
-      "CTVA": 0.1101895617114637,
-      "DECK": 0.09119434667377063,
-      "ELV": 0.0941038247162481,
-      "ENPH": 0.07359989157676194,
-      "EPAM": 0.09696646679279733,
-      "PAYC": 0.07537807116136874,
-      "PYPL": 0.08705785551771102
-    }
-  },
+  "nav": 107628.44890185431,
+  "pending": null,
   "positions": {
     "ALGN": {
       "entry_date": "2026-10-02",
       "entry_price": 147.16354133605955,
-      "quantity": 65.058542,
+      "quantity": 64.59740560344117,
       "sector": "Health Care"
     },
     "AOS": {
       "entry_date": "2026-10-02",
-      "entry_price": 57.23860408401489,
-      "quantity": 216.249331,
+      "entry_price": 57.48892001950967,
+      "quantity": 224.69008200000002,
       "sector": "Industrials"
     },
     "CTSH": {
       "entry_date": "2026-10-02",
       "entry_price": 61.12054515266418,
-      "quantity": 170.113766,
+      "quantity": 149.74687538294503,
       "sector": "Information Technology"
     },
     "CTVA": {
       "entry_date": "2026-10-02",
-      "entry_price": 12.391192728996277,
-      "quantity": 742.16335,
+      "entry_price": 12.189214813605979,
+      "quantity": 1003.5828670000001,
       "sector": "Materials"
     },
     "DECK": {
       "entry_date": "2026-10-02",
-      "entry_price": 79.53975,
-      "quantity": 112.557558,
+      "entry_price": 79.64814408538989,
+      "quantity": 117.593146,
       "sector": "Consumer Discretionary"
     },
     "ELV": {
       "entry_date": "2026-10-02",
       "entry_price": 382.28104133605956,
-      "quantity": 25.56402,
+      "quantity": 23.627968026844506,
       "sector": "Health Care"
     },
     "ENPH": {
       "entry_date": "2026-10-02",
-      "entry_price": 33.61679847335815,
-      "quantity": 227.02941,
+      "entry_price": 31.907442142219814,
+      "quantity": 296.15184,
       "sector": "Information Technology"
     },
     "EPAM": {
       "entry_date": "2026-10-02",
       "entry_price": 114.16705561065673,
-      "quantity": 80.061743,
+      "quantity": 72.75355933735605,
       "sector": "Information Technology"
     },
     "PAYC": {
       "entry_date": "2026-10-02",
       "entry_price": 227.53370816802976,
-      "quantity": 39.256361,
+      "quantity": 30.354299606421293,
       "sector": "Industrials"
     },
     "PYPL": {
       "entry_date": "2026-10-02",
       "entry_price": 53.24661122131347,
-      "quantity": 167.697108,
+      "quantity": 159.95141164050506,
       "sector": "Financials"
     }
   },
