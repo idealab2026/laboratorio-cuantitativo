@@ -304,12 +304,19 @@ test("ECB observatory is displayed separately from the preexisting synthetic str
 test("First actual issued signal is explicitly invalidated rather than scored",()=>{
  const ledger=JSON.parse(readFileSync(new URL("../data/fx-forecast-ledger.json",import.meta.url),"utf8"));
  const result=summarizeFxForecastLedger(ledger);
- assert.equal(result.issuedCount,1);
- assert.equal(result.validCount,0);
- assert.equal(result.invalidatedCount,1);
- assert.equal(result.resolvedCount,0);
- assert.equal(result.unresolvedCount,0);
- assert.ok(result.rows[0].invalidated);
+ const first=ledger.events[0];
+ const invalidationIndex=ledger.events.findIndex(e=>e.event_type==="invalidated"&&e.signal_hash===first.hash);
+ assert.equal(first.event_type,"issued");
+ assert.ok(invalidationIndex>0,"The original invalidation remains in the append-only journal");
+ const original=summarizeFxForecastLedger({...ledger,events:ledger.events.slice(0,invalidationIndex+1)});
+ assert.equal(original.issuedCount,1);
+ assert.equal(original.validCount,0);
+ assert.equal(original.invalidatedCount,1);
+ assert.equal(original.resolvedCount,0);
+ assert.equal(original.unresolvedCount,0);
+ const originalRow=result.rows.find(row=>row.issued.hash===first.hash);
+ assert.ok(originalRow.invalidated);
+ assert.equal(originalRow.settled,null);
  assert.equal(result.headHash,ledger.events.at(-1).hash);
 });
 test("Prospective forecast evaluation uses realized next reference, not paper P&L",()=>{
@@ -351,7 +358,9 @@ test("Official independent forecast journal is scheduled and available as an aud
 test("A reversed-rate signal cannot be scored without immutable invalidation",()=>{
  const fixture=JSON.parse(readFileSync(new URL("../data/fx-forecast-ledger.json",import.meta.url),"utf8"));
  const clone=structuredClone(fixture);
- clone.events.pop();
+ const invalidationIndex=clone.events.findIndex(e=>e.event_type==="invalidated");
+ assert.ok(invalidationIndex>0,"The historic invalidation is present before testing its omission");
+ clone.events=clone.events.slice(0,invalidationIndex);
  assert.throws(()=>summarizeFxForecastLedger(clone),/explicitly invalidated/);
  const site=readFileSync(new URL("../src/site.mjs",import.meta.url),"utf8");
  assert.ok(site.includes("ANULADA · error de fórmula"));
