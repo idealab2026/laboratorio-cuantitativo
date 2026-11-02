@@ -1,0 +1,294 @@
+{
+  "schema_version": 1,
+  "status": "machine_first_pass",
+  "reviewed_at_utc": "2026-11-02T21:45:44.845618+00:00",
+  "source_identity": "Buy The Dip YouTube channel",
+  "transport": {
+    "kind": "official_podcast_mirror",
+    "provider": "iVoox",
+    "guid": "https://www.ivoox.com/175131772",
+    "published_date": "2026-06-08",
+    "youtube_video_id": "O1I_LIAw36o",
+    "match_score": 1.0,
+    "audio_bytes_processed_transiently": 16036049
+  },
+  "models": {
+    "asr": {
+      "language": "es",
+      "language_probability": 1.0,
+      "duration_seconds": 2004.401625,
+      "word_count": 5351,
+      "segment_count": 922,
+      "model": "small"
+    },
+    "semantic": {
+      "repo": "Qwen/Qwen3-4B-GGUF",
+      "file": "Qwen3-4B-Q4_K_M.gguf"
+    }
+  },
+  "metadata": {
+    "video_id": "O1I_LIAw36o",
+    "youtube_url": "https://www.youtube.com/watch?v=O1I_LIAw36o",
+    "title": "Nuestra CARTERA de INVERSIÓN y cambios en Junio  | BUY THE DIP PODCAST",
+    "category": "portfolio_update",
+    "guest_likely": false,
+    "podcast_guid": "https://www.ivoox.com/175131772",
+    "published_date": "2026-06-08",
+    "source": "official_podcast_mirror",
+    "match_score": 1.0
+  },
+  "analysis": {
+    "episode_summary": "El episodio discute la cartera de inversión, analizando cambios en las clases de fondos, decisiones de compra y venta de posiciones, y mencionando desafíos y volatilidad en el mercado. Se analizan las decisiones de inversión, las comisiones, y se señalan incertezas sobre el futuro de ciertos mercados, como el Reino Unido. Además, se anticipa una tendencia de descenso en los inventarios con una expectativa de déficit en el mercado de petróleo durante 12-18 meses, lo que podría generar un choque en el mercado. Se menciona una empresa (Monroe) con un mercado atractivo en Estados Unidos, donde los vehículos en circulación son antiguos, lo que incrementa la demanda de neumáticos y servicios mecánicos. Se anticipa una reestructuración de la empresa, con una posible transformación liderada por Peter Sormont, lo que podría afectar su valor y operaciones. También se menciona una caída extrema en el precio de las patatas, lo que sugiere una posible volatilidad extrema en mercados específicos, y se espera que los agricultores no ganen en el futuro, lo que podría afectar la demanda y el precio de las patatas. Finalmente, se espera que el oro siga en una tendencia alcista, con posibles oportunidades de inversión en sectores como el carbón y el petróleo, y que las acciones de la cartera se beneficien de una posible corrección del mercado y un aumento en la demanda.",
+    "process": {
+      "idea_generation": [],
+      "quality": [],
+      "balance_sheet": [],
+      "valuation": [
+        "Se explica la estructura de las clases de fondos, incluyendo comisiones, límites de inversión y condiciones a largo plazo."
+      ],
+      "cycle_macro": [
+        "Se espera un período de déficit en el mercado de petróleo durante 12-18 meses, con una posible recuperación de las capacidades productivas en ese tiempo, lo que podría afectar las exportaciones y la demanda de petróleo en el corto plazo."
+      ],
+      "entry": [
+        "El podcast discute la cartera de inversión, explicando cambios en las clases de fondos, decisiones de compra y venta de posiciones."
+      ],
+      "sizing": [
+        "La empresa Monroe tiene 1100 establecimientos y ventas de 1,2 billones, con un mercado atractivo en Estados Unidos donde los vehículos en circulación son cada vez más antiguos, lo que incrementa el mantenimiento necesario y la demanda de neumáticos y servicios mecánicos."
+      ],
+      "add_hold": [],
+      "exit": [
+        "Se menciona la venta de posiciones como Franco Nevada y Bistri, con comentarios sobre el rendimiento y los desafíos de la inversión."
+      ],
+      "risk": [
+        "Se señala la volatilidad del mercado y la incertidumbre sobre el futuro de la inversión en el Reino Unido y otros mercados."
+      ],
+      "technical": [],
+      "management": [
+        "El director de la consultora fue nombrado CEO, lo que sugiere un cambio de estrategia y una mejora en la gestión de la empresa."
+      ],
+      "mistakes": [
+        "Se menciona una posibilidad de error en la gestión de la cartera, como la rápida venta de una posición tras una oferta en el mercado."
+      ]
+    },
+    "candidate_rules": [
+      {
+        "rule": "paráfrasis compacta",
+        "scope": "hosts|uncertain_or_guest",
+        "confidence": 0.0,
+        "evidence_timestamps": [],
+        "automation_proxy": "variable/cálculo posible o null",
+        "cross_video_confirmation_required": true
+      }
+    ],
+    "contradictions_or_uncertainties": [],
+    "named_examples": [],
+    "automation_readiness": "medium"
+  },
+  "chunk_evidence": [
+    {
+      "chunk": 1,
+      "evidence": [
+        {
+          "stage": "entry",
+          "paraphrase": "El podcast discute la cartera de inversión, mencionando cambios en las clases de fondos y decisiones de compra y venta de posiciones.",
+          "timestamp": "00:00:06",
+          "scope": "hosts",
+          "confidence": 0.9,
+          "automation_hint": "proxy observable"
+        },
+        {
+          "stage": "exit",
+          "paraphrase": "Se menciona la venta de posiciones como Franco Nevada y Bistri, con comentarios sobre el rendimiento y los desafíos de la inversión.",
+          "timestamp": "00:04:50",
+          "scope": "hosts",
+          "confidence": 0.8,
+          "automation_hint": "proxy observable"
+        },
+        {
+          "stage": "risk",
+          "paraphrase": "Se señala la volatilidad del mercado y la incertidumbre sobre el futuro de la inversión en el Reino Unido y otros mercados.",
+          "timestamp": "00:08:45",
+          "scope": "hosts",
+          "confidence": 0.7,
+          "automation_hint": "proxy observable"
+        },
+        {
+          "stage": "valuation",
+          "paraphrase": "Se explica la estructura de las clases de fondos, incluyendo comisiones, límites de inversión y condiciones a largo plazo.",
+          "timestamp": "00:01:54",
+          "scope": "hosts",
+          "confidence": 0.9,
+          "automation_hint": "proxy observable"
+        },
+        {
+          "stage": "mistake",
+          "paraphrase": "Se menciona una posibilidad de error en la gestión de la cartera, como la rápida venta de una posición tras una oferta en el mercado.",
+          "timestamp": "00:05:52",
+          "scope": "hosts",
+          "confidence": 0.6,
+          "automation_hint": "proxy observable"
+        }
+      ],
+      "named_examples": [],
+      "chunk_summary": "El podcast discute la cartera de inversión, explicando cambios en las clases de fondos, decisiones de compra y venta de posiciones, y menciona desafíos y volatilidad en el mercado. Se analizan las decisiones de inversión, las comisiones, y se señalan incertezas sobre el futuro de ciertos mercados, como el Reino Unido."
+    },
+    {
+      "chunk": 2,
+      "evidence": [
+        {
+          "stage": "entry",
+          "paraphrase": "El análisis indica una tendencia de descenso en los inventarios, con una expectativa de que el mercado no se recupere pronto, lo que podría generar un déficit en el mercado de petróleo durante los próximos 12-18 meses.",
+          "timestamp": "00:09:53",
+          "scope": "hosts",
+          "confidence": 0.0,
+          "automation_hint": "proxy observable"
+        },
+        {
+          "stage": "valuation",
+          "paraphrase": "Se anticipa una posible subvención por parte de los estados para aumentar la demanda, lo que podría generar un choque en el mercado, y se espera que las acciones del sector del petróleo tengan buenas oportunidades de inversión a corto plazo.",
+          "timestamp": "00:10:57",
+          "scope": "hosts",
+          "confidence": 0.0,
+          "automation_hint": "proxy observable"
+        },
+        {
+          "stage": "sizing",
+          "paraphrase": "La empresa Monroe tiene 1100 establecimientos y ventas de 1,2 billones, con un mercado atractivo en Estados Unidos donde los vehículos en circulación son cada vez más antiguos, lo que incrementa el mantenimiento necesario y la demanda de neumáticos y servicios mecánicos.",
+          "timestamp": "00:14:09",
+          "scope": "hosts",
+          "confidence": 0.0,
+          "automation_hint": "proxy observable"
+        },
+        {
+          "stage": "cycle_macro",
+          "paraphrase": "Se espera un período de déficit en el mercado de petróleo durante 12-18 meses, con una posible recuperación de las capacidades productivas en ese tiempo, lo que podría afectar las exportaciones y la demanda de petróleo en el corto plazo.",
+          "timestamp": "00:10:15",
+          "scope": "hosts",
+          "confidence": 0.0,
+          "automation_hint": "proxy observable"
+        },
+        {
+          "stage": "risk",
+          "paraphrase": "La empresa Monroe enfrenta una situación de gestión ineficiente y una posible transformación liderada por Peter Sormont, lo que podría llevar a una reestructuración de las acciones de clase C y un cambio en la dirección de la empresa, afectando su valor y operaciones.",
+          "timestamp": "00:17:41",
+          "scope": "hosts",
+          "confidence": 0.0,
+          "automation_hint": "proxy observable"
+        },
+        {
+          "stage": "mistake",
+          "paraphrase": "Se menciona una caída del 98% en el precio de las patatas, lo que sugiere una posible volatilidad extrema en mercados específicos, y se espera que los agricultores no ganen en el futuro, lo que podría afectar la demanda y el precio de las patatas.",
+          "timestamp": "00:12:41",
+          "scope": "hosts",
+          "confidence": 0.0,
+          "automation_hint": "proxy observable"
+        },
+        {
+          "stage": "other",
+          "paraphrase": "Se espera que el oro siga en una tendencia alcista, con posibles oportunidades de inversión en sectores como el carbón y el petróleo, y que las acciones de la cartera se beneficien de una posible corrección del mercado y un aumento en la demanda.",
+          "timestamp": "00:11:11",
+          "scope": "hosts",
+          "confidence": 0.0,
+          "automation_hint": "proxy observable"
+        }
+      ],
+      "named_examples": [],
+      "chunk_summary": "El análisis del fragmento muestra una estrategia de inversión basada en la expectativa de un déficit en el mercado de petróleo durante 12-18 meses, con una posible recuperación de las capacidades productivas. Se espera una subvención por parte de los estados para aumentar la demanda, lo que podría generar un choque en el mercado. Además, se menciona una empresa (Monroe) con un mercado atractivo en Estados Unidos, donde los vehículos en circulación son antiguos, lo que incrementa la demanda de neumáticos y servicios mecánicos. Se anticipa una reestructuración de la empresa, con una posible transformación liderada por Peter Sormont, lo que podría afectar su valor y operaciones. También se menciona una caída extrema en el precio de las patatas, lo que sugiere una posible volatilidad extrema en mercados específicos, y se espera que los agricultores no ganen en el futuro, lo que podría afectar la demanda y el precio de las patatas. Finalmente, se espera que el oro siga en una tendencia alcista, con posibles oportunidades de inversión en sectores como el carbón y el petróleo, y que las acciones de la cartera se beneficien de una posible corrección del mercado y un aumento en la demanda."
+    },
+    {
+      "chunk": 3,
+      "evidence": [
+        {
+          "stage": "entry",
+          "paraphrase": "Aiken intenta comprar la empresa por sus sinergias con su grupo automotriz.",
+          "timestamp": "00:19:11",
+          "scope": "hosts",
+          "confidence": 0.0
+        },
+        {
+          "stage": "valuation",
+          "paraphrase": "La empresa tiene acciones cotizadas a 14,5 dólares, con potencial de crecimiento alrededor de 15% si se logra el turnaround.",
+          "timestamp": "00:21:40",
+          "scope": "uncertain_or_guest",
+          "confidence": 0.0
+        },
+        {
+          "stage": "sizing",
+          "paraphrase": "La empresa ha cerrado 145 tiendas, reducido inventarios y realizado inversiones extraordinarias, lo que afecta sus cuentas y su valoración.",
+          "timestamp": "00:20:01",
+          "scope": "hosts",
+          "confidence": 0.0
+        },
+        {
+          "stage": "risk",
+          "paraphrase": "El riesgo de fracaso operativo y la posibilidad de que la empresa no logre su objetivo de crecimiento son factores críticos en la evaluación.",
+          "timestamp": "00:23:00",
+          "scope": "uncertain_or_guest",
+          "confidence": 0.0
+        },
+        {
+          "stage": "exit",
+          "paraphrase": "La empresa podría venderse por 2 millones de dólares, lo que representa un valor adicional para los inversores.",
+          "timestamp": "00:21:03",
+          "scope": "hosts",
+          "confidence": 0.0
+        },
+        {
+          "stage": "technical",
+          "paraphrase": "El gráfico de precios muestra una tendencia descendente, con un potencial de 15% de rendimiento si se logra el turnaround.",
+          "timestamp": "00:21:30",
+          "scope": "uncertain_or_guest",
+          "confidence": 0.0
+        },
+        {
+          "stage": "management",
+          "paraphrase": "El director de la consultora fue nombrado CEO, lo que sugiere un cambio de estrategia y una mejora en la gestión de la empresa.",
+          "timestamp": "00:19:49",
+          "scope": "hosts",
+          "confidence": 0.0
+        },
+        {
+          "stage": "mistake",
+          "paraphrase": "El director anterior se opuso a la valoración de los espíritus masivos, lo que podría haber afectado negativamente la estrategia de inversión.",
+          "timestamp": "00:19:51",
+          "scope": "uncertain_or_guest",
+          "confidence": 0.0
+        }
+      ],
+      "named_examples": [],
+      "chunk_summary": "El análisis de la empresa Aiken muestra que, con un objetivo de compra por parte de Aiken por sus sinergias, una valoración potencial de 15% si se logra el turnaround, y un riesgo de fracaso operativo, la empresa tiene un potencial de crecimiento significativo, aunque con una incertidumbre en la ejecución de la estrategia. La valoración de las acciones y la posibilidad de una venta por 2 millones de dólares son factores clave en la evaluación de la inversión."
+    },
+    {
+      "chunk": 4,
+      "evidence": [
+        {
+          "stage": "risk",
+          "paraphrase": "Los analistas sugieren que el IPO no se realizará pronto debido a factores políticos y geopolíticos, como las elecciones republicanas y la posibilidad de un impeachment contra Trump, lo que complica la situación.",
+          "timestamp": "00:28:32",
+          "scope": "hosts",
+          "confidence": 0.9,
+          "automation_hint": "proxy observable"
+        },
+        {
+          "stage": "cycle_macro",
+          "paraphrase": "Se menciona que la situación en el estrecho de Ormuz podría ser delicada y podría generar conflictos, lo que afecta la estabilidad geopolítica y económica.",
+          "timestamp": "00:30:50",
+          "scope": "hosts",
+          "confidence": 0.8,
+          "automation_hint": "proxy observable"
+        },
+        {
+          "stage": "entry",
+          "paraphrase": "Se indica que la situación actual en Irán y Estados Unidos podría llevar a una escalada de tensiones, lo que podría impactar en el mercado y en las decisiones de inversión.",
+          "timestamp": "00:31:00",
+          "scope": "hosts",
+          "confidence": 0.7,
+          "automation_hint": "proxy observable"
+        }
+      ],
+      "named_examples": [],
+      "chunk_summary": "El fragmento aborda la posibilidad de que un IPO no se realice pronto debido a factores políticos y geopolíticos, como las elecciones republicanas y la posibilidad de un impeachment contra Trump. También menciona la tensión en el estrecho de Ormuz y su impacto en la estabilidad geopolítica y económica, lo que complica la situación y afecta las decisiones de inversión."
+    }
+  ],
+  "copyright_note": "No audio or verbatim transcript is persisted; only derived paraphrases."
+}
