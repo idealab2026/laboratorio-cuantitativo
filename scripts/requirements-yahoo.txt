@@ -1,0 +1,7 @@
+# Optional local-only Yahoo/yfinance source adapter.
+# Preserve the daily common-capture dependency family without any paid API replacement.
+# Install only in an authorized, non-public institutional data environment.
+yfinance>=0.2.65,<1
+pandas-market-calendars>=4.4,<6
+pandas>=2.1,<3
+numpy>=1.26,<3

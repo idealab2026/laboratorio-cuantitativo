@@ -1,0 +1,119 @@
+name: Auditoria y publicacion institucional
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+  schedule:
+    # After the ECB reference fixing on normal business days; UTC, no weekend runs.
+    - cron: '25 18 * * 1-5'
+  pull_request:
+    branches: [main]
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+concurrency:
+  group: pages-institutional
+  cancel-in-progress: true
+jobs:
+  quality:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+          persist-credentials: false
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: Verify institutional commit identity
+        run: |
+          git log --all --format='%an|%ae|%cn|%ce' | while IFS='|' read -r author email committer commit_email; do
+            test "$author" = "Idea Lab"
+            case "$email" in *+idealab2026@users.noreply.github.com) ;; *) exit 1 ;; esac
+            if [ "$committer" = "GitHub" ]; then
+              test "$commit_email" = "noreply@github.com"
+            else
+              test "$committer" = "Idea Lab"
+              case "$commit_email" in *+idealab2026@users.noreply.github.com) ;; *) exit 1 ;; esac
+            fi
+          done
+      - name: Check publication boundary
+        env:
+          IDEALAB_PUBLIC_DENY_TERMS_JSON: ${{ secrets.IDEALAB_PUBLIC_DENY_TERMS_JSON }}
+          IDEALAB_REQUIRE_PRIVATE_DENY_TERMS: 'true'
+        run: python3 scripts/audit_public.py
+      - name: Check client and engine syntax
+        run: |
+          node --check src/site.mjs
+          node --check src/metrics.mjs
+          node --check src/learning.mjs
+          node --check src/learning-view.mjs
+          node --check src/paper-methods.mjs
+          node --check src/paper-ledger.mjs
+          node --check src/competition-roster.mjs
+          node --check src/paper-feed.mjs
+          node --check src/private-paper.mjs
+          node --check src/private-paper-view.mjs
+          node --check src/private-theses.mjs
+          node --check src/private-theses-view.mjs
+          node --check src/public-theses.mjs
+      - name: Install exact research-only LightGBM runtime
+        run: python3 -m pip install --disable-pip-version-check -r scripts/requirements-research.txt
+      - name: Unit tests
+        run: |
+          node --test tests/*.test.mjs
+          python3 -m unittest discover -s scripts -p 'test_*.py' -v
+          python3 scripts/classic_503.py
+          python3 scripts/monthly_selection.py
+          python3 scripts/monthly_paper.py
+          python3 scripts/monthly_factors.py
+      - name: Verify the institutional frozen 503-ticker Yahoo contract without querying Yahoo
+        run: python3 scripts/yahoo_source.py --check-contract
+      - name: Validate future signed institutional paper feed only with private CI secret
+        env:
+          IDEALAB_PAPER_FEED_KEY: ${{ secrets.IDEALAB_PAPER_FEED_KEY }}
+        run: python3 scripts/paper_feed.py --validate data/institutional-paper-feed.json
+      - name: Build allowlisted static package
+        run: |
+          mkdir -p dist/src dist/data
+          cp index.html research.html private-paper.html private-theses.html styles.css logo.svg favicon.svg dist/
+          cp src/site.mjs src/metrics.mjs src/learning.mjs src/learning-view.mjs src/paper-methods.mjs src/paper-ledger.mjs src/competition-roster.mjs src/paper-feed.mjs src/private-paper.mjs src/private-paper-view.mjs src/private-theses.mjs src/private-theses-view.mjs src/public-theses.mjs dist/src/
+          cp data/demo.json data/public-theses.json data/fx-forecast-ledger.json data/sec-filings.json data/competition-roster.json data/strategy-candidates.json data/institutional-paper-feed.json dist/data/
+          python3 scripts/refresh_sec.py --validate dist/data/sec-filings.json
+          python3 scripts/paper_feed.py --validate dist/data/institutional-paper-feed.json
+          test "$(find dist -type f | wc -l)" -eq 27
+      - name: Acquire official ECB reference observations (not tradable quotes)
+        run: |
+          python3 scripts/refresh_ecb.py --output dist/data/official-fx.json
+          python3 scripts/refresh_ecb.py --validate dist/data/official-fx.json
+          python3 -c "import json,sys;sys.path.insert(0,'scripts');from advance_fx import verify_ledger;verify_ledger(json.load(open('dist/data/fx-forecast-ledger.json',encoding='utf8')))"
+          test "$(find dist -type f | wc -l)" -eq 28
+      - name: Acquire independently checked ECB euro area AAA ten-year model yield
+        run: |
+          python3 scripts/refresh_ecb_yield.py --out dist/data/official-eur-yield.json
+          python3 scripts/refresh_ecb_yield.py --validate dist/data/official-eur-yield.json
+          test "$(find dist -type f | wc -l)" -eq 29
+      - uses: actions/upload-artifact@v4
+        with:
+          name: audited-site
+          path: dist/
+          retention-days: 1
+  deploy:
+    if: github.event_name != 'pull_request'
+    needs: quality
+    runs-on: ubuntu-latest
+    environment: github-pages
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: audited-site
+          path: dist/
+      - uses: actions/configure-pages@v5
+        with:
+          enablement: true
+      - uses: actions/upload-pages-artifact@v4
+        with:
+          path: dist/
+      - uses: actions/deploy-pages@v4

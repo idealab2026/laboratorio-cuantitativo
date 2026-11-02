@@ -1,0 +1,33 @@
+{
+  "schema": "idea_lab_research_candidate_register_v1",
+  "data_class": "research_proposals_without_market_results",
+  "as_of": "2026-11-02",
+  "candidates": [
+    {
+      "id": "IL-R001",
+      "ordinal": 65,
+      "name": "Satellite Alternative Data",
+      "group": "Datos alternativos · satélites",
+      "subject": "Aparcamientos minoristas y estimación adelantada de actividad comercial",
+      "status": "PENDIENTE · sin feed satelital ni señales verificadas",
+      "universe": [
+        "WMT",
+        "TGT",
+        "COST"
+      ],
+      "first_signal_at": null,
+      "last_session": null,
+      "return_pct": null,
+      "day_return_pct": null,
+      "positions": null,
+      "method": "Segmentar vehículos y estimar ocupación normalizada por tienda y hora, comparar con estacionalidad y controles, agregar a compañía; medir sorpresa de ventas y filtrar señales con valor predictivo fuera de muestra.",
+      "rule": "Piloto: comparar cambios de ocupación trimestral frente a comparables; solo emitir señal tras validar calendario de captura, disponibilidad real para el investigador y sorpresa de ventas. Probar long/short o cash según resultado fuera de muestra; no ejecutar órdenes hasta completar validación.",
+      "research_requirements": "Imágenes submétricas con cobertura temporal frecuente y licencia de uso; metadatos de adquisición/entrega, máscaras de nubes/sombras, geolocalización y conteo con intervalos de confianza.",
+      "validation": "Backtest walk-forward por empresa, dato disponible en t, purging/embargo alrededor de earnings, impacto de días festivos y clima, costes/capacidad, baseline consenso y momentum; después forward paper desde nuevas capturas.",
+      "limitations": "Sentinel-2 (10 m/píxel) no permite contar automóviles individualmente. NAIP (0,3–0,6 m) sirve para entrenamiento/ubicaciones, pero su revisión de 2–3 años no sirve para señales trimestrales oportunas. Imaginería comercial requiere licencia, presupuesto y disponibilidad.",
+      "source": "https://doi.org/10.1017/S0022109023001448",
+      "source_name": "Katona et al. · Journal of Financial and Quantitative Analysis 60(2), 2025",
+      "data_reference": "https://catalog.data.gov/dataset/national-agriculture-imagery-program-naip-imagery"
+    }
+  ]
+}
