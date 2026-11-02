@@ -28,6 +28,20 @@
       "reason": "prediction_input_order_bug_v1",
       "previous_hash": "7f5829bba23df074a6780afb0b6fe39ffee18dbe023c64d052f68b40e86db9f7",
       "hash": "e00e355f2ae99c3bf2e4214d665a2942a5fbc0ca3c83b8f7be97b52d1fca423e"
+    },
+    {
+      "event_type": "issued",
+      "fixing_date": "2026-11-02",
+      "recorded_at_utc": "2026-11-02T15:35:46Z",
+      "source_sha256": "3639334b2d700a7920584ca0242e4dde544bda3001a70133e194068598fdc949",
+      "observed_rate": "1.1216",
+      "predictions": {
+        "unchanged": "1.121600",
+        "momentum_1": "1.126000",
+        "reversal_1": "1.117200"
+      },
+      "previous_hash": "e00e355f2ae99c3bf2e4214d665a2942a5fbc0ca3c83b8f7be97b52d1fca423e",
+      "hash": "c97c143efa76809fe0cc8e086546ef2bcfdc32aacb020bc2acef087a696f89d9"
     }
   ]
 }
