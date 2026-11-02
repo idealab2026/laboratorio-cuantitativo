@@ -1,3 +1,4 @@
+import {verifyOriginalPaper} from "./original-paper.mjs";
 import {parseLocalPaperResults,parseLocalPaperCurves,summarizePrivatePaper} from "./private-paper.mjs?v=4baff08a2202";
 import {signalResearchSummary,methodCatalog} from "./paper-methods.mjs";
 import {parseLocalCagr2031} from "./private-theses.mjs";
@@ -9,7 +10,7 @@ import {verify,simulate,rank,valuation,thesisRank,formatPct,money,finite,verifyI
 const $=id=>document.getElementById(id);
 const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 const fmt=n=>finite(n)?new Intl.NumberFormat("es-ES",{maximumFractionDigits:2}).format(n):"N/D";
-const state={data:null,universe:null,fx:null,fxCheck:null,fxStatus:"pending",forecastLedger:null,forecastSummary:null,forecastStatus:"pending",secStatus:"pending",secRead:null,secCatalog:null,yieldDoc:null,yieldCheck:null,yieldStatus:"pending",view:"overview",strategy:"P-01",group:"",sort:"returnPct",asc:false,detailOpen:false,thesis:"T-01",query:"",thesisSort:"central",issuerMode:"catalog",issuerQuery:"",issuerSort:"base",issuerAsc:false,issuerTicker:"MSFT",paperDetail:"M-10",historicalPaper:null,historicalCurves:null,historicalPaperStatus:"pending",fullRoster:null,fullRosterStatus:"pending",strategyCandidates:null,strategyCandidatesStatus:"pending",fullRosterGroup:"",fullRosterQuery:"",institutionalFeedStatus:"pending",paperFeed:null,paperFeedRead:null,localCagr:new Map(),localCagrError:"",publicTheses:new Map(),publicThesesMetadata:null};
+const state={data:null,universe:null,fx:null,fxCheck:null,fxStatus:"pending",forecastLedger:null,forecastSummary:null,forecastStatus:"pending",secStatus:"pending",secRead:null,secCatalog:null,yieldDoc:null,yieldCheck:null,yieldStatus:"pending",view:"overview",strategy:"P-01",group:"",sort:"returnPct",asc:false,detailOpen:false,thesis:"T-01",query:"",thesisSort:"central",issuerMode:"catalog",issuerQuery:"",issuerSort:"base",issuerAsc:false,issuerTicker:"MSFT",paperDetail:"M-10",originalPaper:null,originalPaperStatus:"pending",historicalPaper:null,historicalCurves:null,historicalPaperStatus:"pending",fullRoster:null,fullRosterStatus:"pending",strategyCandidates:null,strategyCandidatesStatus:"pending",fullRosterGroup:"",fullRosterQuery:"",institutionalFeedStatus:"pending",paperFeed:null,paperFeedRead:null,localCagr:new Map(),localCagrError:"",publicTheses:new Map(),publicThesesMetadata:null};
 const viewNames=["overview","competition","algorithms","theses","monitoring","method","archive","ported","full","synthetic"];
 const button=(label,action,value,cls="smallbtn")=>'<button type="button" class="'+cls+'" data-action="'+esc(action)+'" data-value="'+esc(value)+'">'+esc(label)+'</button>';
 const head=(label,title,body)=>'<div class="section-heading"><div><span class="kicker">'+esc(label)+'</span><h2>'+esc(title)+'</h2><p class="section-context">'+esc(body)+'</p></div></div>';
@@ -33,7 +34,7 @@ function summary(){
  $("stat-strategies").textContent=state.fullRoster?.expected||"64";
  $("stat-groups").textContent=state.fullRoster?verifyFullRoster(state.fullRoster).groups.length:"—";
  $("stat-theses").textContent=state.publicTheses.size;
- $("stat-sessions").textContent=state.historicalPaper?summarizePrivatePaper(state.historicalPaper,state.historicalCurves).latest:"—";
+ $("stat-sessions").textContent=state.originalPaper?.latest||(state.historicalPaper?summarizePrivatePaper(state.historicalPaper,state.historicalCurves).latest:"—");
 }
 function overview(){
  const archive=state.historicalPaper?summarizePrivatePaper(state.historicalPaper,state.historicalCurves):null;
@@ -302,6 +303,11 @@ function prospectiveForecastPanel(){
 }
 
 function monitoring(){
+ return head("OPERACIÓN PAPER","Ejecución y estado de los diarios","El motor original se traslada conservando sus reglas, capital virtual y libros. La actualización programada se verifica mediante sus ejecuciones y registros de mercado.")+
+ card('<h3>Fuente de los diarios</h3><p>'+(state.originalPaper?"Archivo del motor disponible · "+state.originalPaper.count+" diarios · último cierre "+esc(state.originalPaper.latest):"Comprobando el registro público del motor.")+'</p><a href="https://github.com/idealab2026/laboratorio-cuantitativo/actions" target="_blank" rel="noopener noreferrer">Ver ejecuciones de los motores</a>')+
+ '<details class="panel"><summary>Herramientas didácticas con datos artificiales</summary>'+syntheticMonitoring()+'</details>';
+}
+function syntheticMonitoring(){
  const s=active(),audit=causalLedger();
  return officialYieldPanel()+officialFxPanel()+prospectiveForecastPanel()+head("SALUD OPERATIVA · DIARIO","Procedencia, ejecución y operaciones","Diferencia entre disponibilidad de fuentes, ejecución del motor y estado de cada diario. Sin fuente y persistencia institucional no se declara funcionamiento autónomo.")+
  '<div class="source-health-strip">'+
@@ -375,8 +381,9 @@ function ported(){
 
 function economicPaperRecord(slot){
  const current=state.paperFeedRead?.bySlot.get(slot);if(current)return current;
+ const original=state.originalPaper?.bySlot.get(slot);if(original)return original;
  const h=state.historicalPaper?.get(slot);if(!h?.active)return null;
- return {activity:"Archivo paper · "+h.activity,currency:h.currency,last_session:h.last,
+ return {activity:"Paper · "+(h.activity==="demo_con_diario"?"Diario registrado":h.activity.replaceAll("_"," ")),currency:h.currency,last_session:h.last,
   return_pct:h.pct,day_return_pct:h.dayPct,positions:h.positions,pending_orders:h.pending,
   risk:{volatility_pct:null,max_drawdown_pct:h.drawdown},comparison:{eligible:false},
   history:state.historicalCurves.get(slot)||[],historical:true};
@@ -390,7 +397,7 @@ function fullRosterRows(){
    state.historicalPaper?.has(item.slot)?"Sin diario histórico":"Sin diario institucional";
  const risks=record?.risk||{},label=record?.historical?"Corte histórico · cohortes separadas":record?.comparison?.eligible?"Misma referencia certificada":"Sin evidencia comparable";
  const curve=record?sparkline(record.history.map(x=>x.nav)):"—";
- return '<tr><td><strong>'+esc(item.name)+'</strong><small class="smallline">'+esc(item.slot)+' · '+esc(record?.historical?"Diario histórico recuperado":technicalStage(item.slot).label)+'</small></td>'+
+ return '<tr><td><strong>'+esc(item.name)+'</strong><small class="smallline">'+esc(item.slot)+' · '+esc(record?.original?"Diario del motor migrado":record?.historical?"Diario histórico recuperado":technicalStage(item.slot).label)+'</small></td>'+
   '<td>'+esc(item.group)+'</td><td>'+active+'</td>'+
   '<td>'+esc(record?.last_session||"Sin datos")+'</td><td>'+esc(record?.currency||"N/D")+'</td>'+
   '<td class="number">'+(record?pctText(record.return_pct):"N/D")+'</td>'+
@@ -420,9 +427,9 @@ function full(){
  const candidate=state.strategyCandidates?.candidates?.[0]||null;
  return headText+
  '<div class="source-health-strip"><div><span class="label">Funciones registradas</span><strong>'+meta.count+'</strong><small>'+meta.groups.length+' grupos funcionales</small></div>'+
- '<div><span class="label">Diarios históricos recuperados</span><strong>'+(state.historicalPaper?[...state.historicalPaper.values()].filter(x=>x.active).length:0)+'</strong><small>'+(state.historicalPaper?"528 observaciones NAV · corte 30/10/2026":"Archivo pendiente de validación")+'</small></div>'+
+ '<div><span class="label">Diarios paper disponibles</span><strong>'+(state.originalPaper?.count||(state.historicalPaper?[...state.historicalPaper.values()].filter(x=>x.active).length:0))+'</strong><small>'+(state.originalPaper?"Registro del motor: "+state.originalPaper.generatedAt:state.historicalPaper?"528 observaciones NAV · corte 30/10/2026":"Archivo pendiente de validación")+'</small></div>'+
  '<div><span class="label">Propuestas en investigación</span><strong>'+(state.strategyCandidates?.candidates.length??"—")+'</strong><small>Sin operaciones, sin NAV y fuera del ranking económico</small></div></div>'+
- disclaimer(state.paperFeedRead?.status==="source_verified"?"Las líneas con evidencia llevan resumen económico trazable a captura y libro firmados por un núcleo institucional. El resto permanece pendiente; no equivale a operativa con dinero real.":state.historicalPaper?"ARCHIVO HISTÓRICO PAPER. Sin fuente institucional acreditada para el motor nuevo. 47 estrategias conservan diario y 17 no tienen histórico comparable. Se mantienen los errores, las omisiones y las diferencias entre cohortes; estos datos no acreditan que el motor nuevo ya esté operando.":"Archivo histórico no disponible o no verificable. No se sustituyen diarios ausentes por simulaciones.")+
+ disclaimer(state.paperFeedRead?.status==="source_verified"?"Las líneas con evidencia llevan resumen económico trazable a captura y libro firmados por un núcleo institucional. El resto permanece pendiente; no equivale a operativa con dinero real.":state.originalPaper?"PAPER CON DATOS DE MERCADO. Se conserva el capital virtual y el diario de cada campaña. Las fechas de cierre y las cohortes determinan qué resultados pueden compararse; un archivo disponible no prueba por sí solo la continuidad de los horarios programados.":state.historicalPaper?"ARCHIVO HISTÓRICO PAPER. Sin fuente institucional acreditada para el motor nuevo. 47 estrategias conservan diario y 17 no tienen histórico comparable. Se mantienen los errores, las omisiones y las diferencias entre cohortes; estos datos no acreditan que el motor nuevo ya esté operando.":"Archivo histórico no disponible o no verificable. No se sustituyen diarios ausentes por simulaciones.")+
  '<div class="filters"><label>Filtrar familia<select id="full-group-select"><option value="">Todas las familias</option>'+
  meta.groups.map(g=>'<option value="'+esc(g.name)+'" '+(g.name===state.fullRosterGroup?"selected":"")+'>'+esc(g.name)+' · '+g.count+'</option>').join("")+
  (candidate?'<option value="'+esc(candidate.group)+'" '+(candidate.group===state.fullRosterGroup?"selected":"")+'>'+esc(candidate.group)+' · propuesta 65</option>':"")+
@@ -624,7 +631,7 @@ async function init(){
   const stats=verifyPublicTheses(publication);
   state.publicTheses=new Map(publication.records.map(x=>[x.ticker,x]));
   state.publicThesesMetadata={...stats,published_as_of:publication.published_as_of};
-  state.data=data;state.universe=universe;const v=new URLSearchParams(location.search).get("view");state.view=viewNames.includes(v)?v:"overview";summary();render();void loadOfficialFx();void loadForecastLedger();void loadSecFilings();void loadOfficialYield();void loadHistoricalPaper();void loadFullRoster();void loadStrategyCandidates();void loadInstitutionalPaperFeed();
+  state.data=data;state.universe=universe;const v=new URLSearchParams(location.search).get("view");state.view=viewNames.includes(v)?v:"overview";summary();render();void loadOfficialFx();void loadForecastLedger();void loadSecFilings();void loadOfficialYield();void loadOriginalPaper();void loadHistoricalPaper();void loadFullRoster();void loadStrategyCandidates();void loadInstitutionalPaperFeed();
  }catch(e){$("app").textContent="No se ha podido cargar el catálogo de emisores o el laboratorio sintético; no se muestran datos no verificados.";}
 }
 async function loadOfficialFx(){
@@ -673,6 +680,14 @@ async function loadStrategyCandidates(){
   state.strategyCandidates=doc;state.strategyCandidatesStatus="ok";
  }catch(_error){state.strategyCandidates=null;state.strategyCandidatesStatus="unavailable";}
  if(["full","competition"].includes(state.view)&&state.data)render();
+}
+async function loadOriginalPaper(){
+ try{
+  const [r,m]=await Promise.all([fetch("https://raw.githubusercontent.com/idealab2026/laboratorio-cuantitativo/main/strategy_state/dashboard.json",{cache:"no-store",credentials:"omit"}),fetch("./data/original-track-map.json",{cache:"no-store"})]);
+  if(!r.ok||!m.ok)throw Error("Diarios no disponibles");
+  state.originalPaper=verifyOriginalPaper(await r.json(),await m.json());state.originalPaperStatus="ok";if(state.data)summary();
+ }catch(_error){state.originalPaper=null;state.originalPaperStatus="unavailable";}
+ if(["full","competition","monitoring","overview"].includes(state.view)&&state.data)render();
 }
 async function loadHistoricalPaper(){
  try{

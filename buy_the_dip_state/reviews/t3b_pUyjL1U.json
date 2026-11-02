@@ -1,0 +1,149 @@
+{
+  "schema_version": 1,
+  "status": "machine_first_pass",
+  "reviewed_at_utc": "2026-11-02T09:50:09.429349+00:00",
+  "source_identity": "Buy The Dip YouTube channel",
+  "transport": {
+    "kind": "official_podcast_mirror",
+    "provider": "iVoox",
+    "guid": "https://www.ivoox.com/139912175",
+    "published_date": "2025-02-16",
+    "youtube_video_id": "t3b_pUyjL1U",
+    "match_score": 1.0,
+    "audio_bytes_processed_transiently": 8275217
+  },
+  "models": {
+    "asr": {
+      "language": "es",
+      "language_probability": 1.0,
+      "duration_seconds": 1034.3445,
+      "word_count": 2927,
+      "segment_count": 214,
+      "model": "small"
+    },
+    "semantic": {
+      "repo": "Qwen/Qwen3-4B-GGUF",
+      "file": "Qwen3-4B-Q4_K_M.gguf"
+    }
+  },
+  "metadata": {
+    "video_id": "t3b_pUyjL1U",
+    "youtube_url": "https://www.youtube.com/watch?v=t3b_pUyjL1U",
+    "title": "¿La ECONOMÍA va BIEN? | OPORTUNIDAD HISTÓRICA para INVERTIR en ORO",
+    "category": "sector_theme",
+    "guest_likely": false,
+    "podcast_guid": "https://www.ivoox.com/139912175",
+    "published_date": "2025-02-16",
+    "source": "official_podcast_mirror",
+    "match_score": 1.0
+  },
+  "analysis": {
+    "episode_summary": "El episodio analiza la situación macroeconómica de Estados Unidos, destacando desafíos como inflación, déficit fiscal y presión sobre los tipos de interés, que afectan a las bolsas. Se menciona un aumento del 13% en la bolsa en seis meses, reflejando expectativas positivas, aunque persisten riesgos. Se aborda la posibilidad de una subida en el mercado de oro y minerales debido a factores estacionales, inflación y aumento de la masa monetaria global. Se sugiere una oportunidad de inversión en mineras de oro con márgenes expandidos, aunque se advierte sobre riesgos asociados a la volatilidad del mercado y la dependencia de factores estacionales.",
+    "process": {
+      "idea_generation": [],
+      "quality": [],
+      "balance_sheet": [],
+      "valuation": [],
+      "cycle_macro": [],
+      "entry": [],
+      "sizing": [],
+      "add_hold": [],
+      "exit": [],
+      "risk": [],
+      "technical": [],
+      "management": [],
+      "mistakes": []
+    },
+    "candidate_rules": [
+      {
+        "rule": "paráfrasis compacta",
+        "scope": "hosts|uncertain_or_guest",
+        "confidence": 0.0,
+        "evidence_timestamps": [],
+        "automation_proxy": "variable/cálculo posible o null",
+        "cross_video_confirmation_required": true
+      }
+    ],
+    "contradictions_or_uncertainties": [],
+    "named_examples": [],
+    "automation_readiness": "low"
+  },
+  "chunk_evidence": [
+    {
+      "chunk": 1,
+      "evidence": [
+        {
+          "stage": "risk",
+          "paraphrase": "El mercado está bajo presión por inflación y déficit fiscal, con tipos de interés en alto y una economía en dificultades.",
+          "timestamp": "00:06:56",
+          "scope": "uncertain_or_guest",
+          "confidence": 0.0
+        },
+        {
+          "stage": "valuation",
+          "paraphrase": "La bolsa ha subido significativamente en los últimos meses, con un aumento del 13% en seis meses, reflejando expectativas positivas sobre el mercado.",
+          "timestamp": "00:04:11",
+          "scope": "hosts",
+          "confidence": 0.0
+        },
+        {
+          "stage": "cycle_macro",
+          "paraphrase": "La economía estadounidense enfrenta desafíos con inflación en aumento, déficit fiscal y presión sobre los tipos de interés, lo que afecta a las bolsas.",
+          "timestamp": "00:06:02",
+          "scope": "hosts",
+          "confidence": 0.0
+        }
+      ],
+      "named_examples": [],
+      "chunk_summary": "El análisis del fragmento muestra que el mercado está bajo presión por inflación y déficit fiscal, con tipos de interés en alto y una economía en dificultades. La bolsa ha subido significativamente en los últimos meses, reflejando expectativas positivas sobre el mercado, aunque se enfrenta a desafíos macroeconómicos que podrían afectar su desempeño a largo plazo."
+    },
+    {
+      "chunk": 2,
+      "evidence": [
+        {
+          "stage": "cycle_macro",
+          "paraphrase": "Los factores estacionales, como el frío, afectan la producción de petróleo y las ventas del retail, influyendo en la caída de precios.",
+          "timestamp": "00:11:00",
+          "scope": "hosts",
+          "confidence": 0.8,
+          "automation_hint": "proxy observable"
+        },
+        {
+          "stage": "valuation",
+          "paraphrase": "Las commodities están a punto de romper su nivel de precios, con un gráfico técnico que sugiere una posible subida en el mercado de oro y minerales.",
+          "timestamp": "00:11:25",
+          "scope": "hosts",
+          "confidence": 0.7,
+          "automation_hint": "proxy observable"
+        },
+        {
+          "stage": "entry",
+          "paraphrase": "El oro ha alcanzado máximos históricos, lo que sugiere una oportunidad de inversión en mineras de oro con márgenes expandidos y valor potencial.",
+          "timestamp": "00:12:20",
+          "scope": "hosts",
+          "confidence": 0.9,
+          "automation_hint": "proxy observable"
+        },
+        {
+          "stage": "risk",
+          "paraphrase": "La inflación y el aumento de la masa monetaria global pueden favorecer el revalorización del oro, mientras que los bancos centrales están comprando oro para aumentar sus reservas.",
+          "timestamp": "00:14:00",
+          "scope": "hosts",
+          "confidence": 0.8,
+          "automation_hint": "proxy observable"
+        },
+        {
+          "stage": "technical",
+          "paraphrase": "La estacionalidad del petróleo, especialmente en verano, aumentará la demanda y podría llevar a una subida de precios si la oferta no aumenta.",
+          "timestamp": "00:16:15",
+          "scope": "hosts",
+          "confidence": 0.7,
+          "automation_hint": "proxy observable"
+        }
+      ],
+      "named_examples": [],
+      "chunk_summary": "El análisis semanal destaca factores estacionales que afectan la producción de petróleo y las ventas del retail, sugiere una posible subida en el mercado de oro y minerales, y menciona la inflación y el aumento de la masa monetaria global como factores que favorecen el revalorización del oro. Además, se analiza la estacionalidad del petróleo y su impacto en los precios, destacando la posibilidad de una subida si la oferta no aumenta."
+    }
+  ],
+  "copyright_note": "No audio or verbatim transcript is persisted; only derived paraphrases."
+}

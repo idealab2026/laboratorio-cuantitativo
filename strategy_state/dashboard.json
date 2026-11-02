@@ -1,0 +1,4594 @@
+{
+  "schema_version": 1,
+  "generated_at_utc": "2026-10-31T11:28:13.585609+00:00",
+  "principle": "Comparar rentabilidad acumulada y riesgo observado; no ordenar carteras con distintas fechas de inicio o supuestos de ejecución.",
+  "counts": {
+    "paper_with_diary": 18,
+    "legacy_with_diary": 0,
+    "tfm_with_diary": 4,
+    "weekly_ml_with_diary": 9,
+    "weekly_ml_legacy_with_ledger": 9,
+    "tfg_with_diary": 1,
+    "capital_cycle_with_diary": 1,
+    "buy_the_dip_with_diary": 1,
+    "timesfm_with_diary": 2,
+    "timesfm_daily_with_diary": 2,
+    "classic_sp500_with_diary": 9,
+    "historical_pending": 16
+  },
+  "tracks": [
+    {
+      "id": "benchmark_spy",
+      "label": "Referencia SPY",
+      "provenance": "Campaña nueva 2026 · referencia SPY",
+      "group": "paper_nuevo",
+      "status": "demo_con_diario",
+      "first_session": "2026-09-28",
+      "last_session": "2026-10-09",
+      "initial_capital": 100000.0,
+      "last_equity": 101309.91500405536,
+      "return_pct": 1.309915,
+      "day_return_pct": 0.569781,
+      "currency": "USD",
+      "equity_history": [
+        {
+          "date": "2026-09-28",
+          "nav": 100000.0
+        },
+        {
+          "date": "2026-09-29",
+          "nav": 99532.33174843852
+        },
+        {
+          "date": "2026-09-30",
+          "nav": 99338.12021893082
+        },
+        {
+          "date": "2026-10-01",
+          "nav": 99506.35181324293
+        },
+        {
+          "date": "2026-10-02",
+          "nav": 100205.2656757989
+        },
+        {
+          "date": "2026-10-05",
+          "nav": 100847.27434464109
+        },
+        {
+          "date": "2026-10-06",
+          "nav": 101374.24195780903
+        },
+        {
+          "date": "2026-10-07",
+          "nav": 101142.91407798995
+        },
+        {
+          "date": "2026-10-08",
+          "nav": 100735.94039393081
+        },
+        {
+          "date": "2026-10-09",
+          "nav": 101309.91500405536
+        }
+      ],
+      "note": "Mismas reglas de contabilidad; variante nueva si el nombre indica adaptación.",
+      "activity_state": "active",
+      "activity_label": "1 posición abierta",
+      "activity_tickers": [
+        "SPY"
+      ],
+      "open_positions_count": 1,
+      "pending_orders_count": 0,
+      "comparison_eligible": false,
+      "comparison_universe_id": null,
+      "comparison_universe_symbols": null,
+      "comparison_exclusion_reason": "Archivo histórico: estrategia de 8 activos, no S&P 500 completo",
+      "risk_observations": 10,
+      "annualized_volatility_pct": null,
+      "max_drawdown_pct": -0.66188,
+      "sharpe_0rf": null
+    },
+    {
+      "id": "buy_hold_equal_weight",
+      "label": "Referencia ocho acciones equiponderadas",
+      "provenance": "Campaña nueva 2026 · referencia equiponderada",
+      "group": "paper_nuevo",
+      "status": "demo_con_diario",
+      "first_session": "2026-09-28",
+      "last_session": "2026-10-09",
+      "initial_capital": 100000.0,
+      "last_equity": 101567.49591711433,
+      "return_pct": 1.567496,
+      "day_return_pct": 0.836947,
+      "currency": "USD",
+      "equity_history": [
+        {
+          "date": "2026-09-28",
+          "nav": 100000.0
+        },
+        {
+          "date": "2026-09-29",
+          "nav": 99394.56551284832
+        },
+        {
+          "date": "2026-09-30",
+          "nav": 99521.90040866181
+        },
+        {
+          "date": "2026-10-01",
+          "nav": 99404.3795320571
+        },
+        {
+          "date": "2026-10-02",
+          "nav": 99758.4413476841
+        },
+        {
+          "date": "2026-10-05",
+          "nav": 100137.56480641833
+        },
+        {
+          "date": "2026-10-06",
+          "nav": 100601.99692893849
+        },
+        {
+          "date": "2026-10-07",
+          "nav": 100825.4195485053
+        },
+        {
+          "date": "2026-10-08",
+          "nav": 100724.48564805812
+        },
+        {
+          "date": "2026-10-09",
+          "nav": 101567.49591711433
+        }
+      ],
+      "note": "Mismas reglas de contabilidad; variante nueva si el nombre indica adaptación.",
+      "activity_state": "active",
+      "activity_label": "8 posiciones abiertas",
+      "activity_tickers": [
+        "AAPL",
+        "AMZN",
+        "JNJ",
+        "JPM",
+        "KO",
+        "MSFT",
+        "NVDA",
+        "XOM"
+      ],
+      "open_positions_count": 8,
+      "pending_orders_count": 0,
+      "comparison_eligible": false,
+      "comparison_universe_id": null,
+      "comparison_universe_symbols": null,
+      "comparison_exclusion_reason": "Archivo histórico: estrategia de 8 activos, no S&P 500 completo",
+      "risk_observations": 10,
+      "annualized_volatility_pct": null,
+      "max_drawdown_pct": -0.605434,
+      "sharpe_0rf": null
+    },
+    {
+      "id": "ema_rsi_fixed",
+      "label": "EMA/RSI fijo, adaptación nueva",
+      "provenance": "Campaña nueva 2026 · señal técnica adaptada",
+      "group": "paper_nuevo",
+      "status": "demo_con_diario",
+      "first_session": "2026-09-28",
+      "last_session": "2026-10-09",
+      "initial_capital": 100000.0,
+      "last_equity": 100000.0,
+      "return_pct": 0.0,
+      "day_return_pct": 0.0,
+      "currency": "USD",
+      "equity_history": [
+        {
+          "date": "2026-09-28",
+          "nav": 100000.0
+        },
+        {
+          "date": "2026-09-29",
+          "nav": 100000.0
+        },
+        {
+          "date": "2026-09-30",
+          "nav": 100000.0
+        },
+        {
+          "date": "2026-10-01",
+          "nav": 100000.0
+        },
+        {
+          "date": "2026-10-02",
+          "nav": 100000.0
+        },
+        {
+          "date": "2026-10-05",
+          "nav": 100000.0
+        },
+        {
+          "date": "2026-10-06",
+          "nav": 100000.0
+        },
+        {
+          "date": "2026-10-07",
+          "nav": 100000.0
+        },
+        {
+          "date": "2026-10-08",
+          "nav": 100000.0
+        },
+        {
+          "date": "2026-10-09",
+          "nav": 100000.0
+        }
+      ],
+      "note": "Mismas reglas de contabilidad; variante nueva si el nombre indica adaptación.",
+      "activity_state": "pending",
+      "activity_label": "1 órdenes pendientes",
+      "activity_tickers": [
+        "AMZN"
+      ],
+      "open_positions_count": 0,
+      "pending_orders_count": 1,
+      "comparison_eligible": false,
+      "comparison_universe_id": null,
+      "comparison_universe_symbols": null,
+      "comparison_exclusion_reason": "Archivo histórico: estrategia de 8 activos, no S&P 500 completo",
+      "risk_observations": 10,
+      "annualized_volatility_pct": null,
+      "max_drawdown_pct": 0.0,
+      "sharpe_0rf": null
+    },
+    {
+      "id": "genetic_frozen",
+      "label": "Genético nuevo congelado, ocho acciones",
+      "provenance": "MIDAS nuevo 2026 · genético congelado",
+      "group": "paper_nuevo",
+      "status": "demo_con_diario",
+      "first_session": "2026-09-28",
+      "last_session": "2026-10-09",
+      "initial_capital": 100000.0,
+      "last_equity": 101129.77574207087,
+      "return_pct": 1.129776,
+      "day_return_pct": 0.53251,
+      "currency": "USD",
+      "equity_history": [
+        {
+          "date": "2026-09-28",
+          "nav": 100000.0
+        },
+        {
+          "date": "2026-09-29",
+          "nav": 100000.0
+        },
+        {
+          "date": "2026-09-30",
+          "nav": 100000.0
+        },
+        {
+          "date": "2026-10-01",
+          "nav": 100192.68393418574
+        },
+        {
+          "date": "2026-10-02",
+          "nav": 100210.30336458496
+        },
+        {
+          "date": "2026-10-05",
+          "nav": 100209.3764730171
+        },
+        {
+          "date": "2026-10-06",
+          "nav": 100253.89132500235
+        },
+        {
+          "date": "2026-10-07",
+          "nav": 100527.87653911613
+        },
+        {
+          "date": "2026-10-08",
+          "nav": 100594.10176220612
+        },
+        {
+          "date": "2026-10-09",
+          "nav": 101129.77574207087
+        }
+      ],
+      "note": "Mismas reglas de contabilidad; variante nueva si el nombre indica adaptación.",
+      "activity_state": "active",
+      "activity_label": "2 posiciones abiertas",
+      "activity_tickers": [
+        "AMZN",
+        "XOM"
+      ],
+      "open_positions_count": 2,
+      "pending_orders_count": 0,
+      "comparison_eligible": false,
+      "comparison_universe_id": null,
+      "comparison_universe_symbols": null,
+      "comparison_exclusion_reason": "Archivo histórico: estrategia de 8 activos, no S&P 500 completo",
+      "risk_observations": 10,
+      "annualized_volatility_pct": null,
+      "max_drawdown_pct": -0.000925,
+      "sharpe_0rf": null
+    },
+    {
+      "id": "macd_12_26_9",
+      "label": "MACD, adaptación nueva",
+      "provenance": "Campaña nueva 2026 · señal técnica adaptada",
+      "group": "paper_nuevo",
+      "status": "demo_con_diario",
+      "first_session": "2026-09-28",
+      "last_session": "2026-10-09",
+      "initial_capital": 100000.0,
+      "last_equity": 100710.14677864563,
+      "return_pct": 0.710147,
+      "day_return_pct": 0.397986,
+      "currency": "USD",
+      "equity_history": [
+        {
+          "date": "2026-09-28",
+          "nav": 100000.0
+        },
+        {
+          "date": "2026-09-29",
+          "nav": 100000.0
+        },
+        {
+          "date": "2026-09-30",
+          "nav": 100000.0
+        },
+        {
+          "date": "2026-10-01",
+          "nav": 100000.0
+        },
+        {
+          "date": "2026-10-02",
+          "nav": 99923.89026705372
+        },
+        {
+          "date": "2026-10-05",
+          "nav": 100144.49044008888
+        },
+        {
+          "date": "2026-10-06",
+          "nav": 100263.29775859992
+        },
+        {
+          "date": "2026-10-07",
+          "nav": 100113.40569341257
+        },
+        {
+          "date": "2026-10-08",
+          "nav": 100310.92332089644
+        },
+        {
+          "date": "2026-10-09",
+          "nav": 100710.14677864563
+        }
+      ],
+      "note": "Mismas reglas de contabilidad; variante nueva si el nombre indica adaptación.",
+      "activity_state": "active_pending",
+      "activity_label": "2 posiciones · 1 órdenes pendientes",
+      "activity_tickers": [
+        "MSFT",
+        "XOM",
+        "KO"
+      ],
+      "open_positions_count": 2,
+      "pending_orders_count": 1,
+      "comparison_eligible": false,
+      "comparison_universe_id": null,
+      "comparison_universe_symbols": null,
+      "comparison_exclusion_reason": "Archivo histórico: estrategia de 8 activos, no S&P 500 completo",
+      "risk_observations": 10,
+      "annualized_volatility_pct": null,
+      "max_drawdown_pct": -0.149498,
+      "sharpe_0rf": null
+    },
+    {
+      "id": "rsi_reversion_14",
+      "label": "RSI reversión, adaptación nueva",
+      "provenance": "Campaña nueva 2026 · señal técnica adaptada",
+      "group": "paper_nuevo",
+      "status": "demo_con_diario",
+      "first_session": "2026-09-28",
+      "last_session": "2026-10-09",
+      "initial_capital": 100000.0,
+      "last_equity": 100000.0,
+      "return_pct": 0.0,
+      "day_return_pct": 0.0,
+      "currency": "USD",
+      "equity_history": [
+        {
+          "date": "2026-09-28",
+          "nav": 100000.0
+        },
+        {
+          "date": "2026-09-29",
+          "nav": 100000.0
+        },
+        {
+          "date": "2026-09-30",
+          "nav": 100000.0
+        },
+        {
+          "date": "2026-10-01",
+          "nav": 100000.0
+        },
+        {
+          "date": "2026-10-02",
+          "nav": 100000.0
+        },
+        {
+          "date": "2026-10-05",
+          "nav": 100000.0
+        },
+        {
+          "date": "2026-10-06",
+          "nav": 100000.0
+        },
+        {
+          "date": "2026-10-07",
+          "nav": 100000.0
+        },
+        {
+          "date": "2026-10-08",
+          "nav": 100000.0
+        },
+        {
+          "date": "2026-10-09",
+          "nav": 100000.0
+        }
+      ],
+      "note": "Mismas reglas de contabilidad; variante nueva si el nombre indica adaptación.",
+      "activity_state": "cash",
+      "activity_label": "Sin compras · en efectivo",
+      "activity_tickers": [],
+      "open_positions_count": 0,
+      "pending_orders_count": 0,
+      "comparison_eligible": false,
+      "comparison_universe_id": null,
+      "comparison_universe_symbols": null,
+      "comparison_exclusion_reason": "Archivo histórico: estrategia de 8 activos, no S&P 500 completo",
+      "risk_observations": 10,
+      "annualized_volatility_pct": null,
+      "max_drawdown_pct": 0.0,
+      "sharpe_0rf": null
+    },
+    {
+      "id": "bollinger_breakout_20",
+      "label": "Bollinger ruptura, adaptación nueva",
+      "provenance": "Campaña nueva 2026 · señal técnica adaptada",
+      "group": "paper_nuevo",
+      "status": "demo_con_diario",
+      "first_session": "2026-09-28",
+      "last_session": "2026-10-09",
+      "initial_capital": 100000.0,
+      "last_equity": 100132.64127394816,
+      "return_pct": 0.132641,
+      "day_return_pct": 0.484339,
+      "currency": "USD",
+      "equity_history": [
+        {
+          "date": "2026-09-28",
+          "nav": 100000.0
+        },
+        {
+          "date": "2026-09-29",
+          "nav": 100000.0
+        },
+        {
+          "date": "2026-09-30",
+          "nav": 100000.0
+        },
+        {
+          "date": "2026-10-01",
+          "nav": 100000.0
+        },
+        {
+          "date": "2026-10-02",
+          "nav": 100000.0
+        },
+        {
+          "date": "2026-10-05",
+          "nav": 100000.0
+        },
+        {
+          "date": "2026-10-06",
+          "nav": 100000.0
+        },
+        {
+          "date": "2026-10-07",
+          "nav": 100000.0
+        },
+        {
+          "date": "2026-10-08",
+          "nav": 99649.99776098058
+        },
+        {
+          "date": "2026-10-09",
+          "nav": 100132.64127394816
+        }
+      ],
+      "note": "Mismas reglas de contabilidad; variante nueva si el nombre indica adaptación.",
+      "activity_state": "active",
+      "activity_label": "1 posición abierta",
+      "activity_tickers": [
+        "AMZN"
+      ],
+      "open_positions_count": 1,
+      "pending_orders_count": 0,
+      "comparison_eligible": false,
+      "comparison_universe_id": null,
+      "comparison_universe_symbols": null,
+      "comparison_exclusion_reason": "Archivo histórico: estrategia de 8 activos, no S&P 500 completo",
+      "risk_observations": 10,
+      "annualized_volatility_pct": null,
+      "max_drawdown_pct": -0.350002,
+      "sharpe_0rf": null
+    },
+    {
+      "id": "turtle_20_10_long",
+      "label": "Turtle 20/10 largo, adaptación nueva",
+      "provenance": "Campaña nueva 2026 · señal técnica adaptada",
+      "group": "paper_nuevo",
+      "status": "demo_con_diario",
+      "first_session": "2026-09-28",
+      "last_session": "2026-10-09",
+      "initial_capital": 100000.0,
+      "last_equity": 100132.64127394816,
+      "return_pct": 0.132641,
+      "day_return_pct": 0.484339,
+      "currency": "USD",
+      "equity_history": [
+        {
+          "date": "2026-09-28",
+          "nav": 100000.0
+        },
+        {
+          "date": "2026-09-29",
+          "nav": 100000.0
+        },
+        {
+          "date": "2026-09-30",
+          "nav": 100000.0
+        },
+        {
+          "date": "2026-10-01",
+          "nav": 100000.0
+        },
+        {
+          "date": "2026-10-02",
+          "nav": 100000.0
+        },
+        {
+          "date": "2026-10-05",
+          "nav": 100000.0
+        },
+        {
+          "date": "2026-10-06",
+          "nav": 100000.0
+        },
+        {
+          "date": "2026-10-07",
+          "nav": 100000.0
+        },
+        {
+          "date": "2026-10-08",
+          "nav": 99649.99776098058
+        },
+        {
+          "date": "2026-10-09",
+          "nav": 100132.64127394816
+        }
+      ],
+      "note": "Mismas reglas de contabilidad; variante nueva si el nombre indica adaptación.",
+      "activity_state": "active",
+      "activity_label": "1 posición abierta",
+      "activity_tickers": [
+        "AMZN"
+      ],
+      "open_positions_count": 1,
+      "pending_orders_count": 0,
+      "comparison_eligible": false,
+      "comparison_universe_id": null,
+      "comparison_universe_symbols": null,
+      "comparison_exclusion_reason": "Archivo histórico: estrategia de 8 activos, no S&P 500 completo",
+      "risk_observations": 10,
+      "annualized_volatility_pct": null,
+      "max_drawdown_pct": -0.350002,
+      "sharpe_0rf": null
+    },
+    {
+      "id": "turtle_55_20_long",
+      "label": "Turtle 55/20 largo, adaptación nueva",
+      "provenance": "Campaña nueva 2026 · señal técnica adaptada",
+      "group": "paper_nuevo",
+      "status": "demo_con_diario",
+      "first_session": "2026-09-28",
+      "last_session": "2026-10-09",
+      "initial_capital": 100000.0,
+      "last_equity": 100000.0,
+      "return_pct": 0.0,
+      "day_return_pct": 0.0,
+      "currency": "USD",
+      "equity_history": [
+        {
+          "date": "2026-09-28",
+          "nav": 100000.0
+        },
+        {
+          "date": "2026-09-29",
+          "nav": 100000.0
+        },
+        {
+          "date": "2026-09-30",
+          "nav": 100000.0
+        },
+        {
+          "date": "2026-10-01",
+          "nav": 100000.0
+        },
+        {
+          "date": "2026-10-02",
+          "nav": 100000.0
+        },
+        {
+          "date": "2026-10-05",
+          "nav": 100000.0
+        },
+        {
+          "date": "2026-10-06",
+          "nav": 100000.0
+        },
+        {
+          "date": "2026-10-07",
+          "nav": 100000.0
+        },
+        {
+          "date": "2026-10-08",
+          "nav": 100000.0
+        },
+        {
+          "date": "2026-10-09",
+          "nav": 100000.0
+        }
+      ],
+      "note": "Mismas reglas de contabilidad; variante nueva si el nombre indica adaptación.",
+      "activity_state": "cash",
+      "activity_label": "Sin compras · en efectivo",
+      "activity_tickers": [],
+      "open_positions_count": 0,
+      "pending_orders_count": 0,
+      "comparison_eligible": false,
+      "comparison_universe_id": null,
+      "comparison_universe_symbols": null,
+      "comparison_exclusion_reason": "Archivo histórico: estrategia de 8 activos, no S&P 500 completo",
+      "risk_observations": 10,
+      "annualized_volatility_pct": null,
+      "max_drawdown_pct": 0.0,
+      "sharpe_0rf": null
+    },
+    {
+      "id": "classic_sp500_buy_hold_equal_weight",
+      "label": "S&P 500 v2 · Equiponderación S&P 500",
+      "provenance": "MIDAS 2026 · nueva campaña prospectiva S&P 500 completo (503 símbolos); no hereda libro antiguo de ocho acciones",
+      "group": "paper_nuevo",
+      "status": "demo_con_diario",
+      "classic_sp500_cohort": true,
+      "first_session": "2026-10-12",
+      "last_session": "2026-10-27",
+      "initial_capital": 100000.0,
+      "last_equity": 101829.72298058106,
+      "return_pct": 1.829723,
+      "day_return_pct": null,
+      "currency": "USD",
+      "equity_history": [
+        {
+          "date": "2026-10-12",
+          "nav": 100000.0
+        },
+        {
+          "date": "2026-10-14",
+          "nav": 100000.0
+        },
+        {
+          "date": "2026-10-15",
+          "nav": 100646.66303478436
+        },
+        {
+          "date": "2026-10-16",
+          "nav": 100390.26786123197
+        },
+        {
+          "date": "2026-10-19",
+          "nav": 100009.1886874937
+        },
+        {
+          "date": "2026-10-20",
+          "nav": 101171.82974369722
+        },
+        {
+          "date": "2026-10-21",
+          "nav": 101345.30893303639
+        },
+        {
+          "date": "2026-10-22",
+          "nav": 102453.20813848713
+        },
+        {
+          "date": "2026-10-23",
+          "nav": 101642.4914997855
+        },
+        {
+          "date": "2026-10-26",
+          "nav": 101849.30153344055
+        },
+        {
+          "date": "2026-10-27",
+          "nav": 101829.72298058106
+        }
+      ],
+      "note": "Nueva campaña S&P500 503 símbolos; las carteras originales de 8 títulos se conservan históricas y no transfieren NAV ni operaciones. Valoración conservada exclusivamente hasta 2026-10-27; operaciones sin actualizar.",
+      "evaluated_universe_symbols": 488,
+      "eligible_universe_symbols": 503,
+      "activity_state": "active",
+      "activity_label": "VALORACIÓN PAUSADA · falta cotización; 490 posiciones abiertas",
+      "activity_tickers": [
+        "A",
+        "AAPL",
+        "ABBV",
+        "ABNB",
+        "ABT",
+        "ACGL",
+        "ACN",
+        "ADBE",
+        "ADI",
+        "ADM",
+        "ADP",
+        "ADSK"
+      ],
+      "open_positions_count": 490,
+      "pending_orders_count": 0,
+      "data_quality_status": "held_quote_unavailable",
+      "comparison_eligible": true,
+      "comparison_universe_id": "SP500_2026-09-29_503",
+      "comparison_universe_symbols": 503,
+      "comparison_exclusion_reason": null,
+      "risk_observations": 11,
+      "annualized_volatility_pct": 9.94924,
+      "max_drawdown_pct": -0.791304,
+      "sharpe_0rf": 4.641345
+    },
+    {
+      "id": "classic_sp500_ema_rsi_fixed",
+      "label": "S&P 500 v2 · EMA/RSI",
+      "provenance": "MIDAS 2026 · nueva campaña prospectiva S&P 500 completo (503 símbolos); no hereda libro antiguo de ocho acciones",
+      "group": "paper_nuevo",
+      "status": "demo_con_diario",
+      "classic_sp500_cohort": true,
+      "first_session": "2026-10-12",
+      "last_session": "2026-10-30",
+      "initial_capital": 100000.0,
+      "last_equity": 102397.43515036203,
+      "return_pct": 2.397435,
+      "day_return_pct": 1.305841,
+      "currency": "USD",
+      "equity_history": [
+        {
+          "date": "2026-10-12",
+          "nav": 100000.0
+        },
+        {
+          "date": "2026-10-14",
+          "nav": 100000.0
+        },
+        {
+          "date": "2026-10-15",
+          "nav": 100264.52577095128
+        },
+        {
+          "date": "2026-10-16",
+          "nav": 100755.69283409244
+        },
+        {
+          "date": "2026-10-19",
+          "nav": 100105.35495999045
+        },
+        {
+          "date": "2026-10-20",
+          "nav": 100558.54868815478
+        },
+        {
+          "date": "2026-10-21",
+          "nav": 100582.68625723066
+        },
+        {
+          "date": "2026-10-22",
+          "nav": 103583.07469219231
+        },
+        {
+          "date": "2026-10-23",
+          "nav": 102511.27744632428
+        },
+        {
+          "date": "2026-10-26",
+          "nav": 101895.34902991113
+        },
+        {
+          "date": "2026-10-27",
+          "nav": 101047.24477732042
+        },
+        {
+          "date": "2026-10-28",
+          "nav": 100820.15660320473
+        },
+        {
+          "date": "2026-10-29",
+          "nav": 101077.52310972467
+        },
+        {
+          "date": "2026-10-30",
+          "nav": 102397.43515036203
+        }
+      ],
+      "note": "Nueva campaña S&P500 503 símbolos; las carteras originales de 8 títulos se conservan históricas y no transfieren NAV ni operaciones.",
+      "evaluated_universe_symbols": 488,
+      "eligible_universe_symbols": 503,
+      "activity_state": "active_pending",
+      "activity_label": "7 posiciones · 1 compra paper para próxima apertura",
+      "activity_tickers": [
+        "BF-B",
+        "CNP",
+        "RSG",
+        "STLD",
+        "STZ",
+        "YUM",
+        "ZTS",
+        "BLDR"
+      ],
+      "open_positions_count": 7,
+      "pending_orders_count": 1,
+      "comparison_eligible": true,
+      "comparison_universe_id": "SP500_2026-09-29_503",
+      "comparison_universe_symbols": 503,
+      "comparison_exclusion_reason": null,
+      "risk_observations": 14,
+      "annualized_volatility_pct": 16.724107,
+      "max_drawdown_pct": -2.667345,
+      "sharpe_0rf": 2.82486
+    },
+    {
+      "id": "classic_sp500_genetic_frozen",
+      "label": "S&P 500 v2 · Genético congelado (reglas)",
+      "provenance": "MIDAS 2026 · nueva campaña prospectiva S&P 500 completo (503 símbolos); no hereda libro antiguo de ocho acciones",
+      "group": "paper_nuevo",
+      "status": "demo_con_diario",
+      "classic_sp500_cohort": true,
+      "first_session": "2026-10-12",
+      "last_session": "2026-10-30",
+      "initial_capital": 100000.0,
+      "last_equity": 103807.0969750218,
+      "return_pct": 3.807097,
+      "day_return_pct": -0.107351,
+      "currency": "USD",
+      "equity_history": [
+        {
+          "date": "2026-10-12",
+          "nav": 100000.0
+        },
+        {
+          "date": "2026-10-14",
+          "nav": 100000.0
+        },
+        {
+          "date": "2026-10-15",
+          "nav": 100564.05436455322
+        },
+        {
+          "date": "2026-10-16",
+          "nav": 101140.74307369607
+        },
+        {
+          "date": "2026-10-19",
+          "nav": 101128.05450830849
+        },
+        {
+          "date": "2026-10-20",
+          "nav": 102053.16074012923
+        },
+        {
+          "date": "2026-10-21",
+          "nav": 100930.3257905362
+        },
+        {
+          "date": "2026-10-22",
+          "nav": 103255.52255202403
+        },
+        {
+          "date": "2026-10-23",
+          "nav": 102104.19841914727
+        },
+        {
+          "date": "2026-10-26",
+          "nav": 102595.16979237598
+        },
+        {
+          "date": "2026-10-27",
+          "nav": 101161.3847026656
+        },
+        {
+          "date": "2026-10-28",
+          "nav": 102196.2667493637
+        },
+        {
+          "date": "2026-10-29",
+          "nav": 103918.65435437033
+        },
+        {
+          "date": "2026-10-30",
+          "nav": 103807.0969750218
+        }
+      ],
+      "note": "Nueva campaña S&P500 503 símbolos; las carteras originales de 8 títulos se conservan históricas y no transfieren NAV ni operaciones.",
+      "evaluated_universe_symbols": 488,
+      "eligible_universe_symbols": 503,
+      "activity_state": "active",
+      "activity_label": "8 posiciones abiertas",
+      "activity_tickers": [
+        "ABT",
+        "DRI",
+        "IDXX",
+        "KVUE",
+        "LH",
+        "MNST",
+        "SJM",
+        "WELL"
+      ],
+      "open_positions_count": 8,
+      "pending_orders_count": 0,
+      "comparison_eligible": true,
+      "comparison_universe_id": "SP500_2026-09-29_503",
+      "comparison_universe_symbols": 503,
+      "comparison_exclusion_reason": null,
+      "risk_observations": 14,
+      "annualized_volatility_pct": 17.274431,
+      "max_drawdown_pct": -2.028112,
+      "sharpe_0rf": 4.278338
+    },
+    {
+      "id": "classic_sp500_macd_12_26_9",
+      "label": "S&P 500 v2 · MACD",
+      "provenance": "MIDAS 2026 · nueva campaña prospectiva S&P 500 completo (503 símbolos); no hereda libro antiguo de ocho acciones",
+      "group": "paper_nuevo",
+      "status": "demo_con_diario",
+      "classic_sp500_cohort": true,
+      "first_session": "2026-10-12",
+      "last_session": "2026-10-30",
+      "initial_capital": 100000.0,
+      "last_equity": 105146.32037259513,
+      "return_pct": 5.14632,
+      "day_return_pct": 0.722789,
+      "currency": "USD",
+      "equity_history": [
+        {
+          "date": "2026-10-12",
+          "nav": 100000.0
+        },
+        {
+          "date": "2026-10-14",
+          "nav": 100000.0
+        },
+        {
+          "date": "2026-10-15",
+          "nav": 99811.38942075326
+        },
+        {
+          "date": "2026-10-16",
+          "nav": 99229.27944590827
+        },
+        {
+          "date": "2026-10-19",
+          "nav": 98264.08222894697
+        },
+        {
+          "date": "2026-10-20",
+          "nav": 100064.98905871698
+        },
+        {
+          "date": "2026-10-21",
+          "nav": 101723.33650861883
+        },
+        {
+          "date": "2026-10-22",
+          "nav": 102582.86533084931
+        },
+        {
+          "date": "2026-10-23",
+          "nav": 102073.96227637296
+        },
+        {
+          "date": "2026-10-26",
+          "nav": 102992.93037974884
+        },
+        {
+          "date": "2026-10-27",
+          "nav": 102408.69610591458
+        },
+        {
+          "date": "2026-10-28",
+          "nav": 102642.57320975338
+        },
+        {
+          "date": "2026-10-29",
+          "nav": 104391.78753147644
+        },
+        {
+          "date": "2026-10-30",
+          "nav": 105146.32037259513
+        }
+      ],
+      "note": "Nueva campaña S&P500 503 símbolos; las carteras originales de 8 títulos se conservan históricas y no transfieren NAV ni operaciones.",
+      "evaluated_universe_symbols": 488,
+      "eligible_universe_symbols": 503,
+      "activity_state": "active_pending",
+      "activity_label": "6 posiciones · 2 compras paper para próxima apertura",
+      "activity_tickers": [
+        "ADI",
+        "DHR",
+        "EW",
+        "GILD",
+        "MMM",
+        "PFE",
+        "GDDY",
+        "MDLZ"
+      ],
+      "open_positions_count": 6,
+      "pending_orders_count": 2,
+      "comparison_eligible": true,
+      "comparison_universe_id": "SP500_2026-09-29_503",
+      "comparison_universe_symbols": 503,
+      "comparison_exclusion_reason": null,
+      "risk_observations": 14,
+      "annualized_volatility_pct": 15.206422,
+      "max_drawdown_pct": -1.735918,
+      "sharpe_0rf": 6.4793
+    },
+    {
+      "id": "classic_sp500_rsi_reversion_14",
+      "label": "S&P 500 v2 · RSI reversión",
+      "provenance": "MIDAS 2026 · nueva campaña prospectiva S&P 500 completo (503 símbolos); no hereda libro antiguo de ocho acciones",
+      "group": "paper_nuevo",
+      "status": "demo_con_diario",
+      "classic_sp500_cohort": true,
+      "first_session": "2026-10-12",
+      "last_session": "2026-10-30",
+      "initial_capital": 100000.0,
+      "last_equity": 104694.2425966551,
+      "return_pct": 4.694243,
+      "day_return_pct": -1.629929,
+      "currency": "USD",
+      "equity_history": [
+        {
+          "date": "2026-10-12",
+          "nav": 100000.0
+        },
+        {
+          "date": "2026-10-14",
+          "nav": 100000.0
+        },
+        {
+          "date": "2026-10-15",
+          "nav": 101448.95257703691
+        },
+        {
+          "date": "2026-10-16",
+          "nav": 100768.67567919599
+        },
+        {
+          "date": "2026-10-19",
+          "nav": 100222.76610376338
+        },
+        {
+          "date": "2026-10-20",
+          "nav": 101339.33706303284
+        },
+        {
+          "date": "2026-10-21",
+          "nav": 101923.30104080861
+        },
+        {
+          "date": "2026-10-22",
+          "nav": 102885.29867674042
+        },
+        {
+          "date": "2026-10-23",
+          "nav": 102550.56397724207
+        },
+        {
+          "date": "2026-10-26",
+          "nav": 103425.53032373611
+        },
+        {
+          "date": "2026-10-27",
+          "nav": 103979.0798513359
+        },
+        {
+          "date": "2026-10-28",
+          "nav": 105185.58086747523
+        },
+        {
+          "date": "2026-10-29",
+          "nav": 106428.95953351168
+        },
+        {
+          "date": "2026-10-30",
+          "nav": 104694.2425966551
+        }
+      ],
+      "note": "Nueva campaña S&P500 503 símbolos; las carteras originales de 8 títulos se conservan históricas y no transfieren NAV ni operaciones.",
+      "evaluated_universe_symbols": 488,
+      "eligible_universe_symbols": 503,
+      "activity_state": "active_pending",
+      "activity_label": "7 posiciones · 1 compra paper para próxima apertura",
+      "activity_tickers": [
+        "APH",
+        "BEN",
+        "BG",
+        "CZR",
+        "GOOG",
+        "IVZ",
+        "STT",
+        "BAC"
+      ],
+      "open_positions_count": 7,
+      "pending_orders_count": 1,
+      "comparison_eligible": true,
+      "comparison_universe_id": "SP500_2026-09-29_503",
+      "comparison_universe_symbols": 503,
+      "comparison_exclusion_reason": null,
+      "risk_observations": 14,
+      "annualized_volatility_pct": 14.611617,
+      "max_drawdown_pct": -1.629929,
+      "sharpe_0rf": 6.164158
+    },
+    {
+      "id": "classic_sp500_bollinger_breakout_20",
+      "label": "S&P 500 v2 · Bollinger ruptura",
+      "provenance": "MIDAS 2026 · nueva campaña prospectiva S&P 500 completo (503 símbolos); no hereda libro antiguo de ocho acciones",
+      "group": "paper_nuevo",
+      "status": "demo_con_diario",
+      "classic_sp500_cohort": true,
+      "first_session": "2026-10-12",
+      "last_session": "2026-10-30",
+      "initial_capital": 100000.0,
+      "last_equity": 102372.24479546699,
+      "return_pct": 2.372245,
+      "day_return_pct": 1.082092,
+      "currency": "USD",
+      "equity_history": [
+        {
+          "date": "2026-10-12",
+          "nav": 100000.0
+        },
+        {
+          "date": "2026-10-14",
+          "nav": 100000.0
+        },
+        {
+          "date": "2026-10-15",
+          "nav": 98815.31702361869
+        },
+        {
+          "date": "2026-10-16",
+          "nav": 99525.13915010996
+        },
+        {
+          "date": "2026-10-19",
+          "nav": 98862.71216106649
+        },
+        {
+          "date": "2026-10-20",
+          "nav": 100053.58617874306
+        },
+        {
+          "date": "2026-10-21",
+          "nav": 98997.33438418733
+        },
+        {
+          "date": "2026-10-22",
+          "nav": 100658.70709334774
+        },
+        {
+          "date": "2026-10-23",
+          "nav": 98944.40064285567
+        },
+        {
+          "date": "2026-10-26",
+          "nav": 99058.91138067849
+        },
+        {
+          "date": "2026-10-27",
+          "nav": 98603.75068121278
+        },
+        {
+          "date": "2026-10-28",
+          "nav": 98715.94932431824
+        },
+        {
+          "date": "2026-10-29",
+          "nav": 101276.3417059624
+        },
+        {
+          "date": "2026-10-30",
+          "nav": 102372.24479546699
+        }
+      ],
+      "note": "Nueva campaña S&P500 503 símbolos; las carteras originales de 8 títulos se conservan históricas y no transfieren NAV ni operaciones.",
+      "evaluated_universe_symbols": 488,
+      "eligible_universe_symbols": 503,
+      "activity_state": "active_pending",
+      "activity_label": "7 posiciones · 1 compra paper para próxima apertura",
+      "activity_tickers": [
+        "ABBV",
+        "CAH",
+        "COST",
+        "DLTR",
+        "MTD",
+        "PFE",
+        "WMT",
+        "PTC"
+      ],
+      "open_positions_count": 7,
+      "pending_orders_count": 1,
+      "comparison_eligible": true,
+      "comparison_universe_id": "SP500_2026-09-29_503",
+      "comparison_universe_symbols": 503,
+      "comparison_exclusion_reason": null,
+      "risk_observations": 14,
+      "annualized_volatility_pct": 19.616043,
+      "max_drawdown_pct": -2.041509,
+      "sharpe_0rf": 2.409122
+    },
+    {
+      "id": "classic_sp500_turtle_20_10_long",
+      "label": "S&P 500 v2 · Turtle 20/10",
+      "provenance": "MIDAS 2026 · nueva campaña prospectiva S&P 500 completo (503 símbolos); no hereda libro antiguo de ocho acciones",
+      "group": "paper_nuevo",
+      "status": "demo_con_diario",
+      "classic_sp500_cohort": true,
+      "first_session": "2026-10-12",
+      "last_session": "2026-10-30",
+      "initial_capital": 100000.0,
+      "last_equity": 97308.15185548896,
+      "return_pct": -2.691848,
+      "day_return_pct": -0.742904,
+      "currency": "USD",
+      "equity_history": [
+        {
+          "date": "2026-10-12",
+          "nav": 100000.0
+        },
+        {
+          "date": "2026-10-14",
+          "nav": 100000.0
+        },
+        {
+          "date": "2026-10-15",
+          "nav": 99209.85926620034
+        },
+        {
+          "date": "2026-10-16",
+          "nav": 98723.99243266626
+        },
+        {
+          "date": "2026-10-19",
+          "nav": 98158.08975798274
+        },
+        {
+          "date": "2026-10-20",
+          "nav": 98832.38760387506
+        },
+        {
+          "date": "2026-10-21",
+          "nav": 98846.44145880014
+        },
+        {
+          "date": "2026-10-22",
+          "nav": 99634.38481793852
+        },
+        {
+          "date": "2026-10-23",
+          "nav": 98598.4616399411
+        },
+        {
+          "date": "2026-10-26",
+          "nav": 99256.10578688953
+        },
+        {
+          "date": "2026-10-27",
+          "nav": 96194.45295173215
+        },
+        {
+          "date": "2026-10-28",
+          "nav": 96394.39938829279
+        },
+        {
+          "date": "2026-10-29",
+          "nav": 98036.46879833707
+        },
+        {
+          "date": "2026-10-30",
+          "nav": 97308.15185548896
+        }
+      ],
+      "note": "Nueva campaña S&P500 503 símbolos; las carteras originales de 8 títulos se conservan históricas y no transfieren NAV ni operaciones.",
+      "evaluated_universe_symbols": 488,
+      "eligible_universe_symbols": 503,
+      "activity_state": "active_pending",
+      "activity_label": "7 posiciones · 1 compra paper para próxima apertura",
+      "activity_tickers": [
+        "ALLE",
+        "CNP",
+        "COST",
+        "CRL",
+        "LW",
+        "MTD",
+        "ULTA",
+        "GEN"
+      ],
+      "open_positions_count": 7,
+      "pending_orders_count": 1,
+      "comparison_eligible": true,
+      "comparison_universe_id": "SP500_2026-09-29_503",
+      "comparison_universe_symbols": 503,
+      "comparison_exclusion_reason": null,
+      "risk_observations": 14,
+      "annualized_volatility_pct": 18.501526,
+      "max_drawdown_pct": -3.805547,
+      "sharpe_0rf": -2.769857
+    },
+    {
+      "id": "classic_sp500_turtle_55_20_long",
+      "label": "S&P 500 v2 · Turtle 55/20",
+      "provenance": "MIDAS 2026 · nueva campaña prospectiva S&P 500 completo (503 símbolos); no hereda libro antiguo de ocho acciones",
+      "group": "paper_nuevo",
+      "status": "demo_con_diario",
+      "classic_sp500_cohort": true,
+      "first_session": "2026-10-12",
+      "last_session": "2026-10-30",
+      "initial_capital": 100000.0,
+      "last_equity": 98406.17982171176,
+      "return_pct": -1.59382,
+      "day_return_pct": 0.817189,
+      "currency": "USD",
+      "equity_history": [
+        {
+          "date": "2026-10-12",
+          "nav": 100000.0
+        },
+        {
+          "date": "2026-10-14",
+          "nav": 100000.0
+        },
+        {
+          "date": "2026-10-15",
+          "nav": 99189.15573042184
+        },
+        {
+          "date": "2026-10-16",
+          "nav": 98865.0045970975
+        },
+        {
+          "date": "2026-10-19",
+          "nav": 98209.76109168505
+        },
+        {
+          "date": "2026-10-20",
+          "nav": 99317.73124168444
+        },
+        {
+          "date": "2026-10-21",
+          "nav": 99085.39781729458
+        },
+        {
+          "date": "2026-10-22",
+          "nav": 99159.05006336063
+        },
+        {
+          "date": "2026-10-23",
+          "nav": 98478.34514078905
+        },
+        {
+          "date": "2026-10-26",
+          "nav": 99100.577197703
+        },
+        {
+          "date": "2026-10-27",
+          "nav": 95847.27185564794
+        },
+        {
+          "date": "2026-10-28",
+          "nav": 96388.02978588152
+        },
+        {
+          "date": "2026-10-29",
+          "nav": 97608.53341431505
+        },
+        {
+          "date": "2026-10-30",
+          "nav": 98406.17982171176
+        }
+      ],
+      "note": "Nueva campaña S&P500 503 símbolos; las carteras originales de 8 títulos se conservan históricas y no transfieren NAV ni operaciones.",
+      "evaluated_universe_symbols": 488,
+      "eligible_universe_symbols": 503,
+      "activity_state": "active",
+      "activity_label": "8 posiciones abiertas",
+      "activity_tickers": [
+        "ABBV",
+        "HCA",
+        "MCK",
+        "MPC",
+        "MTD",
+        "PSX",
+        "ULTA",
+        "VLO"
+      ],
+      "open_positions_count": 8,
+      "pending_orders_count": 0,
+      "comparison_eligible": true,
+      "comparison_universe_id": "SP500_2026-09-29_503",
+      "comparison_universe_symbols": 503,
+      "comparison_exclusion_reason": null,
+      "risk_observations": 14,
+      "annualized_volatility_pct": 18.668219,
+      "max_drawdown_pct": -4.152728,
+      "sharpe_0rf": -1.580084
+    },
+    {
+      "id": "classic_sp500_benchmark_spy",
+      "label": "S&P 500 v2 · Referencia SPY · inicio clásicos S&P500",
+      "provenance": "MIDAS 2026 · nueva campaña prospectiva S&P 500 completo (503 símbolos); no hereda libro antiguo de ocho acciones",
+      "group": "paper_nuevo",
+      "status": "demo_con_diario",
+      "classic_sp500_cohort": true,
+      "first_session": "2026-10-12",
+      "last_session": "2026-10-30",
+      "initial_capital": 100000.0,
+      "last_equity": 98554.10457043885,
+      "return_pct": -1.445895,
+      "day_return_pct": -1.684473,
+      "currency": "USD",
+      "equity_history": [
+        {
+          "date": "2026-10-12",
+          "nav": 100000.0
+        },
+        {
+          "date": "2026-10-14",
+          "nav": 100000.0
+        },
+        {
+          "date": "2026-10-15",
+          "nav": 100543.48582403809
+        },
+        {
+          "date": "2026-10-16",
+          "nav": 99486.28206233581
+        },
+        {
+          "date": "2026-10-19",
+          "nav": 99886.13642857118
+        },
+        {
+          "date": "2026-10-20",
+          "nav": 100204.28963717041
+        },
+        {
+          "date": "2026-10-21",
+          "nav": 100704.42493969972
+        },
+        {
+          "date": "2026-10-22",
+          "nav": 99574.17899813355
+        },
+        {
+          "date": "2026-10-23",
+          "nav": 99080.23191793884
+        },
+        {
+          "date": "2026-10-26",
+          "nav": 99748.72615826965
+        },
+        {
+          "date": "2026-10-27",
+          "nav": 100279.80257247193
+        },
+        {
+          "date": "2026-10-28",
+          "nav": 100607.86147030274
+        },
+        {
+          "date": "2026-10-29",
+          "nav": 100242.66568263734
+        },
+        {
+          "date": "2026-10-30",
+          "nav": 98554.10457043885
+        }
+      ],
+      "note": "Nueva campaña S&P500 503 símbolos; las carteras originales de 8 títulos se conservan históricas y no transfieren NAV ni operaciones.",
+      "evaluated_universe_symbols": 488,
+      "eligible_universe_symbols": 503,
+      "activity_state": "active",
+      "activity_label": "1 posición abierta",
+      "activity_tickers": [
+        "SPY"
+      ],
+      "open_positions_count": 1,
+      "pending_orders_count": 0,
+      "comparison_eligible": true,
+      "comparison_universe_id": "SP500_2026-09-29_503",
+      "comparison_universe_symbols": 503,
+      "comparison_exclusion_reason": null,
+      "risk_observations": 14,
+      "annualized_volatility_pct": 12.192266,
+      "max_drawdown_pct": -2.135279,
+      "sharpe_0rf": -2.257764
+    },
+    {
+      "id": "weekly_ml_benchmark_spy",
+      "label": "ML semanal · referencia SPY",
+      "provenance": "Campaña ML semanal 2026 · referencia SPY",
+      "group": "weekly_ml_demo",
+      "status": "demo_con_diario",
+      "daily_mode": true,
+      "first_session": "2026-10-09",
+      "last_session": "2026-10-30",
+      "initial_capital": 100000.0,
+      "last_equity": 95611.99506221453,
+      "return_pct": -4.388005,
+      "day_return_pct": -1.824893,
+      "currency": "USD",
+      "equity_history": [
+        {
+          "date": "2026-10-09",
+          "nav": 100000.0
+        },
+        {
+          "date": "2026-10-12",
+          "nav": 99774.83355797338
+        },
+        {
+          "date": "2026-10-13",
+          "nav": 99763.87546015845
+        },
+        {
+          "date": "2026-10-14",
+          "nav": 98739.50890797339
+        },
+        {
+          "date": "2026-10-15",
+          "nav": 99006.25755634374
+        },
+        {
+          "date": "2026-10-16",
+          "nav": 97826.66085457122
+        },
+        {
+          "date": "2026-10-19",
+          "nav": 97596.70819633853
+        },
+        {
+          "date": "2026-10-20",
+          "nav": 97907.54931261917
+        },
+        {
+          "date": "2026-10-21",
+          "nav": 98396.19004144926
+        },
+        {
+          "date": "2026-10-22",
+          "nav": 97291.92046109549
+        },
+        {
+          "date": "2026-10-23",
+          "nav": 96671.49470133023
+        },
+        {
+          "date": "2026-10-26",
+          "nav": 96909.24052471909
+        },
+        {
+          "date": "2026-10-27",
+          "nav": 97425.33415634104
+        },
+        {
+          "date": "2026-10-28",
+          "nav": 97744.13782270554
+        },
+        {
+          "date": "2026-10-29",
+          "nav": 97389.24497627329
+        },
+        {
+          "date": "2026-10-30",
+          "nav": 95611.99506221453
+        }
+      ],
+      "note": "Campaña diaria prospectiva desde la señal del 09/10/2026. Fills simulados en la siguiente apertura, NAV al cierre y cierre semanal. No hereda el NAV de la campaña de liquidación diferida ni reconstruye compras pasadas.",
+      "positions": [],
+      "activity_state": "pending",
+      "activity_label": "1 señal para próxima apertura paper",
+      "activity_tickers": [
+        "SPY"
+      ],
+      "open_positions_count": 0,
+      "pending_orders_count": 1,
+      "comparison_eligible": true,
+      "comparison_universe_id": "SP500_2026-09-29_503",
+      "comparison_universe_symbols": 503,
+      "comparison_exclusion_reason": null,
+      "risk_observations": 16,
+      "annualized_volatility_pct": 11.436428,
+      "max_drawdown_pct": -4.388005,
+      "sharpe_0rf": -6.528092
+    },
+    {
+      "id": "weekly_legacy_weekly_ml_benchmark_spy",
+      "label": "ML semanal · referencia SPY · liquidación diferida",
+      "provenance": "Campaña ML semanal 2026 · referencia SPY · libro semanal independiente",
+      "group": "weekly_ml_legacy",
+      "status": "weekly_settled_demo",
+      "daily_mode": false,
+      "first_session": "2026-10-02",
+      "last_session": "2026-10-30",
+      "initial_capital": 100000.0,
+      "last_equity": 96384.70264719165,
+      "return_pct": -3.615297,
+      "day_return_pct": null,
+      "currency": "USD",
+      "equity_history": [
+        {
+          "date": "2026-10-02",
+          "nav": 100000.0
+        },
+        {
+          "date": "2026-10-09",
+          "nav": 100808.17011862928
+        },
+        {
+          "date": "2026-10-16",
+          "nav": 98617.26670709564
+        },
+        {
+          "date": "2026-10-23",
+          "nav": 97452.76485350072
+        },
+        {
+          "date": "2026-10-30",
+          "nav": 96384.70264719165
+        }
+      ],
+      "note": "Libro semanal prospectivo desde 02/10/2026: liquidación al final de la siguiente semana, sin NAV diario ni fills registrados lunes-jueves. Resultado semanal separado; NO participa en la competición diaria ni se suma a la rentabilidad de la campaña diaria.",
+      "activity_state": "pending",
+      "activity_label": "1 señal congelada · liquidación semanal pendiente",
+      "activity_tickers": [
+        "SPY"
+      ],
+      "open_positions_count": 0,
+      "pending_orders_count": 1,
+      "comparison_eligible": false,
+      "comparison_universe_id": null,
+      "comparison_universe_symbols": null,
+      "comparison_exclusion_reason": "Campaña archivada o todavía no normalizada al universo S&P 500",
+      "risk_observations": 5,
+      "annualized_volatility_pct": null,
+      "max_drawdown_pct": -4.388005,
+      "sharpe_0rf": null
+    },
+    {
+      "id": "weekly_ml_benchmark_rsp",
+      "label": "ML semanal · referencia RSP",
+      "provenance": "Campaña ML semanal 2026 · referencia RSP equiponderada",
+      "group": "weekly_ml_demo",
+      "status": "demo_con_diario",
+      "daily_mode": true,
+      "first_session": "2026-10-09",
+      "last_session": "2026-10-30",
+      "initial_capital": 100000.0,
+      "last_equity": 101083.0962018479,
+      "return_pct": 1.083096,
+      "day_return_pct": -0.888821,
+      "currency": "USD",
+      "equity_history": [
+        {
+          "date": "2026-10-09",
+          "nav": 100000.0
+        },
+        {
+          "date": "2026-10-12",
+          "nav": 99804.30496912106
+        },
+        {
+          "date": "2026-10-13",
+          "nav": 99853.22157537071
+        },
+        {
+          "date": "2026-10-14",
+          "nav": 99315.13890662458
+        },
+        {
+          "date": "2026-10-15",
+          "nav": 100609.19993837246
+        },
+        {
+          "date": "2026-10-16",
+          "nav": 100061.76762473409
+        },
+        {
+          "date": "2026-10-19",
+          "nav": 99476.63934351929
+        },
+        {
+          "date": "2026-10-20",
+          "nav": 100565.7001508115
+        },
+        {
+          "date": "2026-10-21",
+          "nav": 100911.01063125838
+        },
+        {
+          "date": "2026-10-22",
+          "nav": 101610.48761233807
+        },
+        {
+          "date": "2026-10-23",
+          "nav": 100722.98974397361
+        },
+        {
+          "date": "2026-10-26",
+          "nav": 100777.90324547174
+        },
+        {
+          "date": "2026-10-27",
+          "nav": 100879.25009007916
+        },
+        {
+          "date": "2026-10-28",
+          "nav": 100839.58941366021
+        },
+        {
+          "date": "2026-10-29",
+          "nav": 101989.60111747174
+        },
+        {
+          "date": "2026-10-30",
+          "nav": 101083.0962018479
+        }
+      ],
+      "note": "Campaña diaria prospectiva desde la señal del 09/10/2026. Fills simulados en la siguiente apertura, NAV al cierre y cierre semanal. No hereda el NAV de la campaña de liquidación diferida ni reconstruye compras pasadas.",
+      "positions": [],
+      "activity_state": "pending",
+      "activity_label": "1 señal para próxima apertura paper",
+      "activity_tickers": [
+        "RSP"
+      ],
+      "open_positions_count": 0,
+      "pending_orders_count": 1,
+      "comparison_eligible": true,
+      "comparison_universe_id": "SP500_2026-09-29_503",
+      "comparison_universe_symbols": 503,
+      "comparison_exclusion_reason": null,
+      "risk_observations": 16,
+      "annualized_volatility_pct": 11.423043,
+      "max_drawdown_pct": -1.125703,
+      "sharpe_0rf": 1.638105
+    },
+    {
+      "id": "weekly_legacy_weekly_ml_benchmark_rsp",
+      "label": "ML semanal · referencia RSP · liquidación diferida",
+      "provenance": "Campaña ML semanal 2026 · referencia RSP equiponderada · libro semanal independiente",
+      "group": "weekly_ml_legacy",
+      "status": "weekly_settled_demo",
+      "daily_mode": false,
+      "first_session": "2026-10-02",
+      "last_session": "2026-10-30",
+      "initial_capital": 100000.0,
+      "last_equity": 102241.57293795428,
+      "return_pct": 2.241573,
+      "day_return_pct": null,
+      "currency": "USD",
+      "equity_history": [
+        {
+          "date": "2026-10-02",
+          "nav": 100000.0
+        },
+        {
+          "date": "2026-10-09",
+          "nav": 101146.06376267727
+        },
+        {
+          "date": "2026-10-16",
+          "nav": 101208.53928374074
+        },
+        {
+          "date": "2026-10-23",
+          "nav": 101877.33943000576
+        },
+        {
+          "date": "2026-10-30",
+          "nav": 102241.57293795428
+        }
+      ],
+      "note": "Libro semanal prospectivo desde 02/10/2026: liquidación al final de la siguiente semana, sin NAV diario ni fills registrados lunes-jueves. Resultado semanal separado; NO participa en la competición diaria ni se suma a la rentabilidad de la campaña diaria.",
+      "activity_state": "pending",
+      "activity_label": "1 señal congelada · liquidación semanal pendiente",
+      "activity_tickers": [
+        "RSP"
+      ],
+      "open_positions_count": 0,
+      "pending_orders_count": 1,
+      "comparison_eligible": false,
+      "comparison_universe_id": null,
+      "comparison_universe_symbols": null,
+      "comparison_exclusion_reason": "Campaña archivada o todavía no normalizada al universo S&P 500",
+      "risk_observations": 5,
+      "annualized_volatility_pct": null,
+      "max_drawdown_pct": 0.0,
+      "sharpe_0rf": null
+    },
+    {
+      "id": "weekly_ml_lgbm_return_2026",
+      "label": "ML semanal · LightGBM rentabilidad",
+      "provenance": "MIDAS Python v2 · regresión semanal corregida 2026",
+      "group": "weekly_ml_demo",
+      "status": "demo_con_diario",
+      "daily_mode": true,
+      "first_session": "2026-10-09",
+      "last_session": "2026-10-30",
+      "initial_capital": 100000.0,
+      "last_equity": 83291.89980045031,
+      "return_pct": -16.7081,
+      "day_return_pct": 0.0,
+      "currency": "USD",
+      "equity_history": [
+        {
+          "date": "2026-10-09",
+          "nav": 100000.0
+        },
+        {
+          "date": "2026-10-12",
+          "nav": 98292.0884738033
+        },
+        {
+          "date": "2026-10-13",
+          "nav": 97599.50454367654
+        },
+        {
+          "date": "2026-10-14",
+          "nav": 93009.19524435597
+        },
+        {
+          "date": "2026-10-15",
+          "nav": 92260.64612062901
+        },
+        {
+          "date": "2026-10-16",
+          "nav": 88064.3797293889
+        },
+        {
+          "date": "2026-10-19",
+          "nav": 86218.89274162358
+        },
+        {
+          "date": "2026-10-20",
+          "nav": 85709.53333373288
+        },
+        {
+          "date": "2026-10-21",
+          "nav": 88295.47281650896
+        },
+        {
+          "date": "2026-10-22",
+          "nav": 82539.6712247888
+        },
+        {
+          "date": "2026-10-23",
+          "nav": 83291.89980045031
+        },
+        {
+          "date": "2026-10-26",
+          "nav": 83291.89980045031
+        },
+        {
+          "date": "2026-10-27",
+          "nav": 83291.89980045031
+        },
+        {
+          "date": "2026-10-28",
+          "nav": 83291.89980045031
+        },
+        {
+          "date": "2026-10-29",
+          "nav": 83291.89980045031
+        },
+        {
+          "date": "2026-10-30",
+          "nav": 83291.89980045031
+        }
+      ],
+      "note": "Campaña diaria prospectiva desde la señal del 09/10/2026. Fills simulados en la siguiente apertura, NAV al cierre y cierre semanal. No hereda el NAV de la campaña de liquidación diferida ni reconstruye compras pasadas.",
+      "positions": [],
+      "activity_state": "cash",
+      "activity_label": "Sin compras · en efectivo",
+      "activity_tickers": [],
+      "open_positions_count": 0,
+      "pending_orders_count": 0,
+      "comparison_eligible": true,
+      "comparison_universe_id": "SP500_2026-09-29_503",
+      "comparison_universe_symbols": 503,
+      "comparison_exclusion_reason": null,
+      "risk_observations": 16,
+      "annualized_volatility_pct": 38.662361,
+      "max_drawdown_pct": -17.460329,
+      "sharpe_0rf": -7.710997
+    },
+    {
+      "id": "weekly_legacy_weekly_ml_lgbm_return_2026",
+      "label": "ML semanal · LightGBM rentabilidad · liquidación diferida",
+      "provenance": "MIDAS Python v2 · regresión semanal corregida 2026 · libro semanal independiente",
+      "group": "weekly_ml_legacy",
+      "status": "weekly_settled_demo",
+      "daily_mode": false,
+      "first_session": "2026-10-02",
+      "last_session": "2026-10-30",
+      "initial_capital": 100000.0,
+      "last_equity": 83303.10859468838,
+      "return_pct": -16.696891,
+      "day_return_pct": null,
+      "currency": "USD",
+      "equity_history": [
+        {
+          "date": "2026-10-02",
+          "nav": 100000.0
+        },
+        {
+          "date": "2026-10-09",
+          "nav": 100000.0
+        },
+        {
+          "date": "2026-10-16",
+          "nav": 88064.37972938888
+        },
+        {
+          "date": "2026-10-23",
+          "nav": 83303.10859468838
+        },
+        {
+          "date": "2026-10-30",
+          "nav": 83303.10859468838
+        }
+      ],
+      "note": "Libro semanal prospectivo desde 02/10/2026: liquidación al final de la siguiente semana, sin NAV diario ni fills registrados lunes-jueves. Resultado semanal separado; NO participa en la competición diaria ni se suma a la rentabilidad de la campaña diaria.",
+      "activity_state": "cash",
+      "activity_label": "Sin compras · en efectivo",
+      "activity_tickers": [],
+      "open_positions_count": 0,
+      "pending_orders_count": 0,
+      "comparison_eligible": false,
+      "comparison_universe_id": null,
+      "comparison_universe_symbols": null,
+      "comparison_exclusion_reason": "Campaña archivada o todavía no normalizada al universo S&P 500",
+      "risk_observations": 5,
+      "annualized_volatility_pct": null,
+      "max_drawdown_pct": -16.696891,
+      "sharpe_0rf": null
+    },
+    {
+      "id": "weekly_ml_lgbm_direction_2026",
+      "label": "ML semanal · LightGBM dirección",
+      "provenance": "MIDAS Python v2 · clasificación semanal corregida 2026",
+      "group": "weekly_ml_demo",
+      "status": "demo_con_diario",
+      "daily_mode": true,
+      "first_session": "2026-10-09",
+      "last_session": "2026-10-30",
+      "initial_capital": 100000.0,
+      "last_equity": 100692.64930089214,
+      "return_pct": 0.692649,
+      "day_return_pct": -0.205217,
+      "currency": "USD",
+      "equity_history": [
+        {
+          "date": "2026-10-09",
+          "nav": 100000.0
+        },
+        {
+          "date": "2026-10-12",
+          "nav": 99959.48428286341
+        },
+        {
+          "date": "2026-10-13",
+          "nav": 99968.84477385326
+        },
+        {
+          "date": "2026-10-14",
+          "nav": 99480.80410233894
+        },
+        {
+          "date": "2026-10-15",
+          "nav": 99709.04500063723
+        },
+        {
+          "date": "2026-10-16",
+          "nav": 99314.10274179855
+        },
+        {
+          "date": "2026-10-19",
+          "nav": 98954.95222747838
+        },
+        {
+          "date": "2026-10-20",
+          "nav": 100152.6260686868
+        },
+        {
+          "date": "2026-10-21",
+          "nav": 101254.12540275758
+        },
+        {
+          "date": "2026-10-22",
+          "nav": 101393.19484862871
+        },
+        {
+          "date": "2026-10-23",
+          "nav": 100493.69750953472
+        },
+        {
+          "date": "2026-10-26",
+          "nav": 100779.2709148987
+        },
+        {
+          "date": "2026-10-27",
+          "nav": 99503.18394770843
+        },
+        {
+          "date": "2026-10-28",
+          "nav": 99073.8559490987
+        },
+        {
+          "date": "2026-10-29",
+          "nav": 100899.71235174725
+        },
+        {
+          "date": "2026-10-30",
+          "nav": 100692.64930089214
+        }
+      ],
+      "note": "Campaña diaria prospectiva desde la señal del 09/10/2026. Fills simulados en la siguiente apertura, NAV al cierre y cierre semanal. No hereda el NAV de la campaña de liquidación diferida ni reconstruye compras pasadas.",
+      "positions": [],
+      "activity_state": "cash",
+      "activity_label": "Sin compras · en efectivo",
+      "activity_tickers": [],
+      "open_positions_count": 0,
+      "pending_orders_count": 0,
+      "comparison_eligible": true,
+      "comparison_universe_id": "SP500_2026-09-29_503",
+      "comparison_universe_symbols": 503,
+      "comparison_exclusion_reason": null,
+      "risk_observations": 16,
+      "annualized_volatility_pct": 12.961422,
+      "max_drawdown_pct": -2.28747,
+      "sharpe_0rf": 0.955138
+    },
+    {
+      "id": "weekly_legacy_weekly_ml_lgbm_direction_2026",
+      "label": "ML semanal · LightGBM dirección · liquidación diferida",
+      "provenance": "MIDAS Python v2 · clasificación semanal corregida 2026 · libro semanal independiente",
+      "group": "weekly_ml_legacy",
+      "status": "weekly_settled_demo",
+      "daily_mode": false,
+      "first_session": "2026-10-02",
+      "last_session": "2026-10-30",
+      "initial_capital": 100000.0,
+      "last_equity": 100705.31498611334,
+      "return_pct": 0.705315,
+      "day_return_pct": null,
+      "currency": "USD",
+      "equity_history": [
+        {
+          "date": "2026-10-02",
+          "nav": 100000.0
+        },
+        {
+          "date": "2026-10-09",
+          "nav": 100000.0
+        },
+        {
+          "date": "2026-10-16",
+          "nav": 99314.10274179852
+        },
+        {
+          "date": "2026-10-23",
+          "nav": 100506.33817479112
+        },
+        {
+          "date": "2026-10-30",
+          "nav": 100705.31498611334
+        }
+      ],
+      "note": "Libro semanal prospectivo desde 02/10/2026: liquidación al final de la siguiente semana, sin NAV diario ni fills registrados lunes-jueves. Resultado semanal separado; NO participa en la competición diaria ni se suma a la rentabilidad de la campaña diaria.",
+      "activity_state": "cash",
+      "activity_label": "Sin compras · en efectivo",
+      "activity_tickers": [],
+      "open_positions_count": 0,
+      "pending_orders_count": 0,
+      "comparison_eligible": false,
+      "comparison_universe_id": null,
+      "comparison_universe_symbols": null,
+      "comparison_exclusion_reason": "Campaña archivada o todavía no normalizada al universo S&P 500",
+      "risk_observations": 5,
+      "annualized_volatility_pct": null,
+      "max_drawdown_pct": -0.685897,
+      "sharpe_0rf": null
+    },
+    {
+      "id": "weekly_ml_lgbm_ranker_2026",
+      "label": "ML semanal · LightGBM ranker",
+      "provenance": "MIDAS nuevo 2026 · ranking cross-sectional que sustituye precio absoluto",
+      "group": "weekly_ml_demo",
+      "status": "demo_con_diario",
+      "daily_mode": true,
+      "first_session": "2026-10-09",
+      "last_session": "2026-10-30",
+      "initial_capital": 100000.0,
+      "last_equity": 93086.44604935743,
+      "return_pct": -6.913554,
+      "day_return_pct": -5.661659,
+      "currency": "USD",
+      "equity_history": [
+        {
+          "date": "2026-10-09",
+          "nav": 100000.0
+        },
+        {
+          "date": "2026-10-12",
+          "nav": 99094.23575542352
+        },
+        {
+          "date": "2026-10-13",
+          "nav": 98985.30811229287
+        },
+        {
+          "date": "2026-10-14",
+          "nav": 97147.41504971139
+        },
+        {
+          "date": "2026-10-15",
+          "nav": 98502.07610550431
+        },
+        {
+          "date": "2026-10-16",
+          "nav": 97192.79806216282
+        },
+        {
+          "date": "2026-10-19",
+          "nav": 96999.13610136427
+        },
+        {
+          "date": "2026-10-20",
+          "nav": 98263.56810551973
+        },
+        {
+          "date": "2026-10-21",
+          "nav": 100769.06350999676
+        },
+        {
+          "date": "2026-10-22",
+          "nav": 93616.11292676759
+        },
+        {
+          "date": "2026-10-23",
+          "nav": 93626.23090181296
+        },
+        {
+          "date": "2026-10-26",
+          "nav": 95495.24807721042
+        },
+        {
+          "date": "2026-10-27",
+          "nav": 98865.19779205101
+        },
+        {
+          "date": "2026-10-28",
+          "nav": 99954.96408560826
+        },
+        {
+          "date": "2026-10-29",
+          "nav": 98672.97329026941
+        },
+        {
+          "date": "2026-10-30",
+          "nav": 93086.44604935743
+        }
+      ],
+      "note": "Campaña diaria prospectiva desde la señal del 09/10/2026. Fills simulados en la siguiente apertura, NAV al cierre y cierre semanal. No hereda el NAV de la campaña de liquidación diferida ni reconstruye compras pasadas.",
+      "positions": [],
+      "activity_state": "pending",
+      "activity_label": "10 señales para próxima apertura paper",
+      "activity_tickers": [
+        "AKAM",
+        "NOW",
+        "ORCL",
+        "CRWD",
+        "MRNA",
+        "AMAT",
+        "PANW",
+        "STX",
+        "MU",
+        "HPE"
+      ],
+      "open_positions_count": 0,
+      "pending_orders_count": 10,
+      "comparison_eligible": true,
+      "comparison_universe_id": "SP500_2026-09-29_503",
+      "comparison_universe_symbols": 503,
+      "comparison_exclusion_reason": null,
+      "risk_observations": 16,
+      "annualized_volatility_pct": 45.517871,
+      "max_drawdown_pct": -7.623984,
+      "sharpe_0rf": -2.420257
+    },
+    {
+      "id": "weekly_legacy_weekly_ml_lgbm_ranker_2026",
+      "label": "ML semanal · LightGBM ranker · liquidación diferida",
+      "provenance": "MIDAS nuevo 2026 · ranking cross-sectional que sustituye precio absoluto · libro semanal independiente",
+      "group": "weekly_ml_legacy",
+      "status": "weekly_settled_demo",
+      "daily_mode": false,
+      "first_session": "2026-10-02",
+      "last_session": "2026-10-30",
+      "initial_capital": 100000.0,
+      "last_equity": 91590.00556718362,
+      "return_pct": -8.409994,
+      "day_return_pct": null,
+      "currency": "USD",
+      "equity_history": [
+        {
+          "date": "2026-10-02",
+          "nav": 100000.0
+        },
+        {
+          "date": "2026-10-09",
+          "nav": 98378.0969249574
+        },
+        {
+          "date": "2026-10-16",
+          "nav": 95617.71084198591
+        },
+        {
+          "date": "2026-10-23",
+          "nav": 92121.11294229668
+        },
+        {
+          "date": "2026-10-30",
+          "nav": 91590.00556718362
+        }
+      ],
+      "note": "Libro semanal prospectivo desde 02/10/2026: liquidación al final de la siguiente semana, sin NAV diario ni fills registrados lunes-jueves. Resultado semanal separado; NO participa en la competición diaria ni se suma a la rentabilidad de la campaña diaria.",
+      "activity_state": "pending",
+      "activity_label": "10 señales congeladas · liquidación semanal pendiente",
+      "activity_tickers": [
+        "AKAM",
+        "NOW",
+        "ORCL",
+        "CRWD",
+        "MRNA",
+        "AMAT",
+        "PANW",
+        "STX",
+        "MU",
+        "HPE"
+      ],
+      "open_positions_count": 0,
+      "pending_orders_count": 10,
+      "comparison_eligible": false,
+      "comparison_universe_id": null,
+      "comparison_universe_symbols": null,
+      "comparison_exclusion_reason": "Campaña archivada o todavía no normalizada al universo S&P 500",
+      "risk_observations": 5,
+      "annualized_volatility_pct": null,
+      "max_drawdown_pct": -8.409994,
+      "sharpe_0rf": null
+    },
+    {
+      "id": "weekly_ml_mlp_2026",
+      "label": "ML semanal · MLP",
+      "provenance": "TFM/ML · MLP adaptado al horizonte semanal",
+      "group": "weekly_ml_demo",
+      "status": "demo_con_diario",
+      "daily_mode": true,
+      "first_session": "2026-10-09",
+      "last_session": "2026-10-30",
+      "initial_capital": 100000.0,
+      "last_equity": 88740.2225692813,
+      "return_pct": -11.259777,
+      "day_return_pct": -3.04017,
+      "currency": "USD",
+      "equity_history": [
+        {
+          "date": "2026-10-09",
+          "nav": 100000.0
+        },
+        {
+          "date": "2026-10-12",
+          "nav": 98896.17827831536
+        },
+        {
+          "date": "2026-10-13",
+          "nav": 99645.32566571867
+        },
+        {
+          "date": "2026-10-14",
+          "nav": 96370.30492638813
+        },
+        {
+          "date": "2026-10-15",
+          "nav": 97163.60061334667
+        },
+        {
+          "date": "2026-10-16",
+          "nav": 94309.9991100305
+        },
+        {
+          "date": "2026-10-19",
+          "nav": 92933.394960369
+        },
+        {
+          "date": "2026-10-20",
+          "nav": 92838.07072340998
+        },
+        {
+          "date": "2026-10-21",
+          "nav": 94710.6204325726
+        },
+        {
+          "date": "2026-10-22",
+          "nav": 88905.51290345023
+        },
+        {
+          "date": "2026-10-23",
+          "nav": 90332.84147144362
+        },
+        {
+          "date": "2026-10-26",
+          "nav": 90514.42120521927
+        },
+        {
+          "date": "2026-10-27",
+          "nav": 91885.87585793175
+        },
+        {
+          "date": "2026-10-28",
+          "nav": 91437.42017328463
+        },
+        {
+          "date": "2026-10-29",
+          "nav": 91522.66717195719
+        },
+        {
+          "date": "2026-10-30",
+          "nav": 88740.2225692813
+        }
+      ],
+      "note": "Campaña diaria prospectiva desde la señal del 09/10/2026. Fills simulados en la siguiente apertura, NAV al cierre y cierre semanal. No hereda el NAV de la campaña de liquidación diferida ni reconstruye compras pasadas.",
+      "positions": [],
+      "activity_state": "pending",
+      "activity_label": "10 señales para próxima apertura paper",
+      "activity_tickers": [
+        "INTU",
+        "PYPL",
+        "DXCM",
+        "DVA",
+        "PANW",
+        "BLDR",
+        "CRWD",
+        "DDOG",
+        "MRK",
+        "FICO"
+      ],
+      "open_positions_count": 0,
+      "pending_orders_count": 10,
+      "comparison_eligible": true,
+      "comparison_universe_id": "SP500_2026-09-29_503",
+      "comparison_universe_symbols": 503,
+      "comparison_exclusion_reason": null,
+      "risk_observations": 16,
+      "annualized_volatility_pct": 35.801632,
+      "max_drawdown_pct": -11.259777,
+      "sharpe_0rf": -5.412647
+    },
+    {
+      "id": "weekly_legacy_weekly_ml_mlp_2026",
+      "label": "ML semanal · MLP · liquidación diferida",
+      "provenance": "TFM/ML · MLP adaptado al horizonte semanal · libro semanal independiente",
+      "group": "weekly_ml_legacy",
+      "status": "weekly_settled_demo",
+      "daily_mode": false,
+      "first_session": "2026-10-02",
+      "last_session": "2026-10-30",
+      "initial_capital": 100000.0,
+      "last_equity": 88626.42723077661,
+      "return_pct": -11.373573,
+      "day_return_pct": null,
+      "currency": "USD",
+      "equity_history": [
+        {
+          "date": "2026-10-02",
+          "nav": 100000.0
+        },
+        {
+          "date": "2026-10-09",
+          "nav": 99805.41793310178
+        },
+        {
+          "date": "2026-10-16",
+          "nav": 94126.48875045154
+        },
+        {
+          "date": "2026-10-23",
+          "nav": 90217.00385450856
+        },
+        {
+          "date": "2026-10-30",
+          "nav": 88626.42723077661
+        }
+      ],
+      "note": "Libro semanal prospectivo desde 02/10/2026: liquidación al final de la siguiente semana, sin NAV diario ni fills registrados lunes-jueves. Resultado semanal separado; NO participa en la competición diaria ni se suma a la rentabilidad de la campaña diaria.",
+      "activity_state": "pending",
+      "activity_label": "10 señales congeladas · liquidación semanal pendiente",
+      "activity_tickers": [
+        "INTU",
+        "PYPL",
+        "DXCM",
+        "DVA",
+        "PANW",
+        "BLDR",
+        "CRWD",
+        "DDOG",
+        "MRK",
+        "FICO"
+      ],
+      "open_positions_count": 0,
+      "pending_orders_count": 10,
+      "comparison_eligible": false,
+      "comparison_universe_id": null,
+      "comparison_universe_symbols": null,
+      "comparison_exclusion_reason": "Campaña archivada o todavía no normalizada al universo S&P 500",
+      "risk_observations": 5,
+      "annualized_volatility_pct": null,
+      "max_drawdown_pct": -11.373573,
+      "sharpe_0rf": null
+    },
+    {
+      "id": "weekly_ml_lstm_2026",
+      "label": "ML semanal · LSTM",
+      "provenance": "TFM/ML · LSTM adaptado al horizonte semanal",
+      "group": "weekly_ml_demo",
+      "status": "demo_con_diario",
+      "daily_mode": true,
+      "first_session": "2026-10-09",
+      "last_session": "2026-10-30",
+      "initial_capital": 100000.0,
+      "last_equity": 96515.1167903347,
+      "return_pct": -3.484883,
+      "day_return_pct": -0.717499,
+      "currency": "USD",
+      "equity_history": [
+        {
+          "date": "2026-10-09",
+          "nav": 100000.0
+        },
+        {
+          "date": "2026-10-12",
+          "nav": 98329.46660754806
+        },
+        {
+          "date": "2026-10-13",
+          "nav": 98637.83526216332
+        },
+        {
+          "date": "2026-10-14",
+          "nav": 94484.13417647066
+        },
+        {
+          "date": "2026-10-15",
+          "nav": 95906.6730787208
+        },
+        {
+          "date": "2026-10-16",
+          "nav": 92421.39974018345
+        },
+        {
+          "date": "2026-10-19",
+          "nav": 91465.59780751931
+        },
+        {
+          "date": "2026-10-20",
+          "nav": 93117.99195480329
+        },
+        {
+          "date": "2026-10-21",
+          "nav": 94039.20503120657
+        },
+        {
+          "date": "2026-10-22",
+          "nav": 94486.4956932943
+        },
+        {
+          "date": "2026-10-23",
+          "nav": 92805.03605936996
+        },
+        {
+          "date": "2026-10-26",
+          "nav": 92583.86273161034
+        },
+        {
+          "date": "2026-10-27",
+          "nav": 93402.02845844437
+        },
+        {
+          "date": "2026-10-28",
+          "nav": 93775.49790981959
+        },
+        {
+          "date": "2026-10-29",
+          "nav": 97212.61596537598
+        },
+        {
+          "date": "2026-10-30",
+          "nav": 96515.1167903347
+        }
+      ],
+      "note": "Campaña diaria prospectiva desde la señal del 09/10/2026. Fills simulados en la siguiente apertura, NAV al cierre y cierre semanal. No hereda el NAV de la campaña de liquidación diferida ni reconstruye compras pasadas.",
+      "positions": [],
+      "activity_state": "pending",
+      "activity_label": "10 señales para próxima apertura paper",
+      "activity_tickers": [
+        "MGM",
+        "NRG",
+        "AXON",
+        "CAT",
+        "ODFL",
+        "WYNN",
+        "APTV",
+        "LII",
+        "CHRW",
+        "CHTR"
+      ],
+      "open_positions_count": 0,
+      "pending_orders_count": 10,
+      "comparison_eligible": true,
+      "comparison_universe_id": "SP500_2026-09-29_503",
+      "comparison_universe_symbols": 503,
+      "comparison_exclusion_reason": null,
+      "risk_observations": 16,
+      "annualized_volatility_pct": 32.600588,
+      "max_drawdown_pct": -8.534402,
+      "sharpe_0rf": -1.672587
+    },
+    {
+      "id": "weekly_legacy_weekly_ml_lstm_2026",
+      "label": "ML semanal · LSTM · liquidación diferida",
+      "provenance": "TFM/ML · LSTM adaptado al horizonte semanal · libro semanal independiente",
+      "group": "weekly_ml_legacy",
+      "status": "weekly_settled_demo",
+      "daily_mode": false,
+      "first_session": "2026-10-02",
+      "last_session": "2026-10-30",
+      "initial_capital": 100000.0,
+      "last_equity": 94154.92371856241,
+      "return_pct": -5.845076,
+      "day_return_pct": null,
+      "currency": "USD",
+      "equity_history": [
+        {
+          "date": "2026-10-02",
+          "nav": 100000.0
+        },
+        {
+          "date": "2026-10-09",
+          "nav": 97553.20770649232
+        },
+        {
+          "date": "2026-10-16",
+          "nav": 90161.31498247455
+        },
+        {
+          "date": "2026-10-23",
+          "nav": 90535.56977336342
+        },
+        {
+          "date": "2026-10-30",
+          "nav": 94154.92371856241
+        }
+      ],
+      "note": "Libro semanal prospectivo desde 02/10/2026: liquidación al final de la siguiente semana, sin NAV diario ni fills registrados lunes-jueves. Resultado semanal separado; NO participa en la competición diaria ni se suma a la rentabilidad de la campaña diaria.",
+      "activity_state": "pending",
+      "activity_label": "10 señales congeladas · liquidación semanal pendiente",
+      "activity_tickers": [
+        "MGM",
+        "NRG",
+        "AXON",
+        "CAT",
+        "ODFL",
+        "WYNN",
+        "APTV",
+        "LII",
+        "CHRW",
+        "CHTR"
+      ],
+      "open_positions_count": 0,
+      "pending_orders_count": 10,
+      "comparison_eligible": false,
+      "comparison_universe_id": null,
+      "comparison_universe_symbols": null,
+      "comparison_exclusion_reason": "Campaña archivada o todavía no normalizada al universo S&P 500",
+      "risk_observations": 5,
+      "annualized_volatility_pct": null,
+      "max_drawdown_pct": -9.838685,
+      "sharpe_0rf": null
+    },
+    {
+      "id": "weekly_ml_arima_2026",
+      "label": "ML semanal · ARIMA",
+      "provenance": "TFM/ML · ARIMA adaptado al horizonte semanal",
+      "group": "weekly_ml_demo",
+      "status": "demo_con_diario",
+      "daily_mode": true,
+      "first_session": "2026-10-09",
+      "last_session": "2026-10-30",
+      "initial_capital": 100000.0,
+      "last_equity": 89683.27426368505,
+      "return_pct": -10.316726,
+      "day_return_pct": 1.560367,
+      "currency": "USD",
+      "equity_history": [
+        {
+          "date": "2026-10-09",
+          "nav": 100000.0
+        },
+        {
+          "date": "2026-10-12",
+          "nav": 98065.48501686993
+        },
+        {
+          "date": "2026-10-13",
+          "nav": 97486.76231156902
+        },
+        {
+          "date": "2026-10-14",
+          "nav": 94437.75699874689
+        },
+        {
+          "date": "2026-10-15",
+          "nav": 93564.25698821031
+        },
+        {
+          "date": "2026-10-16",
+          "nav": 89037.72638050203
+        },
+        {
+          "date": "2026-10-19",
+          "nav": 88408.06201989045
+        },
+        {
+          "date": "2026-10-20",
+          "nav": 89158.35541104282
+        },
+        {
+          "date": "2026-10-21",
+          "nav": 91956.78030914272
+        },
+        {
+          "date": "2026-10-22",
+          "nav": 87248.48923812195
+        },
+        {
+          "date": "2026-10-23",
+          "nav": 88118.41432641921
+        },
+        {
+          "date": "2026-10-26",
+          "nav": 88439.38816379986
+        },
+        {
+          "date": "2026-10-27",
+          "nav": 86785.05704636098
+        },
+        {
+          "date": "2026-10-28",
+          "nav": 87383.16530459998
+        },
+        {
+          "date": "2026-10-29",
+          "nav": 88305.38650965803
+        },
+        {
+          "date": "2026-10-30",
+          "nav": 89683.27426368505
+        }
+      ],
+      "note": "Campaña diaria prospectiva desde la señal del 09/10/2026. Fills simulados en la siguiente apertura, NAV al cierre y cierre semanal. No hereda el NAV de la campaña de liquidación diferida ni reconstruye compras pasadas.",
+      "positions": [],
+      "activity_state": "pending",
+      "activity_label": "10 señales para próxima apertura paper",
+      "activity_tickers": [
+        "NOW",
+        "FFIV",
+        "NCLH",
+        "MRNA",
+        "FTNT",
+        "HPQ",
+        "CRWD",
+        "BBY",
+        "ROP",
+        "MPC"
+      ],
+      "open_positions_count": 0,
+      "pending_orders_count": 10,
+      "comparison_eligible": true,
+      "comparison_universe_id": "SP500_2026-09-29_503",
+      "comparison_universe_symbols": 503,
+      "comparison_exclusion_reason": null,
+      "risk_observations": 16,
+      "annualized_volatility_pct": 37.175042,
+      "max_drawdown_pct": -13.214943,
+      "sharpe_0rf": -4.726749
+    },
+    {
+      "id": "weekly_legacy_weekly_ml_arima_2026",
+      "label": "ML semanal · ARIMA · liquidación diferida",
+      "provenance": "TFM/ML · ARIMA adaptado al horizonte semanal · libro semanal independiente",
+      "group": "weekly_ml_legacy",
+      "status": "weekly_settled_demo",
+      "daily_mode": false,
+      "first_session": "2026-10-02",
+      "last_session": "2026-10-30",
+      "initial_capital": 100000.0,
+      "last_equity": 91562.08869615922,
+      "return_pct": -8.437911,
+      "day_return_pct": null,
+      "currency": "USD",
+      "equity_history": [
+        {
+          "date": "2026-10-02",
+          "nav": 100000.0
+        },
+        {
+          "date": "2026-10-09",
+          "nav": 102080.31733493878
+        },
+        {
+          "date": "2026-10-16",
+          "nav": 90891.32765517029
+        },
+        {
+          "date": "2026-10-23",
+          "nav": 89964.44580131033
+        },
+        {
+          "date": "2026-10-30",
+          "nav": 91562.08869615922
+        }
+      ],
+      "note": "Libro semanal prospectivo desde 02/10/2026: liquidación al final de la siguiente semana, sin NAV diario ni fills registrados lunes-jueves. Resultado semanal separado; NO participa en la competición diaria ni se suma a la rentabilidad de la campaña diaria.",
+      "activity_state": "pending",
+      "activity_label": "10 señales congeladas · liquidación semanal pendiente",
+      "activity_tickers": [
+        "NOW",
+        "FFIV",
+        "NCLH",
+        "MRNA",
+        "FTNT",
+        "HPQ",
+        "CRWD",
+        "BBY",
+        "ROP",
+        "MPC"
+      ],
+      "open_positions_count": 0,
+      "pending_orders_count": 10,
+      "comparison_eligible": false,
+      "comparison_universe_id": null,
+      "comparison_universe_symbols": null,
+      "comparison_exclusion_reason": "Campaña archivada o todavía no normalizada al universo S&P 500",
+      "risk_observations": 5,
+      "annualized_volatility_pct": null,
+      "max_drawdown_pct": -11.86896,
+      "sharpe_0rf": null
+    },
+    {
+      "id": "weekly_ml_ensemble_2026",
+      "label": "ML semanal · ensemble consenso",
+      "provenance": "MIDAS nuevo 2026 · consenso de expertos semanales",
+      "group": "weekly_ml_demo",
+      "status": "demo_con_diario",
+      "daily_mode": true,
+      "first_session": "2026-10-09",
+      "last_session": "2026-10-30",
+      "initial_capital": 100000.0,
+      "last_equity": 83727.75526088435,
+      "return_pct": -16.272245,
+      "day_return_pct": -2.695175,
+      "currency": "USD",
+      "equity_history": [
+        {
+          "date": "2026-10-09",
+          "nav": 100000.0
+        },
+        {
+          "date": "2026-10-12",
+          "nav": 97895.36950059992
+        },
+        {
+          "date": "2026-10-13",
+          "nav": 97594.37310822331
+        },
+        {
+          "date": "2026-10-14",
+          "nav": 93130.9032851153
+        },
+        {
+          "date": "2026-10-15",
+          "nav": 91227.04190527245
+        },
+        {
+          "date": "2026-10-16",
+          "nav": 87153.67295416383
+        },
+        {
+          "date": "2026-10-19",
+          "nav": 86653.6393939074
+        },
+        {
+          "date": "2026-10-20",
+          "nav": 87569.71803005549
+        },
+        {
+          "date": "2026-10-21",
+          "nav": 89990.86466241677
+        },
+        {
+          "date": "2026-10-22",
+          "nav": 86755.43236001114
+        },
+        {
+          "date": "2026-10-23",
+          "nav": 86090.96691497671
+        },
+        {
+          "date": "2026-10-26",
+          "nav": 86508.4393964152
+        },
+        {
+          "date": "2026-10-27",
+          "nav": 86889.94983880527
+        },
+        {
+          "date": "2026-10-28",
+          "nav": 86228.17851844616
+        },
+        {
+          "date": "2026-10-29",
+          "nav": 86046.8691057231
+        },
+        {
+          "date": "2026-10-30",
+          "nav": 83727.75526088435
+        }
+      ],
+      "note": "Campaña diaria prospectiva desde la señal del 09/10/2026. Fills simulados en la siguiente apertura, NAV al cierre y cierre semanal. No hereda el NAV de la campaña de liquidación diferida ni reconstruye compras pasadas.",
+      "positions": [],
+      "activity_state": "pending",
+      "activity_label": "10 señales para próxima apertura paper",
+      "activity_tickers": [
+        "PLTR",
+        "NOW",
+        "ERIE",
+        "MGM",
+        "MRK",
+        "MAR",
+        "AON",
+        "FDS",
+        "BIIB",
+        "VLO"
+      ],
+      "open_positions_count": 0,
+      "pending_orders_count": 10,
+      "comparison_eligible": true,
+      "comparison_universe_id": "SP500_2026-09-29_503",
+      "comparison_universe_symbols": 503,
+      "comparison_exclusion_reason": null,
+      "risk_observations": 16,
+      "annualized_volatility_pct": 32.976168,
+      "max_drawdown_pct": -16.272245,
+      "sharpe_0rf": -8.838619
+    },
+    {
+      "id": "weekly_legacy_weekly_ml_ensemble_2026",
+      "label": "ML semanal · ensemble consenso · liquidación diferida",
+      "provenance": "MIDAS nuevo 2026 · consenso de expertos semanales · libro semanal independiente",
+      "group": "weekly_ml_legacy",
+      "status": "weekly_settled_demo",
+      "daily_mode": false,
+      "first_session": "2026-10-02",
+      "last_session": "2026-10-30",
+      "initial_capital": 100000.0,
+      "last_equity": 81698.70085459937,
+      "return_pct": -18.301299,
+      "day_return_pct": null,
+      "currency": "USD",
+      "equity_history": [
+        {
+          "date": "2026-10-02",
+          "nav": 100000.0
+        },
+        {
+          "date": "2026-10-09",
+          "nav": 97564.03364258673
+        },
+        {
+          "date": "2026-10-16",
+          "nav": 85030.63879082374
+        },
+        {
+          "date": "2026-10-23",
+          "nav": 84004.64257267193
+        },
+        {
+          "date": "2026-10-30",
+          "nav": 81698.70085459937
+        }
+      ],
+      "note": "Libro semanal prospectivo desde 02/10/2026: liquidación al final de la siguiente semana, sin NAV diario ni fills registrados lunes-jueves. Resultado semanal separado; NO participa en la competición diaria ni se suma a la rentabilidad de la campaña diaria.",
+      "activity_state": "pending",
+      "activity_label": "10 señales congeladas · liquidación semanal pendiente",
+      "activity_tickers": [
+        "PLTR",
+        "NOW",
+        "ERIE",
+        "MGM",
+        "MRK",
+        "MAR",
+        "AON",
+        "FDS",
+        "BIIB",
+        "VLO"
+      ],
+      "open_positions_count": 0,
+      "pending_orders_count": 10,
+      "comparison_eligible": false,
+      "comparison_universe_id": null,
+      "comparison_universe_symbols": null,
+      "comparison_exclusion_reason": "Campaña archivada o todavía no normalizada al universo S&P 500",
+      "risk_observations": 5,
+      "annualized_volatility_pct": null,
+      "max_drawdown_pct": -18.301299,
+      "sharpe_0rf": null
+    },
+    {
+      "id": "tfg_corrected_2026",
+      "label": "TFG corregido 2026 · técnico + AHP + MAD",
+      "provenance": "TFG 2021 · arquitectura portada y corregida para paper 2026",
+      "group": "tfg_demo_adaptado",
+      "status": "demo_con_diario",
+      "first_session": "2026-10-02",
+      "last_session": "2026-10-30",
+      "initial_capital": 100000.0,
+      "last_equity": 100000.0,
+      "return_pct": 0.0,
+      "day_return_pct": 0.0,
+      "currency": "USD",
+      "equity_history": [
+        {
+          "date": "2026-10-02",
+          "nav": 100000.0
+        },
+        {
+          "date": "2026-10-09",
+          "nav": 100000.0
+        },
+        {
+          "date": "2026-10-16",
+          "nav": 100000.0
+        },
+        {
+          "date": "2026-10-23",
+          "nav": 100000.0
+        },
+        {
+          "date": "2026-10-30",
+          "nav": 100000.0
+        }
+      ],
+      "note": "Arquitectura TFG 2021 portada con riesgo/beta sobre retornos y ejecución prospectiva next-open.",
+      "activity_state": "pending",
+      "activity_label": "15 compras para próxima apertura",
+      "activity_tickers": [
+        "HST",
+        "MAR",
+        "DOV",
+        "TDY",
+        "HON",
+        "FAST",
+        "WMT",
+        "PG",
+        "AIG",
+        "DD",
+        "FTV",
+        "MTD"
+      ],
+      "open_positions_count": 0,
+      "pending_orders_count": 15,
+      "comparison_eligible": true,
+      "comparison_universe_id": "SP500_2026-09-29_503",
+      "comparison_universe_symbols": 503,
+      "comparison_exclusion_reason": null,
+      "risk_observations": 5,
+      "annualized_volatility_pct": null,
+      "max_drawdown_pct": 0.0,
+      "sharpe_0rf": null
+    },
+    {
+      "id": "capital_cycle_inflection_2026",
+      "label": "Capital Cycle Inflection · underinvestment + calidad + giro",
+      "provenance": "MIDAS 2026 · estrategia cíclica derivada del marco Capital Cycle",
+      "group": "capital_cycle_demo",
+      "status": "demo_con_diario",
+      "first_session": "2026-09-30",
+      "last_session": "2026-10-30",
+      "initial_capital": 100000.0,
+      "last_equity": 106397.81643808546,
+      "return_pct": 6.397816,
+      "day_return_pct": -0.402964,
+      "currency": "USD",
+      "equity_history": [
+        {
+          "date": "2026-09-30",
+          "nav": 100000.0
+        },
+        {
+          "date": "2026-10-01",
+          "nav": 100626.30858269057
+        },
+        {
+          "date": "2026-10-02",
+          "nav": 101536.39772830743
+        },
+        {
+          "date": "2026-10-05",
+          "nav": 101876.1470326577
+        },
+        {
+          "date": "2026-10-06",
+          "nav": 101952.13242630963
+        },
+        {
+          "date": "2026-10-07",
+          "nav": 100600.75814057965
+        },
+        {
+          "date": "2026-10-08",
+          "nav": 101316.83690387306
+        },
+        {
+          "date": "2026-10-09",
+          "nav": 100646.41733860325
+        },
+        {
+          "date": "2026-10-12",
+          "nav": 101023.87564541132
+        },
+        {
+          "date": "2026-10-13",
+          "nav": 102286.5451661728
+        },
+        {
+          "date": "2026-10-14",
+          "nav": 101789.58893460623
+        },
+        {
+          "date": "2026-10-15",
+          "nav": 103772.61945342128
+        },
+        {
+          "date": "2026-10-16",
+          "nav": 103694.64759814294
+        },
+        {
+          "date": "2026-10-19",
+          "nav": 103425.1893966528
+        },
+        {
+          "date": "2026-10-20",
+          "nav": 104579.35490624892
+        },
+        {
+          "date": "2026-10-21",
+          "nav": 104966.08027512433
+        },
+        {
+          "date": "2026-10-22",
+          "nav": 105422.96482855396
+        },
+        {
+          "date": "2026-10-23",
+          "nav": 105675.5747375056
+        },
+        {
+          "date": "2026-10-26",
+          "nav": 105879.34558915743
+        },
+        {
+          "date": "2026-10-27",
+          "nav": 106206.07055334348
+        },
+        {
+          "date": "2026-10-28",
+          "nav": 106247.1684207654
+        },
+        {
+          "date": "2026-10-29",
+          "nav": 106828.2959765124
+        },
+        {
+          "date": "2026-10-30",
+          "nav": 106397.81643808546
+        }
+      ],
+      "note": "Capital Cycle v1: underinvestment multianual + calidad + valoración normalizada + confirmación 6/12 meses; rebalance mensual y fills next-open.",
+      "activity_state": "active_pending",
+      "activity_label": "12 posiciones · 4 órdenes pendientes",
+      "activity_tickers": [
+        "ADI",
+        "CF",
+        "EBAY",
+        "EOG",
+        "MHK",
+        "NEM",
+        "ON",
+        "OXY",
+        "PAYC",
+        "PAYX",
+        "QCOM",
+        "SWKS"
+      ],
+      "open_positions_count": 12,
+      "pending_orders_count": 4,
+      "comparison_eligible": true,
+      "comparison_universe_id": "SP500_2026-09-29_503",
+      "comparison_universe_symbols": 503,
+      "comparison_exclusion_reason": null,
+      "risk_observations": 23,
+      "annualized_volatility_pct": 11.106182,
+      "max_drawdown_pct": -1.325499,
+      "sharpe_0rf": 6.457876
+    },
+    {
+      "id": "buy_the_dip_corpus_2026_v0",
+      "label": "Buy The Dip corpus v0 · deep value + special situations",
+      "provenance": "MIDAS 2026 · Buy The Dip corpus v0 · deep value + special situations",
+      "group": "buy_the_dip_demo",
+      "status": "demo_con_diario",
+      "first_session": "2026-10-01",
+      "last_session": "2026-10-30",
+      "initial_capital": 100000.0,
+      "last_equity": 105159.52883115194,
+      "return_pct": 5.159529,
+      "day_return_pct": 0.708275,
+      "currency": "USD",
+      "equity_history": [
+        {
+          "date": "2026-10-01",
+          "nav": 100000.0
+        },
+        {
+          "date": "2026-10-02",
+          "nav": 98006.09859900846
+        },
+        {
+          "date": "2026-10-05",
+          "nav": 99059.64936080732
+        },
+        {
+          "date": "2026-10-06",
+          "nav": 100324.12018754399
+        },
+        {
+          "date": "2026-10-07",
+          "nav": 100152.46126685075
+        },
+        {
+          "date": "2026-10-08",
+          "nav": 101201.03216421067
+        },
+        {
+          "date": "2026-10-09",
+          "nav": 101197.14739049636
+        },
+        {
+          "date": "2026-10-12",
+          "nav": 101498.33283785368
+        },
+        {
+          "date": "2026-10-13",
+          "nav": 102762.6997438044
+        },
+        {
+          "date": "2026-10-14",
+          "nav": 102371.33823816312
+        },
+        {
+          "date": "2026-10-15",
+          "nav": 105318.98114156075
+        },
+        {
+          "date": "2026-10-16",
+          "nav": 104898.37356718667
+        },
+        {
+          "date": "2026-10-19",
+          "nav": 105512.02654807376
+        },
+        {
+          "date": "2026-10-20",
+          "nav": 107585.5518063922
+        },
+        {
+          "date": "2026-10-21",
+          "nav": 107569.09150244854
+        },
+        {
+          "date": "2026-10-22",
+          "nav": 110263.07578185866
+        },
+        {
+          "date": "2026-10-23",
+          "nav": 108421.94403906628
+        },
+        {
+          "date": "2026-10-26",
+          "nav": 106688.96363382142
+        },
+        {
+          "date": "2026-10-27",
+          "nav": 105167.51100126361
+        },
+        {
+          "date": "2026-10-28",
+          "nav": 103914.29754161541
+        },
+        {
+          "date": "2026-10-29",
+          "nav": 104419.94860520308
+        },
+        {
+          "date": "2026-10-30",
+          "nav": 105159.52883115194
+        }
+      ],
+      "note": "Buy The Dip corpus v0: deep value + special situations; valoración, calidad, capital allocation, dislocación y catalizadores; decisión mensual y fills next-open.",
+      "activity_state": "active_pending",
+      "activity_label": "10 posiciones · 4 órdenes pendientes",
+      "activity_tickers": [
+        "ALGN",
+        "AOS",
+        "CTSH",
+        "CTVA",
+        "DECK",
+        "ELV",
+        "ENPH",
+        "EPAM",
+        "PAYC",
+        "PYPL",
+        "expected_fill_session",
+        "sectors"
+      ],
+      "open_positions_count": 10,
+      "pending_orders_count": 4,
+      "comparison_eligible": true,
+      "comparison_universe_id": "SP500_2026-09-29_503",
+      "comparison_universe_symbols": 503,
+      "comparison_exclusion_reason": null,
+      "risk_observations": 22,
+      "annualized_volatility_pct": 21.543616,
+      "max_drawdown_pct": -5.757846,
+      "sharpe_0rf": 2.907838
+    },
+    {
+      "id": "timesfm_2p5_eur_paper",
+      "label": "TimesFM 2.5 · zero-shot semanal · EUR",
+      "provenance": "MIDAS 2026 · TimesFM 2.5 5 sesiones · S&P 500 503 símbolos · EUR",
+      "group": "timesfm_demo",
+      "status": "demo_con_diario",
+      "first_session": "2026-10-16",
+      "last_session": "2026-10-30",
+      "initial_capital": 100000.0,
+      "last_equity": 104260.17228467712,
+      "return_pct": 4.260172,
+      "day_return_pct": -0.114148,
+      "currency": "EUR",
+      "equity_history": [
+        {
+          "date": "2026-10-16",
+          "nav": 100000.0
+        },
+        {
+          "date": "2026-10-19",
+          "nav": 100152.02792482822
+        },
+        {
+          "date": "2026-10-20",
+          "nav": 101065.2414059132
+        },
+        {
+          "date": "2026-10-21",
+          "nav": 100782.50947667025
+        },
+        {
+          "date": "2026-10-22",
+          "nav": 103583.59492527976
+        },
+        {
+          "date": "2026-10-23",
+          "nav": 102898.66775688078
+        },
+        {
+          "date": "2026-10-26",
+          "nav": 102831.60291244305
+        },
+        {
+          "date": "2026-10-27",
+          "nav": 102191.8645617358
+        },
+        {
+          "date": "2026-10-28",
+          "nav": 102553.88425229746
+        },
+        {
+          "date": "2026-10-29",
+          "nav": 104379.31955554587
+        },
+        {
+          "date": "2026-10-30",
+          "nav": 104260.17228467712
+        }
+      ],
+      "note": "Campaña forward EUR: TimesFM 2.5, horizonte 5 sesiones, NAV EUR; referencia SPY EUR same-cohort.",
+      "period_returns_pct": {
+        "5_sessions": 1.323151,
+        "21_sessions": null,
+        "63_sessions": null
+      },
+      "comparison_currency": "EUR",
+      "comparison_reference": "timesfm_spy_eur",
+      "comparison_observation_dates": [
+        "2026-10-16",
+        "2026-10-19",
+        "2026-10-20",
+        "2026-10-21",
+        "2026-10-22",
+        "2026-10-23",
+        "2026-10-26",
+        "2026-10-27",
+        "2026-10-28",
+        "2026-10-29",
+        "2026-10-30"
+      ],
+      "activity_state": "pending",
+      "activity_label": "8 compras paper para próxima apertura",
+      "activity_tickers": [
+        "RMD",
+        "NOW",
+        "CARR",
+        "IP",
+        "XYL",
+        "IBM",
+        "BKNG",
+        "LDOS"
+      ],
+      "open_positions_count": 0,
+      "pending_orders_count": 8,
+      "comparison_eligible": true,
+      "comparison_universe_id": "SP500_2026-09-29_503",
+      "comparison_universe_symbols": 503,
+      "comparison_exclusion_reason": null,
+      "risk_observations": 11,
+      "annualized_volatility_pct": 17.549413,
+      "max_drawdown_pct": -1.343582,
+      "sharpe_0rf": 6.081221
+    },
+    {
+      "id": "timesfm_spy_eur",
+      "label": "Referencia SPY · EUR · inicio TimesFM",
+      "provenance": "Referencia SPY buy & hold convertida a EUR · mismas fechas",
+      "group": "timesfm_demo",
+      "status": "demo_con_diario",
+      "first_session": "2026-10-16",
+      "last_session": "2026-10-30",
+      "initial_capital": 100000.0,
+      "last_equity": 98895.28800427579,
+      "return_pct": -1.104712,
+      "day_return_pct": -1.61061,
+      "currency": "EUR",
+      "equity_history": [
+        {
+          "date": "2026-10-16",
+          "nav": 100000.0
+        },
+        {
+          "date": "2026-10-19",
+          "nav": 99714.3584978734
+        },
+        {
+          "date": "2026-10-20",
+          "nav": 100050.77943988376
+        },
+        {
+          "date": "2026-10-21",
+          "nav": 100392.79169642625
+        },
+        {
+          "date": "2026-10-22",
+          "nav": 99387.18075441688
+        },
+        {
+          "date": "2026-10-23",
+          "nav": 99185.48241380019
+        },
+        {
+          "date": "2026-10-26",
+          "nav": 99655.2140408321
+        },
+        {
+          "date": "2026-10-27",
+          "nav": 100415.28485961781
+        },
+        {
+          "date": "2026-10-28",
+          "nav": 101012.24477102277
+        },
+        {
+          "date": "2026-10-29",
+          "nav": 100514.17966803523
+        },
+        {
+          "date": "2026-10-30",
+          "nav": 98895.28800427579
+        }
+      ],
+      "note": "Campaña forward EUR: TimesFM 2.5, horizonte 5 sesiones, NAV EUR; referencia SPY EUR same-cohort.",
+      "period_returns_pct": {
+        "5_sessions": -0.292578,
+        "21_sessions": null,
+        "63_sessions": null
+      },
+      "comparison_currency": "EUR",
+      "comparison_reference": "timesfm_spy_eur",
+      "comparison_observation_dates": [
+        "2026-10-16",
+        "2026-10-19",
+        "2026-10-20",
+        "2026-10-21",
+        "2026-10-22",
+        "2026-10-23",
+        "2026-10-26",
+        "2026-10-27",
+        "2026-10-28",
+        "2026-10-29",
+        "2026-10-30"
+      ],
+      "activity_state": "active",
+      "activity_label": "1 posición abierta",
+      "activity_tickers": [
+        "SPY"
+      ],
+      "open_positions_count": 1,
+      "pending_orders_count": 0,
+      "comparison_eligible": true,
+      "comparison_universe_id": "SP500_2026-09-29_503",
+      "comparison_universe_symbols": 503,
+      "comparison_exclusion_reason": null,
+      "risk_observations": 11,
+      "annualized_volatility_pct": 12.108095,
+      "max_drawdown_pct": -2.095743,
+      "sharpe_0rf": -2.255953
+    },
+    {
+      "id": "timesfm_2p5_daily_eur_paper",
+      "label": "TimesFM 2.5 · diario · S&P 500 · EUR",
+      "provenance": "MIDAS 2026 · TimesFM 2.5 1 sesión · S&P 500 503 símbolos · EUR",
+      "group": "timesfm_daily_demo",
+      "status": "demo_con_diario",
+      "first_session": "2026-10-12",
+      "last_session": "2026-10-30",
+      "initial_capital": 100000.0,
+      "last_equity": 100612.29901180395,
+      "return_pct": 0.612299,
+      "day_return_pct": -0.1899,
+      "currency": "EUR",
+      "equity_history": [
+        {
+          "date": "2026-10-12",
+          "nav": 100000.0
+        },
+        {
+          "date": "2026-10-13",
+          "nav": 100170.5146876088
+        },
+        {
+          "date": "2026-10-14",
+          "nav": 99967.98583765228
+        },
+        {
+          "date": "2026-10-15",
+          "nav": 100104.25988813999
+        },
+        {
+          "date": "2026-10-16",
+          "nav": 99864.47322076657
+        },
+        {
+          "date": "2026-10-19",
+          "nav": 99864.47322076657
+        },
+        {
+          "date": "2026-10-20",
+          "nav": 100278.72891491576
+        },
+        {
+          "date": "2026-10-21",
+          "nav": 100663.86313460779
+        },
+        {
+          "date": "2026-10-22",
+          "nav": 100945.00750202683
+        },
+        {
+          "date": "2026-10-23",
+          "nav": 100988.52299760707
+        },
+        {
+          "date": "2026-10-26",
+          "nav": 100745.73700973888
+        },
+        {
+          "date": "2026-10-27",
+          "nav": 100555.32337552993
+        },
+        {
+          "date": "2026-10-28",
+          "nav": 100184.407257004
+        },
+        {
+          "date": "2026-10-29",
+          "nav": 100803.7255391774
+        },
+        {
+          "date": "2026-10-30",
+          "nav": 100612.29901180395
+        }
+      ],
+      "period_returns_pct": {
+        "5_sessions": -0.372541,
+        "21_sessions": null,
+        "63_sessions": null
+      },
+      "note": "TimesFM 2.5: predicción de una sesión sobre el S&P 500 canónico; cartera intradía ficticia, EUR 100k, fills next-open, cierre del mismo día; referencia SPY EUR de misma cohorte.",
+      "comparison_currency": "EUR",
+      "comparison_reference": "timesfm_daily_spy_eur",
+      "activity_state": "pending",
+      "activity_label": "1 compra paper para próxima apertura",
+      "activity_tickers": [
+        "XYL"
+      ],
+      "open_positions_count": 0,
+      "pending_orders_count": 1,
+      "comparison_eligible": true,
+      "comparison_universe_id": "SP500_2026-09-29_503",
+      "comparison_universe_symbols": 503,
+      "comparison_exclusion_reason": null,
+      "risk_observations": 15,
+      "annualized_volatility_pct": 4.754216,
+      "max_drawdown_pct": -0.796245,
+      "sharpe_0rf": 2.333715
+    },
+    {
+      "id": "timesfm_daily_spy_eur",
+      "label": "Referencia SPY · EUR · inicio TimesFM diario",
+      "provenance": "Referencia SPY en EUR, misma fecha y costes que TimesFM diario",
+      "group": "timesfm_daily_demo",
+      "status": "demo_con_diario",
+      "first_session": "2026-10-12",
+      "last_session": "2026-10-30",
+      "initial_capital": 100000.0,
+      "last_equity": 97810.71746006577,
+      "return_pct": -2.189283,
+      "day_return_pct": -1.606156,
+      "currency": "EUR",
+      "equity_history": [
+        {
+          "date": "2026-10-12",
+          "nav": 100000.0
+        },
+        {
+          "date": "2026-10-13",
+          "nav": 100267.8916546968
+        },
+        {
+          "date": "2026-10-14",
+          "nav": 99086.53239945357
+        },
+        {
+          "date": "2026-10-15",
+          "nav": 99378.23501332055
+        },
+        {
+          "date": "2026-10-16",
+          "nav": 98161.55848589898
+        },
+        {
+          "date": "2026-10-19",
+          "nav": 98618.52822850265
+        },
+        {
+          "date": "2026-10-20",
+          "nav": 98950.32440698538
+        },
+        {
+          "date": "2026-10-21",
+          "nav": 99287.63503645136
+        },
+        {
+          "date": "2026-10-22",
+          "nav": 98295.84818273984
+        },
+        {
+          "date": "2026-10-23",
+          "nav": 98096.92258012125
+        },
+        {
+          "date": "2026-10-26",
+          "nav": 98560.19682764672
+        },
+        {
+          "date": "2026-10-27",
+          "nav": 99309.81898714228
+        },
+        {
+          "date": "2026-10-28",
+          "nav": 99898.57251754959
+        },
+        {
+          "date": "2026-10-29",
+          "nav": 99407.35429308547
+        },
+        {
+          "date": "2026-10-30",
+          "nav": 97810.71746006577
+        }
+      ],
+      "period_returns_pct": {
+        "5_sessions": -0.291757,
+        "21_sessions": null,
+        "63_sessions": null
+      },
+      "note": "TimesFM 2.5: predicción de una sesión sobre el S&P 500 canónico; cartera intradía ficticia, EUR 100k, fills next-open, cierre del mismo día; referencia SPY EUR de misma cohorte.",
+      "comparison_currency": "EUR",
+      "comparison_reference": "timesfm_daily_spy_eur",
+      "activity_state": "active",
+      "activity_label": "1 posición abierta",
+      "activity_tickers": [
+        "SPY"
+      ],
+      "open_positions_count": 1,
+      "pending_orders_count": 0,
+      "comparison_eligible": true,
+      "comparison_universe_id": "SP500_2026-09-29_503",
+      "comparison_universe_symbols": 503,
+      "comparison_exclusion_reason": null,
+      "risk_observations": 15,
+      "annualized_volatility_pct": 12.583252,
+      "max_drawdown_pct": -2.450609,
+      "sharpe_0rf": -3.105295
+    },
+    {
+      "id": "genetic_sp500_legacy",
+      "label": "Genético original S&P 500",
+      "provenance": "Agente genético S&P 500 original · 2026",
+      "group": "diario_heredado",
+      "status": "sin_diario_disponible",
+      "first_session": null,
+      "last_session": null,
+      "initial_capital": null,
+      "last_equity": null,
+      "return_pct": null,
+      "day_return_pct": null,
+      "currency": null,
+      "equity_history": [],
+      "note": "Diario y ejecución propios; observar por separado hasta reconciliar horarios y contabilidad.",
+      "comparison_eligible": false,
+      "comparison_universe_id": null,
+      "comparison_universe_symbols": null,
+      "comparison_exclusion_reason": "Campaña archivada o todavía no normalizada al universo S&P 500",
+      "activity_state": "unknown",
+      "activity_label": "Actividad actual no enlazada",
+      "activity_tickers": [],
+      "open_positions_count": 0,
+      "pending_orders_count": 0,
+      "risk_observations": 0,
+      "annualized_volatility_pct": null,
+      "max_drawdown_pct": null,
+      "sharpe_0rf": null
+    },
+    {
+      "id": "tfg_midas_r_2021",
+      "label": "TFG 2021: filtros técnicos, AHP y rentabilidad/riesgo",
+      "provenance": "TFG 2021 · MIDAS en R",
+      "group": "historica_pendiente",
+      "status": "sin_ejecucion_comparable",
+      "first_session": null,
+      "last_session": null,
+      "initial_capital": null,
+      "last_equity": null,
+      "return_pct": null,
+      "day_return_pct": null,
+      "currency": null,
+      "equity_history": [],
+      "note": "La réplica literal global de 20 mercados sigue pendiente por símbolos, divisas y calendarios; la variante TFG corregido 2026 se ejecuta por separado sobre un universo S&P-derived homogéneo.",
+      "kind": "estrategia semanal",
+      "source": "fuente histórica privada, no publicada",
+      "comparison_eligible": false,
+      "comparison_universe_id": null,
+      "comparison_universe_symbols": null,
+      "comparison_exclusion_reason": "Campaña archivada o todavía no normalizada al universo S&P 500",
+      "activity_state": "unknown",
+      "activity_label": "Actividad actual no enlazada",
+      "activity_tickers": [],
+      "open_positions_count": 0,
+      "pending_orders_count": 0,
+      "risk_observations": 0,
+      "annualized_volatility_pct": null,
+      "max_drawdown_pct": null,
+      "sharpe_0rf": null
+    },
+    {
+      "id": "midas_r_crypto",
+      "label": "MIDAS R cripto",
+      "provenance": "MIDAS en R · experimento cripto",
+      "group": "historica_pendiente",
+      "status": "sin_ejecucion_comparable",
+      "first_session": null,
+      "last_session": null,
+      "initial_capital": null,
+      "last_equity": null,
+      "return_pct": null,
+      "day_return_pct": null,
+      "currency": null,
+      "equity_history": [],
+      "note": "Necesita campaña EUR y calendario 24/7; comprobar diferencias frente al TFG.",
+      "kind": "estrategia",
+      "source": "fuente histórica privada, no publicada",
+      "comparison_eligible": false,
+      "comparison_universe_id": null,
+      "comparison_universe_symbols": null,
+      "comparison_exclusion_reason": "Campaña archivada o todavía no normalizada al universo S&P 500",
+      "activity_state": "unknown",
+      "activity_label": "Actividad actual no enlazada",
+      "activity_tickers": [],
+      "open_positions_count": 0,
+      "pending_orders_count": 0,
+      "risk_observations": 0,
+      "annualized_volatility_pct": null,
+      "max_drawdown_pct": null,
+      "sharpe_0rf": null
+    },
+    {
+      "id": "tfm_lgbm_2023",
+      "label": "TFM: LightGBM (versión corregida 2026)",
+      "provenance": "TFM · modelo reimplementado en 2026",
+      "group": "tfm_demo_adaptado",
+      "status": "demo_con_diario",
+      "first_session": "2026-10-02",
+      "last_session": "2026-10-09",
+      "initial_capital": 100000.0,
+      "last_equity": 100090.24617379472,
+      "return_pct": 0.090246,
+      "day_return_pct": -0.350466,
+      "currency": "EUR",
+      "equity_history": [
+        {
+          "date": "2026-10-02",
+          "nav": 100000.0
+        },
+        {
+          "date": "2026-10-05",
+          "nav": 100000.0
+        },
+        {
+          "date": "2026-10-06",
+          "nav": 100000.0
+        },
+        {
+          "date": "2026-10-07",
+          "nav": 99856.71358524694
+        },
+        {
+          "date": "2026-10-08",
+          "nav": 100442.26261521611
+        },
+        {
+          "date": "2026-10-09",
+          "nav": 100090.24617379472
+        }
+      ],
+      "note": "Modelo del TFM reimplementado; regla de cartera común provisional, distinta de la tesis.",
+      "kind": "modelo predictivo",
+      "source": "fuente histórica privada, no publicada",
+      "activity_state": "pending",
+      "activity_label": "3 compras para próxima apertura",
+      "activity_tickers": [
+        "AMS.MC",
+        "SAN.MC",
+        "CLNX.MC"
+      ],
+      "open_positions_count": 0,
+      "pending_orders_count": 3,
+      "comparison_eligible": false,
+      "comparison_universe_id": null,
+      "comparison_universe_symbols": null,
+      "comparison_exclusion_reason": "Archivo histórico: 31 activos IBEX, no S&P 500; usar modelos Weekly ML S&P 500 para competición",
+      "risk_observations": 6,
+      "annualized_volatility_pct": null,
+      "max_drawdown_pct": -0.350466,
+      "sharpe_0rf": null
+    },
+    {
+      "id": "tfm_mlp_2023",
+      "label": "TFM: red MLP (versión corregida 2026)",
+      "provenance": "TFM · modelo reimplementado en 2026",
+      "group": "tfm_demo_adaptado",
+      "status": "demo_con_diario",
+      "first_session": "2026-10-02",
+      "last_session": "2026-10-09",
+      "initial_capital": 100000.0,
+      "last_equity": 97680.43680651282,
+      "return_pct": -2.319563,
+      "day_return_pct": -0.382939,
+      "currency": "EUR",
+      "equity_history": [
+        {
+          "date": "2026-10-02",
+          "nav": 100000.0
+        },
+        {
+          "date": "2026-10-05",
+          "nav": 99919.25338318852
+        },
+        {
+          "date": "2026-10-06",
+          "nav": 99919.25338318852
+        },
+        {
+          "date": "2026-10-07",
+          "nav": 98222.32964299306
+        },
+        {
+          "date": "2026-10-08",
+          "nav": 98055.93156369808
+        },
+        {
+          "date": "2026-10-09",
+          "nav": 97680.43680651282
+        }
+      ],
+      "note": "Modelo del TFM reimplementado; regla de cartera común provisional, distinta de la tesis.",
+      "kind": "modelo predictivo",
+      "source": "fuente histórica privada, no publicada",
+      "activity_state": "pending",
+      "activity_label": "10 compras para próxima apertura",
+      "activity_tickers": [
+        "CLNX.MC",
+        "AMS.MC",
+        "CABK.MC",
+        "UNI.MC",
+        "ELE.MC",
+        "FDR.MC",
+        "ITX.MC",
+        "ACX.MC",
+        "ACS.MC",
+        "FER.MC"
+      ],
+      "open_positions_count": 0,
+      "pending_orders_count": 10,
+      "comparison_eligible": false,
+      "comparison_universe_id": null,
+      "comparison_universe_symbols": null,
+      "comparison_exclusion_reason": "Archivo histórico: 31 activos IBEX, no S&P 500; usar modelos Weekly ML S&P 500 para competición",
+      "risk_observations": 6,
+      "annualized_volatility_pct": null,
+      "max_drawdown_pct": -2.319563,
+      "sharpe_0rf": null
+    },
+    {
+      "id": "tfm_lstm_2023",
+      "label": "TFM: red LSTM (versión corregida 2026)",
+      "provenance": "TFM · modelo reimplementado en 2026",
+      "group": "tfm_demo_adaptado",
+      "status": "demo_con_diario",
+      "first_session": "2026-10-02",
+      "last_session": "2026-10-09",
+      "initial_capital": 100000.0,
+      "last_equity": 99987.78626502545,
+      "return_pct": -0.012214,
+      "day_return_pct": 0.445133,
+      "currency": "EUR",
+      "equity_history": [
+        {
+          "date": "2026-10-02",
+          "nav": 100000.0
+        },
+        {
+          "date": "2026-10-05",
+          "nav": 100000.0
+        },
+        {
+          "date": "2026-10-06",
+          "nav": 100000.0
+        },
+        {
+          "date": "2026-10-07",
+          "nav": 100000.0
+        },
+        {
+          "date": "2026-10-08",
+          "nav": 99544.68048375752
+        },
+        {
+          "date": "2026-10-09",
+          "nav": 99987.78626502545
+        }
+      ],
+      "note": "Modelo del TFM reimplementado; regla de cartera común provisional, distinta de la tesis.",
+      "kind": "modelo predictivo",
+      "source": "fuente histórica privada, no publicada",
+      "activity_state": "cash",
+      "activity_label": "Sin compras · en efectivo",
+      "activity_tickers": [],
+      "open_positions_count": 0,
+      "pending_orders_count": 0,
+      "comparison_eligible": false,
+      "comparison_universe_id": null,
+      "comparison_universe_symbols": null,
+      "comparison_exclusion_reason": "Archivo histórico: 31 activos IBEX, no S&P 500; usar modelos Weekly ML S&P 500 para competición",
+      "risk_observations": 6,
+      "annualized_volatility_pct": null,
+      "max_drawdown_pct": -0.45532,
+      "sharpe_0rf": null
+    },
+    {
+      "id": "tfm_arima_2023",
+      "label": "TFM: ARIMA (versión corregida 2026)",
+      "provenance": "TFM · modelo reimplementado en 2026",
+      "group": "tfm_demo_adaptado",
+      "status": "demo_con_diario",
+      "first_session": "2026-10-02",
+      "last_session": "2026-10-09",
+      "initial_capital": 100000.0,
+      "last_equity": 100000.0,
+      "return_pct": 0.0,
+      "day_return_pct": 0.0,
+      "currency": "EUR",
+      "equity_history": [
+        {
+          "date": "2026-10-02",
+          "nav": 100000.0
+        },
+        {
+          "date": "2026-10-05",
+          "nav": 100000.0
+        },
+        {
+          "date": "2026-10-06",
+          "nav": 100000.0
+        },
+        {
+          "date": "2026-10-07",
+          "nav": 100000.0
+        },
+        {
+          "date": "2026-10-08",
+          "nav": 100000.0
+        },
+        {
+          "date": "2026-10-09",
+          "nav": 100000.0
+        }
+      ],
+      "note": "Modelo del TFM reimplementado; regla de cartera común provisional, distinta de la tesis.",
+      "kind": "modelo predictivo",
+      "source": "fuente histórica privada, no publicada",
+      "activity_state": "cash",
+      "activity_label": "Sin compras · en efectivo",
+      "activity_tickers": [],
+      "open_positions_count": 0,
+      "pending_orders_count": 0,
+      "comparison_eligible": false,
+      "comparison_universe_id": null,
+      "comparison_universe_symbols": null,
+      "comparison_exclusion_reason": "Archivo histórico: 31 activos IBEX, no S&P 500; usar modelos Weekly ML S&P 500 para competición",
+      "risk_observations": 6,
+      "annualized_volatility_pct": null,
+      "max_drawdown_pct": 0.0,
+      "sharpe_0rf": null
+    },
+    {
+      "id": "midas_lgbm_weekly_return",
+      "label": "MIDAS Python: LightGBM rentabilidad semanal",
+      "provenance": "MIDAS Python · pipeline LightGBM semanal",
+      "group": "historica_pendiente",
+      "status": "sin_ejecucion_comparable",
+      "first_session": null,
+      "last_session": null,
+      "initial_capital": null,
+      "last_equity": null,
+      "return_pct": null,
+      "day_return_pct": null,
+      "currency": null,
+      "equity_history": [],
+      "note": "Los datos/Features llegan hasta 2024 y el entrenamiento mezclaba semanas; rehacer el pipeline cronológico.",
+      "kind": "modelo predictivo",
+      "source": "fuente histórica privada, no publicada",
+      "comparison_eligible": false,
+      "comparison_universe_id": null,
+      "comparison_universe_symbols": null,
+      "comparison_exclusion_reason": "Campaña archivada o todavía no normalizada al universo S&P 500",
+      "activity_state": "unknown",
+      "activity_label": "Actividad actual no enlazada",
+      "activity_tickers": [],
+      "open_positions_count": 0,
+      "pending_orders_count": 0,
+      "risk_observations": 0,
+      "annualized_volatility_pct": null,
+      "max_drawdown_pct": null,
+      "sharpe_0rf": null
+    },
+    {
+      "id": "midas_lgbm_weekly_direction",
+      "label": "MIDAS Python: LightGBM dirección semanal",
+      "provenance": "MIDAS Python · pipeline LightGBM semanal",
+      "group": "historica_pendiente",
+      "status": "sin_ejecucion_comparable",
+      "first_session": null,
+      "last_session": null,
+      "initial_capital": null,
+      "last_equity": null,
+      "return_pct": null,
+      "day_return_pct": null,
+      "currency": null,
+      "equity_history": [],
+      "note": "Rehacer features y entrenamiento cronológicos; no cargar pickle legado sin contrato verificado.",
+      "kind": "modelo predictivo",
+      "source": "fuente histórica privada, no publicada",
+      "comparison_eligible": false,
+      "comparison_universe_id": null,
+      "comparison_universe_symbols": null,
+      "comparison_exclusion_reason": "Campaña archivada o todavía no normalizada al universo S&P 500",
+      "activity_state": "unknown",
+      "activity_label": "Actividad actual no enlazada",
+      "activity_tickers": [],
+      "open_positions_count": 0,
+      "pending_orders_count": 0,
+      "risk_observations": 0,
+      "annualized_volatility_pct": null,
+      "max_drawdown_pct": null,
+      "sharpe_0rf": null
+    },
+    {
+      "id": "midas_lgbm_weekly_price",
+      "label": "MIDAS Python: LightGBM precio semanal",
+      "provenance": "MIDAS Python · pipeline LightGBM semanal",
+      "group": "historica_pendiente",
+      "status": "sin_ejecucion_comparable",
+      "first_session": null,
+      "last_session": null,
+      "initial_capital": null,
+      "last_equity": null,
+      "return_pct": null,
+      "day_return_pct": null,
+      "currency": null,
+      "equity_history": [],
+      "note": "Rehacer features y entrenamiento cronológicos; no cargar pickle legado sin contrato verificado.",
+      "kind": "modelo predictivo",
+      "source": "fuente histórica privada, no publicada",
+      "comparison_eligible": false,
+      "comparison_universe_id": null,
+      "comparison_universe_symbols": null,
+      "comparison_exclusion_reason": "Campaña archivada o todavía no normalizada al universo S&P 500",
+      "activity_state": "unknown",
+      "activity_label": "Actividad actual no enlazada",
+      "activity_tickers": [],
+      "open_positions_count": 0,
+      "pending_orders_count": 0,
+      "risk_observations": 0,
+      "annualized_volatility_pct": null,
+      "max_drawdown_pct": null,
+      "sharpe_0rf": null
+    },
+    {
+      "id": "midas_lgbm_combined",
+      "label": "MIDAS Python v2: selección semanal de hasta 30 empresas",
+      "provenance": "MIDAS Python · filtro de los tres LightGBM",
+      "group": "historica_pendiente",
+      "status": "sin_ejecucion_comparable",
+      "first_session": null,
+      "last_session": null,
+      "initial_capital": null,
+      "last_equity": null,
+      "return_pct": null,
+      "day_return_pct": null,
+      "currency": null,
+      "equity_history": [],
+      "note": "El código original sí proponía inversiones semanales: combina tres predicciones, RSI y ranking. Para medir rentabilidad demo faltan datos actuales, modelos causales, órdenes fechadas y contabilidad de ejecución.",
+      "kind": "estrategia semanal de selección",
+      "source": "fuente histórica privada, no publicada",
+      "comparison_eligible": false,
+      "comparison_universe_id": null,
+      "comparison_universe_symbols": null,
+      "comparison_exclusion_reason": "Campaña archivada o todavía no normalizada al universo S&P 500",
+      "activity_state": "unknown",
+      "activity_label": "Actividad actual no enlazada",
+      "activity_tickers": [],
+      "open_positions_count": 0,
+      "pending_orders_count": 0,
+      "risk_observations": 0,
+      "annualized_volatility_pct": null,
+      "max_drawdown_pct": null,
+      "sharpe_0rf": null
+    },
+    {
+      "id": "genetic_single_asset_2026",
+      "label": "Genético original de un solo activo",
+      "provenance": "Agente genético · prototipo individual 2026",
+      "group": "historica_pendiente",
+      "status": "sin_ejecucion_comparable",
+      "first_session": null,
+      "last_session": null,
+      "initial_capital": null,
+      "last_equity": null,
+      "return_pct": null,
+      "day_return_pct": null,
+      "currency": null,
+      "equity_history": [],
+      "note": "Separar entrenamiento y ejecución del mismo cierre, elegir activo y congelar versión antes de empezar.",
+      "kind": "estrategia",
+      "source": "fuente histórica privada, no publicada",
+      "comparison_eligible": false,
+      "comparison_universe_id": null,
+      "comparison_universe_symbols": null,
+      "comparison_exclusion_reason": "Campaña archivada o todavía no normalizada al universo S&P 500",
+      "activity_state": "unknown",
+      "activity_label": "Actividad actual no enlazada",
+      "activity_tickers": [],
+      "open_positions_count": 0,
+      "pending_orders_count": 0,
+      "risk_observations": 0,
+      "annualized_volatility_pct": null,
+      "max_drawdown_pct": null,
+      "sharpe_0rf": null
+    },
+    {
+      "id": "rsi_itx_70_30",
+      "label": "RSI original 70/30 sobre Inditex",
+      "provenance": "Experimento histórico · trading",
+      "group": "historica_pendiente",
+      "status": "sin_ejecucion_comparable",
+      "first_session": null,
+      "last_session": null,
+      "initial_capital": null,
+      "last_equity": null,
+      "return_pct": null,
+      "day_return_pct": null,
+      "currency": null,
+      "equity_history": [],
+      "note": "El original usa posición -1/0/+1 sobre retornos al cierre; el motor actual es solo largo y no replica cortos/costes.",
+      "kind": "backtest de exposición larga/corta",
+      "source": "fuente histórica privada, no publicada",
+      "comparison_eligible": false,
+      "comparison_universe_id": null,
+      "comparison_universe_symbols": null,
+      "comparison_exclusion_reason": "Campaña archivada o todavía no normalizada al universo S&P 500",
+      "activity_state": "unknown",
+      "activity_label": "Actividad actual no enlazada",
+      "activity_tickers": [],
+      "open_positions_count": 0,
+      "pending_orders_count": 0,
+      "risk_observations": 0,
+      "annualized_volatility_pct": null,
+      "max_drawdown_pct": null,
+      "sharpe_0rf": null
+    },
+    {
+      "id": "ichimoku_aapl",
+      "label": "Ichimoku original sobre AAPL",
+      "provenance": "Experimento histórico · trading",
+      "group": "historica_pendiente",
+      "status": "sin_ejecucion_comparable",
+      "first_session": null,
+      "last_session": null,
+      "initial_capital": null,
+      "last_equity": null,
+      "return_pct": null,
+      "day_return_pct": null,
+      "currency": null,
+      "equity_history": [],
+      "note": "La referencia a close(-26) puede mirar al futuro; corregir y marcar una versión nueva antes de ejecutarla.",
+      "kind": "backtest experimental",
+      "source": "fuente histórica privada, no publicada",
+      "comparison_eligible": false,
+      "comparison_universe_id": null,
+      "comparison_universe_symbols": null,
+      "comparison_exclusion_reason": "Campaña archivada o todavía no normalizada al universo S&P 500",
+      "activity_state": "unknown",
+      "activity_label": "Actividad actual no enlazada",
+      "activity_tickers": [],
+      "open_positions_count": 0,
+      "pending_orders_count": 0,
+      "risk_observations": 0,
+      "annualized_volatility_pct": null,
+      "max_drawdown_pct": null,
+      "sharpe_0rf": null
+    },
+    {
+      "id": "gap_open_close",
+      "label": "Gap alcista de apertura a cierre",
+      "provenance": "Experimento histórico · trading intradía",
+      "group": "historica_pendiente",
+      "status": "sin_ejecucion_comparable",
+      "first_session": null,
+      "last_session": null,
+      "initial_capital": null,
+      "last_equity": null,
+      "return_pct": null,
+      "day_return_pct": null,
+      "currency": null,
+      "equity_history": [],
+      "note": "El gap se conoce en apertura; requiere ejecución intradía separada del ciclo cierre a apertura.",
+      "kind": "estrategia intradía",
+      "source": "fuente histórica privada, no publicada",
+      "comparison_eligible": false,
+      "comparison_universe_id": null,
+      "comparison_universe_symbols": null,
+      "comparison_exclusion_reason": "Campaña archivada o todavía no normalizada al universo S&P 500",
+      "activity_state": "unknown",
+      "activity_label": "Actividad actual no enlazada",
+      "activity_tickers": [],
+      "open_positions_count": 0,
+      "pending_orders_count": 0,
+      "risk_observations": 0,
+      "annualized_volatility_pct": null,
+      "max_drawdown_pct": null,
+      "sharpe_0rf": null
+    },
+    {
+      "id": "turtle_short_20_10",
+      "label": "Turtle 20/10 corto original",
+      "provenance": "Experimento histórico · trading en corto",
+      "group": "historica_pendiente",
+      "status": "sin_ejecucion_comparable",
+      "first_session": null,
+      "last_session": null,
+      "initial_capital": null,
+      "last_equity": null,
+      "return_pct": null,
+      "day_return_pct": null,
+      "currency": null,
+      "equity_history": [],
+      "note": "Requiere contabilidad de posiciones cortas y costes de préstamo.",
+      "kind": "estrategia corta",
+      "source": "fuente histórica privada, no publicada",
+      "comparison_eligible": false,
+      "comparison_universe_id": null,
+      "comparison_universe_symbols": null,
+      "comparison_exclusion_reason": "Campaña archivada o todavía no normalizada al universo S&P 500",
+      "activity_state": "unknown",
+      "activity_label": "Actividad actual no enlazada",
+      "activity_tickers": [],
+      "open_positions_count": 0,
+      "pending_orders_count": 0,
+      "risk_observations": 0,
+      "annualized_volatility_pct": null,
+      "max_drawdown_pct": null,
+      "sharpe_0rf": null
+    },
+    {
+      "id": "turtle_short_55_20",
+      "label": "Turtle 55/20 corto original",
+      "provenance": "Experimento histórico · trading en corto",
+      "group": "historica_pendiente",
+      "status": "sin_ejecucion_comparable",
+      "first_session": null,
+      "last_session": null,
+      "initial_capital": null,
+      "last_equity": null,
+      "return_pct": null,
+      "day_return_pct": null,
+      "currency": null,
+      "equity_history": [],
+      "note": "Requiere contabilidad de posiciones cortas y costes de préstamo.",
+      "kind": "estrategia corta",
+      "source": "fuente histórica privada, no publicada",
+      "comparison_eligible": false,
+      "comparison_universe_id": null,
+      "comparison_universe_symbols": null,
+      "comparison_exclusion_reason": "Campaña archivada o todavía no normalizada al universo S&P 500",
+      "activity_state": "unknown",
+      "activity_label": "Actividad actual no enlazada",
+      "activity_tickers": [],
+      "open_positions_count": 0,
+      "pending_orders_count": 0,
+      "risk_observations": 0,
+      "annualized_volatility_pct": null,
+      "max_drawdown_pct": null,
+      "sharpe_0rf": null
+    },
+    {
+      "id": "momentum_sp500_monthly",
+      "label": "Screener momentum mensual S&P 500",
+      "provenance": "Experimento histórico · selección mensual",
+      "group": "historica_pendiente",
+      "status": "sin_ejecucion_comparable",
+      "first_session": null,
+      "last_session": null,
+      "initial_capital": null,
+      "last_equity": null,
+      "return_pct": null,
+      "day_return_pct": null,
+      "currency": null,
+      "equity_history": [],
+      "note": "Documentar regla de salida y pesos antes de convertir la selección mensual en cartera.",
+      "kind": "selección, sin cartera",
+      "source": "fuente histórica privada, no publicada",
+      "comparison_eligible": false,
+      "comparison_universe_id": null,
+      "comparison_universe_symbols": null,
+      "comparison_exclusion_reason": "Campaña archivada o todavía no normalizada al universo S&P 500",
+      "activity_state": "unknown",
+      "activity_label": "Actividad actual no enlazada",
+      "activity_tickers": [],
+      "open_positions_count": 0,
+      "pending_orders_count": 0,
+      "risk_observations": 0,
+      "annualized_volatility_pct": null,
+      "max_drawdown_pct": null,
+      "sharpe_0rf": null
+    },
+    {
+      "id": "coinbase_btc",
+      "label": "Bot BTC Coinbase",
+      "provenance": "Bot Coinbase histórico · cripto",
+      "group": "historica_pendiente",
+      "status": "sin_ejecucion_comparable",
+      "first_session": null,
+      "last_session": null,
+      "initial_capital": null,
+      "last_equity": null,
+      "return_pct": null,
+      "day_return_pct": null,
+      "currency": null,
+      "equity_history": [],
+      "note": "El original incluye llamadas a órdenes reales; portar solo reglas a simulador sin credenciales.",
+      "kind": "estrategia cripto",
+      "source": "fuente histórica privada, no publicada",
+      "comparison_eligible": false,
+      "comparison_universe_id": null,
+      "comparison_universe_symbols": null,
+      "comparison_exclusion_reason": "Campaña archivada o todavía no normalizada al universo S&P 500",
+      "activity_state": "unknown",
+      "activity_label": "Actividad actual no enlazada",
+      "activity_tickers": [],
+      "open_positions_count": 0,
+      "pending_orders_count": 0,
+      "risk_observations": 0,
+      "annualized_volatility_pct": null,
+      "max_drawdown_pct": null,
+      "sharpe_0rf": null
+    },
+    {
+      "id": "markowitz_weights",
+      "label": "Markowitz",
+      "provenance": "Módulo Markowitz · asignación de pesos",
+      "group": "historica_pendiente",
+      "status": "sin_ejecucion_comparable",
+      "first_session": null,
+      "last_session": null,
+      "initial_capital": null,
+      "last_equity": null,
+      "return_pct": null,
+      "day_return_pct": null,
+      "currency": null,
+      "equity_history": [],
+      "note": "Comparar como asignador de pesos; antes, normalizar divisas y frecuencia.",
+      "kind": "política de asignación",
+      "source": "fuente histórica privada, no publicada",
+      "comparison_eligible": false,
+      "comparison_universe_id": null,
+      "comparison_universe_symbols": null,
+      "comparison_exclusion_reason": "Campaña archivada o todavía no normalizada al universo S&P 500",
+      "activity_state": "unknown",
+      "activity_label": "Actividad actual no enlazada",
+      "activity_tickers": [],
+      "open_positions_count": 0,
+      "pending_orders_count": 0,
+      "risk_observations": 0,
+      "annualized_volatility_pct": null,
+      "max_drawdown_pct": null,
+      "sharpe_0rf": null
+    },
+    {
+      "id": "midas_fundamental_filter",
+      "label": "Filtro fundamental MIDAS Python",
+      "provenance": "MIDAS Python · filtro fundamental",
+      "group": "historica_pendiente",
+      "status": "sin_ejecucion_comparable",
+      "first_session": null,
+      "last_session": null,
+      "initial_capital": null,
+      "last_equity": null,
+      "return_pct": null,
+      "day_return_pct": null,
+      "currency": null,
+      "equity_history": [],
+      "note": "Definir datos conocidos en cada fecha y cartera receptora; no es una señal independiente.",
+      "kind": "filtro complementario",
+      "source": "fuente histórica privada, no publicada",
+      "comparison_eligible": false,
+      "comparison_universe_id": null,
+      "comparison_universe_symbols": null,
+      "comparison_exclusion_reason": "Campaña archivada o todavía no normalizada al universo S&P 500",
+      "activity_state": "unknown",
+      "activity_label": "Actividad actual no enlazada",
+      "activity_tickers": [],
+      "open_positions_count": 0,
+      "pending_orders_count": 0,
+      "risk_observations": 0,
+      "annualized_volatility_pct": null,
+      "max_drawdown_pct": null,
+      "sharpe_0rf": null
+    }
+  ],
+  "market_data": {
+    "age_seconds": 347,
+    "captured_at_utc": "2026-10-31T02:16:29+00:00",
+    "checked_at_utc": "2026-10-31T02:22:16.074271+00:00",
+    "consumers": {
+      "buy_the_dip_strategy": {
+        "ledger_status": "observed",
+        "paused_book_ids": [],
+        "paused_books": 0,
+        "updated_books": 1,
+        "valuation_sessions": {
+          "buy_the_dip_strategy": "2026-10-30"
+        },
+        "workflow_outcome": "success"
+      },
+      "capital_cycle": {
+        "ledger_status": "observed",
+        "paused_book_ids": [],
+        "paused_books": 0,
+        "updated_books": 1,
+        "valuation_sessions": {
+          "capital_cycle": "2026-10-30"
+        },
+        "workflow_outcome": "success"
+      },
+      "classic_sp500": {
+        "ledger_status": "observed",
+        "paused_book_ids": [
+          "buy_hold_equal_weight"
+        ],
+        "paused_books": 1,
+        "updated_books": 8,
+        "valuation_sessions": {
+          "benchmark_spy": "2026-10-30",
+          "bollinger_breakout_20": "2026-10-30",
+          "buy_hold_equal_weight": "2026-10-27",
+          "ema_rsi_fixed": "2026-10-30",
+          "genetic_frozen": "2026-10-30",
+          "macd_12_26_9": "2026-10-30",
+          "rsi_reversion_14": "2026-10-30",
+          "turtle_20_10_long": "2026-10-30",
+          "turtle_55_20_long": "2026-10-30"
+        },
+        "workflow_outcome": "success"
+      },
+      "timesfm_daily": {
+        "ledger_status": "observed",
+        "paused_book_ids": [],
+        "paused_books": 0,
+        "updated_books": 2,
+        "valuation_sessions": {
+          "benchmark_spy": "2026-10-30",
+          "timesfm": "2026-10-30"
+        },
+        "workflow_outcome": "success"
+      },
+      "timesfm_one_day": {
+        "ledger_status": "observed",
+        "paused_book_ids": [],
+        "paused_books": 0,
+        "updated_books": 2,
+        "valuation_sessions": {
+          "benchmark_spy": "2026-10-30",
+          "timesfm_daily": "2026-10-30"
+        },
+        "workflow_outcome": "success"
+      },
+      "weekly_ml_daily": {
+        "ledger_status": "observed",
+        "paused_book_ids": [],
+        "paused_books": 0,
+        "updated_books": 9,
+        "valuation_sessions": {
+          "arima_return": "2026-10-30",
+          "benchmark_rsp": "2026-10-30",
+          "benchmark_spy": "2026-10-30",
+          "ensemble_consensus": "2026-10-30",
+          "lgbm_direction": "2026-10-30",
+          "lgbm_ranker": "2026-10-30",
+          "lgbm_return": "2026-10-30",
+          "lstm_return": "2026-10-30",
+          "mlp_return": "2026-10-30"
+        },
+        "workflow_outcome": "success"
+      }
+    },
+    "coverage": {
+      "frozen_constituents_observed": 489,
+      "missing": 14,
+      "observed": 490,
+      "requested": 504
+    },
+    "effective_sha256": "01ee1c4d0d5f28fc76abd4a80bc6228477bbf1b6c1e244aed29ce64fe5f3a987",
+    "engine_health": "not_assessed",
+    "expected_session": "2026-10-30",
+    "market": "XNYS",
+    "missing_symbols": [
+      "AVB",
+      "BK",
+      "CTRA",
+      "DAY",
+      "EA",
+      "EQR",
+      "FI",
+      "HOLX",
+      "HUBB",
+      "IPG",
+      "K",
+      "MMC",
+      "WBA",
+      "WBD"
+    ],
+    "policy": "common_raw_daily_primary",
+    "revision_hashes": [],
+    "run_id": "41159066934",
+    "schema": "midas.xnys_source_health.v1",
+    "sha256": "01ee1c4d0d5f28fc76abd4a80bc6228477bbf1b6c1e244aed29ce64fe5f3a987",
+    "status": "snapshot_verified",
+    "trigger_event": "schedule"
+  }
+}

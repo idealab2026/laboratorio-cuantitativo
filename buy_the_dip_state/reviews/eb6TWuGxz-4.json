@@ -1,0 +1,176 @@
+{
+  "schema_version": 1,
+  "status": "machine_first_pass",
+  "reviewed_at_utc": "2026-11-01T09:45:03.364245+00:00",
+  "source_identity": "Buy The Dip YouTube channel",
+  "transport": {
+    "kind": "official_podcast_mirror",
+    "provider": "iVoox",
+    "guid": "https://www.ivoox.com/100564725",
+    "published_date": "2022-12-28",
+    "youtube_video_id": "eb6TWuGxz-4",
+    "match_score": 1.0,
+    "audio_bytes_processed_transiently": 15764838
+  },
+  "models": {
+    "asr": {
+      "language": "es",
+      "language_probability": 1.0,
+      "duration_seconds": 1970.5991875,
+      "word_count": 5322,
+      "segment_count": 330,
+      "model": "small"
+    },
+    "semantic": {
+      "repo": "Qwen/Qwen3-4B-GGUF",
+      "file": "Qwen3-4B-Q4_K_M.gguf"
+    }
+  },
+  "metadata": {
+    "video_id": "eb6TWuGxz-4",
+    "youtube_url": "https://www.youtube.com/watch?v=eb6TWuGxz-4",
+    "title": "Cuál en la mejor empresa de PETRÓLEO para INVERTIR | BUY THE DIP PODCAST",
+    "category": "sector_theme",
+    "guest_likely": false,
+    "podcast_guid": "https://www.ivoox.com/100564725",
+    "published_date": "2022-12-28",
+    "source": "official_podcast_mirror",
+    "match_score": 1.0
+  },
+  "analysis": {
+    "episode_summary": "El episodio analiza a dos empresas del sector de petróleo, Yed Ouston y Me Energy, mediante el método Buy The Dip. Yed Ouston, cotizada en el Reino Unido, ha mejorado su producción y beneficios tras resolver problemas de pozos, con un valor de 320 millones de libras esterlinas y perspectivas positivas por el alza del petróleo en 2023. Me Energy, con producción estable y reservas a largo plazo, tiene un costo de producción bajo, lo que la sitúa en la parte baja de la curva de costes, y su valor intrínseco podría alcanzar 64 dólares canadienses. La empresa también ha adquirido activos en Canadá, Francia y Malasia, con un free cash flow de 425 millones de dólares en 2022, y tiene potencial de crecimiento con una cotización que podría multiplicarse por 3 si se mantiene la rentabilidad actual. El análisis enfatiza la diversificación geográfica, la eficiencia operativa y la resistencia a caídas en el precio del petróleo.",
+    "process": {
+      "idea_generation": [],
+      "quality": [],
+      "balance_sheet": [],
+      "valuation": [
+        "Yed Ouston cotiza en el Reino Unido con un valor de 320 millones de libras esterlinas y ha mostrado una rentabilidad del 104% desde su cotización.",
+        "Me Energy tiene un precio de cotización actual de 17,8 dólares canadienses con un potencial de aumento al 64 dólares canadienses si el petróleo alcanza precios más altos, sugiriendo un valor intrínseco elevado."
+      ],
+      "cycle_macro": [
+        "El precio del petróleo está en alza, con perspectivas positivas para 2023, lo que beneficia a empresas como Yed Ouston."
+      ],
+      "entry": [
+        "Yed Ouston tiene activos en Malasia, Australia y otras regiones del Sudeste Asiático, reflejando su diversificación y posibilidad de beneficio en un mercado de petróleo en alza.",
+        "Me Energy tiene producción estable y reservas a largo plazo, con un costo de producción a 30 dólares, lo que la sitúa en la parte baja de la curva de costes."
+      ],
+      "sizing": [],
+      "add_hold": [],
+      "exit": [
+        "La empresa con producción de 50 mil barriles diarios de petróleo equivalente tiene expectativas de crecimiento en 2022 y una cotización que podría multiplicarse por 3 si se mantiene la rentabilidad actual."
+      ],
+      "risk": [
+        "Me Energy tiene una volatilidad menor que otras empresas del sector debido a su estructura de costes eficiente y una capitalización bursátil de 5 billones, reduciendo su exposición a riesgos de mercado."
+      ],
+      "technical": [],
+      "management": [],
+      "mistakes": []
+    },
+    "candidate_rules": [
+      {
+        "rule": "paráfrasis compacta",
+        "scope": "hosts|uncertain_or_guest",
+        "confidence": 0.0,
+        "evidence_timestamps": [],
+        "automation_proxy": "variable/cálculo posible o null",
+        "cross_video_confirmation_required": true
+      }
+    ],
+    "contradictions_or_uncertainties": [],
+    "named_examples": [],
+    "automation_readiness": "medium"
+  },
+  "chunk_evidence": [
+    {
+      "chunk": 1,
+      "evidence": [
+        {
+          "stage": "valuation",
+          "paraphrase": "La empresa Yed Ouston cotiza en el Reino Unido con un valor de 320 millones de libras esterlinas, ha tenido una rentabilidad del 104% desde su cotización y ha mejorado su producción y beneficios tras resolver un problema de pozos.",
+          "timestamp": "00:04:54",
+          "scope": "hosts",
+          "confidence": 0.9,
+          "automation_hint": "proxy observable"
+        },
+        {
+          "stage": "cycle_macro",
+          "paraphrase": "El precio del petróleo está en alza, con perspectivas positivas para 2023, lo que beneficia a empresas como Yed Ouston que operan en el sector de materias primas.",
+          "timestamp": "00:07:37",
+          "scope": "hosts",
+          "confidence": 0.8,
+          "automation_hint": "proxy observable"
+        },
+        {
+          "stage": "entry",
+          "paraphrase": "La empresa Yed Ouston tiene activos en Malasia, Australia y otras regiones del Sudeste Asiático, lo que refleja su diversificación y posibilidad de beneficio en un mercado de petróleo en alza.",
+          "timestamp": "00:02:48",
+          "scope": "hosts",
+          "confidence": 0.7,
+          "automation_hint": "proxy observable"
+        }
+      ],
+      "named_examples": [],
+      "chunk_summary": "El programa analiza a Yed Ouston, una empresa de petróleo con activos en Malasia, Australia y otras regiones, que cotiza en el Reino Unido y ha mostrado una mejora en producción y beneficios tras resolver un problema de pozos, con perspectivas positivas para 2023 debido a un precio del petróleo en alza."
+    },
+    {
+      "chunk": 2,
+      "evidence": [
+        {
+          "stage": "valuation",
+          "paraphrase": "El análisis de la empresa Me Energy destaca un precio de cotización actual de 17,8 dólares canadienses, con un potencial de aumento al 64 dólares canadienses si el petróleo alcanza precios más altos, lo que sugiere un valor intrínseco elevado.",
+          "timestamp": "00:15:12",
+          "scope": "hosts",
+          "confidence": 0.9,
+          "automation_hint": "proxy observable"
+        },
+        {
+          "stage": "entry",
+          "paraphrase": "La empresa Me Energy tiene una producción estable y reservas de 55 años, con un costo de producción a 30 dólares, lo que la sitúa en la parte baja de la curva de costes, mejorando su resistencia a caídas en el precio del petróleo.",
+          "timestamp": "00:17:06",
+          "scope": "hosts",
+          "confidence": 0.8,
+          "automation_hint": "proxy observable"
+        },
+        {
+          "stage": "risk",
+          "paraphrase": "La empresa Me Energy tiene una volatilidad menor que otras empresas del sector debido a su estructura de costes bajos y una capitalización bursátil de 5 billones, lo que reduce su exposición a riesgos de mercado.",
+          "timestamp": "00:20:01",
+          "scope": "hosts",
+          "confidence": 0.7,
+          "automation_hint": "proxy observable"
+        }
+      ],
+      "named_examples": [],
+      "chunk_summary": "El análisis de la empresa Me Energy destaca su producción estable, reservas a largo plazo, y un costo de producción bajo, lo que la sitúa en la parte baja de la curva de costes, mejorando su resistencia a caídas en el precio del petróleo. Su potencial de valoración al 64 dólares canadienses sugiere un alto valor intrínseco, mientras que su volatilidad menor en comparación con otras empresas del sector refleja una estructura de costes eficiente y una capitalización bursátil significativa, reduciendo su exposición a riesgos de mercado."
+    },
+    {
+      "chunk": 3,
+      "evidence": [
+        {
+          "stage": "entry",
+          "paraphrase": "La empresa ha adquirido activos en Canadá, Francia y Malasia, con un enfoque principal en Canadá, donde las reservas han crecido significativamente desde 2016.",
+          "timestamp": "00:22:16",
+          "scope": "hosts",
+          "confidence": 0.8
+        },
+        {
+          "stage": "valuation",
+          "paraphrase": "La empresa genera un free cash flow de 425 millones de dólares en 2022 a 85 dólares del Brent, con un yield del 20% y potencial para alcanzar el 30%.",
+          "timestamp": "00:26:51",
+          "scope": "hosts",
+          "confidence": 0.7
+        },
+        {
+          "stage": "exit",
+          "paraphrase": "La empresa tiene una producción de 50 mil barriles diarios de petróleo equivalente, con expectativas de crecimiento en 2022 y una cotización que podría multiplicarse por 3 si se mantiene la rentabilidad actual.",
+          "timestamp": "00:26:16",
+          "scope": "hosts",
+          "confidence": 0.6
+        }
+      ],
+      "named_examples": [],
+      "chunk_summary": "El análisis destaca la adquisición de activos en Canadá, Francia y Malasia por parte de la empresa, su crecimiento de reservas de petróleo, el free cash flow generador y la potencial valorización de la empresa a partir de su rentabilidad actual."
+    }
+  ],
+  "copyright_note": "No audio or verbatim transcript is persisted; only derived paraphrases."
+}

@@ -1,0 +1,743 @@
+{
+  "benchmark_first_close": 763.989990234375,
+  "benchmark_last_close": 755.719970703125,
+  "cash": 5082.175454763751,
+  "config_hash": "125dabd8eaf1ea4c31f2b26c78d7bd80cb7b3499de37442f9ac881a9b20d1f2f",
+  "currency": "USD",
+  "equity": [
+    {
+      "benchmark_close": 763.989990234375,
+      "cash": 100000.0,
+      "date": "2026-10-01",
+      "nav": 100000.0,
+      "positions": 0
+    },
+    {
+      "benchmark_close": 769.6400146484375,
+      "cash": 5000.000708983751,
+      "date": "2026-10-02",
+      "nav": 98006.09859900846,
+      "positions": 10
+    },
+    {
+      "benchmark_close": 774.8300170898438,
+      "cash": 5000.000708983751,
+      "date": "2026-10-05",
+      "nav": 99059.64936080732,
+      "positions": 10
+    },
+    {
+      "benchmark_close": 779.0900268554688,
+      "cash": 5000.000708983751,
+      "date": "2026-10-06",
+      "nav": 100324.12018754399,
+      "positions": 10
+    },
+    {
+      "benchmark_close": 777.219970703125,
+      "cash": 5000.000708983751,
+      "date": "2026-10-07",
+      "nav": 100152.46126685075,
+      "positions": 10
+    },
+    {
+      "benchmark_close": 773.9299926757812,
+      "cash": 5000.000708983751,
+      "date": "2026-10-08",
+      "nav": 101201.03216421067,
+      "positions": 10
+    },
+    {
+      "benchmark_close": 778.5700073242188,
+      "cash": 5000.000708983751,
+      "date": "2026-10-09",
+      "nav": 101197.14739049636,
+      "positions": 10
+    },
+    {
+      "benchmark_close": 778.0999755859375,
+      "cash": 5000.000708983751,
+      "date": "2026-10-12",
+      "nav": 101498.33283785368,
+      "positions": 10
+    },
+    {
+      "benchmark_close": 778.010009765625,
+      "cash": 5000.000708983751,
+      "date": "2026-10-13",
+      "nav": 102762.6997438044,
+      "positions": 10
+    },
+    {
+      "benchmark_close": 769.5999755859375,
+      "cash": 5000.000708983751,
+      "date": "2026-10-14",
+      "nav": 102371.33823816312,
+      "positions": 10
+    },
+    {
+      "benchmark_close": 771.7899780273438,
+      "cash": 5000.000708983751,
+      "date": "2026-10-15",
+      "nav": 105318.98114156075,
+      "positions": 10
+    },
+    {
+      "benchmark_close": 763.25,
+      "cash": 5000.000708983751,
+      "date": "2026-10-16",
+      "nav": 104898.37356718667,
+      "positions": 10
+    },
+    {
+      "benchmark_close": 766.47998046875,
+      "cash": 5000.000708983751,
+      "date": "2026-10-19",
+      "nav": 105512.02654807376,
+      "positions": 10
+    },
+    {
+      "benchmark_close": 769.0499877929688,
+      "cash": 5000.000708983751,
+      "date": "2026-10-20",
+      "nav": 107585.5518063922,
+      "positions": 10
+    },
+    {
+      "benchmark_close": 773.0900268554688,
+      "cash": 5000.000708983751,
+      "date": "2026-10-21",
+      "nav": 107569.09150244854,
+      "positions": 10
+    },
+    {
+      "benchmark_close": 763.9600219726562,
+      "cash": 5000.000708983751,
+      "date": "2026-10-22",
+      "nav": 110263.07578185866,
+      "positions": 10
+    },
+    {
+      "benchmark_close": 759.969970703125,
+      "cash": 5000.000708983751,
+      "date": "2026-10-23",
+      "nav": 108421.94403906628,
+      "positions": 10
+    },
+    {
+      "benchmark_close": 765.3699951171875,
+      "cash": 5000.000708983751,
+      "date": "2026-10-26",
+      "nav": 106688.96363382142,
+      "positions": 10
+    },
+    {
+      "benchmark_close": 769.6599731445312,
+      "cash": 5000.000708983751,
+      "date": "2026-10-27",
+      "nav": 105167.51100126361,
+      "positions": 10
+    },
+    {
+      "benchmark_close": 772.3099975585938,
+      "cash": 5000.000708983751,
+      "date": "2026-10-28",
+      "nav": 103914.29754161541,
+      "positions": 10
+    },
+    {
+      "benchmark_close": 769.3599853515625,
+      "cash": 5000.000708983751,
+      "date": "2026-10-29",
+      "nav": 104419.94860520308,
+      "positions": 10
+    },
+    {
+      "benchmark_close": 755.719970703125,
+      "cash": 5082.175454763751,
+      "date": "2026-10-30",
+      "nav": 105159.52883115194,
+      "positions": 10
+    }
+  ],
+  "events": [
+    {
+      "date": "2026-10-01",
+      "expected_fill_session": "2026-10-02",
+      "invest_fraction": 0.95,
+      "targets": 10,
+      "ticker": null,
+      "type": "signal"
+    },
+    {
+      "date": "2026-10-02",
+      "fee": 9.574245434880767,
+      "price": 147.16354133605955,
+      "quantity": 65.058542,
+      "reason": "monthly_rotation",
+      "side": "buy",
+      "ticker": "ALGN",
+      "type": "fill"
+    },
+    {
+      "date": "2026-10-02",
+      "fee": 12.377809840542088,
+      "price": 57.23860408401489,
+      "quantity": 216.249331,
+      "reason": "monthly_rotation",
+      "side": "buy",
+      "ticker": "AOS",
+      "type": "fill"
+    },
+    {
+      "date": "2026-10-02",
+      "fee": 10.397446115892748,
+      "price": 61.12054515266418,
+      "quantity": 170.113766,
+      "reason": "monthly_rotation",
+      "side": "buy",
+      "ticker": "CTSH",
+      "type": "fill"
+    },
+    {
+      "date": "2026-10-02",
+      "fee": 9.19628910624752,
+      "price": 12.391192728996277,
+      "quantity": 742.16335,
+      "reason": "monthly_rotation",
+      "side": "buy",
+      "ticker": "CTVA",
+      "type": "fill"
+    },
+    {
+      "date": "2026-10-02",
+      "fee": 8.9528000239305,
+      "price": 79.53975,
+      "quantity": 112.557558,
+      "reason": "monthly_rotation",
+      "side": "buy",
+      "ticker": "DECK",
+      "type": "fill"
+    },
+    {
+      "date": "2026-10-02",
+      "fee": 9.772640186335854,
+      "price": 382.28104133605956,
+      "quantity": 25.56402,
+      "reason": "monthly_rotation",
+      "side": "buy",
+      "ticker": "ELV",
+      "type": "fill"
+    },
+    {
+      "date": "2026-10-02",
+      "fee": 7.632001923495403,
+      "price": 33.61679847335815,
+      "quantity": 227.02941,
+      "reason": "monthly_rotation",
+      "side": "buy",
+      "ticker": "ENPH",
+      "type": "fill"
+    },
+    {
+      "date": "2026-10-02",
+      "fee": 9.140413465367109,
+      "price": 114.16705561065673,
+      "quantity": 80.061743,
+      "reason": "monthly_rotation",
+      "side": "buy",
+      "ticker": "EPAM",
+      "type": "fill"
+    },
+    {
+      "date": "2026-10-02",
+      "fee": 8.932145387512824,
+      "price": 227.53370816802976,
+      "quantity": 39.256361,
+      "reason": "monthly_rotation",
+      "side": "buy",
+      "ticker": "PAYC",
+      "type": "fill"
+    },
+    {
+      "date": "2026-10-02",
+      "fee": 8.929302712614618,
+      "price": 53.24661122131347,
+      "quantity": 167.697108,
+      "reason": "monthly_rotation",
+      "side": "buy",
+      "ticker": "PYPL",
+      "type": "fill"
+    },
+    {
+      "date": "2026-10-02",
+      "reason": "next_open",
+      "signal_date": "2026-10-01",
+      "targets": 10,
+      "ticker": null,
+      "type": "rebalance_filled"
+    },
+    {
+      "amount": 82.17474578000001,
+      "date": "2026-10-30",
+      "per_share": 0.38,
+      "ticker": "AOS",
+      "type": "dividend"
+    },
+    {
+      "date": "2026-10-30",
+      "expected_fill_session": "2026-11-02",
+      "invest_fraction": 0.95,
+      "targets": 10,
+      "ticker": null,
+      "type": "signal"
+    }
+  ],
+  "first_session": "2026-10-01",
+  "first_signal_session": "2026-10-01",
+  "last_session": "2026-10-30",
+  "last_signal_session": "2026-10-30",
+  "market_hashes": {
+    "2026-10-01": "93e8a01065ee5b97ed93450b123f2b28d1ce61e8cd6800fb4602afa8c1fe0487",
+    "2026-10-02": "236533ebd1426d2a218fd8f8e1f5308d94f4d9b4a3560585bec28b24599cad19",
+    "2026-10-05": "4fe3e66942eb6063a61d39af1ac7b2801c81419d505fa68c077a2e79cbec095c",
+    "2026-10-06": "8775725a9228d6fc8500ca1219b744649c84528ae52db56b7479036805715044",
+    "2026-10-07": "c69f5d64765bd7b4a09411f697ba32340a926305b56336683775f41751d71194",
+    "2026-10-08": "5e540e1ebcb35d440fa55664c6f8f85c0d55dabb9964e3bfe96b6e8551551057",
+    "2026-10-09": "f59322cffd85d642c9b0a7702ac86e98da63ee4670b2020e3dbffeb7952a2014",
+    "2026-10-12": "4be658e51b3b1389f31a3823d315c15263083a702a9fc5e51745f5ad358ceaad",
+    "2026-10-13": "2c3d55ffe9f88995e84849e46e7ced4a1579610abcd65b8e14e48828b335d457",
+    "2026-10-14": "fe22a30333de8e90c85a57f4aa881e0a3b1da2c4f642ff0dc06ff4766c90a2cc",
+    "2026-10-15": "fcc632670dfe9c80a7768b2e798619f39dc96a379102f0a36a740f2e63ce0c30",
+    "2026-10-16": "c3f872ebb55f7a15a6fb179ce4759a00bc5038b490bcf5d00e2168e927d6ff38",
+    "2026-10-19": "931695e0f9432ececc02add39cb9f72ec9ab485a92366251e517d81d4b3c27b6",
+    "2026-10-20": "691f3b54031d2c41bed12516114d7a953b341ed66cf9c3c490a24374883bf104",
+    "2026-10-21": "8abbf59523f42f51ae1468018cd06d1e82a4eeceff46589e018eb09d86e86677",
+    "2026-10-22": "ca977eef8cecb86bce80365e084d40899c649709846db821e93c2f9936fe59cc",
+    "2026-10-23": "ea20b5c42a9922bdbac74ab345c3fd9db4066ef1bc38af1a24223d86b7a18d6e",
+    "2026-10-26": "0be928459f5d8de5473ca639e45739636cbe829ae7a589f4f976c81516e9c19a",
+    "2026-10-27": "79fb87b7b44a36662e52d3a77e6775d4726228f819762f9bf50f68755d1979fb",
+    "2026-10-28": "c7238c6a9c2251327fae027d9b5d8432216509cc1623006707e18e3153d05844",
+    "2026-10-29": "5d9cb1fd01961603e5237463165b2c0c8468032c85da2575c5150f96f7061f62",
+    "2026-10-30": "833cefcaa9fd4e0150753bb6308941c3bcdd24a6932eb297e2e65e73610d123f"
+  },
+  "nav": 105159.52883115194,
+  "pending": {
+    "expected_fill_session": "2026-11-02",
+    "sectors": {
+      "ALGN": "Health Care",
+      "AOS": "Industrials",
+      "CTSH": "Information Technology",
+      "CTVA": "Materials",
+      "DECK": "Consumer Discretionary",
+      "ELV": "Health Care",
+      "ENPH": "Information Technology",
+      "EPAM": "Information Technology",
+      "PAYC": "Industrials",
+      "PYPL": "Financials"
+    },
+    "signal_date": "2026-10-30",
+    "target_weights": {
+      "ALGN": 0.09397274044670055,
+      "AOS": 0.13567211232302134,
+      "CTSH": 0.09186512908015662,
+      "CTVA": 0.1101895617114637,
+      "DECK": 0.09119434667377063,
+      "ELV": 0.0941038247162481,
+      "ENPH": 0.07359989157676194,
+      "EPAM": 0.09696646679279733,
+      "PAYC": 0.07537807116136874,
+      "PYPL": 0.08705785551771102
+    }
+  },
+  "positions": {
+    "ALGN": {
+      "entry_date": "2026-10-02",
+      "entry_price": 147.16354133605955,
+      "quantity": 65.058542,
+      "sector": "Health Care"
+    },
+    "AOS": {
+      "entry_date": "2026-10-02",
+      "entry_price": 57.23860408401489,
+      "quantity": 216.249331,
+      "sector": "Industrials"
+    },
+    "CTSH": {
+      "entry_date": "2026-10-02",
+      "entry_price": 61.12054515266418,
+      "quantity": 170.113766,
+      "sector": "Information Technology"
+    },
+    "CTVA": {
+      "entry_date": "2026-10-02",
+      "entry_price": 12.391192728996277,
+      "quantity": 742.16335,
+      "sector": "Materials"
+    },
+    "DECK": {
+      "entry_date": "2026-10-02",
+      "entry_price": 79.53975,
+      "quantity": 112.557558,
+      "sector": "Consumer Discretionary"
+    },
+    "ELV": {
+      "entry_date": "2026-10-02",
+      "entry_price": 382.28104133605956,
+      "quantity": 25.56402,
+      "sector": "Health Care"
+    },
+    "ENPH": {
+      "entry_date": "2026-10-02",
+      "entry_price": 33.61679847335815,
+      "quantity": 227.02941,
+      "sector": "Information Technology"
+    },
+    "EPAM": {
+      "entry_date": "2026-10-02",
+      "entry_price": 114.16705561065673,
+      "quantity": 80.061743,
+      "sector": "Information Technology"
+    },
+    "PAYC": {
+      "entry_date": "2026-10-02",
+      "entry_price": 227.53370816802976,
+      "quantity": 39.256361,
+      "sector": "Industrials"
+    },
+    "PYPL": {
+      "entry_date": "2026-10-02",
+      "entry_price": 53.24661122131347,
+      "quantity": 167.697108,
+      "sector": "Financials"
+    }
+  },
+  "schema_version": 1,
+  "signals": [
+    {
+      "coverage": {
+        "entry_eligible": 44,
+        "financials_scored": 55,
+        "frozen_universe": 503,
+        "fundamental_failures": 130,
+        "fundamental_usable": 358,
+        "price_failures": 15,
+        "price_usable": 488,
+        "scored": 358
+      },
+      "date": "2026-10-01",
+      "excluded_count": 145,
+      "exit_reasons": {},
+      "expected_fill_session": "2026-10-02",
+      "invest_fraction": 0.95,
+      "selected": [
+        {
+          "capital_allocation_score": 85.4545,
+          "catalyst_votes": 3,
+          "composite_score": 85.7273,
+          "dislocation_score": 97.7273,
+          "latest_statement_period": "2025-12-31",
+          "quality_score": 75.2273,
+          "sector": "Materials",
+          "ticker": "CTVA",
+          "valuation_score": 97.7273,
+          "volatility_1y": 0.881123,
+          "weight": 0.09205485
+        },
+        {
+          "capital_allocation_score": 75.3061,
+          "catalyst_votes": 2,
+          "composite_score": 76.7946,
+          "dislocation_score": 98.9796,
+          "latest_statement_period": "2025-12-31",
+          "quality_score": 58.0217,
+          "sector": "Information Technology",
+          "ticker": "ENPH",
+          "valuation_score": 93.6613,
+          "volatility_1y": 0.823816,
+          "weight": 0.07639634
+        },
+        {
+          "capital_allocation_score": 79.6939,
+          "catalyst_votes": 4,
+          "composite_score": 75.5271,
+          "dislocation_score": 73.2653,
+          "latest_statement_period": "2025-12-31",
+          "quality_score": 53.8074,
+          "sector": "Information Technology",
+          "ticker": "CTSH",
+          "valuation_score": 87.195,
+          "volatility_1y": 0.415283,
+          "weight": 0.10407844
+        },
+        {
+          "capital_allocation_score": 86.4286,
+          "catalyst_votes": 2,
+          "composite_score": 74.6628,
+          "dislocation_score": 94.1837,
+          "latest_statement_period": "2025-12-31",
+          "quality_score": 43.5174,
+          "sector": "Information Technology",
+          "ticker": "EPAM",
+          "valuation_score": 93.8609,
+          "volatility_1y": 0.513181,
+          "weight": 0.09149554
+        },
+        {
+          "capital_allocation_score": 79.0566,
+          "catalyst_votes": 2,
+          "composite_score": 73.9583,
+          "dislocation_score": 83.4906,
+          "latest_statement_period": "2025-12-31",
+          "quality_score": 70.1078,
+          "sector": "Industrials",
+          "ticker": "AOS",
+          "valuation_score": 84.6004,
+          "volatility_1y": 0.26943,
+          "weight": 0.12390188
+        },
+        {
+          "capital_allocation_score": 73.2075,
+          "catalyst_votes": 5,
+          "composite_score": 72.3281,
+          "dislocation_score": 67.1698,
+          "latest_statement_period": "2025-12-31",
+          "quality_score": 82.4894,
+          "sector": "Industrials",
+          "ticker": "PAYC",
+          "valuation_score": 54.717,
+          "volatility_1y": 0.473262,
+          "weight": 0.08941078
+        },
+        {
+          "capital_allocation_score": 64.3023,
+          "catalyst_votes": 2,
+          "composite_score": 71.5682,
+          "dislocation_score": 95.6977,
+          "latest_statement_period": "2025-12-31",
+          "quality_score": 63.4497,
+          "sector": "Health Care",
+          "ticker": "ALGN",
+          "valuation_score": 80.3111,
+          "volatility_1y": 0.394871,
+          "weight": 0.0958382
+        },
+        {
+          "capital_allocation_score": 71.0811,
+          "catalyst_votes": 2,
+          "composite_score": 71.4057,
+          "dislocation_score": 75.4054,
+          "latest_statement_period": "2026-03-31",
+          "quality_score": 85.3581,
+          "sector": "Consumer Discretionary",
+          "ticker": "DECK",
+          "valuation_score": 75.3029,
+          "volatility_1y": 0.447507,
+          "weight": 0.08961753
+        },
+        {
+          "capital_allocation_score": 67.0909,
+          "catalyst_votes": 4,
+          "composite_score": 71.0194,
+          "dislocation_score": 86.3636,
+          "latest_statement_period": "2025-12-31",
+          "quality_score": 56.553,
+          "sector": "Financials",
+          "ticker": "PYPL",
+          "valuation_score": 67.9082,
+          "volatility_1y": 0.44021,
+          "weight": 0.08938232
+        },
+        {
+          "capital_allocation_score": 75.6977,
+          "catalyst_votes": 4,
+          "composite_score": 70.1558,
+          "dislocation_score": 76.8605,
+          "latest_statement_period": "2025-12-31",
+          "quality_score": 44.6924,
+          "sector": "Health Care",
+          "ticker": "ELV",
+          "valuation_score": 74.9686,
+          "volatility_1y": 0.349958,
+          "weight": 0.09782413
+        }
+      ],
+      "target_weights": {
+        "ALGN": 0.09583819776599034,
+        "AOS": 0.12390187686322575,
+        "CTSH": 0.10407843579918245,
+        "CTVA": 0.09205485396743043,
+        "DECK": 0.08961752860908756,
+        "ELV": 0.09782413071881535,
+        "ENPH": 0.07639633939194738,
+        "EPAM": 0.09149553901586022,
+        "PAYC": 0.08941077737628751,
+        "PYPL": 0.08938232049217298
+      }
+    },
+    {
+      "coverage": {
+        "entry_eligible": 42,
+        "financials_scored": 54,
+        "frozen_universe": 503,
+        "fundamental_failures": 138,
+        "fundamental_usable": 348,
+        "price_failures": 17,
+        "price_usable": 486,
+        "scored": 348
+      },
+      "date": "2026-10-30",
+      "excluded_count": 155,
+      "exit_reasons": {},
+      "expected_fill_session": "2026-11-02",
+      "invest_fraction": 0.95,
+      "selected": [
+        {
+          "capital_allocation_score": 79.8077,
+          "catalyst_votes": 4,
+          "composite_score": 79.8822,
+          "dislocation_score": 81.8269,
+          "latest_statement_period": "2025-12-31",
+          "quality_score": 70.5889,
+          "sector": "Industrials",
+          "ticker": "AOS",
+          "valuation_score": 84.7596,
+          "volatility_1y": 0.274529,
+          "weight": 0.13567211
+        },
+        {
+          "capital_allocation_score": 85.5102,
+          "catalyst_votes": 4,
+          "composite_score": 79.253,
+          "dislocation_score": 91.2245,
+          "latest_statement_period": "2025-12-31",
+          "quality_score": 43.2773,
+          "sector": "Information Technology",
+          "ticker": "EPAM",
+          "valuation_score": 91.7535,
+          "volatility_1y": 0.5207,
+          "weight": 0.09696647
+        },
+        {
+          "capital_allocation_score": 78.9796,
+          "catalyst_votes": 2,
+          "composite_score": 77.5359,
+          "dislocation_score": 98.9796,
+          "latest_statement_period": "2025-12-31",
+          "quality_score": 57.4426,
+          "sector": "Information Technology",
+          "ticker": "ENPH",
+          "valuation_score": 94.6817,
+          "volatility_1y": 0.82799,
+          "weight": 0.07359989
+        },
+        {
+          "capital_allocation_score": 85.4762,
+          "catalyst_votes": 3,
+          "composite_score": 74.3452,
+          "dislocation_score": 41.6667,
+          "latest_statement_period": "2025-12-31",
+          "quality_score": 74.5238,
+          "sector": "Materials",
+          "ticker": "CTVA",
+          "valuation_score": 97.619,
+          "volatility_1y": 0.312248,
+          "weight": 0.11018956
+        },
+        {
+          "capital_allocation_score": 77.3469,
+          "catalyst_votes": 4,
+          "composite_score": 73.6815,
+          "dislocation_score": 64.7959,
+          "latest_statement_period": "2025-12-31",
+          "quality_score": 53.2283,
+          "sector": "Information Technology",
+          "ticker": "CTSH",
+          "valuation_score": 88.2487,
+          "volatility_1y": 0.433412,
+          "weight": 0.09186513
+        },
+        {
+          "capital_allocation_score": 64.5238,
+          "catalyst_votes": 2,
+          "composite_score": 72.7103,
+          "dislocation_score": 96.6667,
+          "latest_statement_period": "2025-12-31",
+          "quality_score": 63.4174,
+          "sector": "Health Care",
+          "ticker": "ALGN",
+          "valuation_score": 83.3829,
+          "volatility_1y": 0.392778,
+          "weight": 0.09397274
+        },
+        {
+          "capital_allocation_score": 72.3611,
+          "catalyst_votes": 2,
+          "composite_score": 72.5286,
+          "dislocation_score": 79.3056,
+          "latest_statement_period": "2026-03-31",
+          "quality_score": 85.2275,
+          "sector": "Consumer Discretionary",
+          "ticker": "DECK",
+          "valuation_score": 75.8929,
+          "volatility_1y": 0.412924,
+          "weight": 0.09119435
+        },
+        {
+          "capital_allocation_score": 67.2222,
+          "catalyst_votes": 4,
+          "composite_score": 71.2959,
+          "dislocation_score": 85.9259,
+          "latest_statement_period": "2025-12-31",
+          "quality_score": 56.0683,
+          "sector": "Financials",
+          "ticker": "PYPL",
+          "valuation_score": 69.3789,
+          "volatility_1y": 0.423068,
+          "weight": 0.08705786
+        },
+        {
+          "capital_allocation_score": 75.4762,
+          "catalyst_votes": 4,
+          "composite_score": 70.7807,
+          "dislocation_score": 78.9286,
+          "latest_statement_period": "2025-12-31",
+          "quality_score": 45.0495,
+          "sector": "Health Care",
+          "ticker": "ELV",
+          "valuation_score": 75.5456,
+          "volatility_1y": 0.351734,
+          "weight": 0.09410382
+        },
+        {
+          "capital_allocation_score": 72.1154,
+          "catalyst_votes": 5,
+          "composite_score": 68.3101,
+          "dislocation_score": 58.0769,
+          "latest_statement_period": "2025-12-31",
+          "quality_score": 82.3438,
+          "sector": "Industrials",
+          "ticker": "PAYC",
+          "valuation_score": 48.0288,
+          "volatility_1y": 0.475574,
+          "weight": 0.07537807
+        }
+      ],
+      "target_weights": {
+        "ALGN": 0.09397274044670055,
+        "AOS": 0.13567211232302134,
+        "CTSH": 0.09186512908015662,
+        "CTVA": 0.1101895617114637,
+        "DECK": 0.09119434667377063,
+        "ELV": 0.0941038247162481,
+        "ENPH": 0.07359989157676194,
+        "EPAM": 0.09696646679279733,
+        "PAYC": 0.07537807116136874,
+        "PYPL": 0.08705785551771102
+      }
+    }
+  ],
+  "source": "yfinance/raw_ohlc+actions+current_fundamentals",
+  "strategy_id": "buy_the_dip_corpus_2026_v0",
+  "universe_hash": "4588bffae39f1dc2bb1bdec6201751b559600759675a0b3c259dfb834e669394"
+}

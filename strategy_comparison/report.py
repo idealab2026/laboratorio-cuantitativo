@@ -1,0 +1,808 @@
+"""Expose every MIDAS idea without presenting missing strategies as live results."""
+
+import argparse
+import hashlib
+import json
+import math
+import os
+import statistics
+import tempfile
+from datetime import datetime, timezone
+from pathlib import Path
+
+
+def _read(path, *, optional=False):
+    path = Path(path)
+    if optional and not path.exists():
+        return None
+    return json.loads(path.read_text(encoding="utf-8"))
+
+
+def _write(path, content):
+    path = Path(path)
+    path.parent.mkdir(parents=True, exist_ok=True)
+    with tempfile.NamedTemporaryFile("w", encoding="utf-8", dir=path.parent, delete=False) as stream:
+        temporary = Path(stream.name)
+        stream.write(content)
+        stream.flush()
+        os.fsync(stream.fileno())
+    os.replace(temporary, path)
+
+
+def _config_hash(config):
+    payload = json.dumps(config, sort_keys=True, separators=(",", ":"), ensure_ascii=False)
+    return hashlib.sha256(payload.encode("utf-8")).hexdigest()
+
+
+def _equity(value, label):
+    if isinstance(value, bool) or not isinstance(value, (float, int)) or not math.isfinite(value) or value < 0:
+        raise ValueError("Patrimonio inválido: " + label)
+    return float(value)
+
+
+def _daily_return(history, label):
+    if len(history) < 2:
+        return None
+    previous = _equity(history[-2].get("nav"), label + " anterior")
+    current = _equity(history[-1].get("nav"), label)
+    if previous == 0:
+        return None
+    return round(100 * (current / previous - 1), 6)
+
+
+def _equity_history(history, label, limit=520):
+    if not isinstance(history, list):
+        return []
+    points = []
+    for item in history[-limit:]:
+        if not isinstance(item, dict):
+            raise ValueError("Histórico de patrimonio inválido: " + label)
+        date = item.get("date")
+        nav = _equity(item.get("nav"), label + " histórico")
+        if not isinstance(date, str) or len(date) < 10:
+            raise ValueError("Fecha de patrimonio inválida: " + label)
+        points.append({"date": date[:10], "nav": nav})
+    if any(points[index]["date"] <= points[index - 1]["date"] for index in range(1, len(points))):
+        raise ValueError("Histórico de patrimonio desordenado: " + label)
+    return points
+
+
+def _risk_metrics(points):
+    """Risk from the same recorded NAV path shown in the dashboard."""
+    if not isinstance(points, list) or not points:
+        return {
+            "risk_observations": 0,
+            "annualized_volatility_pct": None,
+            "max_drawdown_pct": None,
+            "sharpe_0rf": None,
+        }
+    navs = [float(point["nav"]) for point in points if isinstance(point, dict) and _equity(point.get("nav"), "riesgo") >= 0]
+    if not navs:
+        return {
+            "risk_observations": 0,
+            "annualized_volatility_pct": None,
+            "max_drawdown_pct": None,
+            "sharpe_0rf": None,
+        }
+    peak = navs[0]
+    max_dd = 0.0
+    for nav in navs:
+        peak = max(peak, nav)
+        if peak > 0:
+            max_dd = min(max_dd, nav / peak - 1.0)
+
+    returns = []
+    dates = []
+    for index, point in enumerate(points):
+        try:
+            dates.append(datetime.fromisoformat(str(point["date"])[:10]).date())
+        except (TypeError, ValueError, KeyError):
+            dates.append(None)
+        if index and navs[index - 1] > 0:
+            returns.append(navs[index] / navs[index - 1] - 1.0)
+
+    volatility = sharpe = None
+    # Annualized volatility and Sharpe are too unstable with only a handful of
+    # observations. Keep max drawdown from day one, but wait for 10 returns.
+    if len(returns) >= 10:
+        sd = statistics.stdev(returns)
+        valid_gaps = [
+            (dates[i] - dates[i - 1]).days
+            for i in range(1, len(dates))
+            if dates[i] is not None and dates[i - 1] is not None and (dates[i] - dates[i - 1]).days > 0
+        ]
+        gap = statistics.median(valid_gaps) if valid_gaps else 1
+        periods = 252.0 if gap <= 3 else 52.0 if gap <= 10 else 12.0 if gap <= 40 else 4.0
+        volatility = 100.0 * sd * math.sqrt(periods)
+        if sd > 1e-15:
+            sharpe = statistics.fmean(returns) / sd * math.sqrt(periods)
+
+    return {
+        "risk_observations": len(navs),
+        "annualized_volatility_pct": None if volatility is None else round(volatility, 6),
+        "max_drawdown_pct": round(100.0 * max_dd, 6),
+        "sharpe_0rf": None if sharpe is None else round(sharpe, 6),
+    }
+
+
+TFM_IDS = {"tfm_lgbm_2023": "lgbm", "tfm_mlp_2023": "mlp",
+           "tfm_lstm_2023": "lstm", "tfm_arima_2023": "arima"}
+
+
+def _activity_tickers(value):
+    if isinstance(value, dict):
+        return [str(ticker) for ticker in value if ticker]
+    if isinstance(value, list):
+        return [str(item.get("ticker")) for item in value
+                if isinstance(item, dict) and item.get("ticker")]
+    return []
+
+
+def _activity(positions=None, pending=None, *, pending_label="órdenes pendientes",
+              empty_label="Sin compras · en efectivo"):
+    position_tickers = _activity_tickers(positions)
+    pending_tickers = _activity_tickers(pending)
+    combined = []
+    for ticker in position_tickers + pending_tickers:
+        if ticker not in combined:
+            combined.append(ticker)
+    open_count = len(position_tickers)
+    pending_count = len(pending_tickers)
+    # Labels are already formatted for plural counts by the callers.
+    # Adjust only the initial noun when a single order/signal is pending.
+    single_pending_label = pending_label
+    if pending_count == 1 and pending_label.startswith("compras "):
+        single_pending_label = "compra " + pending_label[len("compras "):]
+    elif pending_count == 1 and pending_label.startswith("señales congeladas"):
+        single_pending_label = "señal congelada" + pending_label[len("señales congeladas"):]
+    elif pending_count == 1 and pending_label.startswith("señales "):
+        single_pending_label = "señal " + pending_label[len("señales "):]
+    resolved_pending_label = single_pending_label if pending_count == 1 else pending_label
+    if open_count and pending_count:
+        state = "active_pending"
+        label = f"{open_count} " + ("posición" if open_count == 1 else "posiciones") + f" · {pending_count} {resolved_pending_label}"
+    elif open_count:
+        state = "active"
+        label = f"{open_count} " + ("posición abierta" if open_count == 1 else "posiciones abiertas")
+    elif pending_count:
+        state = "pending"
+        label = f"{pending_count} {resolved_pending_label}"
+    else:
+        state = "cash"
+        label = empty_label
+    return {
+        "activity_state": state,
+        "activity_label": label,
+        "activity_tickers": combined[:12],
+        "open_positions_count": open_count,
+        "pending_orders_count": pending_count,
+    }
+
+
+def build(registry, paper_config, paper_state=None, legacy_state=None, now=None,
+          tfm_config=None, tfm_state=None, weekly_config=None, weekly_state=None,
+          tfg_config=None, tfg_state=None, capital_config=None, capital_state=None,
+          btd_config=None, btd_state=None, weekly_daily_state=None,
+          timesfm_config=None, timesfm_state=None, timesfm_daily_config=None, timesfm_daily_state=None,
+          classic_sp500_config=None, classic_sp500_state=None):
+    if registry.get("schema_version") != 1:
+        raise ValueError("Versión de registro no válida")
+    paper_names = registry.get("paper_tracks", {})
+    if not isinstance(paper_names, dict) or set(paper_names) != set(paper_config.get("strategies", {})):
+        raise ValueError("Registro y configuración paper no coinciden")
+    ideas = registry.get("historical_ideas", [])
+    legacy_tracks = registry.get("legacy_tracks", [])
+    weekly_tracks = registry.get("weekly_ml_tracks", {})
+    if not isinstance(weekly_tracks, dict):
+        raise ValueError("Registro weekly ML inválido")
+    weekly_ids = [item["id"] for item in weekly_tracks.values()]
+    tfg_tracks = registry.get("tfg_tracks", {})
+    if not isinstance(tfg_tracks, dict):
+        raise ValueError("Registro TFG inválido")
+    tfg_ids = [item["id"] for item in tfg_tracks.values()]
+    capital_tracks = registry.get("capital_cycle_tracks", {})
+    if not isinstance(capital_tracks, dict):
+        raise ValueError("Registro Capital Cycle inválido")
+    capital_ids = [item["id"] for item in capital_tracks.values()]
+    btd_tracks = registry.get("buy_the_dip_tracks", {})
+    if not isinstance(btd_tracks, dict):
+        raise ValueError("Registro Buy The Dip inválido")
+    btd_ids = [item["id"] for item in btd_tracks.values()]
+    timesfm_tracks = registry.get("timesfm_tracks", {})
+    timesfm_ids = [item["id"] for item in timesfm_tracks.values()]
+    timesfm_daily_tracks = registry.get("timesfm_daily_tracks", {})
+    timesfm_daily_ids = [item["id"] for item in timesfm_daily_tracks.values()]
+    classic_sp500_tracks = registry.get("classic_sp500_tracks", {})
+    classic_sp500_ids = [item["id"] for item in classic_sp500_tracks.values()]
+    ids = list(paper_names) + weekly_ids + tfg_ids + capital_ids + btd_ids + timesfm_ids + timesfm_daily_ids + classic_sp500_ids + [x["id"] for x in legacy_tracks + ideas]
+    if len(ids) != len(set(ids)):
+        raise ValueError("Ideas duplicadas")
+    provenance = registry.get("provenance", {})
+    if set(provenance) != set(ids) or not all(isinstance(value, str) and value.strip() for value in provenance.values()):
+        raise ValueError("Procedencia incompleta o inválida")
+    capital = _equity(paper_config.get("capital"), "capital inicial paper")
+    if capital == 0:
+        raise ValueError("Capital paper cero")
+    if paper_state is not None:
+        if paper_state.get("config_hash") != _config_hash(paper_config):
+            raise ValueError("El diario paper pertenece a otra configuración")
+        if set(paper_state.get("strategies", {})) != set(paper_names):
+            raise ValueError("Faltan carteras paper")
+    if tfm_config is not None:
+        if set(tfm_config.get("models", [])) != set(TFM_IDS.values()):
+            raise ValueError("Configuración TFM incompleta")
+        if not TFM_IDS.keys() <= {item["id"] for item in ideas}:
+            raise ValueError("El catálogo omite variantes TFM")
+    if tfm_state is not None:
+        if tfm_config is None or tfm_state.get("config_hash") != _config_hash(tfm_config):
+            raise ValueError("El diario TFM pertenece a otra configuración")
+        if set(tfm_state.get("models", {})) != set(TFM_IDS.values()):
+            raise ValueError("Faltan carteras TFM")
+    if weekly_config is not None:
+        expected_weekly = set(weekly_config.get("models", [])) | {"benchmark_spy", "benchmark_rsp"}
+        if set(weekly_tracks) != expected_weekly:
+            raise ValueError("Registro y configuración weekly ML no coinciden")
+    if weekly_state is not None:
+        if weekly_config is None or weekly_state.get("config_hash") != _config_hash(weekly_config):
+            raise ValueError("El diario weekly ML pertenece a otra configuración")
+        if set(weekly_state.get("strategies", {})) != set(weekly_tracks):
+            raise ValueError("Faltan carteras weekly ML")
+    if weekly_daily_state is not None:
+        if (weekly_config is None or weekly_daily_state.get("config_hash") != _config_hash(weekly_config)
+                or weekly_daily_state.get("engine") != "weekly_ml_daily_next_open_v1"
+                or set(weekly_daily_state.get("strategies", {})) != set(weekly_tracks)):
+            raise ValueError("Diario prospectivo Weekly ML inválido")
+    if tfg_config is not None:
+        if set(tfg_tracks) != {"tfg_corrected"}:
+            raise ValueError("Registro TFG corregido incompleto")
+        if tfg_config.get("name") != "TFG_2021_corrected_2026":
+            raise ValueError("Configuración TFG no reconocida")
+    if tfg_state is not None:
+        if tfg_config is None or tfg_state.get("config_hash") != _config_hash(tfg_config):
+            raise ValueError("El diario TFG pertenece a otra configuración")
+        if not isinstance(tfg_state.get("equity"), list) or not tfg_state["equity"]:
+            raise ValueError("Diario TFG sin patrimonio")
+    if capital_config is not None:
+        if set(capital_tracks) != {"capital_cycle_inflection"}:
+            raise ValueError("Registro Capital Cycle incompleto")
+        if capital_config.get("name") != "MIDAS_capital_cycle_inflection_2026":
+            raise ValueError("Configuración Capital Cycle no reconocida")
+    if capital_state is not None:
+        if capital_config is None or capital_state.get("config_hash") != _config_hash(capital_config):
+            raise ValueError("El diario Capital Cycle pertenece a otra configuración")
+        if capital_state.get("strategy_id") != "capital_cycle_inflection_2026":
+            raise ValueError("Diario Capital Cycle no reconocido")
+        if not isinstance(capital_state.get("equity"), list) or not capital_state["equity"]:
+            raise ValueError("Diario Capital Cycle sin patrimonio")
+    if btd_config is not None:
+        if set(btd_tracks) != {"buy_the_dip_corpus"}:
+            raise ValueError("Registro Buy The Dip incompleto")
+        if btd_config.get("name") != "MIDAS_buy_the_dip_corpus_v0_2026":
+            raise ValueError("Configuración Buy The Dip no reconocida")
+    if btd_state is not None:
+        if btd_config is None or btd_state.get("config_hash") != _config_hash(btd_config):
+            raise ValueError("El diario Buy The Dip pertenece a otra configuración")
+        if btd_state.get("strategy_id") != "buy_the_dip_corpus_2026_v0":
+            raise ValueError("Diario Buy The Dip no reconocido")
+        if not isinstance(btd_state.get("equity"), list) or not btd_state["equity"]:
+            raise ValueError("Diario Buy The Dip sin patrimonio")
+    if timesfm_config is not None:
+        if set(timesfm_tracks) != {"timesfm", "benchmark_spy"}:
+            raise ValueError("Registro TimesFM incompleto")
+        if timesfm_config.get("name") != "MIDAS_timesfm_2p5_eur_weekly_2026":
+            raise ValueError("Configuración TimesFM no reconocida")
+        if (timesfm_config.get("currency") != "EUR" or
+                timesfm_config.get("initial_capital") != 100000):
+            raise ValueError("La campaña TimesFM debe ser de 100k EUR")
+    if timesfm_state is not None:
+        if timesfm_config is None or timesfm_state.get("config_hash") != _config_hash(timesfm_config):
+            raise ValueError("El diario TimesFM pertenece a otra configuración")
+        if timesfm_state.get("engine") != "timesfm_2p5_weekly_eur_v1":
+            raise ValueError("Motor TimesFM no reconocido")
+        if set(timesfm_state.get("books", {})) != set(timesfm_tracks):
+            raise ValueError("Faltan carteras TimesFM")
+        for book in timesfm_state["books"].values():
+            hist = book.get("equity", [])
+            if not hist or hist[-1].get("date") != timesfm_state.get("last_session"):
+                raise ValueError("Diario TimesFM sin NAV fechado")
+    if timesfm_daily_config is not None:
+        if set(timesfm_daily_tracks) != {"timesfm_daily", "benchmark_spy"}:
+            raise ValueError("Registro de TimesFM diario incompleto")
+        if timesfm_daily_config.get("name") != "MIDAS_timesfm_2p5_eur_daily_2026":
+            raise ValueError("Configuración TimesFM diario no reconocida")
+        if timesfm_daily_config.get("currency") != "EUR" or timesfm_daily_config.get("initial_capital") != 100000:
+            raise ValueError("TimesFM diario debe ser una campaña EUR 100k")
+    if timesfm_daily_state is not None:
+        if (timesfm_daily_config is None
+                or timesfm_daily_state.get("config_hash") != _config_hash(timesfm_daily_config)
+                or timesfm_daily_state.get("engine") != "timesfm_2p5_daily_eur_v1"
+                or set(timesfm_daily_state.get("books", {})) != set(timesfm_daily_tracks)):
+            raise ValueError("Diario TimesFM diario ajeno o incompleto")
+        for book in timesfm_daily_state["books"].values():
+            if not book.get("equity") or book["equity"][-1]["date"] != timesfm_daily_state.get("last_session"):
+                raise ValueError("Diario TimesFM diario sin cierre observado")
+    if classic_sp500_config is not None:
+        if set(classic_sp500_tracks) != set(classic_sp500_config.get("strategies", {})) | {"benchmark_spy"}:
+            raise ValueError("Classic S&P 500: registry does not match strategies")
+        if (classic_sp500_config.get("name") != "MIDAS_classic_SP500_forward_2026"
+                or classic_sp500_config.get("universe_file") != "weekly_ml/universe_sp500_2026-09-29.csv"):
+            raise ValueError("Classic S&P 500 configuration is not common-universe")
+    if classic_sp500_state is not None:
+        if (classic_sp500_config is None
+                or classic_sp500_state.get("config_hash") != _config_hash(classic_sp500_config)
+                or classic_sp500_state.get("engine") != "classic_sp500_next_open_v2"
+                or set(classic_sp500_state.get("books", {})) != set(classic_sp500_tracks)):
+            raise ValueError("Classic S&P 500 forward ledger invalid")
+        for book in classic_sp500_state["books"].values():
+            if not book.get("equity"):
+                raise ValueError("Classic S&P 500 book lacks matching close")
+            verified_day = book["equity"][-1].get("date")
+            paused = book.get("paused_missing_quotes")
+            if paused:
+                if (verified_day >= classic_sp500_state["last_session"]
+                        or paused.get("last_valued_session") != verified_day
+                        or not paused.get("missing_tickers")):
+                    raise ValueError("Classic S&P 500 unpriced book has invalid provenance")
+            elif verified_day != classic_sp500_state.get("last_session"):
+                raise ValueError("Classic S&P 500 book lacks matching close")
+    timestamp = now or datetime.now(timezone.utc)
+    rows = []
+    for strategy_id, label in paper_names.items():
+        row = {"id": strategy_id, "label": label, "provenance": provenance[strategy_id],
+               "group": "paper_nuevo", "status": "programada_sin_diario",
+               "first_session": None, "last_session": None, "initial_capital": capital, "last_equity": None,
+               "return_pct": None, "day_return_pct": None, "currency": paper_config.get("currency", "USD"),
+               "equity_history": [], "note": "Mismas reglas de contabilidad; variante nueva si el nombre indica adaptación."}
+        if paper_state is not None:
+            book = paper_state["strategies"][strategy_id]
+            history = book.get("equity", [])
+            if not history:
+                raise ValueError("Cartera sin patrimonio: " + strategy_id)
+            nav = _equity(history[-1].get("nav"), strategy_id)
+            row.update(status="demo_con_diario" if book.get("status") == "active" else "pendiente_modelo",
+                       first_session=paper_state.get("first_session"),
+                       last_session=paper_state.get("last_session"), last_equity=nav,
+                       return_pct=round(100 * (nav / capital - 1), 6),
+                       day_return_pct=_daily_return(history, strategy_id),
+                       equity_history=_equity_history(history, strategy_id))
+            row.update(_activity(book.get("positions"), book.get("pending")))
+        rows.append(row)
+    for name, item in classic_sp500_tracks.items():
+        init = None if classic_sp500_config is None else _equity(
+            classic_sp500_config["initial_capital"], "classic SP500 capital")
+        row = {"id": item["id"], "label": item["label"], "provenance": provenance[item["id"]],
+               "group": "paper_nuevo", "status": "programada_sin_diario",
+               "classic_sp500_cohort": True,
+               "first_session": None, "last_session": None,
+               "initial_capital": init, "last_equity": None,
+               "return_pct": None, "day_return_pct": None, "currency": "USD",
+               "equity_history": [], "note": "Nueva campaña S&P500 503 símbolos; las carteras originales de 8 títulos "
+                       "se conservan históricas y no transfieren NAV ni operaciones."}
+        if classic_sp500_state is not None:
+            book = classic_sp500_state["books"][name]
+            hist = book["equity"]
+            nav = _equity(book["nav"], item["id"])
+            quarantined = book.get("paused_missing_quotes")
+            row.update(status="demo_con_diario", first_session=classic_sp500_state["first_session"],
+                       last_session=hist[-1]["date"], last_equity=nav,
+                       return_pct=round(100 * (nav / init - 1), 6) if len(hist) >= 2 else None,
+                       day_return_pct=None if quarantined else _daily_return(hist, item["id"]),
+                       equity_history=_equity_history(hist, item["id"]),
+                       evaluated_universe_symbols=(classic_sp500_state["coverage"][-1]["eligible"]
+                                                   if classic_sp500_state.get("coverage") else None),
+                       eligible_universe_symbols=(classic_sp500_state["coverage"][-1]["total"]
+                                                   if classic_sp500_state.get("coverage") else None))
+            row.update(_activity(book["positions"], book.get("pending"),
+                                 pending_label="compras paper para próxima apertura"))
+            if quarantined:
+                row["data_quality_status"] = "held_quote_unavailable"
+                row["activity_label"] = ("VALORACIÓN PAUSADA · falta cotización; "
+                                          + row.get("activity_label", ""))
+                row["note"] += (" Valoración conservada exclusivamente hasta "
+                                + hist[-1]["date"] + "; operaciones sin actualizar.")
+        rows.append(row)
+    for strategy_key, item in weekly_tracks.items():
+        capital_weekly = None if weekly_config is None else _equity(
+            weekly_config["paper_policy"]["capital"], "capital weekly ML")
+        # Only the independent next-open ledger may enter the daily competition.
+        # Never substitute the old weekly ledger while the first daily signal is pending.
+        row = {"id": item["id"], "label": item["label"], "provenance": provenance[item["id"]],
+               "group": "weekly_ml_demo", "status": "programada_sin_diario",
+               "daily_mode": True,
+               "first_session": None, "last_session": None,
+               "initial_capital": capital_weekly, "last_equity": None,
+               "return_pct": None, "day_return_pct": None,
+               "currency": None if weekly_config is None else weekly_config.get("currency", "USD"),
+               "equity_history": [],
+               "note": "Campaña diaria prospectiva desde la señal del 09/10/2026. "
+                       "Fills simulados en la siguiente apertura, NAV al cierre y cierre semanal. "
+                       "No hereda el NAV de la campaña de liquidación diferida ni reconstruye compras pasadas."}
+        if weekly_daily_state is not None:
+            book = weekly_daily_state["strategies"][strategy_key]
+            history = book.get("equity", [])
+            if not history:
+                raise ValueError("Cartera weekly ML diaria sin patrimonio: " + strategy_key)
+            nav = _equity(history[-1].get("nav"), strategy_key)
+            if history[-1].get("date") != weekly_daily_state.get("last_session"):
+                raise ValueError("Patrimonio weekly ML diario sin fecha válida")
+            row.update(status="demo_con_diario",
+                       first_session=weekly_daily_state.get("first_session"),
+                       last_session=weekly_daily_state.get("last_session"),
+                       last_equity=nav,
+                       return_pct=round(100 * (nav / capital_weekly - 1), 6),
+                       day_return_pct=_daily_return(history, strategy_key),
+                       equity_history=_equity_history(history, strategy_key))
+            positions = book.get("positions", {})
+            row["positions"] = [{"ticker": ticker, "shares": p["shares"]}
+                                for ticker, p in positions.items()]
+            row.update(_activity(positions, book.get("pending"),
+                                 pending_label="señales para próxima apertura paper"))
+        rows.append(row)
+
+        # The original weekly settlement book is preserved as a separate reference,
+        # with distinct IDs and no transfer of cash, trades or performance.
+        if weekly_state is not None:
+            book = weekly_state["strategies"][strategy_key]
+            history = book.get("equity", [])
+            if not history:
+                raise ValueError("Cartera weekly ML con liquidación diferida sin patrimonio: " + strategy_key)
+            if history[-1].get("date") != weekly_state.get("last_session"):
+                raise ValueError("Patrimonio semanal sin fecha válida: " + strategy_key)
+            nav = _equity(history[-1].get("nav"), strategy_key)
+            settled = len(history) >= 2
+            legacy = {
+                "id": "weekly_legacy_" + item["id"],
+                "label": item["label"] + " · liquidación diferida",
+                "provenance": provenance[item["id"]] + " · libro semanal independiente",
+                "group": "weekly_ml_legacy",
+                "status": "weekly_settled_demo" if settled else "weekly_awaiting_first_settlement",
+                "daily_mode": False,
+                "first_session": weekly_state.get("first_session"),
+                "last_session": weekly_state.get("last_session"),
+                "initial_capital": capital_weekly, "last_equity": nav,
+                "return_pct": round(100 * (nav / capital_weekly - 1), 6) if settled else None,
+                "day_return_pct": None,
+                "currency": weekly_config.get("currency", "USD"),
+                "equity_history": _equity_history(history, strategy_key),
+                "note": "Libro semanal prospectivo desde 02/10/2026: liquidación al final de "
+                        "la siguiente semana, sin NAV diario ni fills registrados lunes-jueves. "
+                        "Resultado semanal separado; NO participa en la competición diaria ni "
+                        "se suma a la rentabilidad de la campaña diaria."
+            }
+            legacy.update(_activity(None, book.get("pending"),
+                                    pending_label="señales congeladas · liquidación semanal pendiente"))
+            rows.append(legacy)
+    for strategy_key, item in tfg_tracks.items():
+        capital_tfg = None if tfg_config is None else _equity(
+            tfg_config["portfolio"]["capital"], "capital TFG")
+        row = {"id": item["id"], "label": item["label"], "provenance": provenance[item["id"]],
+               "group": "tfg_demo_adaptado", "status": "programada_sin_diario",
+               "first_session": None, "last_session": None,
+               "initial_capital": capital_tfg, "last_equity": None,
+               "return_pct": None, "day_return_pct": None,
+               "currency": None if tfg_config is None else tfg_config.get("currency", "USD"),
+               "equity_history": [],
+               "note": "Arquitectura TFG 2021 portada con riesgo/beta sobre retornos y ejecución prospectiva next-open."}
+        if tfg_state is not None:
+            history = tfg_state["equity"]
+            nav = _equity(tfg_state.get("nav"), item["id"])
+            if history[-1].get("date") != tfg_state.get("last_signal_session"):
+                raise ValueError("Patrimonio TFG sin fecha válida")
+            row.update(status="demo_con_diario",
+                       first_session=tfg_state.get("first_signal_session"),
+                       last_session=tfg_state.get("last_signal_session"),
+                       last_equity=nav,
+                       return_pct=round(100 * (nav / capital_tfg - 1), 6),
+                       day_return_pct=_daily_return(history, item["id"]),
+                       equity_history=_equity_history(history, item["id"]))
+            signal = tfg_state.get("pending_signal")
+            selections = signal.get("selections", []) if isinstance(signal, dict) else []
+            row.update(_activity(None, selections,
+                                 pending_label="compras para próxima apertura",
+                                 empty_label="Sin compras · esperando señal"))
+        rows.append(row)
+    for strategy_key, item in capital_tracks.items():
+        capital_cc = None if capital_config is None else _equity(
+            capital_config["paper_policy"]["capital"], "capital Capital Cycle")
+        row = {"id": item["id"], "label": item["label"], "provenance": provenance[item["id"]],
+               "group": "capital_cycle_demo", "status": "programada_sin_diario",
+               "first_session": None, "last_session": None,
+               "initial_capital": capital_cc, "last_equity": None,
+               "return_pct": None, "day_return_pct": None,
+               "currency": None if capital_config is None else capital_config.get("currency", "USD"),
+               "equity_history": [],
+               "note": "Capital Cycle v1: underinvestment multianual + calidad + valoración normalizada + confirmación 6/12 meses; rebalance mensual y fills next-open."}
+        if capital_state is not None:
+            history = capital_state["equity"]
+            nav = _equity(capital_state.get("nav"), item["id"])
+            if history[-1].get("date") != capital_state.get("last_session"):
+                raise ValueError("Patrimonio Capital Cycle sin fecha válida")
+            row.update(status="demo_con_diario",
+                       first_session=capital_state.get("first_session"),
+                       last_session=capital_state.get("last_session"),
+                       last_equity=nav,
+                       return_pct=round(100 * (nav / capital_cc - 1), 6),
+                       day_return_pct=_daily_return(history, item["id"]),
+                       equity_history=_equity_history(history, item["id"]))
+            row.update(_activity(capital_state.get("positions"), capital_state.get("pending")))
+        rows.append(row)
+    for strategy_key, item in btd_tracks.items():
+        capital_btd = None if btd_config is None else _equity(
+            btd_config["paper_policy"]["capital"], "capital Buy The Dip")
+        row = {"id": item["id"], "label": item["label"], "provenance": provenance[item["id"]],
+               "group": "buy_the_dip_demo", "status": "programada_sin_diario",
+               "first_session": None, "last_session": None,
+               "initial_capital": capital_btd, "last_equity": None,
+               "return_pct": None, "day_return_pct": None,
+               "currency": None if btd_config is None else btd_config.get("currency", "USD"),
+               "equity_history": [],
+               "note": "Buy The Dip corpus v0: deep value + special situations; valoración, calidad, capital allocation, dislocación y catalizadores; decisión mensual y fills next-open."}
+        if btd_state is not None:
+            history = btd_state["equity"]
+            nav = _equity(btd_state.get("nav"), item["id"])
+            if history[-1].get("date") != btd_state.get("last_session"):
+                raise ValueError("Patrimonio Buy The Dip sin fecha válida")
+            row.update(status="demo_con_diario",
+                       first_session=btd_state.get("first_session"),
+                       last_session=btd_state.get("last_session"),
+                       last_equity=nav,
+                       return_pct=round(100 * (nav / capital_btd - 1), 6),
+                       day_return_pct=_daily_return(history, item["id"]),
+                       equity_history=_equity_history(history, item["id"]))
+            row.update(_activity(btd_state.get("positions"), btd_state.get("pending")))
+        rows.append(row)
+    for book_key, item in timesfm_tracks.items():
+        capital_tf = None if timesfm_config is None else _equity(timesfm_config["initial_capital"], "capital TimesFM")
+        row = {"id": item["id"], "label": item["label"], "provenance": provenance[item["id"]],
+               "group": "timesfm_demo", "status": "programada_sin_diario",
+               "first_session": None, "last_session": None,
+               "initial_capital": capital_tf, "last_equity": None,
+               "return_pct": None, "day_return_pct": None,
+               "currency": "EUR", "equity_history": [],
+               "note": "Campaña forward EUR: TimesFM 2.5, horizonte 5 sesiones, NAV EUR; referencia SPY EUR same-cohort.",
+               "period_returns_pct": {"5_sessions": None, "21_sessions": None, "63_sessions": None}}
+        if timesfm_state is not None:
+            book = timesfm_state["books"][book_key]
+            hist = book["equity"]
+            nav = _equity(book["nav"], item["id"])
+            periods = {}
+            for n in (5, 21, 63):
+                periods[f"{n}_sessions"] = (
+                    round(100 * (nav / _equity(hist[-(n + 1)]["nav"], item["id"]) - 1), 6)
+                    if len(hist) >= n + 1 else None)
+            row.update(status="demo_con_diario", first_session=timesfm_state["first_session"],
+                       last_session=timesfm_state["last_session"], last_equity=nav,
+                       return_pct=(round(100 * (nav / capital_tf - 1), 6)
+                                   if len(hist) >= 2 else None),
+                       day_return_pct=_daily_return(hist, item["id"]),
+                       equity_history=_equity_history(hist, item["id"]),
+                       period_returns_pct=periods,
+                       comparison_currency="EUR",
+                       comparison_reference="timesfm_spy_eur",
+                       comparison_observation_dates=[x["date"] for x in hist])
+            row.update(_activity(book.get("positions"), book.get("pending"),
+                                 pending_label="compras paper para próxima apertura"))
+        rows.append(row)
+    for book_key, item in timesfm_daily_tracks.items():
+        capital_day = None if timesfm_daily_config is None else _equity(
+            timesfm_daily_config["initial_capital"], "capital TimesFM diario")
+        row = {"id": item["id"], "label": item["label"], "provenance": provenance[item["id"]],
+               "group": "timesfm_daily_demo", "status": "programada_sin_diario",
+               "first_session": None, "last_session": None,
+               "initial_capital": capital_day, "last_equity": None,
+               "return_pct": None, "day_return_pct": None, "currency": "EUR",
+               "equity_history": [], "period_returns_pct": {"5_sessions": None, "21_sessions": None, "63_sessions": None},
+               "note": "TimesFM 2.5: predicción de una sesión sobre el S&P 500 canónico; cartera intradía ficticia, EUR 100k, "
+                       "fills next-open, cierre del mismo día; referencia SPY EUR de misma cohorte."}
+        if timesfm_daily_state is not None:
+            book = timesfm_daily_state["books"][book_key]
+            history = book["equity"]
+            nav = _equity(book["nav"], item["id"])
+            periods = {f"{n}_sessions": round(100 * (nav / _equity(history[-(n + 1)]["nav"], item["id"]) - 1), 6)
+                       if len(history) >= n + 1 else None for n in (5, 21, 63)}
+            row.update(status="demo_con_diario", first_session=timesfm_daily_state["first_session"],
+                       last_session=timesfm_daily_state["last_session"], last_equity=nav,
+                       return_pct=round(100 * (nav / capital_day - 1), 6) if len(history) >= 2 else None,
+                       day_return_pct=_daily_return(history, item["id"]),
+                       equity_history=_equity_history(history, item["id"]),
+                       period_returns_pct=periods,
+                       comparison_currency="EUR", comparison_reference="timesfm_daily_spy_eur")
+            row.update(_activity(book.get("positions"), book.get("pending"),
+                                 pending_label="compras paper para próxima apertura"))
+        rows.append(row)
+    for item in legacy_tracks:
+        row = {"id": item["id"], "label": item["label"], "provenance": provenance[item["id"]],
+               "group": "diario_heredado",
+               "status": "sin_diario_disponible", "first_session": None, "last_session": None,
+               "initial_capital": None, "last_equity": None, "return_pct": None,
+               "day_return_pct": None, "currency": None, "equity_history": [],
+               "note": item["note"]}
+        if item["id"] == "genetic_sp500_legacy" and legacy_state is not None:
+            history = legacy_state.get("equity_history")
+            if not isinstance(history, dict) or not history:
+                raise ValueError("Diario genético sin patrimonio fechado")
+            dates = sorted(history)
+            initial = _equity(legacy_state.get("initial_capital"), "capital genético")
+            if initial == 0:
+                raise ValueError("Capital genético cero")
+            nav = _equity(history[dates[-1]], "patrimonio genético")
+            row.update(status="diario_heredado_observado", first_session=dates[0], last_session=dates[-1],
+                       initial_capital=initial, last_equity=nav,
+                       return_pct=round(100 * (nav / initial - 1), 6),
+                       equity_history=[{"date": date[:10], "nav": _equity(history[date], "patrimonio genético histórico")}
+                                       for date in dates[-520:]])
+        rows.append(row)
+    for item in ideas:
+        if item["id"] in TFM_IDS and tfm_config is not None:
+            row = {"id": item["id"], "label": item["label"] + " (versión corregida 2026)",
+                   "provenance": provenance[item["id"]],
+                   "group": "tfm_demo_adaptado", "status": "programada_sin_diario",
+                   "first_session": None, "last_session": None,
+                   "initial_capital": _equity(tfm_config["paper_policy"]["capital"], "capital TFM"),
+                   "last_equity": None, "return_pct": None, "day_return_pct": None,
+                   "currency": tfm_config.get("currency", "EUR"), "equity_history": [],
+                   "note": "Modelo del TFM reimplementado; regla de cartera común provisional, distinta de la tesis.",
+                   "kind": item["kind"], "source": item["source"]}
+            if tfm_state is not None:
+                book = tfm_state["models"][TFM_IDS[item["id"]]]
+                nav = _equity(book.get("nav"), item["id"])
+                if not book.get("equity") or book["equity"][-1].get("date") != tfm_state.get("last_session"):
+                    raise ValueError("Patrimonio TFM sin fecha válida")
+                capital_tfm = row["initial_capital"]
+                row.update(status="demo_con_diario", first_session=tfm_state.get("first_session"),
+                           last_session=tfm_state.get("last_session"), last_equity=nav,
+                           return_pct=round(100 * (nav / capital_tfm - 1), 6),
+                           day_return_pct=_daily_return(book["equity"], item["id"]),
+                           equity_history=_equity_history(book["equity"], item["id"]))
+                row.update(_activity(None, book.get("pending"),
+                                     pending_label="compras para próxima apertura"))
+            rows.append(row)
+        else:
+            rows.append({"id": item["id"], "label": item["label"],
+                         "provenance": provenance[item["id"]], "group": "historica_pendiente",
+                         "status": "sin_ejecucion_comparable", "first_session": None, "last_session": None,
+                         "initial_capital": None, "last_equity": None, "return_pct": None,
+                         "day_return_pct": None, "currency": None, "equity_history": [],
+                         "note": item["blocker"], "kind": item["kind"], "source": item["source"]})
+    # Universe contract: eligible forward strategies must share the frozen S&P500
+    # 503-symbol snapshot. Old 8-symbol and 31-IBEX books stay observable but
+    # cannot enter the common forward competition or contaminate its ranking.
+    expected_snapshot = "weekly_ml/universe_sp500_2026-09-29.csv"
+    for row in rows:
+        group = row["group"]
+        if group == "paper_nuevo":
+            eligible = ((row.get("classic_sp500_cohort") is True and
+                         classic_sp500_config is not None and
+                         classic_sp500_config.get("universe_file") == expected_snapshot))
+            reason = None if eligible else "Archivo histórico: estrategia de 8 activos, no S&P 500 completo"
+        elif group == "tfm_demo_adaptado":
+            eligible = False
+            reason = "Archivo histórico: 31 activos IBEX, no S&P 500; usar modelos Weekly ML S&P 500 para competición"
+        elif group in {"weekly_ml_demo", "tfg_demo_adaptado", "capital_cycle_demo",
+                       "buy_the_dip_demo", "timesfm_demo", "timesfm_daily_demo"}:
+            source = {"weekly_ml_demo": weekly_config, "tfg_demo_adaptado": tfg_config,
+                      "capital_cycle_demo": capital_config, "buy_the_dip_demo": btd_config,
+                      "timesfm_demo": timesfm_config,
+                      "timesfm_daily_demo": timesfm_daily_config}[group]
+            eligible = bool(source and source.get("universe_file") == expected_snapshot)
+            reason = None if eligible else "Falta acreditar universo S&P 500 congelado en configuración"
+        else:
+            eligible = False
+            reason = "Campaña archivada o todavía no normalizada al universo S&P 500"
+        row["comparison_eligible"] = eligible
+        row["comparison_universe_id"] = "SP500_2026-09-29_503" if eligible else None
+        row["comparison_universe_symbols"] = 503 if eligible else None
+        row["comparison_exclusion_reason"] = reason
+    for row in rows:
+        if "activity_state" not in row:
+            if row.get("status") == "programada_sin_diario":
+                row.update({
+                    "activity_state": "waiting",
+                    "activity_label": "Esperando primera sesión",
+                    "activity_tickers": [],
+                    "open_positions_count": 0,
+                    "pending_orders_count": 0,
+                })
+            elif row.get("group") in {"historica_pendiente", "diario_heredado", "weekly_ml_legacy"}:
+                row.update({
+                    "activity_state": "unknown",
+                    "activity_label": "Actividad actual no enlazada",
+                    "activity_tickers": [],
+                    "open_positions_count": 0,
+                    "pending_orders_count": 0,
+                })
+            else:
+                row.update(_activity())
+        row.update(_risk_metrics(row.get("equity_history", [])))
+
+    return {"schema_version": 1, "generated_at_utc": timestamp.isoformat(),
+            "principle": "Comparar rentabilidad acumulada y riesgo observado; no ordenar carteras con distintas fechas de inicio o supuestos de ejecución.",
+            "counts": {"paper_with_diary": sum(x["group"] == "paper_nuevo" and x["status"] == "demo_con_diario" for x in rows),
+                       "legacy_with_diary": sum(x["status"] == "diario_heredado_observado" for x in rows),
+                       "tfm_with_diary": sum(x["group"] == "tfm_demo_adaptado" and x["status"] == "demo_con_diario" for x in rows),
+                       "weekly_ml_with_diary": sum(x["group"] == "weekly_ml_demo" and x["status"] == "demo_con_diario" for x in rows),
+                       "weekly_ml_legacy_with_ledger": sum(x["group"] == "weekly_ml_legacy" for x in rows),
+                       "tfg_with_diary": sum(x["group"] == "tfg_demo_adaptado" and x["status"] == "demo_con_diario" for x in rows),
+                       "capital_cycle_with_diary": sum(x["group"] == "capital_cycle_demo" and x["status"] == "demo_con_diario" for x in rows),
+                       "buy_the_dip_with_diary": sum(x["group"] == "buy_the_dip_demo" and x["status"] == "demo_con_diario" for x in rows),
+                       "timesfm_with_diary": sum(x["group"] == "timesfm_demo" and x["status"] == "demo_con_diario" for x in rows),
+                       "timesfm_daily_with_diary": sum(x["group"] == "timesfm_daily_demo" and x["status"] == "demo_con_diario" for x in rows),
+                       "classic_sp500_with_diary": sum(x.get("classic_sp500_cohort") is True and x["status"] == "demo_con_diario" for x in rows),
+                       "historical_pending": sum(x["group"] == "historica_pendiente" for x in rows)}, "tracks": rows}
+
+
+def markdown(report):
+    lines = ["# MIDAS: todas las ideas en paralelo", "",
+             "Actualizado: " + report["generated_at_utc"] + ". El tablero distingue resultados observados de ideas aún no ejecutadas.", "",
+             "La comparación principal sigue **rentabilidad acumulada + riesgo realizado**. Las campañas diarias, TFM, Weekly ML, TFG corregido, Capital Cycle, Buy The Dip y el diario genético antiguo **no forman una clasificación común** si sus fechas, divisas o reglas difieren.", "",
+             "| Estrategia | Procedencia | Estado | Actividad actual | Primera fecha | Última fecha | Último periodo | Acumulada | Vol. anual. | Máx. DD | Sharpe 0rf |", "| --- | --- | --- | --- | --- | --- | ---: | ---: | ---: | ---: | ---: |"]
+    for row in report["tracks"]:
+        value = "—" if row["return_pct"] is None else f"{row['return_pct']:.2f} %"
+        daily = "—" if row["day_return_pct"] is None else f"{row['day_return_pct']:.2f} %"
+        vol = "—" if row["annualized_volatility_pct"] is None else f"{row['annualized_volatility_pct']:.2f} %"
+        drawdown = "—" if row["max_drawdown_pct"] is None else f"{row['max_drawdown_pct']:.2f} %"
+        sharpe = "—" if row["sharpe_0rf"] is None else f"{row['sharpe_0rf']:.2f}"
+        lines.append(f"| {row['label']} | {row['provenance']} | {row['status']} | {row.get('activity_label') or '—'} | {row['first_session'] or '—'} | {row['last_session'] or '—'} | {daily} | {value} | {vol} | {drawdown} | {sharpe} |")
+    lines += ["", "## Qué impide activar las líneas restantes", ""]
+    for row in report["tracks"]:
+        if row["group"] == "historica_pendiente":
+            lines.append(f"- **{row['label']}**: {row['note']}")
+    lines += ["", "La [hoja de ruta](../research/ROADMAP.md) documenta el estado de las adaptaciones. Ninguna fila pendiente recibe rentabilidad simulada retrospectivamente.", ""]
+    return "\n".join(lines)
+
+
+def main(argv=None):
+    parser = argparse.ArgumentParser(description="Tablero de todas las estrategias MIDAS")
+    parser.add_argument("--registry", required=True)
+    parser.add_argument("--paper-config", required=True)
+    parser.add_argument("--paper-state", required=True)
+    parser.add_argument("--legacy-state")
+    parser.add_argument("--tfm-config")
+    parser.add_argument("--tfm-state")
+    parser.add_argument("--weekly-ml-config")
+    parser.add_argument("--weekly-ml-state")
+    parser.add_argument("--weekly-ml-daily-state", default="weekly_ml_daily_state/ledger.json")
+    parser.add_argument("--tfg-config")
+    parser.add_argument("--tfg-state")
+    parser.add_argument("--capital-cycle-config", default="capital_cycle/config.json")
+    parser.add_argument("--capital-cycle-state", default="capital_cycle_state/ledger.json")
+    parser.add_argument("--buy-the-dip-config", default="buy_the_dip_strategy/config.json")
+    parser.add_argument("--buy-the-dip-state", default="buy_the_dip_state/ledger.json")
+    parser.add_argument("--timesfm-config", default="timesfm_strategy/config.json")
+    parser.add_argument("--timesfm-state", default="timesfm_state/ledger.json")
+    parser.add_argument("--timesfm-daily-config", default="timesfm_strategy/config-daily.json")
+    parser.add_argument("--timesfm-daily-state", default="timesfm_daily_state/ledger.json")
+    parser.add_argument("--classic-sp500-config", default="classic_sp500/config.json")
+    parser.add_argument("--classic-sp500-state", default="classic_sp500_state/ledger.json")
+    parser.add_argument("--output", required=True)
+    args = parser.parse_args(argv)
+    report = build(_read(args.registry), _read(args.paper_config),
+                   _read(args.paper_state, optional=True), _read(args.legacy_state, optional=True) if args.legacy_state else None,
+                   tfm_config=_read(args.tfm_config) if args.tfm_config else None,
+                   tfm_state=_read(args.tfm_state, optional=True) if args.tfm_state else None,
+                   weekly_config=_read(args.weekly_ml_config) if args.weekly_ml_config else None,
+                   weekly_state=_read(args.weekly_ml_state, optional=True) if args.weekly_ml_state else None,
+                   weekly_daily_state=_read(args.weekly_ml_daily_state, optional=True) if args.weekly_ml_daily_state else None,
+                   tfg_config=_read(args.tfg_config) if args.tfg_config else None,
+                   tfg_state=_read(args.tfg_state, optional=True) if args.tfg_state else None,
+                   capital_config=_read(args.capital_cycle_config) if args.capital_cycle_config and Path(args.capital_cycle_config).exists() else None,
+                   capital_state=_read(args.capital_cycle_state, optional=True) if args.capital_cycle_state else None,
+                   btd_config=_read(args.buy_the_dip_config) if args.buy_the_dip_config and Path(args.buy_the_dip_config).exists() else None,
+                   btd_state=_read(args.buy_the_dip_state, optional=True) if args.buy_the_dip_state else None,
+                    timesfm_config=_read(args.timesfm_config) if args.timesfm_config and Path(args.timesfm_config).exists() else None,
+                    timesfm_state=_read(args.timesfm_state, optional=True) if args.timesfm_state else None,
+                    timesfm_daily_config=_read(args.timesfm_daily_config) if args.timesfm_daily_config and Path(args.timesfm_daily_config).exists() else None,
+                    timesfm_daily_state=_read(args.timesfm_daily_state, optional=True) if args.timesfm_daily_state else None,
+                    classic_sp500_config=_read(args.classic_sp500_config) if args.classic_sp500_config and Path(args.classic_sp500_config).exists() else None,
+                    classic_sp500_state=_read(args.classic_sp500_state, optional=True) if args.classic_sp500_state else None)
+    output = Path(args.output)
+    source_health = Path(__file__).resolve().parents[1] / "market_data/source_health.json"
+    if source_health.is_file():
+        report["market_data"] = _read(source_health)
+    _write(output / "dashboard.json", json.dumps(report, indent=2, ensure_ascii=False) + "\n")
+    _write(output / "dashboard.md", markdown(report))
+    print(json.dumps({"output": str(output), "counts": report["counts"]}, ensure_ascii=False))
+
+
+if __name__ == "__main__":
+    main()

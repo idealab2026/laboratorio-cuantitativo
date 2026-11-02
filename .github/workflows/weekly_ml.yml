@@ -1,0 +1,100 @@
+name: MIDAS weekly ML paper
+
+on:
+  # One-off recovery after the Friday 09/10 failure, before the Monday NYSE open.
+  # Trigger only for the dedicated marker committed alongside the fix.
+  push:
+    branches: ['main']
+    paths:
+      - 'weekly_ml/recovery/2026-10-10.trigger'
+  schedule:
+    # Friday after XNYS close and vendor-delay margin, plus a Saturday backup slot.
+    - cron: '17 23 * * 5'
+    - cron: '17 2 * * 6'
+  workflow_dispatch:
+    inputs:
+      preflight_only:
+        description: 'Verify code/tests without recording a market forecast'
+        type: boolean
+        default: false
+
+permissions:
+  contents: write
+
+concurrency:
+  group: midas-weekly-ml
+  cancel-in-progress: false
+
+jobs:
+  weekly:
+    runs-on: ubuntu-latest
+    timeout-minutes: 75
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: pip
+          cache-dependency-path: weekly_ml/requirements-live.txt
+      - name: Install OpenMP and ML libraries
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libgomp1
+          python -m pip install -r weekly_ml/requirements-live.txt
+      - name: Verify chronology, accounting and dashboard integration
+        run: |
+          python -m py_compile weekly_ml/*.py strategy_comparison/report.py
+          python -m unittest discover -s weekly_ml/tests -v
+          python -m unittest discover -s strategy_comparison/tests -v
+      - name: Record weekly ML forecasts and paper portfolios
+        id: execute
+        if: ${{ !inputs.preflight_only }}
+        run: python weekly_ml/run.py --output weekly_ml_state
+      - name: Freeze next Weekly ML signal for daily paper accounting
+        if: ${{ steps.execute.outcome == 'success' && !inputs.preflight_only }}
+        run: python weekly_ml/daily.py --phase signal
+      - name: Refresh Weekly ML human dashboard
+        if: ${{ always() && !inputs.preflight_only }}
+        run: |
+          latest_forecast="$(ls weekly_ml_state/forecasts/*.json 2>/dev/null | sort | tail -1 || true)"
+          if [ -n "$latest_forecast" ]; then
+            python weekly_ml/report.py \
+              --forecast "$latest_forecast" \
+              --ledger weekly_ml_state/ledger.json \
+              --bootstrap weekly_ml_bootstrap_state/bootstrap_2026-09-25.json \
+              --output WEEKLY_ML_DASHBOARD.md
+          fi
+      - name: Record scheduled runtime health
+        if: ${{ always() && github.event_name == 'schedule' && !inputs.preflight_only }}
+        run: |
+          python strategy_comparison/runtime_health.py \
+            --output strategy_runtime/weekly_ml.json \
+            --workflow-key weekly_ml \
+            --workflow-name "MIDAS weekly ML paper" \
+            --outcome "${{ steps.execute.outcome }}" \
+            --run-id "$GITHUB_RUN_ID" \
+            --run-number "$GITHUB_RUN_NUMBER" \
+            --head-sha "$GITHUB_SHA"
+      - name: Refresh all-strategy dashboard
+        if: ${{ always() && !inputs.preflight_only }}
+        run: |
+          python strategy_comparison/report.py \
+            --registry strategy_comparison/registry.json \
+            --paper-config paper_demo/config.json \
+            --paper-state paper_state/state.json \
+            --tfm-config tfm_shadow/config.json \
+            --tfm-state tfm_state/ledger.json \
+            --weekly-ml-config weekly_ml/config.json \
+            --weekly-ml-state weekly_ml_state/ledger.json \
+            --tfg-config tfg_ahp/config.json \
+            --tfg-state tfg_state/ledger.json \
+            --output strategy_state
+      - name: Commit weekly ml and dashboard state
+        if: ${{ always() && !inputs.preflight_only }}
+        run: |
+          python strategy_comparison/publish_state.py \
+            --message "Record MIDAS weekly ML paper state" \
+            --path strategy_runtime/weekly_ml.json \
+            --path weekly_ml_state \
+            --path weekly_ml_daily_state \
+            --path WEEKLY_ML_DASHBOARD.md

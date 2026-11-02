@@ -94,3 +94,12 @@ test("Public historical archive reconciles all 64 rows with 47 dated diaries and
  assert.deepEqual(summarizePrivatePaper(results,curves),{algorithms:64,withNav:47,pending:17,curveObservations:528,latest:"2026-10-30"});
  for(const r of results.values()){if(r.active)assert.equal(curves.get(r.id).at(-1).nav,r.nav);else assert.equal(r.pct,null);}
 });
+
+test("Migrated original engine reconciles 64 slots with dated accounting and rejects corrupted NAV",async()=>{
+ const {verifyOriginalPaper}=await import("../src/original-paper.mjs");
+ const doc=JSON.parse(readFileSync(new URL("../strategy_state/dashboard.json",import.meta.url),"utf8"));
+ const map=JSON.parse(readFileSync(new URL("../data/original-track-map.json",import.meta.url),"utf8"));
+ const result=verifyOriginalPaper(doc,map);assert.equal(result.bySlot.size,47);assert.equal(result.latest,"2026-10-30");
+ const bad=structuredClone(doc);bad.tracks[0].last_equity=1;assert.throws(()=>verifyOriginalPaper(bad,map));
+ const missing=structuredClone(doc);missing.tracks.pop();assert.throws(()=>verifyOriginalPaper(missing,map));
+});

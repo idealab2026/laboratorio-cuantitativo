@@ -1,0 +1,337 @@
+{
+  "schema_version": 1,
+  "purpose": "Inventario de todas las ideas localizadas; una fila no implica que la estrategia esté ejecutándose.",
+  "paper_tracks": {
+    "benchmark_spy": "Referencia SPY",
+    "buy_hold_equal_weight": "Referencia ocho acciones equiponderadas",
+    "ema_rsi_fixed": "EMA/RSI fijo, adaptación nueva",
+    "genetic_frozen": "Genético nuevo congelado, ocho acciones",
+    "macd_12_26_9": "MACD, adaptación nueva",
+    "rsi_reversion_14": "RSI reversión, adaptación nueva",
+    "bollinger_breakout_20": "Bollinger ruptura, adaptación nueva",
+    "turtle_20_10_long": "Turtle 20/10 largo, adaptación nueva",
+    "turtle_55_20_long": "Turtle 55/20 largo, adaptación nueva"
+  },
+  "provenance": {
+    "benchmark_spy": "Campaña nueva 2026 · referencia SPY",
+    "buy_hold_equal_weight": "Campaña nueva 2026 · referencia equiponderada",
+    "ema_rsi_fixed": "Campaña nueva 2026 · señal técnica adaptada",
+    "genetic_frozen": "MIDAS nuevo 2026 · genético congelado",
+    "macd_12_26_9": "Campaña nueva 2026 · señal técnica adaptada",
+    "rsi_reversion_14": "Campaña nueva 2026 · señal técnica adaptada",
+    "bollinger_breakout_20": "Campaña nueva 2026 · señal técnica adaptada",
+    "turtle_20_10_long": "Campaña nueva 2026 · señal técnica adaptada",
+    "turtle_55_20_long": "Campaña nueva 2026 · señal técnica adaptada",
+    "genetic_sp500_legacy": "Agente genético S&P 500 original · 2026",
+    "tfg_midas_r_2021": "TFG 2021 · MIDAS en R",
+    "midas_r_crypto": "MIDAS en R · experimento cripto",
+    "tfm_lgbm_2023": "TFM · modelo reimplementado en 2026",
+    "tfm_mlp_2023": "TFM · modelo reimplementado en 2026",
+    "tfm_lstm_2023": "TFM · modelo reimplementado en 2026",
+    "tfm_arima_2023": "TFM · modelo reimplementado en 2026",
+    "midas_lgbm_weekly_return": "MIDAS Python · pipeline LightGBM semanal",
+    "midas_lgbm_weekly_direction": "MIDAS Python · pipeline LightGBM semanal",
+    "midas_lgbm_weekly_price": "MIDAS Python · pipeline LightGBM semanal",
+    "midas_lgbm_combined": "MIDAS Python · filtro de los tres LightGBM",
+    "genetic_single_asset_2026": "Agente genético · prototipo individual 2026",
+    "rsi_itx_70_30": "Experimento histórico · trading",
+    "ichimoku_aapl": "Experimento histórico · trading",
+    "gap_open_close": "Experimento histórico · trading intradía",
+    "turtle_short_20_10": "Experimento histórico · trading en corto",
+    "turtle_short_55_20": "Experimento histórico · trading en corto",
+    "momentum_sp500_monthly": "Experimento histórico · selección mensual",
+    "coinbase_btc": "Bot Coinbase histórico · cripto",
+    "markowitz_weights": "Módulo Markowitz · asignación de pesos",
+    "midas_fundamental_filter": "MIDAS Python · filtro fundamental",
+    "weekly_ml_benchmark_spy": "Campaña ML semanal 2026 · referencia SPY",
+    "weekly_ml_benchmark_rsp": "Campaña ML semanal 2026 · referencia RSP equiponderada",
+    "weekly_ml_lgbm_return_2026": "MIDAS Python v2 · regresión semanal corregida 2026",
+    "weekly_ml_lgbm_direction_2026": "MIDAS Python v2 · clasificación semanal corregida 2026",
+    "weekly_ml_lgbm_ranker_2026": "MIDAS nuevo 2026 · ranking cross-sectional que sustituye precio absoluto",
+    "weekly_ml_mlp_2026": "TFM/ML · MLP adaptado al horizonte semanal",
+    "weekly_ml_lstm_2026": "TFM/ML · LSTM adaptado al horizonte semanal",
+    "weekly_ml_arima_2026": "TFM/ML · ARIMA adaptado al horizonte semanal",
+    "weekly_ml_ensemble_2026": "MIDAS nuevo 2026 · consenso de expertos semanales",
+    "tfg_corrected_2026": "TFG 2021 · arquitectura portada y corregida para paper 2026",
+    "capital_cycle_inflection_2026": "MIDAS 2026 · estrategia cíclica derivada del marco Capital Cycle",
+    "buy_the_dip_corpus_2026_v0": "MIDAS 2026 · Buy The Dip corpus v0 · deep value + special situations",
+    "timesfm_2p5_eur_paper": "MIDAS 2026 · TimesFM 2.5 5 sesiones · S&P 500 503 símbolos · EUR",
+    "timesfm_spy_eur": "Referencia SPY buy & hold convertida a EUR · mismas fechas",
+    "timesfm_2p5_daily_eur_paper": "MIDAS 2026 · TimesFM 2.5 1 sesión · S&P 500 503 símbolos · EUR",
+    "timesfm_daily_spy_eur": "Referencia SPY en EUR, misma fecha y costes que TimesFM diario",
+    "classic_sp500_buy_hold_equal_weight": "MIDAS 2026 · nueva campaña prospectiva S&P 500 completo (503 símbolos); no hereda libro antiguo de ocho acciones",
+    "classic_sp500_ema_rsi_fixed": "MIDAS 2026 · nueva campaña prospectiva S&P 500 completo (503 símbolos); no hereda libro antiguo de ocho acciones",
+    "classic_sp500_genetic_frozen": "MIDAS 2026 · nueva campaña prospectiva S&P 500 completo (503 símbolos); no hereda libro antiguo de ocho acciones",
+    "classic_sp500_macd_12_26_9": "MIDAS 2026 · nueva campaña prospectiva S&P 500 completo (503 símbolos); no hereda libro antiguo de ocho acciones",
+    "classic_sp500_rsi_reversion_14": "MIDAS 2026 · nueva campaña prospectiva S&P 500 completo (503 símbolos); no hereda libro antiguo de ocho acciones",
+    "classic_sp500_bollinger_breakout_20": "MIDAS 2026 · nueva campaña prospectiva S&P 500 completo (503 símbolos); no hereda libro antiguo de ocho acciones",
+    "classic_sp500_turtle_20_10_long": "MIDAS 2026 · nueva campaña prospectiva S&P 500 completo (503 símbolos); no hereda libro antiguo de ocho acciones",
+    "classic_sp500_turtle_55_20_long": "MIDAS 2026 · nueva campaña prospectiva S&P 500 completo (503 símbolos); no hereda libro antiguo de ocho acciones",
+    "classic_sp500_benchmark_spy": "MIDAS 2026 · nueva campaña prospectiva S&P 500 completo (503 símbolos); no hereda libro antiguo de ocho acciones"
+  },
+  "legacy_tracks": [
+    {
+      "id": "genetic_sp500_legacy",
+      "label": "Genético original S&P 500",
+      "source": "fuente histórica privada, no publicada",
+      "cadence": "diaria, workflow propio a las 08:00 UTC",
+      "note": "Diario y ejecución propios; observar por separado hasta reconciliar horarios y contabilidad."
+    }
+  ],
+  "historical_ideas": [
+    {
+      "id": "tfg_midas_r_2021",
+      "label": "TFG 2021: filtros técnicos, AHP y rentabilidad/riesgo",
+      "kind": "estrategia semanal",
+      "source": "fuente histórica privada, no publicada",
+      "blocker": "La réplica literal global de 20 mercados sigue pendiente por símbolos, divisas y calendarios; la variante TFG corregido 2026 se ejecuta por separado sobre un universo S&P-derived homogéneo."
+    },
+    {
+      "id": "midas_r_crypto",
+      "label": "MIDAS R cripto",
+      "kind": "estrategia",
+      "source": "fuente histórica privada, no publicada",
+      "blocker": "Necesita campaña EUR y calendario 24/7; comprobar diferencias frente al TFG."
+    },
+    {
+      "id": "tfm_lgbm_2023",
+      "label": "TFM: LightGBM",
+      "kind": "modelo predictivo",
+      "source": "fuente histórica privada, no publicada",
+      "blocker": "Reconstruir entrenamiento temporal y registrar predicción; definir política de operaciones diferenciada."
+    },
+    {
+      "id": "tfm_mlp_2023",
+      "label": "TFM: red MLP",
+      "kind": "modelo predictivo",
+      "source": "fuente histórica privada, no publicada",
+      "blocker": "Corregir escalado y validación temporal antes de predicción prospectiva; definir política de operaciones."
+    },
+    {
+      "id": "tfm_lstm_2023",
+      "label": "TFM: red LSTM",
+      "kind": "modelo predictivo",
+      "source": "fuente histórica privada, no publicada",
+      "blocker": "Portar la secuencia y el escalado sin fuga temporal; definir política de operaciones."
+    },
+    {
+      "id": "tfm_arima_2023",
+      "label": "TFM: ARIMA",
+      "kind": "modelo predictivo",
+      "source": "fuente histórica privada, no publicada",
+      "blocker": "Validar pronóstico causal y coste de entrenamiento diario; definir política de operaciones."
+    },
+    {
+      "id": "midas_lgbm_weekly_return",
+      "label": "MIDAS Python: LightGBM rentabilidad semanal",
+      "kind": "modelo predictivo",
+      "source": "fuente histórica privada, no publicada",
+      "blocker": "Los datos/Features llegan hasta 2024 y el entrenamiento mezclaba semanas; rehacer el pipeline cronológico."
+    },
+    {
+      "id": "midas_lgbm_weekly_direction",
+      "label": "MIDAS Python: LightGBM dirección semanal",
+      "kind": "modelo predictivo",
+      "source": "fuente histórica privada, no publicada",
+      "blocker": "Rehacer features y entrenamiento cronológicos; no cargar pickle legado sin contrato verificado."
+    },
+    {
+      "id": "midas_lgbm_weekly_price",
+      "label": "MIDAS Python: LightGBM precio semanal",
+      "kind": "modelo predictivo",
+      "source": "fuente histórica privada, no publicada",
+      "blocker": "Rehacer features y entrenamiento cronológicos; no cargar pickle legado sin contrato verificado."
+    },
+    {
+      "id": "midas_lgbm_combined",
+      "label": "MIDAS Python v2: selección semanal de hasta 30 empresas",
+      "kind": "estrategia semanal de selección",
+      "source": "fuente histórica privada, no publicada",
+      "blocker": "El código original sí proponía inversiones semanales: combina tres predicciones, RSI y ranking. Para medir rentabilidad demo faltan datos actuales, modelos causales, órdenes fechadas y contabilidad de ejecución."
+    },
+    {
+      "id": "genetic_single_asset_2026",
+      "label": "Genético original de un solo activo",
+      "kind": "estrategia",
+      "source": "fuente histórica privada, no publicada",
+      "blocker": "Separar entrenamiento y ejecución del mismo cierre, elegir activo y congelar versión antes de empezar."
+    },
+    {
+      "id": "rsi_itx_70_30",
+      "label": "RSI original 70/30 sobre Inditex",
+      "kind": "backtest de exposición larga/corta",
+      "source": "fuente histórica privada, no publicada",
+      "blocker": "El original usa posición -1/0/+1 sobre retornos al cierre; el motor actual es solo largo y no replica cortos/costes."
+    },
+    {
+      "id": "ichimoku_aapl",
+      "label": "Ichimoku original sobre AAPL",
+      "kind": "backtest experimental",
+      "source": "fuente histórica privada, no publicada",
+      "blocker": "La referencia a close(-26) puede mirar al futuro; corregir y marcar una versión nueva antes de ejecutarla."
+    },
+    {
+      "id": "gap_open_close",
+      "label": "Gap alcista de apertura a cierre",
+      "kind": "estrategia intradía",
+      "source": "fuente histórica privada, no publicada",
+      "blocker": "El gap se conoce en apertura; requiere ejecución intradía separada del ciclo cierre a apertura."
+    },
+    {
+      "id": "turtle_short_20_10",
+      "label": "Turtle 20/10 corto original",
+      "kind": "estrategia corta",
+      "source": "fuente histórica privada, no publicada",
+      "blocker": "Requiere contabilidad de posiciones cortas y costes de préstamo."
+    },
+    {
+      "id": "turtle_short_55_20",
+      "label": "Turtle 55/20 corto original",
+      "kind": "estrategia corta",
+      "source": "fuente histórica privada, no publicada",
+      "blocker": "Requiere contabilidad de posiciones cortas y costes de préstamo."
+    },
+    {
+      "id": "momentum_sp500_monthly",
+      "label": "Screener momentum mensual S&P 500",
+      "kind": "selección, sin cartera",
+      "source": "fuente histórica privada, no publicada",
+      "blocker": "Documentar regla de salida y pesos antes de convertir la selección mensual en cartera."
+    },
+    {
+      "id": "coinbase_btc",
+      "label": "Bot BTC Coinbase",
+      "kind": "estrategia cripto",
+      "source": "fuente histórica privada, no publicada",
+      "blocker": "El original incluye llamadas a órdenes reales; portar solo reglas a simulador sin credenciales."
+    },
+    {
+      "id": "markowitz_weights",
+      "label": "Markowitz",
+      "kind": "política de asignación",
+      "source": "fuente histórica privada, no publicada",
+      "blocker": "Comparar como asignador de pesos; antes, normalizar divisas y frecuencia."
+    },
+    {
+      "id": "midas_fundamental_filter",
+      "label": "Filtro fundamental MIDAS Python",
+      "kind": "filtro complementario",
+      "source": "fuente histórica privada, no publicada",
+      "blocker": "Definir datos conocidos en cada fecha y cartera receptora; no es una señal independiente."
+    }
+  ],
+  "weekly_ml_tracks": {
+    "benchmark_spy": {
+      "id": "weekly_ml_benchmark_spy",
+      "label": "ML semanal · referencia SPY"
+    },
+    "benchmark_rsp": {
+      "id": "weekly_ml_benchmark_rsp",
+      "label": "ML semanal · referencia RSP"
+    },
+    "lgbm_return": {
+      "id": "weekly_ml_lgbm_return_2026",
+      "label": "ML semanal · LightGBM rentabilidad"
+    },
+    "lgbm_direction": {
+      "id": "weekly_ml_lgbm_direction_2026",
+      "label": "ML semanal · LightGBM dirección"
+    },
+    "lgbm_ranker": {
+      "id": "weekly_ml_lgbm_ranker_2026",
+      "label": "ML semanal · LightGBM ranker"
+    },
+    "mlp_return": {
+      "id": "weekly_ml_mlp_2026",
+      "label": "ML semanal · MLP"
+    },
+    "lstm_return": {
+      "id": "weekly_ml_lstm_2026",
+      "label": "ML semanal · LSTM"
+    },
+    "arima_return": {
+      "id": "weekly_ml_arima_2026",
+      "label": "ML semanal · ARIMA"
+    },
+    "ensemble_consensus": {
+      "id": "weekly_ml_ensemble_2026",
+      "label": "ML semanal · ensemble consenso"
+    }
+  },
+  "tfg_tracks": {
+    "tfg_corrected": {
+      "id": "tfg_corrected_2026",
+      "label": "TFG corregido 2026 · técnico + AHP + MAD"
+    }
+  },
+  "capital_cycle_tracks": {
+    "capital_cycle_inflection": {
+      "id": "capital_cycle_inflection_2026",
+      "label": "Capital Cycle Inflection · underinvestment + calidad + giro"
+    }
+  },
+  "buy_the_dip_tracks": {
+    "buy_the_dip_corpus": {
+      "id": "buy_the_dip_corpus_2026_v0",
+      "label": "Buy The Dip corpus v0 · deep value + special situations"
+    }
+  },
+  "timesfm_tracks": {
+    "timesfm": {
+      "id": "timesfm_2p5_eur_paper",
+      "label": "TimesFM 2.5 · zero-shot semanal · EUR"
+    },
+    "benchmark_spy": {
+      "id": "timesfm_spy_eur",
+      "label": "Referencia SPY · EUR · inicio TimesFM"
+    }
+  },
+  "timesfm_daily_tracks": {
+    "timesfm_daily": {
+      "id": "timesfm_2p5_daily_eur_paper",
+      "label": "TimesFM 2.5 · diario · S&P 500 · EUR"
+    },
+    "benchmark_spy": {
+      "id": "timesfm_daily_spy_eur",
+      "label": "Referencia SPY · EUR · inicio TimesFM diario"
+    }
+  },
+  "classic_sp500_tracks": {
+    "buy_hold_equal_weight": {
+      "id": "classic_sp500_buy_hold_equal_weight",
+      "label": "S&P 500 v2 · Equiponderación S&P 500"
+    },
+    "ema_rsi_fixed": {
+      "id": "classic_sp500_ema_rsi_fixed",
+      "label": "S&P 500 v2 · EMA/RSI"
+    },
+    "genetic_frozen": {
+      "id": "classic_sp500_genetic_frozen",
+      "label": "S&P 500 v2 · Genético congelado (reglas)"
+    },
+    "macd_12_26_9": {
+      "id": "classic_sp500_macd_12_26_9",
+      "label": "S&P 500 v2 · MACD"
+    },
+    "rsi_reversion_14": {
+      "id": "classic_sp500_rsi_reversion_14",
+      "label": "S&P 500 v2 · RSI reversión"
+    },
+    "bollinger_breakout_20": {
+      "id": "classic_sp500_bollinger_breakout_20",
+      "label": "S&P 500 v2 · Bollinger ruptura"
+    },
+    "turtle_20_10_long": {
+      "id": "classic_sp500_turtle_20_10_long",
+      "label": "S&P 500 v2 · Turtle 20/10"
+    },
+    "turtle_55_20_long": {
+      "id": "classic_sp500_turtle_55_20_long",
+      "label": "S&P 500 v2 · Turtle 55/20"
+    },
+    "benchmark_spy": {
+      "id": "classic_sp500_benchmark_spy",
+      "label": "S&P 500 v2 · Referencia SPY · inicio clásicos S&P500"
+    }
+  }
+}

@@ -1,0 +1,2 @@
+# Publicación institucional del agente genético
+Los algoritmos, cohortes congeladas y anclas del diario se conservan. La publicación de resúmenes usa Git público de Idea Lab, sin transporte externo ni identidad personal. El archivo privado conserva los originales y su procedencia. La activación de un escritor requiere el traspaso explícito y las validaciones del calendario; no reconstruir señales históricas.
