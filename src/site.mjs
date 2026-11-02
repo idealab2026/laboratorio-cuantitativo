@@ -626,8 +626,6 @@ async function init(){
   const data=await r.json(),universe=data.issuerCatalog,publication=await p.json();
   verify(data);verifyIssuerCatalog(universe);
   const stats=verifyPublicTheses(publication);
-  const allowed=new Set(universe.issuers.map(x=>x.ticker));
-  if(publication.records.some(x=>!allowed.has(x.ticker)))throw Error("Noncatalogued public ticker");
   state.publicTheses=new Map(publication.records.map(x=>[x.ticker,x]));
   state.publicThesesMetadata={...stats,published_as_of:publication.published_as_of};
   state.data=data;state.universe=universe;const v=new URLSearchParams(location.search).get("view");state.view=viewNames.includes(v)?v:"overview";summary();render();void loadOfficialFx();void loadForecastLedger();void loadSecFilings();void loadOfficialYield();void loadHistoricalPaper();void loadFullRoster();void loadStrategyCandidates();void loadInstitutionalPaperFeed();
