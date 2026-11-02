@@ -1,11 +1,12 @@
 name: MIDAS weekly ML bootstrap replay
 
 on:
-  push:
-    branches: [main]
-    paths:
-      - 'weekly_ml/bootstrap_trigger.txt'
   workflow_dispatch:
+    inputs:
+      replay_history:
+        description: 'Recompute the separate historical diagnostic; never creates a prospective campaign'
+        type: boolean
+        default: false
 
 permissions:
   contents: write
@@ -35,12 +36,14 @@ jobs:
           python -m py_compile weekly_ml/*.py
           python -m unittest discover -s weekly_ml/tests -v
       - name: Replay Friday signal and Monday entry
+        if: inputs.replay_history
         run: |
           python weekly_ml/bootstrap.py \
             --output weekly_ml_bootstrap_state \
             --signal-asof 2026-09-25 \
             --mark-asof 2026-09-28
       - name: Commit bootstrap smoke result
+        if: inputs.replay_history
         run: |
           git add -- weekly_ml_bootstrap_state
           if ! git diff --cached --quiet; then

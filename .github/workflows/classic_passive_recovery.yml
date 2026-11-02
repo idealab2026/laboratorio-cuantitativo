@@ -43,12 +43,13 @@ jobs:
           python -m unittest discover -s classic_sp500/tests -v
           python -m unittest discover -s market_data/tests -v
       - name: Dry run recovery without touching paper state
+        if: ${{ github.event_name == 'schedule' || github.event_name == 'workflow_dispatch' }}
         run: python classic_sp500/passive_recover_cli.py --phase check
       - name: Recover only verified passive marks in the existing ledger
-        if: ${{ github.event_name != 'pull_request' }}
+        if: ${{ (github.event_name == 'schedule' || github.event_name == 'workflow_dispatch') }}
         run: python classic_sp500/passive_recover_cli.py --phase recover
       - name: Publish only the canonical classical paper ledger
-        if: ${{ success() && github.event_name != 'pull_request' }}
+        if: ${{ success() && (github.event_name == 'schedule' || github.event_name == 'workflow_dispatch') }}
         run: |
           python strategy_comparison/publish_state.py \
             --message "Record verified passive-only mark recovery" \
