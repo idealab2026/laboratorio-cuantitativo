@@ -1,7 +1,7 @@
 {
-  "age_seconds": 347,
-  "captured_at_utc": "2026-10-31T02:16:29+00:00",
-  "checked_at_utc": "2026-10-31T02:22:16.074271+00:00",
+  "age_seconds": 373,
+  "captured_at_utc": "2026-11-02T23:39:03+00:00",
+  "checked_at_utc": "2026-11-02T23:45:16.322474+00:00",
   "consumers": {
     "buy_the_dip_strategy": {
       "ledger_status": "observed",
@@ -9,7 +9,7 @@
       "paused_books": 0,
       "updated_books": 1,
       "valuation_sessions": {
-        "buy_the_dip_strategy": "2026-10-30"
+        "buy_the_dip_strategy": "2026-11-02"
       },
       "workflow_outcome": "success"
     },
@@ -19,27 +19,29 @@
       "paused_books": 0,
       "updated_books": 1,
       "valuation_sessions": {
-        "capital_cycle": "2026-10-30"
+        "capital_cycle": "2026-11-02"
       },
       "workflow_outcome": "success"
     },
     "classic_sp500": {
       "ledger_status": "observed",
       "paused_book_ids": [
-        "buy_hold_equal_weight"
+        "buy_hold_equal_weight",
+        "genetic_frozen",
+        "macd_12_26_9"
       ],
-      "paused_books": 1,
-      "updated_books": 8,
+      "paused_books": 3,
+      "updated_books": 6,
       "valuation_sessions": {
-        "benchmark_spy": "2026-10-30",
-        "bollinger_breakout_20": "2026-10-30",
+        "benchmark_spy": "2026-11-02",
+        "bollinger_breakout_20": "2026-11-02",
         "buy_hold_equal_weight": "2026-10-27",
-        "ema_rsi_fixed": "2026-10-30",
+        "ema_rsi_fixed": "2026-11-02",
         "genetic_frozen": "2026-10-30",
         "macd_12_26_9": "2026-10-30",
-        "rsi_reversion_14": "2026-10-30",
-        "turtle_20_10_long": "2026-10-30",
-        "turtle_55_20_long": "2026-10-30"
+        "rsi_reversion_14": "2026-11-02",
+        "turtle_20_10_long": "2026-11-02",
+        "turtle_55_20_long": "2026-11-02"
       },
       "workflow_outcome": "success"
     },
@@ -49,8 +51,8 @@
       "paused_books": 0,
       "updated_books": 2,
       "valuation_sessions": {
-        "benchmark_spy": "2026-10-30",
-        "timesfm": "2026-10-30"
+        "benchmark_spy": "2026-11-02",
+        "timesfm": "2026-11-02"
       },
       "workflow_outcome": "success"
     },
@@ -60,16 +62,26 @@
       "paused_books": 0,
       "updated_books": 2,
       "valuation_sessions": {
-        "benchmark_spy": "2026-10-30",
-        "timesfm_daily": "2026-10-30"
+        "benchmark_spy": "2026-11-02",
+        "timesfm_daily": "2026-11-02"
       },
       "workflow_outcome": "success"
     },
     "weekly_ml_daily": {
       "ledger_status": "observed",
-      "paused_book_ids": [],
-      "paused_books": 0,
-      "updated_books": 9,
+      "paused_book_ids": [
+        "arima_return",
+        "benchmark_rsp",
+        "benchmark_spy",
+        "ensemble_consensus",
+        "lgbm_direction",
+        "lgbm_ranker",
+        "lgbm_return",
+        "lstm_return",
+        "mlp_return"
+      ],
+      "paused_books": 9,
+      "updated_books": 0,
       "valuation_sessions": {
         "arima_return": "2026-10-30",
         "benchmark_rsp": "2026-10-30",
@@ -81,40 +93,61 @@
         "lstm_return": "2026-10-30",
         "mlp_return": "2026-10-30"
       },
-      "workflow_outcome": "success"
+      "workflow_outcome": "failure"
     }
   },
   "coverage": {
-    "frozen_constituents_observed": 489,
-    "missing": 14,
-    "observed": 490,
+    "frozen_constituents_observed": 468,
+    "missing": 35,
+    "observed": 469,
     "requested": 504
   },
-  "effective_sha256": "01ee1c4d0d5f28fc76abd4a80bc6228477bbf1b6c1e244aed29ce64fe5f3a987",
+  "effective_sha256": "4ba926a4fbd9f925dd95d344d80856877216ff6b4fce3f53a9e18c3f2a07da1b",
   "engine_health": "not_assessed",
-  "expected_session": "2026-10-30",
+  "expected_session": "2026-11-02",
   "market": "XNYS",
   "missing_symbols": [
+    "ALL",
     "AVB",
+    "AZO",
     "BK",
+    "CCL",
+    "CMG",
     "CTRA",
+    "CVS",
     "DAY",
+    "DHR",
+    "DIS",
+    "DLR",
+    "DVA",
     "EA",
+    "EFX",
     "EQR",
+    "EXR",
     "FI",
+    "FRT",
     "HOLX",
-    "HUBB",
+    "HRL",
+    "IFF",
     "IPG",
     "K",
+    "KVUE",
+    "L",
+    "LII",
+    "LOW",
     "MMC",
+    "SPG",
+    "UHS",
     "WBA",
-    "WBD"
+    "WBD",
+    "WSM",
+    "WY"
   ],
   "policy": "common_raw_daily_primary",
   "revision_hashes": [],
-  "run_id": "41159066934",
+  "run_id": "41546738769",
   "schema": "midas.xnys_source_health.v1",
-  "sha256": "01ee1c4d0d5f28fc76abd4a80bc6228477bbf1b6c1e244aed29ce64fe5f3a987",
+  "sha256": "4ba926a4fbd9f925dd95d344d80856877216ff6b4fce3f53a9e18c3f2a07da1b",
   "status": "snapshot_verified",
   "trigger_event": "schedule"
 }
