@@ -164,3 +164,87 @@ p{line-height:1.6;text-align:justify;text-align-last:left;hyphens:auto}p.lead{co
 .full-competition-table thead th[aria-sort="descending"] .sort-indicator{color:#123f68}
 .full-competition-table thead th.number .table-sort{justify-content:flex-end;width:100%}
 @media(max-width:700px){.full-competition-table thead .table-sort{font-size:.69rem}}
+
+
+/* MIDAS / competition: twelve metrics fit the available desktop width.
+   A responsive multi-metric row replaces horizontal scrolling on small screens. */
+.full-competition-table{overflow-x:hidden;max-width:100%}
+.full-competition-table table{table-layout:fixed;width:100%;min-width:0;font:650 .65rem/1.3 system-ui,sans-serif}
+.full-competition-table td,.full-competition-table th{
+ min-width:0;max-width:none;padding:4px 3px;white-space:normal;
+ vertical-align:middle;overflow-wrap:anywhere
+}
+.full-competition-table td:first-child{min-width:0;max-width:none}
+.full-competition-table th:nth-child(1),.full-competition-table td:nth-child(1){width:22%}
+.full-competition-table th:nth-child(2),.full-competition-table td:nth-child(2){width:8%}
+.full-competition-table th:nth-child(3),.full-competition-table td:nth-child(3){width:14%}
+.full-competition-table th:nth-child(4),.full-competition-table td:nth-child(4){width:7%}
+.full-competition-table th:nth-child(5),.full-competition-table td:nth-child(5){width:4%}
+.full-competition-table th:nth-child(6),.full-competition-table td:nth-child(6){width:6%}
+.full-competition-table th:nth-child(7),.full-competition-table td:nth-child(7){width:5%}
+.full-competition-table th:nth-child(8),.full-competition-table td:nth-child(8){width:6%}
+.full-competition-table th:nth-child(9),.full-competition-table td:nth-child(9){width:6%}
+.full-competition-table th:nth-child(10),.full-competition-table td:nth-child(10){width:7%}
+.full-competition-table th:nth-child(11),.full-competition-table td:nth-child(11){width:7%}
+.full-competition-table th:nth-child(12),.full-competition-table td:nth-child(12){width:8%}
+.full-competition-table thead th{white-space:normal}
+.full-competition-table thead .table-sort{
+ white-space:normal;text-align:left;overflow-wrap:anywhere;
+ font:740 .62rem/1.12 system-ui,sans-serif;gap:2px
+}
+.full-competition-table thead th.number .table-sort{justify-content:flex-end;text-align:right}
+.full-competition-table .full-strategy-name{
+ display:block;font:720 .68rem/1.24 system-ui,sans-serif;
+ white-space:normal;overflow-wrap:anywhere;color:#193957
+}
+.full-competition-table .smallline{font:.56rem/1.15 system-ui,sans-serif;margin-top:2px;white-space:normal}
+.full-competition-table .clamped-cell{display:-webkit-box;-webkit-box-orient:vertical;
+ -webkit-line-clamp:2;line-clamp:2;overflow:hidden;overflow-wrap:anywhere}
+.full-competition-table .activity-cell .clamped-cell{-webkit-line-clamp:2;line-clamp:2}
+.full-competition-table .family-cell{font-size:.61rem}
+.full-competition-table .date-cell,.full-competition-table .currency-cell,
+.full-competition-table .number{white-space:nowrap;font-variant-numeric:tabular-nums}
+.full-competition-table .number{font-size:.64rem}
+.full-competition-table .number .performance{font-size:inherit}
+.full-competition-table .comparison-cell{font-size:.58rem;overflow-wrap:anywhere}
+.full-competition-table .mini-chart{width:100%;height:22px;max-width:86px}
+.full-competition-table .curve-cell{padding:3px 2px}
+.competition-mobile-sort{display:none}
+@media(max-width:1050px){
+ .competition-mobile-sort{display:flex;align-items:end;gap:8px;margin:8px 0 10px;
+  font:700 .7rem system-ui,sans-serif}
+ .competition-mobile-sort label{display:grid;gap:3px;flex:1;min-width:0}
+ .competition-mobile-sort select{min-width:0;width:100%;border:1px solid #d0dce5;
+  background:#fff;border-radius:6px;padding:5px 7px;font:.74rem system-ui,sans-serif}
+ .competition-mobile-sort .outline-btn{padding:6px 8px;font:.7rem system-ui,sans-serif}
+ .full-competition-table{border:0;overflow:visible}
+ .full-competition-table table{display:block;width:100%;min-width:0}
+ .full-competition-table thead{display:none}
+ .full-competition-table tbody{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,345px),1fr));gap:9px}
+ .full-competition-table .competition-row{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));
+  gap:0;border:1px solid var(--line);border-radius:8px;padding:5px 7px;background:#fff;min-width:0}
+ .full-competition-table .competition-row td{
+  display:block;width:auto;min-width:0;max-width:none;border-bottom:1px solid #eaf0f3;
+  font-size:.71rem;line-height:1.28;padding:5px 4px;white-space:normal;overflow-wrap:anywhere
+ }
+ .full-competition-table .competition-row td:before{
+  content:attr(data-label);display:block;font:680 .59rem/1.2 system-ui,sans-serif;
+  color:#788a9b;margin-bottom:2px
+ }
+ .full-competition-table .competition-row td:first-child{
+  grid-column:1/-1;padding-bottom:7px;border-bottom:1px solid #dce6ed
+ }
+ .full-competition-table .competition-row td:nth-child(2),
+ .full-competition-table .competition-row td:nth-child(3),
+ .full-competition-table .competition-row td:nth-child(10),
+ .full-competition-table .competition-row td:nth-child(11),
+ .full-competition-table .competition-row td:nth-child(12){grid-column:span 2}
+ .full-competition-table .full-strategy-name{font-size:.79rem}
+ .full-competition-table .smallline{font-size:.59rem}
+ .full-competition-table .clamped-cell{display:block;overflow:visible}
+ .full-competition-table .competition-row td.number{text-align:left;white-space:normal;font-size:.72rem}
+ .full-competition-table .competition-row td.number .performance{font-size:.72rem}
+ .full-competition-table .competition-row td.comparison-cell{font-size:.69rem}
+ .full-competition-table .mini-chart{width:100%;max-width:110px;height:25px;margin:0}
+ .full-competition-table .competition-row td.curve-cell{border-bottom:0}
+}
