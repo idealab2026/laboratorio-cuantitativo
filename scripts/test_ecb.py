@@ -2,7 +2,7 @@ import unittest
 from datetime import date, timedelta
 from hashlib import sha256
 
-from refresh_ecb import parse_ecb_csv, validate_document, SERIES, URL
+from refresh_ecb import parse_ecb_csv, validate_document, fetch_official_csv, SERIES, URL
 
 AT = "2026-10-31T15:00:00Z"
 TODAY = date(2026, 10, 31)
@@ -64,6 +64,58 @@ class OfficialECBTests(unittest.TestCase):
             parse_ecb_csv(thin.encode(), AT, today=TODAY)
         self.assertNotIn("broker", URL.lower())
         self.assertNotIn("yahoo", URL.lower())
+
+
+
+
+class OfficialTransportTests(unittest.TestCase):
+    def test_transient_gateway_failures_retry_same_source_and_preserve_bytes(self):
+        from unittest.mock import Mock, MagicMock
+        from urllib.error import HTTPError
+        raw = sample()
+        response = MagicMock()
+        response.__enter__.return_value = response
+        response.status = 200
+        response.geturl.return_value = URL
+        response.read.return_value = raw
+        opener = Mock(side_effect=[HTTPError(URL, 504, "gateway", {}, None),
+                                   HTTPError(URL, 503, "busy", {}, None), response])
+        sleeper = Mock()
+        self.assertEqual(fetch_official_csv(URL, {}, 22, opener=opener, sleeper=sleeper), raw)
+        self.assertEqual([c.args[0].full_url for c in opener.call_args_list], [URL] * 3)
+        self.assertEqual([c.args[0] for c in sleeper.call_args_list], [2, 5])
+        response.read.assert_called_once_with(2_000_001)
+
+    def test_persistent_failure_is_bounded_and_never_returns_old_data(self):
+        from unittest.mock import Mock
+        from urllib.error import HTTPError
+        opener = Mock(side_effect=HTTPError(URL, 504, "gateway", {}, None))
+        sleeper = Mock()
+        with self.assertRaises(HTTPError):
+            fetch_official_csv(URL, {}, 22, opener=opener, sleeper=sleeper)
+        self.assertEqual(opener.call_count, 3)
+        self.assertEqual(sleeper.call_count, 2)
+
+    def test_denials_redirects_and_certificate_failures_are_not_retried(self):
+        from unittest.mock import Mock, MagicMock
+        from urllib.error import HTTPError, URLError
+        import ssl
+        for error in (HTTPError(URL, 403, "denied", {}, None),
+                      URLError(ssl.SSLCertVerificationError("certificate"))):
+            opener, sleeper = Mock(side_effect=error), Mock()
+            with self.assertRaises(type(error)):
+                fetch_official_csv(URL, {}, 22, opener=opener, sleeper=sleeper)
+            self.assertEqual(opener.call_count, 1)
+            sleeper.assert_not_called()
+        response = MagicMock()
+        response.__enter__.return_value = response
+        response.status = 200
+        response.geturl.return_value = "https://untrusted.test/redirect"
+        opener, sleeper = Mock(return_value=response), Mock()
+        with self.assertRaisesRegex(RuntimeError, "redirect"):
+            fetch_official_csv(URL, {}, 22, opener=opener, sleeper=sleeper)
+        response.read.assert_not_called()
+        sleeper.assert_not_called()
 
 
 if __name__ == "__main__":

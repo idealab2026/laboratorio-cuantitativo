@@ -7,6 +7,9 @@ import io
 import json
 import re
 import urllib.request
+import urllib.error
+import time
+import ssl
 from datetime import date, datetime, timezone
 from pathlib import Path
 
@@ -16,6 +19,27 @@ SOURCE = "European Central Bank (ECB statistics)"
 NOTICE = "ECB reference rate: US dollars per one euro, NOT a transaction, bid/ask, open or close."
 USER_AGENT = "IDEA-LAB-public-research/1.0 (+https://idealab2026.github.io/laboratorio-cuantitativo/)"
 HEADERS = {"User-Agent": USER_AGENT, "Accept": "text/csv"}
+
+
+def fetch_official_csv(url, headers, timeout, *, opener=None, sleeper=None):
+    """Bounded transport retries; never retry validation or substitute a source."""
+    opener = opener or urllib.request.urlopen
+    sleeper = sleeper or time.sleep
+    request = urllib.request.Request(url, headers=headers)
+    for attempt in range(3):
+        try:
+            with opener(request, timeout=timeout) as response:
+                if response.status != 200 or response.geturl() != url:
+                    raise RuntimeError("Unverified ECB response or redirect")
+                return response.read(2_000_001)
+        except urllib.error.HTTPError as exc:
+            if exc.code not in (429, 500, 502, 503, 504) or attempt == 2:
+                raise
+            exc.close()
+        except (urllib.error.URLError, TimeoutError) as exc:
+            if isinstance(getattr(exc, "reason", None), ssl.SSLError) or attempt == 2:
+                raise
+        sleeper((2, 5)[attempt])
 
 
 def parse_ecb_csv(raw, received_at, today=None):
@@ -113,11 +137,7 @@ def main():
         validate_document(obj)
         print("ECB public release validated: " + obj["latest_observation"])
         return
-    request = urllib.request.Request(URL, headers=HEADERS)
-    with urllib.request.urlopen(request, timeout=22) as response:
-        if response.status != 200 or response.geturl() != URL:
-            raise RuntimeError("Unverified ECB response or redirect")
-        raw = response.read(2_000_001)
+    raw = fetch_official_csv(URL, HEADERS, 22)
     when = datetime.now(timezone.utc).replace(microsecond=0).strftime("%Y-%m-%dT%H:%M:%SZ")
     doc = parse_ecb_csv(raw, when)
     validate_document(doc)

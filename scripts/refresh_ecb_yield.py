@@ -6,7 +6,7 @@ import hashlib
 import io
 import json
 import re
-import urllib.request
+from refresh_ecb import fetch_official_csv
 from datetime import datetime, date, timezone
 from pathlib import Path
 
@@ -83,10 +83,7 @@ def main():
         validate(json.loads(a.validate.read_text(encoding="utf8")))
         print("ECB AAA 10Y source verified")
         return
-    req=urllib.request.Request(URL,headers={"User-Agent":"IDEA-LAB-public-research/1.0 (+https://idealab2026.github.io/laboratorio-cuantitativo/)","Accept":"text/csv"})
-    with urllib.request.urlopen(req,timeout=25) as response:
-        if response.status!=200 or response.geturl()!=URL:raise RuntimeError("Unexpected ECB source response")
-        raw=response.read(2_000_001)
+    raw=fetch_official_csv(URL,{"User-Agent":"IDEA-LAB-public-research/1.0 (+https://idealab2026.github.io/laboratorio-cuantitativo/)","Accept":"text/csv"},25)
     received=datetime.now(timezone.utc).replace(microsecond=0).strftime("%Y-%m-%dT%H:%M:%SZ")
     doc=parse(raw,received)
     validate(doc)
