@@ -1,30 +1,69 @@
-# MIDAS · Puesta en producción en el repositorio público existente
+# MIDAS · Operación en Idea Lab
 
-El repositorio público aloja los algoritmos, el controlador y las pruebas. No es necesario crear otro repositorio. Los ficheros de posiciones, cotizaciones sujetas a licencia y credenciales deben respetar por separado sus permisos de acceso.
+La producción canónica reside en `idealab2026/laboratorio-cuantitativo` y su
+GitHub Pages. Código, diarios impersonales, pruebas y automatismos se conservan
+en el mismo repositorio institucional. Arquitectura: GitHub público, Actions y
+Pages; coste cero siempre. Credenciales exclusivamente en GitHub Secrets.
 
-## Condición previa: datos y firma
+## Captura y contabilidad diaria originales
 
-La tarea existente `.github/workflows/public-market.yml` intenta capturar una sesión XNYS real solo si la variable de repositorio `MIDAS_YAHOO_RIGHTS_CONFIRMED` vale `true` y está configurado el secreto `IDEALAB_PAPER_FEED_KEY` (32 caracteres o más). La variable se debe establecer **únicamente después de comprobar que el uso del proveedor y la publicación de resultados derivados están autorizados**. No equivale a comprar una licencia ni acredita por sí sola los derechos.
+1. `market_data_xnys.yml` captura la sesión XNYS recién cerrada a las 23:07 UTC
+   laborables. Verifica el calendario, el universo congelado de 503 valores más
+   SPY y barras RAW con fecha exacta, volumen y acciones corporativas.
+2. El snapshot inicial es inmutable. `collect.py --phase recover` solo añade
+   cotizaciones realmente ausentes mediante revisiones enlazadas por SHA. Tiene
+   hasta 48 reintentos aislados; valores retirados del mercado permanecen ausentes.
+   Nunca sustituye un activo ni una observación previamente registrada.
+3. Después de publicar la fuente, se encadenan los consumidores originales:
+   `classic_sp500`, `buy_the_dip_strategy`, `capital_cycle`, `weekly_ml_daily`,
+   `timesfm_daily` y `timesfm_one_day`. También conservan sus horarios de respaldo.
+   RSP es independiente del universo común; su lector exige una barra RAW fechada
+   válida y reintenta de forma acotada antes de declarar ausencia.
+4. `market_data/source_health.json` separa cobertura de fuente, resultados de jobs
+   y libros actualizados o pausados. `strategy_state/dashboard.json` es la vista
+   derivada de los diarios. Su fecha de generación no es un cierre de mercado.
+5. Para una recuperación explícita dentro de la ventana causal, ejecutar el mismo
+   workflow con `capture_session=true` y `run_consumers=true`. No admite seleccionar
+   una sesión pasada. Una recuperación manual no demuestra continuidad programada:
+   verificar después un nuevo ciclo natural y una sesión económica nueva.
 
-En GitHub, configurar en **Settings → Secrets and variables → Actions**. No incluir nunca claves en commits, incidencias, comentarios, historial de terminal o conversaciones públicas.
+Conservar señales, órdenes, fills simulados, cash, costes y NAV de cada campaña.
+Cotizaciones ausentes o inválidas bloquean la transición correspondiente; no se
+rellenan con el último cierre ni se reconstruyen operaciones perdidas.
 
-El motor registra **paper**, no órdenes bancarias. El día inicial congela señales al cierre, la siguiente sesión ejecuta las entradas hipotéticas a la apertura correspondiente. Los libros solo pasan a activos si el capturador obtiene OHLC coherente, cobertura suficiente y hash de la fuente; si faltan barras, fechas o firmas se rechaza la actualización.
+## Otros calendarios y campañas
 
-## Operación y auditoría
+Weekly ML, TimesFM semanal y TFG conservan sus horarios y señales congeladas;
+no deben ejecutarse artificialmente como estrategias diarias. La campaña genética
+conserva sus tres cohortes y requiere un traspaso de writer verificado antes de
+activar `GENETIC_PUBLIC_ACTIVE`. No mezclar históricos ni crear otra cohorte para
+ocultar un hueco. Las antiguas campañas de ocho activos/IBEX y TFM shadow están
+archivadas por su contrato original desde el 13/10/2026; conservar sus resultados
+sin tratarlas como participantes activos del universo S&P 500.
 
-- Ejecutar la acción **MIDAS institutional public-code Yahoo paper runtime**, seleccionando `execute=true`, solo después de satisfacer las condiciones previas y en un día bursátil ya cerrado.
-- La ejecución programada existente funciona lunes a viernes a las **23:07 UTC**. No inventa sesiones cerradas, y una ausencia de cotizaciones no puede contabilizarse como un resultado de cero.
-- La acción **MIDAS operational state audit** genera un informe independiente sin descargar precios, lunes a viernes a las **23:47 UTC**. Puede ejecutarse manualmente cuando sea necesario.
-- Ejecutar en el repositorio `python3 scripts/operational_status.py` para consultar si están conectadas la fuente y los libros y cuántas estrategias se han observado.
-- Verificar los trabajos `validate` y `execute` de la acción del mercado, los hashes de los cierres, NAV y P/L, y el despliegue de Pages. El éxito del control de calidad no demuestra que se hayan realizado sesiones económicas.
-- El lector de archivo histórico puede representar resultados anteriores de manera **local y manual**. No se reescribe el libro prospectivo ni se presenta esa recuperación como rentabilidad generada por IDEA LAB.
+El inventario tiene 64 estrategias. Disponer de código o de 47 diarios históricos
+recuperados no demuestra que las 64 estén operativas. Consultar fechas, estado,
+universo y comparabilidad de cada fila; no ordenar campañas incompatibles juntas.
 
-## Alcance y decisión de corte
+## Prototipos separados
 
-La infraestructura actual ofrece once libros de referencia bursátil prospectivos preparados: dos carteras base y nueve variantes clásicas. Otros modelos figuran en el catálogo, pero no son equivalentes a once motores plenamente operativos ni a 64 algoritmos corriendo con datos bursátiles nuevos.
+`public-market.yml`, los libros HMAC alternativos y las demos con precios
+artificiales son desarrollos separados del motor original. Sus permisos y gates
+propios siguen vigentes. No activarlos como un segundo writer para recuperar el
+motor original ni atribuirles sus diarios. Capital virtual con cotizaciones reales
+es paper trading; la demo de 23 estrategias usa precios artificiales y no acredita
+resultados de mercado. Una simulación no garantiza ejecución de broker idéntica.
 
-No se debe retirar la implementación anterior hasta tener evidencia verificable de: licencias y seguridad, ejecución continuada sin ordenador local, paridad por estrategia y fuente, registros económicos auditados, fiabilidad ante fallos, acceso privado a la información restringida y ensayo de restauración.
+## Auditoría y retirada del origen
 
-## Otras fuentes
+El auditor diario de ChatGPT «AUDITOR - MIDAS · IDEA LAB» comprueba la fuente,
+los workflows, los diarios y la web institucionales, además del seguimiento de
+las tesis. No depende de la UI, Worker ni repositorios personales de Segundo
+Cerebro. No confundir tests verdes, publicación, recuperación manual y continuidad
+natural. Alertar solo de cambios materiales, preservando las incidencias abiertas.
 
-Si no se dispone de derechos de uso para el proveedor actual, debe evaluarse otro contrato de datos. Por ejemplo, Alpaca distingue datos IEX gratuitos (cobertura parcial del mercado) y SIP de cobertura consolidada, con condiciones de acceso diferentes. Un feed de IEX **no es automáticamente equivalente** al conjunto OHLC de todas las bolsas ni sustituye dividendos, splits, históricos y metadatos requeridos por los motores. No se activará un proveedor nuevo hasta integrarlo y probar su contrato real.
+El propietario autoriza retirar MIDAS del origen después de probar sustitución
+funcional, conservación de históricos, acceso a documentos de trabajo impersonales,
+restauración y continuidad. Hasta entonces conservar el respaldo y el fallback;
+no detener automatismos originales ni afectar otras áreas. No activar servicios
+de pago, facturación ni infraestructura Cloudflare para resolver esta migración.
