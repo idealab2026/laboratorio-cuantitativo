@@ -486,3 +486,21 @@ p{line-height:1.6;text-align:justify;text-align-last:left;hyphens:auto}p.lead{co
 .audit-price-entry,.audit-price-execution,.audit-price-market{font-weight:700}
 .audit-missing-source{font-size:.68rem;color:#7b8995}
 .audit-operation-table td .smallline{display:block;font-size:.62rem;line-height:1.45}
+
+
+/* Audit markers for non-executed corporate conversions and orders whose fill
+   price was not preserved. Their vertical position is intentionally not a price. */
+.audit-price-chart .audit-corporate-guide{stroke:#997330;stroke-width:1.8;stroke-dasharray:6 4}
+.audit-price-chart .audit-corporate-label{font:780 13px system-ui,sans-serif;fill:#8a621f;
+ paint-order:stroke fill;stroke:#fbfcfd;stroke-width:4px;stroke-linejoin:round}
+.audit-price-chart .audit-undocumented-guide{stroke:#b17b35;stroke-width:1.5;stroke-dasharray:4 4}
+.audit-price-chart .audit-unpriced-label{font:750 11px system-ui,sans-serif;fill:#86582a;
+ paint-order:stroke fill;stroke:#fbfcfd;stroke-width:4px}
+.audit-price-chart .audit-buy-undocumented{fill:none;stroke:#168268;stroke-width:2.7}
+.audit-price-chart .audit-sell-undocumented{fill:none;stroke:#b54b4b;stroke-width:2.7}
+.audit-legend-corporate{color:#906927}
+.audit-action.audit-corporate_action{color:#866321;font-weight:800}
+.audit-corporate-note{color:#846429;font-weight:720}
+.audit-counts .audit-warning{background:#fff7e8;border-color:#e9cea0;color:#77541d}
+.audit-standalone-timeline{padding:12px 2px}
+.audit-standalone-timeline p{font:.74rem/1.5 system-ui,sans-serif;color:#596b7f}
