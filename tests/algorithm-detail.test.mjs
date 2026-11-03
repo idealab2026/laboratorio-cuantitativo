@@ -389,7 +389,7 @@ test("Monitoring has two tabs, a real audit selector and the SAME trade table as
    "state.monitoringTab","state.monitoringStrategy","state.monitoringSort","state.monitoringDesc",
    "summarizeOperationsAudit(audit)","Última sesión de trading paper",
    "Algoritmos propuestos","Algoritmos productivos","Algoritmos con operaciones paper",
-   "feed?.status===\\"source_verified\\"","feed?.status===\\"not_connected\\""
+   'feed?.status==="source_verified"','feed?.status==="not_connected"'
  ])assert.ok(site.includes(text),"Missing monitoring contract: "+text);
  const audit=readFileSync(new URL("../src/operations-audit.mjs",import.meta.url),"utf8");
  assert.ok(audit.includes("export function renderTradeLotsTable"));
