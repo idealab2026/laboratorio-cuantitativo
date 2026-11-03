@@ -1,4 +1,4 @@
-import {verifyOriginalPaper} from "./original-paper.mjs";
+import {verifyOriginalPaper} from "./original-paper.mjs?v=8e289fdabcc1";
 import {parseLocalPaperResults,parseLocalPaperCurves,summarizePrivatePaper} from "./private-paper.mjs?v=4baff08a2202";
 import {signalResearchSummary,methodCatalog} from "./paper-methods.mjs";
 import {parseLocalCagr2031} from "./private-theses.mjs";
