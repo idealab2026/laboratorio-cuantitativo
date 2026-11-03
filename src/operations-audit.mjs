@@ -44,6 +44,49 @@ export function verifyOperationsAudit(doc){
  }
  return {count:64,withExecution:Object.values(doc.tracks).filter(t=>t.status==="partial_executions_documented").length};
 }
+/**
+ * Position a visible price label above EVERY documented market close and fill.
+ * Executed trades receive priority; collisions are staggered vertically and
+ * then horizontally. All layout coordinates are within the SVG viewBox.
+ * No price values are modified or inferred.
+ */
+export function layoutAuditPriceLabels(points){
+ const prioritized=[...points].sort((a,b)=>
+  Number(b.kind!=="close")-Number(a.kind!=="close")||
+  a.x-b.x||a.y-b.y);
+ const placed=[];
+ for(const point of prioritized){
+  const value=fmt(point.price);
+  const text=point.kind==="buy"?"Compra "+value:
+   point.kind==="sell"?"Venta "+value:value;
+  const width=text.length*(point.kind==="close"?6.4:6.75)+5;
+  let selected=null;
+  for(const dx of [0,16,-16,36,-36,65,-65,95,-95]){
+   for(let level=0;level<7;level++){
+    const y=point.y-12-level*15;
+    if(y<43)continue;
+    const desiredX=point.x+(point.x<120?9:point.x>810?-9:0)+dx;
+    const anchor=point.x<120?"start":point.x>810?"end":"middle";
+    const x=Math.max(anchor==="start"?55:anchor==="end"?55+width:55+width/2,
+      Math.min(anchor==="start"?884-width:anchor==="end"?884:884-width/2,desiredX));
+    const left=anchor==="start"?x:anchor==="end"?x-width:x-width/2;
+    const rect={left,right:left+width,top:y-12,bottom:y+3};
+    const overlaps=placed.some(p=>rect.left<p.rect.right+4&&rect.right>p.rect.left-4&&
+       rect.top<p.rect.bottom+3&&rect.bottom>p.rect.top-3);
+    if(!overlaps){selected={x,y,anchor,rect};break;}
+   }
+   if(selected)break;
+  }
+  if(!selected){
+   // Dense overlaps remain explicit; avoid dropping a documented point.
+   const x=Math.max(55+width/2,Math.min(884-width/2,point.x));
+   selected={x,y:Math.max(43,point.y-12),anchor:"middle",
+    rect:{left:x-width/2,right:x+width/2,top:point.y-24,bottom:point.y-9}};
+  }
+  placed.push({...selected,kind:point.kind,text,date:point.date,price:point.price});
+ }
+ return placed;
+}
 function chart(track,ticker){
  const quote=(track.prices[ticker]||[]).map(q=>({date:q.date,price:q.price,kind:"close"}));
  const trades=track.sessions.flatMap(s=>s.actions.filter(a=>a.ticker===ticker&&
@@ -66,14 +109,17 @@ function chart(track,ticker){
  }
  if(group.length>1)lines+='<polyline class="audit-price-line" points="'+group.map(v=>n(x(v.date))+","+n(y(v.price))).join(" ")+'"/>';
  const closeDots=quote.map(q=>'<circle class="audit-close-dot" cx="'+n(x(q.date))+'" cy="'+n(y(q.price))+
-   '" r="3"><title>Cierre '+esc(q.date)+': '+fmt(q.price)+'</title></circle>').join("");
+   '" r="3.5"><title>Cierre '+esc(q.date)+': '+fmt(q.price)+'</title></circle>').join("");
  const markers=trades.map(p=>{
   const cx=n(x(p.date)),cy=n(y(p.price));
   return '<circle class="'+(p.kind==="buy"?"audit-buy-dot":"audit-sell-dot")+'" cx="'+cx+'" cy="'+cy+
-   '" r="6" stroke="#fff" stroke-width="1.5"><title>'+esc(p.date)+' '+(p.kind==="buy"?"Compra":"Venta")+
-   ' a '+fmt(p.price)+'</title></circle><text class="audit-trade-symbol" x="'+cx+'" y="'+(cy-12)+
-   '" text-anchor="middle">'+(p.kind==="buy"?"C":"V")+'</text>';
+   '" r="7" stroke="#fff" stroke-width="1.5"><title>'+esc(p.date)+' '+(p.kind==="buy"?"Compra":"Venta")+
+   ' a '+fmt(p.price)+'</title></circle>';
  }).join("");
+ const labels=layoutAuditPriceLabels([...trades,...quote].map(p=>({
+  date:p.date,kind:p.kind,price:p.price,x:n(x(p.date)),y:n(y(p.price))
+ }))).map(a=>'<text class="audit-point-price audit-price-'+a.kind+
+   '" x="'+n(a.x)+'" y="'+n(a.y)+'" text-anchor="'+a.anchor+'">'+esc(a.text)+'</text>').join("");
  const start=new Date(d0).toISOString().slice(0,10),end=new Date(d1).toISOString().slice(0,10);
  const currency=esc(track.currency||"divisa sin verificar");
  return '<svg viewBox="0 0 920 270" class="audit-price-chart" role="img" aria-label="Fechas y precios observados de '+esc(ticker)+' con puntos de compra y venta">'+
@@ -85,7 +131,7 @@ function chart(track,ticker){
   '<text x="60" y="247" class="audit-axis-label">'+esc(start)+'</text>'+
   '<text x="870" y="247" text-anchor="end" class="audit-axis-label">'+esc(end)+'</text>'+
   '<text x="870" y="27" text-anchor="end" class="audit-axis-label">Precio ('+currency+')</text>'+
-  lines+closeDots+markers+'</svg>'+
+  lines+closeDots+markers+labels+'</svg>'+
   '<div class="audit-legend"><span class="audit-legend-buy">● Compras</span><span class="audit-legend-sell">● Ventas</span><span class="audit-legend-close">● Precio de cierre del mercado (no es una operación)</span></div>'+
   '<p class="audit-method-note">Las abscisas son fechas de sesión y las ordenadas son precios en '+currency+
   '. Los puntos azules son cierres observados de mercado, NO compras ni ventas del algoritmo. Solo se unen cierres consecutivos realmente guardados; no se interpolan fechas sin cotización. No consta la hora exacta de los fills. '+
