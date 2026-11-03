@@ -168,7 +168,7 @@ const priority=[
  [/markowitz/,"markowitz"],
  [/fundamental/,"fundamental"],
  [/coinbase|btc|crypto/,"crypto"],
- [/tfg|ahp|multicriterio/,"ahp"]
+ [/ahp|multicriterio/,"ahp"]
 ];
 export function algorithmTheory(sourceId,group=""){
  const key=typeof sourceId==="string"?sourceId.toLowerCase():"";
