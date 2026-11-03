@@ -227,11 +227,17 @@ export function renderOperationsAudit(doc,id,selectedTicker=null){
  const symbols=[...new Set(sessions.flatMap(s=>s.actions.map(a=>a.ticker)))].sort();
  const chosen=symbols.includes(selectedTicker)?selectedTicker:
   symbols.find(t=>sessions.some(s=>s.actions.some(a=>a.ticker===t&&a.side!=="hold")))||symbols[0];
- const totals=sessions.reduce((out,s)=>{for(const a of s.actions)out[a.side]++;return out},{buy:0,sell:0,hold:0});
+ const totals=sessions.reduce((out,s)=>{for(const a of s.actions)out[a.side]++;return out},{buy:0,sell:0,hold:0,corporate_action:0});
+ const missingExecutionPrices=sessions.reduce((n,session)=>n+session.actions.filter(a=>
+  (a.side==="buy"||a.side==="sell")&&!num(a.price)).length,0);
  const intro=heading+
   '<p>Consulta las compras y ventas paper ejecutadas y las posiciones que continuaron abiertas. Los mantenimientos son una <strong>inferencia contable</strong>; no equivalen a una decisión explícita registrada. Cuando el libro no guarda la señal individual, se describe la regla acreditada del motor y se diferencia de una decisión histórica comprobada.</p>'+
   '<div class="audit-counts"><span>'+sessions.length+' sesiones</span><span>'+totals.buy+' compras</span>'+
-  '<span>'+totals.sell+' ventas</span><span>'+totals.hold+' mantenimientos inferidos</span></div>';
+  '<span>'+totals.sell+' ventas</span><span>'+totals.hold+' mantenimientos inferidos</span>'+
+  (totals.corporate_action?'<span>'+totals.corporate_action+' conversiones corporativas (no ventas)</span>':"")+
+  (missingExecutionPrices?'<span class="audit-warning">'+missingExecutionPrices+
+   ' ejecuciones sin precio original trazable (marcadas por fecha)</span>':"")+
+  '</div>';
  const graph=symbols.length?
   '<div class="audit-chart-area"><h4>Precio histórico del activo y ejecuciones</h4>'+
   '<label class="audit-ticker-picker">Acción <select id="audit-ticker" aria-label="Elegir ticker del gráfico">'+
@@ -245,13 +251,17 @@ export function renderOperationsAudit(doc,id,selectedTicker=null){
    '<div class="table-scroll audit-table-wrap"><table class="table-compact audit-operation-table"><thead><tr>'+
    '<th>Acción</th><th>Activo</th><th>Precio / referencia</th><th>Unidades</th><th>Motivo y evidencia</th></tr></thead><tbody>'+
    actions.map(a=>{
-    const kind={buy:"COMPRA",sell:"VENTA",hold:"MANTENER · INFERIDO"}[a.side];
-    const evidence=a.reason_basis==="recorded"?"Motivo guardado en libro de órdenes":
+    const kind={buy:"COMPRA",sell:"VENTA",hold:"MANTENER · INFERIDO",
+     corporate_action:"CONVERSIÓN CORPORATIVA"}[a.side];
+    const evidence=a.side==="corporate_action"?
+      "Transformación societaria acreditada; NO es una compraventa ni mantenimiento de la acción anterior":
+     a.reason_basis==="recorded"?"Motivo guardado en libro de órdenes":
      a.reason_basis==="engine_rule"?"Regla acreditada por código; indicador individual no archivado":
      a.reason_basis==="inferred_position_continuity"?"Posición y unidades reconstruidas de ejecuciones; regla explicada cuando existe":
      "Sin motivo individual conservado";
     return '<tr><td><strong class="audit-action audit-'+a.side+'">'+esc(kind)+'</strong></td>'+
-     '<td>'+esc(a.ticker)+'</td><td>'+valueCell(a,track.currency)+'</td><td>'+fmtUnits(a.quantity)+'</td>'+
+     '<td>'+esc(a.ticker)+(a.side==="corporate_action"?' → '+esc(a.successor_ticker):"")+
+     '</td><td>'+valueCell(a,track.currency)+'</td><td>'+fmtUnits(a.quantity)+'</td>'+
      '<td>'+esc(a.reason)+'<small class="smallline">'+esc(evidence)+
      (a.signal_date?' · señal '+esc(a.signal_date):"")+
      (a.rule_source?' · regla: '+esc(a.rule_source):"")+' · libro: '+esc(a.evidence)+'</small></td></tr>';
