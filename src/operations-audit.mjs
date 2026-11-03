@@ -86,9 +86,9 @@ function chart(track,ticker){
   '<text x="870" y="247" text-anchor="end" class="audit-axis-label">'+esc(end)+'</text>'+
   '<text x="870" y="27" text-anchor="end" class="audit-axis-label">Precio ('+currency+')</text>'+
   lines+closeDots+markers+'</svg>'+
-  '<div class="audit-legend"><span class="audit-legend-buy">● Compras</span><span class="audit-legend-sell">● Ventas</span><span class="audit-legend-close">● Cierres conservados</span></div>'+
+  '<div class="audit-legend"><span class="audit-legend-buy">● Compras</span><span class="audit-legend-sell">● Ventas</span><span class="audit-legend-close">● Precio de cierre del mercado (no es una operación)</span></div>'+
   '<p class="audit-method-note">Las abscisas son fechas de sesión y las ordenadas son precios en '+currency+
-  '. Solo se unen cierres consecutivos realmente guardados; no se interpolan fechas sin cotización. No consta la hora exacta de los fills. '+
+  '. Los puntos azules son cierres observados de mercado, NO compras ni ventas del algoritmo. Solo se unen cierres consecutivos realmente guardados; no se interpolan fechas sin cotización. No consta la hora exacta de los fills. '+
   (quote.length<2?'No existe una serie de cierres suficiente para mostrar una trayectoria continua.':'')+'</p>';
 }
 export function renderOperationsAudit(doc,id,selectedTicker=null){
