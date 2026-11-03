@@ -33,11 +33,11 @@ rellenan con el último cierre ni se reconstruyen operaciones perdidas.
 
 ## Otros calendarios y campañas
 
-Weekly ML, TimesFM semanal y TFG conservan sus horarios y señales congeladas;
+Weekly ML, TimesFM semanal y selección multicriterio conservan sus horarios y señales congeladas;
 no deben ejecutarse artificialmente como estrategias diarias. La campaña genética
 conserva sus tres cohortes y requiere un traspaso de writer verificado antes de
 activar `GENETIC_PUBLIC_ACTIVE`. No mezclar históricos ni crear otra cohorte para
-ocultar un hueco. Las antiguas campañas de ocho activos/IBEX y TFM shadow están
+ocultar un hueco. Las antiguas campañas de ocho activos/IBEX y modelos cuantitativos de referencia están
 archivadas por su contrato original desde el 13/10/2026; conservar sus resultados
 sin tratarlas como participantes activos del universo S&P 500.
 
@@ -58,11 +58,10 @@ resultados de mercado. Una simulación no garantiza ejecución de broker idénti
 
 El auditor diario de ChatGPT «AUDITOR - MIDAS · IDEA LAB» comprueba la fuente,
 los workflows, los diarios y la web institucionales, además del seguimiento de
-las tesis. No depende de la UI, Worker ni repositorios personales de Segundo
-Cerebro. No confundir tests verdes, publicación, recuperación manual y continuidad
+las tesis. No depende de la UI, Worker ni repositorios personales del producto anterior. No confundir tests verdes, publicación, recuperación manual y continuidad
 natural. Alertar solo de cambios materiales, preservando las incidencias abiertas.
 
-El propietario autoriza retirar MIDAS del origen después de probar sustitución
+El propietario autoriza retirar MIDAS del entorno anterior después de probar sustitución
 funcional, conservación de históricos, acceso a documentos de trabajo impersonales,
 restauración y continuidad. Hasta entonces conservar el respaldo y el fallback;
 no detener automatismos originales ni afectar otras áreas. No activar servicios
