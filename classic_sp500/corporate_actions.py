@@ -95,7 +95,9 @@ def apply_merger(book, day, bars, *, recorded_at):
         successor = {"shares": float(whole), "cost": position_cost,
                      "entry_date": old["entry_date"], "entry_price": position_cost / whole,
                      "dividends": float(old.get("dividends", 0)),
-                     "stop": None, "target": None}
+                     "stop": None, "target": None,
+                     "basis_origin": "corporate_conversion_no_purchase",
+                     "acquired_by_merger_on": day}
         for key in ("stop", "target"):
             if old.get(key) is not None:
                 successor[key] = positive((positive(old[key]) - float(CASH)) / float(RATIO))
