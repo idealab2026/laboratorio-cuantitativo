@@ -103,3 +103,69 @@ test("Missing return/session data remains N/D and proposals do not enter the win
  assert.equal(paperLeaderboard(sorted).id,"IL-001");
  assert.equal(algorithmTheory("not_a_model").familyId,"general");
 });
+
+
+test("Operation audit documents real fills, inferred holds and dated trade markers without fabricating decisions",async()=>{
+ const {verifyOperationsAudit,renderOperationsAudit}=await import("../src/operations-audit.mjs");
+ const sha="a".repeat(64);
+ const tracks=Object.fromEntries(Array.from({length:64},(_,idx)=>[
+  "IL-"+String(idx+1).padStart(3,"0"),
+  {source_id:"demo_test_"+idx,status:"no_executed_actions_documented",
+   source_path:null,source_sha256:null,currency:"USD",sessions:[],prices:{}}
+ ]));
+ tracks["IL-038"]={
+  source_id:"capital_cycle_inflection_2026",status:"partial_executions_documented",
+  source_path:"capital_cycle_state/ledger.json",source_sha256:sha,currency:"USD",
+  sessions:[
+   {date:"2026-10-01",audit_note:null,actions:[
+     {ticker:"AAPL",side:"buy",price:150,quantity:5,
+      reason:"Compra vinculada a puntuación de selección documentada.",
+      reason_basis:"recorded",signal_date:"2026-09-30",evidence:"capital_cycle_state/ledger.json"}]},
+   {date:"2026-10-02",audit_note:null,actions:[
+     {ticker:"AAPL",side:"hold",price:null,quantity:null,
+      reason:"Posición abierta, sin salida registrada. Mantenimiento inferido.",
+      reason_basis:"inferred_position_continuity",signal_date:null,
+      evidence:"capital_cycle_state/ledger.json"}]},
+   {date:"2026-10-05",audit_note:null,actions:[
+     {ticker:"AAPL",side:"sell",price:153,quantity:5,
+      reason:"Salida por señal registrada.",
+      reason_basis:"recorded",signal_date:"2026-10-02",
+      evidence:"capital_cycle_state/ledger.json"}]}
+  ],
+  prices:{AAPL:[
+   {date:"2026-10-01",price:151,source:"dated_market_close",snapshot_sha256:sha},
+   {date:"2026-10-02",price:152,source:"dated_market_close",snapshot_sha256:sha}
+  ]}
+ };
+ const doc={schema:"midas_operations_audit_v1",purpose:"read_only_paper_decision_evidence",
+            asof:"2026-11-02",tracks};
+ assert.deepEqual(verifyOperationsAudit(doc),{count:64,withExecution:1});
+ const html=renderOperationsAudit(doc,"IL-038");
+ for(const expected of ["Operaciones por sesión","AAPL","COMPRA","VENTA","MANTENER · INFERIDO",
+   "Compra vinculada","Mantenimiento inferido","audit-price-chart","audit-buy-dot","audit-sell-dot",
+   "2026-10-01","2026-10-05","Ejecuciones","signal"]){} // descriptions tested below
+ for(const expected of ["Operaciones por sesión","AAPL","COMPRA","VENTA","MANTENER · INFERIDO",
+   "Compra vinculada","Mantenimiento inferido","audit-price-chart","audit-buy-dot","audit-sell-dot",
+   "2026-10-01","2026-10-05","Motivo"]){
+  assert.ok(html.includes(expected),"Missing audit UI element: "+expected);
+ }
+ assert.ok(html.includes('id="audit-ticker"'));
+ assert.ok(html.includes("Precio (USD)"));
+ assert.ok(!html.includes("Cierre 2026-10-05:"));
+ const vacant=renderOperationsAudit(doc,"IL-039");
+ assert.ok(vacant.includes("Los NAV globales no bastan"));
+ assert.throws(()=>verifyOperationsAudit({...doc,tracks:{...tracks,"IL-038":{
+  ...tracks["IL-038"],sessions:[{date:"2026-10-01",actions:[{
+   ...tracks["IL-038"].sessions[0].actions[0],side:"hold",price:150
+  }]}]}}}));
+});
+test("Strategy profiles append source-driven sessions instead of attributing synthetic orders",()=>{
+ const site=readFileSync(new URL("../src/site.mjs",import.meta.url),"utf8");
+ const workflow=readFileSync(new URL("../.github/workflows/pages.yml",import.meta.url),"utf8");
+ assert.ok(site.includes('renderOperationsAudit(state.operationsAudit,id,state.auditTicker)'));
+ assert.ok(site.includes('fetch("./data/operations-audit.json"'));
+ assert.ok(site.includes('verifyOperationsAudit(document)'));
+ assert.ok(site.includes('if(el.id==="audit-ticker")'));
+ assert.ok(workflow.includes("python3 scripts/build_operations_audit.py --output dist/data/operations-audit.json"));
+ assert.ok(workflow.includes("node --check src/operations-audit.mjs"));
+});
