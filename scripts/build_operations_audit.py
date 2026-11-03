@@ -209,7 +209,7 @@ def build():
         journal_days=[x["date"] for x in original.get("equity_history",[]) if date(x.get("date"))]
         if not isinstance(book,dict):
             tracks[slot]={"source_id":source_id,"status":"no_executed_actions_documented",
-                          "source_path":filename,"source_sha256":digest,
+                          "source_path":filename,"source_sha256":digest,"currency":original.get("currency"),
                           "sessions":[{"date":d,"actions":[],
                                        "audit_note":"NAV registrado; no se conserva un detalle verificable de órdenes para esta sesión."}
                                       for d in journal_days],
@@ -241,9 +241,9 @@ def build():
         else:status="partial_executions_documented"
         by_symbol={}
         for ticker in sorted(ever):
-            by_symbol[ticker]=prices.get(ticker,[])
+            by_symbol[ticker]=prices.get(ticker,[]) if original.get("currency")=="USD" else []
         tracks[slot]={"source_id":source_id,"status":status,
-                      "source_path":filename,"source_sha256":digest,
+                      "source_path":filename,"source_sha256":digest,"currency":original.get("currency"),
                       "sessions":session_rows,"prices":by_symbol}
     return {"schema":"midas_operations_audit_v1","purpose":"read_only_paper_decision_evidence",
             "asof":max((x.get("last_session") or "" for x in dashboard["tracks"]),default=""),
