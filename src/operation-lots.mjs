@@ -78,12 +78,12 @@ export function buildOperationLots(track) {
     if (lot.remaining <= epsilon || lot.converted || lot.uncertain) continue;
     const filled = Math.min(lot.remaining,required);
     const allocatedFee = saleFee === null ? 0 : saleFee * filled / a.quantity;
+    lot.saleQuantity += filled;
     if (salePrice === null || lot.basisUnit === null) {
      lot.saleEvidenceMissing = true;
     } else {
      lot.realised += filled * (salePrice - lot.basisUnit) - allocatedFee;
      lot.saleNotional += filled * salePrice;
-     lot.saleQuantity += filled;
     }
     lot.feeComplete &&= saleFee !== null;
     lot.lastSalePrice = salePrice;
@@ -119,7 +119,7 @@ export function buildOperationLots(track) {
    lot.boughtCost !== null && (!isOpen || close !== null)
    ? lot.realised + (isOpen ? lot.remaining * (close.price - lot.basisUnit) : 0)
    : null;
-  const salePrice = lot.saleQuantity > epsilon ? lot.saleNotional / lot.saleQuantity : lot.lastSalePrice;
+  const salePrice = lot.saleEvidenceMissing ? null : lot.saleQuantity > epsilon ? lot.saleNotional / lot.saleQuantity : lot.lastSalePrice;
   return {
    id:lot.id, ticker:lot.ticker, buyDate:lot.buyDate, saleDate:lot.saleDate,
    action:status, buyPrice:positive(lot.entryPrice) ? lot.entryPrice / lot.splitFactor : null,
