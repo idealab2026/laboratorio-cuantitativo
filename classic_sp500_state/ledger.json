@@ -543,6 +543,21 @@
             "snapshot_sha256": "01ee1c4d0d5f28fc76abd4a80bc6228477bbf1b6c1e244aed29ce64fe5f3a987"
           },
           "recorded_at_utc": "2026-11-03T11:33:03+00:00"
+        },
+        {
+          "date": "2026-11-02",
+          "inactive_no_fills": true,
+          "nav": 103377.45077314039,
+          "provisional_corporate_valuation": true,
+          "quote_identity": {
+            "effective_sha256": "eebe356462aa1a2bcce72d1f62aaa7be676fccba2279c555ec24c38658564910",
+            "snapshot_sha256": "4ba926a4fbd9f925dd95d344d80856877216ff6b4fce3f53a9e18c3f2a07da1b"
+          },
+          "recorded_at_utc": "2026-11-03T16:28:14+00:00",
+          "unsettled_receivables": [
+            "KVUE_KMB_2026-11-02"
+          ],
+          "valuation_reference_url": "https://infomemo.theocc.com/infomemos?number=60113"
         }
       ],
       "events": [
@@ -4351,16 +4366,50 @@
             "2026-10-30"
           ],
           "type": "passive_prefix_recovered_still_paused"
+        },
+        {
+          "action_id": "KVUE_KMB_2026-11-02",
+          "cash_credited": 0.0,
+          "cost_allocation": "pro_rata_temporary_reference_at_effective_open",
+          "date": "2026-11-02",
+          "fixed_cash_receivable": "35.91",
+          "fractional_shares": "0.50056507250",
+          "original_position": {
+            "cost": 188.86679754241297,
+            "dividends": 0.0,
+            "entry_date": "2026-10-15",
+            "entry_price": 18.389189160346984,
+            "shares": 10.260274,
+            "stop": null,
+            "target": null
+          },
+          "prior_successor_position": {
+            "cost": 188.8667278438517,
+            "dividends": 0.0,
+            "entry_date": "2026-10-15",
+            "entry_price": 102.92143774795532,
+            "shares": 1.833224,
+            "stop": null,
+            "target": null
+          },
+          "recorded_at_utc": "2026-11-03T16:28:14+00:00",
+          "source_url": "https://www.sec.gov/Archives/edgar/data/55785/000110465926120990/tm2628636d1_8k.htm",
+          "successor_whole_shares": 1,
+          "trades_executed": 0,
+          "type": "corporate_merger_entitlement",
+          "valuation_reference_url": "https://infomemo.theocc.com/infomemos?number=60113"
+        },
+        {
+          "date": "2026-11-02",
+          "expired_unfilled_orders": {},
+          "recorded_at_utc": "2026-11-03T16:28:14+00:00",
+          "type": "inactive_mark_no_trades"
         }
       ],
-      "nav": 102449.37889850004,
-      "paused_missing_quotes": {
-        "last_valued_session": "2026-10-30",
-        "missing_tickers": [
-          "KVUE"
-        ],
-        "reason": "missing_historical_held_bar",
-        "since": "2026-11-02"
+      "nav": 103377.45077314039,
+      "outage_control": {
+        "first_trading_session": "2026-11-04",
+        "registered_at_utc": "2026-11-03T16:28:14+00:00"
       },
       "pending": {},
       "positions": {
@@ -6678,11 +6727,13 @@
           "target": null
         },
         "KMB": {
-          "cost": 188.8667278438517,
+          "acquired_by_merger_on": "2026-11-02",
+          "basis_origin": "corporate_conversion_no_purchase",
+          "cost": 292.1126390104351,
           "dividends": 0.0,
           "entry_date": "2026-10-15",
-          "entry_price": 102.92143774795532,
-          "shares": 1.833224,
+          "entry_price": 103.10255702000092,
+          "shares": 2.833224,
           "stop": null,
           "target": null
         },
@@ -6719,15 +6770,6 @@
           "entry_date": "2026-10-15",
           "entry_price": 64.33215305328369,
           "shares": 2.932874,
-          "stop": null,
-          "target": null
-        },
-        "KVUE": {
-          "cost": 188.86679754241297,
-          "dividends": 0.0,
-          "entry_date": "2026-10-15",
-          "entry_price": 18.389189160346984,
-          "shares": 10.260274,
           "stop": null,
           "target": null
         },
@@ -8775,6 +8817,21 @@
           "target": null
         }
       },
+      "receivables": {
+        "KVUE_KMB_2026-11-02": {
+          "action_id": "KVUE_KMB_2026-11-02",
+          "allocated_cost": 85.62088637582957,
+          "effective_session": "2026-11-02",
+          "fixed_cash": "35.91",
+          "fractional_shares": "0.50056507250",
+          "recorded_at_utc": "2026-11-03T16:28:14+00:00",
+          "source_url": "https://www.sec.gov/Archives/edgar/data/55785/000110465926120990/tm2628636d1_8k.htm",
+          "status": "unsettled",
+          "symbol": "KMB",
+          "valuation_policy": "occ_temporary_reference_applied_to_paper_claim",
+          "valuation_reference_url": "https://infomemo.theocc.com/infomemos?number=60113"
+        }
+      },
       "signal_counts": [
         {
           "buys": 503,
@@ -9163,6 +9220,21 @@
         {
           "date": "2026-10-30",
           "nav": 103807.0969750218
+        },
+        {
+          "date": "2026-11-02",
+          "inactive_no_fills": true,
+          "nav": 107393.24866585147,
+          "provisional_corporate_valuation": true,
+          "quote_identity": {
+            "effective_sha256": "eebe356462aa1a2bcce72d1f62aaa7be676fccba2279c555ec24c38658564910",
+            "snapshot_sha256": "4ba926a4fbd9f925dd95d344d80856877216ff6b4fce3f53a9e18c3f2a07da1b"
+          },
+          "recorded_at_utc": "2026-11-03T16:28:14+00:00",
+          "unsettled_receivables": [
+            "KVUE_KMB_2026-11-02"
+          ],
+          "valuation_reference_url": "https://infomemo.theocc.com/infomemos?number=60113"
         }
       ],
       "events": [
@@ -9229,16 +9301,49 @@
             "KVUE"
           ],
           "type": "book_quarantined_missing_held_bar"
+        },
+        {
+          "action_id": "KVUE_KMB_2026-11-02",
+          "cash_credited": 0.0,
+          "cost_allocation": "pro_rata_temporary_reference_at_effective_open",
+          "date": "2026-11-02",
+          "fixed_cash_receivable": "2257.90",
+          "fractional_shares": "0.34802970125",
+          "original_position": {
+            "cost": 11874.999992119001,
+            "dividends": 0.0,
+            "entry_date": "2026-10-15",
+            "entry_price": 18.389189160346984,
+            "shares": 645.114733,
+            "stop": 16.72864537916765,
+            "target": 22.741910234601114
+          },
+          "prior_successor_position": null,
+          "recorded_at_utc": "2026-11-03T16:28:14+00:00",
+          "source_url": "https://www.sec.gov/Archives/edgar/data/55785/000110465926120990/tm2628636d1_8k.htm",
+          "successor_whole_shares": 94,
+          "trades_executed": 0,
+          "type": "corporate_merger_entitlement",
+          "valuation_reference_url": "https://infomemo.theocc.com/infomemos?number=60113"
+        },
+        {
+          "date": "2026-11-02",
+          "recorded_at_utc": "2026-11-03T16:28:14+00:00",
+          "ticker": "IDXX",
+          "trigger": "target",
+          "type": "unexecuted_during_outage"
+        },
+        {
+          "date": "2026-11-02",
+          "expired_unfilled_orders": {},
+          "recorded_at_utc": "2026-11-03T16:28:14+00:00",
+          "type": "inactive_mark_no_trades"
         }
       ],
-      "nav": 103807.0969750218,
-      "paused_missing_quotes": {
-        "last_valued_session": "2026-10-30",
-        "missing_tickers": [
-          "KVUE"
-        ],
-        "reason": "required same-session bar unavailable",
-        "since": "2026-11-02"
+      "nav": 107393.24866585147,
+      "outage_control": {
+        "first_trading_session": "2026-11-04",
+        "registered_at_utc": "2026-11-03T16:28:14+00:00"
       },
       "pending": {},
       "positions": {
@@ -9269,14 +9374,16 @@
           "stop": 489.97278639163505,
           "target": 666.0979937677641
         },
-        "KVUE": {
-          "cost": 11874.999992119001,
+        "KMB": {
+          "acquired_by_merger_on": "2026-11-02",
+          "basis_origin": "corporate_conversion_no_purchase",
+          "cost": 9705.070283890987,
           "dividends": 0.0,
           "entry_date": "2026-10-15",
-          "entry_price": 18.389189160346984,
-          "shares": 645.114733,
-          "stop": 16.72864537916765,
-          "target": 22.741910234601114
+          "entry_price": 103.24542855203178,
+          "shares": 94.0,
+          "stop": 90.45227609687282,
+          "target": 131.56861698872558
         },
         "LH": {
           "cost": 11874.999688759446,
@@ -9313,6 +9420,21 @@
           "shares": 50.129828,
           "stop": 215.2789255594711,
           "target": 292.66290781510156
+        }
+      },
+      "receivables": {
+        "KVUE_KMB_2026-11-02": {
+          "action_id": "KVUE_KMB_2026-11-02",
+          "allocated_cost": 2169.9297082280136,
+          "effective_session": "2026-11-02",
+          "fixed_cash": "2257.90",
+          "fractional_shares": "0.34802970125",
+          "recorded_at_utc": "2026-11-03T16:28:14+00:00",
+          "source_url": "https://www.sec.gov/Archives/edgar/data/55785/000110465926120990/tm2628636d1_8k.htm",
+          "status": "unsettled",
+          "symbol": "KMB",
+          "valuation_policy": "occ_temporary_reference_applied_to_paper_claim",
+          "valuation_reference_url": "https://infomemo.theocc.com/infomemos?number=60113"
         }
       },
       "signal_counts": [
