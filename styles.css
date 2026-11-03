@@ -154,3 +154,13 @@ p{line-height:1.6;text-align:justify;text-align-last:left;hyphens:auto}p.lead{co
 #issuer-empty[hidden]{display:none}
 @media(max-width:900px){.source-health-strip{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media(max-width:650px){.source-health-strip{grid-template-columns:1fr}.source-health-strip>div{padding:8px 10px}.table-sort{font-size:.69rem}.competition-parity-table{min-width:1000px}}
+
+
+/* Sortable institutional competition: clear keyboard focus and direction arrows. */
+.full-competition-table thead th{white-space:nowrap}
+.full-competition-table thead .table-sort{display:inline-flex;gap:4px;align-items:center;justify-content:inherit;font-size:.72rem}
+.full-competition-table thead .sort-indicator{font-size:.78rem;color:#7d91a3;font-weight:700}
+.full-competition-table thead th[aria-sort="ascending"] .sort-indicator,
+.full-competition-table thead th[aria-sort="descending"] .sort-indicator{color:#123f68}
+.full-competition-table thead th.number .table-sort{justify-content:flex-end;width:100%}
+@media(max-width:700px){.full-competition-table thead .table-sort{font-size:.69rem}}
