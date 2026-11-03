@@ -1,7 +1,7 @@
 import {verifyOriginalPaper} from "./original-paper.mjs?v=b4ab52ea9863";
 import {algorithmTheory,paperLeaderboard} from "./algorithm-detail.mjs";
 import {glossaryGroups,searchGlossary,verifyGlossary} from "./glossary.mjs";
-import {verifyOperationsAudit,renderOperationsAudit,renderTradeLotsTable,summarizeOperationsAudit} from "./operations-audit.mjs?v=abb7180186b7";
+import {verifyOperationsAudit,renderOperationsAudit,renderTradeLotsTable,summarizeOperationsAudit,buildSessionActionColumns,renderSessionTickerList} from "./operations-audit.mjs?v=abb7180186b7";
 import {parseLocalPaperResults,parseLocalPaperCurves,summarizePrivatePaper} from "./private-paper.mjs?v=4baff08a2202";
 import {signalResearchSummary,methodCatalog} from "./paper-methods.mjs";
 import {parseLocalCagr2031} from "./private-theses.mjs";
@@ -619,15 +619,35 @@ function algorithmFiche(){
   ["Capital inicial",fmtMoney(record?.initial_capital)],
   ["NAV final",fmtMoney(record?.last_equity)]
  ].map(([label,value])=>'<div><small>'+label+'</small><strong>'+value+'</strong></div>').join("")+'</div>';
+ // NAV observations and audited actions are different sources; align ONLY by date.
+ // A NAV observation never implies that a buy, sale or hold took place.
+ const auditTrack=state.operationsAudit?.tracks?.[id]||null;
+ const navActions=new Map(buildSessionActionColumns(auditTrack).map(row=>[row.date,row]));
+ const navActionCell=(day,key)=>{
+  if(!auditTrack)return '<span class="audit-no-data">'+
+    (state.operationsAuditStatus==="pending"?"Cargando…":"N/D")+'</span>';
+  const row=navActions.get(day);
+  if(!row)return '<span class="audit-no-data" title="Sin registro individual acreditado para esta fecha">N/D</span>';
+  return renderSessionTickerList(row[key],key==="sells"?row.partialSells:[]);
+ };
  const measured=history.length?
   '<section class="algorithm-section"><h3>Evolución de capital y sesiones</h3>'+
   '<p>Diario paper procedente del archivo contrastado; no es dinero real ni prueba de ejecución diaria actual.</p>'+
   fullHistoryChart(history)+
   '<details><summary>Consultar las '+history.length+' observaciones del NAV</summary>'+
-  '<div class="table-scroll"><table class="table-compact"><thead><tr><th>Sesión</th><th>NAV</th><th>Rentabilidad desde el inicio</th></tr></thead><tbody>'+
+  '<div class="table-scroll nav-session-table-wrap"><table class="table-compact nav-session-table"><thead><tr>'+
+  '<th scope="col">Sesión</th><th scope="col">NAV</th>'+
+  '<th scope="col">Rentabilidad desde el inicio</th>'+
+  '<th scope="col">COMPRAS</th><th scope="col">VENTAS</th><th scope="col">MANTENER</th>'+
+  '</tr></thead><tbody>'+
   history.map(p=>'<tr><td>'+esc(p.date)+'</td><td>'+fmtMoney(p.nav)+'</td><td>'+
    (finite(record?.initial_capital)&&record.initial_capital>0?pctText(100*(p.nav/record.initial_capital-1)):"N/D")+
-   '</td></tr>').join("")+'</tbody></table></div></details></section>':
+   '</td><td>'+navActionCell(p.date,"buys")+'</td>'+
+   '<td>'+navActionCell(p.date,"sells")+'</td>'+
+   '<td>'+navActionCell(p.date,"holds")+'</td></tr>').join("")+
+  '</tbody></table></div>'+
+  '<p class="audit-method-note">* Venta parcial acreditada: permanecen acciones del mismo ticker. MANTENER expresa continuidad contable inferida, no una orden. — indica que no consta ninguna acción de esa clase en una sesión auditada; N/D significa que falta el desglose de acciones para esa fecha.</p>'+
+  '</details></section>':
   '<section class="algorithm-section"><h3>Evolución y sesiones</h3><p>Sin diario verificable: no existen rentabilidades ni operaciones acreditadas para esta línea.</p></section>';
  const theory=candidate?
   '<section class="algorithm-section"><h3>Teoría e hipótesis</h3><p>'+esc(candidate.subject)+'</p>'+
