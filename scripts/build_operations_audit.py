@@ -268,7 +268,11 @@ def explain_classic_buy(model, event):
 
 def explain_classic_hold(model,ticker,day,position,price_point,is_latest):
     policy=CLASSIC_POLICY[model]
-    text=("Posición abierta según los fills; ninguna venta ejecutada para " + ticker +
+    original=bool(isinstance(position,dict) and
+                  position.get("basis_origin")=="corporate_conversion_no_purchase")
+    source_text=("Posición recibida por conversión corporativa, no compra bursátil; " if original else
+                 "Posición abierta según las compras ejecutadas; ")
+    text=(source_text+"ninguna venta ejecutada para " + ticker +
           " en esta sesión. Regla del motor: " + policy +
           " Esta fila es continuidad contable, no una señal explícita de MANTENER.")
     # The published ledger's current risk thresholds are NOT historical unless
@@ -359,7 +363,12 @@ def build():
                           "prices":{}}
             continue
         actions=normalize_ledger(book,filename)
-        days=sorted(set(equity_days(book)) | set(actions.keys()) | set(journal_days))
+        mergers=corporate_events(book) if filename=="classic_sp500_state/ledger.json" else []
+        mergers_by_day=defaultdict(list)
+        for previous,successor,event in mergers:
+            mergers_by_day[event["date"]].append((previous,successor,event))
+        days=sorted(set(equity_days(book)) | set(actions.keys()) | set(journal_days)
+                    | set(mergers_by_day))
         # Replay *executed* quantity changes (never pending orders or signals).
         # Only classic_sp500/run.py has the documented full-position sell
         # semantics needed to attribute the entire remaining quantity.
@@ -400,6 +409,39 @@ def build():
                         item["quantity"]=holdings[ticker]
                     holdings.pop(ticker,None)
                 ever.add(ticker)
+            for previous,successor,event in mergers_by_day.get(day,[]):
+                original_position=event["original_position"]
+                expected=number(original_position.get("shares"))
+                held=holdings.get(previous)
+                # Never pretend a corporate conversion is a market sale.
+                if held is None or expected is None or abs(held-expected)>max(.00001,expected*.000001):
+                    raise ValueError("Corporate predecessor quantity cannot be reconciled: "+previous)
+                holdings.pop(previous)
+                successors=number(event.get("successor_whole_shares"))
+                if successors is None:
+                    raise ValueError("Missing corporate successor shares")
+                holdings[successor]=holdings.get(successor,0)+successors
+                ever.add(previous);ever.add(successor)
+                traded.add(previous)
+                fixed_receivable=event.get("fixed_cash_receivable")
+                try:cash=float(fixed_receivable)
+                except (ValueError,TypeError):raise ValueError("Invalid corporate receivable")
+                if not 0<=cash<10**8:raise ValueError("Nonpositive corporate receivable")
+                recorded_at=event.get("recorded_at_utc")
+                if not isinstance(recorded_at,str) or not recorded_at.endswith("+00:00"):
+                    raise ValueError("Corporate event timestamp not verified")
+                events.append({
+                    "ticker":previous,"side":"corporate_action","price":None,
+                    "quantity":expected,"price_basis":"not_applicable",
+                    "reason":("Conversión corporativa registrada: "+previous+" → "+successor+
+                              "; "+str(int(successors))+" acciones sucesoras enteras y "+
+                              ("%.2f" % cash)+" USD de derecho de cobro pendiente. "+
+                              "No es una venta ni una compra ejecutada. Registro: "+recorded_at+"."),
+                    "reason_basis":"recorded","evidence":filename,"signal_date":None,
+                    "successor_ticker":successor,"successor_quantity":successors,
+                    "receivable_cash":cash,"recorded_at_utc":recorded_at,
+                    "action_id":event.get("action_id")
+                })
             for ticker in sorted(holdings.keys()-traded):
                 price_point=next((p for p in prices.get(ticker,[]) if p["date"]==day),None)
                 current_pos=positions.get(ticker)
@@ -434,9 +476,15 @@ def build():
         by_symbol={}
         for ticker in sorted(ever):
             by_symbol[ticker]=prices.get(ticker,[]) if original.get("currency")=="USD" else []
+        executed=[a for row in session_rows for a in row["actions"] if a["side"] in ("buy","sell")]
+        conversions=[a for row in session_rows for a in row["actions"] if a["side"]=="corporate_action"]
+        coverage={"executions":len(executed),
+                  "priced_executions":sum(number(a.get("price")) is not None for a in executed),
+                  "unpriced_executions":sum(number(a.get("price")) is None for a in executed),
+                  "corporate_conversions":len(conversions)}
         tracks[slot]={"source_id":source_id,"status":status,
                       "source_path":filename,"source_sha256":digest,"currency":original.get("currency"),
-                      "sessions":session_rows,"prices":by_symbol}
+                      "sessions":session_rows,"prices":by_symbol,"coverage":coverage}
     return {"schema":"midas_operations_audit_v1","purpose":"read_only_paper_decision_evidence",
             "asof":max((x.get("last_session") or "" for x in dashboard["tracks"]),default=""),
             "notes":["Solo constan las operaciones disponibles en libros versionados.",
