@@ -3,16 +3,41 @@ from __future__ import annotations
 
 import copy
 import math
+from decimal import Decimal, InvalidOperation, ROUND_HALF_UP
 
 
-def reviewed_dividend(reviews, ticker, day, amount):
+def reviewed_dividend_action(reviews, ticker, day, amount):
     for item in reviews.get("reviews", []):
         if (item.get("ticker") == ticker and item.get("vendor_ex_session") == day
                 and item.get("kind") == "cash_dividend" and item.get("currency") == "USD"
                 and item.get("amount") == amount and item.get("source_url", "").startswith("https://")
                 and item.get("verified_on")):
-            return item["source_url"]
+            # Preserve the immutable vendor observation, but value the newly
+            # recovered entitlement at the issuer's exact declared amount.
+            # A discrepancy is admitted only through an explicit, reproducible
+            # decimal-rounding review, never a general numerical tolerance.
+            issuer = item.get("issuer_amount", amount)
+            try:
+                exact = Decimal(str(issuer))
+                observed = Decimal(str(amount))
+                if not exact.is_finite() or exact <= 0:
+                    continue
+                if exact != observed:
+                    places = item.get("vendor_rounding_decimals")
+                    if (type(places) is not int or not 3 <= places <= 8
+                            or item.get("amount_basis") != "issuer_exact_vendor_rounded"
+                            or exact.quantize(Decimal(1).scaleb(-places),
+                                              rounding=ROUND_HALF_UP) != observed):
+                        continue
+            except (InvalidOperation, TypeError, ValueError):
+                continue
+            return item
     return None
+
+
+def reviewed_dividend(reviews, ticker, day, amount):
+    action = reviewed_dividend_action(reviews, ticker, day, amount)
+    return action["source_url"] if action else None
 
 
 def recover_passive_books(config, state, sessions_after, quote_loader, *, recorded_at, reviews=None):
@@ -46,14 +71,17 @@ def recover_passive_books(config, state, sessions_after, quote_loader, *, record
                     if row.get("split", 0):
                         raise ValueError("corporate_action_requires_review")
                     if dividend:
-                        source = reviewed_dividend(reviews or {}, ticker, day, dividend)
-                        if not source or not math.isfinite(dividend) or dividend < 0:
+                        action = reviewed_dividend_action(reviews or {}, ticker, day, dividend)
+                        if not action or not math.isfinite(dividend) or dividend < 0:
                             raise ValueError("corporate_action_requires_review")
-                        amount = pos["shares"] * dividend
+                        issuer_dividend = float(action.get("issuer_amount", dividend))
+                        amount = pos["shares"] * issuer_dividend
                         book["cash"] += amount
                         pos["dividends"] = pos.get("dividends", 0) + amount
                         book["events"].append({"date": day, "type": "dividend",
-                            "ticker": ticker, "amount": amount, "source_url": source,
+                            "ticker": ticker, "amount": amount, "source_url": action["source_url"],
+                            "vendor_dividend_per_share": dividend,
+                            "issuer_dividend_per_share": issuer_dividend,
                             "recorded_at_utc": recorded_at, "recognition": "existing_paper_ex_session_model"})
                     close = float(row["close"])
                     if not math.isfinite(close) or close <= 0:
