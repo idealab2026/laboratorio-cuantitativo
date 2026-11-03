@@ -489,3 +489,35 @@ test("Partial sale marker refuses uncertainty, supports split-adjusted remaining
  assert.deepEqual(rows[2].partialSells,[],"Final split-adjusted 10 shares close position");
  assert.deepEqual(rows[2].holds,["KMB"]);
 });
+
+
+test("NAV observations have the three action columns in the same six-column table, not only the lower accordion",()=>{
+ const src=readFileSync(new URL("../src/site.mjs",import.meta.url),"utf8");
+ const css=readFileSync(new URL("../styles.css",import.meta.url),"utf8");
+ assert.ok(src.includes('class="table-scroll nav-session-table-wrap"'));
+ assert.ok(src.includes('<th scope="col">Sesión</th><th scope="col">NAV</th>'));
+ for(const label of ["COMPRAS","VENTAS","MANTENER"])assert.ok(src.includes('<th scope="col">'+label+'</th>'));
+ for(const field of ["buys","sells","holds"])assert.ok(src.includes('navActionCell(p.date,"'+field+'")'));
+ assert.ok(src.includes('const navActions=new Map(buildSessionActionColumns(auditTrack).map(row=>[row.date,row]));'),
+  "No inference from NAV shape: join audited execution sessions by their own dates");
+ assert.ok(src.includes('renderSessionTickerList(row[key],key==="sells"?row.partialSells:[])'),
+  "The star is only in sale cells when source-backed evidence reports a partial sale");
+ assert.ok(src.includes('state.operationsAuditStatus==="pending"?"Cargando…":"N/D"'),
+  "No audit yet must not appear as empty execution");
+ assert.ok(src.includes('if(!row)return'),"Unknown audited dates cannot become confirmed no-action dates");
+ assert.ok(css.includes(".nav-session-table-wrap .nav-session-table"));
+ assert.ok(css.includes(".nav-session-table td:nth-child(5) .audit-session-ticker"));
+});
+test("NAV row renderer and per-session accordion use the exact same ticker and partial-star component",async()=>{
+ const {renderSessionTickerList,buildSessionActionColumns}=await import("../src/operations-audit.mjs");
+ assert.equal(renderSessionTickerList([]),'<span class="audit-empty-session">—</span>');
+ assert.ok(renderSessionTickerList(["DECK","ENPH"]).includes("DECK"));
+ assert.ok(!renderSessionTickerList(["DECK","ENPH"]).includes("audit-partial-star"));
+ const starred=renderSessionTickerList(["AOS","PYPL"],["AOS"]);
+ assert.equal((starred.match(/audit-partial-star/g)||[]).length,1);
+ assert.ok(starred.includes("Venta parcial: quedan acciones tras el fill"));
+ assert.ok(!starred.includes("PYPL*"));
+ assert.deepEqual(buildSessionActionColumns(null),[]);
+ const src=readFileSync(new URL("../src/operations-audit.mjs",import.meta.url),"utf8");
+ assert.ok(src.includes("const sessionTickers=renderSessionTickerList;"));
+});
