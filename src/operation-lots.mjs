@@ -50,7 +50,7 @@ export function buildOperationLots(track) {
     boughtCost: invested, basisUnit: invested !== null ? invested / qty : null,
     saleQuantity: 0, saleNotional: 0, realised: 0, feeComplete: buyFee !== null,
     converted: false, convertedTo: null, uncertain: qty === null,
-    saleEvidenceMissing: false, source: a.price_basis || "not_recorded"
+    saleEvidenceMissing: false, salePriceMissing: false, source: a.price_basis || "not_recorded"
    };
    lots.push(lot);
    book(ticker).push(lot);
@@ -79,12 +79,10 @@ export function buildOperationLots(track) {
     const filled = Math.min(lot.remaining,required);
     const allocatedFee = saleFee === null ? 0 : saleFee * filled / a.quantity;
     lot.saleQuantity += filled;
-    if (salePrice === null || lot.basisUnit === null) {
-     lot.saleEvidenceMissing = true;
-    } else {
-     lot.realised += filled * (salePrice - lot.basisUnit) - allocatedFee;
-     lot.saleNotional += filled * salePrice;
-    }
+    if (salePrice === null) lot.salePriceMissing = true;
+    else lot.saleNotional += filled * salePrice;
+    if (salePrice === null || lot.basisUnit === null) lot.saleEvidenceMissing = true;
+    else lot.realised += filled * (salePrice - lot.basisUnit) - allocatedFee;
     lot.feeComplete &&= saleFee !== null;
     lot.lastSalePrice = salePrice;
     lot.saleDate = date;
@@ -99,7 +97,7 @@ export function buildOperationLots(track) {
     entryPrice:null,lastSalePrice:salePrice,quantityBought:null,remaining:0,
     splitFactor:1,boughtCost:null,basisUnit:null,saleQuantity:0,saleNotional:0,
     realised:0,feeComplete:false,converted:false,convertedTo:null,uncertain:true,
-    saleEvidenceMissing:true,source:"unmatched_sale"
+    saleEvidenceMissing:true,salePriceMissing:salePrice===null,source:"unmatched_sale"
    });
   }
  }
@@ -119,7 +117,7 @@ export function buildOperationLots(track) {
    lot.boughtCost !== null && (!isOpen || close !== null)
    ? lot.realised + (isOpen ? lot.remaining * (close.price - lot.basisUnit) : 0)
    : null;
-  const salePrice = lot.saleEvidenceMissing ? null : lot.saleQuantity > epsilon ? lot.saleNotional / lot.saleQuantity : lot.lastSalePrice;
+  const salePrice = lot.salePriceMissing ? null : lot.saleQuantity > epsilon ? lot.saleNotional / lot.saleQuantity : lot.lastSalePrice;
   return {
    id:lot.id, ticker:lot.ticker, buyDate:lot.buyDate, saleDate:lot.saleDate,
    action:status, buyPrice:positive(lot.entryPrice) ? lot.entryPrice / lot.splitFactor : null,
