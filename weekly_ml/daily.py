@@ -213,30 +213,13 @@ def download_bars(tickers, day, *, diagnostics=None):
     prices, info = canonical(day, ordered, ROOT / "market_data/snapshots")
     independent = info["independent_symbols"]
     if independent:
-        import yfinance as yf
-        import pandas as pd
-        raw = yf.download(independent,
-                          start=(datetime.fromisoformat(day) - timedelta(days=4)).date().isoformat(),
-                          end=(datetime.fromisoformat(day) + timedelta(days=1)).date().isoformat(),
-                          interval="1d", auto_adjust=False, actions=False,
-                          group_by="ticker", threads=False, progress=False)
-        for ticker in independent:
-            if raw is None or raw.empty:
-                continue
-            if isinstance(raw.columns, pd.MultiIndex):
-                if ticker not in raw.columns.get_level_values(0):
-                    continue
-                frame = raw[ticker]
-            elif len(independent) == 1:
-                frame = raw
-            else:
-                raise ValueError("Datos sin identificar ticker")
-            rows = frame[frame.index.strftime("%Y-%m-%d") == day]
-            if len(rows) == 1:
-                row = rows.iloc[0]
-                prices[ticker] = {"open": float(row["Open"]), "close": float(row["Close"])}
-                _price(prices, ticker, "open")
-                _price(prices, ticker, "close")
+        # RSP remains outside the common frozen universe. Use the same strict
+        # RAW/exact-date parser and bounded isolated retry as the common reader,
+        # without substituting another ETF or changing the immutable snapshot.
+        from market_data.collect import collect
+        recovered, failures = collect(day, independent, include_benchmark=False)
+        prices.update(recovered)
+        info["independent_missing"] = sorted(failures)
     if diagnostics is not None:
         diagnostics.update(info)
     missing = sorted(set(ordered) - set(prices))

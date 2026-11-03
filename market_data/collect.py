@@ -19,6 +19,10 @@ from market_data.revisions import append_missing, load_effective
 UNIVERSE = "weekly_ml/universe_sp500_2026-09-29.csv"
 SNAPSHOTS = ROOT / "market_data" / "snapshots"
 MAX_RETRIES = 18
+# Recovery runs after the immutable capture. A frozen universe can contain
+# delisted symbols; those must not exhaust the budget before a live holding
+# later in alphabetical order gets its isolated provider retry.
+MAX_RECOVERY_RETRIES = 48
 
 
 def extract(frame, session: str, ticker: str) -> dict:
@@ -125,7 +129,8 @@ def recover_missing():
     missing = sorted(effective["missing"])
     if not missing:
         return {"status": "no_missing_bars", "session": session}
-    found, failures = collect(session, missing, include_benchmark=False)
+    found, failures = collect(session, missing, include_benchmark=False,
+                              attempts=MAX_RECOVERY_RETRIES)
     review = sorted(s for s, r in found.items() if r["dividend"] or r["split"])
     found = {s: r for s, r in found.items() if s not in review}
     if not found:
