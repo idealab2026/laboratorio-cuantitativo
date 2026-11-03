@@ -178,7 +178,7 @@ test("Capital Cycle and Buy The Dip are searchable by their canonical names and 
 });
 
 
-test("All 64 institutional rows show the exact names from the original Segundo Cerebro journals",async()=>{
+test("All 64 institutional rows preserve the exact journal display names",async()=>{
  const mapping=JSON.parse(readFileSync(new URL("../data/original-track-map.json",import.meta.url),"utf8"));
  const source=JSON.parse(readFileSync(new URL("../strategy_state/dashboard.json",import.meta.url),"utf8"));
  const {verifyOriginalPaper}=await import("../src/original-paper.mjs");
