@@ -811,7 +811,7 @@ $("app").addEventListener("submit",e=>{
  }
  const id="P-"+String(Math.max(...all().map(x=>Number(x.id.slice(2))))+1).padStart(2,"0");
  state.data.strategies.push({id,name,group:"Carteras locales",mode:"manual",manualWeights:weights,rule:"Pesos elegidos en este navegador. Sin persistencia.",cost_bps:cost,status:"Local · sintético",coverage:100,initialCapital:100000});
- state.strategy=id;state.group="";state.sort="returnPct";state.detailOpen=true;summary();go("competition");
+ state.strategy=id;state.group="";state.sort="returnPct";state.detailOpen=true;go("competition");
 });
 document.querySelectorAll(".product-tabs [data-view]").forEach(b=>b.addEventListener("click",()=>{state.detailOpen=false;go(b.dataset.view);}));
 window.addEventListener("popstate",()=>{state.view=resolveMidasView();state.algorithmId=new URLSearchParams(location.search).get("algorithm");state.detailOpen=false;render();});
@@ -878,7 +878,7 @@ async function loadOriginalPaper(){
  try{
   const [r,m]=await Promise.all([fetch("https://raw.githubusercontent.com/idealab2026/laboratorio-cuantitativo/main/strategy_state/dashboard.json",{cache:"no-store",credentials:"omit"}),fetch("./data/original-track-map.json",{cache:"no-store"})]);
   if(!r.ok||!m.ok)throw Error("Diarios no disponibles");
-  state.originalPaper=verifyOriginalPaper(await r.json(),await m.json());state.originalPaperStatus="ok";if(state.data)summary();
+  state.originalPaper=verifyOriginalPaper(await r.json(),await m.json());state.originalPaperStatus="ok";if(state.data)
  }catch(_error){state.originalPaper=null;state.originalPaperStatus="unavailable";}
  if(["full","competition","algorithm","monitoring"].includes(state.view)&&state.data)render();
 }
@@ -888,7 +888,7 @@ async function loadHistoricalPaper(){
   if(res.some(r=>!r.ok))throw Error("Archivo histórico no disponible");
   const [results,nav]=await Promise.all(res.map(r=>r.text()));
   const rows=parseLocalPaperResults(results),curves=parseLocalPaperCurves(nav,rows);
-  state.historicalPaper=rows;state.historicalCurves=curves;state.historicalPaperStatus="ok";if(state.data)summary();
+  state.historicalPaper=rows;state.historicalCurves=curves;state.historicalPaperStatus="ok";if(state.data)
  }catch(_error){state.historicalPaper=null;state.historicalCurves=null;state.historicalPaperStatus="unavailable";}
  if(["full","competition","algorithm"].includes(state.view)&&state.data)render();
 }
@@ -898,7 +898,7 @@ async function loadFullRoster(){
   if(!response.ok)throw Error("Missing institution-only roster");
   const doc=await response.json();
   verifyFullRoster(doc);
-  state.fullRoster=doc;state.fullRosterStatus="ok";if(state.data)summary();
+  state.fullRoster=doc;state.fullRosterStatus="ok";if(state.data)
  }catch(_error){state.fullRoster=null;state.fullRosterStatus="unavailable";}
  if(["full","competition","algorithm"].includes(state.view)&&state.data)render();
 }
