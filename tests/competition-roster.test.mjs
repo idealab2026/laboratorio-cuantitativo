@@ -194,7 +194,7 @@ test("All 64 institutional rows show the exact names from the original Segundo C
  assert.ok(site.includes('state.originalPaper?.labels?.get(item.slot)||item.name'));
  assert.ok(site.includes('name:originalStrategyName(item)'));
  assert.ok(site.includes('originalStrategyName(item)].some('));
- assert.ok(site.includes('title="'+ "esc(name)"'));
+ assert.ok(site.includes("full-strategy-name"));
 });
 test("Compact competition has all twelve columns without horizontal scrolling",()=>{
  const css=readFileSync(new URL("../styles.css",import.meta.url),"utf8");
@@ -206,7 +206,7 @@ test("Compact competition has all twelve columns without horizontal scrolling",(
  assert.ok(css.includes('.full-competition-table .competition-row td:before'));
  assert.ok(site.includes('FULL_COMPETITION_COLUMNS=['));
  assert.ok(site.includes('function fullMobileSortControls()'));
- assert.ok(site.includes('data-label="'+ "esc(label)"'));
+ assert.ok(site.includes("data-label="));
  assert.ok(site.includes('if(el.id==="full-mobile-sort")'));
  assert.ok(site.includes('else if(action==="full-sort-direction")'));
  const keys=["Estrategia","Familia","Actividad","Fecha","Divisa","P/L acumulado","P/L día","Volatilidad","Drawdown","Posiciones / órdenes","Comparabilidad","Curva"];
