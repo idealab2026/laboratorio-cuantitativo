@@ -361,3 +361,67 @@ test("Every recorded order without recoverable fill price is still visible on it
  assert.ok(html.includes("audit-undocumented-guide"));
  assert.ok(!html.includes("audit-buy-dot"),"Unrecorded price must never be assigned a y-coordinate");
 });
+
+
+test("MIDAS header replaces corporate links and retires the catalogue view",()=>{
+ const html=readFileSync(new URL("../index.html",import.meta.url),"utf8");
+ const site=readFileSync(new URL("../src/site.mjs",import.meta.url),"utf8");
+ const css=readFileSync(new URL("../styles.css",import.meta.url),"utf8");
+ assert.ok(html.includes('<header class="topbar midas-topbar">'));
+ assert.ok(html.includes('<nav class="product-tabs midas-header-menu"'));
+ assert.ok(html.includes('data-view="competition"'));
+ assert.ok(html.includes('data-view="monitoring"'));
+ assert.ok(!html.includes('class="global-nav"'));
+ assert.ok(!html.includes('data-view="archive"'));
+ assert.ok(!site.includes("function archive(){"));
+ assert.ok(!site.includes("monitoring,archive"));
+ assert.ok(site.includes('requested==="overview"||requested==="archive"'),
+   "Historic bookmarks should resolve to the main competition");
+ assert.ok(css.includes(".midas-topbar .midas-header-menu"));
+});
+test("Monitoring has two tabs, a real audit selector and the SAME trade table as each algorithm",()=>{
+ const site=readFileSync(new URL("../src/site.mjs",import.meta.url),"utf8");
+ for(const text of [
+   "function monitoring(){",'data-action="monitoring-tab"',"monitoring-panel-summary",
+   "monitoring-panel-operations","monitoring-algorithm",
+   "renderTradeLotsTable(audit.tracks[chosen],state.monitoringSort,state.monitoringDesc)",
+   "renderTradeLotsTable(state.operationsAudit.tracks[el.value],state.monitoringSort,state.monitoringDesc)",
+   "state.monitoringTab","state.monitoringStrategy","state.monitoringSort","state.monitoringDesc",
+   "summarizeOperationsAudit(audit)","Última sesión de trading paper",
+   "Algoritmos propuestos","Algoritmos productivos","Algoritmos con operaciones paper",
+   "feed?.status===\\"source_verified\\"","feed?.status===\\"not_connected\\""
+ ])assert.ok(site.includes(text),"Missing monitoring contract: "+text);
+ const audit=readFileSync(new URL("../src/operations-audit.mjs",import.meta.url),"utf8");
+ assert.ok(audit.includes("export function renderTradeLotsTable"));
+ assert.ok(audit.includes("renderTradeLotsTable(track,view.sort"));
+});
+test("Historical execution KPIs do not mistake holds, NAV-only or mergers for a productive algorithm",async()=>{
+ const {summarizeOperationsAudit,renderTradeLotsTable}=await import("../src/operations-audit.mjs");
+ const tracks={
+  "IL-001":{status:"nav_only_or_no_actions",currency:"USD",sessions:[{date:"2026-11-03",actions:[]}],prices:{}},
+  "IL-002":{status:"partial_executions_documented",currency:"USD",sessions:[
+   {date:"2026-11-01",actions:[{ticker:"AAA",side:"buy",price:100,quantity:2,fee:0}]},
+   {date:"2026-11-02",actions:[{ticker:"AAA",side:"hold",price:null,quantity:2}]}
+  ],prices:{AAA:[{date:"2026-11-02",price:112}]}},
+  "IL-003":{status:"nav_only_or_no_actions",currency:"USD",sessions:[
+   {date:"2026-11-02",actions:[{ticker:"KVUE",side:"corporate_action",successor_ticker:"KMB"}]}
+  ],prices:{}},
+  "IL-004":{status:"partial_executions_documented",currency:"USD",sessions:[
+   {date:"2026-11-03",actions:[{ticker:"BBB",side:"sell",price:10,quantity:1}]}
+  ],prices:{}}
+ };
+ const summary=summarizeOperationsAudit({tracks});
+ assert.equal(summary.slots,4);
+ assert.equal(summary.withExecutions,2);
+ assert.equal(summary.withoutExecutions,2);
+ assert.equal(summary.executions,2);
+ assert.equal(summary.conversions,1);
+ assert.equal(summary.latestSession,"2026-11-03");
+ assert.equal(summary.latestTrade,"2026-11-03");
+ assert.equal(summarizeOperationsAudit(null),null);
+ const rows=renderTradeLotsTable(tracks["IL-002"]);
+ for(const expected of ["Activo","Acción ejecutada","Precio de compra","Precio de venta",
+  "Rentabilidad %","P/L total","Dinero empleado en compra","Nº acciones compradas",
+  "COMPRA · ABIERTA"])assert.ok(rows.includes(expected),"Same trade columns: "+expected);
+ assert.ok(rows.includes("24,00"),"Unrealized P/L uses stored close and recorded quantity");
+});
