@@ -41,6 +41,52 @@ class PassiveRecoveryTests(unittest.TestCase):
         self.assertEqual(twice, got)
         self.assertEqual(restored, [])
 
+    def test_issuer_exact_amount_recovers_without_rewriting_vendor_or_history(self):
+        def quotes(day):
+            bars, identity = self.quotes(day)
+            bars["AAA"]["dividend"] = .176 if day.endswith("27") else 0
+            return bars, identity
+        reviews = {"reviews": [{"ticker": "AAA", "kind": "cash_dividend", "currency": "USD",
+            "amount": .176, "issuer_amount": .17595, "vendor_rounding_decimals": 3,
+            "amount_basis": "issuer_exact_vendor_rounded", "vendor_ex_session": "2026-10-27",
+            "source_url": "https://issuer.example/declared-amount", "verified_on": "2026-11-03"}]}
+        before = copy.deepcopy(self.state)
+        got, restored, blocked = recover_passive_books(self.config, self.state, self.days, quotes,
+                                                      recorded_at="now", reviews=reviews)
+        self.assertEqual(restored, ["hold"])
+        self.assertFalse(blocked)
+        book = got["books"]["hold"]
+        self.assertAlmostEqual(book["cash"], 50.17595)
+        self.assertAlmostEqual(book["nav"], 153.17595)
+        self.assertEqual(book["events"][0]["vendor_dividend_per_share"], .176)
+        self.assertEqual(book["events"][0]["issuer_dividend_per_share"], .17595)
+        self.assertEqual(book["equity"][0], before["books"]["hold"]["equity"][0])
+        self.assertEqual(self.state, before)
+        self.assertEqual(quotes("2026-10-27")[0]["AAA"]["dividend"], .176)
+        twice, restored, _ = recover_passive_books(self.config, got, self.days, quotes,
+                                                   recorded_at="later", reviews=reviews)
+        self.assertEqual(twice, got)
+        self.assertEqual(restored, [])
+
+    def test_arbitrary_amount_change_cannot_be_laundered_as_vendor_rounding(self):
+        def quotes(day):
+            bars, identity = self.quotes(day)
+            bars["AAA"]["dividend"] = .176 if day.endswith("27") else 0
+            return bars, identity
+        for issuer, precision, basis in [(.2, 3, "issuer_exact_vendor_rounded"),
+                                         (.17595, 2, "issuer_exact_vendor_rounded"),
+                                         (.17595, 3, "unreviewed"),
+                                         (float("nan"), 3, "issuer_exact_vendor_rounded")]:
+            reviews = {"reviews": [{"ticker": "AAA", "kind": "cash_dividend", "currency": "USD",
+                "amount": .176, "issuer_amount": issuer, "vendor_rounding_decimals": precision,
+                "amount_basis": basis, "vendor_ex_session": "2026-10-27",
+                "source_url": "https://issuer.example/dividend", "verified_on": "2026-11-03"}]}
+            got, restored, blocked = recover_passive_books(self.config, self.state, self.days,
+                quotes, recorded_at="now", reviews=reviews)
+            self.assertEqual(got, self.state)
+            self.assertEqual(restored, [])
+            self.assertEqual(blocked["hold"], "corporate_action_requires_review")
+
     def test_one_missing_historical_day_cannot_be_skipped_or_partially_written(self):
         def quotes(day):
             return ({}, {}) if day.endswith("27") else self.quotes(day)
