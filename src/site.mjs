@@ -878,7 +878,7 @@ async function loadOriginalPaper(){
  try{
   const [r,m]=await Promise.all([fetch("https://raw.githubusercontent.com/idealab2026/laboratorio-cuantitativo/main/strategy_state/dashboard.json",{cache:"no-store",credentials:"omit"}),fetch("./data/original-track-map.json",{cache:"no-store"})]);
   if(!r.ok||!m.ok)throw Error("Diarios no disponibles");
-  state.originalPaper=verifyOriginalPaper(await r.json(),await m.json());state.originalPaperStatus="ok";if(state.data)
+  state.originalPaper=verifyOriginalPaper(await r.json(),await m.json());state.originalPaperStatus="ok";
  }catch(_error){state.originalPaper=null;state.originalPaperStatus="unavailable";}
  if(["full","competition","algorithm","monitoring"].includes(state.view)&&state.data)render();
 }
@@ -888,7 +888,7 @@ async function loadHistoricalPaper(){
   if(res.some(r=>!r.ok))throw Error("Archivo histórico no disponible");
   const [results,nav]=await Promise.all(res.map(r=>r.text()));
   const rows=parseLocalPaperResults(results),curves=parseLocalPaperCurves(nav,rows);
-  state.historicalPaper=rows;state.historicalCurves=curves;state.historicalPaperStatus="ok";if(state.data)
+  state.historicalPaper=rows;state.historicalCurves=curves;state.historicalPaperStatus="ok";
  }catch(_error){state.historicalPaper=null;state.historicalCurves=null;state.historicalPaperStatus="unavailable";}
  if(["full","competition","algorithm"].includes(state.view)&&state.data)render();
 }
@@ -898,7 +898,7 @@ async function loadFullRoster(){
   if(!response.ok)throw Error("Missing institution-only roster");
   const doc=await response.json();
   verifyFullRoster(doc);
-  state.fullRoster=doc;state.fullRosterStatus="ok";if(state.data)
+  state.fullRoster=doc;state.fullRosterStatus="ok";
  }catch(_error){state.fullRoster=null;state.fullRosterStatus="unavailable";}
  if(["full","competition","algorithm"].includes(state.view)&&state.data)render();
 }
