@@ -277,3 +277,74 @@ test("Shares and market close are shown for a held ABT without claiming a new fi
  assert.ok(html.includes("audit-buy-dot"));
  assert.ok(!html.includes("audit-sell-dot"));
 });
+
+
+test("KVUE entry survives corporate conversion and displays at price/date on chart, without fictitious sale",async()=>{
+ const {verifyOperationsAudit,renderOperationsAudit}=await import("../src/operations-audit.mjs");
+ const sha="a".repeat(64),source="classic_sp500_state/ledger.json";
+ const tracks=Object.fromEntries(Array.from({length:64},(_,i)=>[
+  "IL-"+String(i+1).padStart(3,"0"),
+  {source_id:"slot_"+i,status:"no_executed_actions_documented",
+   source_path:null,source_sha256:null,currency:"USD",sessions:[],prices:{}}
+ ]));
+ tracks["IL-012"]={source_id:"classic_sp500_genetic_frozen",
+  status:"partial_executions_documented",source_path:source,source_sha256:sha,
+  currency:"USD",coverage:{executions:1,priced_executions:1,unpriced_executions:0,corporate_conversions:1},
+  sessions:[
+   {date:"2026-10-15",actions:[{
+     ticker:"KVUE",side:"buy",price:18.389189160346984,quantity:645.114733,
+     reason:"Ejecutada por el motor",reason_basis:"engine_rule",price_basis:"corporate_original_entry",
+     evidence:source,signal_date:null,rule_source:"classic_sp500/run.py"}]},
+   {date:"2026-10-27",actions:[{
+     ticker:"KVUE",side:"hold",price:null,quantity:645.114733,
+     reason:"Posición mantenida de manera inferida",reason_basis:"inferred_position_continuity",
+     evidence:source,signal_date:null}]},
+   {date:"2026-11-02",actions:[{
+     ticker:"KVUE",side:"corporate_action",price:null,quantity:645.114733,
+     reason:"Conversión corporativa KVUE hacia KMB; no es una venta",
+     reason_basis:"recorded",price_basis:"not_applicable",evidence:source,signal_date:null,
+     successor_ticker:"KMB",successor_quantity:94,receivable_cash:2257.90,
+     action_id:"KVUE_KMB_2026-11-02",recorded_at_utc:"2026-11-03T16:28:14+00:00"},
+    {ticker:"KMB",side:"hold",price:null,quantity:94,
+     reason:"Posición recibida por conversión; no comprada",
+     reason_basis:"inferred_position_continuity",evidence:source,signal_date:null}]}
+  ],
+  prices:{KVUE:[{date:"2026-10-27",price:19.43,source:"dated_market_close",snapshot_sha256:sha},
+    {date:"2026-10-30",price:19.31,source:"dated_market_close",snapshot_sha256:sha}]}
+ };
+ const doc={schema:"midas_operations_audit_v1",purpose:"read_only_paper_decision_evidence",
+            asof:"2026-11-02",tracks};
+ assert.equal(verifyOperationsAudit(doc).count,64);
+ const html=renderOperationsAudit(doc,"IL-012","KVUE");
+ for(const phrase of ["Compra 18,389","audit-buy-dot","audit-buy-guide",
+    "Conversión → KMB","audit-corporate-marker","CONVERSIÓN CORPORATIVA",
+    "KVUE → KMB","2.257,9","conversión corporativa",
+    "2026-10-15","2026-11-02","1 conversiones corporativas"]){
+  assert.ok(html.toLowerCase().includes(phrase.toLowerCase()),"Missing: "+phrase);
+ }
+ assert.ok(!html.includes("audit-sell-dot"),"Merger is not a sale");
+ const invalid=structuredClone(doc);invalid.tracks["IL-012"].sessions[2].actions[0].price=25;
+ assert.throws(()=>verifyOperationsAudit(invalid),"Corporate action must never have sell price");
+});
+test("Every recorded order without recoverable fill price is still visible on its execution date",async()=>{
+ const {renderOperationsAudit}=await import("../src/operations-audit.mjs");
+ const tracks=Object.fromEntries(Array.from({length:64},(_,i)=>[
+  "IL-"+String(i+1).padStart(3,"0"),
+  {source_id:"s_"+i,status:"no_executed_actions_documented",
+   source_path:null,source_sha256:null,currency:"USD",sessions:[],prices:{}}
+ ]));
+ tracks["IL-005"]={source_id:"test_ledger",status:"partial_executions_documented",
+  source_path:"test/ledger.json",source_sha256:"a".repeat(64),currency:"USD",
+  sessions:[{date:"2026-10-08",actions:[
+   {ticker:"AAPL",side:"buy",quantity:1,price:null,reason:"Fill recorded; price unavailable",
+     reason_basis:"not_recorded",price_basis:"not_recorded",
+     evidence:"test/ledger.json",signal_date:null}]}],prices:{AAPL:[]}};
+ const doc={schema:"midas_operations_audit_v1",
+  purpose:"read_only_paper_decision_evidence",asof:"2026-11-02",tracks};
+ const html=renderOperationsAudit(doc,"IL-005","AAPL");
+ assert.ok(html.includes("Compra sin precio de mercado"));
+ assert.ok(html.includes("2026-10-08"));
+ assert.ok(html.includes("1 ejecuciones sin precio original trazable"));
+ assert.ok(html.includes("audit-undocumented-guide"));
+ assert.ok(!html.includes("audit-buy-dot"),"Unrecorded price must never be assigned a y-coordinate");
+});
