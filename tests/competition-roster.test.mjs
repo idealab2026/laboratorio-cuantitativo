@@ -246,7 +246,7 @@ test("Competition displays No verificable for missing cells, keeping the numeric
 test("Comparability explanation opens on hover, keyboard focus and in mobile sort controls",()=>{
  const src=readFileSync(new URL("../src/site.mjs",import.meta.url),"utf8");
  const css=readFileSync(new URL("../styles.css",import.meta.url),"utf8");
- for(const term of ["misma cohorte","universo","divisa","costes","No comparable","Archivo","Investigación"]){
+ for(const term of ["mismo grupo de comparación","universo","divisa","costes","No comparable","Archivo","Investigación"]){
   assert.ok(src.toLocaleLowerCase("es").includes(term.toLocaleLowerCase("es")));
  }
  assert.ok(src.includes('role="tooltip"'));
