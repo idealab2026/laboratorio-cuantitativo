@@ -731,7 +731,8 @@ $("app").addEventListener("click",e=>{
  else if(action==="full-detail"){
   if(!state.fullRoster?.entries.some(x=>x.slot===value)&&
      !state.strategyCandidates?.candidates.some(c=>c.id===value))return;
-  state.algorithmId=value;state.auditTab="sessions";state.auditSort="recent";state.auditDesc=true;go("algorithm");
+  state.auditTab="sessions";state.auditSort="recent";state.auditDesc=true;
+  state.algorithmId=value;go("algorithm");
  }
  else if(action==="select")openCompetitionRow(value);
  else if(action==="journal"){state.strategy=value;state.detailOpen=false;go("monitoring");}
