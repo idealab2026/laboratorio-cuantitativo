@@ -410,3 +410,49 @@ p{line-height:1.6;text-align:justify;text-align-last:left;hyphens:auto}p.lead{co
  .audit-operation-table{min-width:650px}
  .audit-counts span{font-size:.62rem}
 }
+
+
+/* MIDAS: two independent objectives instead of a single dense paragraph. */
+.research-hero{padding-bottom:clamp(18px,2.5vw,36px)}
+.midas-intro{max-width:920px;margin:9px 0 16px!important;
+ color:#475f77!important;font-size:clamp(.97rem,1.1vw,1.08rem)!important;
+ text-align:left;text-align-last:left;hyphens:none}
+.midas-pillars{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:13px;align-items:stretch}
+.midas-pillar{padding:16px 19px;border:1px solid #dce5ed;border-radius:10px;background:#f8fafc;min-width:0}
+.midas-pillar h2{font:750 1.03rem/1.3 system-ui,sans-serif;color:#133653;
+ margin:0 0 8px;letter-spacing:-.01em}
+.midas-pillar p{font:480 .91rem/1.55 system-ui,sans-serif;color:#455e75;
+ margin:0;text-align:left;text-align-last:left;hyphens:none}
+.midas-pillar strong{color:#223f5e;font-weight:750}
+@media(max-width:730px){
+ .midas-pillars{grid-template-columns:minmax(0,1fr);gap:9px}
+ .midas-pillar{padding:13px 14px}
+ .midas-pillar p{font-size:.89rem}
+}
+
+/* Compact searchable glossary, useful even without familiarity with finance. */
+.glossary-tools{display:flex;align-items:center;gap:12px;flex-wrap:wrap;
+ margin:8px 0 18px;border:1px solid #dce5ed;background:#f8fafc;
+ border-radius:10px;padding:12px 15px}
+.glossary-tools label{font:740 .78rem system-ui,sans-serif;color:#334c66}
+.glossary-tools input{flex:1;min-width:min(100%,200px);max-width:480px;
+ font:450 .85rem system-ui,sans-serif;padding:9px 11px;
+ border:1px solid #c9d7e2;border-radius:7px;background:#fff;color:#193951}
+.glossary-tools #glossary-count{font:650 .72rem system-ui,sans-serif;color:#61738a}
+.glossary-results{display:grid;gap:20px}
+.glossary-group h3{font:760 .91rem system-ui,sans-serif;color:#233e59;margin:0 0 10px;
+ border-bottom:1px solid #dfe8ef;padding-bottom:8px}
+.glossary-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,285px),1fr));
+ gap:9px;margin:0}
+.glossary-entry{margin:0;padding:12px 14px;background:#fff;border:1px solid #e0e7ee;
+ border-radius:8px;min-width:0}
+.glossary-entry dt{font:760 .79rem/1.35 system-ui,sans-serif;color:#12375b;margin-bottom:6px}
+.glossary-entry dd{font:450 .77rem/1.5 system-ui,sans-serif;color:#50647b;margin:0;
+ text-align:left;hyphens:none;overflow-wrap:break-word}
+.glossary-empty{font:.88rem system-ui,sans-serif;color:#566e83}
+@media(max-width:700px){
+ .glossary-grid{grid-template-columns:minmax(0,1fr)}
+ .glossary-tools{align-items:stretch}
+ .glossary-tools label{width:100%}
+ .glossary-tools input{max-width:none}
+}

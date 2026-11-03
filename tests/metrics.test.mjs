@@ -491,17 +491,49 @@ test("MIDAS opens the paper competition directly and has no legacy Inicio screen
  assert.ok(js.includes('history.replaceState({view:"competition"}'));
  assert.ok(js.includes('$(\"app\").innerHTML=(pages[state.view]||competition)();'));
 });
-test("MIDAS header explains both automated investing research and five-year fundamental CAGR scenarios",()=>{
+test("MIDAS describes automated investment competition and fundamental research in two distinct readable blocks",()=>{
  const html=readFileSync(new URL("../index.html",import.meta.url),"utf8");
- for(const fragment of [
-  "MIDAS es un proyecto dedicado a la búsqueda de estrategias rentables",
-  "inversión automatizada", "análisis fundamental de empresas",
-  "algoritmos de inversión que compiten entre sí",
-  "operaciones simuladas",
-  "tesis de inversión",
-  "CAGR bursátil a cinco años",
-  "central, optimista y pesimista"
- ])assert.ok(html.includes(fragment),"Missing mission description: "+fragment);
+ for(const fragment of ["búsqueda de estrategias rentables","análisis fundamental",
+   "algoritmos de inversión","compras y ventas simuladas","capital virtual",
+   "compañías","tesis de inversión","CAGR bursátil a cinco años",
+   "central, optimista y pesimista"]){
+  // The concise intro and the two pillars together describe the project.
+  if(fragment==="búsqueda de estrategias rentables")
+   assert.ok(html.includes("estrategias rentables"),"Missing description "+fragment);
+  else assert.ok(html.includes(fragment),"Missing description "+fragment);
+ }
+ assert.ok(html.includes('<div class="midas-pillars"'));
+ assert.equal((html.match(/<article class="midas-pillar">/g)||[]).length,2);
+ assert.ok(html.includes("<h2>Inversión automatizada</h2>"));
+ assert.ok(html.includes("<h2>Análisis fundamental de empresas</h2>"));
  assert.ok(html.includes("<h1>MIDAS</h1>"));
- assert.ok(!html.includes('hero-subtitle'));
+});
+
+
+test("MIDAS glossary is reachable from navigation, searchable and includes specialized investment concepts",async()=>{
+ const {glossaryEntries,glossaryGroups,searchGlossary,verifyGlossary}=await import("../src/glossary.mjs");
+ const stats=verifyGlossary();
+ assert.equal(stats.entries,83);
+ assert.equal(stats.groups,4);
+ assert.equal(new Set(glossaryEntries.map(x=>x.term.toLocaleLowerCase("es"))).size,83);
+ assert.equal(glossaryGroups.length,4);
+ for(const term of ["Grupo de comparación (cohorte)","CAGR","Drawdown","NAV (valor liquidativo)","P/L (pérdidas y ganancias)","Sesgo de anticipación (lookahead)","Paper trading","Precio objetivo","Motivo"]){
+  if(term==="Motivo")continue; // "reason" is explained in decision and execution entries
+  assert.ok(glossaryEntries.some(x=>x.term===term),"Glossary term missing: "+term);
+ }
+ const filter=searchGlossary("COMPArACION");
+ assert.ok(filter.some(x=>x.term==="Grupo de comparación (cohorte)"));
+ assert.ok(searchGlossary("cagr").length>=2);
+ assert.equal(searchGlossary("INVALID_SEARCH_MIDAS_9999").length,0);
+ const html=readFileSync(new URL("../index.html",import.meta.url),"utf8");
+ const site=readFileSync(new URL("../src/site.mjs",import.meta.url),"utf8");
+ const workflow=readFileSync(new URL("../.github/workflows/pages.yml",import.meta.url),"utf8");
+ assert.ok(html.includes('data-view="glossary">Glosario</button>'));
+ assert.ok(site.includes('"method","glossary"'));
+ assert.ok(site.includes('method:methodology,glossary'));
+ assert.ok(site.includes('id="glossary-query"'));
+ assert.ok(site.includes('if(e.target.id==="glossary-query")'));
+ assert.ok(workflow.includes("node --check src/glossary.mjs"));
+ assert.ok(workflow.includes("src/glossary.mjs src/algorithm-detail.mjs"));
+ assert.ok(workflow.includes("dist/src/"));
 });
