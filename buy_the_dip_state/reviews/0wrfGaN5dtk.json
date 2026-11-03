@@ -1,0 +1,327 @@
+{
+  "schema_version": 1,
+  "status": "machine_first_pass",
+  "reviewed_at_utc": "2026-11-03T15:50:35.859459+00:00",
+  "source_identity": "Buy The Dip YouTube channel",
+  "transport": {
+    "kind": "official_podcast_mirror",
+    "provider": "iVoox",
+    "guid": "https://www.ivoox.com/71894501",
+    "published_date": "2021-06-24",
+    "youtube_video_id": "0wrfGaN5dtk",
+    "match_score": 0.893767,
+    "audio_bytes_processed_transiently": 21397256
+  },
+  "models": {
+    "asr": {
+      "language": "es",
+      "language_probability": 1.0,
+      "duration_seconds": 2674.6514375,
+      "word_count": 7139,
+      "segment_count": 893,
+      "model": "small"
+    },
+    "semantic": {
+      "repo": "Qwen/Qwen3-4B-GGUF",
+      "file": "Qwen3-4B-Q4_K_M.gguf"
+    }
+  },
+  "metadata": {
+    "video_id": "0wrfGaN5dtk",
+    "youtube_url": "https://www.youtube.com/watch?v=0wrfGaN5dtk",
+    "title": "BUY THE DIP PODCAST EPISODIO 54: RESUMEN MES DE JUNIO",
+    "category": "company_or_theme",
+    "guest_likely": false,
+    "podcast_guid": "https://www.ivoox.com/71894501",
+    "published_date": "2021-06-24",
+    "source": "official_podcast_mirror",
+    "match_score": 0.893767
+  },
+  "analysis": {
+    "episode_summary": "En el episodio 54 del podcast, los anfitrones discuten sus lecturas del mes, destacando el libro 'AP Giannini The People's Banker' que analiza innovación, emprendimiento y gestión de riesgos en la banca. Se menciona la importancia de la banca en tiempos de crisis, como en el caso del terremoto de San Francisco, y la innovación en servicios para nichos específicos. Se analizan iniciativas de inversión en software, con un enfoque en el ETF y colaboración con expertos, mientras que empresas como Perseus Mining y Brookfield Infrastructure Partners muestran potencial en infraestructura y riesgos. La empresa Parlen tiene una atención al cliente excelente, contrastando con empresas tradicionales. Se destaca el crecimiento de una empresa en China con un aumento del 60% anual en ventas y producción, aunque enfrenta problemas regulatorios. Se menciona un episodio de Daniel La Calle con 8000 escuchas mensuales, destacando la calidad de la entrevista, pero también críticas por su tono prepotente. Se sugieren futuros episodios sobre educación financiera y experiencias de inversión. Sin embargo, se señalan errores técnicos y limitaciones en la profundidad de las entrevistas.",
+    "process": {
+      "idea_generation": [],
+      "quality": [],
+      "balance_sheet": [],
+      "valuation": [],
+      "cycle_macro": [],
+      "entry": [],
+      "sizing": [],
+      "add_hold": [],
+      "exit": [],
+      "risk": [],
+      "technical": [],
+      "management": [],
+      "mistakes": []
+    },
+    "candidate_rules": [
+      {
+        "rule": "paráfrasis compacta",
+        "scope": "hosts|uncertain_or_guest",
+        "confidence": 0.0,
+        "evidence_timestamps": [],
+        "automation_proxy": "variable/cálculo posible o null",
+        "cross_video_confirmation_required": true
+      }
+    ],
+    "contradictions_or_uncertainties": [],
+    "named_examples": [],
+    "automation_readiness": "low"
+  },
+  "chunk_evidence": [
+    {
+      "chunk": 1,
+      "evidence": [
+        {
+          "stage": "entry",
+          "paraphrase": "Los anfitriones discuten sobre sus lecturas del mes, mencionando libros como 'AP Giannini The People's Banker' y 'Money Dice'.",
+          "timestamp": "00:01:18",
+          "scope": "hosts",
+          "confidence": 0.9,
+          "automation_hint": "proxy observable"
+        },
+        {
+          "stage": "valuation",
+          "paraphrase": "El libro 'AP Giannini The People's Banker' se describe como un análisis de innovación y emprendimiento, destacando la historia de AP Giannini y su impacto en la banca.",
+          "timestamp": "00:01:44",
+          "scope": "hosts",
+          "confidence": 0.8,
+          "automation_hint": "proxy observable"
+        },
+        {
+          "stage": "cycle_macro",
+          "paraphrase": "Se menciona la importancia de la banca en tiempos de crisis, como en el caso del terremoto de San Francisco, donde AP Giannini ayudó a reconstruir la economía local.",
+          "timestamp": "00:05:11",
+          "scope": "hosts",
+          "confidence": 0.7,
+          "automation_hint": "proxy observable"
+        },
+        {
+          "stage": "risk",
+          "paraphrase": "Se destaca la gestión de riesgos por parte de AP Giannini, quien financiaba proyectos de alto riesgo con su propio capital, incluso en momentos de crisis.",
+          "timestamp": "00:03:22",
+          "scope": "hosts",
+          "confidence": 0.6,
+          "automation_hint": "proxy observable"
+        },
+        {
+          "stage": "technical",
+          "paraphrase": "Se menciona la importancia de la innovación en el sector bancario, como la creación de servicios para clientes no tradicionales (inmigrantes, mujeres, etc.).",
+          "timestamp": "00:04:00",
+          "scope": "hosts",
+          "confidence": 0.5,
+          "automation_hint": "proxy observable"
+        }
+      ],
+      "named_examples": [],
+      "chunk_summary": "Los anfitrones discuten sobre sus lecturas del mes, destacando el libro 'AP Giannini The People's Banker' y su análisis sobre innovación, emprendimiento y gestión de riesgos en la banca. También se menciona la importancia de la banca en tiempos de crisis y la innovación en servicios para nichos específicos."
+    },
+    {
+      "chunk": 2,
+      "evidence": [
+        {
+          "stage": "entry",
+          "paraphrase": "Están en fases iniciales de dos iniciativas relacionadas con inversión en software, con un enfoque en el ETF y colaboración con un experto en el área.",
+          "timestamp": "00:11:23",
+          "scope": "hosts",
+          "confidence": 0.8,
+          "automation_hint": "proxy observable"
+        },
+        {
+          "stage": "valuation",
+          "paraphrase": "El análisis de Perseus Mining muestra un interés en proyectos en África con riesgos, pero con potencial de aumento de producción a un precio atractivo.",
+          "timestamp": "00:13:47",
+          "scope": "hosts",
+          "confidence": 0.7,
+          "automation_hint": "proxy observable"
+        },
+        {
+          "stage": "risk",
+          "paraphrase": "La empresa Parlen tiene una atención al cliente excelente, contrastando con empresas como Movistar, que se destacan por una mala experiencia y una falta de eficiencia.",
+          "timestamp": "00:18:33",
+          "scope": "hosts",
+          "confidence": 0.6,
+          "automation_hint": "proxy observable"
+        },
+        {
+          "stage": "technical",
+          "paraphrase": "El análisis de Brookfield Infrastructure Partners es extenso y detallado, con un enfoque en infraestructura, deuda, sinergias y trucos de inversión, destacando una guerra de ofertas en el mercado.",
+          "timestamp": "00:14:56",
+          "scope": "hosts",
+          "confidence": 0.7,
+          "automation_hint": "proxy observable"
+        },
+        {
+          "stage": "sizing",
+          "paraphrase": "La empresa Parlen ha cotizado con un aumento del 30% en el primer día, indicando un buen desempeño y potencial de crecimiento en el sector de telecomunicaciones.",
+          "timestamp": "00:17:19",
+          "scope": "hosts",
+          "confidence": 0.6,
+          "automation_hint": "proxy observable"
+        }
+      ],
+      "named_examples": [],
+      "chunk_summary": "El análisis de dos iniciativas de inversión en software se encuentra en fases iniciales, con un enfoque en el ETF y colaboración con expertos. Se destacan análisis de empresas como Perseus Mining y Brookfield Infrastructure Partners, que muestran potencial en infraestructura y riesgos, mientras que Parlen muestra una atención al cliente excelente, contrastando con empresas tradicionales. El análisis de Brookfield es detallado y aborda temas de deuda, sinergias y trucos de inversión, con un enfoque en el sector de infraestructura y un posible aumento de precios. La empresa Parlen ha cotizado con un aumento del 30% en el primer día, indicando un buen desempeño y potencial de crecimiento en el sector de telecomunicaciones."
+    },
+    {
+      "chunk": 3,
+      "evidence": [
+        {
+          "stage": "entry",
+          "paraphrase": "La empresa ha estado creciendo desde 2014 con un aumento del 60% anual en las ventas.",
+          "timestamp": "00:20:53",
+          "scope": "hosts",
+          "confidence": 0.9
+        },
+        {
+          "stage": "valuation",
+          "paraphrase": "La empresa tiene localizaciones en los mejores sitios de China y ha aumentado su producción desde 2014 hasta 2020, pasando de 10 a 23 millones de toneladas.",
+          "timestamp": "00:20:53",
+          "scope": "hosts",
+          "confidence": 0.8
+        },
+        {
+          "stage": "risk",
+          "paraphrase": "La empresa enfrenta problemas regulatorios en China, pero no se han reportado cambios significativos en las regulaciones que afecten a la compañía.",
+          "timestamp": "00:21:03",
+          "scope": "uncertain_or_guest",
+          "confidence": 0.6
+        },
+        {
+          "stage": "cycle_macro",
+          "paraphrase": "El mercado de almendras está experimentando un ciclo de crecimiento, con Selected Harvest como el mayor productor de Australia, con un 10% de la producción mundial.",
+          "timestamp": "00:22:03",
+          "scope": "hosts",
+          "confidence": 0.7
+        },
+        {
+          "stage": "sizing",
+          "paraphrase": "La empresa tiene activos en Australia y ha adquirido nuevos cultivos, concentrados en la región sureste del país, con un enfoque en la exportación a Asia y la India.",
+          "timestamp": "00:25:29",
+          "scope": "hosts",
+          "confidence": 0.7
+        },
+        {
+          "stage": "management",
+          "paraphrase": "El manejo de la empresa es conservador, con un enfoque en la producción y el cliente, y una familia que posee el 40% de las acciones.",
+          "timestamp": "00:27:01",
+          "scope": "hosts",
+          "confidence": 0.6
+        }
+      ],
+      "named_examples": [],
+      "chunk_summary": "El análisis destaca la creciente producción de la empresa desde 2014, su ubicación en China y su enfoque en exportaciones a Asia, junto con un manejo conservador y un 10% de mercado en almendras. Se mencionan riesgos regulatorios en China y un crecimiento macro en el sector, con una posible publicación de análisis en el sitio web."
+    },
+    {
+      "chunk": 4,
+      "evidence": [
+        {
+          "stage": "entry",
+          "paraphrase": "El programa menciona que un episodio de Daniel La Calle ha tenido bastantes visitas, cerca de 8000 escuchas mensuales.",
+          "timestamp": "00:30:09",
+          "scope": "hosts",
+          "confidence": 0.9,
+          "automation_hint": "proxy observable"
+        },
+        {
+          "stage": "sizing",
+          "paraphrase": "El episodio de Daniel La Calle se sitúa cerca de las 8000 escuchas mensuales, lo que sugiere un nivel de popularidad significativo.",
+          "timestamp": "00:30:17",
+          "scope": "hosts",
+          "confidence": 0.8,
+          "automation_hint": "proxy observable"
+        },
+        {
+          "stage": "valuation",
+          "paraphrase": "El programa destaca la calidad de la entrevista con Daniel La Calle, considerada una de las mejores y con un impacto emocional positivo.",
+          "timestamp": "00:31:01",
+          "scope": "hosts",
+          "confidence": 0.7,
+          "automation_hint": "proxy observable"
+        },
+        {
+          "stage": "risk",
+          "paraphrase": "Se menciona una crítica al programa por su tono prepotente y falta de profundidad en temas como la inversión y la libertad financiera.",
+          "timestamp": "00:37:03",
+          "scope": "uncertain_or_guest",
+          "confidence": 0.6,
+          "automation_hint": "proxy observable"
+        },
+        {
+          "stage": "mistake",
+          "paraphrase": "Se comete un error al mencionar que un comentarista sugiere que se busque una persona que haya logrado la libertad financiera con un trabajo normal.",
+          "timestamp": "00:31:47",
+          "scope": "uncertain_or_guest",
+          "confidence": 0.5,
+          "automation_hint": "proxy observable"
+        },
+        {
+          "stage": "other",
+          "paraphrase": "Se menciona la posibilidad de un episodio especial sobre educación financiera y la experiencia de un cliente que invierte en Canadá.",
+          "timestamp": "00:33:01",
+          "scope": "hosts",
+          "confidence": 0.8,
+          "automation_hint": "proxy observable"
+        }
+      ],
+      "named_examples": [],
+      "chunk_summary": "El programa analiza un episodio de Daniel La Calle con un alto nivel de escucha, destaca la calidad de la entrevista, menciona críticas por su tono prepotente, y sugiere futuros episodios sobre inversión y libertad financiera. Se mencionan comentarios sobre la popularidad del programa y posibles errores en la interpretación de temas como la libertad financiera."
+    },
+    {
+      "chunk": 5,
+      "evidence": [
+        {
+          "stage": "entry",
+          "paraphrase": "El entrevistado evitó mencionar nombres específicos durante la entrevista, respondiendo con generalidades y sin anécdotas particulares.",
+          "timestamp": "00:39:43",
+          "scope": "hosts",
+          "confidence": 0.9,
+          "automation_hint": "proxy observable"
+        },
+        {
+          "stage": "exit",
+          "paraphrase": "El proceso de entrevista terminó con la resolución de preguntas, pero con un clima de descontento por la falta de profundidad y la presión de tiempo.",
+          "timestamp": "00:40:16",
+          "scope": "uncertain_or_guest",
+          "confidence": 0.7,
+          "automation_hint": "proxy observable"
+        },
+        {
+          "stage": "risk",
+          "paraphrase": "La falta de profundidad en las entrevistas sugiere un riesgo de no obtener información valiosa que pueda influir en decisiones de inversión.",
+          "timestamp": "00:40:26",
+          "scope": "hosts",
+          "confidence": 0.8,
+          "automation_hint": "proxy observable"
+        },
+        {
+          "stage": "valuation",
+          "paraphrase": "La calidad de las entrevistas varía según el entrevistado, con algunos que se mostraron más encajados y otros que no lograron mantener el enfoque.",
+          "timestamp": "00:40:31",
+          "scope": "hosts",
+          "confidence": 0.6,
+          "automation_hint": "proxy observable"
+        },
+        {
+          "stage": "sizing",
+          "paraphrase": "La distribución de la cartera de inversión refleja una estrategia diversificada, con un enfoque en materias primas y financieras, aunque con diferencias en el enfoque de inversión.",
+          "timestamp": "00:41:11",
+          "scope": "hosts",
+          "confidence": 0.7,
+          "automation_hint": "proxy observable"
+        },
+        {
+          "stage": "mistake",
+          "paraphrase": "Hubo errores técnicos durante la transmisión, como problemas con el internet y el software Zencaster, lo que afectó la calidad de la entrevista.",
+          "timestamp": "00:42:41",
+          "scope": "hosts",
+          "confidence": 0.8,
+          "automation_hint": "proxy observable"
+        }
+      ],
+      "named_examples": [],
+      "chunk_summary": "El episodio refleja una entrevista de inversión con diferentes participantes, donde se destacan la falta de profundidad en las respuestas, la presión por tiempo, la diversificación de la cartera, y errores técnicos que afectaron la calidad de la transmisión. La estrategia de inversión se basa en una diversificación entre materias primas y financieras, aunque con variaciones según el entrevistado."
+    }
+  ],
+  "copyright_note": "No audio or verbatim transcript is persisted; only derived paraphrases."
+}
