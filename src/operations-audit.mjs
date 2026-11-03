@@ -236,9 +236,9 @@ function renderTradeLotsTable(track, key="recent", descending=true){
  const closed=lots.filter(l=>l.action==="cerrada").length;
  const converted=lots.filter(l=>l.action==="convertida").length;
  const cells=[
-  ["ticker","Activo"],["action","Acción ejecutada"],["buyPrice","Precio compra"],
-  ["salePrice","Precio venta"],["returnPct","Rentabilidad %"],
-  ["pnl","P/L total"],["invested","Dinero empleado"],["shares","Nº acciones compradas"]
+  ["ticker","Activo"],["action","Acción ejecutada"],["buyPrice","Precio de compra"],
+  ["salePrice","Precio de venta"],["returnPct","Rentabilidad %"],
+  ["pnl","P/L total"],["invested","Dinero empleado en compra"],["shares","Nº acciones compradas"]
  ];
  const status=l=>l.action==="abierta"?"COMPRA · ABIERTA":
   l.action==="parcial"?"VENTA PARCIAL · ABIERTA":
