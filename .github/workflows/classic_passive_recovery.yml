@@ -14,6 +14,12 @@ on:
   schedule:
     - cron: '21 6 * * 0,6'
   workflow_dispatch:
+    inputs:
+      recovery_kind:
+        description: 'Passive marks or reviewed merger conversion with provisional receivables'
+        type: choice
+        options: [passive, merger]
+        default: passive
 
 permissions:
   contents: write
@@ -44,13 +50,32 @@ jobs:
           python -m unittest discover -s market_data/tests -v
       - name: Dry run recovery without touching paper state
         if: ${{ github.event_name == 'schedule' || github.event_name == 'workflow_dispatch' }}
-        run: python classic_sp500/passive_recover_cli.py --phase check
+        env:
+          RECOVERY_KIND: ${{ inputs.recovery_kind }}
+        run: |
+          if [ "$RECOVERY_KIND" = 'merger' ]; then
+            python classic_sp500/corporate_actions.py --phase check
+          else
+            python classic_sp500/passive_recover_cli.py --phase check
+          fi
       - name: Recover only verified passive marks in the existing ledger
         if: ${{ (github.event_name == 'schedule' || github.event_name == 'workflow_dispatch') }}
-        run: python classic_sp500/passive_recover_cli.py --phase recover
+        env:
+          RECOVERY_KIND: ${{ inputs.recovery_kind }}
+        run: |
+          if [ "$RECOVERY_KIND" = 'merger' ]; then
+            python classic_sp500/corporate_actions.py --phase recover
+          else
+            python classic_sp500/passive_recover_cli.py --phase recover
+          fi
       - name: Publish only the canonical classical paper ledger
         if: ${{ success() && (github.event_name == 'schedule' || github.event_name == 'workflow_dispatch') }}
+        env:
+          RECOVERY_KIND: ${{ inputs.recovery_kind }}
         run: |
+          if [ "$RECOVERY_KIND" = 'merger' ]; then
+            python classic_sp500/corporate_actions.py --phase publication-check
+          fi
           python strategy_comparison/publish_state.py \
             --message "Record verified passive-only mark recovery" \
             --path classic_sp500_state

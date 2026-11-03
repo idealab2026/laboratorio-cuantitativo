@@ -402,6 +402,15 @@ def build(registry, paper_config, paper_state=None, legacy_state=None, now=None,
                 row["activity_label"] += " · Cálculo tardío: " + ", ".join(late)
                 row["note"] += (" Reconciliación registrada con retraso sobre órdenes previamente "
                                 "fijadas y OHLC común exacto; no acredita una ejecución puntual.")
+            provisional = [p["date"] for p in hist if p.get("provisional_corporate_valuation")]
+            if provisional:
+                row["provisional_valuation_sessions"] = provisional
+                row["data_quality_status"] = "provisional_corporate_receivable"
+                row["activity_label"] += " · CANJE CON VALORACIÓN PROVISIONAL; cobro separado del efectivo"
+                row["note"] += " Derecho de cobro pendiente; referencia temporal OCC, no importe final de liquidación."
+                first = book.get("outage_control", {}).get("first_trading_session")
+                if first:
+                    row["activity_label"] += " · Reanudación desde apertura: " + first
             if quarantined:
                 row["data_quality_status"] = "held_quote_unavailable"
                 row["activity_label"] = ("VALORACIÓN PAUSADA · falta cotización; "
@@ -710,6 +719,9 @@ def build(registry, paper_config, paper_state=None, legacy_state=None, now=None,
         else:
             eligible = False
             reason = "Campaña archivada o todavía no normalizada al universo S&P 500"
+        if row.get("provisional_valuation_sessions"):
+            eligible = False
+            reason = "Canje con valoración provisional de un derecho de cobro; excluido de comparación certificada"
         row["comparison_eligible"] = eligible
         row["comparison_universe_id"] = "SP500_2026-09-29_503" if eligible else None
         row["comparison_universe_symbols"] = 503 if eligible else None
