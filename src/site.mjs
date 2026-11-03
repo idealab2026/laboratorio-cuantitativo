@@ -1,7 +1,7 @@
 import {verifyOriginalPaper} from "./original-paper.mjs?v=b4ab52ea9863";
 import {algorithmTheory,paperLeaderboard} from "./algorithm-detail.mjs";
 import {glossaryGroups,searchGlossary,verifyGlossary} from "./glossary.mjs";
-import {verifyOperationsAudit,renderOperationsAudit} from "./operations-audit.mjs?v=f870323d7553";
+import {verifyOperationsAudit,renderOperationsAudit,renderTradeLotsTable,summarizeOperationsAudit} from "./operations-audit.mjs?v=f870323d7553";
 import {parseLocalPaperResults,parseLocalPaperCurves,summarizePrivatePaper} from "./private-paper.mjs?v=4baff08a2202";
 import {signalResearchSummary,methodCatalog} from "./paper-methods.mjs";
 import {parseLocalCagr2031} from "./private-theses.mjs";
@@ -13,8 +13,8 @@ import {verify,simulate,rank,valuation,thesisRank,formatPct,money,finite,verifyI
 const $=id=>document.getElementById(id);
 const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 const fmt=n=>finite(n)?new Intl.NumberFormat("es-ES",{maximumFractionDigits:2}).format(n):"N/D";
-const state={data:null,universe:null,fx:null,fxCheck:null,fxStatus:"pending",forecastLedger:null,forecastSummary:null,forecastStatus:"pending",secStatus:"pending",secRead:null,secCatalog:null,yieldDoc:null,yieldCheck:null,yieldStatus:"pending",view:"competition",strategy:"P-01",group:"",sort:"returnPct",asc:false,detailOpen:false,thesis:"T-01",query:"",thesisSort:"central",issuerMode:"catalog",issuerQuery:"",issuerSort:"base",issuerAsc:false,issuerTicker:"MSFT",paperDetail:"M-10",originalPaper:null,originalPaperStatus:"pending",historicalPaper:null,historicalCurves:null,historicalPaperStatus:"pending",fullRoster:null,fullRosterStatus:"pending",strategyCandidates:null,strategyCandidatesStatus:"pending",fullRosterGroup:"",fullRosterQuery:"",fullRosterSort:"return",fullRosterAsc:false,algorithmId:null,operationsAudit:null,operationsAuditStatus:"pending",auditTicker:null,auditTab:"sessions",auditSort:"recent",auditDesc:true,institutionalFeedStatus:"pending",paperFeed:null,paperFeedRead:null,localCagr:new Map(),localCagrError:"",publicTheses:new Map(),publicThesesMetadata:null};
-const viewNames=["competition","algorithm","algorithms","theses","monitoring","method","glossary","archive","ported","full","synthetic"];
+const state={data:null,universe:null,fx:null,fxCheck:null,fxStatus:"pending",forecastLedger:null,forecastSummary:null,forecastStatus:"pending",secStatus:"pending",secRead:null,secCatalog:null,yieldDoc:null,yieldCheck:null,yieldStatus:"pending",view:"competition",strategy:"P-01",group:"",sort:"returnPct",asc:false,detailOpen:false,thesis:"T-01",query:"",thesisSort:"central",issuerMode:"catalog",issuerQuery:"",issuerSort:"base",issuerAsc:false,issuerTicker:"MSFT",paperDetail:"M-10",originalPaper:null,originalPaperStatus:"pending",historicalPaper:null,historicalCurves:null,historicalPaperStatus:"pending",fullRoster:null,fullRosterStatus:"pending",strategyCandidates:null,strategyCandidatesStatus:"pending",fullRosterGroup:"",fullRosterQuery:"",fullRosterSort:"return",fullRosterAsc:false,algorithmId:null,operationsAudit:null,operationsAuditStatus:"pending",auditTicker:null,auditTab:"sessions",auditSort:"recent",auditDesc:true,monitoringTab:"summary",monitoringStrategy:"IL-039",monitoringSort:"recent",monitoringDesc:true,institutionalFeedStatus:"pending",paperFeed:null,paperFeedRead:null,localCagr:new Map(),localCagrError:"",publicTheses:new Map(),publicThesesMetadata:null};
+const viewNames=["competition","algorithm","algorithms","theses","monitoring","method","glossary","ported","full","synthetic"];
 const button=(label,action,value,cls="smallbtn")=>'<button type="button" class="'+cls+'" data-action="'+esc(action)+'" data-value="'+esc(value)+'">'+esc(label)+'</button>';
 const head=(label,title,body)=>'<div class="section-heading"><div><span class="kicker">'+esc(label)+'</span><h2>'+esc(title)+'</h2><p class="section-context">'+esc(body)+'</p></div></div>';
 const card=(html)=>'<article class="panel">'+html+'</article>';
@@ -292,9 +292,69 @@ function prospectiveForecastPanel(){
 }
 
 function monitoring(){
- return head("OPERACIÓN PAPER","Ejecución y estado de los diarios","El motor original se traslada conservando sus reglas, capital virtual y libros. La actualización programada se verifica mediante sus ejecuciones y registros de mercado.")+
- card('<h3>Fuente de los diarios</h3><p>'+(state.originalPaper?"Archivo del motor disponible · "+state.originalPaper.count+" diarios · último cierre "+esc(state.originalPaper.latest):"Comprobando el registro público del motor.")+'</p><a href="https://github.com/idealab2026/laboratorio-cuantitativo/actions" target="_blank" rel="noopener noreferrer">Ver ejecuciones de los motores</a>')+
- '<details class="panel"><summary>Herramientas didácticas con datos artificiales</summary>'+syntheticMonitoring()+'</details>';
+ const roster=state.fullRoster, candidates=state.strategyCandidates, audit=state.operationsAudit;
+ const summary=summarizeOperationsAudit(audit);
+ const number=v=>Number.isInteger(v)?new Intl.NumberFormat("es-ES").format(v):"N/D";
+ const rosterCount=Array.isArray(roster?.entries)?roster.entries.length:null;
+ const proposals=Array.isArray(candidates?.candidates)?candidates.candidates.length:null;
+ const registered=rosterCount!==null&&proposals!==null?rosterCount+proposals:null;
+ const feed=state.paperFeedRead;
+ const productive=feed?.status==="source_verified"?
+   [...feed.bySlot.values()].filter(x=>x.activity==="active"||x.activity==="cash").length:
+   feed?.status==="not_connected"?0:null;
+ const latestPaper=summary?.latestSession||state.originalPaper?.latest||null;
+ const latestTrade=summary?.latestTrade||null;
+ const selectedTab=state.monitoringTab==="operations"?"operations":"summary";
+ const tabs='<div class="monitoring-tabs" id="monitoring-tab-strip" role="tablist" aria-label="Paneles de salud operativa">'+
+  [['summary',"Indicadores"],['operations',"Operaciones"]].map(([key,label])=>
+   '<button type="button" role="tab" data-action="monitoring-tab" data-value="'+key+
+   '" aria-selected="'+(selectedTab===key)+'" aria-controls="monitoring-panel-'+key+'">'+label+'</button>').join("")+'</div>';
+ const health=summary?summary.withExecutions:null;
+ const totalPaper=summary?.slots||rosterCount;
+ const percent=totalPaper?Math.min(100,Math.max(0,100*(health||0)/totalPaper)):0;
+ const summaryPanel='<div id="monitoring-panel-summary" role="tabpanel"'+(selectedTab!=="summary"?' hidden':'')+'>'+
+  '<div class="monitoring-kpis">'+
+  '<article><span>Algoritmos propuestos</span><strong>'+number(registered)+'</strong>'+
+   '<small>'+(registered!==null?rosterCount+' estrategias en inventario + '+proposals+' propuesta en investigación':'Comprobando el inventario de proyectos')+'</small></article>'+
+  '<article><span>Algoritmos productivos</span><strong>'+number(productive)+'</strong>'+
+   '<small>Con ejecución institucional vigente acreditada; no cuenta diarios históricos</small></article>'+
+  '<article><span>Algoritmos con operaciones paper</span><strong>'+number(health)+'</strong>'+
+   '<small>Libros con compras o ventas registradas, no prueba de operación actual</small></article>'+
+  '<article><span>Última sesión de trading paper</span><strong>'+esc(shortPaperDate(latestPaper))+'</strong>'+
+   '<small>Última compraventa documentada: '+esc(shortPaperDate(latestTrade))+'</small></article>'+
+  '</div>'+
+  '<section class="monitoring-chart-panel"><div class="monitoring-chart-header"><h3>Cobertura del diario de operaciones</h3>'+
+   '<strong>'+(health!==null&&totalPaper!==null?number(health)+' / '+number(totalPaper):"N/D")+'</strong></div>'+
+   '<div class="monitoring-coverage-bar" role="img" aria-label="'+
+    esc(health!==null&&totalPaper!==null?health+' de '+totalPaper+' estrategias con operaciones paper archivadas':'Sin datos de cobertura verificables')+
+    '"><span style="width:'+percent.toFixed(2)+'%"></span></div>'+
+   '<div class="monitoring-coverage-legend"><span>Con compraventas verificables: '+number(health)+'</span>'+
+    '<span>Sin compraventas reconstruibles: '+number(summary?.withoutExecutions)+'</span></div>'+
+   '<p class="monitoring-explanation">Diarios históricos con posiciones simuladas y precios observados del mercado. No implican que los algoritmos estén ejecutándose hoy. '+(summary?'Ejecuciones documentadas: '+number(summary.executions)+'. Conversiones corporativas: '+number(summary.conversions)+'.':'Cargando libro de operaciones.')+'</p></section>'+
+  '<p class="monitoring-caveat">«Productivo» exige un motor institucional con registro independiente verificable. Un algoritmo con resultados paper archivados no se clasifica automáticamente como productivo. Si falla la fuente de verificación, se muestra N/D en lugar de atribuirle actividad.</p>'+
+  '</div>';
+ const options=roster?.entries?.map(x=>({id:x.slot,name:originalStrategyName(x)}))||
+   (audit?Object.keys(audit.tracks).sort().map(id=>({id,name:id})):[]);
+ const chosen=options.some(x=>x.id===state.monitoringStrategy)?
+  state.monitoringStrategy:options[0]?.id||null;
+ const picker='<div class="monitoring-operation-controls"><label for="monitoring-algorithm">Algoritmo</label>'+
+  '<select id="monitoring-algorithm" aria-label="Seleccionar algoritmo para revisar operaciones"'+(options.length?'':' disabled')+'>'+
+  options.map(x=>{
+   const count=audit?.tracks?.[x.id]?.coverage?.executions;
+   return '<option value="'+esc(x.id)+'"'+(x.id===chosen?' selected':'')+'>'+esc(x.id+' · '+x.name)+
+     (Number.isInteger(count)?' · '+count+' ejecuciones':'')+'</option>';
+  }).join("")+'</select></div>';
+ const table=chosen&&audit?.tracks?.[chosen]?
+  renderTradeLotsTable(audit.tracks[chosen],state.monitoringSort,state.monitoringDesc):
+  '<p class="audit-method-note">'+
+   (state.operationsAuditStatus==="pending"?"Comprobando el registro auditado de compras y ventas…":
+    "No hay un libro de ejecuciones verificable para mostrar la tabla.")+'</p>';
+ const operationPanel='<div id="monitoring-panel-operations" role="tabpanel"'+(selectedTab!=="operations"?' hidden':'')+'>'+
+  '<p class="monitoring-explanation">Registro por lotes, idéntico al apartado «Operaciones» de la ficha de cada algoritmo. Las estrategias sin fills individuales quedan señaladas como sin operaciones documentadas.</p>'+
+  picker+'<div id="monitoring-trade-table">'+table+'</div></div>';
+ return head("SALUD OPERATIVA","Estado del laboratorio MIDAS",
+  "Propuestas, actividad paper documentada y evidencia de producción, separadas para no confundir simulaciones con ejecución automática.")+
+  tabs+summaryPanel+operationPanel;
 }
 function syntheticMonitoring(){
  const s=active(),audit=causalLedger();
@@ -608,19 +668,6 @@ function algorithmFiche(){
    '</p></section>')+'</div>';
 }
 
-function archive(){
- const groupsInCatalog=state.fullRoster?verifyFullRoster(state.fullRoster).groups:[];
- const count=state.originalPaper?.count||(state.historicalPaper?[...state.historicalPaper.values()].filter(x=>x.active).length:0);
- return head("CATÁLOGO · HISTÓRICO","Estrategias y campañas paper","Los diarios originales se conservan con su capital virtual, fechas y universos. Las campañas separadas no se fusionan como una sola rentabilidad.")+
- '<div class="source-health-strip"><div><span class="label">Estrategias registradas</span><strong>64</strong><small>12 familias metodológicas</small></div>'+
- '<div><span class="label">Diarios paper recuperados</span><strong>'+count+'</strong><small>Operaciones simuladas con datos de mercado</small></div>'+
- '<div><span class="label">Último cierre disponible</span><strong>'+esc(state.originalPaper?.latest||"—")+'</strong><small>Consultar fecha y estado de cada estrategia</small></div></div>'+
- disclaimer("La disponibilidad de los diarios históricos y del código no prueba por sí sola la continuidad automática de todas las estrategias desde Idea Lab. Las valoraciones pausadas y las ausencias de cotización se conservan explícitamente.")+
- '<div class="family-grid">'+groupsInCatalog.map(g=>card('<h3>'+esc(g.name)+'</h3><p>'+g.count+' estrategias registradas.</p>'+button("Ver diarios de esta familia","navigate","competition","outline-btn"))).join("")+'</div>'+
- '<details class="panel"><summary>Ejemplos didácticos con precios artificiales</summary><p>Los 23 prototipos didácticos se conservan aparte; sus resultados no pertenecen a los diarios paper de mercado.</p>'+button("Abrir demo didáctica","navigate","synthetic","outline-btn")+'</details>'+
- button("Volver a la competición paper","navigate","competition","outline-btn");
-}
-
 function glossaryRows(query=""){
  const rows=searchGlossary(query);
  if(!rows.length)return '<p class="glossary-empty">No hay conceptos que coincidan con la búsqueda. Prueba otro término.</p>';
@@ -665,14 +712,14 @@ function chart(){
 }
 function render(){
  if(!state.data)return;
- const pages={competition,algorithm:algorithmFiche,synthetic:syntheticCompetition,algorithms,theses,monitoring,archive,ported,full,method:methodology,glossary};
+ const pages={competition,algorithm:algorithmFiche,synthetic:syntheticCompetition,algorithms,theses,monitoring,ported,full,method:methodology,glossary};
  document.querySelectorAll(".product-tabs [data-view]").forEach(b=>{const active=b.dataset.view===state.view||(state.view==="algorithm"&&b.dataset.view==="competition");b.classList.toggle("active",active);b.setAttribute("aria-pressed",String(active));});
  $("app").innerHTML=(pages[state.view]||competition)();chart();
 }
 function resolveMidasView(){
  const requested=new URLSearchParams(location.search).get("view");
  // Preserve old bookmarks without retaining the deleted Inicio page.
- if(requested==="overview"){
+ if(requested==="overview"||requested==="archive"){
   const u=new URL(location.href);u.searchParams.set("view","competition");
   history.replaceState({view:"competition"},"",u);
   return "competition";
