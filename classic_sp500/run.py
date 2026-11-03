@@ -189,6 +189,82 @@ def _close_position(book, ticker, value, day, config, reason):
     book["events"].append({"date": day, "ticker": ticker, "type": "sell", "reason": reason})
 
 
+def _settle_book(config, name, book, day, today):
+    """Existing next-open, fees and conservative stop/target policy, in place."""
+    p = config["execution"]
+    for ticker, pos in list(book["positions"].items()):
+        bar = today[ticker]
+        split = float(bar.get("split", 0))
+        if split:
+            pos["shares"] *= market._positive(split, "split")
+            if pos["stop"] is not None:
+                pos["stop"] /= split
+            if pos["target"] is not None:
+                pos["target"] /= split
+            book["events"].append({"date": day, "ticker": ticker, "type": "split", "ratio": split})
+        dividend = float(bar.get("dividend", 0))
+        if dividend:
+            amount = pos["shares"] * dividend
+            book["cash"] += amount
+            pos["dividends"] += amount
+    sells = sorted(t for t, order in book["pending"].items() if order["side"] == "sell")
+    for ticker in sells:
+        if ticker not in book["positions"]:
+            raise ValueError("Orphan sell signal")
+        _close_position(book, ticker, today[ticker]["open"], day, config, "signal_next_open")
+    buy_list = sorted(t for t, order in book["pending"].items() if order["side"] == "buy")
+    nav_at_open = book["cash"] + sum(pos["shares"] * today[t]["open"] for t, pos in book["positions"].items())
+    if buy_list:
+        if name == "buy_hold_equal_weight":
+            budget = nav_at_open * p["capital_fraction"] / 503
+        else:
+            budget = min(nav_at_open * p["capital_fraction"] / len(buy_list),
+                         nav_at_open * (p["capital_fraction"] if name == BENCHMARK else p["max_weight"]))
+        for ticker in buy_list:
+            if ticker in book["positions"]:
+                continue
+            if ticker not in today:
+                # No same-session OHLC => no evidence of an executable fill.
+                # Keep the remaining buy budgets unchanged; never redistribute
+                # unavailable constituents' cash or use a later day's price.
+                book["events"].append({
+                    "date": day, "ticker": ticker,
+                    "type": "unfilled_missing_dated_bar",
+                    "reason": "required same-session OHLC unavailable",
+                })
+                continue
+            price = market._positive(today[ticker]["open"], "buy open") * (1 + p["slippage"])
+            scale = 10 ** p["fractional_precision"]
+            shares = math.floor(budget / (price * (1 + p["commission"])) * scale) / scale
+            cost = shares * price * (1 + p["commission"])
+            if cost < p["minimum_notional"] or cost > book["cash"] + 1e-7:
+                book["events"].append({"date": day, "ticker": ticker, "type": "unfilled"})
+                continue
+            spec = config["strategies"].get(name, {})
+            book["positions"][ticker] = {
+                "shares": shares, "entry_date": day, "entry_price": price,
+                "cost": cost, "dividends": 0.0,
+                "stop": price * (1 - spec["stop_loss"]) if spec.get("stop_loss") else None,
+                "target": price * (1 + spec["take_profit"]) if spec.get("take_profit") else None}
+            book["cash"] -= cost
+            book["events"].append({"date": day, "ticker": ticker, "type": "buy", "shares": shares})
+    book["pending"] = {}
+    # Conservative candle execution: if stop and target both occur, stop wins.
+    for ticker, pos in list(book["positions"].items()):
+        bar = today[ticker]
+        if pos["stop"] is not None and bar["low"] <= pos["stop"]:
+            price = min(bar["open"], pos["stop"])
+            _close_position(book, ticker, price, day, config, "stop")
+        elif pos["target"] is not None and bar["high"] >= pos["target"]:
+            price = max(bar["open"], pos["target"])
+            _close_position(book, ticker, price, day, config, "target")
+    book["nav"] = book["cash"] + sum(pos["shares"] * market._positive(today[t]["close"], "mark")
+                                       for t, pos in book["positions"].items())
+    if not math.isfinite(book["nav"]) or book["nav"] < 0:
+        raise ValueError("Invalid classic USD NAV")
+    book["equity"].append({"date": day, "nav": book["nav"]})
+
+
 def settle(config, state, day, previous, today, *, allow_partial=False):
     """Pure paper transition. Isolate unpriced books, never invent a daily NAV.
 
@@ -235,77 +311,7 @@ def settle(config, state, day, previous, today, *, allow_partial=False):
                     "missing_tickers": missing,
                 })
                 continue
-        for ticker, pos in list(book["positions"].items()):
-            bar = today[ticker]
-            split = float(bar.get("split", 0))
-            if split:
-                pos["shares"] *= market._positive(split, "split")
-                if pos["stop"] is not None:
-                    pos["stop"] /= split
-                if pos["target"] is not None:
-                    pos["target"] /= split
-                book["events"].append({"date": day, "ticker": ticker, "type": "split", "ratio": split})
-            dividend = float(bar.get("dividend", 0))
-            if dividend:
-                amount = pos["shares"] * dividend
-                book["cash"] += amount
-                pos["dividends"] += amount
-        sells = sorted(t for t, order in book["pending"].items() if order["side"] == "sell")
-        for ticker in sells:
-            if ticker not in book["positions"]:
-                raise ValueError("Orphan sell signal")
-            _close_position(book, ticker, today[ticker]["open"], day, config, "signal_next_open")
-        buy_list = sorted(t for t, order in book["pending"].items() if order["side"] == "buy")
-        nav_at_open = book["cash"] + sum(pos["shares"] * today[t]["open"] for t, pos in book["positions"].items())
-        if buy_list:
-            if name == "buy_hold_equal_weight":
-                budget = nav_at_open * p["capital_fraction"] / 503
-            else:
-                budget = min(nav_at_open * p["capital_fraction"] / len(buy_list),
-                             nav_at_open * (p["capital_fraction"] if name == BENCHMARK else p["max_weight"]))
-            for ticker in buy_list:
-                if ticker in book["positions"]:
-                    continue
-                if ticker not in today:
-                    # No same-session OHLC => no evidence of an executable fill.
-                    # Keep the remaining buy budgets unchanged; never redistribute
-                    # unavailable constituents' cash or use a later day's price.
-                    book["events"].append({
-                        "date": day, "ticker": ticker,
-                        "type": "unfilled_missing_dated_bar",
-                        "reason": "required same-session OHLC unavailable",
-                    })
-                    continue
-                price = market._positive(today[ticker]["open"], "buy open") * (1 + p["slippage"])
-                scale = 10 ** p["fractional_precision"]
-                shares = math.floor(budget / (price * (1 + p["commission"])) * scale) / scale
-                cost = shares * price * (1 + p["commission"])
-                if cost < p["minimum_notional"] or cost > book["cash"] + 1e-7:
-                    book["events"].append({"date": day, "ticker": ticker, "type": "unfilled"})
-                    continue
-                spec = config["strategies"].get(name, {})
-                book["positions"][ticker] = {
-                    "shares": shares, "entry_date": day, "entry_price": price,
-                    "cost": cost, "dividends": 0.0,
-                    "stop": price * (1 - spec["stop_loss"]) if spec.get("stop_loss") else None,
-                    "target": price * (1 + spec["take_profit"]) if spec.get("take_profit") else None}
-                book["cash"] -= cost
-                book["events"].append({"date": day, "ticker": ticker, "type": "buy", "shares": shares})
-        book["pending"] = {}
-        # Conservative candle execution: if stop and target both occur, stop wins.
-        for ticker, pos in list(book["positions"].items()):
-            bar = today[ticker]
-            if pos["stop"] is not None and bar["low"] <= pos["stop"]:
-                price = min(bar["open"], pos["stop"])
-                _close_position(book, ticker, price, day, config, "stop")
-            elif pos["target"] is not None and bar["high"] >= pos["target"]:
-                price = max(bar["open"], pos["target"])
-                _close_position(book, ticker, price, day, config, "target")
-        book["nav"] = book["cash"] + sum(pos["shares"] * market._positive(today[t]["close"], "mark")
-                                           for t, pos in book["positions"].items())
-        if not math.isfinite(book["nav"]) or book["nav"] < 0:
-            raise ValueError("Invalid classic USD NAV")
-        book["equity"].append({"date": day, "nav": book["nav"]})
+        _settle_book(config, name, book, day, today)
     result["last_session"] = day
     return result, True
 
@@ -323,6 +329,78 @@ def freeze(config, state, day, decisions, coverage):
         book["signal_counts"].append({"date": day, "buys": sum(o["side"] == "buy" for o in book["pending"].values())})
     new["coverage"].append({"date": day, **coverage})
     return new
+
+
+def recover_one_session_books(config, state, day, previous, today, decisions, coverage,
+                              *, quote_identity, recorded_at):
+    """Disclosed late calculation of ONE quarantined session, not a new cohort.
+
+    All orders were already frozen at the immediately preceding close. Reuse
+    the unchanged execution policy and exact common bars. Never bridge a
+    multi-session signal gap or simulate a merger as an ordinary price bar.
+    The caller must enforce the current calendar's before-next-open gate.
+    """
+    validate_state(state, config)
+    if state["last_session"] != day:
+        raise ValueError("Recovery requires the current common market session")
+    if not quote_identity.get("snapshot_sha256") or not quote_identity.get("effective_sha256"):
+        raise ValueError("Recovery lacks immutable common quote identity")
+    if (coverage.get("total") != 503 or coverage.get("eligible", 0) <
+            math.ceil(503 * config["execution"]["minimum_eligible_coverage"])):
+        raise ValueError("Recovery lacks full-universe signal coverage")
+    result = copy.deepcopy(state)
+    recovered, blocked = [], {}
+    for name, original in state["books"].items():
+        pause = original.get("paused_missing_quotes")
+        if not pause or config["strategies"].get(name, {}).get("kind") == "equal_weight_hold":
+            continue
+        if original["equity"][-1]["date"] != previous or pause.get("since") != day:
+            blocked[name] = "multi_session_signal_gap_requires_review"
+            continue
+        if any(order.get("signal_date") != previous for order in original["pending"].values()):
+            blocked[name] = "pending_order_not_frozen_at_previous_close"
+            continue
+        required = set(original["positions"]) | set(original["pending"])
+        try:
+            if not required <= set(today):
+                raise ValueError("missing_exact_common_bar")
+            for ticker in required:
+                row = today[ticker]
+                o, h, l, c = (float(row[k]) for k in ("open", "high", "low", "close"))
+                if (not all(math.isfinite(x) and x > 0 for x in (o, h, l, c))
+                        or l > min(o, c) or h < max(o, c)):
+                    raise ValueError("invalid_exact_common_bar")
+                if row.get("split", 0) or row.get("dividend", 0):
+                    raise ValueError("corporate_action_requires_review")
+            book = copy.deepcopy(original)
+            del book["paused_missing_quotes"]
+            old_trades = len(book["trades"])
+            old_events = len(book["events"])
+            _settle_book(config, name, book, day, today)
+            disclosure = {"late_recorded_verified_date": True,
+                          "recorded_at_utc": recorded_at,
+                          "quote_identity": copy.deepcopy(quote_identity),
+                          "reconciliation_kind": "previously_frozen_order_exact_bar_replay"}
+            book["equity"][-1].update(disclosure)
+            for row in book["trades"][old_trades:] + book["events"][old_events:]:
+                row.update(disclosure)
+            # This NEW decision is made before the next opening, using only
+            # the completed session. No intermediate historic signal is made.
+            book["pending"] = frozen_orders(config, name, decisions.get(name, []),
+                                             book["positions"], day)
+            book["signal_counts"].append({"date": day,
+                "buys": sum(o["side"] == "buy" for o in book["pending"].values()),
+                "recorded_at_utc": recorded_at})
+            book["events"].append({"date": day,
+                "type": "single_session_quarantine_reconciled",
+                "frozen_signal_session": previous, "signal_coverage": copy.deepcopy(coverage),
+                **disclosure})
+            result["books"][name] = book
+            recovered.append(name)
+        except (ValueError, KeyError, TypeError, OverflowError) as exc:
+            blocked[name] = str(exc)
+    validate_state(result, config)
+    return result, recovered, blocked
 
 
 def recover_flat_gap(config, state, day, previous, decisions, coverage):
@@ -496,11 +574,28 @@ def run(config_path, state_path):
             reviews=market.read(ROOT / "market_data/corporate_action_reviews.json"))
         validate_state(state, config)
         if day <= state["last_session"]:
-            if recovered:
+            active_recovered, active_blocked = [], {}
+            eligible = any(book.get("paused_missing_quotes", {}).get("since") == day
+                           and book["equity"][-1]["date"] == previous
+                           and config["strategies"].get(name, {}).get("kind") != "equal_weight_hold"
+                           for name, book in state["books"].items())
+            if day == state["last_session"] and eligible:
+                frames, today = fetch_live(config, day, previous, symbols,
+                                           required=required_live_quotes(state))
+                decisions, coverage = rank_signals(config, frames, day)
+                _bars, identity = quotes(day)
+                state, active_recovered, active_blocked = recover_one_session_books(
+                    config, state, day, previous, today, decisions, coverage,
+                    quote_identity=identity,
+                    recorded_at=datetime.now(timezone.utc).isoformat(timespec="seconds"))
+            if recovered or active_recovered:
                 market.atomic_write(state_path, state)
-            return {"status": "passive_marks_recovered" if recovered else "already_recorded",
+            return {"status": "quarantined_session_reconciled" if active_recovered else
+                              "passive_marks_recovered" if recovered else "already_recorded",
                     "session": day, "recovered_books": recovered,
-                    "recovery_blocked": blocked}
+                    "recovery_blocked": blocked,
+                    "active_recovered_books": active_recovered,
+                    "active_recovery_blocked": active_blocked}
     gap = state is not None and previous != state["last_session"]
     if gap and any(book["positions"] for book in state["books"].values()):
         # Never skip held exposures or treat future prices as historic prices.
