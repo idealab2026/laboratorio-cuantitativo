@@ -98,19 +98,100 @@ def selected_scores(ledger):
     return scored
 
 def add_event(target, day, side, ticker, price=None, quantity=None, reason=None,
-              basis="not_recorded", origin="executed_ledger", signal_date=None):
+              basis="not_recorded", origin="executed_ledger", signal_date=None,
+              price_basis=None):
     if not date(day) or not clean_ticker(ticker):
         return
     target[day].append({
         "ticker":ticker,"side":side,"price":number(price),"quantity":number(quantity),
         "reason":reason or "Motivo individual no documentado.","reason_basis":basis,
-        "evidence":origin,"signal_date":date(signal_date)
+        "evidence":origin,"signal_date":date(signal_date),
+        "price_basis":price_basis or ("book_fill" if number(price) else "not_recorded")
     })
+
+
+def corporate_events(ledger):
+    """Return original corporate conversion records, never exchange trades."""
+    events=[]
+    for item in ledger.get("events",[]):
+        if not isinstance(item,dict) or item.get("type")!="corporate_merger_entitlement":
+            continue
+        parts=str(item.get("action_id","")).split("_")
+        if len(parts)<3:continue
+        previous,successor=clean_ticker(parts[0]),clean_ticker(parts[1])
+        original=item.get("original_position")
+        if not previous or not successor or not isinstance(original,dict) or not date(item.get("date")):
+            continue
+        if number(original.get("shares")) is None or number(original.get("entry_price")) is None:
+            continue
+        events.append((previous,successor,item))
+    return events
+
+def classic_execution_prices(ledger):
+    """Resolve classic buy/sell fills from verifiable book data and fee math.
+
+    A converted predecessor's original_position retains its real entry fill.
+    Closed trades store gross cost and net proceeds; recover price only when
+    matching a unique executed buy with shares and a documented commission.
+    Missing or ambiguous information is deliberately not guessed.
+    """
+    out={}
+    positions=ledger.get("positions",{})
+    if not isinstance(positions,dict):positions={}
+    for ticker,position in positions.items():
+        if not isinstance(position,dict):continue
+        entry=date(position.get("entry_date"))
+        price=number(position.get("entry_price"))
+        if entry and price and clean_ticker(ticker):
+            out[(entry,ticker,"buy")]=(price,"position_entry")
+    for old,new,change in corporate_events(ledger):
+        pos=change["original_position"]
+        entry=date(pos.get("entry_date"))
+        if entry:
+            out[(entry,old,"buy")]=(number(pos["entry_price"]),"corporate_original_entry")
+    configuration,_=read("classic_sp500/config.json")
+    if not isinstance(configuration,dict):return out
+    commission=(configuration.get("execution") or {}).get("commission")
+    if not isinstance(commission,(int,float)) or isinstance(commission,bool) or not 0<=commission<.05:
+        return out
+    buys=defaultdict(list)
+    splits=defaultdict(list)
+    for event in ledger.get("events",[]):
+        if not isinstance(event,dict):continue
+        ticker=clean_ticker(event.get("ticker"))
+        if not ticker or not date(event.get("date")):continue
+        if event.get("type")=="buy" and number(event.get("shares")):
+            buys[(event["date"],ticker)].append(number(event["shares"]))
+        if event.get("type")=="split":
+            splits[ticker].append(event["date"])
+    for trade in ledger.get("trades",[]):
+        if not isinstance(trade,dict):continue
+        ticker=clean_ticker(trade.get("ticker"))
+        entry=date(trade.get("entry_date"));exit_day=date(trade.get("exit_date"))
+        if not ticker or not entry or not exit_day or entry>=exit_day:continue
+        records=buys[(entry,ticker)]
+        if len(records)!=1:continue
+        if any(entry<split<=exit_day for split in splits[ticker]):continue
+        qty=records[0]
+        cost=number(trade.get("entry_cost"))
+        proceeds=number(trade.get("proceeds"))
+        dividends=trade.get("dividends")
+        pnl=trade.get("net_pnl")
+        if cost is None or proceeds is None:continue
+        if isinstance(dividends,(int,float)) and isinstance(pnl,(int,float)):
+            if abs((proceeds+dividends-cost)-pnl)>max(1e-5,abs(pnl)*1e-8):
+                continue
+        # Gross buy cost includes commission; net sell proceeds exclude it.
+        if (entry,ticker,"buy") not in out:
+            out[(entry,ticker,"buy")]=(cost/qty/(1+commission),"trade_entry_cost_derived")
+        out[(exit_day,ticker,"sell")]=(proceeds/qty/(1-commission),"trade_net_proceeds_derived")
+    return out
 
 def normalize_ledger(ledger, source):
     """Return dated executed actions; do not present unfilled signals as purchases."""
     out=defaultdict(list)
     score_map=selected_scores(ledger)
+    classic_prices=classic_execution_prices(ledger) if source=="classic_sp500_state/ledger.json" else {}
     events=ledger.get("events",[])
     if isinstance(events,list):
         for event in events:
@@ -125,11 +206,17 @@ def normalize_ledger(ledger, source):
                 reason,basis=rule_reason(event,score)
                 qty=event.get("quantity",event.get("shares"))
                 pr=event.get("price",event.get("price_eur"))
+                price_basis="book_fill" if number(pr) else "not_recorded"
+                recovered=classic_prices.get((day,ticker,action))
+                if pr is None and recovered:
+                    pr,price_basis=recovered
                 if pr is None and action=="buy":
                     holding=ledger.get("positions",{}).get(ticker)
                     if isinstance(holding,dict) and holding.get("entry_date")==day:
                         pr=holding.get("entry_price",holding.get("entry_price_eur"))
-                add_event(out,day,action,ticker,pr,qty,reason,basis,source,event.get("signal_date"))
+                        if number(pr):price_basis="position_entry"
+                add_event(out,day,action,ticker,pr,qty,reason,basis,source,
+                          event.get("signal_date"),price_basis=price_basis)
     # Closed trades with explicit entry/exit prices are a separate, verifiable
     # representation; skip them if corresponding event rows already exist.
     trades=ledger.get("trades",[])
