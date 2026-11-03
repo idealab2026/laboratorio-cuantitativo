@@ -161,7 +161,7 @@ test("Operation audit documents real fills, inferred holds and dated trade marke
  assert.ok(operationTab.includes("Dinero empleado"));
  assert.ok(operationTab.includes("Nº acciones compradas"));
  assert.ok(operationTab.includes("VENTA · CERRADA"));
- assert.ok(operationTab.includes("10,00 %"));
+ assert.ok(operationTab.includes("2,00 %"));
  assert.ok(html.includes('id="audit-ticker"'));
  assert.ok(html.includes("Precio (USD)"));
  assert.ok(!html.includes("Cierre 2026-10-05:"));
