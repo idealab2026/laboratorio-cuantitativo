@@ -107,6 +107,15 @@ test("Migrated original engine reconciles 64 slots with dated accounting and rej
  // Reconcile independently exported accounting for every named strategy, not array order.
  for(const [slot,h] of historic){
   const r=result.bySlot.get(slot);
+  if(slot==="IL-044"){
+   const raw=readFileSync(new URL("../AGENTE/genetic_invest_agent/registro_historico/diario_portfolio_forward_2026-10-12.json",import.meta.url),"utf8");
+   const canonical=JSON.parse(raw);
+   assert.ok(r,"canonical original genetic diary must be linked");
+   assert.equal(r.currency,"USD");
+   assert.equal(r.last_session,canonical.last_session);
+   assert.deepEqual(r.history,Object.keys(canonical.equity_history).sort().map(date=>({date,nav:canonical.equity_history[date]})));
+   continue;
+  }
   if(!h.active){
    if(r)assert.ok(r.history.every(p=>p.date>"2026-10-30"),slot+" must not acquire another algorithm's historical diary");
    continue;
