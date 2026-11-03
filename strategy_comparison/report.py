@@ -635,10 +635,23 @@ def build(registry, paper_config, paper_state=None, legacy_state=None, now=None,
                 raise ValueError("Capital genético cero")
             nav = _equity(history[dates[-1]], "patrimonio genético")
             row.update(status="diario_heredado_observado", first_session=dates[0], last_session=dates[-1],
-                       initial_capital=initial, last_equity=nav,
+                       initial_capital=initial, last_equity=nav, currency="USD",
                        return_pct=round(100 * (nav / initial - 1), 6),
                        equity_history=[{"date": date[:10], "nav": _equity(history[date], "patrimonio genético histórico")}
                                        for date in dates[-520:]])
+            row["day_return_pct"] = _daily_return(row["equity_history"], "genético activo")
+            pending = legacy_state.get("pending", {})
+            row.update(_activity(legacy_state.get("positions"),
+                                 [{"ticker": ticker} for ticker in list(pending.get("buys", {})) + list(pending.get("sells", []))],
+                                 pending_label="órdenes para próxima apertura"))
+            inactive = legacy_state.get("inactive_sessions", [])
+            if inactive:
+                row["inactive_sessions"] = list(inactive)
+                row["outage_control"] = legacy_state.get("outage_control", {})
+                row["activity_label"] += " · Inactividad sin operaciones: " + ", ".join(inactive)
+                first = row["outage_control"].get("first_trading_session")
+                if first:
+                    row["activity_label"] += " · Reanudación desde apertura: " + first
         rows.append(row)
     for item in ideas:
         if item["id"] in TFM_IDS and tfm_config is not None:
@@ -759,12 +772,27 @@ def markdown(report):
     return "\n".join(lines)
 
 
+
+def cohort_report(path, label, active):
+    raw = Path(path).read_bytes()
+    state = json.loads(raw)
+    history = state.get("equity_history")
+    if not isinstance(history, dict) or not history:
+        raise ValueError("Cohorte genética sin curva fechada")
+    points = _equity_history([{"date": day, "nav": history[day]} for day in sorted(history)], label)
+    return {"label": label, "active": active, "source_path": str(path),
+            "source_sha256": hashlib.sha256(raw).hexdigest(),
+            "first_session": points[0]["date"], "last_session": points[-1]["date"],
+            "initial_capital": _equity(state.get("initial_capital"), label),
+            "model": state.get("model"), "equity_history": points}
+
+
 def main(argv=None):
     parser = argparse.ArgumentParser(description="Tablero de todas las estrategias MIDAS")
     parser.add_argument("--registry", required=True)
     parser.add_argument("--paper-config", required=True)
     parser.add_argument("--paper-state", required=True)
-    parser.add_argument("--legacy-state")
+    parser.add_argument("--legacy-state", default="AGENTE/genetic_invest_agent/registro_historico/diario_portfolio_forward_2026-10-12.json")
     parser.add_argument("--tfm-config")
     parser.add_argument("--tfm-state")
     parser.add_argument("--weekly-ml-config")
@@ -803,6 +831,12 @@ def main(argv=None):
                     timesfm_daily_state=_read(args.timesfm_daily_state, optional=True) if args.timesfm_daily_state else None,
                     classic_sp500_config=_read(args.classic_sp500_config) if args.classic_sp500_config and Path(args.classic_sp500_config).exists() else None,
                     classic_sp500_state=_read(args.classic_sp500_state, optional=True) if args.classic_sp500_state else None)
+    # Preserve each original cohort as its own dated curve and file identity.
+    # The strategy row above reads only the canonical active cohort.
+    report["genetic_cohorts"] = [cohort_report(path, label, active) for path, label, active in (
+        ("AGENTE/genetic_invest_agent/registro_historico/diario_portfolio.json", "Histórico de cierre", False),
+        ("AGENTE/genetic_invest_agent/registro_historico/diario_portfolio_forward.json", "Prospectivo archivado", False),
+        (args.legacy_state, "Prospectivo activo", True)) if path and Path(path).is_file()]
     output = Path(args.output)
     source_health = Path(__file__).resolve().parents[1] / "market_data/source_health.json"
     if source_health.is_file():

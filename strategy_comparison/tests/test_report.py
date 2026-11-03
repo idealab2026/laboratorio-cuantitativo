@@ -2,12 +2,14 @@ import copy
 import json
 import sys
 import unittest
+import tempfile
+import hashlib
 from datetime import datetime, timezone
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
-from report import _config_hash, _activity, build, markdown
+from report import _config_hash, _activity, build, markdown, cohort_report
 
 
 class ReportTests(unittest.TestCase):
@@ -59,6 +61,32 @@ class ReportTests(unittest.TestCase):
         self.assertEqual((new["first_session"], new["last_session"], new["return_pct"]),
                          ("2026-09-28", "2026-09-29", 1.0))
         self.assertIn("no forman una clasificación común", markdown(result))
+
+    def test_genetic_active_outage_is_visible_and_archives_never_join_its_curve(self):
+        active = {"initial_capital": 100000., "equity_history": {
+            "2026-10-28": 101000., "2026-11-02": 103000.},
+            "positions": {"TEST": {"shares": 10}}, "pending": {"buys": {}, "sells": []},
+            "inactive_sessions": ["2026-10-29", "2026-10-30", "2026-11-02"],
+            "outage_control": {"first_trading_session": "2026-11-04"}}
+        row = next(x for x in build(self.registry, self.config, legacy_state=active,
+                                   now=self.now)["tracks"] if x["id"] == "genetic_sp500_legacy")
+        self.assertEqual(row["currency"], "USD")
+        self.assertEqual(row["open_positions_count"], 1)
+        self.assertAlmostEqual(row["day_return_pct"], 1.980198)
+        self.assertIn("Inactividad sin operaciones", row["activity_label"])
+        self.assertIn("Reanudación desde apertura: 2026-11-04", row["activity_label"])
+        self.assertEqual([p["date"] for p in row["equity_history"]], sorted(active["equity_history"]))
+        with tempfile.TemporaryDirectory() as directory:
+            summaries = []
+            for index, day in enumerate(["2026-02-27", "2026-09-29", "2026-10-12"]):
+                path = Path(directory) / (str(index) + ".json")
+                raw = json.dumps({"initial_capital": 100000., "equity_history": {day: 100000. + index}}).encode()
+                path.write_bytes(raw)
+                summaries.append(cohort_report(path, str(index), index == 2))
+                self.assertEqual(summaries[-1]["source_sha256"], hashlib.sha256(raw).hexdigest())
+                self.assertEqual(path.read_bytes(), raw)
+            self.assertEqual([s["first_session"] for s in summaries], ["2026-02-27", "2026-09-29", "2026-10-12"])
+            self.assertEqual([s["active"] for s in summaries], [False, False, True])
 
     def test_daily_change_uses_previous_valuation_and_preserves_first_day_unknown(self):
         paper = {"config_hash": _config_hash(self.config), "first_session": "2026-09-28",
