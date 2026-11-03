@@ -459,7 +459,8 @@ function full(){
  button("Exportar inventario CSV","full-export","csv","outline-btn")+'</div>'+
  '<p class="table-note">Operaciones simuladas con capital virtual y precios de mercado. Cada fila indica su último cierre; una fecha antigua o una valoración pausada no acredita actualización diaria.</p>'+
  '<p class="table-note"><span id="full-count">'+(visible.length+proposals.length)+'</span> de '+(meta.count+(state.strategyCandidates?.candidates.length||0))+' entradas (64 funciones + propuestas independientes) · N/D significa no verificado, nunca rentabilidad cero</p>'+
- '<div class="table-scroll table-compact"><table><thead><tr><th>Estrategia / ID</th><th>Familia</th><th>Actividad</th><th>Fecha</th><th>Divisa</th><th class="number">P/L acumulado</th><th class="number">P/L día</th><th class="number">Volatilidad</th><th class="number">Drawdown</th><th class="number">Posiciones / órdenes</th><th>Comparabilidad</th><th>Curva</th></tr></thead><tbody id="full-rows">'+fullRosterRows()+'</tbody></table></div>'+
+ '<p class="table-note">Pulsa en cualquier cabecera para ordenar. Los N/D permanecen al final y la ordenación visual no implica comparabilidad económica entre campañas.</p>'+
+ '<div class="table-scroll table-compact full-competition-table"><table><thead><tr>'+fullRosterHeaders()+'</tr></thead><tbody id="full-rows">'+fullRosterRows()+'</tbody></table></div>'+
  (candidate?card('<h3>65 · '+esc(candidate.name)+' — propuesta experimental</h3>'+
  '<p><strong>Objetivo:</strong> '+esc(candidate.subject)+'</p>'+
  '<p><strong>Método:</strong> '+esc(candidate.method)+'</p>'+
@@ -563,14 +564,26 @@ $("app").addEventListener("click",e=>{
   state.detailOpen=false;render();
  }
  else if(action==="paper-select"){state.paperDetail=value;render();}
+ else if(action==="full-column"){
+  if(!FULL_SORT_KEYS.includes(value))return;
+  if(state.fullRosterSort===value)state.fullRosterAsc=!state.fullRosterAsc;
+  else{
+   state.fullRosterSort=value;
+   state.fullRosterAsc=["name","group","activity","currency"].includes(value);
+  }
+  // Preserve horizontal table position when sorting on a small screen.
+  const left=document.querySelector("#full-rows")?.closest(".table-scroll")?.scrollLeft||0;
+  render();
+  const scroller=document.querySelector("#full-rows")?.closest(".table-scroll");
+  if(scroller)scroller.scrollLeft=left;
+ }
  else if(action==="full-export"){
   if(state.fullRoster){
-   const rows=filterRoster(state.fullRoster,{group:state.fullRosterGroup,query:state.fullRosterQuery});
-   const proposals=state.strategyCandidates?filterStrategyCandidates(state.strategyCandidates,{group:state.fullRosterGroup,query:state.fullRosterQuery}):[];
    download("midas-competicion-64-y-propuestas.csv",[
     ["ID","Nombre","Familia","Fase técnica","Estado económico","Actividad","Rentabilidad","Riesgo","Comparabilidad"],
-    ...rows.map(x=>{const r=economicPaperRecord(x.slot);return [x.slot,x.name,x.group,technicalStage(x.slot).label,r?.historical?"archivo_historico":r?"fuente_verificada":"sin_diario",r?.activity||"N/D",r?.return_pct??"N/D",r?.risk?.max_drawdown_pct??"N/D",r?.comparison?.eligible?"misma referencia":"no comparable"];}),
-    ...proposals.map(c=>[c.id,c.name,c.group,"Investigación sin feed satelital","No iniciado",c.status,"N/D","N/D","no comparable"])
+    ...sortedFullRosterRows().map(({id,name,group,record,candidate})=>candidate?
+     [candidate.id,candidate.name,candidate.group,"Investigación sin feed satelital","No iniciado",candidate.status,"N/D","N/D","no comparable"]:
+     [id,name,group,technicalStage(id).label,record?.historical?"archivo_historico":record?"diario_paper":"sin_diario",record?.activity||"N/D",record?.return_pct??"N/D",record?.risk?.max_drawdown_pct??"N/D",record?.comparison?.eligible?"misma referencia":"no comparable"])
    ]);
   }
  }
