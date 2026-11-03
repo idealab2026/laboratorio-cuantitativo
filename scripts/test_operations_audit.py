@@ -22,7 +22,7 @@ class OperationsAuditTests(unittest.TestCase):
                 for event in session["actions"]:
                     self.assertIn(event["side"],{"buy","sell","hold"})
                     self.assertIn(event["reason_basis"],{"recorded","not_recorded",
-                                                       "inferred_position_continuity"})
+                                                       "inferred_position_continuity","engine_rule"})
                     if event["side"]=="hold":
                         self.assertIsNone(event["price"])
                         self.assertEqual(event["reason_basis"],"inferred_position_continuity")
