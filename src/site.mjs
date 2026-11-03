@@ -388,53 +388,92 @@ function economicPaperRecord(slot){
   risk:{volatility_pct:null,max_drawdown_pct:h.drawdown},comparison:{eligible:false},
   history:state.historicalCurves.get(slot)||[],historical:true};
 }
+function originalStrategyName(item){
+ return state.originalPaper?.labels?.get(item.slot)||item.name;
+}
+function compactGroup(group){
+ return ({
+  "US · Cartera original 8 activos":"8 activos","S&P 500 · cartera ampliada":"S&P 500",
+  "ML semanal · vigente":"ML semanal","ML semanal · legado":"ML legado",
+  "Selección multicriterio · riesgo":"Multicriterio","Ciclo de capital":"Ciclo capital",
+  "Compra en caídas":"Buy The Dip","TimesFM · semanal":"TimesFM sem.",
+  "TimesFM · diario":"TimesFM día","Genético · histórico":"Genético",
+  "Predicción cuantitativa · cuatro enfoques":"Predicción",
+  "Investigación histórica":"Histórico"
+ })[group]||group;
+}
+function shortPaperDate(raw){
+ return typeof raw==="string"&&/^\d{4}-\d{2}-\d{2}$/.test(raw)
+  ?raw.slice(8)+"/"+raw.slice(5,7)+"/"+raw.slice(2,4):"N/D";
+}
+function compactCell(label,html,cls="",tooltip=""){
+ return '<td data-label="'+esc(label)+'"'+(cls?' class="'+esc(cls)+'"':"")+
+  (tooltip?' title="'+esc(tooltip)+'"':"")+'>'+html+'</td>';
+}
 function sortedFullRosterRows(){
  if(!state.fullRoster)return [];
- const existing=filterRoster(state.fullRoster,{group:state.fullRosterGroup,query:state.fullRosterQuery}).map(item=>({
-  id:item.slot,name:item.name,group:item.group,item,record:economicPaperRecord(item.slot),candidate:null
- }));
+ const q=state.fullRosterQuery.trim().toLocaleLowerCase("es");
+ const existing=filterRoster(state.fullRoster,{group:state.fullRosterGroup}).filter(item=>
+  !q||[item.slot,item.group,item.name,originalStrategyName(item)].some(x=>x.toLocaleLowerCase("es").includes(q))
+ ).map(item=>({id:item.slot,name:originalStrategyName(item),group:item.group,
+  item,record:economicPaperRecord(item.slot),candidate:null}));
  const proposals=state.strategyCandidates?
   filterStrategyCandidates(state.strategyCandidates,{group:state.fullRosterGroup,query:state.fullRosterQuery}).map(candidate=>({
    id:candidate.id,name:candidate.name,group:candidate.group,item:null,record:null,candidate
   })):[];
  return sortFullCompetitionRows([...existing,...proposals],{key:state.fullRosterSort,ascending:state.fullRosterAsc});
 }
+const FULL_COMPETITION_COLUMNS=[
+ ["name","Estrategia / ID"],["group","Familia"],["activity","Actividad"],["date","Fecha"],
+ ["currency","Divisa"],["return","P/L acumulado"],["day","P/L día"],
+ ["volatility","Volatilidad"],["drawdown","Drawdown"],
+ ["positions","Posiciones / órdenes"],["comparison","Comparabilidad"],["curve","Curva"]
+];
 function fullRosterHeaders(){
- const columns=[
-  ["name","Estrategia / ID"],["group","Familia"],["activity","Actividad"],
-  ["date","Fecha"],["currency","Divisa"],["return","P/L acumulado"],
-  ["day","P/L día"],["volatility","Volatilidad"],["drawdown","Drawdown"],
-  ["positions","Posiciones / órdenes"],["comparison","Comparabilidad"],["curve","Curva"]
- ];
- return columns.map(([key,label])=>{
+ return FULL_COMPETITION_COLUMNS.map(([key,label])=>{
   const selected=key===state.fullRosterSort;
   const arrow=selected?(state.fullRosterAsc?" ↑":" ↓"):" ↕";
   const numeric=["return","day","volatility","drawdown"].includes(key);
   const aria=selected?(state.fullRosterAsc?"ascending":"descending"):"none";
-  return '<th scope="col" aria-sort="'+aria+'"'+(numeric?' class="number"':'')+'><button type="button" class="table-sort" data-action="full-column" data-value="'+key+'" aria-label="Ordenar '+label+'" title="Ordenar '+label+'">'+label+'<span class="sort-indicator" aria-hidden="true">'+arrow+'</span></button></th>';
+  return '<th scope="col" aria-sort="'+aria+'"'+(numeric?' class="number"':'')+
+   '><button type="button" class="table-sort" data-action="full-column" data-value="'+key+
+   '" aria-label="Ordenar '+label+'" title="Ordenar '+label+'">'+label+
+   '<span class="sort-indicator" aria-hidden="true">'+arrow+'</span></button></th>';
  }).join("");
 }
+function fullMobileSortControls(){
+ return '<div class="competition-mobile-sort"><label>Ordenar por <select id="full-mobile-sort" aria-label="Columna de ordenación">'+
+  FULL_COMPETITION_COLUMNS.map(([key,label])=>'<option value="'+key+'"'+
+   (key===state.fullRosterSort?' selected':'')+'>'+label+'</option>').join("")+
+  '</select></label>'+button(state.fullRosterAsc?"Ascendente ↑":"Descendente ↓","full-sort-direction","toggle","outline-btn")+'</div>';
+}
 function fullRosterRows(){
- return sortedFullRosterRows().map(({item,record,candidate})=>{
-  if(candidate)return '<tr><td><strong>'+esc(candidate.name)+'</strong><small class="smallline">N.º '+candidate.ordinal+' · '+esc(candidate.id)+' · Investigación nueva</small></td>'+
-   '<td>'+esc(candidate.group)+'</td><td>'+esc(candidate.status)+'</td>'+
-   '<td>Sin primera señal</td><td>N/D</td><td class="number">N/D</td><td class="number">N/D</td>'+
-   '<td class="number">N/D</td><td class="number">N/D</td><td class="number">N/D</td>'+
-   '<td>Sin datos comparables</td><td>—</td></tr>';
-  const active=record?
-   esc(record.activity)+(record.pending_orders?" · "+record.pending_orders+" pendiente(s)":""):
-   state.historicalPaper?.has(item.slot)?"Sin diario histórico":"Sin diario institucional";
-  const risks=record?.risk||{},label=record?.historical?"Corte histórico · cohortes separadas":record?.comparison?.eligible?"Misma referencia certificada":"Sin evidencia comparable";
+ return sortedFullRosterRows().map(({id,name,group,record,candidate})=>{
+  const identity=compactCell("Estrategia",'<strong class="full-strategy-name" title="'+esc(name)+'">'+esc(name)+'</strong>'+
+   '<small class="smallline">'+esc(id)+(candidate?' · Investigación':'')+'</small>');
+  const family=compactCell("Familia",'<span class="clamped-cell">'+esc(compactGroup(group))+'</span>',"family-cell",group);
+  if(candidate)return '<tr class="competition-row">'+identity+family+
+   compactCell("Actividad",'<span class="clamped-cell">'+esc(candidate.status)+'</span>',"activity-cell",candidate.status)+
+   compactCell("Fecha","N/D")+compactCell("Divisa","N/D")+
+   ["P/L acumulado","P/L día","Volatilidad","Drawdown","Posiciones / órdenes"].map(x=>compactCell(x,"N/D","number")).join("")+
+   compactCell("Comparabilidad","Investigación","comparison-cell","Sin datos comparables")+
+   compactCell("Curva","—","curve-cell")+'</tr>';
+  const activity=record?.activity??"Sin diario institucional";
+  const risk=record?.risk||{},last=record?.last_session||"";
+  const label=record?.historical?"Histórico":record?.comparison?.eligible?"Comparable":"No comparable";
+  const detail=record?.historical?"Corte histórico · cohortes separadas":record?.comparison?.eligible?"Misma referencia certificada":"Sin evidencia comparable";
   const curve=record?sparkline(record.history.map(x=>x.nav),"Evolución del capital virtual · diario paper"):"—";
-  return '<tr><td><strong>'+esc(item.name)+'</strong><small class="smallline">'+esc(item.slot)+' · '+esc(record?.original?"Diario del motor migrado":record?.historical?"Diario histórico recuperado":technicalStage(item.slot).label)+'</small></td>'+
-   '<td>'+esc(item.group)+'</td><td>'+active+'</td>'+
-   '<td>'+esc(record?.last_session||"Sin datos")+'</td><td>'+esc(record?.currency||"N/D")+'</td>'+
-   '<td class="number">'+(record?pctText(record.return_pct):"N/D")+'</td>'+
-   '<td class="number">'+(record&&record.day_return_pct!==null?pctText(record.day_return_pct):"N/D")+'</td>'+
-   '<td class="number">'+(record&&risks.volatility_pct!==null?pctText(risks.volatility_pct):"N/D")+'</td>'+
-   '<td class="number">'+(record&&risks.max_drawdown_pct!==null?pctText(risks.max_drawdown_pct):"N/D")+'</td>'+
-   '<td class="number">'+(record?record.positions+" / "+record.pending_orders:"N/D")+'</td>'+
-   '<td>'+label+'</td><td>'+curve+'</td></tr>';
+  return '<tr class="competition-row">'+identity+family+
+   compactCell("Actividad",'<span class="clamped-cell">'+esc(activity.replace(/^Paper\s*·\s*/,""))+'</span>',"activity-cell",activity)+
+   compactCell("Fecha",esc(shortPaperDate(last)),"date-cell",last)+
+   compactCell("Divisa",esc(record?.currency||"N/D"),"currency-cell")+
+   compactCell("P/L acumulado",record?pctText(record.return_pct):"N/D","number")+
+   compactCell("P/L día",record&&record.day_return_pct!==null?pctText(record.day_return_pct):"N/D","number")+
+   compactCell("Volatilidad",record&&risk.volatility_pct!==null?pctText(risk.volatility_pct):"N/D","number")+
+   compactCell("Drawdown",record&&risk.max_drawdown_pct!==null?pctText(risk.max_drawdown_pct):"N/D","number")+
+   compactCell("Posiciones / órdenes",record?esc(String(record.positions??"N/D")+" / "+String(record.pending_orders??"N/D")):"N/D","number")+
+   compactCell("Comparabilidad",esc(label),"comparison-cell",detail)+
+   compactCell("Curva",curve,"curve-cell")+'</tr>';
  }).join("");
 }
 
@@ -443,10 +482,9 @@ function full(){
  const headText=head("COMPETICIÓN COMPLETA · CONTRATO DE MIGRACIÓN","MIDAS · 64 estrategias + 1 nueva propuesta satelital",
  "Cobertura funcional de las familias del laboratorio con columnas de actividad, rentabilidad, riesgo y comparabilidad. Los diarios históricos recuperados se muestran con sus fechas originales y se distinguen de la nueva operación institucional.");
  if(!d)return headText+card('<h3>Inventario no verificable</h3><p>El registro institucional está pendiente de carga o ha fallado su validación. No se sustituyen datos perdidos por simulaciones.</p>');
- const meta=verifyFullRoster(d),visible=filterRoster(d,{group:state.fullRosterGroup,query:state.fullRosterQuery});
+ const meta=verifyFullRoster(d),visibleCount=sortedFullRosterRows().length;
  
- const proposals=state.strategyCandidates?filterStrategyCandidates(state.strategyCandidates,{group:state.fullRosterGroup,query:state.fullRosterQuery}):[];
- const candidate=state.strategyCandidates?.candidates?.[0]||null;
+  const candidate=state.strategyCandidates?.candidates?.[0]||null;
  return headText+
  '<div class="source-health-strip"><div><span class="label">Funciones registradas</span><strong>'+meta.count+'</strong><small>'+meta.groups.length+' grupos funcionales</small></div>'+
  '<div><span class="label">Diarios paper disponibles</span><strong>'+(state.originalPaper?.count||(state.historicalPaper?[...state.historicalPaper.values()].filter(x=>x.active).length:0))+'</strong><small>'+(state.originalPaper?"Registro del motor: "+state.originalPaper.generatedAt:state.historicalPaper?"528 observaciones NAV · corte 30/10/2026":"Archivo pendiente de validación")+'</small></div>'+
@@ -461,8 +499,9 @@ function full(){
  button("Capital Cycle · IL-038","full-focus","IL-038","outline-btn")+' '+
  button("Buy The Dip · IL-039","full-focus","IL-039","outline-btn")+'</p>'+
  '<p class="table-note">Operaciones simuladas con capital virtual y precios de mercado. Cada fila indica su último cierre; una fecha antigua o una valoración pausada no acredita actualización diaria.</p>'+
- '<p class="table-note"><span id="full-count">'+(visible.length+proposals.length)+'</span> de '+(meta.count+(state.strategyCandidates?.candidates.length||0))+' entradas (64 funciones + propuestas independientes) · N/D significa no verificado, nunca rentabilidad cero</p>'+
+ '<p class="table-note"><span id="full-count">'+visibleCount+'</span> de '+(meta.count+(state.strategyCandidates?.candidates.length||0))+' entradas (64 funciones + propuestas independientes) · N/D significa no verificado, nunca rentabilidad cero</p>'+
  '<p class="table-note">Pulsa en cualquier cabecera para ordenar. Los N/D permanecen al final y la ordenación visual no implica comparabilidad económica entre campañas.</p>'+
+ fullMobileSortControls()+
  '<div class="table-scroll table-compact full-competition-table"><table><thead><tr>'+fullRosterHeaders()+'</tr></thead><tbody id="full-rows">'+fullRosterRows()+'</tbody></table></div>'+
  (candidate?card('<h3>65 · '+esc(candidate.name)+' — propuesta experimental</h3>'+
  '<p><strong>Objetivo:</strong> '+esc(candidate.subject)+'</p>'+
@@ -571,6 +610,7 @@ $("app").addEventListener("click",e=>{
   if(!["IL-038","IL-039"].includes(value))return;
   state.fullRosterGroup="";state.fullRosterQuery=value;render();
  }
+ else if(action==="full-sort-direction"){state.fullRosterAsc=!state.fullRosterAsc;render();}
  else if(action==="full-column"){
   if(!FULL_SORT_KEYS.includes(value))return;
   if(state.fullRosterSort===value)state.fullRosterAsc=!state.fullRosterAsc;
@@ -633,13 +673,14 @@ $("app").addEventListener("change",e=>{
  }
  if(el.id==="group-select"){state.group=el.value;state.detailOpen=false;render();}
  if(el.id==="full-group-select"){state.fullRosterGroup=el.value;render();}
+ if(el.id==="full-mobile-sort"){if(FULL_SORT_KEYS.includes(el.value)){state.fullRosterSort=el.value;state.fullRosterAsc=["name","group","activity","currency"].includes(el.value);render();}}
  if(el.id==="rank-select"){state.sort=el.value;state.asc=["name","group"].includes(el.value);state.detailOpen=false;render();}
  if(el.id==="thesis-sort"){state.thesisSort=el.value;render();}
  if(el.id==="issuer-sort"){state.issuerSort=el.value;state.issuerAsc=["ticker","company","market"].includes(el.value);render();}
  if(el.id==="journal-select"){state.strategy=el.value;render();}
 });
 $("app").addEventListener("input",e=>{
- if(e.target.id==="full-query"){state.fullRosterQuery=e.target.value;const tbody=$("full-rows");if(tbody)tbody.innerHTML=fullRosterRows();const n=$("full-count");if(n&&state.fullRoster)n.textContent=filterRoster(state.fullRoster,{group:state.fullRosterGroup,query:state.fullRosterQuery}).length+(state.strategyCandidates?filterStrategyCandidates(state.strategyCandidates,{group:state.fullRosterGroup,query:state.fullRosterQuery}).length:0);}
+ if(e.target.id==="full-query"){state.fullRosterQuery=e.target.value;const tbody=$("full-rows");if(tbody)tbody.innerHTML=fullRosterRows();const n=$("full-count");if(n&&state.fullRoster)n.textContent=sortedFullRosterRows().length;}
  if(e.target.id==="thesis-query"){state.query=e.target.value;const tbody=$("thesis-rows");if(tbody)tbody.innerHTML=thesisTableRows();}
  if(e.target.id==="issuer-query"){
   state.issuerQuery=e.target.value;
