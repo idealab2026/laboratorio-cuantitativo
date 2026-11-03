@@ -262,7 +262,12 @@ export function renderOperationsAudit(doc,id,selectedTicker=null){
     return '<tr><td><strong class="audit-action audit-'+a.side+'">'+esc(kind)+'</strong></td>'+
      '<td>'+esc(a.ticker)+(a.side==="corporate_action"?' → '+esc(a.successor_ticker):"")+
      '</td><td>'+valueCell(a,track.currency)+'</td><td>'+fmtUnits(a.quantity)+'</td>'+
-     '<td>'+esc(a.reason)+'<small class="smallline">'+esc(evidence)+
+     '<td>'+esc(a.reason)+(a.side==="corporate_action"?'<small class="smallline">Derecho societario: '+
+       fmtUnits(a.successor_quantity)+' '+esc(a.successor_ticker)+' + '+
+       fmt(a.receivable_cash)+' '+esc(track.currency||"")+
+       ' de cobro pendiente. Registrado: '+esc(a.recorded_at_utc)+
+       '. Sin ejecución de compra o venta.</small>':"")+
+     '<small class="smallline">'+esc(evidence)+
      (a.signal_date?' · señal '+esc(a.signal_date):"")+
      (a.rule_source?' · regla: '+esc(a.rule_source):"")+' · libro: '+esc(a.evidence)+'</small></td></tr>';
    }).join("")+'</tbody></table></div>':
