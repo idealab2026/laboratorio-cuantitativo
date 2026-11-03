@@ -7,8 +7,14 @@ const fmt=v=>num(v)?new Intl.NumberFormat("es-ES",{minimumFractionDigits:2,maxim
 const fmtUnits=v=>num(v)?new Intl.NumberFormat("es-ES",{maximumFractionDigits:6}).format(v):"No verificable";
 function valueCell(a,currency){
  const unit=esc(currency||"");
+ if(a.side==="corporate_action")return '<span class="audit-corporate-note">Conversión corporativa; no hubo precio de compraventa</span>';
  if(num(a.price))return '<span class="audit-price-execution">'+esc(fmt(a.price))+' '+unit+
-  '<small class="smallline">Precio de ejecución</small></span>';
+  '<small class="smallline">'+
+  (a.price_basis==="corporate_original_entry"?"Precio de compra original acreditado por la conversión":
+   a.price_basis==="trade_entry_cost_derived"?"Precio reconstruido: coste registrado / unidades / (1 + comisión)":
+   a.price_basis==="trade_net_proceeds_derived"?"Precio reconstruido: cobro registrado / unidades / (1 − comisión)":
+   a.price_basis==="position_entry"?"Precio de entrada conservado de la posición":
+   "Precio de ejecución conservado")+'</small></span>';
  if(num(a.reference_close))return '<span class="audit-price-market">'+esc(fmt(a.reference_close))+' '+unit+
   '<small class="smallline">Cierre de mercado de esta sesión (no es precio de orden)</small></span>';
  if(num(a.entry_price))return '<span class="audit-price-entry">'+esc(fmt(a.entry_price))+' '+unit+
@@ -35,7 +41,7 @@ export function verifyOperationsAudit(doc){
    previous=session.date;
    for(const a of session.actions){
     if(!/^[A-Z0-9][A-Z0-9.-]{0,13}$/.test(a.ticker||"")||
-       !["buy","sell","hold"].includes(a.side)||
+       !["buy","sell","hold","corporate_action"].includes(a.side)||
        !["recorded","not_recorded","inferred_position_continuity","engine_rule"].includes(a.reason_basis)||
        typeof a.reason!=="string"||a.reason.length>1000||!safePath(a.evidence)||
        a.price!==null&&(!num(a.price)||a.price<=0)||
@@ -45,10 +51,21 @@ export function verifyOperationsAudit(doc){
        a.entry_date!==undefined&&!day(a.entry_date)||
        a.reference_close!==undefined&&(!num(a.reference_close)||a.reference_close<=0)||
        a.reference_sha256!==undefined&&!/^[a-f0-9]{64}$/.test(a.reference_sha256)||
-       a.rule_source!==undefined&&a.rule_source!=="classic_sp500/run.py")
+       a.rule_source!==undefined&&a.rule_source!=="classic_sp500/run.py"||
+       a.price_basis!==undefined&&
+        !["book_fill","position_entry","corporate_original_entry","trade_entry_cost_derived",
+          "trade_net_proceeds_derived","not_recorded","not_applicable"].includes(a.price_basis))
      throw Error("Fila de operación inválida");
     if(a.side==="hold"&&(a.price!==null||a.reason_basis!=="inferred_position_continuity"))
      throw Error("Mantenimiento atribuido como una orden");
+    if(a.side==="corporate_action"&&(
+      a.price!==null||a.price_basis!=="not_applicable"||
+      !/^[A-Z0-9][A-Z0-9.-]{0,13}$/.test(a.successor_ticker||"")||
+      !num(a.successor_quantity)||a.successor_quantity<=0||
+      !num(a.receivable_cash)||a.receivable_cash<0||
+      typeof a.recorded_at_utc!=="string"||!a.recorded_at_utc.endsWith("+00:00")||
+      typeof a.action_id!=="string"||a.action_id.length>100))
+     throw Error("Conversión corporativa sin procedencia verificada");
    }
   }
   for(const [ticker,quotes] of Object.entries(t.prices)){
@@ -108,9 +125,26 @@ function chart(track,ticker){
  const quote=(track.prices[ticker]||[]).map(q=>({date:q.date,price:q.price,kind:"close"}));
  const trades=track.sessions.flatMap(s=>s.actions.filter(a=>a.ticker===ticker&&
   (a.side==="buy"||a.side==="sell")&&num(a.price)).map(a=>({date:s.date,price:a.price,kind:a.side})));
+ const other=track.sessions.flatMap(session=>session.actions.filter(a=>a.ticker===ticker&&
+  (a.side==="corporate_action"||
+   (a.side==="buy"||a.side==="sell")&&!num(a.price)))
+  .map(a=>({date:session.date,kind:a.side,price:null,successor:a.successor_ticker})));
  const all=[...quote,...trades];
- if(!all.length)return '<p class="audit-method-note">No existen precios de ejecución o cierres verificables para este activo. No se inventa una curva histórica.</p>';
- const D=all.map(p=>stamp(p.date)),P=all.map(p=>p.price),d0=Math.min(...D),d1=Math.max(...D);
+ const dated=[...all,...other];
+ if(!dated.length)return '<p class="audit-method-note">No existen ejecuciones o cierres con fecha para este activo.</p>';
+ const D=dated.map(p=>stamp(p.date)),P=all.map(p=>p.price),d0=Math.min(...D),d1=Math.max(...D);
+ if(!P.length){
+  const min=60,max=870,range=Math.max(d1-d0,86400000);
+  return '<div class="audit-standalone-timeline"><p>Las operaciones tienen fecha, pero no un precio de ejecución o cierre conservado. Sus marcadores se sitúan únicamente sobre el eje temporal.</p>'+
+   '<svg viewBox="0 0 920 130" class="audit-price-chart" role="img" aria-label="Operaciones con fecha y precio no conservado">'+
+   '<line class="audit-axis" x1="60" x2="870" y1="95" y2="95"/>'+
+   other.map(p=>'<g><line class="audit-undocumented-guide" x1="'+(min+(stamp(p.date)-d0)/range*(max-min))+
+   '" x2="'+(min+(stamp(p.date)-d0)/range*(max-min))+'" y1="52" y2="95"/>'+
+   '<text x="'+(min+(stamp(p.date)-d0)/range*(max-min))+'" y="44" class="audit-gap-label" text-anchor="middle">'+
+   (p.kind==="buy"?"Compra":p.kind==="sell"?"Venta":"Conversión")+' sin precio de mercado</text></g>').join("")+
+   '</svg></div>';
+ }
+
  const p0=Math.min(...P),p1=Math.max(...P),spread=Math.max(p1-p0,p1*.02,.1);
  const lo=p0-spread*.18,hi=p1+spread*.18;
  const x=date=>60+810*(stamp(date)-d0)/Math.max(86400000,d1-d0);
@@ -125,7 +159,7 @@ function chart(track,ticker){
   group.push(q);
  }
  if(group.length>1)lines+='<polyline class="audit-price-line" points="'+group.map(v=>n(x(v.date))+","+n(y(v.price))).join(" ")+'"/>';
- const firstTrade=trades.length?Math.min(...trades.map(p=>stamp(p.date))):null;
+ const firstTrade=[...trades,...other.filter(p=>p.kind==="buy"||p.kind==="sell")].length?Math.min(...[...trades,...other.filter(p=>p.kind==="buy"||p.kind==="sell")].map(p=>stamp(p.date))):null;
  const firstClose=quote.length?Math.min(...quote.map(p=>stamp(p.date))):null;
  const gapDays=firstTrade!==null&&firstClose!==null?
   Math.round((firstClose-firstTrade)/86400000):0;
@@ -139,6 +173,22 @@ function chart(track,ticker){
  const tradeGuides=trades.map(p=>'<line class="'+(p.kind==="buy"?"audit-buy-guide":"audit-sell-guide")+
   '" x1="'+n(x(p.date))+'" y1="'+n(y(p.price)+8)+'" x2="'+n(x(p.date))+'" y2="220">'+
   '<title>'+esc(p.date)+' '+(p.kind==="buy"?"Compra":"Venta")+' a '+esc(fmt(p.price))+'</title></line>').join("");
+ const undatedPrices=other.filter(p=>p.kind==="buy"||p.kind==="sell").map(p=>{
+  const cx=n(x(p.date));
+  return '<g class="audit-undocumented-operation"><line class="audit-undocumented-guide" x1="'+cx+
+   '" x2="'+cx+'" y1="72" y2="220"/><circle class="'+(p.kind==="buy"?"audit-buy-undocumented":"audit-sell-undocumented")+
+   '" cx="'+cx+'" cy="72" r="6"><title>'+esc(p.date)+' '+(p.kind==="buy"?"Compra":"Venta")+
+   ': operación documentada sin precio de ejecución verificable</title></circle>'+
+   '<text class="audit-unpriced-label" x="'+cx+'" y="58" text-anchor="'+(cx>790?"end":cx<140?"start":"middle")+
+   '">'+(p.kind==="buy"?"Compra":"Venta")+' · precio no registrado</text></g>';
+ }).join("");
+ const corporateAnnotations=other.filter(p=>p.kind==="corporate_action").map(p=>{
+  const cx=n(x(p.date));
+  return '<g class="audit-corporate-marker"><line x1="'+cx+'" x2="'+cx+'" y1="80" y2="220" class="audit-corporate-guide"/>'+
+   '<text x="'+cx+'" y="72" text-anchor="'+(cx>790?"end":"middle")+'" class="audit-corporate-label">'+
+   'Conversión → '+esc(p.successor||"sucesora")+'</text>'+
+   '<title>'+esc(p.date)+' · conversión corporativa, sin compraventa</title></g>';
+ }).join("");
  const closeDots=quote.map(q=>'<circle class="audit-close-dot" cx="'+n(x(q.date))+'" cy="'+n(y(q.price))+
    '" r="3.5"><title>Cierre '+esc(q.date)+': '+fmt(q.price)+'</title></circle>').join("");
  const markers=trades.map(p=>{
@@ -162,10 +212,10 @@ function chart(track,ticker){
   '<text x="60" y="247" class="audit-axis-label">'+esc(start)+'</text>'+
   '<text x="870" y="247" text-anchor="end" class="audit-axis-label">'+esc(end)+'</text>'+
   '<text x="870" y="27" text-anchor="end" class="audit-axis-label">Precio ('+currency+')</text>'+
-  gapHighlight+lines+tradeGuides+closeDots+markers+labels+'</svg>'+
-  '<div class="audit-legend"><span class="audit-legend-buy">● Compras</span><span class="audit-legend-sell">● Ventas</span><span class="audit-legend-close">● Precio de cierre del mercado (no es una operación)</span></div>'+
+  gapHighlight+lines+tradeGuides+corporateAnnotations+undatedPrices+closeDots+markers+labels+'</svg>'+
+  '<div class="audit-legend"><span class="audit-legend-buy">● Compras</span><span class="audit-legend-sell">● Ventas</span><span class="audit-legend-close">● Precio de cierre del mercado (no es una operación)</span><span class="audit-legend-corporate">│ Conversión corporativa, no venta</span></div>'+
   '<p class="audit-method-note">Las abscisas son fechas de sesión y las ordenadas son precios en '+currency+
-  '. Los precios aparecen sobre cada punto. Los puntos azules son cierres observados de mercado, NO compras ni ventas del algoritmo. La compra verde está colocada en su fecha y precio reales; el área sombreada indica un periodo sin cierres archivados, no un movimiento supuesto. Si no hay punto rojo, no consta una venta ejecutada de ese activo en las sesiones documentadas; para confirmar la posición actual hay que consultar el libro de posiciones. Solo se unen cierres consecutivos realmente guardados; no se interpolan fechas sin cotización. No consta la hora exacta de los fills. '+
+  '. Los precios aparecen sobre cada punto. Los puntos azules son cierres observados de mercado, NO compras ni ventas del algoritmo. La compra verde está colocada en su fecha y precio reales; el área sombreada indica un periodo sin cierres archivados, no un movimiento supuesto. Si no hay punto rojo, no consta una venta ejecutada con precio confirmado en estas sesiones; un evento corporativo puede transformar la posición sin ser una venta. Las operaciones sin precio se señalan por su fecha, sin inventar su cotización. Solo se unen cierres consecutivos realmente guardados; no se interpolan fechas sin cotización. No consta la hora exacta de los fills. '+
   (quote.length<2?'No existe una serie de cierres suficiente para mostrar una trayectoria continua.':'')+'</p>';
 }
 export function renderOperationsAudit(doc,id,selectedTicker=null){
