@@ -371,6 +371,17 @@ export function buildSessionActionColumns(track){
  return summary;
 }
 
+/**
+ * Use one ticker renderer for the NAV session table and the expanded audit.
+ * Values come exclusively from buildSessionActionColumns (never from NAV).
+ */
+export function renderSessionTickerList(tickers,partial=[]){
+ if(!Array.isArray(tickers)||!tickers.length)return '<span class="audit-empty-session">—</span>';
+ return tickers.map(t=>'<span class="audit-session-ticker">'+esc(t)+
+  (partial.includes(t)?'<span class="audit-partial-star" title="Venta parcial: quedan acciones tras el fill">*</span>':"")+
+  '</span>').join(" ");
+}
+
 export function renderOperationsAudit(doc,id,selectedTicker=null,view={}){
 
  const heading='<section class="algorithm-section audit-section" id="operations-audit"><h3>Operaciones por sesión y motivos</h3>';
@@ -399,10 +410,7 @@ export function renderOperationsAudit(doc,id,selectedTicker=null,view={}){
   chart(track,chosen)+'</div>':
   '<p class="audit-method-note">Los NAV globales no bastan para reconstruir operaciones. No se publican compras o ventas sin evidencias individuales.</p>';
  const sessionColumns=buildSessionActionColumns(track);
- const sessionTickers=(tickers,partial=[])=>tickers.length?
-  tickers.map(t=>'<span class="audit-session-ticker">'+esc(t)+(partial.includes(t)?
-   '<span class="audit-partial-star" title="Venta parcial: quedan acciones tras el fill">*</span>':'')+'</span>').join(" "):
-  '<span class="audit-empty-session">—</span>';
+ const sessionTickers=renderSessionTickerList;
  const rows=sessions.slice().reverse().map((session,i)=>{
   const actions=session.actions||[];
   const date=esc(session.date),n=sessions.length-i;

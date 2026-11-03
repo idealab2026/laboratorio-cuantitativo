@@ -646,3 +646,25 @@ p{line-height:1.6;text-align:justify;text-align-last:left;hyphens:auto}p.lead{co
  .audit-session-column{font-size:.63rem;gap:3px}
  .audit-session-ticker{font-size:.62rem;padding:2px 4px}
 }
+
+
+/* NAV history now includes the same evidence-backed session activity as the
+   detailed accordion; horizontal scrolling keeps the NAV columns legible. */
+.nav-session-table-wrap{max-width:100%;overflow-x:auto;scrollbar-gutter:stable}
+.nav-session-table-wrap .nav-session-table{min-width:1070px;width:100%;font-variant-numeric:tabular-nums}
+.nav-session-table th,.nav-session-table td{padding:9px 10px;vertical-align:top}
+.nav-session-table th:nth-child(1){width:13%}
+.nav-session-table th:nth-child(2){width:15%}
+.nav-session-table th:nth-child(3){width:22%}
+.nav-session-table th:nth-child(4),
+.nav-session-table th:nth-child(5),
+.nav-session-table th:nth-child(6){width:16.66%}
+.nav-session-table td:nth-child(n+4){white-space:normal;line-height:1.7}
+.nav-session-table td .audit-session-ticker{font-size:.7rem;margin:0 3px 3px 0}
+.nav-session-table td:nth-child(4) .audit-session-ticker{background:#eaf5f0;border-color:#cde5d8;color:#16654c}
+.nav-session-table td:nth-child(5) .audit-session-ticker{background:#fbf0ef;border-color:#efd5d2;color:#a34040}
+.nav-session-table td:nth-child(6) .audit-session-ticker{background:#f2f5f9;border-color:#dee6ee;color:#556c82}
+@media(max-width:750px){
+ .nav-session-table-wrap .nav-session-table{min-width:960px}
+ .nav-session-table th,.nav-session-table td{padding:7px;font-size:.69rem}
+}
