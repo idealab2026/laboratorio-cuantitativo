@@ -8,9 +8,9 @@ on:
   workflow_dispatch:
     inputs:
       mode:
-        description: 'Verify, train without writing, republish existing summaries, or record a due paper session'
+        description: 'Verify, train read-only, publish summaries, reconcile inactive holdings, or trade a due paper session'
         type: choice
-        options: [verify, training_check, publish_only, trade]
+        options: [verify, training_check, publish_only, resume, trade]
         default: verify
 
 permissions:
@@ -70,6 +70,16 @@ jobs:
             echo '::error::Writer handover has not been authorized; run verify/training_check instead'
             exit 1
           fi
+      - name: Reconcile explicitly authorized inactive holdings without historical trades
+        if: inputs.mode == 'resume'
+        run: |
+          python AGENTE/genetic_invest_agent/session_gate.py --resume-check
+          python AGENTE/genetic_invest_agent/session_gate.py --resume-outage
+      - name: Audit the retained cohorts after inactive reconciliation
+        if: inputs.mode == 'resume'
+        run: |
+          git diff --exit-code -- AGENTE/genetic_invest_agent/registro_historico/diario_portfolio.json AGENTE/genetic_invest_agent/registro_historico/diario_portfolio_forward.json
+          python AGENTE/genetic_invest_agent/audit_publication.py
       - name: Check session before training
         id: session
         if: github.event_name == 'schedule' || inputs.mode == 'trade'
@@ -85,9 +95,10 @@ jobs:
           python AGENTE/genetic_invest_agent/audit_publication.py
           python AGENTE/genetic_invest_agent/publish_snapshot.py --check-only
       - name: Commit only the canonical simulated diary
-        if: steps.session.outputs.due == 'true'
+        if: steps.session.outputs.due == 'true' || inputs.mode == 'resume'
         env:
           SIGNAL_SESSION: ${{ steps.session.outputs.session }}
+          RUN_MODE: ${{ inputs.mode }}
         run: |
           set -euo pipefail
           git config user.name 'Idea Lab'
@@ -96,13 +107,20 @@ jobs:
           git diff --cached --quiet && exit 0
           git commit -m 'Record original genetic simulated session'
           for attempt in 1 2 3 4; do
-            python -c 'import os,sys; sys.path.insert(0,"AGENTE/genetic_invest_agent"); from forward_portfolio import ensure_before_next_open; ensure_before_next_open(os.environ["SIGNAL_SESSION"])'
+            if [ "$RUN_MODE" = 'resume' ]; then
+              python AGENTE/genetic_invest_agent/session_gate.py --check-resume-window
+            else
+              python -c 'import os,sys; sys.path.insert(0,"AGENTE/genetic_invest_agent"); from forward_portfolio import ensure_before_next_open; ensure_before_next_open(os.environ["SIGNAL_SESSION"])'
+            fi
             git fetch origin main
             git rebase origin/main || { git rebase --abort; exit 1; }
+            if [ "$RUN_MODE" = 'resume' ]; then
+              python AGENTE/genetic_invest_agent/session_gate.py --check-resume-window
+            fi
             if git push origin HEAD:main; then exit 0; fi
           done
           exit 1
       - name: Publish simulated equity through institutional Git
         # Retrying publication never reruns a completed session.
-        if: github.event_name == 'schedule' || inputs.mode == 'publish_only' || inputs.mode == 'trade'
+        if: github.event_name == 'schedule' || inputs.mode == 'publish_only' || inputs.mode == 'trade' || inputs.mode == 'resume'
         run: python AGENTE/genetic_invest_agent/publish_snapshot.py
