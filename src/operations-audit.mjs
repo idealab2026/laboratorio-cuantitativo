@@ -4,6 +4,18 @@ const num=v=>typeof v==="number"&&Number.isFinite(v);
 const day=v=>typeof v==="string"&&/^\d{4}-\d{2}-\d{2}$/.test(v);
 const stamp=v=>Date.parse(v+"T00:00:00Z");
 const fmt=v=>num(v)?new Intl.NumberFormat("es-ES",{minimumFractionDigits:2,maximumFractionDigits:3}).format(v):"No verificable";
+const fmtUnits=v=>num(v)?new Intl.NumberFormat("es-ES",{maximumFractionDigits:6}).format(v):"No verificable";
+function valueCell(a,currency){
+ const unit=esc(currency||"");
+ if(num(a.price))return '<span class="audit-price-execution">'+esc(fmt(a.price))+' '+unit+
+  '<small class="smallline">Precio de ejecución</small></span>';
+ if(num(a.reference_close))return '<span class="audit-price-market">'+esc(fmt(a.reference_close))+' '+unit+
+  '<small class="smallline">Cierre de mercado de esta sesión (no es precio de orden)</small></span>';
+ if(num(a.entry_price))return '<span class="audit-price-entry">'+esc(fmt(a.entry_price))+' '+unit+
+  '<small class="smallline">Precio de entrada ('+esc(a.entry_date||"")+
+  '). No es un cierre de esta sesión</small></span>';
+ return '<span class="audit-missing-source">No se conserva el precio de esta sesión</span>';
+}
 const safePath=v=>v===null||typeof v==="string"&&v.length<170&&!/https?:|[<>@]|\.\./.test(v);
 export function verifyOperationsAudit(doc){
  if(doc?.schema!=="midas_operations_audit_v1"||doc.purpose!=="read_only_paper_decision_evidence"||
@@ -24,11 +36,16 @@ export function verifyOperationsAudit(doc){
    for(const a of session.actions){
     if(!/^[A-Z0-9][A-Z0-9.-]{0,13}$/.test(a.ticker||"")||
        !["buy","sell","hold"].includes(a.side)||
-       !["recorded","not_recorded","inferred_position_continuity"].includes(a.reason_basis)||
+       !["recorded","not_recorded","inferred_position_continuity","engine_rule"].includes(a.reason_basis)||
        typeof a.reason!=="string"||a.reason.length>1000||!safePath(a.evidence)||
        a.price!==null&&(!num(a.price)||a.price<=0)||
        a.quantity!==null&&(!num(a.quantity)||a.quantity<=0)||
-       a.signal_date!==null&&!day(a.signal_date))
+       a.signal_date!==null&&!day(a.signal_date)||
+       a.entry_price!==undefined&&a.entry_price!==null&&(!num(a.entry_price)||a.entry_price<=0)||
+       a.entry_date!==undefined&&!day(a.entry_date)||
+       a.reference_close!==undefined&&(!num(a.reference_close)||a.reference_close<=0)||
+       a.reference_sha256!==undefined&&!/^[a-f0-9]{64}$/.test(a.reference_sha256)||
+       a.rule_source!==undefined&&a.rule_source!=="classic_sp500/run.py")
      throw Error("Fila de operación inválida");
     if(a.side==="hold"&&(a.price!==null||a.reason_basis!=="inferred_position_continuity"))
      throw Error("Mantenimiento atribuido como una orden");
@@ -108,6 +125,20 @@ function chart(track,ticker){
   group.push(q);
  }
  if(group.length>1)lines+='<polyline class="audit-price-line" points="'+group.map(v=>n(x(v.date))+","+n(y(v.price))).join(" ")+'"/>';
+ const firstTrade=trades.length?Math.min(...trades.map(p=>stamp(p.date))):null;
+ const firstClose=quote.length?Math.min(...quote.map(p=>stamp(p.date))):null;
+ const gapDays=firstTrade!==null&&firstClose!==null?
+  Math.round((firstClose-firstTrade)/86400000):0;
+ const gapHighlight=gapDays>=5?
+  '<rect class="audit-unobserved-gap" x="'+n(x(new Date(firstTrade).toISOString().slice(0,10)))+
+  '" y="34" width="'+n(x(new Date(firstClose).toISOString().slice(0,10))-
+   x(new Date(firstTrade).toISOString().slice(0,10)))+'" height="186"/>'+
+  '<text class="audit-gap-label" x="'+n((x(new Date(firstTrade).toISOString().slice(0,10))+
+   x(new Date(firstClose).toISOString().slice(0,10)))/2)+
+  '" y="61" text-anchor="middle">Sin cierres de mercado archivados</text>':"";
+ const tradeGuides=trades.map(p=>'<line class="'+(p.kind==="buy"?"audit-buy-guide":"audit-sell-guide")+
+  '" x1="'+n(x(p.date))+'" y1="'+n(y(p.price)+8)+'" x2="'+n(x(p.date))+'" y2="220">'+
+  '<title>'+esc(p.date)+' '+(p.kind==="buy"?"Compra":"Venta")+' a '+esc(fmt(p.price))+'</title></line>').join("");
  const closeDots=quote.map(q=>'<circle class="audit-close-dot" cx="'+n(x(q.date))+'" cy="'+n(y(q.price))+
    '" r="3.5"><title>Cierre '+esc(q.date)+': '+fmt(q.price)+'</title></circle>').join("");
  const markers=trades.map(p=>{
@@ -131,10 +162,10 @@ function chart(track,ticker){
   '<text x="60" y="247" class="audit-axis-label">'+esc(start)+'</text>'+
   '<text x="870" y="247" text-anchor="end" class="audit-axis-label">'+esc(end)+'</text>'+
   '<text x="870" y="27" text-anchor="end" class="audit-axis-label">Precio ('+currency+')</text>'+
-  lines+closeDots+markers+labels+'</svg>'+
+  gapHighlight+lines+tradeGuides+closeDots+markers+labels+'</svg>'+
   '<div class="audit-legend"><span class="audit-legend-buy">● Compras</span><span class="audit-legend-sell">● Ventas</span><span class="audit-legend-close">● Precio de cierre del mercado (no es una operación)</span></div>'+
   '<p class="audit-method-note">Las abscisas son fechas de sesión y las ordenadas son precios en '+currency+
-  '. Los precios aparecen sobre cada punto. Los puntos azules son cierres observados de mercado, NO compras ni ventas del algoritmo. Si no hay punto rojo, no consta una venta ejecutada de ese activo en las sesiones documentadas; para confirmar la posición actual hay que consultar el libro de posiciones. Solo se unen cierres consecutivos realmente guardados; no se interpolan fechas sin cotización. No consta la hora exacta de los fills. '+
+  '. Los precios aparecen sobre cada punto. Los puntos azules son cierres observados de mercado, NO compras ni ventas del algoritmo. La compra verde está colocada en su fecha y precio reales; el área sombreada indica un periodo sin cierres archivados, no un movimiento supuesto. Si no hay punto rojo, no consta una venta ejecutada de ese activo en las sesiones documentadas; para confirmar la posición actual hay que consultar el libro de posiciones. Solo se unen cierres consecutivos realmente guardados; no se interpolan fechas sin cotización. No consta la hora exacta de los fills. '+
   (quote.length<2?'No existe una serie de cierres suficiente para mostrar una trayectoria continua.':'')+'</p>';
 }
 export function renderOperationsAudit(doc,id,selectedTicker=null){
@@ -148,7 +179,7 @@ export function renderOperationsAudit(doc,id,selectedTicker=null){
   symbols.find(t=>sessions.some(s=>s.actions.some(a=>a.ticker===t&&a.side!=="hold")))||symbols[0];
  const totals=sessions.reduce((out,s)=>{for(const a of s.actions)out[a.side]++;return out},{buy:0,sell:0,hold:0});
  const intro=heading+
-  '<p>Consulta las compras y ventas paper ejecutadas y las posiciones que continuaron abiertas. Los mantenimientos son una <strong>inferencia contable</strong>; no equivalen a una decisión explícita registrada. Un motivo sin documentar aparece como tal.</p>'+
+  '<p>Consulta las compras y ventas paper ejecutadas y las posiciones que continuaron abiertas. Los mantenimientos son una <strong>inferencia contable</strong>; no equivalen a una decisión explícita registrada. Cuando el libro no guarda la señal individual, se describe la regla acreditada del motor y se diferencia de una decisión histórica comprobada.</p>'+
   '<div class="audit-counts"><span>'+sessions.length+' sesiones</span><span>'+totals.buy+' compras</span>'+
   '<span>'+totals.sell+' ventas</span><span>'+totals.hold+' mantenimientos inferidos</span></div>';
  const graph=symbols.length?
@@ -162,15 +193,18 @@ export function renderOperationsAudit(doc,id,selectedTicker=null){
   const date=esc(session.date),n=sessions.length-i;
   const body=actions.length?
    '<div class="table-scroll audit-table-wrap"><table class="table-compact audit-operation-table"><thead><tr>'+
-   '<th>Acción</th><th>Activo</th><th>Precio</th><th>Unidades</th><th>Motivo y evidencia</th></tr></thead><tbody>'+
+   '<th>Acción</th><th>Activo</th><th>Precio / referencia</th><th>Unidades</th><th>Motivo y evidencia</th></tr></thead><tbody>'+
    actions.map(a=>{
     const kind={buy:"COMPRA",sell:"VENTA",hold:"MANTENER · INFERIDO"}[a.side];
-    const evidence=a.reason_basis==="recorded"?"Motivo registrado":
-     a.reason_basis==="inferred_position_continuity"?"Continuidad inferida del libro":"Motivo individual no registrado";
+    const evidence=a.reason_basis==="recorded"?"Motivo guardado en libro de órdenes":
+     a.reason_basis==="engine_rule"?"Regla acreditada por código; indicador individual no archivado":
+     a.reason_basis==="inferred_position_continuity"?"Posición y unidades reconstruidas de ejecuciones; regla explicada cuando existe":
+     "Sin motivo individual conservado";
     return '<tr><td><strong class="audit-action audit-'+a.side+'">'+esc(kind)+'</strong></td>'+
-     '<td>'+esc(a.ticker)+'</td><td>'+fmt(a.price)+'</td><td>'+fmt(a.quantity)+'</td>'+
+     '<td>'+esc(a.ticker)+'</td><td>'+valueCell(a,track.currency)+'</td><td>'+fmtUnits(a.quantity)+'</td>'+
      '<td>'+esc(a.reason)+'<small class="smallline">'+esc(evidence)+
-     (a.signal_date?' · señal '+esc(a.signal_date):"")+' · '+esc(a.evidence)+'</small></td></tr>';
+     (a.signal_date?' · señal '+esc(a.signal_date):"")+
+     (a.rule_source?' · regla: '+esc(a.rule_source):"")+' · libro: '+esc(a.evidence)+'</small></td></tr>';
    }).join("")+'</tbody></table></div>':
    '<p>Sin órdenes ejecutadas ni posiciones reconstruibles documentadas en esta sesión. Esto no prueba que se decidiera mantener efectivo.</p>';
   return '<details class="audit-session"'+(i===0?' open':'')+'><summary>Sesión '+n+' · '+date+

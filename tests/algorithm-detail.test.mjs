@@ -235,3 +235,45 @@ test("Every execution and retained market close shows its real price over the ma
  assert.ok(html.includes("Si no hay punto rojo, no consta una venta"));
  assert.ok(!html.includes("audit-sell-dot"));
 });
+
+
+test("Shares and market close are shown for a held ABT without claiming a new fill",async()=>{
+ const {verifyOperationsAudit,renderOperationsAudit}=await import("../src/operations-audit.mjs");
+ const sha="a".repeat(64);
+ const tracks=Object.fromEntries(Array.from({length:64},(_,i)=>[
+  "IL-"+String(i+1).padStart(3,"0"),
+  {source_id:"test",status:"no_executed_actions_documented",source_path:null,
+   source_sha256:null,currency:"USD",sessions:[],prices:{}}
+ ]));
+ tracks["IL-012"]={
+  source_id:"classic_sp500_genetic_frozen",status:"partial_executions_documented",
+  source_path:"classic_sp500_state/ledger.json",source_sha256:sha,currency:"USD",
+  sessions:[
+   {date:"2026-10-15",actions:[{ticker:"ABT",side:"buy",price:105.0525,quantity:112.925792,
+     reason:"Entrada desde regla genética congelada; señal exacta no registrada.",
+     reason_basis:"engine_rule",signal_date:null,evidence:"classic_sp500_state/ledger.json",
+     rule_source:"classic_sp500/run.py"}]},
+   {date:"2026-11-02",actions:[{ticker:"ABT",side:"hold",price:null,quantity:112.925792,
+     entry_price:105.0525,entry_date:"2026-10-15",reference_close:110.16000366,
+     reference_sha256:sha,reason:"Reglas genéticas congeladas, stop vigente y objetivo vigente; posición inferida.",
+     reason_basis:"inferred_position_continuity",signal_date:null,
+     evidence:"classic_sp500_state/ledger.json",rule_source:"classic_sp500/run.py"}]}
+  ],
+  prices:{ABT:[{date:"2026-10-27",price:103.10,source:"dated_market_close",snapshot_sha256:sha},
+   {date:"2026-11-02",price:110.16,source:"dated_market_close",snapshot_sha256:sha}]}
+ };
+ const doc={schema:"midas_operations_audit_v1",purpose:"read_only_paper_decision_evidence",
+            asof:"2026-11-02",tracks};
+ assert.deepEqual(verifyOperationsAudit(doc),{count:64,withExecution:1});
+ const html=renderOperationsAudit(doc,"IL-012","ABT");
+ assert.ok(html.includes("112,925792"),"Real shares displayed for hold");
+ assert.ok(html.includes("110,16"),"Actual November close displayed");
+ assert.ok(html.includes("105,053"),"Executed entry price retained separately");
+ assert.ok(html.includes("Cierre de mercado de esta sesión (no es precio de orden)"));
+ assert.ok(html.includes("Reglas genéticas congeladas"));
+ assert.ok(html.includes("audit-buy-guide"));
+ assert.ok(html.includes("audit-unobserved-gap"));
+ assert.ok(html.includes("Sin cierres de mercado archivados"));
+ assert.ok(html.includes("audit-buy-dot"));
+ assert.ok(!html.includes("audit-sell-dot"));
+});

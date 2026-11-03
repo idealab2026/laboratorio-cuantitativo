@@ -48,6 +48,8 @@ def price_history():
                 close = number(bar.get("close"))
                 if close is not None:
                     observations[ticker].append({"date":doc["session"], "price":close,
+                                                 "low":number(bar.get("low")),
+                                                 "high":number(bar.get("high")),
                                                  "source":"dated_market_close", "snapshot_sha256":digest})
     return {key: sorted(vals, key=lambda a:a["date"]) for key, vals in observations.items()}
 
@@ -152,6 +154,59 @@ def normalize_ledger(ledger, source):
                           source+"/closed_trade",trade.get("signal_date"))
     return out
 
+
+# These descriptions are grounded in the public classic engine source. They
+# describe policy, not a retrospectively invented per-ticker signal decision.
+CLASSIC_POLICY = {
+    "benchmark_spy": "Referencia SPY: compra una vez y mantiene la exposición mientras no se registre salida.",
+    "buy_hold_equal_weight": "Equiponderación: compra componentes elegibles que aún no mantiene y no emite ventas ordinarias.",
+    "genetic_frozen": "Reglas genéticas congeladas: el motor evalúa señales al cierre y puede cerrar posiciones por señal, stop u objetivo.",
+    "ema_rsi_fixed": "Regla EMA/RSI: evaluación de tendencia y fortaleza relativa al cierre; ejecución posterior de señales y controles stop/objetivo.",
+    "macd_12_26_9": "Regla MACD 12/26/9: cruces de tendencia al cierre, con ejecución posterior y controles stop/objetivo.",
+    "rsi_reversion_14": "Regla RSI 14: selección por reversión a la media y salidas por señal o controles de riesgo.",
+    "bollinger_breakout_20": "Regla Bollinger 20: ruptura de bandas, salida por señal o controles de riesgo.",
+    "turtle_20_10_long": "Regla Turtle 20/10: ruptura de canal con posible salida por la ventana de mínimos.",
+    "turtle_55_20_long": "Regla Turtle 55/20: ruptura de canal con posible salida por la ventana de mínimos.",
+}
+def classic_model(source,key):
+    if source == "classic_sp500_state/ledger.json" and key in CLASSIC_POLICY:
+        return key
+    return None
+
+def explain_classic_buy(model, event):
+    name = CLASSIC_POLICY[model]
+    return ("Ejecución acreditada por el libro. Política de entrada del motor: " + name +
+            " Las órdenes se congelan tras el cierre y se ejecutan en una apertura posterior."
+            " El registro no conserva la lectura exacta del indicador de este ticker que motivó la orden.")
+
+def explain_classic_hold(model,ticker,day,position,price_point,is_latest):
+    policy=CLASSIC_POLICY[model]
+    text=("Posición abierta según los fills; ninguna venta ejecutada para " + ticker +
+          " en esta sesión. Regla del motor: " + policy +
+          " Esta fila es continuidad contable, no una señal explícita de MANTENER.")
+    # The published ledger's current risk thresholds are NOT historical unless
+    # the observation matches its final session; do not project backwards.
+    if is_latest and isinstance(position,dict):
+        stop=number(position.get("stop"))
+        target=number(position.get("target"))
+        if stop is not None or target is not None:
+            parts=[]
+            if stop is not None:parts.append("stop vigente %.3f" % stop)
+            if target is not None:parts.append("objetivo vigente %.3f" % target)
+            text+=" Umbrales documentados para este último cierre: "+", ".join(parts)+"."
+            if price_point:
+                low=price_point.get("low")
+                high=price_point.get("high")
+                if low is not None and high is not None:
+                    if (stop is None or low>stop) and (target is None or high<target):
+                        text+=(" Rango de mercado observado %.3f–%.3f: no cruzó"
+                                " esos umbrales en esta sesión." % (low,high))
+                    else:
+                        text+=(" El rango observado cruzó un umbral o no permite"
+                                " descartar su activación; revisar la ejecución"
+                                " y la secuencia de órdenes.")
+    return text[:950]
+
 def equity_days(ledger):
     values=ledger.get("equity") or []
     if isinstance(values,list):
@@ -218,24 +273,73 @@ def build():
             continue
         actions=normalize_ledger(book,filename)
         days=sorted(set(equity_days(book)) | set(actions.keys()) | set(journal_days))
-        held=set()
+        # Replay *executed* quantity changes (never pending orders or signals).
+        # Only classic_sp500/run.py has the documented full-position sell
+        # semantics needed to attribute the entire remaining quantity.
+        classic=classic_model(filename,key)
+        holdings={}
+        latest=max(days) if days else None
+        positions=book.get("positions",{}) if isinstance(book.get("positions"),dict) else {}
+        split_events=defaultdict(list)
+        if classic:
+            for e in book.get("events",[]):
+                if isinstance(e,dict) and e.get("type")=="split" and date(e.get("date")):
+                    split_events[e["date"]].append(e)
         session_rows=[]
         ever=set()
         for day in days:
-            events=sorted(actions.get(day,[]),key=lambda x:(x["ticker"],x["side"]))
+            for split in split_events.get(day,[]):
+                ticker=clean_ticker(split.get("ticker"))
+                ratio=number(split.get("ratio"))
+                if ticker in holdings and ratio:
+                    holdings[ticker]*=ratio
+            events=list(actions.get(day,[]))
             traded={x["ticker"] for x in events}
-            for x in events:
-                if x["side"]=="buy":held.add(x["ticker"])
-                if x["side"]=="sell":held.discard(x["ticker"])
-                ever.add(x["ticker"])
-            for ticker in sorted(held-traded):
-                events.append({"ticker":ticker,"side":"hold","price":None,"quantity":None,
-                               "reason":"Posición abierta sin orden de salida registrada en esta sesión. Mantenimiento inferido del libro; motivo de decisión no documentado.",
-                               "reason_basis":"inferred_position_continuity",
-                               "evidence":filename,"signal_date":None})
+            for item in events:
+                ticker=item["ticker"]
+                if item["side"]=="buy":
+                    if classic and item["reason_basis"]=="not_recorded":
+                        item["reason"]=explain_classic_buy(classic,item)
+                        item["reason_basis"]="engine_rule"
+                        item["rule_source"]="classic_sp500/run.py"
+                    qty=item.get("quantity")
+                    if qty is not None:
+                        holdings[ticker]=holdings.get(ticker,0)+qty
+                    else:
+                        holdings.pop(ticker,None)
+                elif item["side"]=="sell":
+                    if classic and item.get("quantity") is None and ticker in holdings:
+                        # The classic engine always liquidates entire positions.
+                        item["quantity"]=holdings[ticker]
+                    holdings.pop(ticker,None)
+                ever.add(ticker)
+            for ticker in sorted(holdings.keys()-traded):
+                price_point=next((p for p in prices.get(ticker,[]) if p["date"]==day),None)
+                current_pos=positions.get(ticker)
+                # The final positions file only proves the entry price for the
+                # currently held lot, not for an earlier closed/reopened lot.
+                same_lot=isinstance(current_pos,dict) and date(current_pos.get("entry_date")) and current_pos["entry_date"]<=day
+                qty=holdings[ticker] if holdings[ticker]>0 else None
+                record={"ticker":ticker,"side":"hold","price":None,
+                        "quantity":qty,
+                        "reason":"Posición abierta sin orden de venta registrada; continuidad contable inferida.",
+                        "reason_basis":"inferred_position_continuity",
+                        "evidence":filename,"signal_date":None}
+                if same_lot:
+                    record["entry_price"]=number(current_pos.get("entry_price"))
+                    record["entry_date"]=current_pos["entry_date"]
+                if price_point is not None and original.get("currency")=="USD":
+                    record["reference_close"]=price_point["price"]
+                    record["reference_sha256"]=price_point["snapshot_sha256"]
+                if classic:
+                    record["reason"]=explain_classic_hold(classic,ticker,day,current_pos if same_lot else None,
+                                                          price_point,day==latest)
+                    record["rule_source"]="classic_sp500/run.py"
+                events.append(record)
             if day in journal_days or day in actions:
                 session_rows.append({"date":day,"actions":events,
-                                     "audit_note":None if events else "Sin operaciones ni posiciones reconstruibles del libro en esta sesión."})
+                                     "audit_note":None if events else
+                                     "Sin operaciones ni posiciones reconstruibles del libro en esta sesión."})
         # A source with no event history is NOT transformed into a fictional cash strategy.
         if not actions and not (book.get("trades") or []):
             status="nav_only_or_no_actions"

@@ -22,7 +22,7 @@ class OperationsAuditTests(unittest.TestCase):
                 for event in session["actions"]:
                     self.assertIn(event["side"],{"buy","sell","hold"})
                     self.assertIn(event["reason_basis"],{"recorded","not_recorded",
-                                                       "inferred_position_continuity"})
+                                                       "inferred_position_continuity","engine_rule"})
                     if event["side"]=="hold":
                         self.assertIsNone(event["price"])
                         self.assertEqual(event["reason_basis"],"inferred_position_continuity")
@@ -65,3 +65,45 @@ class OperationsAuditTests(unittest.TestCase):
 
 if __name__=="__main__":
     unittest.main()
+
+
+class ClassicDecisionTraceTests(unittest.TestCase):
+    @classmethod
+    def setUpClass(cls):
+        cls.data=build()
+
+    def test_genetic_abt_holds_recover_shares_entry_price_market_close_and_rule(self):
+        sessions=self.data["tracks"]["IL-012"]["sessions"]
+        day15=next(x for x in sessions if x["date"]=="2026-10-15")
+        purchase=next(x for x in day15["actions"] if x["ticker"]=="ABT" and x["side"]=="buy")
+        self.assertAlmostEqual(purchase["quantity"],112.925792)
+        self.assertAlmostEqual(purchase["price"],105.0525)
+        self.assertEqual(purchase["reason_basis"],"engine_rule")
+        self.assertIn("no conserva la lectura exacta",purchase["reason"])
+        self.assertEqual(purchase["rule_source"],"classic_sp500/run.py")
+        latest=next(x for x in sessions if x["date"]=="2026-11-02")
+        hold=next(x for x in latest["actions"] if x["ticker"]=="ABT" and x["side"]=="hold")
+        self.assertAlmostEqual(hold["quantity"],112.925792)
+        self.assertAlmostEqual(hold["entry_price"],105.0525)
+        self.assertAlmostEqual(hold["reference_close"],110.16000366210938,places=5)
+        self.assertIsNone(hold["price"],"Market closing price is NOT a trade execution")
+        self.assertEqual(hold["reason_basis"],"inferred_position_continuity")
+        self.assertIn("Reglas genéticas congeladas",hold["reason"])
+        self.assertIn("stop vigente",hold["reason"])
+        self.assertIn("objetivo vigente",hold["reason"])
+        self.assertIn("no cruzó",hold["reason"])
+        self.assertEqual(hold["rule_source"],"classic_sp500/run.py")
+        older=next(x for x in sessions if x["date"]=="2026-10-16")
+        old_hold=next(x for x in older["actions"] if x["ticker"]=="ABT" and x["side"]=="hold")
+        self.assertAlmostEqual(old_hold["quantity"],112.925792)
+        self.assertNotIn("reference_close",old_hold,"Cannot synthesize an absent market close")
+        self.assertNotIn("stop vigente",old_hold["reason"],"Do not project final thresholds backwards")
+
+    def test_final_position_shares_replay_and_buy_hold_policy(self):
+        track=self.data["tracks"]["IL-010"]
+        self.assertEqual(track["status"],"partial_executions_documented")
+        abt=next(x for x in track["sessions"][-1]["actions"] if x["ticker"]=="ABT" and x["side"]=="hold")
+        self.assertAlmostEqual(abt["quantity"],1.796036)
+        self.assertAlmostEqual(abt["entry_price"],105.0525)
+        self.assertIn("Equiponderación",abt["reason"])
+        self.assertEqual(abt["reason_basis"],"inferred_position_continuity")

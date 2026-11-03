@@ -470,3 +470,19 @@ p{line-height:1.6;text-align:justify;text-align-last:left;hyphens:auto}p.lead{co
 .audit-price-chart .audit-price-sell{fill:#aa3c3c;font-weight:800}
 .audit-price-chart .audit-buy-dot{stroke-width:2}
 .audit-price-chart .audit-sell-dot{stroke-width:2}
+
+
+/* Truthful chronology: markers are anchored to the date axis; missing market
+   observations are shaded rather than replaced with fabricated price paths. */
+.audit-price-chart .audit-buy-guide,
+.audit-price-chart .audit-sell-guide{
+ fill:none;stroke-width:1.7;stroke-dasharray:4 4;opacity:.78
+}
+.audit-price-chart .audit-buy-guide{stroke:#168268}
+.audit-price-chart .audit-sell-guide{stroke:#bb4e4e}
+.audit-price-chart .audit-unobserved-gap{fill:#e9eff4;fill-opacity:.7}
+.audit-price-chart .audit-gap-label{font:650 12px system-ui,sans-serif;fill:#738698;
+ paint-order:stroke fill;stroke:#f7f9fb;stroke-width:3px}
+.audit-price-entry,.audit-price-execution,.audit-price-market{font-weight:700}
+.audit-missing-source{font-size:.68rem;color:#7b8995}
+.audit-operation-table td .smallline{display:block;font-size:.62rem;line-height:1.45}
