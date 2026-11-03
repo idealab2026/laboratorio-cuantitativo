@@ -85,7 +85,7 @@ jobs:
           cp data/demo.json data/public-theses.json data/fx-forecast-ledger.json data/sec-filings.json data/competition-roster.json data/strategy-candidates.json data/institutional-paper-feed.json dist/data/
           python3 scripts/refresh_sec.py --validate dist/data/sec-filings.json
           python3 scripts/paper_feed.py --validate dist/data/institutional-paper-feed.json
-          test "$(find dist -type f | wc -l)" -eq 33
+          test "$(find dist -type f | wc -l)" -eq 32
       - name: Acquire official ECB reference observations (not tradable quotes)
         run: |
           python3 scripts/refresh_ecb.py --output dist/data/official-fx.json
@@ -96,7 +96,7 @@ jobs:
         run: |
           python3 scripts/refresh_ecb_yield.py --out dist/data/official-eur-yield.json
           python3 scripts/refresh_ecb_yield.py --validate dist/data/official-eur-yield.json
-          test "$(find dist -type f | wc -l)" -eq 33
+          test "$(find dist -type f | wc -l)" -eq 34
       - uses: actions/upload-artifact@v4
         with:
           name: audited-site
