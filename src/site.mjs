@@ -1,5 +1,6 @@
 import {verifyOriginalPaper} from "./original-paper.mjs?v=b4ab52ea9863";
 import {algorithmTheory,paperLeaderboard} from "./algorithm-detail.mjs";
+import {glossaryGroups,searchGlossary,verifyGlossary} from "./glossary.mjs";
 import {verifyOperationsAudit,renderOperationsAudit} from "./operations-audit.mjs";
 import {parseLocalPaperResults,parseLocalPaperCurves,summarizePrivatePaper} from "./private-paper.mjs?v=4baff08a2202";
 import {signalResearchSummary,methodCatalog} from "./paper-methods.mjs";
@@ -13,7 +14,7 @@ const $=id=>document.getElementById(id);
 const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 const fmt=n=>finite(n)?new Intl.NumberFormat("es-ES",{maximumFractionDigits:2}).format(n):"N/D";
 const state={data:null,universe:null,fx:null,fxCheck:null,fxStatus:"pending",forecastLedger:null,forecastSummary:null,forecastStatus:"pending",secStatus:"pending",secRead:null,secCatalog:null,yieldDoc:null,yieldCheck:null,yieldStatus:"pending",view:"competition",strategy:"P-01",group:"",sort:"returnPct",asc:false,detailOpen:false,thesis:"T-01",query:"",thesisSort:"central",issuerMode:"catalog",issuerQuery:"",issuerSort:"base",issuerAsc:false,issuerTicker:"MSFT",paperDetail:"M-10",originalPaper:null,originalPaperStatus:"pending",historicalPaper:null,historicalCurves:null,historicalPaperStatus:"pending",fullRoster:null,fullRosterStatus:"pending",strategyCandidates:null,strategyCandidatesStatus:"pending",fullRosterGroup:"",fullRosterQuery:"",fullRosterSort:"return",fullRosterAsc:false,algorithmId:null,operationsAudit:null,operationsAuditStatus:"pending",auditTicker:null,institutionalFeedStatus:"pending",paperFeed:null,paperFeedRead:null,localCagr:new Map(),localCagrError:"",publicTheses:new Map(),publicThesesMetadata:null};
-const viewNames=["competition","algorithm","algorithms","theses","monitoring","method","archive","ported","full","synthetic"];
+const viewNames=["competition","algorithm","algorithms","theses","monitoring","method","glossary","archive","ported","full","synthetic"];
 const button=(label,action,value,cls="smallbtn")=>'<button type="button" class="'+cls+'" data-action="'+esc(action)+'" data-value="'+esc(value)+'">'+esc(label)+'</button>';
 const head=(label,title,body)=>'<div class="section-heading"><div><span class="kicker">'+esc(label)+'</span><h2>'+esc(title)+'</h2><p class="section-context">'+esc(body)+'</p></div></div>';
 const card=(html)=>'<article class="panel">'+html+'</article>';
@@ -423,8 +424,8 @@ const FULL_COMPETITION_COLUMNS=[
 ];
 const COMPARABILITY_EXPLANATION=[
  "La comparabilidad indica si dos rentabilidades paper cuentan con una base metodológica homogénea acreditada.",
- "Se deben contrastar cohorte y fechas de inicio, universo invertible, divisa, reglas de valoración y costes.",
- "«Misma cohorte»: el registro declara elegibilidad; no garantiza por sí solo equivalencia de todos los supuestos.",
+ "Para compararlas se deben contrastar fechas de inicio, universo invertible, divisa, reglas de valoración, costes y grupo de comparación.",
+ "«Mismo grupo de comparación»: el registro declara elegibilidad; no garantiza por sí solo equivalencia de todos los supuestos.",
  "«No comparable»: falta evidencia suficiente para compararlas directamente.",
  "«Archivo»: campaña histórica separada. «Investigación»: todavía sin operaciones ni valor liquidativo."
 ].join(" ");
@@ -475,9 +476,9 @@ function fullRosterRows(){
    more+'</tr>';
   const activity=record?.activity??"Sin diario institucional";
   const risk=record?.risk||{},last=record?.last_session||"";
-  const compare=record?.historical?"Archivo":record?.comparison?.eligible?"Misma cohorte":"No comparable";
-  const compareExplanation=record?.historical?"Corte histórico · cohortes separadas":
-   record?.comparison?.eligible?"Solo comparable dentro de la cohorte certificada":"Sin evidencia comparable";
+  const compare=record?.historical?"Archivo":record?.comparison?.eligible?"Mismo grupo":"No comparable";
+  const compareExplanation=record?.historical?"Corte histórico · grupos de comparación separados":
+   record?.comparison?.eligible?"Solo comparable dentro del grupo de comparación verificado":"Sin evidencia comparable";
   const start=record?.first_session||null;
   const sessions=record?.session_count;
   return '<tr class="competition-row">'+identity+familyCell+
@@ -620,12 +621,32 @@ function archive(){
  button("Volver a la competición paper","navigate","competition","outline-btn");
 }
 
+function glossaryRows(query=""){
+ const rows=searchGlossary(query);
+ if(!rows.length)return '<p class="glossary-empty">No hay conceptos que coincidan con la búsqueda. Prueba otro término.</p>';
+ return glossaryGroups.map(group=>{
+  const terms=rows.filter(x=>x.group===group);
+  if(!terms.length)return "";
+  return '<section class="glossary-group"><h3>'+esc(group)+'</h3><dl class="glossary-grid">'+
+   terms.map(x=>'<div class="glossary-entry"><dt>'+esc(x.term)+'</dt><dd>'+esc(x.description)+'</dd></div>').join("")+
+   '</dl></section>';
+ }).join("");
+}
+function glossary(){
+ const stats=verifyGlossary();
+ return head("CONCEPTOS DE MIDAS","Glosario financiero y cuantitativo",
+  "Explicaciones breves de los términos especializados que aparecen en la competición, las tesis de inversión y la auditoría de datos.")+
+  '<div class="glossary-tools"><label for="glossary-query">Buscar un término</label>'+
+  '<input id="glossary-query" type="search" placeholder="Ej.: grupo de comparación, CAGR, drawdown, NAV…" autocomplete="off" aria-label="Buscar un concepto en el glosario">'+
+  '<span id="glossary-count" role="status">'+stats.entries+' conceptos explicados</span></div>'+
+  '<div id="glossary-results" class="glossary-results">'+glossaryRows()+'</div>';
+}
 function methodology(){
  return head("MÉTODO Y LÍMITES","Evaluación reproducible","Los motores originales y sus diarios paper están publicados. La ejecución automática desde Idea Lab se verifica por separado; disponer de código e históricos no demuestra que todos los modelos estén actualizados.")+
  '<div class="method-grid">'+[
  ["Reloj causal","Cada motor conserva su contrato temporal y sus controles de disponibilidad. Una operación paper debe respetar la fecha de señal y la siguiente apertura; no se reconstruyen decisiones con información posterior."],
  ["Contabilidad paper","El dinero es virtual. Los diarios de mercado registran posiciones, órdenes y valoración; costes, divisa y reglas dependen de cada campaña. La demo didáctica usa precios artificiales y se muestra aparte."],
- ["Comparaciones","Comparar sólo campañas con fechas, universo, referencia y reglas compatibles. No mezclar cohortes históricas ni presentar una simulación como rentabilidad con dinero real."],
+ ["Comparaciones","Comparar sólo campañas con fechas, universo, referencia y reglas compatibles. No mezclar distintos grupos de comparación históricos ni presentar una simulación como rentabilidad con dinero real."],
  ["Tesis","Valoraciones bajo hipótesis, crecimiento, múltiplos y rentabilidad requerida, con criterios de refutación."],
  ["Estado de los modelos","El código migrado incluye motores clásicos, aprendizaje semanal, series temporales y evolución paramétrica. Cada estrategia conserva su estado; los modelos o datos ausentes no se sustituyen por resultados inventados."],
  ["Auditoría pública","Datos licenciados, fuentes temporales, validación fuera de muestra, trazabilidad y monitorización antes de atribuir capacidad predictiva."]
@@ -644,7 +665,7 @@ function chart(){
 }
 function render(){
  if(!state.data)return;
- const pages={competition,algorithm:algorithmFiche,synthetic:syntheticCompetition,algorithms,theses,monitoring,archive,ported,full,method:methodology};
+ const pages={competition,algorithm:algorithmFiche,synthetic:syntheticCompetition,algorithms,theses,monitoring,archive,ported,full,method:methodology,glossary};
  document.querySelectorAll(".product-tabs [data-view]").forEach(b=>{const active=b.dataset.view===state.view||(state.view==="algorithm"&&b.dataset.view==="competition");b.classList.toggle("active",active);b.setAttribute("aria-pressed",String(active));});
  $("app").innerHTML=(pages[state.view]||competition)();chart();
 }
@@ -797,6 +818,11 @@ $("app").addEventListener("change",e=>{
  if(el.id==="audit-ticker"){state.auditTicker=el.value;render();}
 });
 $("app").addEventListener("input",e=>{
+ if(e.target.id==="glossary-query"){
+  const query=e.target.value;
+  const results=$("glossary-results");if(results)results.innerHTML=glossaryRows(query);
+  const counter=$("glossary-count");if(counter)counter.textContent=searchGlossary(query).length+" conceptos encontrados";
+ }
  if(e.target.id==="full-query"){state.fullRosterQuery=e.target.value;const tbody=$("full-rows");if(tbody)tbody.innerHTML=fullRosterRows();const n=$("full-count");if(n&&state.fullRoster)n.textContent=sortedFullRosterRows().length;}
  if(e.target.id==="thesis-query"){state.query=e.target.value;const tbody=$("thesis-rows");if(tbody)tbody.innerHTML=thesisTableRows();}
  if(e.target.id==="issuer-query"){
