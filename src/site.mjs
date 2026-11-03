@@ -494,9 +494,9 @@ function fullRosterRows(){
    compactCell("Sesiones",Number.isInteger(sessions)&&sessions>0?esc(sessions):"N/D","number")+
    compactCell("Último cierre",esc(shortPaperDate(last)),"date-cell",last)+
    compactCell("Divisa",esc(record?.currency||"N/D"),"currency-cell")+
-   compactCell("Rent. acumulada",record?pctText(record.return_pct):"N/D","number")+
-   compactCell("Rent. día",record&&record.day_return_pct!==null?pctText(record.day_return_pct):"N/D","number")+
-   compactCell("Drawdown",record&&risk.max_drawdown_pct!==null?pctText(risk.max_drawdown_pct):"N/D","number")+
+   compactCell("Rent. acumulada",record&&finite(record.return_pct)?pctText(record.return_pct):"N/D","number")+
+   compactCell("Rent. día",record&&finite(record.day_return_pct)?pctText(record.day_return_pct):"N/D","number")+
+   compactCell("Drawdown",record&&finite(risk.max_drawdown_pct)?pctText(risk.max_drawdown_pct):"N/D","number")+
    compactCell("Comparabilidad",esc(compare),"comparison-cell",compareExplanation)+
    more+'</tr>';
  }).join("");
