@@ -368,3 +368,45 @@ p{line-height:1.6;text-align:justify;text-align-last:left;hyphens:auto}p.lead{co
  .comparison-help-popup{right:0;top:calc(100% + 9px)}
 }
 @media(prefers-reduced-motion:reduce){.comparison-help-popup{transition:none}}
+
+
+/* Per-strategy evidence-based operations audit, appended to the profile. */
+.audit-section{margin-bottom:24px}
+.audit-counts{display:flex;gap:7px;flex-wrap:wrap;margin:10px 0 16px}
+.audit-counts span{font:650 .7rem system-ui,sans-serif;color:#365573;
+ background:#eef3f7;border:1px solid #dae5ed;border-radius:6px;padding:4px 8px}
+.audit-chart-area{padding:10px 13px;border:1px solid #dce7ee;border-radius:9px;background:#fbfcfd;margin:12px 0 17px}
+.audit-ticker-picker{display:flex;gap:8px;align-items:center;margin:6px 0 12px;font:700 .74rem system-ui,sans-serif}
+.audit-ticker-picker select{max-width:210px;width:100%;padding:6px 9px;border:1px solid #d5e0e9;
+ background:#fff;color:#173a59;border-radius:6px}
+.audit-price-chart{display:block;width:100%;height:auto;max-height:285px;overflow:visible}
+.audit-axis{stroke:#acbecc;stroke-width:1}
+.audit-axis-label{font:12px system-ui,sans-serif;fill:#58718a}
+.audit-price-line{stroke:#3a7799;stroke-width:2.2;fill:none;stroke-linecap:round;stroke-linejoin:round}
+.audit-close-dot{fill:#6d95b3;stroke:#fff;stroke-width:1}
+.audit-buy-dot{fill:#168268}
+.audit-sell-dot{fill:#bb4e4e}
+.audit-trade-symbol{font:800 11px system-ui,sans-serif;fill:#26425e}
+.audit-legend{display:flex;gap:12px;flex-wrap:wrap;font:650 .7rem system-ui,sans-serif;margin:2px 0 8px}
+.audit-legend-buy{color:#168268}.audit-legend-sell{color:#ad4a4a}.audit-legend-close{color:#527894}
+.audit-method-note{font:520 .73rem/1.55 system-ui,sans-serif;color:#66788b!important;margin:8px 0!important}
+.audit-session{border:1px solid #dce5ec;border-radius:8px;padding:0!important;margin:8px 0!important;background:#fff}
+.audit-session summary{padding:10px 12px;list-style:revert;cursor:pointer;font:700 .77rem/1.4 system-ui,sans-serif}
+.audit-session[open] summary{border-bottom:1px solid #e4eaf0;background:#f8fafc}
+.audit-session p{padding:9px 13px;font:.78rem/1.5 system-ui,sans-serif}
+.audit-table-wrap{overflow-x:auto;margin:0}
+.audit-operation-table{min-width:710px;width:100%;border-collapse:collapse}
+.audit-operation-table td,.audit-operation-table th{padding:7px!important;font-size:.7rem!important}
+.audit-operation-table th:nth-child(1){width:125px}
+.audit-operation-table th:nth-child(2){width:75px}
+.audit-operation-table th:nth-child(3),.audit-operation-table th:nth-child(4){width:95px}
+.audit-operation-table td:last-child{white-space:normal;overflow-wrap:anywhere}
+.audit-operation-table .smallline{font:.62rem/1.4 system-ui,sans-serif;color:#75869a;margin-top:4px}
+.audit-action{font:790 .65rem system-ui,sans-serif;white-space:normal}
+.audit-buy{color:#148069}.audit-sell{color:#b34b4b}.audit-hold{color:#778599}
+@media(max-width:700px){
+ .audit-chart-area{padding:9px 8px}
+ .audit-price-chart{min-width:0}
+ .audit-operation-table{min-width:650px}
+ .audit-counts span{font-size:.62rem}
+}
