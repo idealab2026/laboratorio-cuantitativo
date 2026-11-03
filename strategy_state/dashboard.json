@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "generated_at_utc": "2026-11-03T09:06:14.525342+00:00",
+  "generated_at_utc": "2026-11-03T09:13:28.981102+00:00",
   "principle": "Comparar rentabilidad acumulada y riesgo observado; no ordenar carteras con distintas fechas de inicio o supuestos de ejecución.",
   "counts": {
     "paper_with_diary": 18,
@@ -225,7 +225,7 @@
       ],
       "note": "Mismas reglas de contabilidad; variante nueva si el nombre indica adaptación.",
       "activity_state": "pending",
-      "activity_label": "1 órdenes pendientes",
+      "activity_label": "1 orden pendientes",
       "activity_tickers": [
         "AMZN"
       ],
@@ -370,7 +370,7 @@
       ],
       "note": "Mismas reglas de contabilidad; variante nueva si el nombre indica adaptación.",
       "activity_state": "active_pending",
-      "activity_label": "2 posiciones · 1 órdenes pendientes",
+      "activity_label": "2 posiciones · 1 orden pendientes",
       "activity_tickers": [
         "MSFT",
         "XOM",
@@ -1039,11 +1039,11 @@
           "nav": 104937.88020151004
         }
       ],
-      "note": "Nueva campaña S&P500 503 símbolos; las carteras originales de 8 títulos se conservan históricas y no transfieren NAV ni operaciones.",
+      "note": "Nueva campaña S&P500 503 símbolos; las carteras originales de 8 títulos se conservan históricas y no transfieren NAV ni operaciones. Reconciliación registrada con retraso sobre órdenes previamente fijadas y OHLC común exacto; no acredita una ejecución puntual.",
       "evaluated_universe_symbols": 488,
       "eligible_universe_symbols": 503,
       "activity_state": "active_pending",
-      "activity_label": "7 posiciones · 3 compras paper para próxima apertura",
+      "activity_label": "7 posiciones · 3 órdenes paper para próxima apertura · Cálculo tardío: 2026-11-02",
       "activity_tickers": [
         "ADI",
         "DHR",
@@ -1057,6 +1057,9 @@
       ],
       "open_positions_count": 7,
       "pending_orders_count": 3,
+      "late_calculation_sessions": [
+        "2026-11-02"
+      ],
       "comparison_eligible": true,
       "comparison_universe_id": "SP500_2026-09-29_503",
       "comparison_universe_symbols": 503,
@@ -1146,7 +1149,7 @@
       "evaluated_universe_symbols": 488,
       "eligible_universe_symbols": 503,
       "activity_state": "active_pending",
-      "activity_label": "7 posiciones · 1 compra paper para próxima apertura",
+      "activity_label": "7 posiciones · 1 orden paper para próxima apertura",
       "activity_tickers": [
         "APH",
         "BEN",
@@ -1248,7 +1251,7 @@
       "evaluated_universe_symbols": 488,
       "eligible_universe_symbols": 503,
       "activity_state": "active_pending",
-      "activity_label": "7 posiciones · 1 compra paper para próxima apertura",
+      "activity_label": "7 posiciones · 1 orden paper para próxima apertura",
       "activity_tickers": [
         "ABBV",
         "CAH",
@@ -1350,7 +1353,7 @@
       "evaluated_universe_symbols": 488,
       "eligible_universe_symbols": 503,
       "activity_state": "active_pending",
-      "activity_label": "7 posiciones · 1 compra paper para próxima apertura",
+      "activity_label": "7 posiciones · 1 orden paper para próxima apertura",
       "activity_tickers": [
         "ALLE",
         "CNP",
