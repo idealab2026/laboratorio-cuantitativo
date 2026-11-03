@@ -1,4 +1,4 @@
-import {verifyOriginalPaper} from "./original-paper.mjs?v=8e289fdabcc1";
+import {verifyOriginalPaper} from "./original-paper.mjs?v=b4ab52ea9863";
 import {algorithmTheory,paperLeaderboard} from "./algorithm-detail.mjs";
 import {parseLocalPaperResults,parseLocalPaperCurves,summarizePrivatePaper} from "./private-paper.mjs?v=4baff08a2202";
 import {signalResearchSummary,methodCatalog} from "./paper-methods.mjs";
@@ -641,11 +641,20 @@ function chart(){
 }
 function render(){
  if(!state.data)return;
- const pages={overview,competition,synthetic:syntheticCompetition,algorithms,theses,monitoring,archive,ported,full,method:methodology};
- document.querySelectorAll(".product-tabs [data-view]").forEach(b=>{const active=b.dataset.view===state.view;b.classList.toggle("active",active);b.setAttribute("aria-pressed",String(active));});
+ const pages={overview,competition,algorithm:algorithmFiche,synthetic:syntheticCompetition,algorithms,theses,monitoring,archive,ported,full,method:methodology};
+ document.querySelectorAll(".product-tabs [data-view]").forEach(b=>{const active=b.dataset.view===state.view||(state.view==="algorithm"&&b.dataset.view==="competition");b.classList.toggle("active",active);b.setAttribute("aria-pressed",String(active));});
  $("app").innerHTML=(pages[state.view]||overview)();chart();
 }
-function go(view){if(!viewNames.includes(view))return;state.view=view;const u=new URL(location.href);u.searchParams.set("view",view);history.pushState({view},"",u);render();window.scrollTo({top:0,behavior:"auto"});}
+function go(view){
+ if(!viewNames.includes(view))return;
+ state.view=view;
+ const u=new URL(location.href);
+ u.searchParams.set("view",view);
+ if(view==="algorithm"&&state.algorithmId)u.searchParams.set("algorithm",state.algorithmId);
+ else u.searchParams.delete("algorithm");
+ history.pushState({view,algorithm:state.algorithmId},"",u);
+ render();window.scrollTo({top:0,behavior:"auto"});
+}
 const asCSV=rows=>rows.map(row=>row.map(x=>'"'+String(x??"").replaceAll('"','""')+'"').join(",")).join("\n");
 function download(name,rows){const u=URL.createObjectURL(new Blob(["\ufeff"+asCSV(rows)],{type:"text/csv;charset=utf-8"}));const a=document.createElement("a");a.href=u;a.download=name;document.body.append(a);a.click();a.remove();URL.revokeObjectURL(u);}
 function exportData(what){
@@ -685,6 +694,11 @@ $("app").addEventListener("click",e=>{
  }
  const {action,value}=b.dataset;
  if(action==="navigate"){state.detailOpen=false;go(value);}
+ else if(action==="full-detail"){
+  if(!state.fullRoster?.entries.some(x=>x.slot===value)&&
+     !state.strategyCandidates?.candidates.some(c=>c.id===value))return;
+  state.algorithmId=value;go("algorithm");
+ }
  else if(action==="select")openCompetitionRow(value);
  else if(action==="journal"){state.strategy=value;state.detailOpen=false;go("monitoring");}
  else if(action==="group"){state.group=value;state.detailOpen=false;go("synthetic");}
@@ -791,7 +805,7 @@ $("app").addEventListener("submit",e=>{
  state.strategy=id;state.group="";state.sort="returnPct";state.detailOpen=true;summary();go("competition");
 });
 document.querySelectorAll(".product-tabs [data-view]").forEach(b=>b.addEventListener("click",()=>{state.detailOpen=false;go(b.dataset.view);}));
-window.addEventListener("popstate",()=>{const v=new URLSearchParams(location.search).get("view");state.view=viewNames.includes(v)?v:"overview";state.detailOpen=false;render();});
+window.addEventListener("popstate",()=>{const params=new URLSearchParams(location.search);const v=params.get("view");state.view=viewNames.includes(v)?v:"overview";state.algorithmId=params.get("algorithm");state.detailOpen=false;render();});
 async function init(){
  try{
   const [r,p]=await Promise.all([fetch("./data/demo.json",{cache:"no-store"}),fetch("./data/public-theses.json",{cache:"no-store"})]);
@@ -801,7 +815,7 @@ async function init(){
   const stats=verifyPublicTheses(publication);
   state.publicTheses=new Map(publication.records.map(x=>[x.ticker,x]));
   state.publicThesesMetadata={...stats,published_as_of:publication.published_as_of};
-  state.data=data;state.universe=universe;const v=new URLSearchParams(location.search).get("view");state.view=viewNames.includes(v)?v:"overview";summary();render();void loadOfficialFx();void loadForecastLedger();void loadSecFilings();void loadOfficialYield();void loadOriginalPaper();void loadHistoricalPaper();void loadFullRoster();void loadStrategyCandidates();void loadInstitutionalPaperFeed();
+  state.data=data;state.universe=universe;const params=new URLSearchParams(location.search);const v=params.get("view");state.view=viewNames.includes(v)?v:"overview";state.algorithmId=params.get("algorithm");summary();render();void loadOfficialFx();void loadForecastLedger();void loadSecFilings();void loadOfficialYield();void loadOriginalPaper();void loadHistoricalPaper();void loadFullRoster();void loadStrategyCandidates();void loadInstitutionalPaperFeed();
  }catch(e){$("app").textContent="No se ha podido cargar el catálogo de emisores o el laboratorio sintético; no se muestran datos no verificados.";}
 }
 async function loadOfficialFx(){
@@ -849,7 +863,7 @@ async function loadStrategyCandidates(){
   verifyStrategyCandidates(doc);
   state.strategyCandidates=doc;state.strategyCandidatesStatus="ok";
  }catch(_error){state.strategyCandidates=null;state.strategyCandidatesStatus="unavailable";}
- if(["full","competition"].includes(state.view)&&state.data)render();
+ if(["full","competition","algorithm"].includes(state.view)&&state.data)render();
 }
 async function loadOriginalPaper(){
  try{
@@ -857,7 +871,7 @@ async function loadOriginalPaper(){
   if(!r.ok||!m.ok)throw Error("Diarios no disponibles");
   state.originalPaper=verifyOriginalPaper(await r.json(),await m.json());state.originalPaperStatus="ok";if(state.data)summary();
  }catch(_error){state.originalPaper=null;state.originalPaperStatus="unavailable";}
- if(["full","competition","monitoring","overview"].includes(state.view)&&state.data)render();
+ if(["full","competition","algorithm","monitoring","overview"].includes(state.view)&&state.data)render();
 }
 async function loadHistoricalPaper(){
  try{
@@ -867,7 +881,7 @@ async function loadHistoricalPaper(){
   const rows=parseLocalPaperResults(results),curves=parseLocalPaperCurves(nav,rows);
   state.historicalPaper=rows;state.historicalCurves=curves;state.historicalPaperStatus="ok";if(state.data)summary();
  }catch(_error){state.historicalPaper=null;state.historicalCurves=null;state.historicalPaperStatus="unavailable";}
- if(["full","competition"].includes(state.view)&&state.data)render();
+ if(["full","competition","algorithm"].includes(state.view)&&state.data)render();
 }
 async function loadFullRoster(){
  try{
@@ -877,7 +891,7 @@ async function loadFullRoster(){
   verifyFullRoster(doc);
   state.fullRoster=doc;state.fullRosterStatus="ok";if(state.data)summary();
  }catch(_error){state.fullRoster=null;state.fullRosterStatus="unavailable";}
- if(["full","competition"].includes(state.view)&&state.data)render();
+ if(["full","competition","algorithm"].includes(state.view)&&state.data)render();
 }
 async function loadInstitutionalPaperFeed(){
  try{
@@ -894,6 +908,6 @@ async function loadInstitutionalPaperFeed(){
   state.paperFeed=doc;state.paperFeedRead=verified;
   state.institutionalFeedStatus=verified.status;
  }catch(_error){state.paperFeed=null;state.paperFeedRead=null;state.institutionalFeedStatus="unavailable";}
- if(["full","competition"].includes(state.view)&&state.data)render();
+ if(["full","competition","algorithm"].includes(state.view)&&state.data)render();
 }
 init();
