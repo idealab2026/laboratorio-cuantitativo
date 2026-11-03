@@ -28,8 +28,15 @@ Pages; coste cero siempre. Credenciales exclusivamente en GitHub Secrets.
    verificar después un nuevo ciclo natural y una sesión económica nueva.
 
 Conservar señales, órdenes, fills simulados, cash, costes y NAV de cada campaña.
-Cotizaciones ausentes o inválidas bloquean la transición correspondiente; no se
-rellenan con el último cierre ni se reconstruyen operaciones perdidas.
+Cotizaciones ausentes o inválidas bloquean la transición correspondiente; nunca
+se rellenan con el último cierre. Una cuarentena de una única sesión recién
+cerrada puede liquidarse con retraso si conserva las órdenes fijadas al cierre
+anterior y dispone de todas las barras comunes exactas. Reutiliza las mismas
+comisiones, deslizamiento y reglas conservadoras de stop/objetivo. Las nuevas
+marcas y operaciones incluyen fecha real de registro, hashes y aviso visible de
+cálculo tardío; no acreditan ejecución puntual. Se rechazan huecos de varias
+sesiones, señales históricas reconstruidas y acciones corporativas sin resolver.
+Las nuevas decisiones se fijan antes de la siguiente apertura XNYS.
 
 ## Otros calendarios y campañas
 
