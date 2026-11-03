@@ -60,13 +60,7 @@
     }
   },
   "pending": {
-    "buys": {
-      "QCOM": {
-        "weight": 0.15,
-        "stop_pct": 0.076284006060928,
-        "target_pct": 0.19061640317598155
-      }
-    },
+    "buys": {},
     "sells": []
   },
   "trades": [
@@ -291,12 +285,80 @@
     "2026-10-23": 99304.42208123722,
     "2026-10-26": 99441.17101078352,
     "2026-10-27": 98693.68610437175,
-    "2026-10-28": 99262.59256310256
+    "2026-10-28": 99262.59256310256,
+    "2026-10-29": 101312.10088710875,
+    "2026-10-30": 101545.79842132085,
+    "2026-11-02": 103472.20536268542
   },
-  "last_session": "2026-10-28",
+  "last_session": "2026-11-02",
   "execution": {
     "fractional_shares": true,
     "share_precision": 6,
     "min_order": 10.0
+  },
+  "outage_events": [
+    {
+      "date": "2026-11-02",
+      "type": "outage_valuations_reconciled_no_trades",
+      "sessions": [
+        "2026-10-29",
+        "2026-10-30",
+        "2026-11-02"
+      ],
+      "expired_unfilled_orders": {
+        "buys": {
+          "QCOM": {
+            "weight": 0.15,
+            "stop_pct": 0.076284006060928,
+            "target_pct": 0.19061640317598155
+          }
+        },
+        "sells": []
+      },
+      "recorded_at_utc": "2026-11-03T14:30:59+00:00"
+    }
+  ],
+  "equity_provenance": {
+    "2026-10-29": {
+      "kind": "inactive_holding_mark_only",
+      "quote_identity": {
+        "session": "2026-10-29",
+        "snapshot_sha256": "12678209e28b68bcda787bafe8805dcfedb5a7fcceea755ec0c6f6d601bb91f1",
+        "effective_sha256": "0b919436da053b8e3aee7e09682ec7a821847a1e129551b14b4236b0790c41bc"
+      },
+      "recorded_at_utc": "2026-11-03T14:30:59+00:00",
+      "trades_executed": 0
+    },
+    "2026-10-30": {
+      "kind": "inactive_holding_mark_only",
+      "quote_identity": {
+        "session": "2026-10-30",
+        "snapshot_sha256": "01ee1c4d0d5f28fc76abd4a80bc6228477bbf1b6c1e244aed29ce64fe5f3a987",
+        "effective_sha256": "0f09c6ae175f1ea60bb6ced05f5a3620483aad3f4cdedc044edd8a1a8f2c2680"
+      },
+      "recorded_at_utc": "2026-11-03T14:30:59+00:00",
+      "trades_executed": 0
+    },
+    "2026-11-02": {
+      "kind": "inactive_holding_mark_only",
+      "quote_identity": {
+        "session": "2026-11-02",
+        "snapshot_sha256": "4ba926a4fbd9f925dd95d344d80856877216ff6b4fce3f53a9e18c3f2a07da1b",
+        "effective_sha256": "eebe356462aa1a2bcce72d1f62aaa7be676fccba2279c555ec24c38658564910"
+      },
+      "recorded_at_utc": "2026-11-03T14:30:59+00:00",
+      "trades_executed": 0
+    }
+  },
+  "inactive_sessions": [
+    "2026-10-29",
+    "2026-10-30",
+    "2026-11-02"
+  ],
+  "outage_control": {
+    "previous_last_session": "2026-10-28",
+    "registered_at_utc": "2026-11-03T14:30:59+00:00",
+    "first_trading_session": "2026-11-04",
+    "policy": "retain_holdings_no_outage_fills_resume_at_future_open"
   }
 }
