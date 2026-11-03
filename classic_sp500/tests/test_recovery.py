@@ -132,3 +132,45 @@ class PassiveRecoveryTests(unittest.TestCase):
                                                   recorded_at="later", reviews=reviews)
         self.assertEqual(got, again)
         self.assertEqual(restored, [])
+
+
+    def test_complete_consecutive_prefix_is_valued_without_skipping_the_blocked_day(self):
+        def quotes(day):
+            return ({}, {}) if day.endswith("28") else self.quotes(day)
+        before = copy.deepcopy(self.state)
+        got, recovered, blocked = self.recover(quotes)
+        book = got["books"]["hold"]
+        self.assertEqual(recovered, [])
+        self.assertEqual(blocked["hold"], "missing_historical_held_bar")
+        self.assertEqual([p["date"] for p in book["equity"]], ["2026-10-26", "2026-10-27"])
+        self.assertEqual(book["nav"], 151.)
+        self.assertEqual(book["paused_missing_quotes"]["since"], "2026-10-28")
+        self.assertEqual(book["paused_missing_quotes"]["last_valued_session"], "2026-10-27")
+        self.assertEqual(book["events"][-1]["type"], "passive_prefix_recovered_still_paused")
+        self.assertEqual(book["positions"], before["books"]["hold"]["positions"])
+        self.assertEqual(book["trades"], [])
+        self.assertEqual(self.state, before)
+        twice, recovered, _ = recover_passive_books(self.config, got,
+            lambda start, end: ["2026-10-28"], quotes, recorded_at="later")
+        self.assertEqual(twice, got)
+        self.assertEqual(recovered, [])
+
+    def test_failed_day_dividends_roll_back_and_cannot_contaminate_verified_prefix(self):
+        def quotes(day):
+            bars, identity = self.quotes(day)
+            if day.endswith("28"):
+                bars["AAA"].update(dividend=.5, close=-1)
+            return bars, identity
+        reviews = {"reviews": [{"ticker": "AAA", "kind": "cash_dividend", "currency": "USD",
+            "amount": .5, "vendor_ex_session": "2026-10-28", "source_url": "https://issuer.example/amount",
+            "verified_on": "2026-10-29"}]}
+        got, recovered, blocked = recover_passive_books(self.config, self.state, self.days,
+            quotes, recorded_at="now", reviews=reviews)
+        book = got["books"]["hold"]
+        self.assertEqual(book["cash"], 50.)
+        self.assertEqual(book["positions"]["AAA"].get("dividends", 0), 0)
+        self.assertFalse(any(e["type"] == "dividend" for e in book["events"]))
+        self.assertEqual(book["nav"], 151.)
+        self.assertEqual(book["equity"][-1]["date"], "2026-10-27")
+        self.assertEqual(blocked["hold"], "invalid_close")
+        self.assertEqual(recovered, [])

@@ -59,11 +59,15 @@ def recover_passive_books(config, state, sessions_after, quote_loader, *, record
             blocked[name] = "incomplete_session_calendar"
             continue
         marks = []
+        verified_book = copy.deepcopy(book)
+        missing_tickers = []
         try:
-            # Validate EVERY missing session before changing any part of a book.
+            # Commit only complete consecutive daily marks in memory. A failed
+            # day rolls back its dividends too; later days are never skipped.
             for day in days:
                 bars, identity = quote_loader(day)
-                if not set(book["positions"]) <= set(bars):
+                missing_tickers = sorted(set(book["positions"]) - set(bars))
+                if missing_tickers:
                     raise ValueError("missing_historical_held_bar")
                 for ticker, pos in book["positions"].items():
                     row = bars[ticker]
@@ -93,20 +97,31 @@ def recover_passive_books(config, state, sessions_after, quote_loader, *, record
                 marks.append({"date": day, "nav": nav, "late_mark_only": True,
                               "recorded_at_utc": recorded_at,
                               "quote_identity": identity})
+                verified_book = copy.deepcopy(book)
         except (ValueError, KeyError, TypeError, OSError) as exc:
             blocked[name] = str(exc)
-            continue
+            if not marks:
+                continue
+            book = verified_book
         # These orders missed their intended open. Preserve their omission;
         # never execute them from a later historical or present-day quote.
         expired = sorted(book["pending"])
         book["pending"] = {}
         book["equity"].extend(marks)
         book["nav"] = marks[-1]["nav"]
-        book["events"].append({"date": state["last_session"],
-            "type": "passive_marks_recovered_no_fills",
-            "recorded_at_utc": recorded_at, "sessions": days,
+        partial = name in blocked
+        book["events"].append({"date": marks[-1]["date"],
+            "type": "passive_prefix_recovered_still_paused" if partial else
+                    "passive_marks_recovered_no_fills",
+            "recorded_at_utc": recorded_at, "sessions": [m["date"] for m in marks],
             "expired_unfilled_buys": expired})
-        del book["paused_missing_quotes"]
+        if partial:
+            book["paused_missing_quotes"] = {
+                "since": day, "last_valued_session": marks[-1]["date"],
+                "missing_tickers": missing_tickers or original["paused_missing_quotes"]["missing_tickers"],
+                "reason": blocked[name]}
+        else:
+            del book["paused_missing_quotes"]
+            recovered.append(name)
         result["books"][name] = book
-        recovered.append(name)
     return result, recovered, blocked

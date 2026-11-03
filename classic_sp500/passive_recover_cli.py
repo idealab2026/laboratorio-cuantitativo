@@ -3,6 +3,7 @@
 Never executes an order, invents a past signal, advances a live session, or
 touches any unpaused portfolio. Requires all missing XNYS sessions' exact
 SHA-verified OHLC from the common source before an atomic ledger write.
+A consecutive verified prefix may advance while the next failed day stays paused.
 """
 from __future__ import annotations
 
@@ -68,13 +69,17 @@ def recover(*, root=ROOT, write=False, clock=None):
         config, original, sessions_after, quote_loader,
         recorded_at=clock or datetime.now(timezone.utc).isoformat(timespec="seconds"),
         reviews=reviews)
+    progressed = [name for name, old in original["books"].items()
+                  if updated["books"][name]["equity"][-1]["date"] > old["equity"][-1]["date"]]
     for name, old in original["books"].items():
         new = updated["books"][name]
         if old["trades"] != new["trades"]:
             raise ValueError("Recovery attempted to modify historical fills")
-        if name not in completed and old != new:
-            raise ValueError("Recovery changed a book not proven complete")
-        if name in completed:
+        if name not in progressed and old != new:
+            raise ValueError("Recovery changed a book without a complete verified daily mark")
+        if name in progressed:
+            if new["equity"][:len(old["equity"])] != old["equity"]:
+                raise ValueError("Recovery rewrote an existing NAV")
             if set(old["positions"]) != set(new["positions"]):
                 raise ValueError("Recovery attempted to change holdings")
             for ticker, old_pos in old["positions"].items():
@@ -85,14 +90,17 @@ def recover(*, root=ROOT, write=False, clock=None):
     if updated["last_session"] != original["last_session"]:
         raise ValueError("Passive mark replay cannot change global market session")
     classic.validate_state(updated, config)
-    if write and completed:
+    if write and progressed:
         classic.market.atomic_write(path, updated)
     return {"status": "passive_book_recovered" if completed and write else
-                      "verified_recoverable" if completed else "nothing_recovered",
+                      "verified_recoverable" if completed else
+                      "passive_prefix_recovered_still_paused" if progressed and write else
+                      "verified_prefix_recoverable" if progressed else "nothing_recovered",
             "global_session": original["last_session"],
             "recovered_books": completed, "blocked_books": blocked,
+            "partially_recovered_books": [n for n in progressed if n not in completed],
             "unreviewed_corporate_actions": pending_actions,
-            "written": bool(write and completed),
+            "written": bool(write and progressed),
             "open_positions_unchanged": True, "trades_unchanged": True,
             "note": "late marks only; no trades, signals or NAV invented"}
 
