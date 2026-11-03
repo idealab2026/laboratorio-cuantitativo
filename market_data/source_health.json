@@ -1,7 +1,7 @@
 {
-  "age_seconds": 373,
+  "age_seconds": 25508,
   "captured_at_utc": "2026-11-02T23:39:03+00:00",
-  "checked_at_utc": "2026-11-02T23:45:16.322474+00:00",
+  "checked_at_utc": "2026-11-03T06:44:11.284237+00:00",
   "consumers": {
     "buy_the_dip_strategy": {
       "ledger_status": "observed",
@@ -69,85 +69,56 @@
     },
     "weekly_ml_daily": {
       "ledger_status": "observed",
-      "paused_book_ids": [
-        "arima_return",
-        "benchmark_rsp",
-        "benchmark_spy",
-        "ensemble_consensus",
-        "lgbm_direction",
-        "lgbm_ranker",
-        "lgbm_return",
-        "lstm_return",
-        "mlp_return"
-      ],
-      "paused_books": 9,
-      "updated_books": 0,
+      "paused_book_ids": [],
+      "paused_books": 0,
+      "updated_books": 9,
       "valuation_sessions": {
-        "arima_return": "2026-10-30",
-        "benchmark_rsp": "2026-10-30",
-        "benchmark_spy": "2026-10-30",
-        "ensemble_consensus": "2026-10-30",
-        "lgbm_direction": "2026-10-30",
-        "lgbm_ranker": "2026-10-30",
-        "lgbm_return": "2026-10-30",
-        "lstm_return": "2026-10-30",
-        "mlp_return": "2026-10-30"
+        "arima_return": "2026-11-02",
+        "benchmark_rsp": "2026-11-02",
+        "benchmark_spy": "2026-11-02",
+        "ensemble_consensus": "2026-11-02",
+        "lgbm_direction": "2026-11-02",
+        "lgbm_ranker": "2026-11-02",
+        "lgbm_return": "2026-11-02",
+        "lstm_return": "2026-11-02",
+        "mlp_return": "2026-11-02"
       },
-      "workflow_outcome": "failure"
+      "workflow_outcome": "success"
     }
   },
   "coverage": {
-    "frozen_constituents_observed": 468,
-    "missing": 35,
-    "observed": 469,
+    "frozen_constituents_observed": 489,
+    "missing": 14,
+    "observed": 490,
     "requested": 504
   },
-  "effective_sha256": "4ba926a4fbd9f925dd95d344d80856877216ff6b4fce3f53a9e18c3f2a07da1b",
+  "effective_sha256": "eebe356462aa1a2bcce72d1f62aaa7be676fccba2279c555ec24c38658564910",
   "engine_health": "not_assessed",
   "expected_session": "2026-11-02",
   "market": "XNYS",
   "missing_symbols": [
-    "ALL",
     "AVB",
-    "AZO",
     "BK",
-    "CCL",
-    "CMG",
     "CTRA",
-    "CVS",
     "DAY",
-    "DHR",
-    "DIS",
-    "DLR",
-    "DVA",
     "EA",
-    "EFX",
     "EQR",
-    "EXR",
     "FI",
-    "FRT",
     "HOLX",
-    "HRL",
-    "IFF",
     "IPG",
     "K",
     "KVUE",
-    "L",
-    "LII",
-    "LOW",
     "MMC",
-    "SPG",
-    "UHS",
     "WBA",
-    "WBD",
-    "WSM",
-    "WY"
+    "WBD"
   ],
   "policy": "common_raw_daily_primary",
-  "revision_hashes": [],
-  "run_id": "41546738769",
+  "revision_hashes": [
+    "eebe356462aa1a2bcce72d1f62aaa7be676fccba2279c555ec24c38658564910"
+  ],
+  "run_id": "41591472493",
   "schema": "midas.xnys_source_health.v1",
   "sha256": "4ba926a4fbd9f925dd95d344d80856877216ff6b4fce3f53a9e18c3f2a07da1b",
   "status": "snapshot_verified",
-  "trigger_event": "schedule"
+  "trigger_event": "workflow_dispatch"
 }
