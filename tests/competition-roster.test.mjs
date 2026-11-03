@@ -215,3 +215,46 @@ test("Responsive competition preserves explicit detail actions and compact mobil
  const keys=["Estrategia","Familia","Actividad","Inicio","Sesiones","Último cierre","Divisa","Rent. acumulada","Rent. día","Drawdown","Comparabilidad","Detalle"];
  for(const key of keys)assert.ok(site.includes('"'+key+'"'));
 });
+
+
+test("Competition removes the entire filter/export/explanatory toolbar without hiding paper records",()=>{
+ const src=readFileSync(new URL("../src/site.mjs",import.meta.url),"utf8");
+ const begin=src.indexOf("function full(){"),end=src.indexOf("function fullHistoryChart(",begin);
+ assert.ok(begin>=0&&end>begin);
+ const competition=src.slice(begin,end);
+ for(const removed of ["competition-filters","full-group-select","full-query","Exportar CSV","competition-disclaimer","full-count","Orden inicial: mayor rentabilidad acumulada"]){
+  assert.ok(!competition.includes(removed),"Unwanted introductory block: "+removed);
+ }
+ assert.ok(competition.includes("fullRosterRows()"));
+ assert.ok(competition.includes("fullRosterHeaders()"));
+ assert.ok(competition.includes("fullMobileSortControls()"));
+ assert.ok(competition.includes("paperLeaderboard("));
+});
+test("Competition displays No verificable for missing cells, keeping the numeric sort as missing",()=>{
+ const src=readFileSync(new URL("../src/site.mjs",import.meta.url),"utf8");
+ const a=src.indexOf("function compactCell("),b=src.indexOf("function sortedFullRosterRows(",a);
+ const cells=src.slice(a,b);
+ assert.ok(cells.includes('html==="N/D"'));
+ assert.ok(cells.includes('class="unverified-text">No verificable'));
+ const full=src.slice(src.indexOf("function fullRosterRows(){"),src.indexOf("function full(){"));
+ assert.ok(full.includes("finite(record.day_return_pct)"));
+ assert.ok(full.includes("finite(risk.max_drawdown_pct)"));
+ const css=readFileSync(new URL("../styles.css",import.meta.url),"utf8");
+ assert.ok(css.includes(".full-competition-table .unverified-text"));
+ assert.ok(css.includes("white-space:normal"));
+});
+test("Comparability explanation opens on hover, keyboard focus and in mobile sort controls",()=>{
+ const src=readFileSync(new URL("../src/site.mjs",import.meta.url),"utf8");
+ const css=readFileSync(new URL("../styles.css",import.meta.url),"utf8");
+ for(const term of ["misma cohorte","universo","divisa","costes","No comparable","Archivo","Investigación"]){
+  assert.ok(src.toLocaleLowerCase("es").includes(term.toLocaleLowerCase("es")));
+ }
+ assert.ok(src.includes('role="tooltip"'));
+ assert.ok(src.includes("aria-describedby="));
+ assert.ok(src.includes('key==="comparison"?comparabilityHelp('));
+ assert.ok(src.includes('comparabilityHelp("competition-comparability-tip-mobile")'));
+ assert.ok(css.includes(".comparison-help-wrap:hover .comparison-help-popup"));
+ assert.ok(css.includes(".comparison-help-wrap:focus-within .comparison-help-popup"));
+ assert.ok(css.includes(".comparison-header:hover .comparison-help-popup"));
+ assert.ok(css.includes(".full-competition-table{overflow:visible}"));
+});
