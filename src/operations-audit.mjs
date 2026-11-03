@@ -223,7 +223,8 @@ function chart(track,ticker){
   '. Los precios aparecen sobre cada punto. Los puntos azules son cierres observados de mercado, NO compras ni ventas del algoritmo. La compra verde está colocada en su fecha y precio reales; el área sombreada indica un periodo sin cierres archivados, no un movimiento supuesto. Si no hay punto rojo, no consta una venta ejecutada con precio confirmado en estas sesiones; un evento corporativo puede transformar la posición sin ser una venta. Las operaciones sin precio se señalan por su fecha, sin inventar su cotización. Solo se unen cierres consecutivos realmente guardados; no se interpolan fechas sin cotización. No consta la hora exacta de los fills. '+
   (quote.length<2?'No existe una serie de cierres suficiente para mostrar una trayectoria continua.':'')+'</p>';
 }
-function renderTradeLotsTable(track, key="recent", descending=true){
+/** One and the same table is used by an algorithm fiche and the operational register. */
+export function renderTradeLotsTable(track, key="recent", descending=true){
  const lots=sortOperationLots(buildOperationLots(track),key,descending);
  if(!lots.length)return '<p class="audit-method-note">No consta ninguna compra o venta individual acreditada. La evolución del NAV no permite inventar operaciones.</p>';
  const cc=esc(track.currency||"");
@@ -282,6 +283,30 @@ function renderTradeLotsTable(track, key="recent", descending=true){
   'Se descuentan comisiones únicamente cuando constan en el libro; los demás importes son brutos. '+
   'No incluye dividendos, efectos de divisa ni valoración de derechos derivados de fusiones. '+
   'Si no existen precios, cantidades o procedencia suficientes se muestra N/D; ninguna conversión corporativa se presenta como una venta.</p>';
+}
+/**
+ * Historical/archived execution coverage only, not proof of an active runner.
+ * Counts executed orders, not inferred holds, signals or conversions.
+ */
+export function summarizeOperationsAudit(doc){
+ if(!doc || !doc.tracks || typeof doc.tracks!=="object") return null;
+ const rows=Object.values(doc.tracks);
+ let withExecutions=0, executions=0, latestTrade=null, latestSession=null, converted=0;
+ for(const track of rows){
+  let found=false;
+  for(const session of track.sessions||[]){
+   if(!latestSession||session.date>latestSession)latestSession=session.date;
+   for(const a of session.actions||[]){
+    if(a.side==="buy"||a.side==="sell"){
+     found=true;executions++;
+     if(!latestTrade||session.date>latestTrade)latestTrade=session.date;
+    }else if(a.side==="corporate_action")converted++;
+   }
+  }
+  if(found)withExecutions++;
+ }
+ return {slots:rows.length,withExecutions,withoutExecutions:rows.length-withExecutions,
+         executions,latestTrade,latestSession,conversions:converted};
 }
 export function renderOperationsAudit(doc,id,selectedTicker=null,view={}){
 
