@@ -82,8 +82,8 @@ test("Readiness taxonomy counts only code and never declares economic activity",
  assert.throws(()=>technicalStage("IL-999"));
  const site=readFileSync(new URL("../src/site.mjs",import.meta.url),"utf8");
  assert.ok(!site.includes("Preparación del motor institucional nuevo:"));
- assert.ok(site.includes("record?.original?"));
- assert.ok(site.includes("technicalStage(item.slot).label"));
+ assert.ok(site.includes("originalStrategyName(item)"));
+ assert.ok(site.includes("technicalStage(id).label"));
  assert.ok(site.includes('"Fase técnica"'));
 });
 
@@ -175,4 +175,40 @@ test("Capital Cycle and Buy The Dip are searchable by their canonical names and 
  assert.ok(site.includes('button("Capital Cycle · IL-038","full-focus","IL-038"'));
  assert.ok(site.includes('button("Buy The Dip · IL-039","full-focus","IL-039"'));
  assert.ok(site.includes('state.fullRosterGroup="";state.fullRosterQuery=value;render();'));
+});
+
+
+test("All 64 institutional rows preserve the exact journal display names",async()=>{
+ const mapping=JSON.parse(readFileSync(new URL("../data/original-track-map.json",import.meta.url),"utf8"));
+ const source=JSON.parse(readFileSync(new URL("../strategy_state/dashboard.json",import.meta.url),"utf8"));
+ const {verifyOriginalPaper}=await import("../src/original-paper.mjs");
+ const original=verifyOriginalPaper(source,mapping);
+ assert.equal(original.labels.size,64);
+ assert.equal(original.bySlot.size,48); // absent diaries must still retain their original names
+ for(const track of source.tracks){
+  assert.equal(original.labels.get(mapping[track.id]),track.label);
+ }
+ assert.equal(original.labels.get("IL-038"),"Capital Cycle Inflection · underinvestment + calidad + giro");
+ assert.equal(original.labels.get("IL-039"),"Buy The Dip corpus v0 · deep value + special situations");
+ const site=readFileSync(new URL("../src/site.mjs",import.meta.url),"utf8");
+ assert.ok(site.includes('state.originalPaper?.labels?.get(item.slot)||item.name'));
+ assert.ok(site.includes('name:originalStrategyName(item)'));
+ assert.ok(site.includes('originalStrategyName(item)].some('));
+ assert.ok(site.includes("full-strategy-name"));
+});
+test("Compact competition has all twelve columns without horizontal scrolling",()=>{
+ const css=readFileSync(new URL("../styles.css",import.meta.url),"utf8");
+ const site=readFileSync(new URL("../src/site.mjs",import.meta.url),"utf8");
+ assert.ok(css.includes('.full-competition-table table{table-layout:fixed;width:100%;min-width:0'));
+ assert.ok(css.includes('.full-competition-table{overflow-x:hidden;'));
+ assert.ok(css.includes('@media(max-width:1050px)'));
+ assert.ok(css.includes('.full-competition-table .competition-row{display:grid;grid-template-columns:repeat(4,minmax(0,1fr))'));
+ assert.ok(css.includes('.full-competition-table .competition-row td:before'));
+ assert.ok(site.includes('FULL_COMPETITION_COLUMNS=['));
+ assert.ok(site.includes('function fullMobileSortControls()'));
+ assert.ok(site.includes("data-label="));
+ assert.ok(site.includes('if(el.id==="full-mobile-sort")'));
+ assert.ok(site.includes('else if(action==="full-sort-direction")'));
+ const keys=["Estrategia","Familia","Actividad","Fecha","Divisa","P/L acumulado","P/L día","Volatilidad","Drawdown","Posiciones / órdenes","Comparabilidad","Curva"];
+ for(const key of keys)assert.ok(site.includes('"'+key+'"'));
 });
