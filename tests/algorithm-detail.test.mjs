@@ -318,7 +318,7 @@ test("KVUE entry survives corporate conversion and displays at price/date on cha
  const html=renderOperationsAudit(doc,"IL-012","KVUE");
  for(const phrase of ["Compra 18,389","audit-buy-dot","audit-buy-guide",
     "Conversión → KMB","audit-corporate-marker","CONVERSIÓN CORPORATIVA",
-    "KVUE → KMB","2.257,9","conversión corporativa",
+    "KVUE → KMB","2257,90","conversión corporativa",
     "2026-10-15","2026-11-02","1 conversiones corporativas"]){
   assert.ok(html.toLowerCase().includes(phrase.toLowerCase()),"Missing: "+phrase);
  }
