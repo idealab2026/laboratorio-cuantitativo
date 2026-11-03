@@ -138,5 +138,132 @@ class ForwardLedgerTests(unittest.TestCase):
             self.assertEqual(json.loads(before)["cash"], 100000)
 
 
+
+
+class InactiveContinuationTests(unittest.TestCase):
+    def setUp(self):
+        self.state = paper._new_state()
+        self.state.update(last_session="2026-10-28", equity_history={"2026-10-28": 100000.}, cash=99000.)
+        self.state["positions"] = {"TEST": {"shares": 10., "entry": 100., "sl": 95., "tp": 120.}}
+        self.state["pending"]["buys"] = {"OLD": {"weight": .15, "stop_pct": .05, "target_pct": .10}}
+        self.state["trades"] = [{"session": "2026-10-28", "ticker": "TEST", "side": "BUY"}]
+        self.days = ["2026-10-29", "2026-10-30", "2026-11-02"]
+        self.rows = {self.days[0]: bar(100, 101, 89, 90), self.days[1]: bar(110, 121, 100, 110),
+                     self.days[2]: bar(105, 106, 104, 105)}
+        self.clock = "2026-11-03T14:00:00+00:00"
+
+    def quotes(self, day):
+        return {"TEST": self.rows[day]}, {"session": day, "snapshot_sha256": "a" * 64,
+                                         "effective_sha256": "b" * 64}
+
+    def test_retains_capital_positions_and_history_marks_real_loss_and_expired_orders(self):
+        before = json.loads(json.dumps(self.state))
+        got = paper.mark_inactive_sessions(self.state, self.days, self.quotes, recorded_at=self.clock)
+        self.assertEqual(got["positions"], before["positions"])
+        self.assertEqual(got["cash"], before["cash"])
+        self.assertEqual(got["trades"], before["trades"])
+        self.assertEqual(got["equity_history"]["2026-10-28"], 100000.)
+        self.assertEqual(got["equity_history"]["2026-10-29"], 99900.)
+        self.assertEqual(got["equity_history"]["2026-11-02"], 100050.)
+        self.assertEqual(got["pending"], {"buys": {}, "sells": []})
+        self.assertEqual(got["inactive_sessions"], self.days)
+        events = got["outage_events"]
+        self.assertEqual([e["trigger"] for e in events if e["type"] == "unexecuted_during_outage"],
+                         ["stop", "target"])
+        self.assertEqual(events[-1]["expired_unfilled_orders"], before["pending"])
+        self.assertEqual(got["equity_provenance"][self.days[0]]["recorded_at_utc"], self.clock)
+        self.assertEqual(self.state, before)
+        self.assertEqual(paper.mark_inactive_sessions(got, [], self.quotes, recorded_at=self.clock), got)
+
+    def test_bad_bar_missing_holding_and_wrong_source_never_change_input(self):
+        before = json.loads(json.dumps(self.state))
+        for mode in ("missing", "date", "identity", "price", "split", "dividend"):
+            def bad(day):
+                rows, identity = self.quotes(day)
+                rows = json.loads(json.dumps(rows))
+                if day == self.days[-1]:
+                    if mode == "missing": rows = {}
+                    if mode == "date": identity["session"] = "2026-11-01"
+                    if mode == "identity": identity["effective_sha256"] = "not-a-hash"
+                    if mode == "price": rows["TEST"]["Close"] = -1
+                    if mode == "split": rows["TEST"]["Stock Splits"] = 2
+                    if mode == "dividend": rows["TEST"]["Dividends"] = 1
+                return rows, identity
+            with self.subTest(mode=mode), self.assertRaises(ValueError):
+                paper.mark_inactive_sessions(self.state, self.days, bad, recorded_at=self.clock)
+            self.assertEqual(self.state, before)
+
+    def test_reviewed_dividend_once_without_any_past_trade(self):
+        self.rows[self.days[0]]["Dividends"] = .5
+        reviews = {"reviews": [{"kind": "cash_dividend", "ticker": "TEST", "currency": "USD",
+            "vendor_ex_session": self.days[0], "amount": .5,
+            "source_url": "https://issuer.example/dividend", "verified_on": "2026-11-03"}]}
+        got = paper.mark_inactive_sessions(self.state, self.days, self.quotes,
+                                           recorded_at=self.clock, reviews=reviews)
+        self.assertEqual(got["cash"], 99005.)
+        self.assertEqual(got["equity_history"][self.days[-1]], 100055.)
+        self.assertEqual(got["trades"], self.state["trades"])
+
+    def test_full_calendar_and_next_future_open_are_checked_by_exchange_schedule(self):
+        from datetime import timezone
+        from session_gate import outage_window
+        days, first = outage_window("2026-10-28", datetime(2026, 11, 3, 14, 29, tzinfo=timezone.utc))
+        self.assertEqual(days, self.days)
+        self.assertEqual(first, "2026-11-03")
+        days, first = outage_window("2026-10-28", datetime(2026, 11, 3, 14, 30, tzinfo=timezone.utc))
+        self.assertEqual(days, self.days)
+        self.assertEqual(first, "2026-11-04")
+
+    def test_resume_is_atomic_and_publication_cannot_miss_the_frozen_future_open(self):
+        from datetime import timezone
+        import session_gate
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            (root / "market_data").mkdir()
+            (root / "market_data/corporate_action_reviews.json").write_text('{"reviews":[]}')
+            path = root / paper.FILE_NAME
+            paper.save(path, self.state)
+            before = path.read_bytes()
+            stamp = datetime(2026, 11, 3, 14, 29, tzinfo=timezone.utc)
+            def broken(root, day):
+                if day == self.days[-1]: return {}, {"session": day, "snapshot_sha256": "a" * 64,
+                                                    "effective_sha256": "b" * 64}
+                return self.quotes(day)
+            with patch.object(session_gate, "common_quotes", side_effect=broken):
+                with self.assertRaises(ValueError): session_gate.resume_outage(path, root=root, write=True, now=stamp)
+            self.assertEqual(path.read_bytes(), before)
+            with patch.object(session_gate, "common_quotes", side_effect=lambda root, day: self.quotes(day)):
+                check = session_gate.resume_outage(path, root=root, write=False, now=stamp)
+                self.assertEqual(path.read_bytes(), before)
+                self.assertEqual(check["first_trading_session"], "2026-11-03")
+                session_gate.resume_outage(path, root=root, write=True, now=stamp)
+            session_gate.check_resume_publication(path, now=stamp)
+            with self.assertRaisesRegex(ValueError, "missed"):
+                session_gate.check_resume_publication(path, now=datetime(2026, 11, 3, 14, 30, tzinfo=timezone.utc))
+            unchanged = path.read_bytes()
+            check = session_gate.resume_outage(path, root=root, write=True, now=stamp)
+            self.assertFalse(check["written"])
+            self.assertEqual(path.read_bytes(), unchanged)
+
+    def test_partial_day_after_late_resume_has_no_stops_but_freezes_future_orders(self):
+        import session_gate
+        state = json.loads(json.dumps(self.state))
+        state["last_session"] = "2026-11-02"
+        state["equity_history"]["2026-11-02"] = 100000.
+        state["pending"] = {"buys": {}, "sells": []}
+        state["outage_control"] = {"first_trading_session": "2026-11-04"}
+        quotes = {"TEST": bar(90, 92, 80, 90)}
+        identity = {"session": "2026-11-03", "snapshot_sha256": "a" * 64, "effective_sha256": "b" * 64}
+        with tempfile.TemporaryDirectory() as directory:
+            path = Path(directory) / paper.FILE_NAME
+            paper.save(path, state)
+            with patch.object(paper, "ensure_before_next_open"),                  patch.object(paper, "fetch_session", return_value=quotes),                  patch.object(session_gate, "common_quotes", return_value=(quotes, identity)):
+                got = paper.run(path, "2026-11-03", {"NEW": .1}, [], .05, .15)
+            self.assertEqual(got["positions"], state["positions"])
+            self.assertEqual(got["trades"], state["trades"])
+            self.assertEqual(got["equity_history"]["2026-11-03"], 99900.)
+            self.assertEqual(got["pending"]["buys"]["NEW"]["weight"], .1)
+
+
 if __name__ == "__main__":
     unittest.main()

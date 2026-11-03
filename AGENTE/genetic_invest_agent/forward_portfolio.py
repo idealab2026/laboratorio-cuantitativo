@@ -246,6 +246,99 @@ def settle(state, session, bars, buy_signals, sell_signals, stop_pct=None, targe
     return next_state
 
 
+def mark_inactive_sessions(state, sessions, quote_loader, *, recorded_at, reviews=None):
+    """Value retained holdings through a disclosed outage, without past fills.
+
+    The caller supplies every XNYS session from the last recorded close and
+    SHA-verified common bars. Stops crossed while the executor was inactive are
+    evidence of missed execution, never retrospectively profitable exits.
+    """
+    if not state.get("last_session") or state["last_session"] not in state["equity_history"]:
+        raise ValueError("Inactive recovery requires an existing canonical portfolio")
+    if not sessions:
+        return json.loads(json.dumps(state))
+    if (sessions != sorted(set(sessions)) or sessions[0] <= state["last_session"]
+            or any(date.fromisoformat(day).isoformat() != day for day in sessions)):
+        raise ValueError("Inactive sessions must be new, unique and ordered")
+    stamp = datetime.fromisoformat(recorded_at.replace("Z", "+00:00"))
+    if stamp.tzinfo is None:
+        raise ValueError("Inactive recovery needs the actual recording timestamp")
+    result = json.loads(json.dumps(state))
+    expired = json.loads(json.dumps(result["pending"]))
+    result["pending"] = {"buys": {}, "sells": []}
+    events = result.setdefault("outage_events", [])
+    for day in sessions:
+        bars, identity = quote_loader(day)
+        if (identity.get("session") != day or
+                any(not isinstance(identity.get(k), str) or len(identity[k]) != 64
+                    or any(c not in "0123456789abcdef" for c in identity[k])
+                    for k in ("snapshot_sha256", "effective_sha256"))):
+            raise ValueError("Inactive mark lacks exact immutable common source identity")
+        if not set(result["positions"]) <= set(bars):
+            raise ValueError("Inactive mark lacks a held position's exact dated bar")
+        for ticker, position in result["positions"].items():
+            bar = bars[ticker]
+            o, h, l, c = (_positive(bar[k], k) for k in ("Open", "High", "Low", "Close"))
+            if l > min(o, c) or h < max(o, c):
+                raise ValueError("Inactive recovery OHLC inconsistent")
+            shares = _positive(position["shares"], "shares")
+            sl, tp = _positive(position["sl"], "stop"), _positive(position["tp"], "target")
+            split, dividend = float(bar["Stock Splits"]), float(bar["Dividends"])
+            if not all(math.isfinite(v) and v >= 0 for v in (split, dividend)):
+                raise ValueError("Inactive recovery corporate action invalid")
+            if split:
+                raise ValueError("Inactive recovery split requires issuer review")
+            if dividend:
+                # Share the exact issuer-versus-rounded-vendor review already
+                # used by the other original paper books. Raw input is intact.
+                from classic_sp500.recovery import reviewed_dividend_action
+                action = reviewed_dividend_action(reviews or {}, ticker, day, dividend)
+                if not action:
+                    raise ValueError("Inactive recovery dividend requires issuer review")
+                amount = shares * float(action.get("issuer_amount", dividend))
+                result["cash"] += amount
+                events.append({"date": day, "type": "outage_dividend_accrual",
+                    "ticker": ticker, "amount": amount, "source_url": action["source_url"],
+                    "recognition": "existing_paper_ex_session_model",
+                    "recorded_at_utc": recorded_at})
+            crossed = "stop" if l <= sl else "target" if h >= tp else None
+            if crossed:
+                events.append({"date": day, "type": "unexecuted_during_outage",
+                    "ticker": ticker, "trigger": crossed, "stop": sl, "target": tp,
+                    "low": l, "high": h, "quote_identity": identity,
+                    "recorded_at_utc": recorded_at})
+        equity = result["cash"] + sum(pos["shares"] * float(bars[ticker]["Close"])
+                                        for ticker, pos in result["positions"].items())
+        if not math.isfinite(equity) or equity < 0:
+            raise ValueError("Inactive recovery NAV invalid")
+        result["equity_history"][day] = equity
+        result.setdefault("equity_provenance", {})[day] = {
+            "kind": "inactive_holding_mark_only", "quote_identity": identity,
+            "recorded_at_utc": recorded_at, "trades_executed": 0}
+        result.setdefault("inactive_sessions", []).append(day)
+        result["last_session"] = day
+    events.append({"date": sessions[-1], "type": "outage_valuations_reconciled_no_trades",
+                   "sessions": sessions, "expired_unfilled_orders": expired,
+                   "recorded_at_utc": recorded_at})
+    return result
+
+
+def _freeze_after_inactive_close(state, buy_signals, sell_signals, stop_pct, target_pct):
+    if buy_signals and (stop_pct is None or target_pct is None or
+            not 0 < _positive(stop_pct, "stop") < 1 or
+            not 0 < _positive(target_pct, "target") < 1):
+        raise ValueError("Future pending buys require valid SL/TP")
+    for weight in buy_signals.values():
+        if not 0 < _positive(weight, "weight") <= MAX_WEIGHT:
+            raise ValueError("Future pending weight invalid")
+    state["pending"] = {
+        "buys": {ticker: {"weight": float(weight), "stop_pct": float(stop_pct),
+                            "target_pct": float(target_pct)}
+                 for ticker, weight in buy_signals.items() if ticker not in state["positions"]},
+        "sells": sorted(set(sell_signals) & set(state["positions"]))}
+    return state
+
+
 def run(path, session, buy_signals, sell_signals, stop_pct=None, target_pct=None):
     state = load(path)
     if state["last_session"] == session:
@@ -257,7 +350,19 @@ def run(path, session, buy_signals, sell_signals, stop_pct=None, target_pct=None
                            "no se salta esa sesión ni se reconstruye retrospectivamente")
     required = set(state["positions"]) | set(state["pending"]["buys"]) | set(state["pending"]["sells"])
     bars = fetch_session(session, required, state["last_session"])
-    updated = settle(state, session, bars, buy_signals, sell_signals, stop_pct, target_pct)
+    first_trading = state.get("outage_control", {}).get("first_trading_session")
+    if first_trading and session < first_trading:
+        # If recovery was published after today's open, this partial day also
+        # remains inactive. Only its fresh closing signal targets a FUTURE open.
+        from session_gate import common_quotes
+        bars, identity = common_quotes(Path(__file__).resolve().parents[2], session)
+        reviews = json.loads((Path(__file__).resolve().parents[2] /
+                              "market_data/corporate_action_reviews.json").read_text())
+        updated = mark_inactive_sessions(state, [session], lambda day: (bars, identity),
+            recorded_at=datetime.now(ZoneInfo("UTC")).isoformat(timespec="seconds"), reviews=reviews)
+        updated = _freeze_after_inactive_close(updated, buy_signals, sell_signals, stop_pct, target_pct)
+    else:
+        updated = settle(state, session, bars, buy_signals, sell_signals, stop_pct, target_pct)
     save(path, updated)
     print(f"Diario prospectivo {session}: ${updated['equity_history'][session]:,.2f}; "
           f"{len(updated['trades']) - len(state['trades'])} operaciones; "
