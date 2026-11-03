@@ -154,11 +154,11 @@ test("Operation audit documents real fills, inferred holds and dated trade marke
  assert.ok(html.includes('id="audit-panel-operations"'));
  const operationTab=renderOperationsAudit(doc,"IL-038","AAPL",{tab:"operations",sort:"pnl",desc:true});
  assert.ok(operationTab.includes('id="audit-panel-operations" role="tabpanel"'));
- assert.ok(operationTab.includes("Precio compra"));
- assert.ok(operationTab.includes("Precio venta"));
+ assert.ok(operationTab.includes("Precio de compra"));
+ assert.ok(operationTab.includes("Precio de venta"));
  assert.ok(operationTab.includes("Rentabilidad %"));
  assert.ok(operationTab.includes("P/L total"));
- assert.ok(operationTab.includes("Dinero empleado"));
+ assert.ok(operationTab.includes("Dinero empleado en compra"));
  assert.ok(operationTab.includes("Nº acciones compradas"));
  assert.ok(operationTab.includes("VENTA · CERRADA"));
  assert.ok(operationTab.includes("2,00 %"));
