@@ -1,5 +1,6 @@
 import {verifyOriginalPaper} from "./original-paper.mjs?v=b4ab52ea9863";
 import {algorithmTheory,paperLeaderboard} from "./algorithm-detail.mjs";
+import {verifyOperationsAudit,renderOperationsAudit} from "./operations-audit.mjs";
 import {parseLocalPaperResults,parseLocalPaperCurves,summarizePrivatePaper} from "./private-paper.mjs?v=4baff08a2202";
 import {signalResearchSummary,methodCatalog} from "./paper-methods.mjs";
 import {parseLocalCagr2031} from "./private-theses.mjs";
@@ -11,7 +12,7 @@ import {verify,simulate,rank,valuation,thesisRank,formatPct,money,finite,verifyI
 const $=id=>document.getElementById(id);
 const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 const fmt=n=>finite(n)?new Intl.NumberFormat("es-ES",{maximumFractionDigits:2}).format(n):"N/D";
-const state={data:null,universe:null,fx:null,fxCheck:null,fxStatus:"pending",forecastLedger:null,forecastSummary:null,forecastStatus:"pending",secStatus:"pending",secRead:null,secCatalog:null,yieldDoc:null,yieldCheck:null,yieldStatus:"pending",view:"competition",strategy:"P-01",group:"",sort:"returnPct",asc:false,detailOpen:false,thesis:"T-01",query:"",thesisSort:"central",issuerMode:"catalog",issuerQuery:"",issuerSort:"base",issuerAsc:false,issuerTicker:"MSFT",paperDetail:"M-10",originalPaper:null,originalPaperStatus:"pending",historicalPaper:null,historicalCurves:null,historicalPaperStatus:"pending",fullRoster:null,fullRosterStatus:"pending",strategyCandidates:null,strategyCandidatesStatus:"pending",fullRosterGroup:"",fullRosterQuery:"",fullRosterSort:"return",fullRosterAsc:false,algorithmId:null,institutionalFeedStatus:"pending",paperFeed:null,paperFeedRead:null,localCagr:new Map(),localCagrError:"",publicTheses:new Map(),publicThesesMetadata:null};
+const state={data:null,universe:null,fx:null,fxCheck:null,fxStatus:"pending",forecastLedger:null,forecastSummary:null,forecastStatus:"pending",secStatus:"pending",secRead:null,secCatalog:null,yieldDoc:null,yieldCheck:null,yieldStatus:"pending",view:"competition",strategy:"P-01",group:"",sort:"returnPct",asc:false,detailOpen:false,thesis:"T-01",query:"",thesisSort:"central",issuerMode:"catalog",issuerQuery:"",issuerSort:"base",issuerAsc:false,issuerTicker:"MSFT",paperDetail:"M-10",originalPaper:null,originalPaperStatus:"pending",historicalPaper:null,historicalCurves:null,historicalPaperStatus:"pending",fullRoster:null,fullRosterStatus:"pending",strategyCandidates:null,strategyCandidatesStatus:"pending",fullRosterGroup:"",fullRosterQuery:"",fullRosterSort:"return",fullRosterAsc:false,algorithmId:null,operationsAudit:null,operationsAuditStatus:"pending",auditTicker:null,institutionalFeedStatus:"pending",paperFeed:null,paperFeedRead:null,localCagr:new Map(),localCagrError:"",publicTheses:new Map(),publicThesesMetadata:null};
 const viewNames=["competition","algorithm","algorithms","theses","monitoring","method","archive","ported","full","synthetic"];
 const button=(label,action,value,cls="smallbtn")=>'<button type="button" class="'+cls+'" data-action="'+esc(action)+'" data-value="'+esc(value)+'">'+esc(label)+'</button>';
 const head=(label,title,body)=>'<div class="section-heading"><div><span class="kicker">'+esc(label)+'</span><h2>'+esc(title)+'</h2><p class="section-context">'+esc(body)+'</p></div></div>';
@@ -600,7 +601,10 @@ function algorithmFiche(){
   stats+theory+
   '<section class="algorithm-section"><h3>Desarrollo, cambios y validación</h3>'+progress+
   '<p class="algorithm-caveat">Las fechas indicadas corresponden a las sesiones NAV, no necesariamente a la fecha de creación del algoritmo. Una cronología técnica completa exige commits y versiones acreditados.</p></section>'+
-  measured+'</div>';
+  measured+(state.operationsAudit?renderOperationsAudit(state.operationsAudit,id,state.auditTicker):
+   '<section class="algorithm-section"><h3>Operaciones por sesión y motivos</h3><p>'+
+   (state.operationsAuditStatus==="pending"?"Comprobando el registro de órdenes…":"Libro de operaciones individuales no disponible; no se reconstruyen operaciones sin evidencia.")+
+   '</p></section>')+'</div>';
 }
 
 function archive(){
@@ -790,6 +794,7 @@ $("app").addEventListener("change",e=>{
  if(el.id==="thesis-sort"){state.thesisSort=el.value;render();}
  if(el.id==="issuer-sort"){state.issuerSort=el.value;state.issuerAsc=["ticker","company","market"].includes(el.value);render();}
  if(el.id==="journal-select"){state.strategy=el.value;render();}
+ if(el.id==="audit-ticker"){state.auditTicker=el.value;render();}
 });
 $("app").addEventListener("input",e=>{
  if(e.target.id==="full-query"){state.fullRosterQuery=e.target.value;const tbody=$("full-rows");if(tbody)tbody.innerHTML=fullRosterRows();const n=$("full-count");if(n&&state.fullRoster)n.textContent=sortedFullRosterRows().length;}
@@ -824,7 +829,7 @@ async function init(){
   const stats=verifyPublicTheses(publication);
   state.publicTheses=new Map(publication.records.map(x=>[x.ticker,x]));
   state.publicThesesMetadata={...stats,published_as_of:publication.published_as_of};
-  state.data=data;state.universe=universe;state.view=resolveMidasView();state.algorithmId=new URLSearchParams(location.search).get("algorithm");render();void loadOfficialFx();void loadForecastLedger();void loadSecFilings();void loadOfficialYield();void loadOriginalPaper();void loadHistoricalPaper();void loadFullRoster();void loadStrategyCandidates();void loadInstitutionalPaperFeed();
+  state.data=data;state.universe=universe;state.view=resolveMidasView();state.algorithmId=new URLSearchParams(location.search).get("algorithm");render();void loadOfficialFx();void loadForecastLedger();void loadSecFilings();void loadOfficialYield();void loadOriginalPaper();void loadHistoricalPaper();void loadFullRoster();void loadStrategyCandidates();void loadInstitutionalPaperFeed();void loadOperationsAudit();
  }catch(e){$("app").textContent="No se ha podido cargar el catálogo de emisores o el laboratorio sintético; no se muestran datos no verificados.";}
 }
 async function loadOfficialFx(){
@@ -919,4 +924,19 @@ async function loadInstitutionalPaperFeed(){
  }catch(_error){state.paperFeed=null;state.paperFeedRead=null;state.institutionalFeedStatus="unavailable";}
  if(["full","competition","algorithm"].includes(state.view)&&state.data)render();
 }
+async function loadOperationsAudit(){
+ try{
+  const response=await fetch("./data/operations-audit.json",{cache:"no-store"});
+  if(!response.ok)throw Error("Libro de operaciones no publicado");
+  const document=await response.json();
+  verifyOperationsAudit(document);
+  state.operationsAudit=document;
+  state.operationsAuditStatus="verified";
+ }catch(_error){
+  state.operationsAudit=null;
+  state.operationsAuditStatus="unavailable";
+ }
+ if(state.view==="algorithm"&&state.data)render();
+}
+
 init();
