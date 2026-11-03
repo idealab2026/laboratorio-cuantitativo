@@ -78,7 +78,7 @@ test("One button per row opens a separate algorithm profile instead of inline bl
   'fullRosterSort:"return",fullRosterAsc:false',
   'function go(view){',
   'u.searchParams.set("algorithm",state.algorithmId)',
-  'state.algorithmId=params.get("algorithm")',
+  'state.algorithmId=new URLSearchParams(location.search).get("algorithm")',
   'Formulación matemática de referencia',
   'Las fechas indicadas corresponden a las sesiones NAV'
  ])assert.ok(source.includes(expected),"Missing public UI contract: "+expected);
