@@ -452,7 +452,7 @@ test("Main competition route serves 64 institutional statuses, not fictitious 23
  assert.ok(src.includes('go("synthetic")'));
  assert.ok(html.includes('data-view="competition" class="active">Competición de algoritmos'));
  assert.ok(!html.includes('data-view="synthetic"'));
- assert.ok(src.includes("Ejemplos didácticos y herramientas de prueba"));
+ assert.ok(!src.includes("Ejemplos didácticos y herramientas de prueba"));
  assert.ok(!html.includes('data-view="full">Inventario completo'));
 });
 
