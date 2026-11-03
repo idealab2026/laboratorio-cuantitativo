@@ -326,3 +326,45 @@ p{line-height:1.6;text-align:justify;text-align-last:left;hyphens:auto}p.lead{co
  .algorithm-stat-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
  .algorithm-section{padding:13px}
 }
+
+
+/* Competition: explicit missing-data values and contextual methodological help.
+   The help remains collapsed until hover or keyboard/touch focus. */
+.full-competition-table{overflow:visible}
+.full-competition-table .unverified-text{
+ display:inline-block;max-width:100%;white-space:normal;overflow-wrap:anywhere;
+ color:#748397;font:500 .58rem/1.2 system-ui,sans-serif;vertical-align:middle
+}
+.comparison-header{position:relative;z-index:2}
+.comparison-header:hover,.comparison-header:focus-within{z-index:8}
+.comparison-help-wrap{display:inline-flex;align-items:center;justify-content:center;
+ position:relative;vertical-align:middle;margin-left:3px;isolation:isolate}
+.comparison-help-icon{
+ display:inline-flex;align-items:center;justify-content:center;
+ width:17px;height:17px;min-width:17px;padding:0;
+ border:1px solid #b3c4d1;background:#edf3f7;color:#264d72;
+ border-radius:50%;font:740 .7rem system-ui,sans-serif;cursor:help
+}
+.comparison-help-icon:hover{background:#dfeaf2;border-color:#7896ad}
+.comparison-help-icon:focus-visible{outline:2px solid #a88944;outline-offset:2px}
+.comparison-help-popup{
+ position:absolute;right:0;top:calc(100% + 7px);z-index:90;
+ width:min(335px,calc(100vw - 40px));padding:12px 14px;
+ border:1px solid #cbd8e2;border-radius:9px;background:#fff;
+ box-shadow:0 8px 24px rgba(25,50,75,.2);
+ white-space:normal;text-align:left;
+ color:#2e475e;font:520 .72rem/1.5 system-ui,sans-serif;
+ opacity:0;visibility:hidden;pointer-events:none;
+ transition:opacity .12s ease,visibility .12s ease
+}
+.comparison-help-wrap:hover .comparison-help-popup,
+.comparison-help-wrap:focus-within .comparison-help-popup,
+.comparison-header:hover .comparison-help-popup{
+ opacity:1;visibility:visible;pointer-events:auto
+}
+.competition-mobile-sort .comparison-help-wrap{flex:none;margin:0 0 2px 2px}
+@media(max-width:1050px){
+ .full-competition-table .unverified-text{font-size:.64rem}
+ .comparison-help-popup{right:0;top:calc(100% + 9px)}
+}
+@media(prefers-reduced-motion:reduce){.comparison-help-popup{transition:none}}
