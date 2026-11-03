@@ -360,7 +360,9 @@ def build():
                           "sessions":[{"date":d,"actions":[],
                                        "audit_note":"NAV registrado; no se conserva un detalle verificable de órdenes para esta sesión."}
                                       for d in journal_days],
-                          "prices":{}}
+                          "prices":{},
+                          "coverage":{"executions":0,"priced_executions":0,
+                                      "unpriced_executions":0,"corporate_conversions":0}}
             continue
         actions=normalize_ledger(book,filename)
         mergers=corporate_events(book) if filename=="classic_sp500_state/ledger.json" else []
@@ -503,5 +505,9 @@ def main():
     args.output.write_text(json.dumps(doc,ensure_ascii=False,separators=(",",":"),sort_keys=True)+"\n",encoding="utf8")
     print("Auditable paper tracks:",len(doc["tracks"]),
           "executed-book tracks:",sum(t["status"]=="partial_executions_documented" for t in doc["tracks"].values()),
-          "rows:",sum(len(t["sessions"]) for t in doc["tracks"].values()))
+          "rows:",sum(len(t["sessions"]) for t in doc["tracks"].values()),
+          "executions:",sum(t["coverage"]["executions"] for t in doc["tracks"].values()),
+          "priced executions:",sum(t["coverage"]["priced_executions"] for t in doc["tracks"].values()),
+          "unpriced dated executions:",sum(t["coverage"]["unpriced_executions"] for t in doc["tracks"].values()),
+          "corporate conversions:",sum(t["coverage"]["corporate_conversions"] for t in doc["tracks"].values()))
 if __name__=="__main__":main()
