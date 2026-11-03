@@ -237,10 +237,10 @@ test("Institutional UI offers row inspection, column sorting, historic isolation
  const src=readFileSync(new URL("../src/site.mjs",import.meta.url),"utf8");
  const html=readFileSync(new URL("../index.html",import.meta.url),"utf8");
  const css=readFileSync(new URL("../styles.css",import.meta.url),"utf8");
- for(const text of ["data-competition-id","data-issuer-id","rank-column","issuer-column","openCompetitionRow","openIssuerRow","close-detail","function archive()","Diarios paper recuperados","Sin alimentación real","Última sesión ficticia","Paper bursátil no activado"]){
+ for(const text of ["data-competition-id","data-issuer-id","rank-column","issuer-column","openCompetitionRow","openIssuerRow","close-detail","function monitoring()","summarizeOperationsAudit(audit)","renderTradeLotsTable(audit.tracks[chosen]","Sin alimentación real","Última sesión ficticia","Paper bursátil no activado"]){
   assert.ok(src.includes(text),text);
  }
- for(const label of ["Competición de algoritmos","Seguimiento de tesis","Catálogo / histórico"]){
+ for(const label of ["Competición de algoritmos","Seguimiento de tesis","Salud operativa","Metodología","Glosario"]){
   assert.ok(html.includes(label),label);
  }
  assert.ok(css.includes(".interactive-table-row:focus-visible"));
@@ -487,7 +487,7 @@ test("MIDAS opens the paper competition directly and has no legacy Inicio screen
  assert.ok(!js.includes("function overview(){"));
  assert.ok(!js.includes('view:"overview"'));
  assert.ok(js.includes('state.view=resolveMidasView();'));
- assert.ok(js.includes('if(requested==="overview")'));
+ assert.ok(js.includes('if(requested==="overview"||requested==="archive")'));
  assert.ok(js.includes('history.replaceState({view:"competition"}'));
  assert.ok(js.includes('$(\"app\").innerHTML=(pages[state.view]||competition)();'));
 });
