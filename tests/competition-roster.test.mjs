@@ -105,14 +105,15 @@ test("Satellite Alternative Data registers as research-only 65th candidate, not 
  assert.ok(site.includes('fetch("./data/strategy-candidates.json"'));
  assert.ok(site.includes("verifyStrategyCandidates(doc)"));
  assert.ok(site.includes("state.strategyCandidates"));
- assert.ok(site.includes("65 · "));
+ assert.ok(site.includes('button("Ver detalle","full-detail",id'));
+ assert.ok(site.includes("function algorithmFiche(){"));
  const release=readFileSync(new URL("../.github/workflows/pages.yml",import.meta.url),"utf8");
  assert.ok(release.includes("data/strategy-candidates.json data/institutional-paper-feed.json dist/data/"));
 });
 
 
 test("All MIDAS competition headings sort their effective paper records with N/D last",()=>{
- assert.equal(FULL_SORT_KEYS.length,12);
+ assert.equal(FULL_SORT_KEYS.length,14);
  const rows=[
   {id:"IL-001",name:"A benchmark",group:"Technical",record:{return_pct:-1.4,day_return_pct:0,positions:1,pending_orders:0,last_session:"2026-11-01",risk:{volatility_pct:15,max_drawdown_pct:-3},activity:"Active",currency:"USD",comparison:{eligible:true},history:[{nav:1},{nav:2}]}},
   {id:"IL-002",name:"B strategy",group:"Research",record:{return_pct:8.3,day_return_pct:2.3,positions:0,pending_orders:1,last_session:"2026-11-02",risk:{volatility_pct:22,max_drawdown_pct:-8},activity:"Cash",currency:"EUR",comparison:{eligible:false},history:[{nav:1},{nav:2},{nav:3}]}},
@@ -139,7 +140,7 @@ test("All MIDAS competition headings sort their effective paper records with N/D
 });
 test("Competition uses accessible sortable headers, shares ordering with export and preserves filters",()=>{
  const s=readFileSync(new URL("../src/site.mjs",import.meta.url),"utf8");
- for(const label of ["Estrategia / ID","Familia","Actividad","Fecha","Divisa","P/L acumulado","P/L día","Volatilidad","Drawdown","Posiciones / órdenes","Comparabilidad","Curva"]){
+ for(const label of ["Estrategia / ID","Familia","Actividad","Inicio","Sesiones","Último cierre","Divisa","Rent. acumulada","Rent. día","Drawdown","Comparabilidad","Detalle"]){
   assert.ok(s.includes('"'+label+'"'));
  }
  assert.ok(s.includes('data-action="full-column"'));
@@ -172,9 +173,9 @@ test("Capital Cycle and Buy The Dip are searchable by their canonical names and 
   assert.match(record.last_session,/^\d{4}-\d{2}-\d{2}$/);
  }
  const site=readFileSync(new URL("../src/site.mjs",import.meta.url),"utf8");
- assert.ok(site.includes('button("Capital Cycle · IL-038","full-focus","IL-038"'));
- assert.ok(site.includes('button("Buy The Dip · IL-039","full-focus","IL-039"'));
- assert.ok(site.includes('state.fullRosterGroup="";state.fullRosterQuery=value;render();'));
+ assert.ok(site.includes('button("Ver detalle","full-detail",id'));
+ assert.ok(site.includes('state.algorithmId=value;go("algorithm")'));
+ assert.ok(site.includes('paperLeaderboard(d.entries.map('));
 });
 
 
@@ -196,11 +197,13 @@ test("All 64 institutional rows preserve the exact journal display names",async(
  assert.ok(site.includes('originalStrategyName(item)].some('));
  assert.ok(site.includes("full-strategy-name"));
 });
-test("Compact competition has all twelve columns without horizontal scrolling",()=>{
+test("Responsive competition preserves explicit detail actions and compact mobile cards",()=>{
  const css=readFileSync(new URL("../styles.css",import.meta.url),"utf8");
  const site=readFileSync(new URL("../src/site.mjs",import.meta.url),"utf8");
  assert.ok(css.includes('.full-competition-table table{table-layout:fixed;width:100%;min-width:0'));
- assert.ok(css.includes('.full-competition-table{overflow-x:hidden;'));
+ assert.ok(css.includes('.paper-leader{'));
+ assert.ok(css.includes('.algorithm-profile{'));
+ assert.ok(css.includes('.detail-cell{'));
  assert.ok(css.includes('@media(max-width:1050px)'));
  assert.ok(css.includes('.full-competition-table .competition-row{display:grid;grid-template-columns:repeat(4,minmax(0,1fr))'));
  assert.ok(css.includes('.full-competition-table .competition-row td:before'));
@@ -209,6 +212,6 @@ test("Compact competition has all twelve columns without horizontal scrolling",(
  assert.ok(site.includes("data-label="));
  assert.ok(site.includes('if(el.id==="full-mobile-sort")'));
  assert.ok(site.includes('else if(action==="full-sort-direction")'));
- const keys=["Estrategia","Familia","Actividad","Fecha","Divisa","P/L acumulado","P/L día","Volatilidad","Drawdown","Posiciones / órdenes","Comparabilidad","Curva"];
+ const keys=["Estrategia","Familia","Actividad","Inicio","Sesiones","Último cierre","Divisa","Rent. acumulada","Rent. día","Drawdown","Comparabilidad","Detalle"];
  for(const key of keys)assert.ok(site.includes('"'+key+'"'));
 });
