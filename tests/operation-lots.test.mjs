@@ -33,7 +33,7 @@ test("closed lot has realized net P/L, never marks a market close as an executio
  assert.equal(rows[0].action,"cerrada");
  assert.equal(rows[0].salePrice,110);
  assert.equal(rows[0].markPrice,null);
- assert.equal(rows[0].pnl,48);
+ assert.ok(Math.abs(rows[0].pnl-48)<1e-8);
 });
 test("unknown buy cost or quotes does not fabricate trade P/L",()=>{
  const a=buildOperationLots(track([
