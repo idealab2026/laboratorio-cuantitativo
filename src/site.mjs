@@ -457,6 +457,9 @@ function full(){
  (candidate?'<option value="'+esc(candidate.group)+'" '+(candidate.group===state.fullRosterGroup?"selected":"")+'>'+esc(candidate.group)+' · propuesta 65</option>':"")+
  '</select></label><label>Buscar<input id="full-query" type="search" value="'+esc(state.fullRosterQuery)+'" placeholder="Algoritmo o familia"></label>'+
  button("Exportar inventario CSV","full-export","csv","outline-btn")+'</div>'+
+ '<p class="table-note">Acceso rápido a estrategias con diario: '+
+ button("Capital Cycle · IL-038","full-focus","IL-038","outline-btn")+' '+
+ button("Buy The Dip · IL-039","full-focus","IL-039","outline-btn")+'</p>'+
  '<p class="table-note">Operaciones simuladas con capital virtual y precios de mercado. Cada fila indica su último cierre; una fecha antigua o una valoración pausada no acredita actualización diaria.</p>'+
  '<p class="table-note"><span id="full-count">'+(visible.length+proposals.length)+'</span> de '+(meta.count+(state.strategyCandidates?.candidates.length||0))+' entradas (64 funciones + propuestas independientes) · N/D significa no verificado, nunca rentabilidad cero</p>'+
  '<p class="table-note">Pulsa en cualquier cabecera para ordenar. Los N/D permanecen al final y la ordenación visual no implica comparabilidad económica entre campañas.</p>'+
@@ -564,6 +567,10 @@ $("app").addEventListener("click",e=>{
   state.detailOpen=false;render();
  }
  else if(action==="paper-select"){state.paperDetail=value;render();}
+ else if(action==="full-focus"){
+  if(!["IL-038","IL-039"].includes(value))return;
+  state.fullRosterGroup="";state.fullRosterQuery=value;render();
+ }
  else if(action==="full-column"){
   if(!FULL_SORT_KEYS.includes(value))return;
   if(state.fullRosterSort===value)state.fullRosterAsc=!state.fullRosterAsc;
