@@ -1,4 +1,5 @@
-import {verifyOriginalPaper} from "./original-paper.mjs?v=8e289fdabcc1";
+import {verifyOriginalPaper} from "./original-paper.mjs?v=b4ab52ea9863";
+import {algorithmTheory,paperLeaderboard} from "./algorithm-detail.mjs";
 import {parseLocalPaperResults,parseLocalPaperCurves,summarizePrivatePaper} from "./private-paper.mjs?v=4baff08a2202";
 import {signalResearchSummary,methodCatalog} from "./paper-methods.mjs";
 import {parseLocalCagr2031} from "./private-theses.mjs";
@@ -10,8 +11,8 @@ import {verify,simulate,rank,valuation,thesisRank,formatPct,money,finite,verifyI
 const $=id=>document.getElementById(id);
 const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 const fmt=n=>finite(n)?new Intl.NumberFormat("es-ES",{maximumFractionDigits:2}).format(n):"N/D";
-const state={data:null,universe:null,fx:null,fxCheck:null,fxStatus:"pending",forecastLedger:null,forecastSummary:null,forecastStatus:"pending",secStatus:"pending",secRead:null,secCatalog:null,yieldDoc:null,yieldCheck:null,yieldStatus:"pending",view:"overview",strategy:"P-01",group:"",sort:"returnPct",asc:false,detailOpen:false,thesis:"T-01",query:"",thesisSort:"central",issuerMode:"catalog",issuerQuery:"",issuerSort:"base",issuerAsc:false,issuerTicker:"MSFT",paperDetail:"M-10",originalPaper:null,originalPaperStatus:"pending",historicalPaper:null,historicalCurves:null,historicalPaperStatus:"pending",fullRoster:null,fullRosterStatus:"pending",strategyCandidates:null,strategyCandidatesStatus:"pending",fullRosterGroup:"",fullRosterQuery:"",fullRosterSort:"name",fullRosterAsc:true,institutionalFeedStatus:"pending",paperFeed:null,paperFeedRead:null,localCagr:new Map(),localCagrError:"",publicTheses:new Map(),publicThesesMetadata:null};
-const viewNames=["overview","competition","algorithms","theses","monitoring","method","archive","ported","full","synthetic"];
+const state={data:null,universe:null,fx:null,fxCheck:null,fxStatus:"pending",forecastLedger:null,forecastSummary:null,forecastStatus:"pending",secStatus:"pending",secRead:null,secCatalog:null,yieldDoc:null,yieldCheck:null,yieldStatus:"pending",view:"overview",strategy:"P-01",group:"",sort:"returnPct",asc:false,detailOpen:false,thesis:"T-01",query:"",thesisSort:"central",issuerMode:"catalog",issuerQuery:"",issuerSort:"base",issuerAsc:false,issuerTicker:"MSFT",paperDetail:"M-10",originalPaper:null,originalPaperStatus:"pending",historicalPaper:null,historicalCurves:null,historicalPaperStatus:"pending",fullRoster:null,fullRosterStatus:"pending",strategyCandidates:null,strategyCandidatesStatus:"pending",fullRosterGroup:"",fullRosterQuery:"",fullRosterSort:"return",fullRosterAsc:false,algorithmId:null,institutionalFeedStatus:"pending",paperFeed:null,paperFeedRead:null,localCagr:new Map(),localCagrError:"",publicTheses:new Map(),publicThesesMetadata:null};
+const viewNames=["overview","competition","algorithm","algorithms","theses","monitoring","method","archive","ported","full","synthetic"];
 const button=(label,action,value,cls="smallbtn")=>'<button type="button" class="'+cls+'" data-action="'+esc(action)+'" data-value="'+esc(value)+'">'+esc(label)+'</button>';
 const head=(label,title,body)=>'<div class="section-heading"><div><span class="kicker">'+esc(label)+'</span><h2>'+esc(title)+'</h2><p class="section-context">'+esc(body)+'</p></div></div>';
 const card=(html)=>'<article class="panel">'+html+'</article>';
@@ -30,12 +31,7 @@ function sparkline(nav,label="Evolución con precios artificiales"){
 }
 const metric=(label,value)=>'<div class="metric"><strong>'+esc(value)+'</strong><small>'+esc(label)+'</small></div>';
 const family=(g)=>({"Clásicas":"Equiponderación, tendencia, reversión, menor variabilidad y control en efectivo.","Aprendizaje semanal":"Proxies de métodos supervisados; no se han entrenado modelos reales.","Predicción temporal":"Modelos temporales de referencia; no se ha ejecutado TimesFM.","Capital Cycle":"Ciclo de inversión y disciplina de valoración con supuestos observables.","Buy The Dip":"Escalonamiento de exposición tras caídas, con reserva de liquidez.","Modelos experimentales":"Multicriterio, parámetros fijos y filtro de estrés."})[g]||"Prototipo de estrategia paper.";
-function summary(){
- $("stat-strategies").textContent=state.fullRoster?.expected||"64";
- $("stat-groups").textContent=state.fullRoster?verifyFullRoster(state.fullRoster).groups.length:"—";
- $("stat-theses").textContent=state.publicTheses.size;
- $("stat-sessions").textContent=state.originalPaper?.latest||(state.historicalPaper?summarizePrivatePaper(state.historicalPaper,state.historicalCurves).latest:"—");
-}
+function summary(){ /* Competition leader and metrics are derived on each verified render. */ }
 function overview(){
  const archive=state.historicalPaper?summarizePrivatePaper(state.historicalPaper,state.historicalCurves):null;
  return head("INICIO · LABORATORIO PAPER","Competición de algoritmos","Compras y ventas simuladas con capital virtual. Los diarios históricos se conservan con las fechas, los datos de mercado y las condiciones de cada campaña.")+
@@ -380,10 +376,12 @@ function ported(){
 }
 
 function economicPaperRecord(slot){
- const current=state.paperFeedRead?.bySlot.get(slot);if(current)return current;
+ const current=state.paperFeedRead?.bySlot.get(slot);
+ if(current)return {...current,session_count:current.history.length,
+   sourceId:state.originalPaper?.bySlot.get(slot)?.sourceId||null};
  const original=state.originalPaper?.bySlot.get(slot);if(original)return original;
  const h=state.historicalPaper?.get(slot);if(!h?.active)return null;
- return {activity:"Paper · "+(h.activity==="demo_con_diario"?"Diario registrado":h.activity.replaceAll("_"," ")),currency:h.currency,last_session:h.last,
+ return {activity:"Paper · "+(h.activity==="demo_con_diario"?"Diario registrado":h.activity.replaceAll("_"," ")),currency:h.currency,first_session:h.first,session_count:h.sessions,initial_capital:h.capital,last_equity:h.nav,last_session:h.last,
   return_pct:h.pct,day_return_pct:h.dayPct,positions:h.positions,pending_orders:h.pending,
   risk:{volatility_pct:null,max_drawdown_pct:h.drawdown},comparison:{eligible:false},
   history:state.historicalCurves.get(slot)||[],historical:true};
@@ -424,16 +422,17 @@ function sortedFullRosterRows(){
  return sortFullCompetitionRows([...existing,...proposals],{key:state.fullRosterSort,ascending:state.fullRosterAsc});
 }
 const FULL_COMPETITION_COLUMNS=[
- ["name","Estrategia / ID"],["group","Familia"],["activity","Actividad"],["date","Fecha"],
- ["currency","Divisa"],["return","P/L acumulado"],["day","P/L día"],
- ["volatility","Volatilidad"],["drawdown","Drawdown"],
- ["positions","Posiciones / órdenes"],["comparison","Comparabilidad"],["curve","Curva"]
+ ["name","Estrategia / ID"],["group","Familia"],["activity","Actividad"],
+ ["start","Inicio"],["sessions","Sesiones"],["date","Último cierre"],
+ ["currency","Divisa"],["return","Rent. acumulada"],["day","Rent. día"],
+ ["drawdown","Drawdown"],["comparison","Comparabilidad"],["detail","Detalle"]
 ];
 function fullRosterHeaders(){
  return FULL_COMPETITION_COLUMNS.map(([key,label])=>{
+  if(key==="detail")return '<th scope="col">Detalle</th>';
   const selected=key===state.fullRosterSort;
   const arrow=selected?(state.fullRosterAsc?" ↑":" ↓"):" ↕";
-  const numeric=["return","day","volatility","drawdown"].includes(key);
+  const numeric=["return","day","sessions","drawdown"].includes(key);
   const aria=selected?(state.fullRosterAsc?"ascending":"descending"):"none";
   return '<th scope="col" aria-sort="'+aria+'"'+(numeric?' class="number"':'')+
    '><button type="button" class="table-sort" data-action="full-column" data-value="'+key+
@@ -443,76 +442,166 @@ function fullRosterHeaders(){
 }
 function fullMobileSortControls(){
  return '<div class="competition-mobile-sort"><label>Ordenar por <select id="full-mobile-sort" aria-label="Columna de ordenación">'+
-  FULL_COMPETITION_COLUMNS.map(([key,label])=>'<option value="'+key+'"'+
+  FULL_COMPETITION_COLUMNS.filter(([key])=>key!=="detail").map(([key,label])=>'<option value="'+key+'"'+
    (key===state.fullRosterSort?' selected':'')+'>'+label+'</option>').join("")+
   '</select></label>'+button(state.fullRosterAsc?"Ascendente ↑":"Descendente ↓","full-sort-direction","toggle","outline-btn")+'</div>';
 }
 function fullRosterRows(){
  return sortedFullRosterRows().map(({id,name,group,record,candidate})=>{
-  const identity=compactCell("Estrategia",'<strong class="full-strategy-name" title="'+esc(name)+'">'+esc(name)+'</strong>'+
+  const identity=compactCell("Estrategia",
+   '<strong class="full-strategy-name" title="'+esc(name)+'">'+esc(name)+'</strong>'+
    '<small class="smallline">'+esc(id)+(candidate?' · Investigación':'')+'</small>');
-  const family=compactCell("Familia",'<span class="clamped-cell">'+esc(compactGroup(group))+'</span>',"family-cell",group);
-  if(candidate)return '<tr class="competition-row">'+identity+family+
-   compactCell("Actividad",'<span class="clamped-cell">'+esc(candidate.status)+'</span>',"activity-cell",candidate.status)+
-   compactCell("Fecha","N/D")+compactCell("Divisa","N/D")+
-   ["P/L acumulado","P/L día","Volatilidad","Drawdown","Posiciones / órdenes"].map(x=>compactCell(x,"N/D","number")).join("")+
-   compactCell("Comparabilidad","Investigación","comparison-cell","Sin datos comparables")+
-   compactCell("Curva","—","curve-cell")+'</tr>';
+  const familyCell=compactCell("Familia",
+   '<span class="clamped-cell">'+esc(compactGroup(group))+'</span>',"family-cell",group);
+  const more=compactCell("Detalle",button("Ver detalle","full-detail",id,"outline-btn"),"detail-cell");
+  if(candidate)return '<tr class="competition-row">'+identity+familyCell+
+   compactCell("Actividad",'<span class="clamped-cell">En investigación</span>',"activity-cell",candidate.status)+
+   compactCell("Inicio","N/D","date-cell")+compactCell("Sesiones","N/D","number")+
+   compactCell("Último cierre","N/D","date-cell")+
+   compactCell("Divisa","N/D","currency-cell")+
+   compactCell("Rent. acumulada","N/D","number")+
+   compactCell("Rent. día","N/D","number")+
+   compactCell("Drawdown","N/D","number")+
+   compactCell("Comparabilidad","Investigación","comparison-cell","Sin operaciones ni NAV; no comparable")+
+   more+'</tr>';
   const activity=record?.activity??"Sin diario institucional";
   const risk=record?.risk||{},last=record?.last_session||"";
-  const label=record?.historical?"Histórico":record?.comparison?.eligible?"Comparable":"No comparable";
-  const detail=record?.historical?"Corte histórico · cohortes separadas":record?.comparison?.eligible?"Misma referencia certificada":"Sin evidencia comparable";
-  const curve=record?sparkline(record.history.map(x=>x.nav),"Evolución del capital virtual · diario paper"):"—";
-  return '<tr class="competition-row">'+identity+family+
+  const compare=record?.historical?"Archivo":record?.comparison?.eligible?"Misma cohorte":"No comparable";
+  const compareExplanation=record?.historical?"Corte histórico · cohortes separadas":
+   record?.comparison?.eligible?"Solo comparable dentro de la cohorte certificada":"Sin evidencia comparable";
+  const start=record?.first_session||null;
+  const sessions=record?.session_count;
+  return '<tr class="competition-row">'+identity+familyCell+
    compactCell("Actividad",'<span class="clamped-cell">'+esc(activity.replace(/^Paper\s*·\s*/,""))+'</span>',"activity-cell",activity)+
-   compactCell("Fecha",esc(shortPaperDate(last)),"date-cell",last)+
+   compactCell("Inicio",esc(shortPaperDate(start)),"date-cell",start||"Sin fecha acreditada")+
+   compactCell("Sesiones",Number.isInteger(sessions)&&sessions>0?esc(sessions):"N/D","number")+
+   compactCell("Último cierre",esc(shortPaperDate(last)),"date-cell",last)+
    compactCell("Divisa",esc(record?.currency||"N/D"),"currency-cell")+
-   compactCell("P/L acumulado",record?pctText(record.return_pct):"N/D","number")+
-   compactCell("P/L día",record&&record.day_return_pct!==null?pctText(record.day_return_pct):"N/D","number")+
-   compactCell("Volatilidad",record&&risk.volatility_pct!==null?pctText(risk.volatility_pct):"N/D","number")+
+   compactCell("Rent. acumulada",record?pctText(record.return_pct):"N/D","number")+
+   compactCell("Rent. día",record&&record.day_return_pct!==null?pctText(record.day_return_pct):"N/D","number")+
    compactCell("Drawdown",record&&risk.max_drawdown_pct!==null?pctText(risk.max_drawdown_pct):"N/D","number")+
-   compactCell("Posiciones / órdenes",record?esc(String(record.positions??"N/D")+" / "+String(record.pending_orders??"N/D")):"N/D","number")+
-   compactCell("Comparabilidad",esc(label),"comparison-cell",detail)+
-   compactCell("Curva",curve,"curve-cell")+'</tr>';
+   compactCell("Comparabilidad",esc(compare),"comparison-cell",compareExplanation)+
+   more+'</tr>';
  }).join("");
 }
 
 function full(){
  const d=state.fullRoster;
- const headText=head("COMPETICIÓN COMPLETA · CONTRATO DE MIGRACIÓN","MIDAS · 64 estrategias + 1 nueva propuesta satelital",
- "Cobertura funcional de las familias del laboratorio con columnas de actividad, rentabilidad, riesgo y comparabilidad. Los diarios históricos recuperados se muestran con sus fechas originales y se distinguen de la nueva operación institucional.");
- if(!d)return headText+card('<h3>Inventario no verificable</h3><p>El registro institucional está pendiente de carga o ha fallado su validación. No se sustituyen datos perdidos por simulaciones.</p>');
+ if(!d)return '<div class="competition-heading"><h2>Clasificación de algoritmos</h2></div>'+
+  card('<p>Inventario institucional no verificable. No se muestran rentabilidades inventadas.</p>');
  const meta=verifyFullRoster(d),visibleCount=sortedFullRosterRows().length;
- 
-  const candidate=state.strategyCandidates?.candidates?.[0]||null;
- return headText+
- '<div class="source-health-strip"><div><span class="label">Funciones registradas</span><strong>'+meta.count+'</strong><small>'+meta.groups.length+' grupos funcionales</small></div>'+
- '<div><span class="label">Diarios paper disponibles</span><strong>'+(state.originalPaper?.count||(state.historicalPaper?[...state.historicalPaper.values()].filter(x=>x.active).length:0))+'</strong><small>'+(state.originalPaper?"Registro del motor: "+state.originalPaper.generatedAt:state.historicalPaper?"528 observaciones NAV · corte 30/10/2026":"Archivo pendiente de validación")+'</small></div>'+
- '<div><span class="label">Propuestas en investigación</span><strong>'+(state.strategyCandidates?.candidates.length??"—")+'</strong><small>Sin operaciones, sin NAV y fuera del ranking económico</small></div></div>'+
- disclaimer(state.paperFeedRead?.status==="source_verified"?"Las líneas con evidencia llevan resumen económico trazable a captura y libro firmados por un núcleo institucional. El resto permanece pendiente; no equivale a operativa con dinero real.":state.originalPaper?"PAPER CON DATOS DE MERCADO. Se conserva el capital virtual y el diario de cada campaña. Las fechas de cierre y las cohortes determinan qué resultados pueden compararse; un archivo disponible no prueba por sí solo la continuidad de los horarios programados.":state.historicalPaper?"ARCHIVO HISTÓRICO PAPER. Sin fuente institucional acreditada para el motor nuevo. 47 estrategias conservan diario y 17 no tienen histórico comparable. Se mantienen los errores, las omisiones y las diferencias entre cohortes; estos datos no acreditan que el motor nuevo ya esté operando.":"Archivo histórico no disponible o no verificable. No se sustituyen diarios ausentes por simulaciones.")+
- '<div class="filters"><label>Filtrar familia<select id="full-group-select"><option value="">Todas las familias</option>'+
- meta.groups.map(g=>'<option value="'+esc(g.name)+'" '+(g.name===state.fullRosterGroup?"selected":"")+'>'+esc(g.name)+' · '+g.count+'</option>').join("")+
- (candidate?'<option value="'+esc(candidate.group)+'" '+(candidate.group===state.fullRosterGroup?"selected":"")+'>'+esc(candidate.group)+' · propuesta 65</option>':"")+
- '</select></label><label>Buscar<input id="full-query" type="search" value="'+esc(state.fullRosterQuery)+'" placeholder="Algoritmo o familia"></label>'+
- button("Exportar inventario CSV","full-export","csv","outline-btn")+'</div>'+
- '<p class="table-note">Acceso rápido a estrategias con diario: '+
- button("Capital Cycle · IL-038","full-focus","IL-038","outline-btn")+' '+
- button("Buy The Dip · IL-039","full-focus","IL-039","outline-btn")+'</p>'+
- '<p class="table-note">Operaciones simuladas con capital virtual y precios de mercado. Cada fila indica su último cierre; una fecha antigua o una valoración pausada no acredita actualización diaria.</p>'+
- '<p class="table-note"><span id="full-count">'+visibleCount+'</span> de '+(meta.count+(state.strategyCandidates?.candidates.length||0))+' entradas (64 funciones + propuestas independientes) · N/D significa no verificado, nunca rentabilidad cero</p>'+
- '<p class="table-note">Pulsa en cualquier cabecera para ordenar. Los N/D permanecen al final y la ordenación visual no implica comparabilidad económica entre campañas.</p>'+
- fullMobileSortControls()+
- '<div class="table-scroll table-compact full-competition-table"><table><thead><tr>'+fullRosterHeaders()+'</tr></thead><tbody id="full-rows">'+fullRosterRows()+'</tbody></table></div>'+
- (candidate?card('<h3>65 · '+esc(candidate.name)+' — propuesta experimental</h3>'+
- '<p><strong>Objetivo:</strong> '+esc(candidate.subject)+'</p>'+
- '<p><strong>Método:</strong> '+esc(candidate.method)+'</p>'+
- '<p><strong>Diseño de señal:</strong> '+esc(candidate.rule)+'</p>'+
- '<p><strong>Datos necesarios:</strong> '+esc(candidate.research_requirements)+'</p>'+
- '<p><strong>Validación:</strong> '+esc(candidate.validation)+'</p>'+
- '<p><strong>Limitaciones:</strong> '+esc(candidate.limitations)+'</p>'+
- '<p class="small-note">Fuente académica: <a href="'+esc(candidate.source)+'" target="_blank" rel="noopener noreferrer">'+esc(candidate.source_name)+'</a>. Datos públicos exploratorios: <a href="'+esc(candidate.data_reference)+'" target="_blank" rel="noopener noreferrer">USDA NAIP</a>. Estado económico: no iniciada; retorno, posiciones y curva N/D.</p>'):"")+
- card('<h3>Condiciones de publicación de cada diario</h3><p>Para activar una línea se debe verificar la fuente de cotizaciones y sus permisos, la fecha exacta de cada señal, su ejecución al siguiente mercado, el historial de NAV, la divisa y los metadatos de comparabilidad. Las carteras de distinta fecha de inicio o universo no se ordenarán como si compitieran en igualdad de condiciones.</p>')+
- button("Ver metodología y condiciones","navigate","method","outline-btn");
+ const candidate=state.strategyCandidates?.candidates?.[0]||null;
+ const leader=paperLeaderboard(d.entries.map(item=>({
+  id:item.slot,name:originalStrategyName(item),record:economicPaperRecord(item.slot)
+ })));
+ const winner=leader?'<div class="paper-leader" role="status" aria-label="Algoritmo líder por rentabilidad acumulada histórica">'+
+  '<div><span class="paper-leader-label">LÍDER PROVISIONAL · RENTABILIDAD ACUMULADA PAPER</span>'+
+  '<strong>'+esc(leader.name)+'</strong>'+
+  '<small>'+esc(leader.id)+' · inicio '+esc(shortPaperDate(leader.record.first_session))+
+  ' · '+esc(leader.record.session_count)+' sesiones · último cierre '+esc(shortPaperDate(leader.record.last_session))+'</small></div>'+
+  '<div class="paper-leader-return">'+pctText(leader.record.return_pct)+'</div>'+
+  button("Ver ficha","full-detail",leader.id,"outline-btn")+'</div>':
+  '<div class="paper-leader"><strong>Sin líder verificable</strong><small>No hay diarios con retorno, inicio y sesiones contrastados.</small></div>';
+ return '<div class="competition-heading"><h2>Clasificación de algoritmos</h2>'+
+  '<span>'+meta.count+' estrategias · '+(candidate?"1 propuesta sin operativa · ":"")+
+  'archivo paper con precios de mercado</span></div>'+
+  winner+
+  '<div class="filters competition-filters"><label>Familia<select id="full-group-select"><option value="">Todas las familias</option>'+
+  meta.groups.map(g=>'<option value="'+esc(g.name)+'" '+(g.name===state.fullRosterGroup?"selected":"")+'>'+esc(g.name)+' · '+g.count+'</option>').join("")+
+  (candidate?'<option value="'+esc(candidate.group)+'" '+(candidate.group===state.fullRosterGroup?"selected":"")+'>'+esc(candidate.group)+'</option>':"")+
+  '</select></label><label>Buscar<input id="full-query" type="search" value="'+esc(state.fullRosterQuery)+
+  '" placeholder="Nombre, familia o IL-039"></label>'+
+  button("Exportar CSV","full-export","csv","outline-btn")+'</div>'+
+  '<p class="competition-disclaimer"><span id="full-count">'+visibleCount+'</span> resultados mostrados. '+ 
+  'Orden inicial: mayor rentabilidad acumulada. N/D significa no verificable, nunca 0 %. '+
+  'Las distintas cohortes, fechas y divisas NO son directamente comparables.</p>'+
+  fullMobileSortControls()+
+  '<div class="table-scroll table-compact full-competition-table"><table><thead><tr>'+
+  fullRosterHeaders()+'</tr></thead><tbody id="full-rows">'+fullRosterRows()+
+  '</tbody></table></div>';
+}
+function fullHistoryChart(points){
+ if(!Array.isArray(points)||points.length<2)return "";
+ const values=points.map(p=>p.nav);
+ if(values.some(x=>!finite(x)))return "";
+ const low=Math.min(...values),high=Math.max(...values),range=Math.max(high-low,1);
+ const coords=values.map((v,i)=>[
+  (30+830*i/(values.length-1)).toFixed(1),
+  (190-145*(v-low)/range).toFixed(1)]);
+ return '<svg class="paper-history-chart" viewBox="0 0 900 225" role="img" aria-label="Evolución del capital paper por sesión">'+
+  '<line x1="30" y1="190" x2="870" y2="190" stroke="#cedae4" stroke-width="1"/>'+
+  '<polyline points="'+coords.map(p=>p.join(",")).join(" ")+
+  '" fill="none" stroke="#205c87" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>'+
+  '<text x="32" y="214" class="chart-label">'+esc(points[0].date)+'</text>'+
+  '<text x="870" y="214" text-anchor="end" class="chart-label">'+esc(points.at(-1).date)+'</text>'+
+  '</svg>';
+}
+function algorithmFiche(){
+ const id=state.algorithmId;
+ const item=state.fullRoster?.entries.find(s=>s.slot===id);
+ const candidate=state.strategyCandidates?.candidates.find(c=>c.id===id);
+ if(!item&&!candidate)return '<div class="competition-heading"><h2>Ficha no disponible</h2></div>'+
+  button("Volver a la competición","navigate","competition","outline-btn");
+ const name=candidate?.name||originalStrategyName(item);
+ const group=candidate?.group||item.group;
+ const record=item?economicPaperRecord(id):null;
+ const sourceId=record?.sourceId||state.originalPaper?.bySlot.get(id)?.sourceId||"";
+ const method=algorithmTheory(sourceId,group);
+ const history=record?.history||[];
+ const sessions=record?.session_count??(history.length||null);
+ const fmtMoney=n=>finite(n)?fmt(n)+" "+esc(record?.currency||""):"N/D";
+ const stats='<div class="algorithm-stat-grid">'+[
+  ["Rentabilidad acumulada",record?pctText(record.return_pct):"N/D"],
+  ["Primera sesión",esc(shortPaperDate(record?.first_session))],
+  ["Sesiones registradas",Number.isInteger(sessions)&&sessions>0?esc(sessions):"N/D"],
+  ["Último cierre",esc(shortPaperDate(record?.last_session))],
+  ["Capital inicial",fmtMoney(record?.initial_capital)],
+  ["NAV final",fmtMoney(record?.last_equity)]
+ ].map(([label,value])=>'<div><small>'+label+'</small><strong>'+value+'</strong></div>').join("")+'</div>';
+ const measured=history.length?
+  '<section class="algorithm-section"><h3>Evolución de capital y sesiones</h3>'+
+  '<p>Diario paper procedente del archivo contrastado; no es dinero real ni prueba de ejecución diaria actual.</p>'+
+  fullHistoryChart(history)+
+  '<details><summary>Consultar las '+history.length+' observaciones del NAV</summary>'+
+  '<div class="table-scroll"><table class="table-compact"><thead><tr><th>Sesión</th><th>NAV</th><th>Rentabilidad desde el inicio</th></tr></thead><tbody>'+
+  history.map(p=>'<tr><td>'+esc(p.date)+'</td><td>'+fmtMoney(p.nav)+'</td><td>'+
+   (finite(record?.initial_capital)&&record.initial_capital>0?pctText(100*(p.nav/record.initial_capital-1)):"N/D")+
+   '</td></tr>').join("")+'</tbody></table></div></details></section>':
+  '<section class="algorithm-section"><h3>Evolución y sesiones</h3><p>Sin diario verificable: no existen rentabilidades ni operaciones acreditadas para esta línea.</p></section>';
+ const theory=candidate?
+  '<section class="algorithm-section"><h3>Teoría e hipótesis</h3><p>'+esc(candidate.subject)+'</p>'+
+  '<h4>Diseño metodológico</h4><p>'+esc(candidate.method)+'</p>'+
+  '<h4>Regla de investigación</h4><p>'+esc(candidate.rule)+'</p>'+
+  '<h4>Matemática</h4><p>La propuesta no dispone todavía de una formulación estimada ni de parámetros contrastados. No se sustituirán por fórmulas ilustrativas.</p></section>':
+  '<section class="algorithm-section"><h3>Teoría y fundamento</h3><p>'+esc(method.theory)+'</p>'+
+  '<h4>Formulación matemática de referencia</h4><div class="algorithm-formula">'+esc(method.equation)+'</div>'+
+  '<p class="algorithm-caveat">'+esc(method.scope)+'</p>'+
+  '<h4>Reglas y señales</h4><p>'+esc(method.signal)+'</p></section>';
+ const progress=candidate?
+  '<p><strong>Fase:</strong> '+esc(candidate.status)+'</p>'+
+  '<p><strong>Datos necesarios:</strong> '+esc(candidate.research_requirements)+'</p>'+
+  '<p><strong>Validación:</strong> '+esc(candidate.validation)+'</p>'+
+  '<p><strong>Limitaciones:</strong> '+esc(candidate.limitations)+'</p>'+
+  '<p><a href="'+esc(candidate.source)+'" target="_blank" rel="noopener noreferrer">Fuente académica</a> · '+
+  '<a href="'+esc(candidate.data_reference)+'" target="_blank" rel="noopener noreferrer">Datos exploratorios</a></p>':
+  '<p><strong>Campaña / evolución:</strong> '+esc(record?.provenance||
+   "Documentación de la campaña disponible parcialmente; no se reconstruye la historia de versiones sin pruebas.")+'</p>'+
+  '<p><strong>Estado histórico:</strong> '+esc(record?.activity||"Sin diario institucional")+'</p>'+
+  '<p><strong>Notas del registro:</strong> '+esc(record?.sourceNote||"No constan notas de desarrollo versionadas para este expediente.")+'</p>'+
+  '<p><strong>Motor institucional nuevo:</strong> '+esc(technicalStage(id).label)+
+  '. El histórico del motor anterior no acredita que este motor ya esté ejecutándose.</p>'+
+  '<p><strong>Control científico:</strong> '+esc(method.validation)+'</p>';
+ return '<div class="algorithm-profile">'+
+  '<div class="algorithm-breadcrumb">'+button("← Volver a la tabla","navigate","competition","outline-btn")+
+  '<span>'+esc(id)+' · '+esc(compactGroup(group))+'</span></div>'+
+  '<header class="algorithm-profile-header"><h2>'+esc(name)+'</h2>'+
+  '<p>'+esc(candidate?"Propuesta de investigación · sin operaciones":
+   "Campaña de capital virtual · "+(record?.historical?"corte histórico":"diario paper registrado"))+
+  ' · información disponible, no rentabilidad futura garantizada</p></header>'+
+  stats+theory+
+  '<section class="algorithm-section"><h3>Desarrollo, cambios y validación</h3>'+progress+
+  '<p class="algorithm-caveat">Las fechas indicadas corresponden a las sesiones NAV, no necesariamente a la fecha de creación del algoritmo. Una cronología técnica completa exige commits y versiones acreditados.</p></section>'+
+  measured+'</div>';
 }
 
 function archive(){
@@ -552,11 +641,20 @@ function chart(){
 }
 function render(){
  if(!state.data)return;
- const pages={overview,competition,synthetic:syntheticCompetition,algorithms,theses,monitoring,archive,ported,full,method:methodology};
- document.querySelectorAll(".product-tabs [data-view]").forEach(b=>{const active=b.dataset.view===state.view;b.classList.toggle("active",active);b.setAttribute("aria-pressed",String(active));});
+ const pages={overview,competition,algorithm:algorithmFiche,synthetic:syntheticCompetition,algorithms,theses,monitoring,archive,ported,full,method:methodology};
+ document.querySelectorAll(".product-tabs [data-view]").forEach(b=>{const active=b.dataset.view===state.view||(state.view==="algorithm"&&b.dataset.view==="competition");b.classList.toggle("active",active);b.setAttribute("aria-pressed",String(active));});
  $("app").innerHTML=(pages[state.view]||overview)();chart();
 }
-function go(view){if(!viewNames.includes(view))return;state.view=view;const u=new URL(location.href);u.searchParams.set("view",view);history.pushState({view},"",u);render();window.scrollTo({top:0,behavior:"auto"});}
+function go(view){
+ if(!viewNames.includes(view))return;
+ state.view=view;
+ const u=new URL(location.href);
+ u.searchParams.set("view",view);
+ if(view==="algorithm"&&state.algorithmId)u.searchParams.set("algorithm",state.algorithmId);
+ else u.searchParams.delete("algorithm");
+ history.pushState({view,algorithm:state.algorithmId},"",u);
+ render();window.scrollTo({top:0,behavior:"auto"});
+}
 const asCSV=rows=>rows.map(row=>row.map(x=>'"'+String(x??"").replaceAll('"','""')+'"').join(",")).join("\n");
 function download(name,rows){const u=URL.createObjectURL(new Blob(["\ufeff"+asCSV(rows)],{type:"text/csv;charset=utf-8"}));const a=document.createElement("a");a.href=u;a.download=name;document.body.append(a);a.click();a.remove();URL.revokeObjectURL(u);}
 function exportData(what){
@@ -596,6 +694,11 @@ $("app").addEventListener("click",e=>{
  }
  const {action,value}=b.dataset;
  if(action==="navigate"){state.detailOpen=false;go(value);}
+ else if(action==="full-detail"){
+  if(!state.fullRoster?.entries.some(x=>x.slot===value)&&
+     !state.strategyCandidates?.candidates.some(c=>c.id===value))return;
+  state.algorithmId=value;go("algorithm");
+ }
  else if(action==="select")openCompetitionRow(value);
  else if(action==="journal"){state.strategy=value;state.detailOpen=false;go("monitoring");}
  else if(action==="group"){state.group=value;state.detailOpen=false;go("synthetic");}
@@ -702,7 +805,7 @@ $("app").addEventListener("submit",e=>{
  state.strategy=id;state.group="";state.sort="returnPct";state.detailOpen=true;summary();go("competition");
 });
 document.querySelectorAll(".product-tabs [data-view]").forEach(b=>b.addEventListener("click",()=>{state.detailOpen=false;go(b.dataset.view);}));
-window.addEventListener("popstate",()=>{const v=new URLSearchParams(location.search).get("view");state.view=viewNames.includes(v)?v:"overview";state.detailOpen=false;render();});
+window.addEventListener("popstate",()=>{const params=new URLSearchParams(location.search);const v=params.get("view");state.view=viewNames.includes(v)?v:"overview";state.algorithmId=params.get("algorithm");state.detailOpen=false;render();});
 async function init(){
  try{
   const [r,p]=await Promise.all([fetch("./data/demo.json",{cache:"no-store"}),fetch("./data/public-theses.json",{cache:"no-store"})]);
@@ -712,7 +815,7 @@ async function init(){
   const stats=verifyPublicTheses(publication);
   state.publicTheses=new Map(publication.records.map(x=>[x.ticker,x]));
   state.publicThesesMetadata={...stats,published_as_of:publication.published_as_of};
-  state.data=data;state.universe=universe;const v=new URLSearchParams(location.search).get("view");state.view=viewNames.includes(v)?v:"overview";summary();render();void loadOfficialFx();void loadForecastLedger();void loadSecFilings();void loadOfficialYield();void loadOriginalPaper();void loadHistoricalPaper();void loadFullRoster();void loadStrategyCandidates();void loadInstitutionalPaperFeed();
+  state.data=data;state.universe=universe;const params=new URLSearchParams(location.search);const v=params.get("view");state.view=viewNames.includes(v)?v:"overview";state.algorithmId=params.get("algorithm");summary();render();void loadOfficialFx();void loadForecastLedger();void loadSecFilings();void loadOfficialYield();void loadOriginalPaper();void loadHistoricalPaper();void loadFullRoster();void loadStrategyCandidates();void loadInstitutionalPaperFeed();
  }catch(e){$("app").textContent="No se ha podido cargar el catálogo de emisores o el laboratorio sintético; no se muestran datos no verificados.";}
 }
 async function loadOfficialFx(){
@@ -760,7 +863,7 @@ async function loadStrategyCandidates(){
   verifyStrategyCandidates(doc);
   state.strategyCandidates=doc;state.strategyCandidatesStatus="ok";
  }catch(_error){state.strategyCandidates=null;state.strategyCandidatesStatus="unavailable";}
- if(["full","competition"].includes(state.view)&&state.data)render();
+ if(["full","competition","algorithm"].includes(state.view)&&state.data)render();
 }
 async function loadOriginalPaper(){
  try{
@@ -768,7 +871,7 @@ async function loadOriginalPaper(){
   if(!r.ok||!m.ok)throw Error("Diarios no disponibles");
   state.originalPaper=verifyOriginalPaper(await r.json(),await m.json());state.originalPaperStatus="ok";if(state.data)summary();
  }catch(_error){state.originalPaper=null;state.originalPaperStatus="unavailable";}
- if(["full","competition","monitoring","overview"].includes(state.view)&&state.data)render();
+ if(["full","competition","algorithm","monitoring","overview"].includes(state.view)&&state.data)render();
 }
 async function loadHistoricalPaper(){
  try{
@@ -778,7 +881,7 @@ async function loadHistoricalPaper(){
   const rows=parseLocalPaperResults(results),curves=parseLocalPaperCurves(nav,rows);
   state.historicalPaper=rows;state.historicalCurves=curves;state.historicalPaperStatus="ok";if(state.data)summary();
  }catch(_error){state.historicalPaper=null;state.historicalCurves=null;state.historicalPaperStatus="unavailable";}
- if(["full","competition"].includes(state.view)&&state.data)render();
+ if(["full","competition","algorithm"].includes(state.view)&&state.data)render();
 }
 async function loadFullRoster(){
  try{
@@ -788,7 +891,7 @@ async function loadFullRoster(){
   verifyFullRoster(doc);
   state.fullRoster=doc;state.fullRosterStatus="ok";if(state.data)summary();
  }catch(_error){state.fullRoster=null;state.fullRosterStatus="unavailable";}
- if(["full","competition"].includes(state.view)&&state.data)render();
+ if(["full","competition","algorithm"].includes(state.view)&&state.data)render();
 }
 async function loadInstitutionalPaperFeed(){
  try{
@@ -805,6 +908,6 @@ async function loadInstitutionalPaperFeed(){
   state.paperFeed=doc;state.paperFeedRead=verified;
   state.institutionalFeedStatus=verified.status;
  }catch(_error){state.paperFeed=null;state.paperFeedRead=null;state.institutionalFeedStatus="unavailable";}
- if(["full","competition"].includes(state.view)&&state.data)render();
+ if(["full","competition","algorithm"].includes(state.view)&&state.data)render();
 }
 init();

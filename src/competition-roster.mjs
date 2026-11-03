@@ -129,7 +129,7 @@ export function filterStrategyCandidates(doc,{group="",query=""}={}){
  * Numeric missing data (including an absent satellite NAV) always sorts last.
  * Presentation order must not be interpreted as economic comparability.
  */
-export const FULL_SORT_KEYS=Object.freeze(["name","group","activity","date","currency",
+export const FULL_SORT_KEYS=Object.freeze(["name","group","activity","start","sessions","date","currency",
  "return","day","volatility","drawdown","positions","comparison","curve"]);
 export function sortFullCompetitionRows(rows,{key="name",ascending=true}={}){
  if(!Array.isArray(rows)||!FULL_SORT_KEYS.includes(key)||typeof ascending!=="boolean")
@@ -140,6 +140,8 @@ export function sortFullCompetitionRows(rows,{key="name",ascending=true}={}){
    case "name":return row.name;
    case "group":return row.group;
    case "activity":return r?.activity??row.candidate?.status??null;
+   case "start":return r?.first_session??null;
+   case "sessions":return r?.session_count??(Array.isArray(r?.history)?r.history.length:null);
    case "date":return r?.last_session??null;
    case "currency":return r?.currency??null;
    case "return":return r?.return_pct??null;
