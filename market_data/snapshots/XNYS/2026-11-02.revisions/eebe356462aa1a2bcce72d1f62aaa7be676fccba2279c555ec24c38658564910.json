@@ -1,0 +1,248 @@
+{
+  "bars": {
+    "ALL": {
+      "close": 263.989990234375,
+      "date": "2026-11-02",
+      "dividend": 0.0,
+      "high": 264.80999755859375,
+      "low": 259.2900085449219,
+      "open": 259.2900085449219,
+      "provider_symbol": "ALL",
+      "split": 0.0,
+      "volume": 1342800.0
+    },
+    "AZO": {
+      "close": 3253.010009765625,
+      "date": "2026-11-02",
+      "dividend": 0.0,
+      "high": 3266.2900390625,
+      "low": 3184.02001953125,
+      "open": 3184.02001953125,
+      "provider_symbol": "AZO",
+      "split": 0.0,
+      "volume": 145000.0
+    },
+    "CCL": {
+      "close": 30.049999237060547,
+      "date": "2026-11-02",
+      "dividend": 0.0,
+      "high": 30.520000457763672,
+      "low": 29.6299991607666,
+      "open": 29.809999465942383,
+      "provider_symbol": "CCL",
+      "split": 0.0,
+      "volume": 30906100.0
+    },
+    "CMG": {
+      "close": 32.90999984741211,
+      "date": "2026-11-02",
+      "dividend": 0.0,
+      "high": 33.349998474121094,
+      "low": 31.899999618530273,
+      "open": 31.899999618530273,
+      "provider_symbol": "CMG",
+      "split": 0.0,
+      "volume": 19844100.0
+    },
+    "CVS": {
+      "close": 88.51000213623047,
+      "date": "2026-11-02",
+      "dividend": 0.0,
+      "high": 90.62000274658203,
+      "low": 87.87999725341797,
+      "open": 90.2300033569336,
+      "provider_symbol": "CVS",
+      "split": 0.0,
+      "volume": 9690200.0
+    },
+    "DHR": {
+      "close": 227.97000122070312,
+      "date": "2026-11-02",
+      "dividend": 0.0,
+      "high": 234.2899932861328,
+      "low": 227.52999877929688,
+      "open": 234.1999969482422,
+      "provider_symbol": "DHR",
+      "split": 0.0,
+      "volume": 3157900.0
+    },
+    "DIS": {
+      "close": 113.11000061035156,
+      "date": "2026-11-02",
+      "dividend": 0.0,
+      "high": 113.79000091552734,
+      "low": 111.7699966430664,
+      "open": 111.77999877929688,
+      "provider_symbol": "DIS",
+      "split": 0.0,
+      "volume": 7398100.0
+    },
+    "DLR": {
+      "close": 175.9499969482422,
+      "date": "2026-11-02",
+      "dividend": 0.0,
+      "high": 180.22000122070312,
+      "low": 173.77999877929688,
+      "open": 180.0,
+      "provider_symbol": "DLR",
+      "split": 0.0,
+      "volume": 3634700.0
+    },
+    "DVA": {
+      "close": 185.74000549316406,
+      "date": "2026-11-02",
+      "dividend": 0.0,
+      "high": 186.3800048828125,
+      "low": 180.39999389648438,
+      "open": 186.3800048828125,
+      "provider_symbol": "DVA",
+      "split": 0.0,
+      "volume": 882400.0
+    },
+    "EFX": {
+      "close": 192.50999450683594,
+      "date": "2026-11-02",
+      "dividend": 0.0,
+      "high": 193.67999267578125,
+      "low": 185.30999755859375,
+      "open": 185.30999755859375,
+      "provider_symbol": "EFX",
+      "split": 0.0,
+      "volume": 2175600.0
+    },
+    "EXR": {
+      "close": 155.97999572753906,
+      "date": "2026-11-02",
+      "dividend": 0.0,
+      "high": 156.74000549316406,
+      "low": 151.6999969482422,
+      "open": 151.6999969482422,
+      "provider_symbol": "EXR",
+      "split": 0.0,
+      "volume": 1342500.0
+    },
+    "FRT": {
+      "close": 111.37000274658203,
+      "date": "2026-11-02",
+      "dividend": 0.0,
+      "high": 111.91000366210938,
+      "low": 109.80000305175781,
+      "open": 109.80000305175781,
+      "provider_symbol": "FRT",
+      "split": 0.0,
+      "volume": 1250300.0
+    },
+    "HRL": {
+      "close": 21.469999313354492,
+      "date": "2026-11-02",
+      "dividend": 0.0,
+      "high": 21.84000015258789,
+      "low": 21.34000015258789,
+      "open": 21.34000015258789,
+      "provider_symbol": "HRL",
+      "split": 0.0,
+      "volume": 6613100.0
+    },
+    "IFF": {
+      "close": 94.62999725341797,
+      "date": "2026-11-02",
+      "dividend": 0.0,
+      "high": 95.2699966430664,
+      "low": 93.25,
+      "open": 93.25,
+      "provider_symbol": "IFF",
+      "split": 0.0,
+      "volume": 3224800.0
+    },
+    "L": {
+      "close": 111.33999633789062,
+      "date": "2026-11-02",
+      "dividend": 0.0,
+      "high": 113.0199966430664,
+      "low": 109.69000244140625,
+      "open": 113.0199966430664,
+      "provider_symbol": "L",
+      "split": 0.0,
+      "volume": 859100.0
+    },
+    "LII": {
+      "close": 353.6400146484375,
+      "date": "2026-11-02",
+      "dividend": 0.0,
+      "high": 354.54998779296875,
+      "low": 344.5799865722656,
+      "open": 344.5799865722656,
+      "provider_symbol": "LII",
+      "split": 0.0,
+      "volume": 958600.0
+    },
+    "LOW": {
+      "close": 218.14999389648438,
+      "date": "2026-11-02",
+      "dividend": 0.0,
+      "high": 218.25,
+      "low": 212.0,
+      "open": 212.0,
+      "provider_symbol": "LOW",
+      "split": 0.0,
+      "volume": 3695500.0
+    },
+    "SPG": {
+      "close": 221.72999572753906,
+      "date": "2026-11-02",
+      "dividend": 0.0,
+      "high": 223.58999633789062,
+      "low": 218.5,
+      "open": 218.5,
+      "provider_symbol": "SPG",
+      "split": 0.0,
+      "volume": 1518700.0
+    },
+    "UHS": {
+      "close": 180.64999389648438,
+      "date": "2026-11-02",
+      "dividend": 0.0,
+      "high": 180.94000244140625,
+      "low": 172.8000030517578,
+      "open": 172.8000030517578,
+      "provider_symbol": "UHS",
+      "split": 0.0,
+      "volume": 910700.0
+    },
+    "WSM": {
+      "close": 259.45001220703125,
+      "date": "2026-11-02",
+      "dividend": 0.0,
+      "high": 263.1600036621094,
+      "low": 256.6400146484375,
+      "open": 256.6400146484375,
+      "provider_symbol": "WSM",
+      "split": 0.0,
+      "volume": 1090000.0
+    },
+    "WY": {
+      "close": 21.290000915527344,
+      "date": "2026-11-02",
+      "dividend": 0.0,
+      "high": 21.420000076293945,
+      "low": 20.520000457763672,
+      "open": 20.56999969482422,
+      "provider_symbol": "WY",
+      "split": 0.0,
+      "volume": 10786100.0
+    }
+  },
+  "base_sha256": "4ba926a4fbd9f925dd95d344d80856877216ff6b4fce3f53a9e18c3f2a07da1b",
+  "captured_at_utc": "2026-11-03T06:41:53+00:00",
+  "parent_sha256": "4ba926a4fbd9f925dd95d344d80856877216ff6b4fce3f53a9e18c3f2a07da1b",
+  "schema": "midas.xnys_missing_revision.v1",
+  "session": "2026-11-02",
+  "sha256": "eebe356462aa1a2bcce72d1f62aaa7be676fccba2279c555ec24c38658564910",
+  "source": {
+    "actions": true,
+    "auto_adjust": false,
+    "client": "yfinance",
+    "interval": "1d",
+    "vendor": "Yahoo Finance"
+  }
+}
