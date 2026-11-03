@@ -73,7 +73,7 @@ test("Thesis methods compute scenarios, ranks and filtered results",()=>{
 test("Navigation exposes all institutional functional sections",()=>{
  const js=readFileSync(new URL("../src/site.mjs",import.meta.url),"utf8");
  const html=readFileSync(new URL("../index.html",import.meta.url),"utf8");
- for(const v of ["overview","competition","algorithms","theses","monitoring","method"])assert.ok(js.includes(v));
+ for(const v of ["competition","algorithms","theses","monitoring","method"])assert.ok(js.includes(v));
  assert.match(html,/src="\.\/src\/site\.mjs\?v=[a-f0-9]{12}"/);
  assert.ok(js.includes("paper-form"));
  assert.ok(js.includes("journal-select"));
@@ -474,4 +474,34 @@ test("Issuer research requires independent source admission instead of accepting
  const missing=structuredClone(data.issuerCatalog);
  delete missing.issuers[0].admission;
  assert.throws(()=>verifyIssuerCatalog(missing),/Unreviewed issuer admission/);
+});
+
+
+test("MIDAS opens the paper competition directly and has no legacy Inicio screen",()=>{
+ const html=readFileSync(new URL("../index.html",import.meta.url),"utf8");
+ const js=readFileSync(new URL("../src/site.mjs",import.meta.url),"utf8");
+ assert.ok(html.includes('data-view="competition" class="active"'));
+ assert.ok(!html.includes('data-view="overview"'));
+ assert.ok(!html.includes('>Inicio</button>'));
+ assert.ok(!html.includes("Laboratorio de algoritmos"));
+ assert.ok(!js.includes("function overview(){"));
+ assert.ok(!js.includes('view:"overview"'));
+ assert.ok(js.includes('state.view=resolveMidasView();'));
+ assert.ok(js.includes('if(requested==="overview")'));
+ assert.ok(js.includes('history.replaceState({view:"competition"}'));
+ assert.ok(js.includes('$(\"app\").innerHTML=(pages[state.view]||competition)();'));
+});
+test("MIDAS header explains both automated investing research and five-year fundamental CAGR scenarios",()=>{
+ const html=readFileSync(new URL("../index.html",import.meta.url),"utf8");
+ for(const fragment of [
+  "MIDAS es un proyecto dedicado a la búsqueda de estrategias rentables",
+  "inversión automatizada", "análisis fundamental de empresas",
+  "algoritmos de inversión que compiten entre sí",
+  "operaciones simuladas",
+  "tesis de inversión",
+  "CAGR bursátil a cinco años",
+  "central, optimista y pesimista"
+ ])assert.ok(html.includes(fragment),"Missing mission description: "+fragment);
+ assert.ok(html.includes("<h1>MIDAS</h1>"));
+ assert.ok(!html.includes('hero-subtitle'));
 });
