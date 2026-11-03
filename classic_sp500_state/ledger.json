@@ -462,7 +462,7 @@
       ]
     },
     "buy_hold_equal_weight": {
-      "cash": 7468.8696249190225,
+      "cash": 7488.652668559971,
       "equity": [
         {
           "date": "2026-10-12",
@@ -513,6 +513,36 @@
             "snapshot_sha256": "4472ae4858a7aff2daa9869379f28700f61ff32194931937e269c55f916546a4"
           },
           "recorded_at_utc": "2026-10-28T08:18:46+00:00"
+        },
+        {
+          "date": "2026-10-28",
+          "late_mark_only": true,
+          "nav": 101638.9861869277,
+          "quote_identity": {
+            "effective_sha256": "f281225f3db3d07ce745f0803078cb5a173bd1e48d5fbf46c527fbbe98426726",
+            "snapshot_sha256": "13800db7a2af7a9df996002dec7f2f18eb016fad8e810d290b631c76102117b4"
+          },
+          "recorded_at_utc": "2026-11-03T11:33:03+00:00"
+        },
+        {
+          "date": "2026-10-29",
+          "late_mark_only": true,
+          "nav": 102898.72681721323,
+          "quote_identity": {
+            "effective_sha256": "0b919436da053b8e3aee7e09682ec7a821847a1e129551b14b4236b0790c41bc",
+            "snapshot_sha256": "12678209e28b68bcda787bafe8805dcfedb5a7fcceea755ec0c6f6d601bb91f1"
+          },
+          "recorded_at_utc": "2026-11-03T11:33:03+00:00"
+        },
+        {
+          "date": "2026-10-30",
+          "late_mark_only": true,
+          "nav": 102449.37889850004,
+          "quote_identity": {
+            "effective_sha256": "0f09c6ae175f1ea60bb6ced05f5a3620483aad3f4cdedc044edd8a1a8f2c2680",
+            "snapshot_sha256": "01ee1c4d0d5f28fc76abd4a80bc6228477bbf1b6c1e244aed29ce64fe5f3a987"
+          },
+          "recorded_at_utc": "2026-11-03T11:33:03+00:00"
         }
       ],
       "events": [
@@ -4134,16 +4164,203 @@
             "HUBB"
           ],
           "type": "book_quarantined_missing_held_bar"
+        },
+        {
+          "amount": 2.7654825,
+          "date": "2026-10-28",
+          "issuer_dividend_per_share": 1.25,
+          "recognition": "existing_paper_ex_session_model",
+          "recorded_at_utc": "2026-11-03T11:33:03+00:00",
+          "source_url": "https://investors.thecloroxcompany.com/news/news-details/2026/Clorox-Declares-Regular-Quarterly-Dividend-of-1-25-Per-Share/default.aspx",
+          "ticker": "CLX",
+          "type": "dividend",
+          "vendor_dividend_per_share": 1.25
+        },
+        {
+          "amount": 0.93948634,
+          "date": "2026-10-28",
+          "issuer_dividend_per_share": 0.26,
+          "recognition": "existing_paper_ex_session_model",
+          "recorded_at_utc": "2026-11-03T11:33:03+00:00",
+          "source_url": "https://investor.fastenal.com/stock-info/dividend-history/default.aspx",
+          "ticker": "FAST",
+          "type": "dividend",
+          "vendor_dividend_per_share": 0.26
+        },
+        {
+          "amount": 0.8196326399999999,
+          "date": "2026-10-29",
+          "issuer_dividend_per_share": 0.24,
+          "recognition": "existing_paper_ex_session_model",
+          "recorded_at_utc": "2026-11-03T11:33:03+00:00",
+          "source_url": "https://www.sec.gov/Archives/edgar/data/1783180/000178318026000037/carr-20260930.htm",
+          "ticker": "CARR",
+          "type": "dividend",
+          "vendor_dividend_per_share": 0.24
+        },
+        {
+          "amount": 2.21504176395,
+          "date": "2026-10-30",
+          "issuer_dividend_per_share": 0.17595,
+          "recognition": "existing_paper_ex_session_model",
+          "recorded_at_utc": "2026-11-03T11:33:03+00:00",
+          "source_url": "https://www.aes.com/newsroom/aes-announces-quarterly-dividend",
+          "ticker": "AES",
+          "type": "dividend",
+          "vendor_dividend_per_share": 0.176
+        },
+        {
+          "amount": 1.2206071200000002,
+          "date": "2026-10-30",
+          "issuer_dividend_per_share": 0.38,
+          "recognition": "existing_paper_ex_session_model",
+          "recorded_at_utc": "2026-11-03T11:33:03+00:00",
+          "source_url": "https://investor.aosmith.com/stocks/dividend-history",
+          "ticker": "AOS",
+          "type": "dividend",
+          "vendor_dividend_per_share": 0.38
+        },
+        {
+          "amount": 1.55953512,
+          "date": "2026-10-30",
+          "issuer_dividend_per_share": 0.52,
+          "recognition": "existing_paper_ex_session_model",
+          "recorded_at_utc": "2026-11-03T11:33:03+00:00",
+          "source_url": "https://investor.citizensbank.com/about-us/investor-relations/shareholder-information/dividend-history.aspx",
+          "ticker": "CFG",
+          "type": "dividend",
+          "vendor_dividend_per_share": 0.52
+        },
+        {
+          "amount": 0.2777418,
+          "date": "2026-10-30",
+          "issuer_dividend_per_share": 1.47,
+          "recognition": "existing_paper_ex_session_model",
+          "recorded_at_utc": "2026-11-03T11:33:03+00:00",
+          "source_url": "https://www.sec.gov/Archives/edgar/data/909832/000090983226000096/cost-20261014.htm",
+          "ticker": "COST",
+          "type": "dividend",
+          "vendor_dividend_per_share": 1.47
+        },
+        {
+          "amount": 0.388131795,
+          "date": "2026-10-30",
+          "issuer_dividend_per_share": 0.885,
+          "recognition": "existing_paper_ex_session_model",
+          "recorded_at_utc": "2026-11-03T11:33:03+00:00",
+          "source_url": "https://humana.gcs-web.com/stock-information/dividend-history",
+          "ticker": "HUM",
+          "type": "dividend",
+          "vendor_dividend_per_share": 0.885
+        },
+        {
+          "amount": 1.4754658,
+          "date": "2026-10-30",
+          "issuer_dividend_per_share": 0.535,
+          "recognition": "existing_paper_ex_session_model",
+          "recorded_at_utc": "2026-11-03T11:33:03+00:00",
+          "source_url": "https://investors.alliantenergy.com/News--Presentations/news/news-details/2026/Alliant-Energy-Corporation-Declares-Quarterly-Common-Stock-Dividend-470a447b1/default.aspx",
+          "ticker": "LNT",
+          "type": "dividend",
+          "vendor_dividend_per_share": 0.535
+        },
+        {
+          "amount": 1.1884008,
+          "date": "2026-10-30",
+          "issuer_dividend_per_share": 1.15,
+          "recognition": "existing_paper_ex_session_model",
+          "recorded_at_utc": "2026-11-03T11:33:03+00:00",
+          "source_url": "https://www.sec.gov/Archives/edgar/data/895421/000089542126000288/a3q26msearningsrelease.htm",
+          "ticker": "MS",
+          "type": "dividend",
+          "vendor_dividend_per_share": 1.15
+        },
+        {
+          "amount": 1.3609608,
+          "date": "2026-10-30",
+          "issuer_dividend_per_share": 0.3,
+          "recognition": "existing_paper_ex_session_model",
+          "recorded_at_utc": "2026-11-03T11:33:03+00:00",
+          "source_url": "https://investors.nisource.com/financial-news/news-details/2026/NiSource-Declares-Common-Stock-Dividend-299420bcd/default.aspx",
+          "ticker": "NI",
+          "type": "dividend",
+          "vendor_dividend_per_share": 0.3
+        },
+        {
+          "amount": 0.914294712,
+          "date": "2026-10-30",
+          "issuer_dividend_per_share": 0.2715,
+          "recognition": "existing_paper_ex_session_model",
+          "recorded_at_utc": "2026-11-03T11:33:03+00:00",
+          "source_url": "https://www.realtyincome.com/sites/realty-income/files/10%2013%2026%20Realty%20Income%20Announces%20676th%20Consecutive%20Common%20Stock%20Monthly%20Dividend.pdf",
+          "ticker": "O",
+          "type": "dividend",
+          "vendor_dividend_per_share": 0.272
+        },
+        {
+          "amount": 1.50586309,
+          "date": "2026-10-30",
+          "issuer_dividend_per_share": 1.03,
+          "recognition": "existing_paper_ex_session_model",
+          "recorded_at_utc": "2026-11-03T11:33:03+00:00",
+          "source_url": "https://ir.cbrands.com/sec-filings/all-sec-filings/content/0000016918-26-000039/stzex991_83120268kearnings.htm",
+          "ticker": "STZ",
+          "type": "dividend",
+          "vendor_dividend_per_share": 1.03
+        },
+        {
+          "amount": 0.8084,
+          "date": "2026-10-30",
+          "issuer_dividend_per_share": 1.25,
+          "recognition": "existing_paper_ex_session_model",
+          "recorded_at_utc": "2026-11-03T11:33:03+00:00",
+          "source_url": "https://www.targaresources.com/news-releases/news-release-details/targa-resources-corp-announces-quarterly-common-dividend-and-2",
+          "ticker": "TRGP",
+          "type": "dividend",
+          "vendor_dividend_per_share": 1.25
+        },
+        {
+          "amount": 1.0408777599999999,
+          "date": "2026-10-30",
+          "issuer_dividend_per_share": 1.52,
+          "recognition": "existing_paper_ex_session_model",
+          "recorded_at_utc": "2026-11-03T11:33:03+00:00",
+          "source_url": "https://investor.ti.com/node/38626/pdf",
+          "ticker": "TXN",
+          "type": "dividend",
+          "vendor_dividend_per_share": 1.52
+        },
+        {
+          "amount": 1.3031216,
+          "date": "2026-10-30",
+          "issuer_dividend_per_share": 0.53,
+          "recognition": "existing_paper_ex_session_model",
+          "recorded_at_utc": "2026-11-03T11:33:03+00:00",
+          "source_url": "https://investor.zoetis.com/news/news-details/2026/Zoetis-Declares-Fourth-Quarter-2026-Dividend/default.aspx",
+          "ticker": "ZTS",
+          "type": "dividend",
+          "vendor_dividend_per_share": 0.53
+        },
+        {
+          "date": "2026-10-30",
+          "expired_unfilled_buys": [],
+          "recorded_at_utc": "2026-11-03T11:33:03+00:00",
+          "sessions": [
+            "2026-10-28",
+            "2026-10-29",
+            "2026-10-30"
+          ],
+          "type": "passive_prefix_recovered_still_paused"
         }
       ],
-      "nav": 101829.72298058106,
+      "nav": 102449.37889850004,
       "paused_missing_quotes": {
-        "last_valued_session": "2026-10-27",
+        "last_valued_session": "2026-10-30",
         "missing_tickers": [
-          "HUBB"
+          "KVUE"
         ],
-        "reason": "required same-session bar unavailable",
-        "since": "2026-10-28"
+        "reason": "missing_historical_held_bar",
+        "since": "2026-11-02"
       },
       "pending": {},
       "positions": {
@@ -4275,7 +4492,7 @@
         },
         "AES": {
           "cost": 188.86679845173433,
-          "dividends": 0.0,
+          "dividends": 2.21504176395,
           "entry_date": "2026-10-15",
           "entry_price": 14.987489542007445,
           "shares": 12.589041,
@@ -4455,7 +4672,7 @@
         },
         "AOS": {
           "cost": 188.86676708676,
-          "dividends": 0.0,
+          "dividends": 1.2206071200000002,
           "entry_date": "2026-10-15",
           "entry_price": 58.73935408401489,
           "shares": 3.212124,
@@ -4797,7 +5014,7 @@
         },
         "CARR": {
           "cost": 188.8667841019075,
-          "dividends": 0.0,
+          "dividends": 0.8196326399999999,
           "entry_date": "2026-10-15",
           "entry_price": 55.24761122131348,
           "shares": 3.415136,
@@ -4896,7 +5113,7 @@
         },
         "CFG": {
           "cost": 188.86675845801008,
-          "dividends": 0.0,
+          "dividends": 1.55953512,
           "entry_date": "2026-10-15",
           "entry_price": 62.91144106864929,
           "shares": 2.999106,
@@ -4959,7 +5176,7 @@
         },
         "CLX": {
           "cost": 188.8667478725933,
-          "dividends": 0.0,
+          "dividends": 2.7654825,
           "entry_date": "2026-10-15",
           "entry_price": 85.28261786270141,
           "shares": 2.212386,
@@ -5076,7 +5293,7 @@
         },
         "COST": {
           "cost": 188.865869274723,
-          "dividends": 0.0,
+          "dividends": 0.2777418,
           "entry_date": "2026-10-15",
           "entry_price": 998.6090403442382,
           "shares": 0.18894,
@@ -5715,7 +5932,7 @@
         },
         "FAST": {
           "cost": 188.8667807557648,
-          "dividends": 0.0,
+          "dividends": 0.93948634,
           "entry_date": "2026-10-15",
           "entry_price": 52.216093626022335,
           "shares": 3.613409,
@@ -6165,7 +6382,7 @@
         },
         "HUM": {
           "cost": 188.86678000690495,
-          "dividends": 0.0,
+          "dividends": 0.388131795,
           "entry_date": "2026-10-15",
           "entry_price": 430.215,
           "shares": 0.438567,
@@ -6606,7 +6823,7 @@
         },
         "LNT": {
           "cost": 188.8667968574076,
-          "dividends": 0.0,
+          "dividends": 1.4754658,
           "entry_date": "2026-10-15",
           "entry_price": 68.41418725204467,
           "shares": 2.75788,
@@ -6921,7 +7138,7 @@
         },
         "MS": {
           "cost": 188.86668161608253,
-          "dividends": 0.0,
+          "dividends": 1.1884008,
           "entry_date": "2026-10-15",
           "entry_price": 182.58125049591064,
           "shares": 1.033392,
@@ -7047,7 +7264,7 @@
         },
         "NI": {
           "cost": 188.86677012766245,
-          "dividends": 0.0,
+          "dividends": 1.3609608,
           "entry_date": "2026-10-15",
           "entry_price": 41.590784694671626,
           "shares": 4.536536,
@@ -7173,7 +7390,7 @@
         },
         "O": {
           "cost": 188.86677800390396,
-          "dividends": 0.0,
+          "dividends": 0.914294712,
           "entry_date": "2026-10-15",
           "entry_price": 56.028,
           "shares": 3.367568,
@@ -7830,7 +8047,7 @@
         },
         "STZ": {
           "cost": 188.86674495541135,
-          "dividends": 0.0,
+          "dividends": 1.50586309,
           "entry_date": "2026-10-15",
           "entry_price": 129.05450049591064,
           "shares": 1.462003,
@@ -8028,7 +8245,7 @@
         },
         "TRGP": {
           "cost": 188.86652557296446,
-          "dividends": 0.0,
+          "dividends": 0.8084,
           "entry_date": "2026-10-15",
           "entry_price": 291.7458061065674,
           "shares": 0.64672,
@@ -8118,7 +8335,7 @@
         },
         "TXN": {
           "cost": 188.8667473089895,
-          "dividends": 0.0,
+          "dividends": 1.0408777599999999,
           "entry_date": "2026-10-15",
           "entry_price": 275.5277096557617,
           "shares": 0.684788,
@@ -8550,7 +8767,7 @@
         },
         "ZTS": {
           "cost": 188.86678651323513,
-          "dividends": 0.0,
+          "dividends": 1.3031216,
           "entry_date": "2026-10-15",
           "entry_price": 76.7383469467163,
           "shares": 2.45872,
