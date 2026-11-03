@@ -153,6 +153,8 @@ def _activity(positions=None, pending=None, *, pending_label="órdenes pendiente
     single_pending_label = pending_label
     if pending_count == 1 and pending_label.startswith("compras "):
         single_pending_label = "compra " + pending_label[len("compras "):]
+    elif pending_count == 1 and pending_label.startswith("órdenes "):
+        single_pending_label = "orden " + pending_label[len("órdenes "):]
     elif pending_count == 1 and pending_label.startswith("señales congeladas"):
         single_pending_label = "señal congelada" + pending_label[len("señales congeladas"):]
     elif pending_count == 1 and pending_label.startswith("señales "):
@@ -393,7 +395,13 @@ def build(registry, paper_config, paper_state=None, legacy_state=None, now=None,
                        eligible_universe_symbols=(classic_sp500_state["coverage"][-1]["total"]
                                                    if classic_sp500_state.get("coverage") else None))
             row.update(_activity(book["positions"], book.get("pending"),
-                                 pending_label="compras paper para próxima apertura"))
+                                 pending_label="órdenes paper para próxima apertura"))
+            late = [p["date"] for p in hist if p.get("late_recorded_verified_date")]
+            if late:
+                row["late_calculation_sessions"] = late
+                row["activity_label"] += " · Cálculo tardío: " + ", ".join(late)
+                row["note"] += (" Reconciliación registrada con retraso sobre órdenes previamente "
+                                "fijadas y OHLC común exacto; no acredita una ejecución puntual.")
             if quarantined:
                 row["data_quality_status"] = "held_quote_unavailable"
                 row["activity_label"] = ("VALORACIÓN PAUSADA · falta cotización; "
