@@ -122,3 +122,55 @@ export function filterStrategyCandidates(doc,{group="",query=""}={}){
  return doc.candidates.filter(c=>(!group||group===c.group)&&
   (!q||[c.id,c.name,c.group,c.subject,...c.universe].some(v=>v.toLocaleLowerCase("es").includes(q))));
 }
+
+
+/**
+ * Sort the displayed competition records without mutating the roster/ledgers.
+ * Numeric missing data (including an absent satellite NAV) always sorts last.
+ * Presentation order must not be interpreted as economic comparability.
+ */
+export const FULL_SORT_KEYS=Object.freeze(["name","group","activity","date","currency",
+ "return","day","volatility","drawdown","positions","comparison","curve"]);
+export function sortFullCompetitionRows(rows,{key="name",ascending=true}={}){
+ if(!Array.isArray(rows)||!FULL_SORT_KEYS.includes(key)||typeof ascending!=="boolean")
+  throw Error("Unsupported competition sort column/direction");
+ const metric=row=>{
+  const r=row.record;
+  switch(key){
+   case "name":return row.name;
+   case "group":return row.group;
+   case "activity":return r?.activity??row.candidate?.status??null;
+   case "date":return r?.last_session??null;
+   case "currency":return r?.currency??null;
+   case "return":return r?.return_pct??null;
+   case "day":return r?.day_return_pct??null;
+   case "volatility":return r?.risk?.volatility_pct??null;
+   case "drawdown":return r?.risk?.max_drawdown_pct??null;
+   case "positions":return r?.positions??null;
+   case "comparison":return r?.comparison?.eligible===true?1:r?0:null;
+   case "curve":return Array.isArray(r?.history)&&r.history.length>=2?r.history.length:null;
+  }
+ };
+ const value=row=>{
+  const raw=metric(row);
+  return raw===null||raw===undefined||raw===""||
+   typeof raw==="number"&&!Number.isFinite(raw)?null:raw;
+ };
+ const collator=new Intl.Collator("es",{numeric:true,sensitivity:"base"});
+ return [...rows].sort((a,b)=>{
+  const left=value(a),right=value(b);
+  if(left===null||right===null){
+   if(left===null&&right!==null)return 1;
+   if(right===null&&left!==null)return -1;
+  }else{
+   const cmp=typeof left==="number"&&typeof right==="number"?
+    Math.sign(left-right):collator.compare(String(left),String(right));
+   if(cmp)return ascending?cmp:-cmp;
+   if(key==="positions"){
+    const pa=a.record?.pending_orders??null,pb=b.record?.pending_orders??null;
+    if(pa!==null&&pb!==null&&pa!==pb)return ascending?pa-pb:pb-pa;
+   }
+  }
+  return collator.compare(String(a.id),String(b.id));
+ });
+}

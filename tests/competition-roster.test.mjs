@@ -1,7 +1,7 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 import {readFileSync} from "node:fs";
-import {verifyFullRoster,filterRoster,technicalStage,technicalCoverage,verifyStrategyCandidates,filterStrategyCandidates} from "../src/competition-roster.mjs";
+import {verifyFullRoster,filterRoster,technicalStage,technicalCoverage,verifyStrategyCandidates,filterStrategyCandidates,FULL_SORT_KEYS,sortFullCompetitionRows} from "../src/competition-roster.mjs";
 
 const doc=JSON.parse(readFileSync(new URL("../data/competition-roster.json",import.meta.url),"utf8"));
 test("Institutional full-coverage manifest has exactly 64 independent functional slots",()=>{
@@ -108,4 +108,45 @@ test("Satellite Alternative Data registers as research-only 65th candidate, not 
  assert.ok(site.includes("65 · "));
  const release=readFileSync(new URL("../.github/workflows/pages.yml",import.meta.url),"utf8");
  assert.ok(release.includes("data/strategy-candidates.json data/institutional-paper-feed.json dist/data/"));
+});
+
+
+test("All MIDAS competition headings sort their effective paper records with N/D last",()=>{
+ assert.equal(FULL_SORT_KEYS.length,12);
+ const rows=[
+  {id:"IL-001",name:"A benchmark",group:"Technical",record:{return_pct:-1.4,day_return_pct:0,positions:1,pending_orders:0,last_session:"2026-11-01",risk:{volatility_pct:15,max_drawdown_pct:-3},activity:"Active",currency:"USD",comparison:{eligible:true},history:[{nav:1},{nav:2}]}},
+  {id:"IL-002",name:"B strategy",group:"Research",record:{return_pct:8.3,day_return_pct:2.3,positions:0,pending_orders:1,last_session:"2026-11-02",risk:{volatility_pct:22,max_drawdown_pct:-8},activity:"Cash",currency:"EUR",comparison:{eligible:false},history:[{nav:1},{nav:2},{nav:3}]}},
+  {id:"IL-003",name:"C pending",group:"Research",record:null},
+  {id:"IL-R001",name:"Satellite Alternative Data",group:"Data",record:null,candidate:{status:"PENDIENTE"}}
+ ];
+ for(const key of FULL_SORT_KEYS){
+  for(const ascending of [true,false]){
+   const snapshot=structuredClone(rows);
+   const sorted=sortFullCompetitionRows(rows,{key,ascending});
+   assert.equal(sorted.length,4);
+   assert.deepEqual(rows,snapshot,"Comparator must not mutate source records");
+   assert.equal(new Set(sorted.map(r=>r.id)).size,4);
+  }
+ }
+ assert.deepEqual(sortFullCompetitionRows(rows,{key:"return",ascending:false}).map(r=>r.id),["IL-002","IL-001","IL-003","IL-R001"]);
+ assert.deepEqual(sortFullCompetitionRows(rows,{key:"return",ascending:true}).map(r=>r.id),["IL-001","IL-002","IL-003","IL-R001"]);
+ assert.deepEqual(sortFullCompetitionRows(rows,{key:"date",ascending:false}).map(r=>r.id),["IL-002","IL-001","IL-003","IL-R001"]);
+ assert.deepEqual(sortFullCompetitionRows(rows,{key:"curve",ascending:false}).map(r=>r.id),["IL-002","IL-001","IL-003","IL-R001"]);
+ assert.deepEqual(sortFullCompetitionRows(rows,{key:"positions",ascending:false}).slice(0,2).map(r=>r.id),["IL-001","IL-002"]);
+ assert.deepEqual(sortFullCompetitionRows(rows,{key:"comparison",ascending:false}).slice(0,2).map(r=>r.id),["IL-001","IL-002"]);
+ assert.throws(()=>sortFullCompetitionRows(rows,{key:"__proto__",ascending:true}));
+ assert.throws(()=>sortFullCompetitionRows(rows,{key:"return",ascending:"desc"}));
+});
+test("Competition uses accessible sortable headers, shares ordering with export and preserves filters",()=>{
+ const s=readFileSync(new URL("../src/site.mjs",import.meta.url),"utf8");
+ for(const label of ["Estrategia / ID","Familia","Actividad","Fecha","Divisa","P/L acumulado","P/L día","Volatilidad","Drawdown","Posiciones / órdenes","Comparabilidad","Curva"]){
+  assert.ok(s.includes('"'+label+'"'));
+ }
+ assert.ok(s.includes('data-action="full-column"'));
+ assert.ok(s.includes('aria-sort="'));
+ assert.ok(s.includes('sortFullCompetitionRows([...existing,...proposals]'));
+ assert.ok(s.includes('...sortedFullRosterRows().map('));
+ assert.ok(s.includes('document.querySelector("#full-rows")?.closest(".table-scroll")'));
+ assert.ok(s.includes('if(e.target.id==="full-query")'));
+ assert.ok(s.includes('if(el.id==="full-group-select")'));
 });

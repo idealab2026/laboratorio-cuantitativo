@@ -4,13 +4,13 @@ import {signalResearchSummary,methodCatalog} from "./paper-methods.mjs";
 import {parseLocalCagr2031} from "./private-theses.mjs";
 import {verifyPublicTheses,publicResearchRows,orderedThesisRows,publicThesisTableRows,publicThesisDetail,publicThesisCsv} from "./public-theses.mjs?v=24b9692353a2";
 import {artificialCampaignComparison} from "./paper-ledger.mjs";
-import {verifyFullRoster,filterRoster,technicalStage,technicalCoverage,verifyStrategyCandidates,filterStrategyCandidates} from "./competition-roster.mjs";
+import {verifyFullRoster,filterRoster,technicalStage,technicalCoverage,verifyStrategyCandidates,filterStrategyCandidates,FULL_SORT_KEYS,sortFullCompetitionRows} from "./competition-roster.mjs";
 import {verifyPaperFeed} from "./paper-feed.mjs";
 import {verify,simulate,rank,valuation,thesisRank,formatPct,money,finite,verifyIssuerCatalog,filterIssuers,syntheticBarsFromDemo,nextOpenPaper,evaluateIssuerScreen,competitionReadModel,publicIssuerReadModel,verifyOfficialFx,summarizeFxForecastLedger,verifySecFilings,verifyOfficialYield} from "./metrics.mjs";
 const $=id=>document.getElementById(id);
 const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 const fmt=n=>finite(n)?new Intl.NumberFormat("es-ES",{maximumFractionDigits:2}).format(n):"N/D";
-const state={data:null,universe:null,fx:null,fxCheck:null,fxStatus:"pending",forecastLedger:null,forecastSummary:null,forecastStatus:"pending",secStatus:"pending",secRead:null,secCatalog:null,yieldDoc:null,yieldCheck:null,yieldStatus:"pending",view:"overview",strategy:"P-01",group:"",sort:"returnPct",asc:false,detailOpen:false,thesis:"T-01",query:"",thesisSort:"central",issuerMode:"catalog",issuerQuery:"",issuerSort:"base",issuerAsc:false,issuerTicker:"MSFT",paperDetail:"M-10",originalPaper:null,originalPaperStatus:"pending",historicalPaper:null,historicalCurves:null,historicalPaperStatus:"pending",fullRoster:null,fullRosterStatus:"pending",strategyCandidates:null,strategyCandidatesStatus:"pending",fullRosterGroup:"",fullRosterQuery:"",institutionalFeedStatus:"pending",paperFeed:null,paperFeedRead:null,localCagr:new Map(),localCagrError:"",publicTheses:new Map(),publicThesesMetadata:null};
+const state={data:null,universe:null,fx:null,fxCheck:null,fxStatus:"pending",forecastLedger:null,forecastSummary:null,forecastStatus:"pending",secStatus:"pending",secRead:null,secCatalog:null,yieldDoc:null,yieldCheck:null,yieldStatus:"pending",view:"overview",strategy:"P-01",group:"",sort:"returnPct",asc:false,detailOpen:false,thesis:"T-01",query:"",thesisSort:"central",issuerMode:"catalog",issuerQuery:"",issuerSort:"base",issuerAsc:false,issuerTicker:"MSFT",paperDetail:"M-10",originalPaper:null,originalPaperStatus:"pending",historicalPaper:null,historicalCurves:null,historicalPaperStatus:"pending",fullRoster:null,fullRosterStatus:"pending",strategyCandidates:null,strategyCandidatesStatus:"pending",fullRosterGroup:"",fullRosterQuery:"",fullRosterSort:"name",fullRosterAsc:true,institutionalFeedStatus:"pending",paperFeed:null,paperFeedRead:null,localCagr:new Map(),localCagrError:"",publicTheses:new Map(),publicThesesMetadata:null};
 const viewNames=["overview","competition","algorithms","theses","monitoring","method","archive","ported","full","synthetic"];
 const button=(label,action,value,cls="smallbtn")=>'<button type="button" class="'+cls+'" data-action="'+esc(action)+'" data-value="'+esc(value)+'">'+esc(label)+'</button>';
 const head=(label,title,body)=>'<div class="section-heading"><div><span class="kicker">'+esc(label)+'</span><h2>'+esc(title)+'</h2><p class="section-context">'+esc(body)+'</p></div></div>';
@@ -388,34 +388,56 @@ function economicPaperRecord(slot){
   risk:{volatility_pct:null,max_drawdown_pct:h.drawdown},comparison:{eligible:false},
   history:state.historicalCurves.get(slot)||[],historical:true};
 }
+function sortedFullRosterRows(){
+ if(!state.fullRoster)return [];
+ const existing=filterRoster(state.fullRoster,{group:state.fullRosterGroup,query:state.fullRosterQuery}).map(item=>({
+  id:item.slot,name:item.name,group:item.group,item,record:economicPaperRecord(item.slot),candidate:null
+ }));
+ const proposals=state.strategyCandidates?
+  filterStrategyCandidates(state.strategyCandidates,{group:state.fullRosterGroup,query:state.fullRosterQuery}).map(candidate=>({
+   id:candidate.id,name:candidate.name,group:candidate.group,item:null,record:null,candidate
+  })):[];
+ return sortFullCompetitionRows([...existing,...proposals],{key:state.fullRosterSort,ascending:state.fullRosterAsc});
+}
+function fullRosterHeaders(){
+ const columns=[
+  ["name","Estrategia / ID"],["group","Familia"],["activity","Actividad"],
+  ["date","Fecha"],["currency","Divisa"],["return","P/L acumulado"],
+  ["day","P/L día"],["volatility","Volatilidad"],["drawdown","Drawdown"],
+  ["positions","Posiciones / órdenes"],["comparison","Comparabilidad"],["curve","Curva"]
+ ];
+ return columns.map(([key,label])=>{
+  const selected=key===state.fullRosterSort;
+  const arrow=selected?(state.fullRosterAsc?" ↑":" ↓"):" ↕";
+  const numeric=["return","day","volatility","drawdown"].includes(key);
+  const aria=selected?(state.fullRosterAsc?"ascending":"descending"):"none";
+  return '<th scope="col" aria-sort="'+aria+'"'+(numeric?' class="number"':'')+'><button type="button" class="table-sort" data-action="full-column" data-value="'+key+'" aria-label="Ordenar '+label+'" title="Ordenar '+label+'">'+label+'<span class="sort-indicator" aria-hidden="true">'+arrow+'</span></button></th>';
+ }).join("");
+}
 function fullRosterRows(){
- if(!state.fullRoster)return "";
- const existing=filterRoster(state.fullRoster,{group:state.fullRosterGroup,query:state.fullRosterQuery}).map(item=>{
- const record=economicPaperRecord(item.slot);
- const active=record?
+ return sortedFullRosterRows().map(({item,record,candidate})=>{
+  if(candidate)return '<tr><td><strong>'+esc(candidate.name)+'</strong><small class="smallline">N.º '+candidate.ordinal+' · '+esc(candidate.id)+' · Investigación nueva</small></td>'+
+   '<td>'+esc(candidate.group)+'</td><td>'+esc(candidate.status)+'</td>'+
+   '<td>Sin primera señal</td><td>N/D</td><td class="number">N/D</td><td class="number">N/D</td>'+
+   '<td class="number">N/D</td><td class="number">N/D</td><td class="number">N/D</td>'+
+   '<td>Sin datos comparables</td><td>—</td></tr>';
+  const active=record?
    esc(record.activity)+(record.pending_orders?" · "+record.pending_orders+" pendiente(s)":""):
    state.historicalPaper?.has(item.slot)?"Sin diario histórico":"Sin diario institucional";
- const risks=record?.risk||{},label=record?.historical?"Corte histórico · cohortes separadas":record?.comparison?.eligible?"Misma referencia certificada":"Sin evidencia comparable";
- const curve=record?sparkline(record.history.map(x=>x.nav),"Evolución del capital virtual · diario paper"):"—";
- return '<tr><td><strong>'+esc(item.name)+'</strong><small class="smallline">'+esc(item.slot)+' · '+esc(record?.original?"Diario del motor migrado":record?.historical?"Diario histórico recuperado":technicalStage(item.slot).label)+'</small></td>'+
-  '<td>'+esc(item.group)+'</td><td>'+active+'</td>'+
-  '<td>'+esc(record?.last_session||"Sin datos")+'</td><td>'+esc(record?.currency||"N/D")+'</td>'+
-  '<td class="number">'+(record?pctText(record.return_pct):"N/D")+'</td>'+
-  '<td class="number">'+(record&&record.day_return_pct!==null?pctText(record.day_return_pct):"N/D")+'</td>'+
-  '<td class="number">'+(record&&risks.volatility_pct!==null?pctText(risks.volatility_pct):"N/D")+'</td>'+
-  '<td class="number">'+(record&&risks.max_drawdown_pct!==null?pctText(risks.max_drawdown_pct):"N/D")+'</td>'+
-  '<td class="number">'+(record?record.positions+" / "+record.pending_orders:"N/D")+'</td>'+
-  '<td>'+label+'</td><td>'+curve+'</td></tr>';
+  const risks=record?.risk||{},label=record?.historical?"Corte histórico · cohortes separadas":record?.comparison?.eligible?"Misma referencia certificada":"Sin evidencia comparable";
+  const curve=record?sparkline(record.history.map(x=>x.nav),"Evolución del capital virtual · diario paper"):"—";
+  return '<tr><td><strong>'+esc(item.name)+'</strong><small class="smallline">'+esc(item.slot)+' · '+esc(record?.original?"Diario del motor migrado":record?.historical?"Diario histórico recuperado":technicalStage(item.slot).label)+'</small></td>'+
+   '<td>'+esc(item.group)+'</td><td>'+active+'</td>'+
+   '<td>'+esc(record?.last_session||"Sin datos")+'</td><td>'+esc(record?.currency||"N/D")+'</td>'+
+   '<td class="number">'+(record?pctText(record.return_pct):"N/D")+'</td>'+
+   '<td class="number">'+(record&&record.day_return_pct!==null?pctText(record.day_return_pct):"N/D")+'</td>'+
+   '<td class="number">'+(record&&risks.volatility_pct!==null?pctText(risks.volatility_pct):"N/D")+'</td>'+
+   '<td class="number">'+(record&&risks.max_drawdown_pct!==null?pctText(risks.max_drawdown_pct):"N/D")+'</td>'+
+   '<td class="number">'+(record?record.positions+" / "+record.pending_orders:"N/D")+'</td>'+
+   '<td>'+label+'</td><td>'+curve+'</td></tr>';
  }).join("");
- const proposals=state.strategyCandidates?filterStrategyCandidates(state.strategyCandidates,{group:state.fullRosterGroup,query:state.fullRosterQuery}):[];
- return existing+proposals.map(c=>
-  '<tr><td><strong>'+esc(c.name)+'</strong><small class="smallline">N.º '+c.ordinal+' · '+esc(c.id)+' · Investigación nueva</small></td>'+
-  '<td>'+esc(c.group)+'</td><td>'+esc(c.status)+'</td>'+
-  '<td>Sin primera señal</td><td>N/D</td><td class="number">N/D</td><td class="number">N/D</td>'+
-  '<td class="number">N/D</td><td class="number">N/D</td><td class="number">N/D</td>'+
-  '<td>Sin datos comparables</td><td>—</td></tr>'
- ).join("");
 }
+
 function full(){
  const d=state.fullRoster;
  const headText=head("COMPETICIÓN COMPLETA · CONTRATO DE MIGRACIÓN","MIDAS · 64 estrategias + 1 nueva propuesta satelital",
@@ -437,7 +459,8 @@ function full(){
  button("Exportar inventario CSV","full-export","csv","outline-btn")+'</div>'+
  '<p class="table-note">Operaciones simuladas con capital virtual y precios de mercado. Cada fila indica su último cierre; una fecha antigua o una valoración pausada no acredita actualización diaria.</p>'+
  '<p class="table-note"><span id="full-count">'+(visible.length+proposals.length)+'</span> de '+(meta.count+(state.strategyCandidates?.candidates.length||0))+' entradas (64 funciones + propuestas independientes) · N/D significa no verificado, nunca rentabilidad cero</p>'+
- '<div class="table-scroll table-compact"><table><thead><tr><th>Estrategia / ID</th><th>Familia</th><th>Actividad</th><th>Fecha</th><th>Divisa</th><th class="number">P/L acumulado</th><th class="number">P/L día</th><th class="number">Volatilidad</th><th class="number">Drawdown</th><th class="number">Posiciones / órdenes</th><th>Comparabilidad</th><th>Curva</th></tr></thead><tbody id="full-rows">'+fullRosterRows()+'</tbody></table></div>'+
+ '<p class="table-note">Pulsa en cualquier cabecera para ordenar. Los N/D permanecen al final y la ordenación visual no implica comparabilidad económica entre campañas.</p>'+
+ '<div class="table-scroll table-compact full-competition-table"><table><thead><tr>'+fullRosterHeaders()+'</tr></thead><tbody id="full-rows">'+fullRosterRows()+'</tbody></table></div>'+
  (candidate?card('<h3>65 · '+esc(candidate.name)+' — propuesta experimental</h3>'+
  '<p><strong>Objetivo:</strong> '+esc(candidate.subject)+'</p>'+
  '<p><strong>Método:</strong> '+esc(candidate.method)+'</p>'+
@@ -541,14 +564,26 @@ $("app").addEventListener("click",e=>{
   state.detailOpen=false;render();
  }
  else if(action==="paper-select"){state.paperDetail=value;render();}
+ else if(action==="full-column"){
+  if(!FULL_SORT_KEYS.includes(value))return;
+  if(state.fullRosterSort===value)state.fullRosterAsc=!state.fullRosterAsc;
+  else{
+   state.fullRosterSort=value;
+   state.fullRosterAsc=["name","group","activity","currency"].includes(value);
+  }
+  // Preserve horizontal table position when sorting on a small screen.
+  const left=document.querySelector("#full-rows")?.closest(".table-scroll")?.scrollLeft||0;
+  render();
+  const scroller=document.querySelector("#full-rows")?.closest(".table-scroll");
+  if(scroller)scroller.scrollLeft=left;
+ }
  else if(action==="full-export"){
   if(state.fullRoster){
-   const rows=filterRoster(state.fullRoster,{group:state.fullRosterGroup,query:state.fullRosterQuery});
-   const proposals=state.strategyCandidates?filterStrategyCandidates(state.strategyCandidates,{group:state.fullRosterGroup,query:state.fullRosterQuery}):[];
    download("midas-competicion-64-y-propuestas.csv",[
     ["ID","Nombre","Familia","Fase técnica","Estado económico","Actividad","Rentabilidad","Riesgo","Comparabilidad"],
-    ...rows.map(x=>{const r=economicPaperRecord(x.slot);return [x.slot,x.name,x.group,technicalStage(x.slot).label,r?.historical?"archivo_historico":r?"fuente_verificada":"sin_diario",r?.activity||"N/D",r?.return_pct??"N/D",r?.risk?.max_drawdown_pct??"N/D",r?.comparison?.eligible?"misma referencia":"no comparable"];}),
-    ...proposals.map(c=>[c.id,c.name,c.group,"Investigación sin feed satelital","No iniciado",c.status,"N/D","N/D","no comparable"])
+    ...sortedFullRosterRows().map(({id,name,group,record,candidate})=>candidate?
+     [candidate.id,candidate.name,candidate.group,"Investigación sin feed satelital","No iniciado",candidate.status,"N/D","N/D","no comparable"]:
+     [id,name,group,technicalStage(id).label,record?.historical?"archivo_historico":record?"diario_paper":"sin_diario",record?.activity||"N/D",record?.return_pct??"N/D",record?.risk?.max_drawdown_pct??"N/D",record?.comparison?.eligible?"misma referencia":"no comparable"])
    ]);
   }
  }
