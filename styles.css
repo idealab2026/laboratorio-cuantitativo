@@ -248,3 +248,81 @@ p{line-height:1.6;text-align:justify;text-align-last:left;hyphens:auto}p.lead{co
  .full-competition-table .mini-chart{width:100%;max-width:110px;height:25px;margin:0}
  .full-competition-table .competition-row td.curve-cell{border-bottom:0}
 }
+
+
+/* MIDAS · compact paper leaderboard and dedicated scientific strategy sheets. */
+.research-hero{padding-bottom:8px}
+.competition-heading{display:flex;align-items:baseline;justify-content:space-between;gap:10px;flex-wrap:wrap;margin:16px 0 10px}
+.competition-heading h2{font-size:clamp(1.35rem,2.2vw,1.9rem);margin:0}
+.competition-heading span{color:var(--muted);font:600 .73rem/1.5 system-ui,sans-serif}
+.paper-leader{display:flex;align-items:center;gap:clamp(9px,2vw,22px);padding:14px 18px;
+ border:1px solid #c7d9ce;border-radius:12px;background:#f5faf7;margin:12px 0 16px;min-width:0}
+.paper-leader>div:first-child{min-width:0;flex:1;display:grid;gap:3px}
+.paper-leader-label{color:#32634d;font:800 .61rem/1.35 system-ui,sans-serif;letter-spacing:.07em}
+.paper-leader strong{display:block;color:#143552;font:760 clamp(.96rem,1.5vw,1.2rem)/1.35 system-ui,sans-serif;overflow-wrap:anywhere}
+.paper-leader small{color:#577064;font:550 .71rem/1.4 system-ui,sans-serif}
+.paper-leader-return{font:780 clamp(1.25rem,2.3vw,2rem)/1.2 system-ui,sans-serif;white-space:nowrap}
+.paper-leader-return .performance{font:inherit}
+.paper-leader .outline-btn{white-space:nowrap}
+.competition-filters{align-items:end;margin:6px 0 7px;gap:10px}
+.competition-filters label{font:680 .74rem/1.4 system-ui,sans-serif}
+.competition-disclaimer{font:500 .7rem/1.5 system-ui,sans-serif;color:var(--muted);margin:6px 0 12px}
+.full-competition-table{border-radius:11px;border:1px solid var(--line)}
+.full-competition-table table{min-width:1050px;table-layout:fixed;width:100%}
+.full-competition-table td,.full-competition-table th{padding:6px 5px}
+.full-competition-table th:nth-child(1),.full-competition-table td:nth-child(1){width:22%}
+.full-competition-table th:nth-child(2),.full-competition-table td:nth-child(2){width:8%}
+.full-competition-table th:nth-child(3),.full-competition-table td:nth-child(3){width:10%}
+.full-competition-table th:nth-child(4),.full-competition-table td:nth-child(4){width:7%}
+.full-competition-table th:nth-child(5),.full-competition-table td:nth-child(5){width:6%}
+.full-competition-table th:nth-child(6),.full-competition-table td:nth-child(6){width:7%}
+.full-competition-table th:nth-child(7),.full-competition-table td:nth-child(7){width:5%}
+.full-competition-table th:nth-child(8),.full-competition-table td:nth-child(8){width:8%}
+.full-competition-table th:nth-child(9),.full-competition-table td:nth-child(9){width:7%}
+.full-competition-table th:nth-child(10),.full-competition-table td:nth-child(10){width:7%}
+.full-competition-table th:nth-child(11),.full-competition-table td:nth-child(11){width:6%}
+.full-competition-table th:nth-child(12),.full-competition-table td:nth-child(12){width:7%}
+.full-competition-table .detail-cell{text-align:center}
+.full-competition-table .detail-cell button{font:730 .63rem/1.2 system-ui,sans-serif;padding:7px 5px;white-space:normal}
+.full-competition-table .number{text-align:right}
+.algorithm-profile{max-width:1150px;margin:15px auto 0;font:500 .87rem/1.62 system-ui,sans-serif}
+.algorithm-breadcrumb{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:13px;color:var(--muted);font-size:.73rem}
+.algorithm-profile-header{padding:6px 0 13px;border-bottom:1px solid var(--line)}
+.algorithm-profile-header h2{font:790 clamp(1.6rem,3vw,2.4rem)/1.18 system-ui,sans-serif;letter-spacing:-.03em;margin:5px 0 7px}
+.algorithm-profile-header p{color:var(--muted);margin:0;font-size:.79rem}
+.algorithm-stat-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:9px;margin:18px 0}
+.algorithm-stat-grid>div{padding:12px 14px;border:1px solid var(--line);background:#f8fafc;border-radius:10px;min-width:0}
+.algorithm-stat-grid small{display:block;font:650 .69rem/1.5 system-ui,sans-serif;color:var(--muted)}
+.algorithm-stat-grid strong{display:block;font:760 clamp(.95rem,1.5vw,1.2rem)/1.3 system-ui,sans-serif;overflow-wrap:anywhere}
+.algorithm-section{margin:13px 0;padding:18px 20px;border:1px solid var(--line);border-radius:11px}
+.algorithm-section h3{font:760 1.13rem/1.35 system-ui,sans-serif;margin:1px 0 11px}
+.algorithm-section h4{font:720 .87rem/1.4 system-ui,sans-serif;margin:13px 0 5px}
+.algorithm-section p{margin:8px 0;color:var(--text);max-width:95ch}
+.algorithm-caveat{color:var(--muted)!important;font-size:.74rem}
+.algorithm-formula{padding:12px 14px;background:#eff4f8;border-radius:8px;color:var(--navy);
+ font:570 .82rem/1.65 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;overflow-wrap:anywhere}
+.paper-history-chart{display:block;width:100%;height:auto;max-height:270px}
+.paper-history-chart .chart-label{font:12px system-ui,sans-serif;fill:#61758b}
+.algorithm-section details{margin:12px 0}
+.algorithm-section summary{cursor:pointer;color:var(--navy);font-weight:700}
+.algorithm-section details table{width:100%;min-width:480px;border-collapse:collapse;font:530 .73rem/1.35 system-ui,sans-serif}
+.algorithm-section details td,.algorithm-section details th{text-align:left;padding:8px;border-bottom:1px solid var(--line)}
+@media(max-width:1050px){
+ .full-competition-table{border:0;overflow:visible}
+ .full-competition-table table{min-width:0}
+ .full-competition-table .competition-row .detail-cell{grid-column:1/-1;display:block;text-align:right;border-bottom:0}
+ .full-competition-table .competition-row .detail-cell:before{display:none}
+ .full-competition-table .competition-row .detail-cell button{min-width:130px}
+ .full-competition-table .competition-row td{width:auto!important}
+}
+@media(max-width:640px){
+ .research-hero{padding-top:17px}
+ .research-hero .lead{font-size:.81rem}
+ .paper-leader{align-items:start;flex-wrap:wrap;padding:12px}
+ .paper-leader>div:first-child{flex-basis:100%}
+ .paper-leader-return{flex:1}
+ .paper-leader .outline-btn{align-self:center}
+ .competition-filters{display:grid;grid-template-columns:1fr;gap:6px}
+ .algorithm-stat-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+ .algorithm-section{padding:13px}
+}
