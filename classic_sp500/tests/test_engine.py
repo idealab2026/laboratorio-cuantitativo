@@ -560,5 +560,107 @@ class SAndP500ClassicTests(unittest.TestCase):
         self.assertEqual(download.call_count, 1)
 
 
+
+class SingleSessionRecoveryTests(unittest.TestCase):
+    def setUp(self):
+        self.config = classic.market.read(Path(__file__).resolve().parents[1] / "config.json")
+        self.coverage = {"eligible": 503, "total": 503, "missing": {}}
+        self.identity = {"snapshot_sha256": "a" * 64, "effective_sha256": "b" * 64}
+        self.normal = classic.initialize(self.config, "2026-10-13", {}, self.coverage)
+        for book in self.normal["books"].values():
+            book["pending"] = {}
+        b = self.normal["books"]["macd_12_26_9"]
+        b.update(cash=1000., nav=1100.)
+        b["positions"] = {"AAA": {"shares": 1., "cost": 100., "entry_price": 100.,
+            "entry_date": "2026-10-13", "dividends": 0., "stop": 90., "target": 120.}}
+        b["pending"] = {"BBB": {"side": "buy", "signal_date": "2026-10-13"}}
+        b["equity"][-1]["nav"] = 1100.
+        self.state = copy.deepcopy(self.normal)
+        self.state["last_session"] = "2026-10-14"
+        for name, book in self.state["books"].items():
+            if name == "macd_12_26_9":
+                book["paused_missing_quotes"] = {"since": "2026-10-14",
+                    "last_valued_session": "2026-10-13", "missing_tickers": ["AAA"]}
+            else:
+                book["equity"].append({"date": "2026-10-14", "nav": book["cash"]})
+        self.bars = {"AAA": {"open": 100., "high": 125., "low": 89., "close": 105.},
+                     "BBB": {"open": 50., "high": 52., "low": 49., "close": 51.}}
+        self.decisions = {"macd_12_26_9": [("CCC", "buy", .1)]}
+
+    def recover(self):
+        return classic.recover_one_session_books(self.config, self.state, "2026-10-14",
+            "2026-10-13", self.bars, self.decisions, self.coverage,
+            quote_identity=self.identity, recorded_at="2026-10-15T08:00:00Z")
+
+    def test_exact_same_execution_as_original_and_late_disclosure(self):
+        before = copy.deepcopy(self.state)
+        expected, _ = classic.settle(self.config, self.normal, "2026-10-14", "2026-10-13", self.bars)
+        expected = classic.freeze(self.config, expected, "2026-10-14", self.decisions, self.coverage)
+        result, recovered, blocked = self.recover()
+        self.assertEqual(recovered, ["macd_12_26_9"])
+        self.assertEqual(blocked, {})
+        b, e = result["books"]["macd_12_26_9"], expected["books"]["macd_12_26_9"]
+        for field in ("cash", "nav", "positions", "pending"):
+            self.assertEqual(b[field], e[field])
+        self.assertEqual(b["trades"][0]["reason"], "stop")
+        self.assertEqual(b["trades"][0]["proceeds"], e["trades"][0]["proceeds"])
+        self.assertTrue(b["trades"][0]["late_recorded_verified_date"])
+        self.assertEqual(b["equity"][-1]["quote_identity"], self.identity)
+        self.assertEqual(b["equity"][0], before["books"]["macd_12_26_9"]["equity"][0])
+        for name in result["books"]:
+            if name != "macd_12_26_9":
+                self.assertEqual(result["books"][name], before["books"][name])
+        self.assertEqual(before, self.state)
+        twice, recovered, _ = classic.recover_one_session_books(self.config, result,
+            "2026-10-14", "2026-10-13", self.bars, self.decisions, self.coverage,
+            quote_identity=self.identity, recorded_at="later")
+        self.assertEqual(result, twice)
+        self.assertEqual(recovered, [])
+
+    def test_missing_held_or_pending_buy_never_partially_writes(self):
+        for ticker in ("AAA", "BBB"):
+            bars = self.bars.copy()
+            del self.bars[ticker]
+            result, recovered, blocked = self.recover()
+            self.assertEqual(result, self.state)
+            self.assertEqual(recovered, [])
+            self.assertEqual(blocked["macd_12_26_9"], "missing_exact_common_bar")
+            self.bars = bars
+
+    def test_corporate_action_or_invalid_ohlc_stays_quarantined(self):
+        for key, value in [("dividend", .1), ("split", 2), ("close", float("nan")), ("high", 80)]:
+            before = self.bars["AAA"].copy()
+            self.bars["AAA"][key] = value
+            result, recovered, blocked = self.recover()
+            self.assertEqual(result, self.state)
+            self.assertEqual(recovered, [])
+            self.assertTrue(blocked)
+            self.bars["AAA"] = before
+
+    def test_stale_orders_and_multi_session_gaps_are_never_replayed(self):
+        b = self.state["books"]["macd_12_26_9"]
+        b["pending"]["BBB"]["signal_date"] = "2026-10-12"
+        result, recovered, blocked = self.recover()
+        self.assertEqual(result, self.state)
+        self.assertEqual(recovered, [])
+        self.assertIn("pending_order", blocked["macd_12_26_9"])
+        b["pending"] = {}
+        b["equity"][-1]["date"] = "2026-10-12"
+        b["paused_missing_quotes"]["last_valued_session"] = "2026-10-12"
+        result, recovered, blocked = self.recover()
+        self.assertEqual(result, self.state)
+        self.assertEqual(recovered, [])
+        self.assertIn("multi_session", blocked["macd_12_26_9"])
+
+    def test_missing_source_identity_or_insufficient_universe_fails(self):
+        self.identity = {}
+        with self.assertRaisesRegex(ValueError, "quote identity"):
+            self.recover()
+        self.identity = {"snapshot_sha256": "a", "effective_sha256": "b"}
+        self.coverage["eligible"] = 1
+        with self.assertRaisesRegex(ValueError, "signal coverage"):
+            self.recover()
+
+
 if __name__ == "__main__":
     unittest.main()
