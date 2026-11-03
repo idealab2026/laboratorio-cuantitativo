@@ -149,6 +149,19 @@ test("Operation audit documents real fills, inferred holds and dated trade marke
    "2026-10-01","2026-10-05","Motivo"]){
   assert.ok(html.includes(expected),"Missing audit UI element: "+expected);
  }
+ assert.ok(html.includes('data-value="sessions"'));
+ assert.ok(html.includes('data-value="operations"'));
+ assert.ok(html.includes('id="audit-panel-operations"'));
+ const operationTab=renderOperationsAudit(doc,"IL-038","AAPL",{tab:"operations",sort:"pnl",desc:true});
+ assert.ok(operationTab.includes('id="audit-panel-operations" role="tabpanel"'));
+ assert.ok(operationTab.includes("Precio compra"));
+ assert.ok(operationTab.includes("Precio venta"));
+ assert.ok(operationTab.includes("Rentabilidad %"));
+ assert.ok(operationTab.includes("P/L total"));
+ assert.ok(operationTab.includes("Dinero empleado"));
+ assert.ok(operationTab.includes("Nº acciones compradas"));
+ assert.ok(operationTab.includes("VENTA · CERRADA"));
+ assert.ok(operationTab.includes("10,00 %"));
  assert.ok(html.includes('id="audit-ticker"'));
  assert.ok(html.includes("Precio (USD)"));
  assert.ok(!html.includes("Cierre 2026-10-05:"));
@@ -162,7 +175,7 @@ test("Operation audit documents real fills, inferred holds and dated trade marke
 test("Strategy profiles append source-driven sessions instead of attributing synthetic orders",()=>{
  const site=readFileSync(new URL("../src/site.mjs",import.meta.url),"utf8");
  const workflow=readFileSync(new URL("../.github/workflows/pages.yml",import.meta.url),"utf8");
- assert.ok(site.includes('renderOperationsAudit(state.operationsAudit,id,state.auditTicker)'));
+ assert.ok(site.includes('renderOperationsAudit(state.operationsAudit,id,state.auditTicker,'));
  assert.ok(site.includes('fetch("./data/operations-audit.json"'));
  assert.ok(site.includes('verifyOperationsAudit(document)'));
  assert.ok(site.includes('if(el.id==="audit-ticker")'));
