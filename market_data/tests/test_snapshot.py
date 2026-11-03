@@ -164,6 +164,21 @@ class ProspectiveCollectorTests(unittest.TestCase):
         self.assertEqual(set(missing), set(NAMES[:2]))
         self.assertNotIn(NAMES[0], found)
 
+    def test_recovery_retries_live_symbol_after_eighteen_absent_symbols(self):
+        requested = NAMES[:35]
+        calls = []
+
+        def provider(names, start, end, allow_missing=False):
+            calls.append(list(names))
+            return {names[0]: names[0]} if names == [requested[-1]] else {}
+
+        with patch.object(collect, "extract", side_effect=lambda _frame, day, _ticker: bar(day)):
+            found, missing = collect.collect(DAY, requested, downloader=provider,
+                include_benchmark=False, attempts=collect.MAX_RECOVERY_RETRIES)
+        self.assertEqual(set(found), {requested[-1]})
+        self.assertEqual(len(missing), 34)
+        self.assertLessEqual(len(calls), 1 + collect.MAX_RECOVERY_RETRIES)
+
 
 if __name__ == "__main__":
     unittest.main()

@@ -70,6 +70,34 @@ class CommonDailyPriceTests(unittest.TestCase):
             with self.assertRaisesRegex(ValueError, "Missing verified common"):
                 daily.download_bars(["AAPL"], self.DAY)
 
+    def test_independent_rsp_bad_batch_retries_exact_raw_bar(self):
+        import pandas as pd
+        valid = pd.DataFrame({"Open": [200.], "High": [205.], "Low": [198.],
+                              "Close": [203.], "Volume": [500.]},
+                             index=pd.DatetimeIndex([self.DAY]))
+        invalid = valid.copy()
+        invalid["Close"] = float("nan")
+        original = self.path.read_bytes()
+        with patch("yfinance.download", side_effect=[invalid, valid]) as provider:
+            info = {}
+            got = daily.download_bars(["AAPL", "RSP"], self.DAY, diagnostics=info)
+        self.assertEqual(provider.call_count, 2)
+        self.assertEqual(got["RSP"]["close"], 203.)
+        self.assertEqual(got["AAPL"]["close"], 102.)
+        self.assertEqual(info["independent_missing"], [])
+        self.assertEqual(self.path.read_bytes(), original)
+        self.assertTrue(all(not call.kwargs["auto_adjust"] for call in provider.call_args_list))
+
+    def test_independent_rsp_invalid_retry_remains_missing(self):
+        import pandas as pd
+        invalid = pd.DataFrame({"Open": [200.], "High": [205.], "Low": [198.],
+                                "Close": [float("nan")], "Volume": [500.]},
+                               index=pd.DatetimeIndex([self.DAY]))
+        with patch("yfinance.download", return_value=invalid) as provider:
+            with self.assertRaisesRegex(ValueError, "Barra OHLC fechada ausente: RSP"):
+                daily.download_bars(["RSP"], self.DAY)
+        self.assertEqual(provider.call_count, 2)
+
     def test_nan_vendor_open_is_missing_and_uses_verified_bar(self):
         import pandas as pd
         raw = pd.DataFrame({"Open": [float("nan")], "Close": [101.]},
