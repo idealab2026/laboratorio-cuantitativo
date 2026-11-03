@@ -504,3 +504,36 @@ p{line-height:1.6;text-align:justify;text-align-last:left;hyphens:auto}p.lead{co
 .audit-counts .audit-warning{background:#fff7e8;border-color:#e9cea0;color:#77541d}
 .audit-standalone-timeline{padding:12px 2px}
 .audit-standalone-timeline p{font:.74rem/1.5 system-ui,sans-serif;color:#596b7f}
+
+
+/* MIDAS: tabbed audited sessions and execution-lot reconciliation. */
+.audit-subtabs{display:flex;gap:5px;align-items:center;border-bottom:1px solid #dce5ec;margin:20px 0 12px}
+.audit-subtabs button{font:750 .8rem system-ui,sans-serif;color:#55718b;background:transparent;border:0;border-bottom:3px solid transparent;padding:10px 17px;cursor:pointer}
+.audit-subtabs button[aria-selected="true"]{color:#0b4d91;border-bottom-color:#1768bd}
+.audit-subtabs button:hover{background:#f2f7fb}
+.audit-lot-stats{display:flex;gap:7px;flex-wrap:wrap;margin:9px 0 12px}
+.audit-lot-stats span{font:650 .72rem system-ui,sans-serif;background:#f4f7fa;border:1px solid #dae5ef;border-radius:6px;padding:6px 9px;color:#335471}
+.audit-lot-stats .audit-warning{background:#fff7e8;color:#77541d;border-color:#e9cea0}
+.audit-lot-scroll{max-height:560px;overflow:auto;scrollbar-gutter:stable}
+.audit-lot-table{min-width:950px;width:100%;font:650 .74rem/1.4 system-ui,sans-serif}
+.audit-lot-table thead{position:sticky;top:0;z-index:2}
+.audit-lot-table th{padding:0;background:#f1f5f9;white-space:nowrap}
+.audit-lot-table th button{display:block;width:100%;text-align:left;border:0;background:transparent;padding:12px 10px;cursor:pointer;color:#365574;font:760 .72rem system-ui,sans-serif}
+.audit-lot-table th button:hover{background:#e6edf5}
+.audit-lot-table td{padding:10px 9px;border-bottom:1px solid #e4e9ee;vertical-align:top;font-variant-numeric:tabular-nums;white-space:nowrap}
+.audit-lot-table tbody tr:nth-child(even){background:#fafbfd}
+.audit-lot-table td small{display:block;color:#6f7f90;font:550 .66rem/1.4 system-ui,sans-serif;white-space:normal;min-width:110px;margin-top:3px}
+.audit-lot-table td:nth-child(6) small{min-width:140px}
+.audit-lot-table .audit-gain{color:#147655;font-weight:800}
+.audit-lot-table .audit-loss{color:#ae4242;font-weight:800}
+.audit-lot-status{display:inline-block;font:780 .67rem/1.45 system-ui,sans-serif;color:#245574;background:#eaf2f7;border-radius:5px;padding:4px 7px;white-space:nowrap}
+.audit-lot-status.cerrada{color:#6d4a39;background:#f5ede6}
+.audit-lot-status.parcial{color:#805819;background:#fff4db}
+.audit-lot-status.convertida,.audit-lot-status.sin_base{color:#815f25;background:#fff6e8}
+.audit-no-data{color:#8592a2;font-style:italic}
+#audit-panel-sessions[hidden],#audit-panel-operations[hidden]{display:none}
+@media(max-width:650px){
+ .audit-subtabs button{flex:1;padding:11px 8px;font-size:.75rem}
+ .audit-lot-scroll{max-height:480px}
+ .audit-lot-table{min-width:930px}
+}

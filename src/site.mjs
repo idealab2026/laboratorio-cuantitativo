@@ -1,7 +1,7 @@
 import {verifyOriginalPaper} from "./original-paper.mjs?v=b4ab52ea9863";
 import {algorithmTheory,paperLeaderboard} from "./algorithm-detail.mjs";
 import {glossaryGroups,searchGlossary,verifyGlossary} from "./glossary.mjs";
-import {verifyOperationsAudit,renderOperationsAudit} from "./operations-audit.mjs?v=f843fc1e682b";
+import {verifyOperationsAudit,renderOperationsAudit} from "./operations-audit.mjs?v=f870323d7553";
 import {parseLocalPaperResults,parseLocalPaperCurves,summarizePrivatePaper} from "./private-paper.mjs?v=4baff08a2202";
 import {signalResearchSummary,methodCatalog} from "./paper-methods.mjs";
 import {parseLocalCagr2031} from "./private-theses.mjs";
@@ -13,7 +13,7 @@ import {verify,simulate,rank,valuation,thesisRank,formatPct,money,finite,verifyI
 const $=id=>document.getElementById(id);
 const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 const fmt=n=>finite(n)?new Intl.NumberFormat("es-ES",{maximumFractionDigits:2}).format(n):"N/D";
-const state={data:null,universe:null,fx:null,fxCheck:null,fxStatus:"pending",forecastLedger:null,forecastSummary:null,forecastStatus:"pending",secStatus:"pending",secRead:null,secCatalog:null,yieldDoc:null,yieldCheck:null,yieldStatus:"pending",view:"competition",strategy:"P-01",group:"",sort:"returnPct",asc:false,detailOpen:false,thesis:"T-01",query:"",thesisSort:"central",issuerMode:"catalog",issuerQuery:"",issuerSort:"base",issuerAsc:false,issuerTicker:"MSFT",paperDetail:"M-10",originalPaper:null,originalPaperStatus:"pending",historicalPaper:null,historicalCurves:null,historicalPaperStatus:"pending",fullRoster:null,fullRosterStatus:"pending",strategyCandidates:null,strategyCandidatesStatus:"pending",fullRosterGroup:"",fullRosterQuery:"",fullRosterSort:"return",fullRosterAsc:false,algorithmId:null,operationsAudit:null,operationsAuditStatus:"pending",auditTicker:null,institutionalFeedStatus:"pending",paperFeed:null,paperFeedRead:null,localCagr:new Map(),localCagrError:"",publicTheses:new Map(),publicThesesMetadata:null};
+const state={data:null,universe:null,fx:null,fxCheck:null,fxStatus:"pending",forecastLedger:null,forecastSummary:null,forecastStatus:"pending",secStatus:"pending",secRead:null,secCatalog:null,yieldDoc:null,yieldCheck:null,yieldStatus:"pending",view:"competition",strategy:"P-01",group:"",sort:"returnPct",asc:false,detailOpen:false,thesis:"T-01",query:"",thesisSort:"central",issuerMode:"catalog",issuerQuery:"",issuerSort:"base",issuerAsc:false,issuerTicker:"MSFT",paperDetail:"M-10",originalPaper:null,originalPaperStatus:"pending",historicalPaper:null,historicalCurves:null,historicalPaperStatus:"pending",fullRoster:null,fullRosterStatus:"pending",strategyCandidates:null,strategyCandidatesStatus:"pending",fullRosterGroup:"",fullRosterQuery:"",fullRosterSort:"return",fullRosterAsc:false,algorithmId:null,operationsAudit:null,operationsAuditStatus:"pending",auditTicker:null,auditTab:"sessions",auditSort:"recent",auditDesc:true,institutionalFeedStatus:"pending",paperFeed:null,paperFeedRead:null,localCagr:new Map(),localCagrError:"",publicTheses:new Map(),publicThesesMetadata:null};
 const viewNames=["competition","algorithm","algorithms","theses","monitoring","method","glossary","archive","ported","full","synthetic"];
 const button=(label,action,value,cls="smallbtn")=>'<button type="button" class="'+cls+'" data-action="'+esc(action)+'" data-value="'+esc(value)+'">'+esc(label)+'</button>';
 const head=(label,title,body)=>'<div class="section-heading"><div><span class="kicker">'+esc(label)+'</span><h2>'+esc(title)+'</h2><p class="section-context">'+esc(body)+'</p></div></div>';
@@ -602,7 +602,7 @@ function algorithmFiche(){
   stats+theory+
   '<section class="algorithm-section"><h3>Desarrollo, cambios y validación</h3>'+progress+
   '<p class="algorithm-caveat">Las fechas indicadas corresponden a las sesiones NAV, no necesariamente a la fecha de creación del algoritmo. Una cronología técnica completa exige commits y versiones acreditados.</p></section>'+
-  measured+(state.operationsAudit?renderOperationsAudit(state.operationsAudit,id,state.auditTicker):
+  measured+(state.operationsAudit?renderOperationsAudit(state.operationsAudit,id,state.auditTicker,{tab:state.auditTab,sort:state.auditSort,desc:state.auditDesc}):
    '<section class="algorithm-section"><h3>Operaciones por sesión y motivos</h3><p>'+
    (state.operationsAuditStatus==="pending"?"Comprobando el registro de órdenes…":"Libro de operaciones individuales no disponible; no se reconstruyen operaciones sin evidencia.")+
    '</p></section>')+'</div>';
@@ -731,6 +731,7 @@ $("app").addEventListener("click",e=>{
  else if(action==="full-detail"){
   if(!state.fullRoster?.entries.some(x=>x.slot===value)&&
      !state.strategyCandidates?.candidates.some(c=>c.id===value))return;
+  state.auditTab="sessions";state.auditSort="recent";state.auditDesc=true;
   state.algorithmId=value;go("algorithm");
  }
  else if(action==="select")openCompetitionRow(value);
@@ -769,6 +770,30 @@ $("app").addEventListener("click",e=>{
      [candidate.id,candidate.name,candidate.group,"Investigación sin feed satelital","No iniciado",candidate.status,"N/D","N/D","no comparable"]:
      [id,name,group,technicalStage(id).label,record?.historical?"archivo_historico":record?"diario_paper":"sin_diario",record?.activity||"N/D",record?.return_pct??"N/D",record?.risk?.max_drawdown_pct??"N/D",record?.comparison?.eligible?"misma referencia":"no comparable"])
    ]);
+  }
+ }
+ else if(action==="audit-tab"){
+  state.auditTab=value==="operations"?"operations":"sessions";
+  const current=document.querySelector("#audit-tab-strip");
+  const region=document.querySelector(".audit-section");
+  if(current&&region){
+   for(const b of current.querySelectorAll("[data-action='audit-tab']"))
+    b.setAttribute("aria-selected",String(b.dataset.value===state.auditTab));
+   for(const panel of ["sessions","operations"]){
+    const el=region.querySelector("#audit-panel-"+panel);
+    if(el)el.hidden=panel!==state.auditTab;
+   }
+  }
+ }
+ else if(action==="audit-sort"){
+  if(!["ticker","action","buyPrice","salePrice","returnPct","pnl","invested","shares"].includes(value))return;
+  if(state.auditSort===value)state.auditDesc=!state.auditDesc;
+  else{state.auditSort=value;state.auditDesc=true;}
+  const top=document.querySelector("#audit-tab-strip")?.getBoundingClientRect().top;
+  render();
+  if(Number.isFinite(top)){
+   const next=document.querySelector("#audit-tab-strip")?.getBoundingClientRect().top;
+   if(Number.isFinite(next))window.scrollBy({top:next-top,behavior:"auto"});
   }
  }
  else if(action==="issuer-column"){

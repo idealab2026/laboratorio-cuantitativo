@@ -1,4 +1,5 @@
 // Read-only audit UI. No unrecorded fills, reasons or quote history are invented.
+import {buildOperationLots,sortOperationLots} from "./operation-lots.mjs?v=e694908892d5";
 const esc=s=>String(s??"").replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;").replaceAll('"',"&quot;").replaceAll("'","&#39;");
 const num=v=>typeof v==="number"&&Number.isFinite(v);
 const day=v=>typeof v==="string"&&/^\d{4}-\d{2}-\d{2}$/.test(v);
@@ -46,6 +47,7 @@ export function verifyOperationsAudit(doc){
        typeof a.reason!=="string"||a.reason.length>1000||!safePath(a.evidence)||
        a.price!==null&&(!num(a.price)||a.price<=0)||
        a.quantity!==null&&(!num(a.quantity)||a.quantity<=0)||
+       a.fee!==undefined&&a.fee!==null&&(!num(a.fee)||a.fee<0)||
        a.signal_date!==null&&!day(a.signal_date)||
        a.entry_price!==undefined&&a.entry_price!==null&&(!num(a.entry_price)||a.entry_price<=0)||
        a.entry_date!==undefined&&!day(a.entry_date)||
@@ -68,6 +70,9 @@ export function verifyOperationsAudit(doc){
      throw Error("Conversión corporativa sin procedencia verificada");
    }
   }
+  if(t.splits!==undefined&&(!Array.isArray(t.splits)||t.splits.some(s=>
+     !day(s.date)||!/^[A-Z0-9][A-Z0-9.-]{0,13}$/.test(s.ticker||"")||
+     !num(s.ratio)||s.ratio<=0)))throw Error("Split sin trazabilidad");
   for(const [ticker,quotes] of Object.entries(t.prices)){
    if(!/^[A-Z0-9][A-Z0-9.-]{0,13}$/.test(ticker)||!Array.isArray(quotes)||quotes.length>1000||
       t.currency!=="USD"&&quotes.length)throw Error("Cotizaciones de divisa incompatible");
@@ -218,7 +223,68 @@ function chart(track,ticker){
   '. Los precios aparecen sobre cada punto. Los puntos azules son cierres observados de mercado, NO compras ni ventas del algoritmo. La compra verde está colocada en su fecha y precio reales; el área sombreada indica un periodo sin cierres archivados, no un movimiento supuesto. Si no hay punto rojo, no consta una venta ejecutada con precio confirmado en estas sesiones; un evento corporativo puede transformar la posición sin ser una venta. Las operaciones sin precio se señalan por su fecha, sin inventar su cotización. Solo se unen cierres consecutivos realmente guardados; no se interpolan fechas sin cotización. No consta la hora exacta de los fills. '+
   (quote.length<2?'No existe una serie de cierres suficiente para mostrar una trayectoria continua.':'')+'</p>';
 }
-export function renderOperationsAudit(doc,id,selectedTicker=null){
+function renderTradeLotsTable(track, key="recent", descending=true){
+ const lots=sortOperationLots(buildOperationLots(track),key,descending);
+ if(!lots.length)return '<p class="audit-method-note">No consta ninguna compra o venta individual acreditada. La evolución del NAV no permite inventar operaciones.</p>';
+ const cc=esc(track.currency||"");
+ const numberCell=(n,suffix="")=>num(n)?esc(fmt(n))+(suffix?" "+suffix:""):'<span class="audit-no-data">N/D</span>';
+ const signed=(n,percent=false)=>num(n)?
+  (n>0?"+":"")+new Intl.NumberFormat("es-ES",{minimumFractionDigits:2,maximumFractionDigits:2}).format(n)+(percent?" %":" "+cc):
+  '<span class="audit-no-data">N/D</span>';
+ const calc=lots.filter(l=>num(l.pnl));
+ const open=lots.filter(l=>["abierta","parcial"].includes(l.action)).length;
+ const closed=lots.filter(l=>l.action==="cerrada").length;
+ const converted=lots.filter(l=>l.action==="convertida").length;
+ const cells=[
+  ["ticker","Activo"],["action","Acción ejecutada"],["buyPrice","Precio de compra"],
+  ["salePrice","Precio de venta"],["returnPct","Rentabilidad %"],
+  ["pnl","P/L total"],["invested","Dinero empleado en compra"],["shares","Nº acciones compradas"]
+ ];
+ const status=l=>l.action==="abierta"?"COMPRA · ABIERTA":
+  l.action==="parcial"?"VENTA PARCIAL · ABIERTA":
+  l.action==="cerrada"?"VENTA · CERRADA":
+  l.action==="convertida"?"CONVERSIÓN → "+(l.convertedTo||"SUCESORA"):
+  l.buyDate?"COMPRA · SIN CONCILIAR":"VENTA · SIN COMPRA ACREDITADA";
+ return '<div class="audit-lot-stats">'+
+  '<span>'+lots.length+' lotes documentados</span><span>'+open+' abiertos</span>'+
+  '<span>'+closed+' cerrados</span>'+
+  (converted?'<span>'+converted+' convertidos (sin venta)</span>':"")+
+  (calc.length!==lots.length?'<span class="audit-warning">'+(lots.length-calc.length)+' sin P/L verificable</span>':"")+
+  '</div><div class="table-scroll audit-lot-scroll"><table class="audit-lot-table"><thead><tr>'+
+  cells.map(([keyName,label])=>'<th scope="col"><button type="button" data-action="audit-sort" data-value="'+keyName+
+   '" aria-label="Ordenar por '+esc(label)+'">'+esc(label)+(key===keyName?(descending?" ↓":" ↑"):" ↕")+'</button></th>').join("")+
+  '</tr></thead><tbody>'+
+  lots.map(l=>{
+   const statusTitle=l.action==="parcial"?"Quedan "+fmt(l.remainingShares)+" acciones abiertas; precio de venta ponderado por la cantidad vendida.":
+    l.action==="convertida"?"Conversión societaria, no venta ni realización de P/L.":
+    l.action==="sin_base"?"La operación no permite reconstrucción contable suficiente.":
+    l.action==="abierta"?"Valoración a último cierre conservado, no venta realizada.":"Venta cerrada en el libro paper.";
+   const priceInfo=l.splitFactor!==1?
+    '<small>Compra ajustada por split ×'+esc(fmt(l.splitFactor))+'; acciones de la columna: compra original</small>':"";
+   const pnlClass=num(l.pnl)?(l.pnl>0?"audit-gain":l.pnl<0?"audit-loss":""):"";
+   const provenance=l.action==="convertida"?"Conversión societaria no contabilizada como venta":
+    l.action==="sin_base"?"Importes no conciliables":
+    l.markDate?"Abierta · cierre observado "+esc(l.markDate):
+    "P/L realizado por precio de venta";
+   return '<tr><td><strong>'+esc(l.ticker)+'</strong><small>'+
+    esc(l.buyDate||l.saleDate||"Fecha no acreditada")+'</small></td>'+
+    '<td><span class="audit-lot-status '+esc(l.action)+'" title="'+esc(statusTitle)+'">'+esc(status(l))+'</span>'+
+    (l.action==="parcial"?'<small>Vendidas '+esc(fmtUnits(l.soldShares))+' · restantes '+esc(fmtUnits(l.remainingShares))+'</small>':"")+'</td>'+
+    '<td>'+numberCell(l.buyPrice,cc)+priceInfo+'</td>'+
+    '<td>'+numberCell(l.salePrice,cc)+(l.saleDate?'<small>'+esc(l.saleDate)+'</small>':"")+'</td>'+
+    '<td class="'+pnlClass+'">'+signed(l.returnPct,true)+'</td>'+
+    '<td class="'+pnlClass+'">'+signed(l.pnl)+'<small>'+provenance+'</small></td>'+
+    '<td>'+numberCell(l.invested,cc)+'</td>'+
+    '<td>'+numberCell(l.shares)+'</td></tr>';
+  }).join("")+'</tbody></table></div>'+
+  '<p class="audit-method-note">Cada fila representa un lote de compra documentado; las ventas parciales se atribuyen por FIFO técnico de visualización (no es una identificación fiscal de lotes). '+
+  'P/L = resultado realizado + valoración de las acciones restantes al último cierre bursátil archivado. '+
+  'Se descuentan comisiones únicamente cuando constan en el libro; los demás importes son brutos. '+
+  'No incluye dividendos, efectos de divisa ni valoración de derechos derivados de fusiones. '+
+  'Si no existen precios, cantidades o procedencia suficientes se muestra N/D; ninguna conversión corporativa se presenta como una venta.</p>';
+}
+export function renderOperationsAudit(doc,id,selectedTicker=null,view={}){
+
  const heading='<section class="algorithm-section audit-section" id="operations-audit"><h3>Operaciones por sesión y motivos</h3>';
  if(!doc)return heading+'<p>Cargando el historial verificado de órdenes…</p></section>';
  const track=doc.tracks[id];
@@ -275,7 +341,16 @@ export function renderOperationsAudit(doc,id,selectedTicker=null){
   return '<details class="audit-session"'+(i===0?' open':'')+'><summary>Sesión '+n+' · '+date+
    ' · '+actions.length+' acciones documentadas o inferidas</summary>'+body+'</details>';
  }).join("");
- return intro+graph+'<h4>Registro por sesión</h4>'+rows+
+ const selectedTab=view.tab==="operations"?"operations":"sessions";
+ const tabs='<div class="audit-subtabs" id="audit-tab-strip" role="tablist" aria-label="Historial del algoritmo">'+
+  ['sessions','operations'].map(v=>'<button type="button" role="tab" data-action="audit-tab" data-value="'+v+
+   '" aria-selected="'+(selectedTab===v)+'" aria-controls="audit-panel-'+v+'">'+
+   (v==="sessions"?"Sesiones":"Operaciones")+'</button>').join("")+'</div>';
+ const sessionsPanel='<div id="audit-panel-sessions" role="tabpanel"'+(selectedTab!=="sessions"?' hidden':'')+'>'+
+  '<h4>Registro por sesión</h4>'+rows+'</div>';
+ const tradesPanel='<div id="audit-panel-operations" role="tabpanel"'+(selectedTab!=="operations"?' hidden':'')+'>'+
+  renderTradeLotsTable(track,view.sort||"recent",view.desc!==false)+'</div>';
+ return intro+graph+tabs+sessionsPanel+tradesPanel+
   '<p class="audit-method-note">Fuente: '+esc(track.source_path||"Sin libro identificado")+
   '. Huella SHA-256: '+esc(track.source_sha256||"No disponible")+
   '. Los históricos de algunas estrategias son parciales; no se reconstruyen señales u órdenes ausentes.</p></section>';

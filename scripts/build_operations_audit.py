@@ -99,14 +99,15 @@ def selected_scores(ledger):
 
 def add_event(target, day, side, ticker, price=None, quantity=None, reason=None,
               basis="not_recorded", origin="executed_ledger", signal_date=None,
-              price_basis=None):
+              price_basis=None, fee=None):
     if not date(day) or not clean_ticker(ticker):
         return
     target[day].append({
         "ticker":ticker,"side":side,"price":number(price),"quantity":number(quantity),
         "reason":reason or "Motivo individual no documentado.","reason_basis":basis,
         "evidence":origin,"signal_date":date(signal_date),
-        "price_basis":price_basis or ("book_fill" if number(price) else "not_recorded")
+        "price_basis":price_basis or ("book_fill" if number(price) else "not_recorded"),
+        "fee":float(fee) if isinstance(fee,(int,float)) and not isinstance(fee,bool) and 0<=fee<10**8 else None
     })
 
 
@@ -216,7 +217,7 @@ def normalize_ledger(ledger, source):
                         pr=holding.get("entry_price",holding.get("entry_price_eur"))
                         if number(pr):price_basis="position_entry"
                 add_event(out,day,action,ticker,pr,qty,reason,basis,source,
-                          event.get("signal_date"),price_basis=price_basis)
+                          event.get("signal_date"),price_basis=price_basis,fee=event.get("fee"))
     # Closed trades with explicit entry/exit prices are a separate, verifiable
     # representation; skip them if corresponding event rows already exist.
     trades=ledger.get("trades",[])
@@ -238,7 +239,8 @@ def normalize_ledger(ledger, source):
                     reason += " Señal guardada: puntuación de selección "+str(round(float(entry_score),6))+"."
                 add_event(out,when,side,ticker,price,
                           trade.get("quantity",trade.get("shares")),reason,basis,
-                          source+"/closed_trade",trade.get("signal_date"))
+                          source+"/closed_trade",trade.get("signal_date"),
+                          fee=trade.get("buy_commission" if side=="buy" else "sell_commission"))
     return out
 
 
@@ -484,9 +486,17 @@ def build():
                   "priced_executions":sum(number(a.get("price")) is not None for a in executed),
                   "unpriced_executions":sum(number(a.get("price")) is None for a in executed),
                   "corporate_conversions":len(conversions)}
+        # Preserve split events as adjustments, not as simulated orders.
+        split_adjustments = [
+            {"date":item["date"],"ticker":item["ticker"],"ratio":float(item["ratio"])}
+            for item in book.get("events",[]) if isinstance(item,dict)
+            and item.get("type")=="split" and date(item.get("date"))
+            and clean_ticker(item.get("ticker")) and number(item.get("ratio"))
+        ]
         tracks[slot]={"source_id":source_id,"status":status,
                       "source_path":filename,"source_sha256":digest,"currency":original.get("currency"),
-                      "sessions":session_rows,"prices":by_symbol,"coverage":coverage}
+                      "sessions":session_rows,"prices":by_symbol,"splits":split_adjustments,
+                      "coverage":coverage}
     return {"schema":"midas_operations_audit_v1","purpose":"read_only_paper_decision_evidence",
             "asof":max((x.get("last_session") or "" for x in dashboard["tracks"]),default=""),
             "notes":["Solo constan las operaciones disponibles en libros versionados.",

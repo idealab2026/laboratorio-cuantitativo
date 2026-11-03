@@ -153,6 +153,21 @@ class AllStrategyOperationReconciliationTests(unittest.TestCase):
               len(unpriced),"without recovered price")
         print("Unpriced audit events, first 35:",unpriced[:35])
 
+    def test_trade_fees_are_preserved_only_when_supported_by_source(self):
+        # Buy The Dip contains directly recorded fees on every fill.
+        btd = self.audit["tracks"]["IL-039"]
+        executed = [a for day in btd["sessions"] for a in day["actions"]
+                    if a["side"] in {"buy","sell"}]
+        self.assertEqual(len(executed),20)
+        self.assertTrue(all(isinstance(a.get("fee"),(int,float))
+                            and a["fee"] >= 0 for a in executed))
+        # Classic purchase records have no explicit commission amount per fill.
+        classic = self.audit["tracks"]["IL-012"]
+        purchase = next(a for day in classic["sessions"] for a in day["actions"]
+                        if a["side"]=="buy" and a["ticker"]=="ABT")
+        self.assertIsNone(purchase.get("fee"))
+        self.assertIsInstance(classic["splits"],list)
+
     def test_kvue_original_buy_and_conversion_are_visible_and_not_a_sale(self):
         for slot,shares,successor in [("IL-012",645.114733,94),
                                        ("IL-010",10.260274,1)]:
