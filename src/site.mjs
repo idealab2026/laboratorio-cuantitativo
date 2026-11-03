@@ -819,6 +819,18 @@ $("app").addEventListener("click",e=>{
    ]);
   }
  }
+ else if(action==="monitoring-tab"){
+  state.monitoringTab=value==="operations"?"operations":"summary";
+  const tabs=document.querySelector("#monitoring-tab-strip");
+  if(tabs){
+   for(const tab of tabs.querySelectorAll("[data-action='monitoring-tab']"))
+    tab.setAttribute("aria-selected",String(tab.dataset.value===state.monitoringTab));
+   for(const key of ["summary","operations"]){
+    const el=document.querySelector("#monitoring-panel-"+key);
+    if(el)el.hidden=key!==state.monitoringTab;
+   }
+  }
+ }
  else if(action==="audit-tab"){
   state.auditTab=value==="operations"?"operations":"sessions";
   const current=document.querySelector("#audit-tab-strip");
@@ -834,12 +846,19 @@ $("app").addEventListener("click",e=>{
  }
  else if(action==="audit-sort"){
   if(!["ticker","action","buyPrice","salePrice","returnPct","pnl","invested","shares"].includes(value))return;
-  if(state.auditSort===value)state.auditDesc=!state.auditDesc;
-  else{state.auditSort=value;state.auditDesc=true;}
-  const top=document.querySelector("#audit-tab-strip")?.getBoundingClientRect().top;
+  const inHealth=state.view==="monitoring";
+  if(inHealth){
+   if(state.monitoringSort===value)state.monitoringDesc=!state.monitoringDesc;
+   else{state.monitoringSort=value;state.monitoringDesc=true;}
+  }else{
+   if(state.auditSort===value)state.auditDesc=!state.auditDesc;
+   else{state.auditSort=value;state.auditDesc=true;}
+  }
+  const region=inHealth?"#monitoring-panel-operations":"#audit-tab-strip";
+  const top=document.querySelector(region)?.getBoundingClientRect().top;
   render();
   if(Number.isFinite(top)){
-   const next=document.querySelector("#audit-tab-strip")?.getBoundingClientRect().top;
+   const next=document.querySelector(region)?.getBoundingClientRect().top;
    if(Number.isFinite(next))window.scrollBy({top:next-top,behavior:"auto"});
   }
  }
@@ -888,6 +907,12 @@ $("app").addEventListener("change",e=>{
  if(el.id==="issuer-sort"){state.issuerSort=el.value;state.issuerAsc=["ticker","company","market"].includes(el.value);render();}
  if(el.id==="journal-select"){state.strategy=el.value;render();}
  if(el.id==="audit-ticker"){state.auditTicker=el.value;render();}
+ if(el.id==="monitoring-algorithm"){
+  if(!/^IL-\\d{3}$/.test(el.value)||!state.operationsAudit?.tracks?.[el.value])return;
+  state.monitoringStrategy=el.value;
+  const place=document.querySelector("#monitoring-trade-table");
+  if(place)place.innerHTML=renderTradeLotsTable(state.operationsAudit.tracks[el.value],state.monitoringSort,state.monitoringDesc);
+ }
 });
 $("app").addEventListener("input",e=>{
  if(e.target.id==="glossary-query"){
@@ -975,7 +1000,7 @@ async function loadStrategyCandidates(){
   verifyStrategyCandidates(doc);
   state.strategyCandidates=doc;state.strategyCandidatesStatus="ok";
  }catch(_error){state.strategyCandidates=null;state.strategyCandidatesStatus="unavailable";}
- if(["full","competition","algorithm"].includes(state.view)&&state.data)render();
+ if(["full","competition","algorithm","monitoring"].includes(state.view)&&state.data)render();
 }
 async function loadOriginalPaper(){
  try{
@@ -993,7 +1018,7 @@ async function loadHistoricalPaper(){
   const rows=parseLocalPaperResults(results),curves=parseLocalPaperCurves(nav,rows);
   state.historicalPaper=rows;state.historicalCurves=curves;state.historicalPaperStatus="ok";
  }catch(_error){state.historicalPaper=null;state.historicalCurves=null;state.historicalPaperStatus="unavailable";}
- if(["full","competition","algorithm"].includes(state.view)&&state.data)render();
+ if(["full","competition","algorithm","monitoring"].includes(state.view)&&state.data)render();
 }
 async function loadFullRoster(){
  try{
@@ -1003,7 +1028,7 @@ async function loadFullRoster(){
   verifyFullRoster(doc);
   state.fullRoster=doc;state.fullRosterStatus="ok";
  }catch(_error){state.fullRoster=null;state.fullRosterStatus="unavailable";}
- if(["full","competition","algorithm"].includes(state.view)&&state.data)render();
+ if(["full","competition","algorithm","monitoring"].includes(state.view)&&state.data)render();
 }
 async function loadInstitutionalPaperFeed(){
  try{
@@ -1020,7 +1045,7 @@ async function loadInstitutionalPaperFeed(){
   state.paperFeed=doc;state.paperFeedRead=verified;
   state.institutionalFeedStatus=verified.status;
  }catch(_error){state.paperFeed=null;state.paperFeedRead=null;state.institutionalFeedStatus="unavailable";}
- if(["full","competition","algorithm"].includes(state.view)&&state.data)render();
+ if(["full","competition","algorithm","monitoring"].includes(state.view)&&state.data)render();
 }
 async function loadOperationsAudit(){
  try{
@@ -1034,7 +1059,7 @@ async function loadOperationsAudit(){
   state.operationsAudit=null;
   state.operationsAuditStatus="unavailable";
  }
- if(state.view==="algorithm"&&state.data)render();
+ if(["algorithm","monitoring"].includes(state.view)&&state.data)render();
 }
 
 init();
