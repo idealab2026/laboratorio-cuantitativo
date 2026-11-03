@@ -169,3 +169,13 @@ test("Strategy profiles append source-driven sessions instead of attributing syn
  assert.ok(workflow.includes("python3 scripts/build_operations_audit.py --output dist/data/operations-audit.json"));
  assert.ok(workflow.includes("node --check src/operations-audit.mjs"));
 });
+
+
+test("Market closing-price blue dots are explicitly distinguished from executed buy/sell orders",()=>{
+ const src=readFileSync(new URL("../src/operations-audit.mjs",import.meta.url),"utf8");
+ assert.ok(src.includes("Precio de cierre del mercado (no es una operación)"));
+ assert.ok(src.includes("Los puntos azules son cierres observados de mercado, NO compras ni ventas del algoritmo."));
+ assert.ok(src.includes("audit-legend-buy"));
+ assert.ok(src.includes("audit-legend-sell"));
+ assert.ok(src.includes("audit-close-dot"));
+});
