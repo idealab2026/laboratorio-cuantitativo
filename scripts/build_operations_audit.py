@@ -165,12 +165,13 @@ def source_for(source_id):
         return "buy_the_dip_state/ledger.json",None
     if source_id.startswith("classic_sp500_"):
         return "classic_sp500_state/ledger.json",source_id.removeprefix("classic_sp500_")
+    weekly_aliases={"arima":"arima_return","lstm":"lstm_return","mlp":"mlp_return","ensemble":"ensemble_consensus"}
     if source_id.startswith("weekly_legacy_weekly_ml_"):
         suffix=source_id.removeprefix("weekly_legacy_weekly_ml_").removesuffix("_2026")
-        return "weekly_ml_state/ledger.json",suffix
+        return "weekly_ml_state/ledger.json",weekly_aliases.get(suffix,suffix)
     if source_id.startswith("weekly_ml_"):
         suffix=source_id.removeprefix("weekly_ml_").removesuffix("_2026")
-        return "weekly_ml_daily_state/ledger.json",suffix
+        return "weekly_ml_daily_state/ledger.json",weekly_aliases.get(suffix,suffix)
     if source_id in ("timesfm_2p5_eur_paper","timesfm_spy_eur"):
         return "timesfm_state/ledger.json",("timesfm" if source_id=="timesfm_2p5_eur_paper" else "benchmark_spy")
     if source_id=="tfg_corrected_2026":
