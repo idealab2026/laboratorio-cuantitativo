@@ -568,10 +568,13 @@ def run(config_path, state_path):
             return record["bars"], {"snapshot_sha256": record["base"]["sha256"],
                                    "effective_sha256": record["effective_sha256"]}
 
+        previous_valuations = {name: book["equity"][-1]["date"] for name, book in state["books"].items()}
         state, recovered, blocked = recover_passive_books(
             config, state, sessions_after, quotes,
             recorded_at=datetime.now(timezone.utc).isoformat(timespec="seconds"),
             reviews=market.read(ROOT / "market_data/corporate_action_reviews.json"))
+        passive_progressed = [name for name, book in state["books"].items()
+                              if book["equity"][-1]["date"] > previous_valuations[name]]
         validate_state(state, config)
         if day <= state["last_session"]:
             active_recovered, active_blocked = [], {}
@@ -588,11 +591,13 @@ def run(config_path, state_path):
                     config, state, day, previous, today, decisions, coverage,
                     quote_identity=identity,
                     recorded_at=datetime.now(timezone.utc).isoformat(timespec="seconds"))
-            if recovered or active_recovered:
+            if passive_progressed or active_recovered:
                 market.atomic_write(state_path, state)
             return {"status": "quarantined_session_reconciled" if active_recovered else
-                              "passive_marks_recovered" if recovered else "already_recorded",
+                              "passive_marks_recovered" if recovered else
+                              "passive_prefix_recovered_still_paused" if passive_progressed else "already_recorded",
                     "session": day, "recovered_books": recovered,
+                    "partially_recovered_books": [n for n in passive_progressed if n not in recovered],
                     "recovery_blocked": blocked,
                     "active_recovered_books": active_recovered,
                     "active_recovery_blocked": active_blocked}
