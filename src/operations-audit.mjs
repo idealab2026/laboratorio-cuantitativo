@@ -308,6 +308,69 @@ export function summarizeOperationsAudit(doc){
  return {slots:rows.length,withExecutions,withoutExecutions:rows.length-withExecutions,
          executions,latestTrade,latestSession,conversions:converted};
 }
+/**
+ * Compact session matrix from dated paper executions.
+ * A '*' is used only when a documented sale leaves a positive quantity
+ * of the same security in the reconstructed position. Without a known
+ * starting quantity there is deliberately no partial-sale assertion.
+ * A corporate entitlement is never a buy, sell or explicit hold.
+ */
+export function buildSessionActionColumns(track){
+ if(!track||!Array.isArray(track.sessions))return [];
+ const holdings=new Map(),epsilon=1e-7;
+ const splits=(track.splits||[]).filter(split=>
+  day(split.date)&&num(split.ratio)&&split.ratio>0&&typeof split.ticker==="string")
+  .sort((a,b)=>a.date.localeCompare(b.date));
+ let nextSplit=0;
+ const summary=[];
+ for(const session of track.sessions){
+  const buy=new Set(),sell=new Set(),hold=new Set(),partial=new Set(),corporate=[];
+  // Apply every split known before this session, even if its effective
+  // date had no separately archived session in the paper ledger.
+  while(nextSplit<splits.length&&splits[nextSplit].date<=session.date){
+   const split=splits[nextSplit++];
+   if(holdings.has(split.ticker)&&holdings.get(split.ticker)!==null){
+    holdings.set(split.ticker,holdings.get(split.ticker)*split.ratio);
+   }
+  }
+  for(const action of session.actions||[]){
+   const ticker=action.ticker;
+   if(!ticker)continue;
+   if(action.side==="buy"){
+    buy.add(ticker);
+    const qty=action.quantity;
+    holdings.set(ticker,num(qty)&&qty>0?
+      ((holdings.has(ticker)&&holdings.get(ticker)!==null?holdings.get(ticker):0)+qty):null);
+   }else if(action.side==="sell"){
+    sell.add(ticker);
+    const qty=action.quantity,previous=holdings.get(ticker);
+    if(num(qty)&&qty>0&&num(previous)&&previous>epsilon){
+     const remaining=previous-qty;
+     if(remaining>epsilon)partial.add(ticker);
+     holdings.set(ticker,remaining>epsilon?remaining:0);
+    }else holdings.set(ticker,null);
+   }else if(action.side==="hold"){
+    hold.add(ticker); // Recorded source marks this explicitly as inferred continuity.
+   }else if(action.side==="corporate_action"){
+    holdings.delete(ticker);
+    if(action.successor_ticker){
+     const old=holdings.get(action.successor_ticker);
+     const qty=action.successor_quantity;
+     holdings.set(action.successor_ticker,num(qty)&&qty>0?
+      ((num(old)?old:0)+qty):null);
+     corporate.push(ticker+" → "+action.successor_ticker);
+    }
+   }
+  }
+  const sorted=set=>[...set].sort((a,b)=>a.localeCompare(b));
+  summary.push({
+   date:session.date, buys:sorted(buy),sells:sorted(sell),
+   holds:sorted(hold),partialSells:sorted(partial),corporate
+  });
+ }
+ return summary;
+}
+
 export function renderOperationsAudit(doc,id,selectedTicker=null,view={}){
 
  const heading='<section class="algorithm-section audit-section" id="operations-audit"><h3>Operaciones por sesión y motivos</h3>';
@@ -335,6 +398,11 @@ export function renderOperationsAudit(doc,id,selectedTicker=null,view={}){
   symbols.map(t=>'<option value="'+esc(t)+'"'+(t===chosen?' selected':'')+'>'+esc(t)+'</option>').join("")+'</select></label>'+
   chart(track,chosen)+'</div>':
   '<p class="audit-method-note">Los NAV globales no bastan para reconstruir operaciones. No se publican compras o ventas sin evidencias individuales.</p>';
+ const sessionColumns=buildSessionActionColumns(track);
+ const sessionTickers=(tickers,partial=[])=>tickers.length?
+  tickers.map(t=>'<span class="audit-session-ticker">'+esc(t)+(partial.includes(t)?
+   '<span class="audit-partial-star" title="Venta parcial: quedan acciones tras el fill">*</span>':'')+'</span>').join(" "):
+  '<span class="audit-empty-session">—</span>';
  const rows=sessions.slice().reverse().map((session,i)=>{
   const actions=session.actions||[];
   const date=esc(session.date),n=sessions.length-i;
@@ -363,8 +431,19 @@ export function renderOperationsAudit(doc,id,selectedTicker=null,view={}){
      (a.rule_source?' · regla: '+esc(a.rule_source):"")+' · libro: '+esc(a.evidence)+'</small></td></tr>';
    }).join("")+'</tbody></table></div>':
    '<p>Sin órdenes ejecutadas ni posiciones reconstruibles documentadas en esta sesión. Esto no prueba que se decidiera mantener efectivo.</p>';
-  return '<details class="audit-session"'+(i===0?' open':'')+'><summary>Sesión '+n+' · '+date+
-   ' · '+actions.length+' acciones documentadas o inferidas</summary>'+body+'</details>';
+  const group=sessionColumns[sessions.length-1-i];
+  const conversions=group.corporate.length?
+   '<small class="audit-session-conversion">Conversión societaria: '+esc(group.corporate.join(", "))+' (no venta)</small>':"";
+  return '<details class="audit-session"'+(i===0?' open':'')+'><summary class="audit-session-summary">'+
+   '<span class="audit-session-title"><strong>Sesión '+n+' · '+date+'</strong>'+
+   '<small>'+actions.length+' acciones documentadas o inferidas</small>'+conversions+'</span>'+
+   '<span class="audit-session-column audit-session-column-buy"><span class="audit-sr-only">Compras: </span>'+
+    sessionTickers(group.buys)+'</span>'+
+   '<span class="audit-session-column audit-session-column-sell"><span class="audit-sr-only">Ventas: </span>'+
+    sessionTickers(group.sells,group.partialSells)+'</span>'+
+   '<span class="audit-session-column audit-session-column-hold"><span class="audit-sr-only">Mantener, inferido: </span>'+
+    sessionTickers(group.holds)+'</span>'+
+   '</summary>'+body+'</details>';
  }).join("");
  const selectedTab=view.tab==="operations"?"operations":"sessions";
  const tabs='<div class="audit-subtabs" id="audit-tab-strip" role="tablist" aria-label="Historial del algoritmo">'+
@@ -372,7 +451,10 @@ export function renderOperationsAudit(doc,id,selectedTicker=null,view={}){
    '" aria-selected="'+(selectedTab===v)+'" aria-controls="audit-panel-'+v+'">'+
    (v==="sessions"?"Sesiones":"Operaciones")+'</button>').join("")+'</div>';
  const sessionsPanel='<div id="audit-panel-sessions" role="tabpanel"'+(selectedTab!=="sessions"?' hidden':'')+'>'+
-  '<h4>Registro por sesión</h4>'+rows+'</div>';
+  '<h4>Registro por sesión</h4>'+
+  '<div class="audit-session-grid-head" aria-hidden="true"><span>SESIÓN</span><span>COMPRAS</span>'+
+   '<span>VENTAS</span><span>MANTENER</span></div>'+rows+
+  '<p class="audit-method-note">* Identifica una venta parcial: quedan acciones del mismo activo tras la ejecución, según cantidades reconstruibles. Si faltan unidades no se afirma que sea parcial. MANTENER representa continuidad de posición inferida, no una orden.</p></div>';
  const tradesPanel='<div id="audit-panel-operations" role="tabpanel"'+(selectedTab!=="operations"?' hidden':'')+'>'+
   renderTradeLotsTable(track,view.sort||"recent",view.desc!==false)+'</div>';
  return intro+graph+tabs+sessionsPanel+tradesPanel+
