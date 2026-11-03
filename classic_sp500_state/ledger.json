@@ -9159,7 +9159,7 @@
       "trades": []
     },
     "macd_12_26_9": {
-      "cash": 27754.028148692516,
+      "cash": 11891.136437388777,
       "equity": [
         {
           "date": "2026-10-12",
@@ -9216,6 +9216,17 @@
         {
           "date": "2026-10-30",
           "nav": 105146.32037259513
+        },
+        {
+          "date": "2026-11-02",
+          "late_recorded_verified_date": true,
+          "nav": 104937.88020151004,
+          "quote_identity": {
+            "effective_sha256": "eebe356462aa1a2bcce72d1f62aaa7be676fccba2279c555ec24c38658564910",
+            "snapshot_sha256": "4ba926a4fbd9f925dd95d344d80856877216ff6b4fce3f53a9e18c3f2a07da1b"
+          },
+          "reconciliation_kind": "previously_frozen_order_exact_bar_replay",
+          "recorded_at_utc": "2026-11-03T09:06:13+00:00"
         }
       ],
       "events": [
@@ -9333,25 +9344,80 @@
             "DHR"
           ],
           "type": "book_quarantined_missing_held_bar"
+        },
+        {
+          "date": "2026-11-02",
+          "late_recorded_verified_date": true,
+          "quote_identity": {
+            "effective_sha256": "eebe356462aa1a2bcce72d1f62aaa7be676fccba2279c555ec24c38658564910",
+            "snapshot_sha256": "4ba926a4fbd9f925dd95d344d80856877216ff6b4fce3f53a9e18c3f2a07da1b"
+          },
+          "reconciliation_kind": "previously_frozen_order_exact_bar_replay",
+          "recorded_at_utc": "2026-11-03T09:06:13+00:00",
+          "shares": 133.247453,
+          "ticker": "GDDY",
+          "type": "buy"
+        },
+        {
+          "date": "2026-11-02",
+          "late_recorded_verified_date": true,
+          "quote_identity": {
+            "effective_sha256": "eebe356462aa1a2bcce72d1f62aaa7be676fccba2279c555ec24c38658564910",
+            "snapshot_sha256": "4ba926a4fbd9f925dd95d344d80856877216ff6b4fce3f53a9e18c3f2a07da1b"
+          },
+          "reconciliation_kind": "previously_frozen_order_exact_bar_replay",
+          "recorded_at_utc": "2026-11-03T09:06:13+00:00",
+          "ticker": "MDLZ",
+          "type": "unfilled"
+        },
+        {
+          "date": "2026-11-02",
+          "frozen_signal_session": "2026-10-30",
+          "late_recorded_verified_date": true,
+          "quote_identity": {
+            "effective_sha256": "eebe356462aa1a2bcce72d1f62aaa7be676fccba2279c555ec24c38658564910",
+            "snapshot_sha256": "4ba926a4fbd9f925dd95d344d80856877216ff6b4fce3f53a9e18c3f2a07da1b"
+          },
+          "reconciliation_kind": "previously_frozen_order_exact_bar_replay",
+          "recorded_at_utc": "2026-11-03T09:06:13+00:00",
+          "signal_coverage": {
+            "eligible": 488,
+            "missing": {
+              "AVB": "invalid_current_ohlc",
+              "BK": "invalid_current_ohlc",
+              "CTRA": "invalid_current_ohlc",
+              "DAY": "invalid_current_ohlc",
+              "EA": "invalid_current_ohlc",
+              "EQR": "invalid_current_ohlc",
+              "FI": "invalid_current_ohlc",
+              "HOLX": "invalid_current_ohlc",
+              "IPG": "invalid_current_ohlc",
+              "K": "invalid_current_ohlc",
+              "KVUE": "invalid_current_ohlc",
+              "MMC": "invalid_current_ohlc",
+              "PSKY": "invalid_current_ohlc",
+              "WBA": "invalid_current_ohlc",
+              "WBD": "invalid_current_ohlc"
+            },
+            "ticker_coverage_pct": 97.018,
+            "total": 503
+          },
+          "type": "single_session_quarantine_reconciled"
         }
       ],
-      "nav": 105146.32037259513,
-      "paused_missing_quotes": {
-        "last_valued_session": "2026-10-30",
-        "missing_tickers": [
-          "DHR"
-        ],
-        "reason": "required same-session bar unavailable",
-        "since": "2026-11-02"
-      },
+      "nav": 104937.88020151004,
       "pending": {
-        "GDDY": {
+        "BF-B": {
           "side": "buy",
-          "signal_date": "2026-10-30"
+          "signal_date": "2026-11-02"
         },
-        "MDLZ": {
+        "DG": {
           "side": "buy",
-          "signal_date": "2026-10-30"
+          "signal_date": "2026-11-02"
+        },
+        "DHR": {
+          "side": "sell",
+          "signal_date": "2026-11-02"
         }
       },
       "positions": {
@@ -9381,6 +9447,15 @@
           "shares": 136.887645,
           "stop": 79.7302477281189,
           "target": 99.66280966014861
+        },
+        "GDDY": {
+          "cost": 15862.891711303739,
+          "dividends": 0.0,
+          "entry_date": "2026-11-02",
+          "entry_price": 118.92943774795532,
+          "shares": 133.247453,
+          "stop": 109.4150827281189,
+          "target": 136.7688534101486
         },
         "GILD": {
           "cost": 11874.999992705953,
@@ -9466,6 +9541,11 @@
         {
           "buys": 2,
           "date": "2026-10-30"
+        },
+        {
+          "buys": 2,
+          "date": "2026-11-02",
+          "recorded_at_utc": "2026-11-03T09:06:13+00:00"
         }
       ],
       "trades": [
