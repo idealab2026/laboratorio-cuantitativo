@@ -792,7 +792,7 @@ $("app").addEventListener("click",e=>{
   render();
   if(Number.isFinite(top)){
    const next=document.querySelector("#audit-tab-strip")?.getBoundingClientRect().top;
-   if(Number.isFinite(next))window.scrollBy({top:next-top,behavior:"instant"});
+   if(Number.isFinite(next))window.scrollBy({top:next-top,behavior:"auto"});
   }
  }
  else if(action==="issuer-column"){
