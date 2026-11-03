@@ -150,3 +150,29 @@ test("Competition uses accessible sortable headers, shares ordering with export 
  assert.ok(s.includes('if(e.target.id==="full-query")'));
  assert.ok(s.includes('if(el.id==="full-group-select")'));
 });
+
+
+test("Capital Cycle and Buy The Dip are searchable by their canonical names and mapped to original diaries",async()=>{
+ const cycle=doc.entries.find(e=>e.slot==="IL-038"),dip=doc.entries.find(e=>e.slot==="IL-039");
+ assert.ok(cycle.name.startsWith("Capital Cycle"));
+ assert.ok(dip.name.startsWith("Buy The Dip"));
+ assert.deepEqual(filterRoster(doc,{query:"capital cycle"}).map(x=>x.slot),["IL-038"]);
+ assert.deepEqual(filterRoster(doc,{query:"buy the dip"}).map(x=>x.slot),["IL-039"]);
+ assert.deepEqual(filterRoster(doc,{group:"Ciclo de capital",query:"Capital Cycle"}).map(x=>x.slot),["IL-038"]);
+ const mapping=JSON.parse(readFileSync(new URL("../data/original-track-map.json",import.meta.url),"utf8"));
+ assert.equal(mapping.capital_cycle_inflection_2026,"IL-038");
+ assert.equal(mapping.buy_the_dip_corpus_2026_v0,"IL-039");
+ const source=JSON.parse(readFileSync(new URL("../strategy_state/dashboard.json",import.meta.url),"utf8"));
+ const {verifyOriginalPaper}=await import("../src/original-paper.mjs");
+ const verified=verifyOriginalPaper(source,mapping);
+ for(const id of ["IL-038","IL-039"]){
+  const record=verified.bySlot.get(id);
+  assert.ok(record&&record.history.length>=2, "Mapped original economic history must exist");
+  assert.ok(Number.isFinite(record.return_pct));
+  assert.match(record.last_session,/^\d{4}-\d{2}-\d{2}$/);
+ }
+ const site=readFileSync(new URL("../src/site.mjs",import.meta.url),"utf8");
+ assert.ok(site.includes('button("Capital Cycle · IL-038","full-focus","IL-038"'));
+ assert.ok(site.includes('button("Buy The Dip · IL-039","full-focus","IL-039"'));
+ assert.ok(site.includes('state.fullRosterGroup="";state.fullRosterQuery=value;render();'));
+});

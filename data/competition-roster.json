@@ -969,7 +969,7 @@
     {
       "slot": "IL-038",
       "group": "Ciclo de capital",
-      "name": "Infra-inversión y mejora fundamental",
+      "name": "Capital Cycle · infrainversión y mejora fundamental",
       "record_status": "not_migrated",
       "activity": "unavailable",
       "currency": null,
@@ -995,7 +995,7 @@
     {
       "slot": "IL-039",
       "group": "Compra en caídas",
-      "name": "Valoración y situaciones especiales",
+      "name": "Buy The Dip · valoración y situaciones especiales",
       "record_status": "not_migrated",
       "activity": "unavailable",
       "currency": null,
