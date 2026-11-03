@@ -405,8 +405,10 @@ function shortPaperDate(raw){
   ?raw.slice(8)+"/"+raw.slice(5,7)+"/"+raw.slice(2,4):"N/D";
 }
 function compactCell(label,html,cls="",tooltip=""){
+ // Display absence explicitly; never convert missing economic data to zero.
+ const display=html==="N/D"?'<span class="unverified-text">No verificable</span>':html;
  return '<td data-label="'+esc(label)+'"'+(cls?' class="'+esc(cls)+'"':"")+
-  (tooltip?' title="'+esc(tooltip)+'"':"")+'>'+html+'</td>';
+  (tooltip?' title="'+esc(tooltip)+'"':"")+'>'+display+'</td>';
 }
 function sortedFullRosterRows(){
  if(!state.fullRoster)return [];
@@ -427,6 +429,19 @@ const FULL_COMPETITION_COLUMNS=[
  ["currency","Divisa"],["return","Rent. acumulada"],["day","Rent. día"],
  ["drawdown","Drawdown"],["comparison","Comparabilidad"],["detail","Detalle"]
 ];
+const COMPARABILITY_EXPLANATION=[
+ "La comparabilidad indica si dos rentabilidades paper cuentan con una base metodológica homogénea acreditada.",
+ "Se deben contrastar cohorte y fechas de inicio, universo invertible, divisa, reglas de valoración y costes.",
+ "«Misma cohorte»: el registro declara elegibilidad; no garantiza por sí solo equivalencia de todos los supuestos.",
+ "«No comparable»: falta evidencia suficiente para compararlas directamente.",
+ "«Archivo»: campaña histórica separada. «Investigación»: todavía sin operaciones ni valor liquidativo."
+].join(" ");
+function comparabilityHelp(id){
+ return '<span class="comparison-help-wrap">'+
+ '<button type="button" class="comparison-help-icon" aria-label="¿Qué significa comparabilidad?" '+
+ 'aria-describedby="'+id+'">ⓘ</button>'+
+ '<span class="comparison-help-popup" id="'+id+'" role="tooltip">'+esc(COMPARABILITY_EXPLANATION)+'</span></span>';
+}
 function fullRosterHeaders(){
  return FULL_COMPETITION_COLUMNS.map(([key,label])=>{
   if(key==="detail")return '<th scope="col">Detalle</th>';
@@ -434,17 +449,19 @@ function fullRosterHeaders(){
   const arrow=selected?(state.fullRosterAsc?" ↑":" ↓"):" ↕";
   const numeric=["return","day","sessions","drawdown"].includes(key);
   const aria=selected?(state.fullRosterAsc?"ascending":"descending"):"none";
-  return '<th scope="col" aria-sort="'+aria+'"'+(numeric?' class="number"':'')+
+  return '<th scope="col" aria-sort="'+aria+'"'+(key==="comparison"?' class="comparison-header"':numeric?' class="number"':'')+
    '><button type="button" class="table-sort" data-action="full-column" data-value="'+key+
    '" aria-label="Ordenar '+label+'" title="Ordenar '+label+'">'+label+
-   '<span class="sort-indicator" aria-hidden="true">'+arrow+'</span></button></th>';
+   '<span class="sort-indicator" aria-hidden="true">'+arrow+'</span></button>'+
+   (key==="comparison"?comparabilityHelp("competition-comparability-tip"):"")+'</th>';
  }).join("");
 }
 function fullMobileSortControls(){
  return '<div class="competition-mobile-sort"><label>Ordenar por <select id="full-mobile-sort" aria-label="Columna de ordenación">'+
   FULL_COMPETITION_COLUMNS.filter(([key])=>key!=="detail").map(([key,label])=>'<option value="'+key+'"'+
    (key===state.fullRosterSort?' selected':'')+'>'+label+'</option>').join("")+
-  '</select></label>'+button(state.fullRosterAsc?"Ascendente ↑":"Descendente ↓","full-sort-direction","toggle","outline-btn")+'</div>';
+  '</select></label>'+button(state.fullRosterAsc?"Ascendente ↑":"Descendente ↓","full-sort-direction","toggle","outline-btn")+
+  comparabilityHelp("competition-comparability-tip-mobile")+'</div>';
 }
 function fullRosterRows(){
  return sortedFullRosterRows().map(({id,name,group,record,candidate})=>{
@@ -489,7 +506,7 @@ function full(){
  const d=state.fullRoster;
  if(!d)return '<div class="competition-heading"><h2>Clasificación de algoritmos</h2></div>'+
   card('<p>Inventario institucional no verificable. No se muestran rentabilidades inventadas.</p>');
- const meta=verifyFullRoster(d),visibleCount=sortedFullRosterRows().length;
+ const meta=verifyFullRoster(d);
  const candidate=state.strategyCandidates?.candidates?.[0]||null;
  const leader=paperLeaderboard(d.entries.map(item=>({
   id:item.slot,name:originalStrategyName(item),record:economicPaperRecord(item.slot)
@@ -506,15 +523,6 @@ function full(){
   '<span>'+meta.count+' estrategias · '+(candidate?"1 propuesta sin operativa · ":"")+
   'archivo paper con precios de mercado</span></div>'+
   winner+
-  '<div class="filters competition-filters"><label>Familia<select id="full-group-select"><option value="">Todas las familias</option>'+
-  meta.groups.map(g=>'<option value="'+esc(g.name)+'" '+(g.name===state.fullRosterGroup?"selected":"")+'>'+esc(g.name)+' · '+g.count+'</option>').join("")+
-  (candidate?'<option value="'+esc(candidate.group)+'" '+(candidate.group===state.fullRosterGroup?"selected":"")+'>'+esc(candidate.group)+'</option>':"")+
-  '</select></label><label>Buscar<input id="full-query" type="search" value="'+esc(state.fullRosterQuery)+
-  '" placeholder="Nombre, familia o IL-039"></label>'+
-  button("Exportar CSV","full-export","csv","outline-btn")+'</div>'+
-  '<p class="competition-disclaimer"><span id="full-count">'+visibleCount+'</span> resultados mostrados. '+ 
-  'Orden inicial: mayor rentabilidad acumulada. N/D significa no verificable, nunca 0 %. '+
-  'Las distintas cohortes, fechas y divisas NO son directamente comparables.</p>'+
   fullMobileSortControls()+
   '<div class="table-scroll table-compact full-competition-table"><table><thead><tr>'+
   fullRosterHeaders()+'</tr></thead><tbody id="full-rows">'+fullRosterRows()+
