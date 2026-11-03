@@ -318,16 +318,17 @@ export function summarizeOperationsAudit(doc){
 export function buildSessionActionColumns(track){
  if(!track||!Array.isArray(track.sessions))return [];
  const holdings=new Map(),epsilon=1e-7;
- const splits=new Map();
- for(const split of track.splits||[]){
-  if(!day(split.date)||!num(split.ratio)||split.ratio<=0||typeof split.ticker!=="string")continue;
-  if(!splits.has(split.date))splits.set(split.date,[]);
-  splits.get(split.date).push(split);
- }
+ const splits=(track.splits||[]).filter(split=>
+  day(split.date)&&num(split.ratio)&&split.ratio>0&&typeof split.ticker==="string")
+  .sort((a,b)=>a.date.localeCompare(b.date));
+ let nextSplit=0;
  const summary=[];
  for(const session of track.sessions){
   const buy=new Set(),sell=new Set(),hold=new Set(),partial=new Set(),corporate=[];
-  for(const split of splits.get(session.date)||[]){
+  // Apply every split known before this session, even if its effective
+  // date had no separately archived session in the paper ledger.
+  while(nextSplit<splits.length&&splits[nextSplit].date<=session.date){
+   const split=splits[nextSplit++];
    if(holdings.has(split.ticker)&&holdings.get(split.ticker)!==null){
     holdings.set(split.ticker,holdings.get(split.ticker)*split.ratio);
    }
