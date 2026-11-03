@@ -50,6 +50,10 @@
         {
           "date": "2026-11-02",
           "nav": 98462.04938050924
+        },
+        {
+          "date": "2026-11-03",
+          "nav": 98643.94090575447
         }
       ],
       "events": [
@@ -62,7 +66,7 @@
           "ticker": "SPY"
         }
       ],
-      "nav": 98462.04938050924,
+      "nav": 98643.94090575447,
       "pending": [],
       "positions": {
         "SPY": {
@@ -127,6 +131,10 @@
         {
           "date": "2026-11-02",
           "nav": 104911.69384875064
+        },
+        {
+          "date": "2026-11-03",
+          "nav": 103752.88418331914
         }
       ],
       "events": [
@@ -415,7 +423,7 @@
           "ticker": "LDOS"
         }
       ],
-      "nav": 104911.69384875064,
+      "nav": 103752.88418331914,
       "pending": [],
       "positions": {
         "BKNG": {
@@ -711,12 +719,16 @@
     {
       "date": "2026-11-02",
       "nav": 104911.69384875064
+    },
+    {
+      "date": "2026-11-03",
+      "nav": 103752.88418331914
     }
   ],
   "first_session": "2026-10-16",
   "fx_method": "previous_XNYS_session_EURUSD_close_at_open; current_EURUSD_close_at_mark",
   "initial_capital": 100000.0,
-  "last_session": "2026-11-02",
+  "last_session": "2026-11-03",
   "last_signal_session": "2026-10-30",
   "schema_version": 1,
   "signals": [
