@@ -456,3 +456,17 @@ p{line-height:1.6;text-align:justify;text-align-last:left;hyphens:auto}p.lead{co
  .glossary-tools label{width:100%}
  .glossary-tools input{max-width:none}
 }
+
+
+/* Prices are always visible above the execution and market-close markers.
+   White outline preserves readability against the price line and other labels. */
+.audit-price-chart .audit-point-price{
+ font:720 12px/1 system-ui,sans-serif;fill:#315f7e;
+ paint-order:stroke fill;stroke:#fbfcfd;stroke-width:4px;
+ stroke-linejoin:round;pointer-events:none;
+ font-variant-numeric:tabular-nums
+}
+.audit-price-chart .audit-price-buy{fill:#08795e;font-weight:800}
+.audit-price-chart .audit-price-sell{fill:#aa3c3c;font-weight:800}
+.audit-price-chart .audit-buy-dot{stroke-width:2}
+.audit-price-chart .audit-sell-dot{stroke-width:2}

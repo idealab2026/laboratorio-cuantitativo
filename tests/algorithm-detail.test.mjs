@@ -179,3 +179,59 @@ test("Market closing-price blue dots are explicitly distinguished from executed 
  assert.ok(src.includes("audit-legend-sell"));
  assert.ok(src.includes("audit-close-dot"));
 });
+
+
+test("Every execution and retained market close shows its real price over the marker",async()=>{
+ const {layoutAuditPriceLabels,renderOperationsAudit}=await import("../src/operations-audit.mjs");
+ const observations=[
+  {date:"2026-10-15",kind:"buy",price:104.57,x:60,y:139},
+  {date:"2026-10-15",kind:"close",price:104.70,x:60,y:137},
+  {date:"2026-10-16",kind:"close",price:104.82,x:100,y:131},
+  {date:"2026-10-20",kind:"close",price:102.34,x:285,y:195},
+  {date:"2026-10-27",kind:"sell",price:108.61,x:690,y:105},
+  {date:"2026-10-27",kind:"close",price:108.72,x:690,y:103},
+  {date:"2026-11-02",kind:"close",price:111.52,x:870,y:75}
+ ];
+ const labels=layoutAuditPriceLabels(observations);
+ assert.equal(labels.length,observations.length,"Do not omit any real price");
+ assert.equal(labels.filter(x=>x.kind==="buy").length,1);
+ assert.equal(labels.filter(x=>x.kind==="sell").length,1);
+ assert.equal(labels.filter(x=>x.kind==="close").length,5);
+ assert.ok(labels.some(x=>x.text.includes("Compra")&&x.text.includes("104,57")));
+ assert.ok(labels.some(x=>x.text.includes("Venta")&&x.text.includes("108,61")));
+ assert.ok(labels.some(x=>x.kind==="close"&&x.text.includes("111,52")));
+ for(const label of labels){
+  assert.ok(label.y>=43&&label.y<=220);
+  assert.ok(label.rect.left>=54&&label.rect.right<=885,"Price label inside SVG chart");
+  const original=observations.find(x=>x.kind===label.kind&&x.price===label.price);
+  assert.ok(original);
+  assert.ok(label.y<original.y,"Displayed price must sit ABOVE its data point");
+ }
+ for(let i=0;i<labels.length;i++)for(let j=i+1;j<labels.length;j++){
+  const a=labels[i].rect,b=labels[j].rect;
+  const overlap=a.left<b.right+3&&a.right>b.left-3&&a.top<b.bottom+2&&a.bottom>b.top-2;
+  assert.equal(overlap,false,"Price callouts must not obscure each other");
+ }
+ const empty={schema:"midas_operations_audit_v1",purpose:"read_only_paper_decision_evidence",
+  asof:"2026-11-02",tracks:Object.fromEntries(Array.from({length:64},(_,i)=>[
+   "IL-"+String(i+1).padStart(3,"0"),
+   {source_id:"test",status:"no_executed_actions_documented",
+    source_path:null,source_sha256:null,currency:"USD",sessions:[],prices:{}}
+  ]))};
+ empty.tracks["IL-038"]={
+  source_id:"capital_cycle_inflection_2026",status:"partial_executions_documented",
+  source_path:"capital_cycle_state/ledger.json",source_sha256:"a".repeat(64),
+  currency:"USD",sessions:[{date:"2026-10-15",actions:[
+   {ticker:"ABT",side:"buy",price:104.57,quantity:5,reason:"Motivo registrado.",
+    reason_basis:"recorded",evidence:"capital_cycle_state/ledger.json",signal_date:null}
+  ]}],prices:{ABT:[{date:"2026-10-15",price:104.7,source:"dated_market_close",
+   snapshot_sha256:"a".repeat(64)}]}
+ };
+ const html=renderOperationsAudit(empty,"IL-038","ABT");
+ assert.ok(html.includes("audit-price-buy"));
+ assert.ok(html.includes("audit-price-close"));
+ assert.ok(html.includes("Compra 104,57"));
+ assert.ok(html.includes("104,7"));
+ assert.ok(html.includes("Si no hay punto rojo, no consta una venta"));
+ assert.ok(!html.includes("audit-sell-dot"));
+});
