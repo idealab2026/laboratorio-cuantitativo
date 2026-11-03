@@ -534,5 +534,6 @@ test("MIDAS glossary is reachable from navigation, searchable and includes speci
  assert.ok(site.includes('id="glossary-query"'));
  assert.ok(site.includes('if(e.target.id==="glossary-query")'));
  assert.ok(workflow.includes("node --check src/glossary.mjs"));
- assert.ok(workflow.includes("src/glossary.mjs dist/src/"));
+ assert.ok(workflow.includes("src/glossary.mjs src/algorithm-detail.mjs"));
+ assert.ok(workflow.includes("dist/src/"));
 });
