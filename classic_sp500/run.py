@@ -19,6 +19,8 @@ sys.path.insert(0, str(ROOT))
 sys.path.insert(0, str(ROOT / "paper_demo"))
 from market_data.consume import canonical as canonical_ohlc
 from strategies import signal
+from classic_sp500.corporate_actions import (apply_merger, portfolio_nav, required_claim_quotes,
+    valuation_metadata, inactive_mark, settle_reviewed_claims)
 
 spec = importlib.util.spec_from_file_location("timesfm_market_lib", ROOT / "timesfm_strategy/run.py")
 market = importlib.util.module_from_spec(spec)
@@ -192,6 +194,12 @@ def _close_position(book, ticker, value, day, config, reason):
 def _settle_book(config, name, book, day, today):
     """Existing next-open, fees and conservative stop/target policy, in place."""
     p = config["execution"]
+    stamp = datetime.now(timezone.utc).isoformat(timespec="seconds")
+    reviews = market.read(ROOT / "market_data/corporate_action_reviews.json") if book.get("receivables") else {}
+    settle_reviewed_claims(book, day, reviews, recorded_at=stamp)
+    if day < book.get("outage_control", {}).get("first_trading_session", ""):
+        inactive_mark(book, day, today, recorded_at=stamp, reviews=reviews)
+        return
     for ticker, pos in list(book["positions"].items()):
         bar = today[ticker]
         split = float(bar.get("split", 0))
@@ -213,7 +221,7 @@ def _settle_book(config, name, book, day, today):
             raise ValueError("Orphan sell signal")
         _close_position(book, ticker, today[ticker]["open"], day, config, "signal_next_open")
     buy_list = sorted(t for t, order in book["pending"].items() if order["side"] == "buy")
-    nav_at_open = book["cash"] + sum(pos["shares"] * today[t]["open"] for t, pos in book["positions"].items())
+    nav_at_open = portfolio_nav(book, today, "open")
     if buy_list:
         if name == "buy_hold_equal_weight":
             budget = nav_at_open * p["capital_fraction"] / 503
@@ -258,11 +266,10 @@ def _settle_book(config, name, book, day, today):
         elif pos["target"] is not None and bar["high"] >= pos["target"]:
             price = max(bar["open"], pos["target"])
             _close_position(book, ticker, price, day, config, "target")
-    book["nav"] = book["cash"] + sum(pos["shares"] * market._positive(today[t]["close"], "mark")
-                                       for t, pos in book["positions"].items())
+    book["nav"] = portfolio_nav(book, today)
     if not math.isfinite(book["nav"]) or book["nav"] < 0:
         raise ValueError("Invalid classic USD NAV")
-    book["equity"].append({"date": day, "nav": book["nav"]})
+    book["equity"].append({"date": day, "nav": book["nav"], **valuation_metadata(book)})
 
 
 def settle(config, state, day, previous, today, *, allow_partial=False):
@@ -280,13 +287,16 @@ def settle(config, state, day, previous, today, *, allow_partial=False):
     # Existing holdings or exit signals require a real dated bar. Missing
     # prices for new, unfilled BUY requests must not prevent other portfolios
     # from proceeding, but an existing exposure is never marked with stale data.
-    required = {ticker for book in state["books"].values()
-                for ticker in set(book["positions"]) |
+    result = copy.deepcopy(state)
+    for book in result["books"].values():
+        if not book.get("paused_missing_quotes") and "KMB" in today:
+            apply_merger(book, day, today, recorded_at=datetime.now(timezone.utc).isoformat(timespec="seconds"))
+    required = {ticker for book in result["books"].values()
+                for ticker in set(book["positions"]) | required_claim_quotes(book) |
                 {t for t, order in book["pending"].items() if order["side"] == "sell"}}
     if not allow_partial and not required <= set(today):
         raise ValueError("Missing dated bar for held position or pending sell: " +
                          ",".join(sorted(required - set(today))))
-    result = copy.deepcopy(state)
     p = config["execution"]
     for name, book in result["books"].items():
         if allow_partial:
@@ -295,7 +305,7 @@ def settle(config, state, day, previous, today, *, allow_partial=False):
             # independently reconciled. Never silently resume at a later close.
             if book.get("paused_missing_quotes"):
                 continue
-            mandatory = set(book["positions"]) | {
+            mandatory = set(book["positions"]) | required_claim_quotes(book) | {
                 t for t, order in book["pending"].items() if order["side"] == "sell"
             }
             missing = sorted(mandatory - set(today))
@@ -462,7 +472,7 @@ def market_sessions_after(last_session, day, previous, *, max_reconcile=3):
 def required_live_quotes(state):
     """Only held exposures and pending sells require a valid mark to proceed."""
     return {ticker for book in state["books"].values()
-            for ticker in set(book["positions"]) |
+            for ticker in set(book["positions"]) | required_claim_quotes(book) |
             {ticker for ticker, order in book["pending"].items()
              if order["side"] == "sell"}}
 

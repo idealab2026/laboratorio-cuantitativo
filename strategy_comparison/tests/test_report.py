@@ -419,6 +419,28 @@ class ReportTests(unittest.TestCase):
         self.assertEqual(new["status"], "programada_sin_diario")
         self.assertNotEqual(old["id"], new["id"])
 
+    def test_merger_receivable_is_disclosed_and_excluded_from_certified_comparison(self):
+        conf = {"name": "MIDAS_classic_SP500_forward_2026",
+                "universe_file": "weekly_ml/universe_sp500_2026-09-29.csv", "initial_capital": 100000,
+                "strategies": {n: {} for n in self.registry["classic_sp500_tracks"] if n != "benchmark_spy"}}
+        state = {"config_hash": _config_hash(conf), "engine": "classic_sp500_next_open_v2",
+                 "first_session": "2026-10-30", "last_session": "2026-11-02", "books": {
+                     name: {"nav": 100001., "positions": {}, "pending": {}, "equity": [
+                         {"date": "2026-10-30", "nav": 100000.},
+                         {"date": "2026-11-02", "nav": 100001.}]}
+                     for name in self.registry["classic_sp500_tracks"]}}
+        state["books"]["genetic_frozen"]["equity"][-1]["provisional_corporate_valuation"] = True
+        state["books"]["genetic_frozen"]["outage_control"] = {"first_trading_session": "2026-11-04"}
+        out = build(self.registry, self.config, now=self.now,
+                    classic_sp500_config=conf, classic_sp500_state=state)
+        row = next(r for r in out["tracks"] if r["id"] == "classic_sp500_genetic_frozen")
+        self.assertFalse(row["comparison_eligible"])
+        self.assertIn("VALORACIÓN PROVISIONAL", row["activity_label"])
+        self.assertIn("2026-11-04", row["activity_label"])
+        self.assertIn("provisional", row["comparison_exclusion_reason"])
+        unaffected = next(r for r in out["tracks"] if r["id"] == "classic_sp500_benchmark_spy")
+        self.assertTrue(unaffected["comparison_eligible"])
+
     def test_classic_late_reconciliation_is_public_and_mixed_orders_are_not_all_buys(self):
         conf = {"name": "MIDAS_classic_SP500_forward_2026",
                 "universe_file": "weekly_ml/universe_sp500_2026-09-29.csv",

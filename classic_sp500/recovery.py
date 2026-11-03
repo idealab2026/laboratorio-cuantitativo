@@ -41,6 +41,7 @@ def reviewed_dividend(reviews, ticker, day, amount):
 
 
 def recover_passive_books(config, state, sessions_after, quote_loader, *, recorded_at, reviews=None):
+    from classic_sp500.corporate_actions import required_claim_quotes, portfolio_nav, valuation_metadata
     result = copy.deepcopy(state)
     recovered, blocked = [], {}
     for name, original in state["books"].items():
@@ -66,7 +67,7 @@ def recover_passive_books(config, state, sessions_after, quote_loader, *, record
             # day rolls back its dividends too; later days are never skipped.
             for day in days:
                 bars, identity = quote_loader(day)
-                missing_tickers = sorted(set(book["positions"]) - set(bars))
+                missing_tickers = sorted((set(book["positions"]) | required_claim_quotes(book)) - set(bars))
                 if missing_tickers:
                     raise ValueError("missing_historical_held_bar")
                 for ticker, pos in book["positions"].items():
@@ -90,13 +91,12 @@ def recover_passive_books(config, state, sessions_after, quote_loader, *, record
                     close = float(row["close"])
                     if not math.isfinite(close) or close <= 0:
                         raise ValueError("invalid_close")
-                nav = float(book["cash"]) + sum(pos["shares"] * float(bars[ticker]["close"])
-                                               for ticker, pos in book["positions"].items())
+                nav = portfolio_nav(book, bars)
                 if not math.isfinite(nav) or nav < 0:
                     raise ValueError("invalid_nav")
                 marks.append({"date": day, "nav": nav, "late_mark_only": True,
                               "recorded_at_utc": recorded_at,
-                              "quote_identity": identity})
+                              "quote_identity": identity, **valuation_metadata(book)})
                 verified_book = copy.deepcopy(book)
         except (ValueError, KeyError, TypeError, OSError) as exc:
             blocked[name] = str(exc)
