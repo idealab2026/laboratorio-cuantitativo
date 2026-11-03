@@ -11,8 +11,8 @@ import {verify,simulate,rank,valuation,thesisRank,formatPct,money,finite,verifyI
 const $=id=>document.getElementById(id);
 const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 const fmt=n=>finite(n)?new Intl.NumberFormat("es-ES",{maximumFractionDigits:2}).format(n):"N/D";
-const state={data:null,universe:null,fx:null,fxCheck:null,fxStatus:"pending",forecastLedger:null,forecastSummary:null,forecastStatus:"pending",secStatus:"pending",secRead:null,secCatalog:null,yieldDoc:null,yieldCheck:null,yieldStatus:"pending",view:"overview",strategy:"P-01",group:"",sort:"returnPct",asc:false,detailOpen:false,thesis:"T-01",query:"",thesisSort:"central",issuerMode:"catalog",issuerQuery:"",issuerSort:"base",issuerAsc:false,issuerTicker:"MSFT",paperDetail:"M-10",originalPaper:null,originalPaperStatus:"pending",historicalPaper:null,historicalCurves:null,historicalPaperStatus:"pending",fullRoster:null,fullRosterStatus:"pending",strategyCandidates:null,strategyCandidatesStatus:"pending",fullRosterGroup:"",fullRosterQuery:"",fullRosterSort:"return",fullRosterAsc:false,algorithmId:null,institutionalFeedStatus:"pending",paperFeed:null,paperFeedRead:null,localCagr:new Map(),localCagrError:"",publicTheses:new Map(),publicThesesMetadata:null};
-const viewNames=["overview","competition","algorithm","algorithms","theses","monitoring","method","archive","ported","full","synthetic"];
+const state={data:null,universe:null,fx:null,fxCheck:null,fxStatus:"pending",forecastLedger:null,forecastSummary:null,forecastStatus:"pending",secStatus:"pending",secRead:null,secCatalog:null,yieldDoc:null,yieldCheck:null,yieldStatus:"pending",view:"competition",strategy:"P-01",group:"",sort:"returnPct",asc:false,detailOpen:false,thesis:"T-01",query:"",thesisSort:"central",issuerMode:"catalog",issuerQuery:"",issuerSort:"base",issuerAsc:false,issuerTicker:"MSFT",paperDetail:"M-10",originalPaper:null,originalPaperStatus:"pending",historicalPaper:null,historicalCurves:null,historicalPaperStatus:"pending",fullRoster:null,fullRosterStatus:"pending",strategyCandidates:null,strategyCandidatesStatus:"pending",fullRosterGroup:"",fullRosterQuery:"",fullRosterSort:"return",fullRosterAsc:false,algorithmId:null,institutionalFeedStatus:"pending",paperFeed:null,paperFeedRead:null,localCagr:new Map(),localCagrError:"",publicTheses:new Map(),publicThesesMetadata:null};
+const viewNames=["competition","algorithm","algorithms","theses","monitoring","method","archive","ported","full","synthetic"];
 const button=(label,action,value,cls="smallbtn")=>'<button type="button" class="'+cls+'" data-action="'+esc(action)+'" data-value="'+esc(value)+'">'+esc(label)+'</button>';
 const head=(label,title,body)=>'<div class="section-heading"><div><span class="kicker">'+esc(label)+'</span><h2>'+esc(title)+'</h2><p class="section-context">'+esc(body)+'</p></div></div>';
 const card=(html)=>'<article class="panel">'+html+'</article>';
@@ -31,15 +31,6 @@ function sparkline(nav,label="Evolución con precios artificiales"){
 }
 const metric=(label,value)=>'<div class="metric"><strong>'+esc(value)+'</strong><small>'+esc(label)+'</small></div>';
 const family=(g)=>({"Clásicas":"Equiponderación, tendencia, reversión, menor variabilidad y control en efectivo.","Aprendizaje semanal":"Proxies de métodos supervisados; no se han entrenado modelos reales.","Predicción temporal":"Modelos temporales de referencia; no se ha ejecutado TimesFM.","Capital Cycle":"Ciclo de inversión y disciplina de valoración con supuestos observables.","Buy The Dip":"Escalonamiento de exposición tras caídas, con reserva de liquidez.","Modelos experimentales":"Multicriterio, parámetros fijos y filtro de estrés."})[g]||"Prototipo de estrategia paper.";
-function summary(){ /* Competition leader and metrics are derived on each verified render. */ }
-function overview(){
- const archive=state.historicalPaper?summarizePrivatePaper(state.historicalPaper,state.historicalCurves):null;
- return head("INICIO · LABORATORIO PAPER","Competición de algoritmos","Compras y ventas simuladas con capital virtual. Los diarios históricos se conservan con las fechas, los datos de mercado y las condiciones de cada campaña.")+
- '<div class="section-grid">'+card('<h3>Diarios de estrategias</h3><p>'+(archive?archive.withNav+" diarios históricos y "+archive.pending+" estrategias sin histórico comparable. Último cierre del archivo: "+archive.latest:"Comprobando el archivo de 64 estrategias.")+'</p>'+button("Abrir competición y curvas","navigate","competition"))+
- card('<h3>Tesis y escenarios</h3><p>'+state.publicTheses.size+' expedientes históricos publicados. Se conservan los supuestos y las fechas de cada estudio.</p>'+button("Abrir tesis","navigate","theses"))+'</div>'+
- '<h3>Estado de la continuidad</h3><p>El histórico ya está disponible. La ejecución y actualización diaria desde Idea Lab aún se están verificando; las automatizaciones de origen se mantienen hasta completar la sustitución.</p>'+
- '<details class="panel"><summary>Ejemplos didácticos y herramientas de prueba</summary><p>Estos ejemplos usan precios artificiales para comprobar reglas e interfaces. Sus resultados no forman parte de la competición con datos de mercado.</p>'+button("Demo técnica · datos artificiales","navigate","synthetic","outline-btn")+button("Métodos de la demo","navigate","algorithms","outline-btn")+button("Pruebas de nueve reglas técnicas","navigate","ported","outline-btn")+'</details>';
-}
 function syntheticCompetition(){
  const rows=competitionReadModel(state.data,{sort:state.sort,ascending:state.asc,group:state.group});
  const headers=[["name","Algoritmo"],["group","Bloque"],["activity","Actividad actual"],["assets","Activos"],["returnPct","Rent. acum."],["sessions","Sesiones"],["lastSession","Última sesión"],["drawdownPct","DD máx."]];
@@ -649,9 +640,19 @@ function chart(){
 }
 function render(){
  if(!state.data)return;
- const pages={overview,competition,algorithm:algorithmFiche,synthetic:syntheticCompetition,algorithms,theses,monitoring,archive,ported,full,method:methodology};
+ const pages={competition,algorithm:algorithmFiche,synthetic:syntheticCompetition,algorithms,theses,monitoring,archive,ported,full,method:methodology};
  document.querySelectorAll(".product-tabs [data-view]").forEach(b=>{const active=b.dataset.view===state.view||(state.view==="algorithm"&&b.dataset.view==="competition");b.classList.toggle("active",active);b.setAttribute("aria-pressed",String(active));});
- $("app").innerHTML=(pages[state.view]||overview)();chart();
+ $("app").innerHTML=(pages[state.view]||competition)();chart();
+}
+function resolveMidasView(){
+ const requested=new URLSearchParams(location.search).get("view");
+ // Preserve old bookmarks without retaining the deleted Inicio page.
+ if(requested==="overview"){
+  const u=new URL(location.href);u.searchParams.set("view","competition");
+  history.replaceState({view:"competition"},"",u);
+  return "competition";
+ }
+ return viewNames.includes(requested)?requested:"competition";
 }
 function go(view){
  if(!viewNames.includes(view))return;
@@ -810,10 +811,10 @@ $("app").addEventListener("submit",e=>{
  }
  const id="P-"+String(Math.max(...all().map(x=>Number(x.id.slice(2))))+1).padStart(2,"0");
  state.data.strategies.push({id,name,group:"Carteras locales",mode:"manual",manualWeights:weights,rule:"Pesos elegidos en este navegador. Sin persistencia.",cost_bps:cost,status:"Local · sintético",coverage:100,initialCapital:100000});
- state.strategy=id;state.group="";state.sort="returnPct";state.detailOpen=true;summary();go("competition");
+ state.strategy=id;state.group="";state.sort="returnPct";state.detailOpen=true;go("competition");
 });
 document.querySelectorAll(".product-tabs [data-view]").forEach(b=>b.addEventListener("click",()=>{state.detailOpen=false;go(b.dataset.view);}));
-window.addEventListener("popstate",()=>{const params=new URLSearchParams(location.search);const v=params.get("view");state.view=viewNames.includes(v)?v:"overview";state.algorithmId=params.get("algorithm");state.detailOpen=false;render();});
+window.addEventListener("popstate",()=>{state.view=resolveMidasView();state.algorithmId=new URLSearchParams(location.search).get("algorithm");state.detailOpen=false;render();});
 async function init(){
  try{
   const [r,p]=await Promise.all([fetch("./data/demo.json",{cache:"no-store"}),fetch("./data/public-theses.json",{cache:"no-store"})]);
@@ -823,7 +824,7 @@ async function init(){
   const stats=verifyPublicTheses(publication);
   state.publicTheses=new Map(publication.records.map(x=>[x.ticker,x]));
   state.publicThesesMetadata={...stats,published_as_of:publication.published_as_of};
-  state.data=data;state.universe=universe;const params=new URLSearchParams(location.search);const v=params.get("view");state.view=viewNames.includes(v)?v:"overview";state.algorithmId=params.get("algorithm");summary();render();void loadOfficialFx();void loadForecastLedger();void loadSecFilings();void loadOfficialYield();void loadOriginalPaper();void loadHistoricalPaper();void loadFullRoster();void loadStrategyCandidates();void loadInstitutionalPaperFeed();
+  state.data=data;state.universe=universe;state.view=resolveMidasView();state.algorithmId=new URLSearchParams(location.search).get("algorithm");render();void loadOfficialFx();void loadForecastLedger();void loadSecFilings();void loadOfficialYield();void loadOriginalPaper();void loadHistoricalPaper();void loadFullRoster();void loadStrategyCandidates();void loadInstitutionalPaperFeed();
  }catch(e){$("app").textContent="No se ha podido cargar el catálogo de emisores o el laboratorio sintético; no se muestran datos no verificados.";}
 }
 async function loadOfficialFx(){
@@ -877,9 +878,9 @@ async function loadOriginalPaper(){
  try{
   const [r,m]=await Promise.all([fetch("https://raw.githubusercontent.com/idealab2026/laboratorio-cuantitativo/main/strategy_state/dashboard.json",{cache:"no-store",credentials:"omit"}),fetch("./data/original-track-map.json",{cache:"no-store"})]);
   if(!r.ok||!m.ok)throw Error("Diarios no disponibles");
-  state.originalPaper=verifyOriginalPaper(await r.json(),await m.json());state.originalPaperStatus="ok";if(state.data)summary();
+  state.originalPaper=verifyOriginalPaper(await r.json(),await m.json());state.originalPaperStatus="ok";
  }catch(_error){state.originalPaper=null;state.originalPaperStatus="unavailable";}
- if(["full","competition","algorithm","monitoring","overview"].includes(state.view)&&state.data)render();
+ if(["full","competition","algorithm","monitoring"].includes(state.view)&&state.data)render();
 }
 async function loadHistoricalPaper(){
  try{
@@ -887,7 +888,7 @@ async function loadHistoricalPaper(){
   if(res.some(r=>!r.ok))throw Error("Archivo histórico no disponible");
   const [results,nav]=await Promise.all(res.map(r=>r.text()));
   const rows=parseLocalPaperResults(results),curves=parseLocalPaperCurves(nav,rows);
-  state.historicalPaper=rows;state.historicalCurves=curves;state.historicalPaperStatus="ok";if(state.data)summary();
+  state.historicalPaper=rows;state.historicalCurves=curves;state.historicalPaperStatus="ok";
  }catch(_error){state.historicalPaper=null;state.historicalCurves=null;state.historicalPaperStatus="unavailable";}
  if(["full","competition","algorithm"].includes(state.view)&&state.data)render();
 }
@@ -897,7 +898,7 @@ async function loadFullRoster(){
   if(!response.ok)throw Error("Missing institution-only roster");
   const doc=await response.json();
   verifyFullRoster(doc);
-  state.fullRoster=doc;state.fullRosterStatus="ok";if(state.data)summary();
+  state.fullRoster=doc;state.fullRosterStatus="ok";
  }catch(_error){state.fullRoster=null;state.fullRosterStatus="unavailable";}
  if(["full","competition","algorithm"].includes(state.view)&&state.data)render();
 }
