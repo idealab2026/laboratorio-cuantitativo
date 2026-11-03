@@ -425,3 +425,67 @@ test("Historical execution KPIs do not mistake holds, NAV-only or mergers for a 
   "COMPRA · ABIERTA"])assert.ok(rows.includes(expected),"Same trade columns: "+expected);
  assert.ok(rows.includes("24,00"),"Unrealized P/L uses stored close and recorded quantity");
 });
+
+
+test("Each MIDAS session lists COMPRAS, VENTAS and MANTENER without confusing inference with executions",async()=>{
+ const {buildSessionActionColumns,renderOperationsAudit}=await import("../src/operations-audit.mjs");
+ const action=(ticker,side,quantity)=>({ticker,side,quantity,
+  price:side==="buy"?50:side==="sell"?55:null,
+  reason:"Evidence-backed sample",reason_basis:side==="hold"?"inferred_position_continuity":"recorded",
+  evidence:"test/ledger.json",signal_date:null});
+ const track={status:"partial_executions_documented",source_id:"test",source_path:"test/ledger.json",
+  source_sha256:"a".repeat(64),currency:"USD",prices:{AAPL:[]},
+  sessions:[
+   {date:"2026-10-01",actions:[action("AAPL","buy",10),action("AAPL","buy",2),action("MSFT","buy",5)]},
+   {date:"2026-10-02",actions:[action("AAPL","sell",4),action("MSFT","hold",5),action("MSFT","buy",2)]},
+   {date:"2026-10-05",actions:[action("AAPL","sell",8),action("MSFT","hold",7)]}
+  ]};
+ const matrix=buildSessionActionColumns(track);
+ assert.deepEqual(matrix[0].buys,["AAPL","MSFT"],"Same-session duplicate buys list ticker once");
+ assert.deepEqual(matrix[1].sells,["AAPL"]);
+ assert.deepEqual(matrix[1].partialSells,["AAPL"],"4 sold from 12 leaves 8");
+ assert.deepEqual(matrix[1].holds,["MSFT"],"Hold is inferred, not another buy");
+ assert.deepEqual(matrix[2].partialSells,[],"8 sold from 8 is a complete exit");
+ const tracks=Object.fromEntries(Array.from({length:64},(_,idx)=>[
+  "IL-"+String(idx+1).padStart(3,"0"),
+  {source_id:"test",status:"no_executed_actions_documented",source_path:null,
+   source_sha256:null,currency:"USD",prices:{},sessions:[]}
+ ]));
+ tracks["IL-001"]=track;
+ const document={schema:"midas_operations_audit_v1",purpose:"read_only_paper_decision_evidence",
+  asof:"2026-11-03",tracks};
+ const markup=renderOperationsAudit(document,"IL-001");
+ for(const h of ["SESIÓN","COMPRAS","VENTAS","MANTENER","audit-session-grid-head",
+  "audit-session-column-buy","audit-session-column-sell","audit-session-column-hold"])
+  assert.ok(markup.includes(h),"Missing session matrix: "+h);
+ assert.ok(markup.includes('class="audit-partial-star"'),"Partial sales carry a star");
+ const index=markup.indexOf("Sesión 2 · 2026-10-02");
+ const closing=markup.indexOf("Sesión 3 · 2026-10-05");
+ assert.ok(index>closing,"Newest session appears first");
+ const s2=markup.slice(index,markup.indexOf("</summary>",index));
+ const s3=markup.slice(closing,markup.indexOf("</summary>",closing));
+ assert.ok(s2.includes('class="audit-partial-star"'),"Partial sale marked on the ticker");
+ assert.ok(!s3.includes('class="audit-partial-star"'),"Full sale never marked partial");
+ assert.ok(markup.includes("documentadas o inferidas"),"Accordion detail remains accessible");
+});
+test("Partial sale marker refuses uncertainty, supports split-adjusted remaining quantities and excludes mergers",async()=>{
+ const {buildSessionActionColumns}=await import("../src/operations-audit.mjs");
+ const a=(ticker,side,quantity,extra={})=>({ticker,side,quantity,...extra});
+ const track={sessions:[
+  {date:"2026-10-01",actions:[a("AAA","buy",10),a("ZZZ","buy",null)]},
+  {date:"2026-10-05",actions:[
+   a("AAA","sell",10),a("ZZZ","sell",1),
+   a("KVUE","corporate_action",12,{successor_ticker:"KMB",successor_quantity:2})
+  ]},
+  {date:"2026-10-06",actions:[a("AAA","sell",10),a("KMB","hold",2)]}
+ ],splits:[{date:"2026-10-04",ticker:"AAA",ratio:2}]};
+ const rows=buildSessionActionColumns(track);
+ assert.deepEqual(rows[1].partialSells,["AAA"],"Split 10→20, sale of 10 is partial");
+ assert.ok(rows[1].sells.includes("ZZZ")&&!rows[1].partialSells.includes("ZZZ"),
+  "Unknown entry units never imply partial sale");
+ assert.deepEqual(rows[1].corporate,["KVUE → KMB"]);
+ assert.ok(!rows[1].sells.includes("KVUE")&&!rows[1].buys.includes("KMB"),
+  "Conversion must not be labeled a market fill");
+ assert.deepEqual(rows[2].partialSells,[],"Final split-adjusted 10 shares close position");
+ assert.deepEqual(rows[2].holds,["KMB"]);
+});
