@@ -908,7 +908,7 @@ $("app").addEventListener("change",e=>{
  if(el.id==="journal-select"){state.strategy=el.value;render();}
  if(el.id==="audit-ticker"){state.auditTicker=el.value;render();}
  if(el.id==="monitoring-algorithm"){
-  if(!/^IL-\\d{3}$/.test(el.value)||!state.operationsAudit?.tracks?.[el.value])return;
+  if(!/^IL-\d{3}$/.test(el.value)||!state.operationsAudit?.tracks?.[el.value])return;
   state.monitoringStrategy=el.value;
   const place=document.querySelector("#monitoring-trade-table");
   if(place)place.innerHTML=renderTradeLotsTable(state.operationsAudit.tracks[el.value],state.monitoringSort,state.monitoringDesc);
