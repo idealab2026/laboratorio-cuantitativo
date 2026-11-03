@@ -1,5 +1,5 @@
 // Read-only audit UI. No unrecorded fills, reasons or quote history are invented.
-import {buildOperationLots,sortOperationLots} from "./operation-lots.mjs?v=1";
+import {buildOperationLots,sortOperationLots} from "./operation-lots.mjs?v=390ccdb9128f";
 const esc=s=>String(s??"").replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;").replaceAll('"',"&quot;").replaceAll("'","&#39;");
 const num=v=>typeof v==="number"&&Number.isFinite(v);
 const day=v=>typeof v==="string"&&/^\d{4}-\d{2}-\d{2}$/.test(v);
