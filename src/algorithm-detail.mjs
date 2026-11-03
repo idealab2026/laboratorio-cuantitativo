@@ -152,7 +152,7 @@ const priority=[
  [/genetic|genetico/,"genetic"],
  [/macd/,"macd"],
  [/bollinger/,"bollinger"],
- [/turtle_.*short/,"turtleShort"],
+ [/turtle_short_|short_.*turtle/,"turtleShort"],
  [/turtle/,"turtle"],
  [/rsi/,"rsi"],
  [/lgbm.*ranker/,"lightgbmRank"],
