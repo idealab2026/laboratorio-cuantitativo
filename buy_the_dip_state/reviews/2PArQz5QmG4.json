@@ -1,0 +1,289 @@
+{
+  "schema_version": 1,
+  "status": "machine_first_pass",
+  "reviewed_at_utc": "2026-11-04T03:44:01.093119+00:00",
+  "source_identity": "Buy The Dip YouTube channel",
+  "transport": {
+    "kind": "official_podcast_mirror",
+    "provider": "iVoox",
+    "guid": "https://www.ivoox.com/67934033",
+    "published_date": "2021-04-01",
+    "youtube_video_id": "2PArQz5QmG4",
+    "match_score": 0.920103,
+    "audio_bytes_processed_transiently": 26729997
+  },
+  "models": {
+    "asr": {
+      "language": "es",
+      "language_probability": 1.0,
+      "duration_seconds": 3341.244125,
+      "word_count": 9145,
+      "segment_count": 555,
+      "model": "small"
+    },
+    "semantic": {
+      "repo": "Qwen/Qwen3-4B-GGUF",
+      "file": "Qwen3-4B-Q4_K_M.gguf"
+    }
+  },
+  "metadata": {
+    "video_id": "2PArQz5QmG4",
+    "youtube_url": "https://www.youtube.com/watch?v=2PArQz5QmG4",
+    "title": "BUY THE DIP PODCAST: EPISODIO 43 PABLO NOGALES:  CICLOS Y SECTORES",
+    "category": "company_or_theme",
+    "guest_likely": false,
+    "podcast_guid": "https://www.ivoox.com/67934033",
+    "published_date": "2021-04-01",
+    "source": "official_podcast_mirror",
+    "match_score": 0.920103
+  },
+  "analysis": {
+    "episode_summary": "El episodio discute estrategias de inversión en sectores específicos, enfocándose en el análisis de ciclos económicos y la valoración de activos basada en datos reales. Se mencionan oportunidades de inversión en minas de oro y otros activos de alto rendimiento, considerados como protecciones contra caídas del mercado. Se aborda la importancia de la cobertura contra volatilidad, la tolerancia al riesgo y la gestión a largo plazo. Se destacan empresas como Brookfield y 5 Point Holdings, con enfoque en modelos de negocio complejos y alta paciencia. También se analiza una empresa con depósito de oro en África, con potencial de crecimiento y riesgos asociados a la exploración y construcción de infraestructuras. El episodio finaliza con una transición a otros episodios.",
+    "process": {
+      "idea_generation": [],
+      "quality": [],
+      "balance_sheet": [],
+      "valuation": [
+        "Análisis de la valoración de activos basada en datos reales y factores macroeconómicos.",
+        "Evaluación de empresas con alta tasa de retorno y cotización atractiva, aunque con movimientos limitados en el mercado."
+      ],
+      "cycle_macro": [
+        "Análisis de ciclos económicos a largo plazo y su influencia en la valoración de sectores y empresas."
+      ],
+      "entry": [
+        "Inversión en empresas de materias primas, minas y royalties como oportunidades de alto rendimiento.",
+        "Estrategia de inversión a largo plazo en empresas con modelos de negocio complejos y alta paciencia."
+      ],
+      "sizing": [
+        "Necesidad de exposición a ciertos activos para aprovechar la volatilidad y diversificar el portafolio."
+      ],
+      "add_hold": [],
+      "exit": [
+        "Cierre del episodio con una transición a otros episodios."
+      ],
+      "risk": [
+        "Importancia de tener cobertura contra caídas de mercado y tolerancia a la volatilidad.",
+        "Riesgos asociados a la exploración y construcción de infraestructuras en proyectos de oro."
+      ],
+      "technical": [],
+      "management": [],
+      "mistakes": []
+    },
+    "candidate_rules": [
+      {
+        "rule": "paráfrasis compacta",
+        "scope": "hosts|uncertain_or_guest",
+        "confidence": 0.0,
+        "evidence_timestamps": [],
+        "automation_proxy": "variable/cálculo posible o null",
+        "cross_video_confirmation_required": true
+      }
+    ],
+    "contradictions_or_uncertainties": [],
+    "named_examples": [
+      "Empresa con depósito de oro en África con potencial de crecimiento y riesgos asociados a la exploración y construcción de infraestructuras.",
+      "Empresas como Brookfield y 5 Point Holdings con enfoque en modelos de negocio complejos y alta paciencia."
+    ],
+    "automation_readiness": "medium"
+  },
+  "chunk_evidence": [
+    {
+      "chunk": 1,
+      "evidence": [
+        {
+          "stage": "entry",
+          "paraphrase": "Los participantes discuten estrategias de inversión en sectores específicos, destacando el valor del análisis de ciclos económicos y la importancia de la formación en finanzas para empresas familiares.",
+          "timestamp": "00:08:29",
+          "scope": "hosts",
+          "confidence": 0.8,
+          "automation_hint": "proxy observable"
+        },
+        {
+          "stage": "valuation",
+          "paraphrase": "Se menciona la pérdida de poder adquisitivo de las divisas emitidas por bancos centrales, lo que influye en la valoración de activos y sectores específicos.",
+          "timestamp": "00:09:13",
+          "scope": "hosts",
+          "confidence": 0.7,
+          "automation_hint": "proxy observable"
+        },
+        {
+          "stage": "cycle_macro",
+          "paraphrase": "Se analizan los ciclos económicos a largo plazo, enfocándose en la evaluación de sectores y empresas basada en datos reales y la influencia de factores macroeconómicos.",
+          "timestamp": "00:09:04",
+          "scope": "hosts",
+          "confidence": 0.6,
+          "automation_hint": "proxy observable"
+        }
+      ],
+      "named_examples": [],
+      "chunk_summary": "El fragmento muestra una discusión sobre estrategias de inversión en sectores específicos, destacando el análisis de ciclos económicos, la valoración de activos basada en datos reales y la formación en finanzas para empresas familiares. Los participantes analizan la influencia de factores macroeconómicos y la importancia de la formación en finanzas para la toma de decisiones en inversiones."
+    },
+    {
+      "chunk": 2,
+      "evidence": [
+        {
+          "stage": "valuation",
+          "paraphrase": "La inversión en minas de oro se basa en la expectativa de que el precio del oro se mantenga estable a pesar de la baja reciente, relacionada con la inflación y la política monetaria.",
+          "timestamp": "00:15:51",
+          "scope": "hosts",
+          "confidence": 0.8,
+          "automation_hint": "proxy observable"
+        },
+        {
+          "stage": "risk",
+          "paraphrase": "Se menciona la posibilidad de que los tipos de interés se mantengan bajos o negativos, lo que podría afectar la demanda de bonos y la inversión en activos como el oro.",
+          "timestamp": "00:18:44",
+          "scope": "hosts",
+          "confidence": 0.7,
+          "automation_hint": "proxy observable"
+        },
+        {
+          "stage": "entry",
+          "paraphrase": "Se sugiere invertir en empresas de materias primas, minas y royalties, consideradas como oportunidades de alto rendimiento en un contexto macroeconómico actual.",
+          "timestamp": "00:15:04",
+          "scope": "hosts",
+          "confidence": 0.6,
+          "automation_hint": "proxy observable"
+        }
+      ],
+      "named_examples": [],
+      "chunk_summary": "El fragmento aborda la estrategia de inversión en minas de oro y otros activos de alto rendimiento, basada en la expectativa de estabilidad del precio del oro y la inflación. Se menciona la importancia de invertir a largo plazo y en activos que se comportan bien durante caídas del mercado accionario, como los bonos. También se discute la posibilidad de que los tipos de interés se mantengan bajos, lo que podría influir en la demanda de bonos y en la inversión en activos como el oro."
+    },
+    {
+      "chunk": 3,
+      "evidence": [
+        {
+          "stage": "risk",
+          "paraphrase": "El analista menciona la importancia de tener cobertura contra caídas de mercado, sugiriendo que la volatilidad y los eventos inesperados pueden afectar significativamente la rentabilidad de la cartera.",
+          "timestamp": "00:29:41",
+          "scope": "hosts",
+          "confidence": 0.8,
+          "automation_hint": "proxy observable"
+        },
+        {
+          "stage": "valuation",
+          "paraphrase": "Se sugiere que la inversión en activos como oro y bitcoin puede actuar como una forma de protección contra períodos macroeconómicos difíciles, aunque el analista no tiene certeza sobre su efectividad a largo plazo.",
+          "timestamp": "00:30:16",
+          "scope": "hosts",
+          "confidence": 0.7,
+          "automation_hint": "proxy observable"
+        },
+        {
+          "stage": "entry",
+          "paraphrase": "El analista considera que entrar en bonos no es la mejor estrategia debido a la incertidumbre sobre los tipos de interés y la posibilidad de cambios en las dinámicas de inversión a largo plazo.",
+          "timestamp": "00:24:38",
+          "scope": "hosts",
+          "confidence": 0.6,
+          "automation_hint": "proxy observable"
+        }
+      ],
+      "named_examples": [],
+      "chunk_summary": "El fragmento aborda la importancia de la cobertura contra volatilidad y caídas de mercado, sugiere que activos como oro y bitcoin pueden ser una forma de protección, y menciona dudas sobre la estrategia de inversión en bonos debido a la incertidumbre sobre los tipos de interés y cambios futuros en las dinámicas de inversión."
+    },
+    {
+      "chunk": 4,
+      "evidence": [
+        {
+          "stage": "entry",
+          "paraphrase": "El usuario menciona una tesis de inversión a largo plazo en empresas como Brookfield y 5 Point Holdings, destacando la paciencia requerida y la complejidad del modelo de negocio.",
+          "timestamp": "00:32:21",
+          "scope": "hosts",
+          "confidence": 0.8
+        },
+        {
+          "stage": "valuation",
+          "paraphrase": "Se analiza la capitalización bursátil de Brookfield y American Tower, comparando su tamaño y participación en el mercado.",
+          "timestamp": "00:33:01",
+          "scope": "hosts",
+          "confidence": 0.7
+        },
+        {
+          "stage": "risk",
+          "paraphrase": "El usuario explica su enfoque hacia la volatilidad y las caídas del mercado, enfatizando su capacidad de tolerancia y su estrategia de gestión de riesgos a largo plazo.",
+          "timestamp": "00:36:01",
+          "scope": "hosts",
+          "confidence": 0.6
+        },
+        {
+          "stage": "cycle_macro",
+          "paraphrase": "Se menciona la importancia de entender el sistema monetario y las decisiones de los bancos centrales en la gestión de carteras a largo plazo.",
+          "timestamp": "00:39:18",
+          "scope": "hosts",
+          "confidence": 0.5
+        },
+        {
+          "stage": "sizing",
+          "paraphrase": "El usuario destaca la necesidad de una exposición a ciertos activos para aprovechar la volatilidad y la estrategia de diversificación en el mercado.",
+          "timestamp": "00:37:30",
+          "scope": "hosts",
+          "confidence": 0.4
+        }
+      ],
+      "named_examples": [],
+      "chunk_summary": "El usuario discute una estrategia de inversión a largo plazo enfocada en empresas con modelos de negocio complejos y alta paciencia, destacando la importancia de la volatilidad, la capitalización bursátil, y la comprensión de factores macroeconómicos. Menciona empresas como Brookfield y 5 Point Holdings, y explica su enfoque hacia el riesgo y la gestión de carteras, enfatizando la tolerancia a la volatilidad y la necesidad de una visión a largo plazo."
+    },
+    {
+      "chunk": 5,
+      "evidence": [
+        {
+          "stage": "entry",
+          "paraphrase": "El analista menciona una empresa cotizada en bolsa que tiene un depósito de oro en África y que ha vendido parte de su producción por un valor elevado, lo que sugiere un potencial de crecimiento.",
+          "timestamp": "00:48:30",
+          "scope": "hosts",
+          "confidence": 0.8,
+          "automation_hint": "proxy observable"
+        },
+        {
+          "stage": "valuation",
+          "paraphrase": "La empresa mencionada tiene una alta tasa de retorno (88%) y una cotización atractiva, aunque actualmente no se mueve mucho en el mercado.",
+          "timestamp": "00:49:54",
+          "scope": "hosts",
+          "confidence": 0.7,
+          "automation_hint": "proxy observable"
+        },
+        {
+          "stage": "risk",
+          "paraphrase": "El analista señala que la empresa tiene riesgos asociados a la exploración y la construcción de infraestructuras, pero también menciona que tiene financiación y apoyo de un gobierno local.",
+          "timestamp": "00:49:13",
+          "scope": "hosts",
+          "confidence": 0.6,
+          "automation_hint": "proxy observable"
+        },
+        {
+          "stage": "entry",
+          "paraphrase": "El analista sugiere que una empresa específica (Pax y Charlo) está presente en supermercados y tiene un valor oculto que podría generar un aumento en su cotización.",
+          "timestamp": "00:53:03",
+          "scope": "hosts",
+          "confidence": 0.7,
+          "automation_hint": "proxy observable"
+        }
+      ],
+      "named_examples": [],
+      "chunk_summary": "El análisis de inversión menciona una empresa con un depósito de oro en África que ha vendido parte de su producción por un valor elevado, lo que sugiere un potencial de crecimiento. La empresa tiene una alta tasa de retorno y una cotización atractiva, aunque actualmente no se mueve mucho en el mercado. También se menciona una empresa específica (Pax y Charlo) que está presente en supermercados y tiene un valor oculto que podría generar un aumento en su cotización. El analista señala riesgos asociados a la exploración y la construcción de infraestructuras, pero también menciona que tiene financiación y apoyo de un gobierno local."
+    },
+    {
+      "chunk": 6,
+      "evidence": [
+        {
+          "stage": "entry",
+          "paraphrase": "Los nuevos siguientes podcasts deben recordarse",
+          "timestamp": "00:55:28",
+          "scope": "hosts",
+          "confidence": 0.0,
+          "automation_hint": "proxy observable"
+        },
+        {
+          "stage": "exit",
+          "paraphrase": "El contenido se finaliza con un adiós",
+          "timestamp": "00:55:38",
+          "scope": "hosts",
+          "confidence": 0.0,
+          "automation_hint": "proxy observable"
+        }
+      ],
+      "named_examples": [],
+      "chunk_summary": "El fragmento describe una transición de un podcast a otro, indicando que los nuevos episodios deben ser recordados y que el contenido se cierra con un adiós. Se identifican dos etapas: entrada y salida, con indicaciones de recordatorio y cierre respectivamente."
+    }
+  ],
+  "copyright_note": "No audio or verbatim transcript is persisted; only derived paraphrases."
+}
