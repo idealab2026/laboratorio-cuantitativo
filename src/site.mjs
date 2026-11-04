@@ -13,7 +13,7 @@ import {verify,simulate,rank,valuation,thesisRank,formatPct,money,finite,verifyI
 const $=id=>document.getElementById(id);
 const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 const fmt=n=>finite(n)?new Intl.NumberFormat("es-ES",{maximumFractionDigits:2}).format(n):"N/D";
-const state={data:null,universe:null,fx:null,fxCheck:null,fxStatus:"pending",forecastLedger:null,forecastSummary:null,forecastStatus:"pending",secStatus:"pending",secRead:null,secCatalog:null,yieldDoc:null,yieldCheck:null,yieldStatus:"pending",view:"competition",strategy:"P-01",group:"",sort:"returnPct",asc:false,detailOpen:false,thesis:"T-01",query:"",thesisSort:"central",issuerMode:"catalog",issuerQuery:"",issuerSort:"base",issuerAsc:false,issuerTicker:"MSFT",paperDetail:"M-10",originalPaper:null,originalPaperStatus:"pending",historicalPaper:null,historicalCurves:null,historicalPaperStatus:"pending",fullRoster:null,fullRosterStatus:"pending",strategyCandidates:null,strategyCandidatesStatus:"pending",fullRosterGroup:"",fullRosterQuery:"",fullRosterSort:"return",fullRosterAsc:false,algorithmId:null,operationsAudit:null,operationsAuditStatus:"pending",auditTicker:null,auditTab:"sessions",auditSort:"recent",auditDesc:true,monitoringTab:"summary",monitoringStrategy:"IL-039",monitoringSort:"recent",monitoringDesc:true,institutionalFeedStatus:"pending",paperFeed:null,paperFeedRead:null,localCagr:new Map(),localCagrError:"",publicTheses:new Map(),publicThesesMetadata:null};
+const state={data:null,universe:null,fx:null,fxCheck:null,fxStatus:"pending",forecastLedger:null,forecastSummary:null,forecastStatus:"pending",secStatus:"pending",secRead:null,secCatalog:null,yieldDoc:null,yieldCheck:null,yieldStatus:"pending",view:"competition",strategy:"P-01",group:"",sort:"returnPct",asc:false,detailOpen:false,thesis:"T-01",query:"",thesisSort:"central",issuerMode:"catalog",issuerQuery:"",issuerSort:"base",issuerAsc:false,issuerTicker:"MSFT",paperDetail:"M-10",originalPaper:null,originalPaperStatus:"pending",historicalPaper:null,historicalCurves:null,historicalPaperStatus:"pending",fullRoster:null,fullRosterStatus:"pending",strategyCandidates:null,strategyCandidatesStatus:"pending",fullRosterGroup:"",fullRosterQuery:"",fullRosterSort:"return",fullRosterAsc:false,algorithmId:null,operationsAudit:null,operationsAuditStatus:"pending",auditTicker:null,auditTab:"sessions",auditSort:"recent",auditDesc:true,monitoringTab:"summary",monitoringStrategy:"IL-039",monitoringSort:"recent",monitoringDesc:true,executionHistory:null,executionHistoryStatus:"pending",institutionalFeedStatus:"pending",paperFeed:null,paperFeedRead:null,localCagr:new Map(),localCagrError:"",publicTheses:new Map(),publicThesesMetadata:null};
 const viewNames=["competition","algorithm","algorithms","theses","monitoring","method","glossary","ported","full","synthetic"];
 const button=(label,action,value,cls="smallbtn")=>'<button type="button" class="'+cls+'" data-action="'+esc(action)+'" data-value="'+esc(value)+'">'+esc(label)+'</button>';
 const head=(label,title,body)=>'<div class="section-heading"><div><span class="kicker">'+esc(label)+'</span><h2>'+esc(title)+'</h2><p class="section-context">'+esc(body)+'</p></div></div>';
@@ -291,6 +291,91 @@ function prospectiveForecastPanel(){
  '<p class="table-note">Registro completo: <a href="./data/fx-forecast-ledger.json" target="_blank" rel="noopener noreferrer">JSON de eventos y hashes</a>. No son operaciones financieras y no se incorporan a la clasificación de las 23 estrategias.</p>';
 }
 
+/**
+ * GitHub Actions session health, NOT the individual paper trading ledger.
+ * A workflow shared by 9 slots can report 9 affected algorithms, while the
+ * source badge discloses that all share one execution event.
+ */
+function verifyExecutionHistory(doc){
+ if(!doc||doc.schema!=="midas_daily_execution_health_v1"||
+    !["verified_github_actions","unavailable"].includes(doc.status))throw Error("Registro diario inválido");
+ if(!Array.isArray(doc.days))throw Error("Sin filas comprobables");
+ if(doc.status==="unavailable"){
+  if(doc.days.length)throw Error("Fuente caída con recuentos ficticios");
+  return doc;
+ }
+ if(doc.slot_count!==64||doc.automated_slots!==26||doc.days.length>21)
+  throw Error("Inventario diario inesperado");
+ let previous="9999-99-99";
+ for(const d of doc.days){
+  if(!/^\d{4}-\d{2}-\d{2}$/.test(d.date)||d.date>=previous)
+   throw Error("Fecha diaria inválida");
+  previous=d.date;
+  if(!Number.isInteger(d.expected)||!Number.isInteger(d.not_scheduled)||
+     d.expected+d.not_scheduled!==64||!Array.isArray(d.details)||d.details.length!==d.expected)
+   throw Error("Inventario diario no conciliado");
+  let sum=0;const ids=new Set();
+  for(const key of ["success","failure","not_run","pending"]){
+   if(!Number.isInteger(d[key])||d[key]<0)throw Error("Recuento diario incorrecto");
+   sum+=d[key];
+  }
+  if(sum!==d.expected)throw Error("Resultados de ejecución no conciliados");
+  for(const item of d.details){
+   if(!/^IL-\d{3}$/.test(item.slot)||ids.has(item.slot)||
+      !["success","failure","not_run","pending"].includes(item.status)||
+      !Array.isArray(item.workflows)||!item.workflows.length)
+    throw Error("Algoritmo duplicado o sin trazabilidad");
+   ids.add(item.slot);
+   for(const workflow of item.workflows){
+    if(!/^[a-z0-9_-]+\.yml$/.test(workflow.workflow)||
+       (workflow.run_url&&!/^https:\/\/github\.com\/idealab2026\/laboratorio-cuantitativo\/actions\/runs\/\d+$/.test(workflow.run_url)))
+      throw Error("Enlace de ejecución no autorizado");
+   }
+  }
+ }
+ return doc;
+}
+function renderDailyExecutionTable(doc,status,roster){
+ if(status==="pending")return '<p class="audit-method-note">Consultando el registro de ejecuciones programadas…</p>';
+ if(status!=="verified"||!doc||doc.status!=="verified_github_actions")
+  return '<p class="audit-method-note">No se ha podido verificar el historial de GitHub Actions. No se muestran ceros ni fallos inventados.</p>';
+ const num=v=>new Intl.NumberFormat("es-ES").format(v);
+ const names=new Map((roster?.entries||[]).map(e=>[e.slot,e.name]));
+ const captions={success:"Correcto",failure:"Fallido",not_run:"Sin ejecución",pending:"Pendiente"};
+ const rows=doc.days.map(day=>{
+  const label=day.date.split("-").reverse().join("/");
+  const details=[...day.details].sort((a,b)=>{
+   const rank={failure:0,not_run:1,pending:2,success:3};
+   return rank[a.status]-rank[b.status]||a.slot.localeCompare(b.slot);
+  });
+  const expanded='<details class="daily-execution-details"><summary>Ver '+day.expected+' algoritmos</summary>'+
+   '<div class="daily-execution-subtable"><table><thead><tr><th>Algoritmo</th><th>Resultado</th><th>Automatismo y evidencia</th></tr></thead><tbody>'+
+   details.map(d=>{
+    const links=d.workflows.map(w=>{
+     const textLabel=esc(w.workflow.replace(/\.yml$/,"").replaceAll("_"," "));
+     return w.run_url?'<a href="'+esc(w.run_url)+'" target="_blank" rel="noopener noreferrer">'+textLabel+'</a>':
+      '<span>'+textLabel+' · sin ejecución registrada</span>';
+    }).join(" · ");
+    return '<tr><td><strong>'+esc(d.slot)+'</strong><small>'+esc(names.get(d.slot)||"")+'</small></td>'+
+     '<td><span class="daily-run-state '+esc(d.status)+'">'+esc(captions[d.status])+'</span>'+
+     (d.reason?'<small>'+esc(d.reason)+'</small>':"")+'</td><td>'+links+'</td></tr>';
+   }).join("")+'</tbody></table></div></details>';
+  return '<tr><td><strong>'+esc(label)+'</strong><small>'+esc(day.complete?"Cierre verificado":"Cierre pendiente")+'</small></td>'+
+   '<td class="daily-count daily-ok">'+num(day.success)+'</td>'+
+   '<td class="daily-count daily-fail">'+num(day.failure)+'</td>'+
+   '<td class="daily-count daily-absent">'+num(day.not_run)+'</td>'+
+   '<td class="daily-count">'+num(day.pending)+'</td>'+
+   '<td class="daily-count daily-neutral">'+num(day.not_scheduled)+'</td>'+
+   '<td>'+expanded+'</td></tr>';
+ }).join("");
+ return '<div class="daily-ledger-header"><strong>Registro por sesión bursátil</strong>'+
+   '<span>Fuente GitHub Actions · actualizado '+esc(doc.as_of_utc.replace("T"," ").slice(0,16))+' UTC</span></div>'+
+  '<div class="table-scroll daily-execution-scroll"><table class="daily-execution-table"><thead><tr>'+
+   '<th>Sesión</th><th>Correctos</th><th>Fallidos</th><th>No ejecutados</th>'+
+   '<th>Pendientes</th><th>Sin programación</th><th>Detalle</th></tr></thead><tbody>'+
+   rows+'</tbody></table></div>'+
+  '<p class="monitoring-caveat">Recuento limitado a los 26 algoritmos vinculados a workflows programados de los 64 catalogados. Se atribuye la ejecución a la fecha de sesión estadounidense (los reintentos de madrugada corresponden a la sesión anterior). Un workflow compartido cuenta por cada algoritmo asociado, pero su éxito no acredita independientemente todos los libros ni implica compras o ventas. «No ejecutados» solo cuenta ejecuciones ya vencidas sin run; las futuras permanecen pendientes. «Sin programación» incluye históricos, propuestas y algoritmos no previstos ese día. Las fechas anteriores al inicio de seguimiento no se reconstruyen artificialmente.</p>';
+}
 function monitoring(){
  const roster=state.fullRoster, candidates=state.strategyCandidates, audit=state.operationsAudit;
  const summary=summarizeOperationsAudit(audit);
@@ -304,9 +389,9 @@ function monitoring(){
    feed?.status==="not_connected"?0:null;
  const latestPaper=summary?.latestSession||state.originalPaper?.latest||null;
  const latestTrade=summary?.latestTrade||null;
- const selectedTab=state.monitoringTab==="operations"?"operations":"summary";
+ const selectedTab=["summary","operations","daily"].includes(state.monitoringTab)?state.monitoringTab:"summary";
  const tabs='<div class="monitoring-tabs" id="monitoring-tab-strip" role="tablist" aria-label="Paneles de salud operativa">'+
-  [['summary',"Indicadores"],['operations',"Operaciones"]].map(([key,label])=>
+  [['summary',"Indicadores"],['operations',"Operaciones"],['daily',"Ejecución diaria"]].map(([key,label])=>
    '<button type="button" role="tab" data-action="monitoring-tab" data-value="'+key+
    '" aria-selected="'+(selectedTab===key)+'" aria-controls="monitoring-panel-'+key+'">'+label+'</button>').join("")+'</div>';
  const health=summary?summary.withExecutions:null;
@@ -352,9 +437,11 @@ function monitoring(){
  const operationPanel='<div id="monitoring-panel-operations" role="tabpanel"'+(selectedTab!=="operations"?' hidden':'')+'>'+
   '<p class="monitoring-explanation">Registro por lotes, idéntico al apartado «Operaciones» de la ficha de cada algoritmo. Las estrategias sin fills individuales quedan señaladas como sin operaciones documentadas.</p>'+
   picker+'<div id="monitoring-trade-table">'+table+'</div></div>';
+ const dailyPanel='<div id="monitoring-panel-daily" role="tabpanel"'+(selectedTab!=="daily"?' hidden':'')+'>'+
+  renderDailyExecutionTable(state.executionHistory,state.executionHistoryStatus,roster)+'</div>';
  return head("SALUD OPERATIVA","Estado del laboratorio MIDAS",
   "Propuestas, actividad paper documentada y evidencia de producción, separadas para no confundir simulaciones con ejecución automática.")+
-  tabs+summaryPanel+operationPanel;
+  tabs+summaryPanel+operationPanel+dailyPanel;
 }
 function syntheticMonitoring(){
  const s=active(),audit=causalLedger();
@@ -840,12 +927,12 @@ $("app").addEventListener("click",e=>{
   }
  }
  else if(action==="monitoring-tab"){
-  state.monitoringTab=value==="operations"?"operations":"summary";
+  state.monitoringTab=["summary","operations","daily"].includes(value)?value:"summary";
   const tabs=document.querySelector("#monitoring-tab-strip");
   if(tabs){
    for(const tab of tabs.querySelectorAll("[data-action='monitoring-tab']"))
     tab.setAttribute("aria-selected",String(tab.dataset.value===state.monitoringTab));
-   for(const key of ["summary","operations"]){
+   for(const key of ["summary","operations","daily"]){
     const el=document.querySelector("#monitoring-panel-"+key);
     if(el)el.hidden=key!==state.monitoringTab;
    }
@@ -972,7 +1059,7 @@ async function init(){
   const stats=verifyPublicTheses(publication);
   state.publicTheses=new Map(publication.records.map(x=>[x.ticker,x]));
   state.publicThesesMetadata={...stats,published_as_of:publication.published_as_of};
-  state.data=data;state.universe=universe;state.view=resolveMidasView();state.algorithmId=new URLSearchParams(location.search).get("algorithm");render();void loadOfficialFx();void loadForecastLedger();void loadSecFilings();void loadOfficialYield();void loadOriginalPaper();void loadHistoricalPaper();void loadFullRoster();void loadStrategyCandidates();void loadInstitutionalPaperFeed();void loadOperationsAudit();
+  state.data=data;state.universe=universe;state.view=resolveMidasView();state.algorithmId=new URLSearchParams(location.search).get("algorithm");render();void loadOfficialFx();void loadForecastLedger();void loadSecFilings();void loadOfficialYield();void loadOriginalPaper();void loadHistoricalPaper();void loadFullRoster();void loadStrategyCandidates();void loadInstitutionalPaperFeed();void loadOperationsAudit();void loadExecutionHistory();
  }catch(e){$("app").textContent="No se ha podido cargar el catálogo de emisores o el laboratorio sintético; no se muestran datos no verificados.";}
 }
 async function loadOfficialFx(){
@@ -1066,6 +1153,19 @@ async function loadInstitutionalPaperFeed(){
   state.institutionalFeedStatus=verified.status;
  }catch(_error){state.paperFeed=null;state.paperFeedRead=null;state.institutionalFeedStatus="unavailable";}
  if(["full","competition","algorithm","monitoring"].includes(state.view)&&state.data)render();
+}
+async function loadExecutionHistory(){
+ try{
+  const response=await fetch("./data/execution-history.json",{cache:"no-store"});
+  if(!response.ok)throw Error("No daily execution ledger");
+  const doc=verifyExecutionHistory(await response.json());
+  state.executionHistory=doc;
+  state.executionHistoryStatus=doc.status==="verified_github_actions"?"verified":"unavailable";
+ }catch(_error){
+  state.executionHistory=null;
+  state.executionHistoryStatus="unavailable";
+ }
+ if(state.view==="monitoring"&&state.data)render();
 }
 async function loadOperationsAudit(){
  try{
