@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "generated_at_utc": "2026-11-04T18:03:05.779937+00:00",
+  "generated_at_utc": "2026-11-04T18:03:10.444116+00:00",
   "principle": "Comparar rentabilidad acumulada y riesgo observado; no ordenar carteras con distintas fechas de inicio o supuestos de ejecución.",
   "counts": {
     "paper_with_diary": 18,
@@ -679,11 +679,11 @@
       "status": "demo_con_diario",
       "classic_sp500_cohort": true,
       "first_session": "2026-10-12",
-      "last_session": "2026-11-02",
+      "last_session": "2026-11-03",
       "initial_capital": 100000.0,
-      "last_equity": 103377.45077314039,
-      "return_pct": 3.377451,
-      "day_return_pct": null,
+      "last_equity": 102893.04840944425,
+      "return_pct": 2.893048,
+      "day_return_pct": -0.468576,
       "currency": "USD",
       "equity_history": [
         {
@@ -745,13 +745,17 @@
         {
           "date": "2026-11-02",
           "nav": 103377.45077314039
+        },
+        {
+          "date": "2026-11-03",
+          "nav": 102893.04840944425
         }
       ],
-      "note": "Nueva campaña S&P500 503 símbolos; las carteras originales de 8 títulos se conservan históricas y no transfieren NAV ni operaciones. Derecho de cobro pendiente; referencia temporal OCC, no importe final de liquidación. Valoración conservada exclusivamente hasta 2026-11-02; operaciones sin actualizar.",
+      "note": "Nueva campaña S&P500 503 símbolos; las carteras originales de 8 títulos se conservan históricas y no transfieren NAV ni operaciones. Derecho de cobro pendiente; referencia temporal OCC, no importe final de liquidación.",
       "evaluated_universe_symbols": 488,
       "eligible_universe_symbols": 503,
       "activity_state": "active",
-      "activity_label": "VALORACIÓN PAUSADA · falta cotización; 489 posiciones abiertas · Inactividad sin operaciones: 2026-11-02 · Reanudación desde apertura: 2026-11-04 · CANJE CON VALORACIÓN PROVISIONAL; cobro separado del efectivo",
+      "activity_label": "489 posiciones abiertas · Inactividad sin operaciones: 2026-11-02, 2026-11-03 · Reanudación desde apertura: 2026-11-05 · CANJE CON VALORACIÓN PROVISIONAL; cobro separado del efectivo",
       "activity_tickers": [
         "A",
         "AAPL",
@@ -769,24 +773,26 @@
       "open_positions_count": 489,
       "pending_orders_count": 0,
       "inactive_sessions": [
-        "2026-11-02"
+        "2026-11-02",
+        "2026-11-03"
       ],
       "outage_control": {
-        "first_trading_session": "2026-11-04",
-        "registered_at_utc": "2026-11-03T16:28:14+00:00"
+        "first_trading_session": "2026-11-05",
+        "registered_at_utc": "2026-11-04T18:03:08+00:00"
       },
       "provisional_valuation_sessions": [
-        "2026-11-02"
+        "2026-11-02",
+        "2026-11-03"
       ],
-      "data_quality_status": "held_quote_unavailable",
+      "data_quality_status": "provisional_corporate_receivable",
       "comparison_eligible": false,
       "comparison_universe_id": null,
       "comparison_universe_symbols": null,
       "comparison_exclusion_reason": "Canje con valoración provisional de un derecho de cobro; excluido de comparación certificada",
-      "risk_observations": 15,
-      "annualized_volatility_pct": 10.465538,
+      "risk_observations": 16,
+      "annualized_volatility_pct": 10.494211,
       "max_drawdown_pct": -0.794726,
-      "sharpe_0rf": 5.768244
+      "sharpe_0rf": 4.618849
     },
     {
       "id": "classic_sp500_ema_rsi_fixed",
@@ -796,11 +802,11 @@
       "status": "demo_con_diario",
       "classic_sp500_cohort": true,
       "first_session": "2026-10-12",
-      "last_session": "2026-11-02",
+      "last_session": "2026-11-03",
       "initial_capital": 100000.0,
-      "last_equity": 104815.84255689943,
-      "return_pct": 4.815843,
-      "day_return_pct": null,
+      "last_equity": 102678.70868641301,
+      "return_pct": 2.678709,
+      "day_return_pct": -2.038942,
       "currency": "USD",
       "equity_history": [
         {
@@ -862,13 +868,17 @@
         {
           "date": "2026-11-02",
           "nav": 104815.84255689943
+        },
+        {
+          "date": "2026-11-03",
+          "nav": 102678.70868641301
         }
       ],
-      "note": "Nueva campaña S&P500 503 símbolos; las carteras originales de 8 títulos se conservan históricas y no transfieren NAV ni operaciones. Valoración conservada exclusivamente hasta 2026-11-02; operaciones sin actualizar.",
+      "note": "Nueva campaña S&P500 503 símbolos; las carteras originales de 8 títulos se conservan históricas y no transfieren NAV ni operaciones.",
       "evaluated_universe_symbols": 488,
       "eligible_universe_symbols": 503,
       "activity_state": "active",
-      "activity_label": "VALORACIÓN PAUSADA · falta cotización; 8 posiciones abiertas",
+      "activity_label": "8 posiciones abiertas · Inactividad sin operaciones: 2026-11-03 · Reanudación desde apertura: 2026-11-05",
       "activity_tickers": [
         "BF-B",
         "BLDR",
@@ -881,15 +891,21 @@
       ],
       "open_positions_count": 8,
       "pending_orders_count": 0,
-      "data_quality_status": "held_quote_unavailable",
+      "inactive_sessions": [
+        "2026-11-03"
+      ],
+      "outage_control": {
+        "first_trading_session": "2026-11-05",
+        "registered_at_utc": "2026-11-04T18:03:08+00:00"
+      },
       "comparison_eligible": true,
       "comparison_universe_id": "SP500_2026-09-29_503",
       "comparison_universe_symbols": 503,
       "comparison_exclusion_reason": null,
-      "risk_observations": 15,
-      "annualized_volatility_pct": 18.527765,
+      "risk_observations": 16,
+      "annualized_volatility_pct": 20.348414,
       "max_drawdown_pct": -2.667345,
-      "sharpe_0rf": 4.66224
+      "sharpe_0rf": 2.2787
     },
     {
       "id": "classic_sp500_genetic_frozen",
@@ -899,11 +915,11 @@
       "status": "demo_con_diario",
       "classic_sp500_cohort": true,
       "first_session": "2026-10-12",
-      "last_session": "2026-11-02",
+      "last_session": "2026-11-03",
       "initial_capital": 100000.0,
-      "last_equity": 107393.24866585147,
-      "return_pct": 7.393249,
-      "day_return_pct": null,
+      "last_equity": 106272.08288858409,
+      "return_pct": 6.272083,
+      "day_return_pct": -1.043982,
       "currency": "USD",
       "equity_history": [
         {
@@ -965,13 +981,17 @@
         {
           "date": "2026-11-02",
           "nav": 107393.24866585147
+        },
+        {
+          "date": "2026-11-03",
+          "nav": 106272.08288858409
         }
       ],
-      "note": "Nueva campaña S&P500 503 símbolos; las carteras originales de 8 títulos se conservan históricas y no transfieren NAV ni operaciones. Derecho de cobro pendiente; referencia temporal OCC, no importe final de liquidación. Valoración conservada exclusivamente hasta 2026-11-02; operaciones sin actualizar.",
+      "note": "Nueva campaña S&P500 503 símbolos; las carteras originales de 8 títulos se conservan históricas y no transfieren NAV ni operaciones. Derecho de cobro pendiente; referencia temporal OCC, no importe final de liquidación.",
       "evaluated_universe_symbols": 488,
       "eligible_universe_symbols": 503,
       "activity_state": "active",
-      "activity_label": "VALORACIÓN PAUSADA · falta cotización; 8 posiciones abiertas · Inactividad sin operaciones: 2026-11-02 · Reanudación desde apertura: 2026-11-04 · CANJE CON VALORACIÓN PROVISIONAL; cobro separado del efectivo",
+      "activity_label": "8 posiciones abiertas · Inactividad sin operaciones: 2026-11-02, 2026-11-03 · Reanudación desde apertura: 2026-11-05 · CANJE CON VALORACIÓN PROVISIONAL; cobro separado del efectivo",
       "activity_tickers": [
         "ABT",
         "DRI",
@@ -985,24 +1005,26 @@
       "open_positions_count": 8,
       "pending_orders_count": 0,
       "inactive_sessions": [
-        "2026-11-02"
+        "2026-11-02",
+        "2026-11-03"
       ],
       "outage_control": {
-        "first_trading_session": "2026-11-04",
-        "registered_at_utc": "2026-11-03T16:28:14+00:00"
+        "first_trading_session": "2026-11-05",
+        "registered_at_utc": "2026-11-04T18:03:08+00:00"
       },
       "provisional_valuation_sessions": [
-        "2026-11-02"
+        "2026-11-02",
+        "2026-11-03"
       ],
-      "data_quality_status": "held_quote_unavailable",
+      "data_quality_status": "provisional_corporate_receivable",
       "comparison_eligible": false,
       "comparison_universe_id": null,
       "comparison_universe_symbols": null,
       "comparison_exclusion_reason": "Canje con valoración provisional de un derecho de cobro; excluido de comparación certificada",
-      "risk_observations": 15,
-      "annualized_volatility_pct": 21.338848,
+      "risk_observations": 16,
+      "annualized_volatility_pct": 21.537577,
       "max_drawdown_pct": -2.028112,
-      "sharpe_0rf": 6.130144
+      "sharpe_0rf": 4.854336
     },
     {
       "id": "classic_sp500_macd_12_26_9",
@@ -1227,11 +1249,11 @@
       "status": "demo_con_diario",
       "classic_sp500_cohort": true,
       "first_session": "2026-10-12",
-      "last_session": "2026-11-02",
+      "last_session": "2026-11-03",
       "initial_capital": 100000.0,
-      "last_equity": 103594.08652099888,
-      "return_pct": 3.594087,
-      "day_return_pct": null,
+      "last_equity": 102355.90161372935,
+      "return_pct": 2.355902,
+      "day_return_pct": -1.195227,
       "currency": "USD",
       "equity_history": [
         {
@@ -1293,13 +1315,17 @@
         {
           "date": "2026-11-02",
           "nav": 103594.08652099888
+        },
+        {
+          "date": "2026-11-03",
+          "nav": 102355.90161372935
         }
       ],
-      "note": "Nueva campaña S&P500 503 símbolos; las carteras originales de 8 títulos se conservan históricas y no transfieren NAV ni operaciones. Valoración conservada exclusivamente hasta 2026-11-02; operaciones sin actualizar.",
+      "note": "Nueva campaña S&P500 503 símbolos; las carteras originales de 8 títulos se conservan históricas y no transfieren NAV ni operaciones.",
       "evaluated_universe_symbols": 488,
       "eligible_universe_symbols": 503,
-      "activity_state": "active_pending",
-      "activity_label": "VALORACIÓN PAUSADA · falta cotización; 7 posiciones · 1 orden paper para próxima apertura",
+      "activity_state": "active",
+      "activity_label": "7 posiciones abiertas · Inactividad sin operaciones: 2026-11-03 · Reanudación desde apertura: 2026-11-05",
       "activity_tickers": [
         "ABBV",
         "CAH",
@@ -1307,20 +1333,25 @@
         "DLTR",
         "MTD",
         "PFE",
-        "WMT",
-        "IDXX"
+        "WMT"
       ],
       "open_positions_count": 7,
-      "pending_orders_count": 1,
-      "data_quality_status": "held_quote_unavailable",
+      "pending_orders_count": 0,
+      "inactive_sessions": [
+        "2026-11-03"
+      ],
+      "outage_control": {
+        "first_trading_session": "2026-11-05",
+        "registered_at_utc": "2026-11-04T18:03:08+00:00"
+      },
       "comparison_eligible": true,
       "comparison_universe_id": "SP500_2026-09-29_503",
       "comparison_universe_symbols": 503,
       "comparison_exclusion_reason": null,
-      "risk_observations": 15,
-      "annualized_volatility_pct": 19.323731,
+      "risk_observations": 16,
+      "annualized_volatility_pct": 19.552029,
       "max_drawdown_pct": -2.041509,
-      "sharpe_0rf": 3.38265
+      "sharpe_0rf": 2.093282
     },
     {
       "id": "classic_sp500_turtle_20_10_long",
@@ -1330,11 +1361,11 @@
       "status": "demo_con_diario",
       "classic_sp500_cohort": true,
       "first_session": "2026-10-12",
-      "last_session": "2026-11-02",
+      "last_session": "2026-11-03",
       "initial_capital": 100000.0,
-      "last_equity": 97823.41062466569,
-      "return_pct": -2.176589,
-      "day_return_pct": null,
+      "last_equity": 97598.32624424911,
+      "return_pct": -2.401674,
+      "day_return_pct": -0.230093,
       "currency": "USD",
       "equity_history": [
         {
@@ -1396,13 +1427,17 @@
         {
           "date": "2026-11-02",
           "nav": 97823.41062466569
+        },
+        {
+          "date": "2026-11-03",
+          "nav": 97598.32624424911
         }
       ],
-      "note": "Nueva campaña S&P500 503 símbolos; las carteras originales de 8 títulos se conservan históricas y no transfieren NAV ni operaciones. Valoración conservada exclusivamente hasta 2026-11-02; operaciones sin actualizar.",
+      "note": "Nueva campaña S&P500 503 símbolos; las carteras originales de 8 títulos se conservan históricas y no transfieren NAV ni operaciones.",
       "evaluated_universe_symbols": 488,
       "eligible_universe_symbols": 503,
-      "activity_state": "active_pending",
-      "activity_label": "VALORACIÓN PAUSADA · falta cotización; 7 posiciones · 1 orden paper para próxima apertura",
+      "activity_state": "active",
+      "activity_label": "7 posiciones abiertas · Inactividad sin operaciones: 2026-11-03 · Reanudación desde apertura: 2026-11-05",
       "activity_tickers": [
         "ALLE",
         "CNP",
@@ -1410,20 +1445,25 @@
         "CRL",
         "LW",
         "MTD",
-        "ULTA",
-        "EFX"
+        "ULTA"
       ],
       "open_positions_count": 7,
-      "pending_orders_count": 1,
-      "data_quality_status": "held_quote_unavailable",
+      "pending_orders_count": 0,
+      "inactive_sessions": [
+        "2026-11-03"
+      ],
+      "outage_control": {
+        "first_trading_session": "2026-11-05",
+        "registered_at_utc": "2026-11-04T18:03:08+00:00"
+      },
       "comparison_eligible": true,
       "comparison_universe_id": "SP500_2026-09-29_503",
       "comparison_universe_symbols": 503,
       "comparison_exclusion_reason": null,
-      "risk_observations": 15,
-      "annualized_volatility_pct": 18.045581,
+      "risk_observations": 16,
+      "annualized_volatility_pct": 17.392178,
       "max_drawdown_pct": -3.805547,
-      "sharpe_0rf": -2.10882
+      "sharpe_0rf": -2.264435
     },
     {
       "id": "classic_sp500_turtle_55_20_long",
