@@ -1,0 +1,2033 @@
+{
+  "schema": "midas_reviewed_execution_archive_v1",
+  "period_start": "2026-10-01",
+  "period_end": "2026-11-01",
+  "evidence_class": "reviewed_migration_schedule_metadata",
+  "date_basis": "daily_workflow_target_session_before_noon_UTC_previous_day",
+  "privacy": "Only impersonal session, workflow, slot and outcome aggregates; original identifiers and locations retained in private custody.",
+  "count_semantics": "Observed scheduled workflow outcomes; absence does not prove a missed run or absence of a schedule.",
+  "records": [
+    {
+      "evidence_id": "ARCH-0001",
+      "date": "2026-10-01",
+      "workflow": "buy_the_dip_strategy.yml",
+      "slots": [
+        "IL-039"
+      ],
+      "outcome": "success",
+      "attempts": 1,
+      "successful_attempts": 1,
+      "failed_attempts": 0
+    },
+    {
+      "evidence_id": "ARCH-0002",
+      "date": "2026-10-01",
+      "workflow": "capital_cycle.yml",
+      "slots": [
+        "IL-038"
+      ],
+      "outcome": "success",
+      "attempts": 1,
+      "successful_attempts": 1,
+      "failed_attempts": 0
+    },
+    {
+      "evidence_id": "ARCH-0003",
+      "date": "2026-10-01",
+      "workflow": "genetic_sp500.yml",
+      "slots": [
+        "IL-044"
+      ],
+      "outcome": "success",
+      "attempts": 2,
+      "successful_attempts": 2,
+      "failed_attempts": 0
+    },
+    {
+      "evidence_id": "ARCH-0004",
+      "date": "2026-10-02",
+      "workflow": "buy_the_dip_strategy.yml",
+      "slots": [
+        "IL-039"
+      ],
+      "outcome": "success",
+      "attempts": 1,
+      "successful_attempts": 1,
+      "failed_attempts": 0
+    },
+    {
+      "evidence_id": "ARCH-0005",
+      "date": "2026-10-02",
+      "workflow": "capital_cycle.yml",
+      "slots": [
+        "IL-038"
+      ],
+      "outcome": "success",
+      "attempts": 1,
+      "successful_attempts": 1,
+      "failed_attempts": 0
+    },
+    {
+      "evidence_id": "ARCH-0006",
+      "date": "2026-10-02",
+      "workflow": "genetic_sp500.yml",
+      "slots": [
+        "IL-044"
+      ],
+      "outcome": "success",
+      "attempts": 2,
+      "successful_attempts": 2,
+      "failed_attempts": 0
+    },
+    {
+      "evidence_id": "ARCH-0007",
+      "date": "2026-10-02",
+      "workflow": "tfg_ahp.yml",
+      "slots": [
+        "IL-037"
+      ],
+      "outcome": "success",
+      "attempts": 2,
+      "successful_attempts": 2,
+      "failed_attempts": 0
+    },
+    {
+      "evidence_id": "ARCH-0008",
+      "date": "2026-10-02",
+      "workflow": "weekly_ml.yml",
+      "slots": [
+        "IL-019",
+        "IL-020",
+        "IL-021",
+        "IL-022",
+        "IL-023",
+        "IL-024",
+        "IL-025",
+        "IL-026",
+        "IL-027"
+      ],
+      "outcome": "success",
+      "attempts": 2,
+      "successful_attempts": 1,
+      "failed_attempts": 1
+    },
+    {
+      "evidence_id": "ARCH-0009",
+      "date": "2026-10-05",
+      "workflow": "buy_the_dip_strategy.yml",
+      "slots": [
+        "IL-039"
+      ],
+      "outcome": "success",
+      "attempts": 1,
+      "successful_attempts": 1,
+      "failed_attempts": 0
+    },
+    {
+      "evidence_id": "ARCH-0010",
+      "date": "2026-10-05",
+      "workflow": "capital_cycle.yml",
+      "slots": [
+        "IL-038"
+      ],
+      "outcome": "failure",
+      "attempts": 1,
+      "successful_attempts": 0,
+      "failed_attempts": 1
+    },
+    {
+      "evidence_id": "ARCH-0011",
+      "date": "2026-10-05",
+      "workflow": "genetic_sp500.yml",
+      "slots": [
+        "IL-044"
+      ],
+      "outcome": "success",
+      "attempts": 2,
+      "successful_attempts": 2,
+      "failed_attempts": 0
+    },
+    {
+      "evidence_id": "ARCH-0012",
+      "date": "2026-10-06",
+      "workflow": "buy_the_dip_strategy.yml",
+      "slots": [
+        "IL-039"
+      ],
+      "outcome": "success",
+      "attempts": 1,
+      "successful_attempts": 1,
+      "failed_attempts": 0
+    },
+    {
+      "evidence_id": "ARCH-0013",
+      "date": "2026-10-06",
+      "workflow": "capital_cycle.yml",
+      "slots": [
+        "IL-038"
+      ],
+      "outcome": "success",
+      "attempts": 1,
+      "successful_attempts": 1,
+      "failed_attempts": 0
+    },
+    {
+      "evidence_id": "ARCH-0014",
+      "date": "2026-10-06",
+      "workflow": "genetic_sp500.yml",
+      "slots": [
+        "IL-044"
+      ],
+      "outcome": "success",
+      "attempts": 2,
+      "successful_attempts": 1,
+      "failed_attempts": 1
+    },
+    {
+      "evidence_id": "ARCH-0015",
+      "date": "2026-10-07",
+      "workflow": "buy_the_dip_strategy.yml",
+      "slots": [
+        "IL-039"
+      ],
+      "outcome": "success",
+      "attempts": 1,
+      "successful_attempts": 1,
+      "failed_attempts": 0
+    },
+    {
+      "evidence_id": "ARCH-0016",
+      "date": "2026-10-07",
+      "workflow": "capital_cycle.yml",
+      "slots": [
+        "IL-038"
+      ],
+      "outcome": "success",
+      "attempts": 1,
+      "successful_attempts": 1,
+      "failed_attempts": 0
+    },
+    {
+      "evidence_id": "ARCH-0017",
+      "date": "2026-10-07",
+      "workflow": "genetic_sp500.yml",
+      "slots": [
+        "IL-044"
+      ],
+      "outcome": "success",
+      "attempts": 2,
+      "successful_attempts": 1,
+      "failed_attempts": 1
+    },
+    {
+      "evidence_id": "ARCH-0018",
+      "date": "2026-10-08",
+      "workflow": "buy_the_dip_strategy.yml",
+      "slots": [
+        "IL-039"
+      ],
+      "outcome": "success",
+      "attempts": 1,
+      "successful_attempts": 1,
+      "failed_attempts": 0
+    },
+    {
+      "evidence_id": "ARCH-0019",
+      "date": "2026-10-08",
+      "workflow": "capital_cycle.yml",
+      "slots": [
+        "IL-038"
+      ],
+      "outcome": "success",
+      "attempts": 1,
+      "successful_attempts": 1,
+      "failed_attempts": 0
+    },
+    {
+      "evidence_id": "ARCH-0020",
+      "date": "2026-10-08",
+      "workflow": "genetic_sp500.yml",
+      "slots": [
+        "IL-044"
+      ],
+      "outcome": "failure",
+      "attempts": 2,
+      "successful_attempts": 0,
+      "failed_attempts": 2
+    },
+    {
+      "evidence_id": "ARCH-0021",
+      "date": "2026-10-08",
+      "workflow": "weekly_ml_daily.yml",
+      "slots": [
+        "IL-019",
+        "IL-020",
+        "IL-021",
+        "IL-022",
+        "IL-023",
+        "IL-024",
+        "IL-025",
+        "IL-026",
+        "IL-027"
+      ],
+      "outcome": "success",
+      "attempts": 2,
+      "successful_attempts": 2,
+      "failed_attempts": 0
+    },
+    {
+      "evidence_id": "ARCH-0022",
+      "date": "2026-10-09",
+      "workflow": "buy_the_dip_strategy.yml",
+      "slots": [
+        "IL-039"
+      ],
+      "outcome": "success",
+      "attempts": 1,
+      "successful_attempts": 1,
+      "failed_attempts": 0
+    },
+    {
+      "evidence_id": "ARCH-0023",
+      "date": "2026-10-09",
+      "workflow": "capital_cycle.yml",
+      "slots": [
+        "IL-038"
+      ],
+      "outcome": "success",
+      "attempts": 1,
+      "successful_attempts": 1,
+      "failed_attempts": 0
+    },
+    {
+      "evidence_id": "ARCH-0024",
+      "date": "2026-10-09",
+      "workflow": "genetic_sp500.yml",
+      "slots": [
+        "IL-044"
+      ],
+      "outcome": "failure",
+      "attempts": 2,
+      "successful_attempts": 0,
+      "failed_attempts": 2
+    },
+    {
+      "evidence_id": "ARCH-0025",
+      "date": "2026-10-09",
+      "workflow": "tfg_ahp.yml",
+      "slots": [
+        "IL-037"
+      ],
+      "outcome": "success",
+      "attempts": 2,
+      "successful_attempts": 2,
+      "failed_attempts": 0
+    },
+    {
+      "evidence_id": "ARCH-0026",
+      "date": "2026-10-09",
+      "workflow": "weekly_ml.yml",
+      "slots": [
+        "IL-019",
+        "IL-020",
+        "IL-021",
+        "IL-022",
+        "IL-023",
+        "IL-024",
+        "IL-025",
+        "IL-026",
+        "IL-027"
+      ],
+      "outcome": "success",
+      "attempts": 2,
+      "successful_attempts": 1,
+      "failed_attempts": 1
+    },
+    {
+      "evidence_id": "ARCH-0027",
+      "date": "2026-10-09",
+      "workflow": "weekly_ml_daily.yml",
+      "slots": [
+        "IL-019",
+        "IL-020",
+        "IL-021",
+        "IL-022",
+        "IL-023",
+        "IL-024",
+        "IL-025",
+        "IL-026",
+        "IL-027"
+      ],
+      "outcome": "success",
+      "attempts": 2,
+      "successful_attempts": 2,
+      "failed_attempts": 0
+    },
+    {
+      "evidence_id": "ARCH-0028",
+      "date": "2026-10-12",
+      "workflow": "buy_the_dip_strategy.yml",
+      "slots": [
+        "IL-039"
+      ],
+      "outcome": "success",
+      "attempts": 1,
+      "successful_attempts": 1,
+      "failed_attempts": 0
+    },
+    {
+      "evidence_id": "ARCH-0029",
+      "date": "2026-10-12",
+      "workflow": "capital_cycle.yml",
+      "slots": [
+        "IL-038"
+      ],
+      "outcome": "success",
+      "attempts": 1,
+      "successful_attempts": 1,
+      "failed_attempts": 0
+    },
+    {
+      "evidence_id": "ARCH-0030",
+      "date": "2026-10-12",
+      "workflow": "classic_sp500.yml",
+      "slots": [
+        "IL-010",
+        "IL-011",
+        "IL-012",
+        "IL-013",
+        "IL-014",
+        "IL-015",
+        "IL-016",
+        "IL-017",
+        "IL-018"
+      ],
+      "outcome": "success",
+      "attempts": 2,
+      "successful_attempts": 2,
+      "failed_attempts": 0
+    },
+    {
+      "evidence_id": "ARCH-0031",
+      "date": "2026-10-12",
+      "workflow": "genetic_sp500.yml",
+      "slots": [
+        "IL-044"
+      ],
+      "outcome": "success",
+      "attempts": 2,
+      "successful_attempts": 1,
+      "failed_attempts": 1
+    },
+    {
+      "evidence_id": "ARCH-0032",
+      "date": "2026-10-12",
+      "workflow": "timesfm_daily.yml",
+      "slots": [
+        "IL-040",
+        "IL-041"
+      ],
+      "outcome": "success",
+      "attempts": 2,
+      "successful_attempts": 2,
+      "failed_attempts": 0
+    },
+    {
+      "evidence_id": "ARCH-0033",
+      "date": "2026-10-12",
+      "workflow": "timesfm_one_day.yml",
+      "slots": [
+        "IL-042",
+        "IL-043"
+      ],
+      "outcome": "success",
+      "attempts": 2,
+      "successful_attempts": 2,
+      "failed_attempts": 0
+    },
+    {
+      "evidence_id": "ARCH-0034",
+      "date": "2026-10-12",
+      "workflow": "weekly_ml_daily.yml",
+      "slots": [
+        "IL-019",
+        "IL-020",
+        "IL-021",
+        "IL-022",
+        "IL-023",
+        "IL-024",
+        "IL-025",
+        "IL-026",
+        "IL-027"
+      ],
+      "outcome": "success",
+      "attempts": 2,
+      "successful_attempts": 2,
+      "failed_attempts": 0
+    },
+    {
+      "evidence_id": "ARCH-0035",
+      "date": "2026-10-13",
+      "workflow": "buy_the_dip_strategy.yml",
+      "slots": [
+        "IL-039"
+      ],
+      "outcome": "success",
+      "attempts": 1,
+      "successful_attempts": 1,
+      "failed_attempts": 0
+    },
+    {
+      "evidence_id": "ARCH-0036",
+      "date": "2026-10-13",
+      "workflow": "capital_cycle.yml",
+      "slots": [
+        "IL-038"
+      ],
+      "outcome": "success",
+      "attempts": 1,
+      "successful_attempts": 1,
+      "failed_attempts": 0
+    },
+    {
+      "evidence_id": "ARCH-0037",
+      "date": "2026-10-13",
+      "workflow": "classic_sp500.yml",
+      "slots": [
+        "IL-010",
+        "IL-011",
+        "IL-012",
+        "IL-013",
+        "IL-014",
+        "IL-015",
+        "IL-016",
+        "IL-017",
+        "IL-018"
+      ],
+      "outcome": "failure",
+      "attempts": 2,
+      "successful_attempts": 0,
+      "failed_attempts": 2
+    },
+    {
+      "evidence_id": "ARCH-0038",
+      "date": "2026-10-13",
+      "workflow": "genetic_sp500.yml",
+      "slots": [
+        "IL-044"
+      ],
+      "outcome": "success",
+      "attempts": 2,
+      "successful_attempts": 2,
+      "failed_attempts": 0
+    },
+    {
+      "evidence_id": "ARCH-0039",
+      "date": "2026-10-13",
+      "workflow": "timesfm_daily.yml",
+      "slots": [
+        "IL-040",
+        "IL-041"
+      ],
+      "outcome": "success",
+      "attempts": 2,
+      "successful_attempts": 2,
+      "failed_attempts": 0
+    },
+    {
+      "evidence_id": "ARCH-0040",
+      "date": "2026-10-13",
+      "workflow": "timesfm_one_day.yml",
+      "slots": [
+        "IL-042",
+        "IL-043"
+      ],
+      "outcome": "success",
+      "attempts": 2,
+      "successful_attempts": 2,
+      "failed_attempts": 0
+    },
+    {
+      "evidence_id": "ARCH-0041",
+      "date": "2026-10-13",
+      "workflow": "weekly_ml_daily.yml",
+      "slots": [
+        "IL-019",
+        "IL-020",
+        "IL-021",
+        "IL-022",
+        "IL-023",
+        "IL-024",
+        "IL-025",
+        "IL-026",
+        "IL-027"
+      ],
+      "outcome": "success",
+      "attempts": 2,
+      "successful_attempts": 1,
+      "failed_attempts": 1
+    },
+    {
+      "evidence_id": "ARCH-0042",
+      "date": "2026-10-14",
+      "workflow": "buy_the_dip_strategy.yml",
+      "slots": [
+        "IL-039"
+      ],
+      "outcome": "success",
+      "attempts": 1,
+      "successful_attempts": 1,
+      "failed_attempts": 0
+    },
+    {
+      "evidence_id": "ARCH-0043",
+      "date": "2026-10-14",
+      "workflow": "capital_cycle.yml",
+      "slots": [
+        "IL-038"
+      ],
+      "outcome": "success",
+      "attempts": 1,
+      "successful_attempts": 1,
+      "failed_attempts": 0
+    },
+    {
+      "evidence_id": "ARCH-0044",
+      "date": "2026-10-14",
+      "workflow": "classic_sp500.yml",
+      "slots": [
+        "IL-010",
+        "IL-011",
+        "IL-012",
+        "IL-013",
+        "IL-014",
+        "IL-015",
+        "IL-016",
+        "IL-017",
+        "IL-018"
+      ],
+      "outcome": "failure",
+      "attempts": 2,
+      "successful_attempts": 0,
+      "failed_attempts": 2
+    },
+    {
+      "evidence_id": "ARCH-0045",
+      "date": "2026-10-14",
+      "workflow": "genetic_sp500.yml",
+      "slots": [
+        "IL-044"
+      ],
+      "outcome": "success",
+      "attempts": 2,
+      "successful_attempts": 2,
+      "failed_attempts": 0
+    },
+    {
+      "evidence_id": "ARCH-0046",
+      "date": "2026-10-14",
+      "workflow": "timesfm_daily.yml",
+      "slots": [
+        "IL-040",
+        "IL-041"
+      ],
+      "outcome": "success",
+      "attempts": 2,
+      "successful_attempts": 2,
+      "failed_attempts": 0
+    },
+    {
+      "evidence_id": "ARCH-0047",
+      "date": "2026-10-14",
+      "workflow": "timesfm_one_day.yml",
+      "slots": [
+        "IL-042",
+        "IL-043"
+      ],
+      "outcome": "success",
+      "attempts": 2,
+      "successful_attempts": 2,
+      "failed_attempts": 0
+    },
+    {
+      "evidence_id": "ARCH-0048",
+      "date": "2026-10-14",
+      "workflow": "weekly_ml_daily.yml",
+      "slots": [
+        "IL-019",
+        "IL-020",
+        "IL-021",
+        "IL-022",
+        "IL-023",
+        "IL-024",
+        "IL-025",
+        "IL-026",
+        "IL-027"
+      ],
+      "outcome": "success",
+      "attempts": 2,
+      "successful_attempts": 1,
+      "failed_attempts": 1
+    },
+    {
+      "evidence_id": "ARCH-0049",
+      "date": "2026-10-15",
+      "workflow": "buy_the_dip_strategy.yml",
+      "slots": [
+        "IL-039"
+      ],
+      "outcome": "success",
+      "attempts": 1,
+      "successful_attempts": 1,
+      "failed_attempts": 0
+    },
+    {
+      "evidence_id": "ARCH-0050",
+      "date": "2026-10-15",
+      "workflow": "capital_cycle.yml",
+      "slots": [
+        "IL-038"
+      ],
+      "outcome": "success",
+      "attempts": 1,
+      "successful_attempts": 1,
+      "failed_attempts": 0
+    },
+    {
+      "evidence_id": "ARCH-0051",
+      "date": "2026-10-15",
+      "workflow": "classic_sp500.yml",
+      "slots": [
+        "IL-010",
+        "IL-011",
+        "IL-012",
+        "IL-013",
+        "IL-014",
+        "IL-015",
+        "IL-016",
+        "IL-017",
+        "IL-018"
+      ],
+      "outcome": "failure",
+      "attempts": 2,
+      "successful_attempts": 0,
+      "failed_attempts": 2
+    },
+    {
+      "evidence_id": "ARCH-0052",
+      "date": "2026-10-15",
+      "workflow": "genetic_sp500.yml",
+      "slots": [
+        "IL-044"
+      ],
+      "outcome": "success",
+      "attempts": 2,
+      "successful_attempts": 2,
+      "failed_attempts": 0
+    },
+    {
+      "evidence_id": "ARCH-0053",
+      "date": "2026-10-15",
+      "workflow": "timesfm_daily.yml",
+      "slots": [
+        "IL-040",
+        "IL-041"
+      ],
+      "outcome": "success",
+      "attempts": 2,
+      "successful_attempts": 2,
+      "failed_attempts": 0
+    },
+    {
+      "evidence_id": "ARCH-0054",
+      "date": "2026-10-15",
+      "workflow": "timesfm_one_day.yml",
+      "slots": [
+        "IL-042",
+        "IL-043"
+      ],
+      "outcome": "success",
+      "attempts": 2,
+      "successful_attempts": 2,
+      "failed_attempts": 0
+    },
+    {
+      "evidence_id": "ARCH-0055",
+      "date": "2026-10-15",
+      "workflow": "weekly_ml_daily.yml",
+      "slots": [
+        "IL-019",
+        "IL-020",
+        "IL-021",
+        "IL-022",
+        "IL-023",
+        "IL-024",
+        "IL-025",
+        "IL-026",
+        "IL-027"
+      ],
+      "outcome": "success",
+      "attempts": 2,
+      "successful_attempts": 1,
+      "failed_attempts": 1
+    },
+    {
+      "evidence_id": "ARCH-0056",
+      "date": "2026-10-16",
+      "workflow": "buy_the_dip_strategy.yml",
+      "slots": [
+        "IL-039"
+      ],
+      "outcome": "success",
+      "attempts": 1,
+      "successful_attempts": 1,
+      "failed_attempts": 0
+    },
+    {
+      "evidence_id": "ARCH-0057",
+      "date": "2026-10-16",
+      "workflow": "capital_cycle.yml",
+      "slots": [
+        "IL-038"
+      ],
+      "outcome": "success",
+      "attempts": 1,
+      "successful_attempts": 1,
+      "failed_attempts": 0
+    },
+    {
+      "evidence_id": "ARCH-0058",
+      "date": "2026-10-16",
+      "workflow": "classic_sp500.yml",
+      "slots": [
+        "IL-010",
+        "IL-011",
+        "IL-012",
+        "IL-013",
+        "IL-014",
+        "IL-015",
+        "IL-016",
+        "IL-017",
+        "IL-018"
+      ],
+      "outcome": "success",
+      "attempts": 2,
+      "successful_attempts": 1,
+      "failed_attempts": 1
+    },
+    {
+      "evidence_id": "ARCH-0059",
+      "date": "2026-10-16",
+      "workflow": "genetic_sp500.yml",
+      "slots": [
+        "IL-044"
+      ],
+      "outcome": "success",
+      "attempts": 2,
+      "successful_attempts": 2,
+      "failed_attempts": 0
+    },
+    {
+      "evidence_id": "ARCH-0060",
+      "date": "2026-10-16",
+      "workflow": "tfg_ahp.yml",
+      "slots": [
+        "IL-037"
+      ],
+      "outcome": "success",
+      "attempts": 2,
+      "successful_attempts": 2,
+      "failed_attempts": 0
+    },
+    {
+      "evidence_id": "ARCH-0061",
+      "date": "2026-10-16",
+      "workflow": "timesfm_daily.yml",
+      "slots": [
+        "IL-040",
+        "IL-041"
+      ],
+      "outcome": "success",
+      "attempts": 2,
+      "successful_attempts": 2,
+      "failed_attempts": 0
+    },
+    {
+      "evidence_id": "ARCH-0062",
+      "date": "2026-10-16",
+      "workflow": "timesfm_one_day.yml",
+      "slots": [
+        "IL-042",
+        "IL-043"
+      ],
+      "outcome": "success",
+      "attempts": 2,
+      "successful_attempts": 2,
+      "failed_attempts": 0
+    },
+    {
+      "evidence_id": "ARCH-0063",
+      "date": "2026-10-16",
+      "workflow": "timesfm_weekly.yml",
+      "slots": [
+        "IL-040",
+        "IL-041"
+      ],
+      "outcome": "success",
+      "attempts": 1,
+      "successful_attempts": 1,
+      "failed_attempts": 0
+    },
+    {
+      "evidence_id": "ARCH-0064",
+      "date": "2026-10-16",
+      "workflow": "weekly_ml.yml",
+      "slots": [
+        "IL-019",
+        "IL-020",
+        "IL-021",
+        "IL-022",
+        "IL-023",
+        "IL-024",
+        "IL-025",
+        "IL-026",
+        "IL-027"
+      ],
+      "outcome": "success",
+      "attempts": 2,
+      "successful_attempts": 1,
+      "failed_attempts": 1
+    },
+    {
+      "evidence_id": "ARCH-0065",
+      "date": "2026-10-16",
+      "workflow": "weekly_ml_daily.yml",
+      "slots": [
+        "IL-019",
+        "IL-020",
+        "IL-021",
+        "IL-022",
+        "IL-023",
+        "IL-024",
+        "IL-025",
+        "IL-026",
+        "IL-027"
+      ],
+      "outcome": "success",
+      "attempts": 2,
+      "successful_attempts": 1,
+      "failed_attempts": 1
+    },
+    {
+      "evidence_id": "ARCH-0066",
+      "date": "2026-10-19",
+      "workflow": "buy_the_dip_strategy.yml",
+      "slots": [
+        "IL-039"
+      ],
+      "outcome": "success",
+      "attempts": 2,
+      "successful_attempts": 2,
+      "failed_attempts": 0
+    },
+    {
+      "evidence_id": "ARCH-0067",
+      "date": "2026-10-19",
+      "workflow": "capital_cycle.yml",
+      "slots": [
+        "IL-038"
+      ],
+      "outcome": "success",
+      "attempts": 1,
+      "successful_attempts": 1,
+      "failed_attempts": 0
+    },
+    {
+      "evidence_id": "ARCH-0068",
+      "date": "2026-10-19",
+      "workflow": "classic_sp500.yml",
+      "slots": [
+        "IL-010",
+        "IL-011",
+        "IL-012",
+        "IL-013",
+        "IL-014",
+        "IL-015",
+        "IL-016",
+        "IL-017",
+        "IL-018"
+      ],
+      "outcome": "failure",
+      "attempts": 2,
+      "successful_attempts": 0,
+      "failed_attempts": 2
+    },
+    {
+      "evidence_id": "ARCH-0069",
+      "date": "2026-10-19",
+      "workflow": "genetic_sp500.yml",
+      "slots": [
+        "IL-044"
+      ],
+      "outcome": "success",
+      "attempts": 2,
+      "successful_attempts": 2,
+      "failed_attempts": 0
+    },
+    {
+      "evidence_id": "ARCH-0070",
+      "date": "2026-10-19",
+      "workflow": "timesfm_daily.yml",
+      "slots": [
+        "IL-040",
+        "IL-041"
+      ],
+      "outcome": "success",
+      "attempts": 2,
+      "successful_attempts": 2,
+      "failed_attempts": 0
+    },
+    {
+      "evidence_id": "ARCH-0071",
+      "date": "2026-10-19",
+      "workflow": "timesfm_one_day.yml",
+      "slots": [
+        "IL-042",
+        "IL-043"
+      ],
+      "outcome": "success",
+      "attempts": 2,
+      "successful_attempts": 2,
+      "failed_attempts": 0
+    },
+    {
+      "evidence_id": "ARCH-0072",
+      "date": "2026-10-19",
+      "workflow": "weekly_ml_daily.yml",
+      "slots": [
+        "IL-019",
+        "IL-020",
+        "IL-021",
+        "IL-022",
+        "IL-023",
+        "IL-024",
+        "IL-025",
+        "IL-026",
+        "IL-027"
+      ],
+      "outcome": "success",
+      "attempts": 2,
+      "successful_attempts": 1,
+      "failed_attempts": 1
+    },
+    {
+      "evidence_id": "ARCH-0073",
+      "date": "2026-10-20",
+      "workflow": "buy_the_dip_strategy.yml",
+      "slots": [
+        "IL-039"
+      ],
+      "outcome": "success",
+      "attempts": 2,
+      "successful_attempts": 2,
+      "failed_attempts": 0
+    },
+    {
+      "evidence_id": "ARCH-0074",
+      "date": "2026-10-20",
+      "workflow": "capital_cycle.yml",
+      "slots": [
+        "IL-038"
+      ],
+      "outcome": "success",
+      "attempts": 1,
+      "successful_attempts": 1,
+      "failed_attempts": 0
+    },
+    {
+      "evidence_id": "ARCH-0075",
+      "date": "2026-10-20",
+      "workflow": "classic_sp500.yml",
+      "slots": [
+        "IL-010",
+        "IL-011",
+        "IL-012",
+        "IL-013",
+        "IL-014",
+        "IL-015",
+        "IL-016",
+        "IL-017",
+        "IL-018"
+      ],
+      "outcome": "failure",
+      "attempts": 2,
+      "successful_attempts": 0,
+      "failed_attempts": 2
+    },
+    {
+      "evidence_id": "ARCH-0076",
+      "date": "2026-10-20",
+      "workflow": "genetic_sp500.yml",
+      "slots": [
+        "IL-044"
+      ],
+      "outcome": "success",
+      "attempts": 2,
+      "successful_attempts": 2,
+      "failed_attempts": 0
+    },
+    {
+      "evidence_id": "ARCH-0077",
+      "date": "2026-10-20",
+      "workflow": "timesfm_daily.yml",
+      "slots": [
+        "IL-040",
+        "IL-041"
+      ],
+      "outcome": "success",
+      "attempts": 2,
+      "successful_attempts": 2,
+      "failed_attempts": 0
+    },
+    {
+      "evidence_id": "ARCH-0078",
+      "date": "2026-10-20",
+      "workflow": "timesfm_one_day.yml",
+      "slots": [
+        "IL-042",
+        "IL-043"
+      ],
+      "outcome": "success",
+      "attempts": 2,
+      "successful_attempts": 2,
+      "failed_attempts": 0
+    },
+    {
+      "evidence_id": "ARCH-0079",
+      "date": "2026-10-20",
+      "workflow": "weekly_ml_daily.yml",
+      "slots": [
+        "IL-019",
+        "IL-020",
+        "IL-021",
+        "IL-022",
+        "IL-023",
+        "IL-024",
+        "IL-025",
+        "IL-026",
+        "IL-027"
+      ],
+      "outcome": "success",
+      "attempts": 2,
+      "successful_attempts": 1,
+      "failed_attempts": 1
+    },
+    {
+      "evidence_id": "ARCH-0080",
+      "date": "2026-10-21",
+      "workflow": "buy_the_dip_strategy.yml",
+      "slots": [
+        "IL-039"
+      ],
+      "outcome": "success",
+      "attempts": 2,
+      "successful_attempts": 2,
+      "failed_attempts": 0
+    },
+    {
+      "evidence_id": "ARCH-0081",
+      "date": "2026-10-21",
+      "workflow": "capital_cycle.yml",
+      "slots": [
+        "IL-038"
+      ],
+      "outcome": "success",
+      "attempts": 1,
+      "successful_attempts": 1,
+      "failed_attempts": 0
+    },
+    {
+      "evidence_id": "ARCH-0082",
+      "date": "2026-10-21",
+      "workflow": "classic_sp500.yml",
+      "slots": [
+        "IL-010",
+        "IL-011",
+        "IL-012",
+        "IL-013",
+        "IL-014",
+        "IL-015",
+        "IL-016",
+        "IL-017",
+        "IL-018"
+      ],
+      "outcome": "success",
+      "attempts": 2,
+      "successful_attempts": 2,
+      "failed_attempts": 0
+    },
+    {
+      "evidence_id": "ARCH-0083",
+      "date": "2026-10-21",
+      "workflow": "genetic_sp500.yml",
+      "slots": [
+        "IL-044"
+      ],
+      "outcome": "success",
+      "attempts": 2,
+      "successful_attempts": 2,
+      "failed_attempts": 0
+    },
+    {
+      "evidence_id": "ARCH-0084",
+      "date": "2026-10-21",
+      "workflow": "timesfm_daily.yml",
+      "slots": [
+        "IL-040",
+        "IL-041"
+      ],
+      "outcome": "success",
+      "attempts": 2,
+      "successful_attempts": 2,
+      "failed_attempts": 0
+    },
+    {
+      "evidence_id": "ARCH-0085",
+      "date": "2026-10-21",
+      "workflow": "timesfm_one_day.yml",
+      "slots": [
+        "IL-042",
+        "IL-043"
+      ],
+      "outcome": "success",
+      "attempts": 2,
+      "successful_attempts": 2,
+      "failed_attempts": 0
+    },
+    {
+      "evidence_id": "ARCH-0086",
+      "date": "2026-10-21",
+      "workflow": "weekly_ml_daily.yml",
+      "slots": [
+        "IL-019",
+        "IL-020",
+        "IL-021",
+        "IL-022",
+        "IL-023",
+        "IL-024",
+        "IL-025",
+        "IL-026",
+        "IL-027"
+      ],
+      "outcome": "success",
+      "attempts": 2,
+      "successful_attempts": 1,
+      "failed_attempts": 1
+    },
+    {
+      "evidence_id": "ARCH-0087",
+      "date": "2026-10-22",
+      "workflow": "buy_the_dip_strategy.yml",
+      "slots": [
+        "IL-039"
+      ],
+      "outcome": "success",
+      "attempts": 2,
+      "successful_attempts": 2,
+      "failed_attempts": 0
+    },
+    {
+      "evidence_id": "ARCH-0088",
+      "date": "2026-10-22",
+      "workflow": "capital_cycle.yml",
+      "slots": [
+        "IL-038"
+      ],
+      "outcome": "success",
+      "attempts": 1,
+      "successful_attempts": 1,
+      "failed_attempts": 0
+    },
+    {
+      "evidence_id": "ARCH-0089",
+      "date": "2026-10-22",
+      "workflow": "classic_sp500.yml",
+      "slots": [
+        "IL-010",
+        "IL-011",
+        "IL-012",
+        "IL-013",
+        "IL-014",
+        "IL-015",
+        "IL-016",
+        "IL-017",
+        "IL-018"
+      ],
+      "outcome": "success",
+      "attempts": 2,
+      "successful_attempts": 2,
+      "failed_attempts": 0
+    },
+    {
+      "evidence_id": "ARCH-0090",
+      "date": "2026-10-22",
+      "workflow": "genetic_sp500.yml",
+      "slots": [
+        "IL-044"
+      ],
+      "outcome": "success",
+      "attempts": 2,
+      "successful_attempts": 2,
+      "failed_attempts": 0
+    },
+    {
+      "evidence_id": "ARCH-0091",
+      "date": "2026-10-22",
+      "workflow": "timesfm_daily.yml",
+      "slots": [
+        "IL-040",
+        "IL-041"
+      ],
+      "outcome": "success",
+      "attempts": 2,
+      "successful_attempts": 2,
+      "failed_attempts": 0
+    },
+    {
+      "evidence_id": "ARCH-0092",
+      "date": "2026-10-22",
+      "workflow": "timesfm_one_day.yml",
+      "slots": [
+        "IL-042",
+        "IL-043"
+      ],
+      "outcome": "success",
+      "attempts": 2,
+      "successful_attempts": 2,
+      "failed_attempts": 0
+    },
+    {
+      "evidence_id": "ARCH-0093",
+      "date": "2026-10-22",
+      "workflow": "weekly_ml_daily.yml",
+      "slots": [
+        "IL-019",
+        "IL-020",
+        "IL-021",
+        "IL-022",
+        "IL-023",
+        "IL-024",
+        "IL-025",
+        "IL-026",
+        "IL-027"
+      ],
+      "outcome": "success",
+      "attempts": 2,
+      "successful_attempts": 1,
+      "failed_attempts": 1
+    },
+    {
+      "evidence_id": "ARCH-0094",
+      "date": "2026-10-23",
+      "workflow": "buy_the_dip_strategy.yml",
+      "slots": [
+        "IL-039"
+      ],
+      "outcome": "success",
+      "attempts": 2,
+      "successful_attempts": 2,
+      "failed_attempts": 0
+    },
+    {
+      "evidence_id": "ARCH-0095",
+      "date": "2026-10-23",
+      "workflow": "capital_cycle.yml",
+      "slots": [
+        "IL-038"
+      ],
+      "outcome": "success",
+      "attempts": 1,
+      "successful_attempts": 1,
+      "failed_attempts": 0
+    },
+    {
+      "evidence_id": "ARCH-0096",
+      "date": "2026-10-23",
+      "workflow": "classic_sp500.yml",
+      "slots": [
+        "IL-010",
+        "IL-011",
+        "IL-012",
+        "IL-013",
+        "IL-014",
+        "IL-015",
+        "IL-016",
+        "IL-017",
+        "IL-018"
+      ],
+      "outcome": "success",
+      "attempts": 2,
+      "successful_attempts": 1,
+      "failed_attempts": 1
+    },
+    {
+      "evidence_id": "ARCH-0097",
+      "date": "2026-10-23",
+      "workflow": "genetic_sp500.yml",
+      "slots": [
+        "IL-044"
+      ],
+      "outcome": "success",
+      "attempts": 2,
+      "successful_attempts": 2,
+      "failed_attempts": 0
+    },
+    {
+      "evidence_id": "ARCH-0098",
+      "date": "2026-10-23",
+      "workflow": "tfg_ahp.yml",
+      "slots": [
+        "IL-037"
+      ],
+      "outcome": "success",
+      "attempts": 2,
+      "successful_attempts": 2,
+      "failed_attempts": 0
+    },
+    {
+      "evidence_id": "ARCH-0099",
+      "date": "2026-10-23",
+      "workflow": "timesfm_daily.yml",
+      "slots": [
+        "IL-040",
+        "IL-041"
+      ],
+      "outcome": "success",
+      "attempts": 2,
+      "successful_attempts": 2,
+      "failed_attempts": 0
+    },
+    {
+      "evidence_id": "ARCH-0100",
+      "date": "2026-10-23",
+      "workflow": "timesfm_one_day.yml",
+      "slots": [
+        "IL-042",
+        "IL-043"
+      ],
+      "outcome": "success",
+      "attempts": 2,
+      "successful_attempts": 2,
+      "failed_attempts": 0
+    },
+    {
+      "evidence_id": "ARCH-0101",
+      "date": "2026-10-23",
+      "workflow": "timesfm_weekly.yml",
+      "slots": [
+        "IL-040",
+        "IL-041"
+      ],
+      "outcome": "success",
+      "attempts": 1,
+      "successful_attempts": 1,
+      "failed_attempts": 0
+    },
+    {
+      "evidence_id": "ARCH-0102",
+      "date": "2026-10-23",
+      "workflow": "weekly_ml.yml",
+      "slots": [
+        "IL-019",
+        "IL-020",
+        "IL-021",
+        "IL-022",
+        "IL-023",
+        "IL-024",
+        "IL-025",
+        "IL-026",
+        "IL-027"
+      ],
+      "outcome": "success",
+      "attempts": 2,
+      "successful_attempts": 1,
+      "failed_attempts": 1
+    },
+    {
+      "evidence_id": "ARCH-0103",
+      "date": "2026-10-23",
+      "workflow": "weekly_ml_daily.yml",
+      "slots": [
+        "IL-019",
+        "IL-020",
+        "IL-021",
+        "IL-022",
+        "IL-023",
+        "IL-024",
+        "IL-025",
+        "IL-026",
+        "IL-027"
+      ],
+      "outcome": "success",
+      "attempts": 2,
+      "successful_attempts": 1,
+      "failed_attempts": 1
+    },
+    {
+      "evidence_id": "ARCH-0104",
+      "date": "2026-10-26",
+      "workflow": "buy_the_dip_strategy.yml",
+      "slots": [
+        "IL-039"
+      ],
+      "outcome": "success",
+      "attempts": 2,
+      "successful_attempts": 2,
+      "failed_attempts": 0
+    },
+    {
+      "evidence_id": "ARCH-0105",
+      "date": "2026-10-26",
+      "workflow": "capital_cycle.yml",
+      "slots": [
+        "IL-038"
+      ],
+      "outcome": "success",
+      "attempts": 1,
+      "successful_attempts": 1,
+      "failed_attempts": 0
+    },
+    {
+      "evidence_id": "ARCH-0106",
+      "date": "2026-10-26",
+      "workflow": "classic_sp500.yml",
+      "slots": [
+        "IL-010",
+        "IL-011",
+        "IL-012",
+        "IL-013",
+        "IL-014",
+        "IL-015",
+        "IL-016",
+        "IL-017",
+        "IL-018"
+      ],
+      "outcome": "success",
+      "attempts": 2,
+      "successful_attempts": 2,
+      "failed_attempts": 0
+    },
+    {
+      "evidence_id": "ARCH-0107",
+      "date": "2026-10-26",
+      "workflow": "genetic_sp500.yml",
+      "slots": [
+        "IL-044"
+      ],
+      "outcome": "success",
+      "attempts": 2,
+      "successful_attempts": 2,
+      "failed_attempts": 0
+    },
+    {
+      "evidence_id": "ARCH-0108",
+      "date": "2026-10-26",
+      "workflow": "timesfm_daily.yml",
+      "slots": [
+        "IL-040",
+        "IL-041"
+      ],
+      "outcome": "success",
+      "attempts": 2,
+      "successful_attempts": 2,
+      "failed_attempts": 0
+    },
+    {
+      "evidence_id": "ARCH-0109",
+      "date": "2026-10-26",
+      "workflow": "timesfm_one_day.yml",
+      "slots": [
+        "IL-042",
+        "IL-043"
+      ],
+      "outcome": "success",
+      "attempts": 2,
+      "successful_attempts": 2,
+      "failed_attempts": 0
+    },
+    {
+      "evidence_id": "ARCH-0110",
+      "date": "2026-10-26",
+      "workflow": "weekly_ml_daily.yml",
+      "slots": [
+        "IL-019",
+        "IL-020",
+        "IL-021",
+        "IL-022",
+        "IL-023",
+        "IL-024",
+        "IL-025",
+        "IL-026",
+        "IL-027"
+      ],
+      "outcome": "success",
+      "attempts": 2,
+      "successful_attempts": 1,
+      "failed_attempts": 1
+    },
+    {
+      "evidence_id": "ARCH-0111",
+      "date": "2026-10-27",
+      "workflow": "buy_the_dip_strategy.yml",
+      "slots": [
+        "IL-039"
+      ],
+      "outcome": "success",
+      "attempts": 2,
+      "successful_attempts": 2,
+      "failed_attempts": 0
+    },
+    {
+      "evidence_id": "ARCH-0112",
+      "date": "2026-10-27",
+      "workflow": "capital_cycle.yml",
+      "slots": [
+        "IL-038"
+      ],
+      "outcome": "success",
+      "attempts": 1,
+      "successful_attempts": 1,
+      "failed_attempts": 0
+    },
+    {
+      "evidence_id": "ARCH-0113",
+      "date": "2026-10-27",
+      "workflow": "classic_sp500.yml",
+      "slots": [
+        "IL-010",
+        "IL-011",
+        "IL-012",
+        "IL-013",
+        "IL-014",
+        "IL-015",
+        "IL-016",
+        "IL-017",
+        "IL-018"
+      ],
+      "outcome": "success",
+      "attempts": 2,
+      "successful_attempts": 2,
+      "failed_attempts": 0
+    },
+    {
+      "evidence_id": "ARCH-0114",
+      "date": "2026-10-27",
+      "workflow": "genetic_sp500.yml",
+      "slots": [
+        "IL-044"
+      ],
+      "outcome": "success",
+      "attempts": 2,
+      "successful_attempts": 2,
+      "failed_attempts": 0
+    },
+    {
+      "evidence_id": "ARCH-0115",
+      "date": "2026-10-27",
+      "workflow": "timesfm_daily.yml",
+      "slots": [
+        "IL-040",
+        "IL-041"
+      ],
+      "outcome": "success",
+      "attempts": 2,
+      "successful_attempts": 2,
+      "failed_attempts": 0
+    },
+    {
+      "evidence_id": "ARCH-0116",
+      "date": "2026-10-27",
+      "workflow": "timesfm_one_day.yml",
+      "slots": [
+        "IL-042",
+        "IL-043"
+      ],
+      "outcome": "success",
+      "attempts": 2,
+      "successful_attempts": 2,
+      "failed_attempts": 0
+    },
+    {
+      "evidence_id": "ARCH-0117",
+      "date": "2026-10-27",
+      "workflow": "weekly_ml_daily.yml",
+      "slots": [
+        "IL-019",
+        "IL-020",
+        "IL-021",
+        "IL-022",
+        "IL-023",
+        "IL-024",
+        "IL-025",
+        "IL-026",
+        "IL-027"
+      ],
+      "outcome": "failure",
+      "attempts": 2,
+      "successful_attempts": 0,
+      "failed_attempts": 2
+    },
+    {
+      "evidence_id": "ARCH-0118",
+      "date": "2026-10-28",
+      "workflow": "buy_the_dip_strategy.yml",
+      "slots": [
+        "IL-039"
+      ],
+      "outcome": "success",
+      "attempts": 2,
+      "successful_attempts": 2,
+      "failed_attempts": 0
+    },
+    {
+      "evidence_id": "ARCH-0119",
+      "date": "2026-10-28",
+      "workflow": "capital_cycle.yml",
+      "slots": [
+        "IL-038"
+      ],
+      "outcome": "success",
+      "attempts": 1,
+      "successful_attempts": 1,
+      "failed_attempts": 0
+    },
+    {
+      "evidence_id": "ARCH-0120",
+      "date": "2026-10-28",
+      "workflow": "classic_sp500.yml",
+      "slots": [
+        "IL-010",
+        "IL-011",
+        "IL-012",
+        "IL-013",
+        "IL-014",
+        "IL-015",
+        "IL-016",
+        "IL-017",
+        "IL-018"
+      ],
+      "outcome": "success",
+      "attempts": 2,
+      "successful_attempts": 2,
+      "failed_attempts": 0
+    },
+    {
+      "evidence_id": "ARCH-0121",
+      "date": "2026-10-28",
+      "workflow": "genetic_sp500.yml",
+      "slots": [
+        "IL-044"
+      ],
+      "outcome": "success",
+      "attempts": 2,
+      "successful_attempts": 1,
+      "failed_attempts": 1
+    },
+    {
+      "evidence_id": "ARCH-0122",
+      "date": "2026-10-28",
+      "workflow": "timesfm_daily.yml",
+      "slots": [
+        "IL-040",
+        "IL-041"
+      ],
+      "outcome": "success",
+      "attempts": 2,
+      "successful_attempts": 2,
+      "failed_attempts": 0
+    },
+    {
+      "evidence_id": "ARCH-0123",
+      "date": "2026-10-28",
+      "workflow": "timesfm_one_day.yml",
+      "slots": [
+        "IL-042",
+        "IL-043"
+      ],
+      "outcome": "success",
+      "attempts": 2,
+      "successful_attempts": 2,
+      "failed_attempts": 0
+    },
+    {
+      "evidence_id": "ARCH-0124",
+      "date": "2026-10-28",
+      "workflow": "weekly_ml_daily.yml",
+      "slots": [
+        "IL-019",
+        "IL-020",
+        "IL-021",
+        "IL-022",
+        "IL-023",
+        "IL-024",
+        "IL-025",
+        "IL-026",
+        "IL-027"
+      ],
+      "outcome": "success",
+      "attempts": 2,
+      "successful_attempts": 1,
+      "failed_attempts": 1
+    },
+    {
+      "evidence_id": "ARCH-0125",
+      "date": "2026-10-29",
+      "workflow": "buy_the_dip_strategy.yml",
+      "slots": [
+        "IL-039"
+      ],
+      "outcome": "success",
+      "attempts": 2,
+      "successful_attempts": 2,
+      "failed_attempts": 0
+    },
+    {
+      "evidence_id": "ARCH-0126",
+      "date": "2026-10-29",
+      "workflow": "capital_cycle.yml",
+      "slots": [
+        "IL-038"
+      ],
+      "outcome": "success",
+      "attempts": 1,
+      "successful_attempts": 1,
+      "failed_attempts": 0
+    },
+    {
+      "evidence_id": "ARCH-0127",
+      "date": "2026-10-29",
+      "workflow": "classic_sp500.yml",
+      "slots": [
+        "IL-010",
+        "IL-011",
+        "IL-012",
+        "IL-013",
+        "IL-014",
+        "IL-015",
+        "IL-016",
+        "IL-017",
+        "IL-018"
+      ],
+      "outcome": "success",
+      "attempts": 2,
+      "successful_attempts": 2,
+      "failed_attempts": 0
+    },
+    {
+      "evidence_id": "ARCH-0128",
+      "date": "2026-10-29",
+      "workflow": "genetic_sp500.yml",
+      "slots": [
+        "IL-044"
+      ],
+      "outcome": "failure",
+      "attempts": 2,
+      "successful_attempts": 0,
+      "failed_attempts": 2
+    },
+    {
+      "evidence_id": "ARCH-0129",
+      "date": "2026-10-29",
+      "workflow": "timesfm_daily.yml",
+      "slots": [
+        "IL-040",
+        "IL-041"
+      ],
+      "outcome": "success",
+      "attempts": 2,
+      "successful_attempts": 2,
+      "failed_attempts": 0
+    },
+    {
+      "evidence_id": "ARCH-0130",
+      "date": "2026-10-29",
+      "workflow": "timesfm_one_day.yml",
+      "slots": [
+        "IL-042",
+        "IL-043"
+      ],
+      "outcome": "success",
+      "attempts": 2,
+      "successful_attempts": 2,
+      "failed_attempts": 0
+    },
+    {
+      "evidence_id": "ARCH-0131",
+      "date": "2026-10-29",
+      "workflow": "weekly_ml_daily.yml",
+      "slots": [
+        "IL-019",
+        "IL-020",
+        "IL-021",
+        "IL-022",
+        "IL-023",
+        "IL-024",
+        "IL-025",
+        "IL-026",
+        "IL-027"
+      ],
+      "outcome": "success",
+      "attempts": 2,
+      "successful_attempts": 1,
+      "failed_attempts": 1
+    },
+    {
+      "evidence_id": "ARCH-0132",
+      "date": "2026-10-30",
+      "workflow": "buy_the_dip_strategy.yml",
+      "slots": [
+        "IL-039"
+      ],
+      "outcome": "failure",
+      "attempts": 2,
+      "successful_attempts": 0,
+      "failed_attempts": 2
+    },
+    {
+      "evidence_id": "ARCH-0133",
+      "date": "2026-10-30",
+      "workflow": "capital_cycle.yml",
+      "slots": [
+        "IL-038"
+      ],
+      "outcome": "success",
+      "attempts": 1,
+      "successful_attempts": 1,
+      "failed_attempts": 0
+    },
+    {
+      "evidence_id": "ARCH-0134",
+      "date": "2026-10-30",
+      "workflow": "classic_sp500.yml",
+      "slots": [
+        "IL-010",
+        "IL-011",
+        "IL-012",
+        "IL-013",
+        "IL-014",
+        "IL-015",
+        "IL-016",
+        "IL-017",
+        "IL-018"
+      ],
+      "outcome": "success",
+      "attempts": 2,
+      "successful_attempts": 2,
+      "failed_attempts": 0
+    },
+    {
+      "evidence_id": "ARCH-0135",
+      "date": "2026-10-30",
+      "workflow": "genetic_sp500.yml",
+      "slots": [
+        "IL-044"
+      ],
+      "outcome": "failure",
+      "attempts": 2,
+      "successful_attempts": 0,
+      "failed_attempts": 2
+    },
+    {
+      "evidence_id": "ARCH-0136",
+      "date": "2026-10-30",
+      "workflow": "tfg_ahp.yml",
+      "slots": [
+        "IL-037"
+      ],
+      "outcome": "success",
+      "attempts": 2,
+      "successful_attempts": 2,
+      "failed_attempts": 0
+    },
+    {
+      "evidence_id": "ARCH-0137",
+      "date": "2026-10-30",
+      "workflow": "timesfm_daily.yml",
+      "slots": [
+        "IL-040",
+        "IL-041"
+      ],
+      "outcome": "success",
+      "attempts": 2,
+      "successful_attempts": 2,
+      "failed_attempts": 0
+    },
+    {
+      "evidence_id": "ARCH-0138",
+      "date": "2026-10-30",
+      "workflow": "timesfm_one_day.yml",
+      "slots": [
+        "IL-042",
+        "IL-043"
+      ],
+      "outcome": "success",
+      "attempts": 2,
+      "successful_attempts": 2,
+      "failed_attempts": 0
+    },
+    {
+      "evidence_id": "ARCH-0139",
+      "date": "2026-10-30",
+      "workflow": "timesfm_weekly.yml",
+      "slots": [
+        "IL-040",
+        "IL-041"
+      ],
+      "outcome": "success",
+      "attempts": 1,
+      "successful_attempts": 1,
+      "failed_attempts": 0
+    },
+    {
+      "evidence_id": "ARCH-0140",
+      "date": "2026-10-30",
+      "workflow": "weekly_ml.yml",
+      "slots": [
+        "IL-019",
+        "IL-020",
+        "IL-021",
+        "IL-022",
+        "IL-023",
+        "IL-024",
+        "IL-025",
+        "IL-026",
+        "IL-027"
+      ],
+      "outcome": "success",
+      "attempts": 2,
+      "successful_attempts": 2,
+      "failed_attempts": 0
+    },
+    {
+      "evidence_id": "ARCH-0141",
+      "date": "2026-10-30",
+      "workflow": "weekly_ml_daily.yml",
+      "slots": [
+        "IL-019",
+        "IL-020",
+        "IL-021",
+        "IL-022",
+        "IL-023",
+        "IL-024",
+        "IL-025",
+        "IL-026",
+        "IL-027"
+      ],
+      "outcome": "success",
+      "attempts": 2,
+      "successful_attempts": 1,
+      "failed_attempts": 1
+    }
+  ],
+  "sha256": "52c02aa3ebb80d08ffd472d18cdd482f348dceb59846c78d3d998ec19aca7e91"
+}

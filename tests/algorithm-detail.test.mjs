@@ -534,7 +534,7 @@ test("MIDAS operational health exposes a separate DAILY RUN ledger, not the buy/
   "loadExecutionHistory()","./data/execution-history.json",
   "state.executionHistoryStatus","daily-execution-table",
   "Correctos","Fallos originales","No ejecutados","Pendientes","Sin programación",
-  "Ver '+ids.length+' algoritmos","laboratorio-cuantitativo"
+  "Ver '+ids.length","laboratorio-cuantitativo"
  ])assert.ok(src.includes(expected),"Missing daily execution UI or source: "+expected);
  assert.ok(src.includes("d.expected+d.not_scheduled!==64"),"Missing 64-slot daily accounting reconciliation");
  assert.ok(src.includes("sum!==d.expected"),"Missing per-day result invariant");
@@ -546,7 +546,7 @@ test("MIDAS operational health exposes a separate DAILY RUN ledger, not the buy/
  assert.ok(flow.includes("actions: read"));
 });
 
-test("MIDAS October history displays unavailable CI data as N/D rather than fabricating zero runs",()=>{
+test("MIDAS session history preserves unknown technical outcomes rather than fabricating zero runs",()=>{
  const site=readFileSync(new URL("../src/site.mjs",import.meta.url),"utf8");
  const python=readFileSync(new URL("../scripts/build_execution_history.py",import.meta.url),"utf8");
  assert.ok(site.includes("doc.days.length>500"));
@@ -594,4 +594,34 @@ test("Session history renders preserved journals and subsequent recovery without
  assert.throws(()=>context.api.verifyExecutionHistory(tampered),/no conciliados/);
  const external=structuredClone(doc);external.days[0].journals[0].source_url="https://example.com/private";
  assert.throws(()=>context.api.verifyExecutionHistory(external),/trazabilidad/);
+});
+
+
+test("Recovered execution archive shows real outcomes, institutional proof and unknown schedule coverage",async()=>{
+ const {runInNewContext}=await import("node:vm");
+ const source=readFileSync(new URL("../src/site.mjs",import.meta.url),"utf8");
+ const segment=source.slice(source.indexOf("function verifyExecutionHistory(doc)"),source.indexOf("function monitoring(){"));
+ const context={Intl,esc:v=>String(v).replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll('"',"&quot;")};
+ runInNewContext(segment+";this.api={verifyExecutionHistory,renderDailyExecutionTable};",context);
+ const proof="https://github.com/idealab2026/laboratorio-cuantitativo/blob/main/data/execution-history-archive.json";
+ const day={date:"2026-10-30",data_status:"archived_observations",expected:1,success:0,failure:1,
+  not_run:null,pending:null,unverified:0,not_scheduled:null,complete:null,journals:[],journal_count:0,recovered_count:0,recovered_failures:0,
+  details:[{slot:"IL-044",status:"failure",reason:null,workflows:[{workflow:"genetic_sp500.yml",status:"failure",run_id:null,run_url:null,
+   source_kind:"reviewed_archive",evidence_id:"ARCH-0001",attempts:2,evidence_sha256:"a".repeat(64),evidence_url:proof}]}]};
+ const unknown={...structuredClone(day),date:"2026-09-30",data_status:"not_verifiable",details:[],expected:null,success:null,failure:null,unverified:null};
+ const doc={schema:"midas_daily_execution_health_v1",status:"verified_github_actions",slot_count:64,automated_slots:26,
+  first_tracked_session:"2026-02-27",oldest_retained_run_session:"2026-11-02",as_of_utc:"2026-11-05T00:00:00Z",
+  reviewed_archive:{first_session:"2026-10-01",last_session:"2026-10-30"},days:[day,unknown]};
+ context.api.verifyExecutionHistory(doc);
+ const html=context.api.renderDailyExecutionTable(doc,"verified",{entries:[]});
+ assert.ok(html.includes('Archivo técnico recuperado')&&html.includes(proof));
+ assert.ok(html.includes('Archivo de ejecuciones; programación histórica no reconstruida'));
+ assert.ok(html.includes('colspan="6">Sin registro técnico acreditado'));
+ assert.ok(html.includes('Ver 1 algoritmo</summary>'));
+ assert.ok(html.includes('Falló originalmente'));
+ assert.ok(!html.includes('N/D'));
+ for(const mutate of [d=>d.days[0].not_run=0,d=>d.days[0].details[0].workflows[0].run_id=123,
+   d=>d.days[0].details[0].workflows[0].evidence_url="https://example.com/original"]){
+  const bad=structuredClone(doc);mutate(bad);assert.throws(()=>context.api.verifyExecutionHistory(bad));
+ }
 });
