@@ -1,11 +1,11 @@
 {
   "event": "schedule",
-  "head_sha": "44cabc8d1c44dd7bbeddcaaf59966f6b7fb20b6b",
-  "outcome": "success",
-  "recorded_at_utc": "2026-11-04T05:13:11.367379+00:00",
+  "head_sha": "cbf50f4c8cd738ac3898e078b82425ca28389f66",
+  "outcome": "failure",
+  "recorded_at_utc": "2026-11-04T23:58:32.280484+00:00",
   "run_attempt": 1,
-  "run_id": 41777855281,
-  "run_number": 17,
+  "run_id": 41937779208,
+  "run_number": 20,
   "schema_version": 1,
   "workflow_key": "buy_the_dip_strategy",
   "workflow_name": "MIDAS Buy The Dip paper"
