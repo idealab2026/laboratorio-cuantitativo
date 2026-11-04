@@ -706,3 +706,9 @@ p{line-height:1.6;text-align:justify;text-align-last:left;hyphens:auto}p.lead{co
  .monitoring-tabs button{flex:0 0 auto}
  .daily-ledger-header{align-items:flex-start;gap:5px}
 }
+
+/* October data is backfilled as dates only where historic CI logs are missing. */
+.daily-execution-table .daily-unverified{color:#8b6b34}
+.daily-execution-table .daily-unverifiable td{color:#738395}
+.daily-execution-table .daily-unverifiable td[colspan]{font-style:italic;font-weight:500}
+.daily-run-state.unverified{background:#f5f1e8;color:#866b3d}
