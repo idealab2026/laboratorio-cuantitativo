@@ -129,6 +129,57 @@ def session_of_run(run):
     return (started - dt.timedelta(days=1)).date() if started.hour < 12 else started.date()
 
 
+COMMON_ACCOUNTING_STEPS = {
+    "classic_sp500.yml": "Record next-open paper ledger",
+    "weekly_ml_daily.yml": "Value one completed XNYS session",
+    "capital_cycle.yml": "Record capital-cycle paper state",
+    "buy_the_dip_strategy.yml": "Record Buy The Dip paper state",
+    "timesfm_daily.yml": "Record latest closed daily XNYS session",
+    "timesfm_one_day.yml": "Close paper session then freeze one-day forecast",
+}
+
+
+def common_consumer_runs(run, token, opener):
+    """Read each called job, never infer six successes from a green capture."""
+    result = []
+    seen = set()
+    for page in range(1, 11):
+        req = urllib.request.Request(
+            GITHUB_API + "/" + str(int(run["id"])) + "/jobs?per_page=100&page=" + str(page),
+            headers={"Accept":"application/vnd.github+json",
+                     "User-Agent":"MIDAS-daily-execution-health/1.0",
+                     **({"Authorization":"Bearer " + token} if token else {})})
+        with opener(req, timeout=20) as response:
+            body = json.load(response)
+        jobs = body.get("jobs")
+        if not isinstance(jobs, list):
+            raise ValueError("Incomplete common consumer job evidence")
+        for job in jobs:
+            prefix = job.get("name", "").split(" / ")[0]
+            if not prefix.startswith("consume-"):
+                continue
+            workflow = prefix[len("consume-"):] + ".yml"
+            if workflow not in COMMON_ACCOUNTING_STEPS:
+                continue
+            if workflow in seen:
+                raise ValueError("Duplicate common consumer job")
+            seen.add(workflow)
+            conclusion = job.get("conclusion")
+            # A green setup/test-only job is not an executed paper engine.
+            if conclusion == "success" and not any(
+                step.get("name") == COMMON_ACCOUNTING_STEPS[workflow] and
+                step.get("conclusion") == "success" for step in job.get("steps", [])):
+                conclusion = "unverified"
+            if conclusion in ("skipped", "neutral"):
+                conclusion = "unverified"
+            result.append({"workflow":workflow,"id":run["id"],
+                           "created_at":run["created_at"],"status":job.get("status", ""),
+                           "conclusion":conclusion,"url":run["html_url"]})
+        if len(jobs) < 100:
+            return result
+    raise ValueError("Common consumer job history truncated")
+
+
 def collect_runs(token, now, opener=urllib.request.urlopen):
     """Query complete paginated Actions history, fail-closed if incomplete."""
     since = START - dt.timedelta(days=1)
@@ -158,6 +209,9 @@ def collect_runs(token, now, opener=urllib.request.urlopen):
             if run.get("event") != "schedule":
                 continue
             path = run.get("path", "").split("/")[-1]
+            if path == "market_data_xnys.yml":
+                output.extend(common_consumer_runs(run, token, opener))
+                continue
             if path not in WORKFLOWS:
                 continue
             output.append({
@@ -359,10 +413,14 @@ def one_workflow_status(due, runs, now):
         return "success", succeeded[-1]
     if any(r["status"] in ("queued", "in_progress", "pending", "waiting") for r in linked):
         return "pending", linked[-1]
-    if now < max(due) + GRACE:
-        return "pending", linked[-1] if linked else None
+    # Report an observed failed attempt immediately. A future backup is not
+    # evidence that the failure did not happen; an actual success can recover it.
     if linked and any(r["conclusion"] in ("failure", "timed_out", "cancelled", "action_required") for r in linked):
         return "failure", linked[-1]
+    if any(r["conclusion"] == "unverified" for r in linked):
+        return "unverified", linked[-1]
+    if now < max(due) + GRACE:
+        return "pending", linked[-1] if linked else None
     return "not_run", linked[-1] if linked else None
 
 
