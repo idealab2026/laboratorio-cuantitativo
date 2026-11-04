@@ -22,7 +22,9 @@ from timesfm_strategy.run import calendar
 SNAPSHOTS = ROOT / "market_data" / "snapshots"
 LEDGER = ROOT / "classic_sp500_state" / "ledger.json"
 MAX_SESSIONS = 4
-MAX_REQUIRED_SYMBOLS = 20
+# An equal-weight book can hold the whole frozen universe. A cap of 20
+# rejected an ordinary 21-symbol provider outage before any genuine retry.
+MAX_REQUIRED_SYMBOLS = 503
 
 
 def paused_requirements(ledger: dict) -> tuple[str, dict]:

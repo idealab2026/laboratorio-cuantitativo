@@ -53,6 +53,16 @@ class HistoricalHeldRecoveryTests(unittest.TestCase):
             self.root, state(), "2026-10-30"),
             [(x, ["HUBB"]) for x in DAYS[1:]])
 
+    def test_equal_weight_book_can_recover_more_than_twenty_held_symbols(self):
+        ledger = state()
+        book = ledger["books"]["buy_hold_equal_weight"]
+        tickers = [f"HELD{i:03d}" for i in range(21)]
+        book["positions"] = {t: {"shares": 1} for t in tickers}
+        book["paused_missing_quotes"]["missing_tickers"] = tickers
+        cutoff, held = recovery.paused_requirements(ledger)
+        self.assertEqual(cutoff, "2026-10-30")
+        self.assertEqual(set(held), set(tickers))
+
     def test_verified_revision_appended_without_touching_original_or_ledger(self):
         day = DAYS[1]
         base = self.root / "XNYS" / (day + ".json")

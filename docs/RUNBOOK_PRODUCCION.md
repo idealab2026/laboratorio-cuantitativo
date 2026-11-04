@@ -73,3 +73,23 @@ funcional, conservación de históricos, acceso a documentos de trabajo imperson
 restauración y continuidad. Hasta entonces conservar el respaldo y el fallback;
 no detener automatismos originales ni afectar otras áreas. No activar servicios
 de pago, facturación ni infraestructura Cloudflare para resolver esta migración.
+
+### Recuperación de una interrupción de cotizaciones
+
+La captura común reintenta a las 01:07 UTC las observaciones ausentes, mediante
+revisiones enlazadas por SHA sin cambiar capturas anteriores. Weekly ML corre
+tras la publicación común (00:17 UTC y respaldo 03:27 UTC). Los horarios reales
+de GitHub Actions pueden retrasarse; un proceso verde no acredita que todas
+las carteras hayan podido valorarse.
+
+Si ya pasó la siguiente apertura, no ejecutar órdenes antiguas para rellenar el
+hueco. En `MIDAS classic passive mark-only recovery` seleccionar `inactive`; en
+`MIDAS Weekly ML daily paper` activar `recover_inactive`. Ambos usan el bloqueo
+del escritor económico correspondiente, comprueban primero sin escribir y
+registran únicamente cierres reales consecutivos (máximo cuatro sesiones).
+Se conservan cartera, cantidades, coste e histórico; las órdenes cuya apertura
+se perdió quedan canceladas y documentadas. El día parcial actual se mantiene
+inactivo y la reanudación se fija en una apertura futura. Los derechos de cobro
+corporativos conservan su valoración provisional y no se convierten en efectivo.
+Las acciones corporativas no revisadas o cotizaciones ausentes siguen bloqueando
+la recuperación; nunca usar cierres rellenados ni resultados sintéticos.

@@ -195,7 +195,8 @@ def _settle_book(config, name, book, day, today):
     """Existing next-open, fees and conservative stop/target policy, in place."""
     p = config["execution"]
     stamp = datetime.now(timezone.utc).isoformat(timespec="seconds")
-    reviews = market.read(ROOT / "market_data/corporate_action_reviews.json") if book.get("receivables") else {}
+    reviews = market.read(ROOT / "market_data/corporate_action_reviews.json") if (
+        book.get("receivables") or book.get("outage_control")) else {}
     settle_reviewed_claims(book, day, reviews, recorded_at=stamp)
     if day < book.get("outage_control", {}).get("first_trading_session", ""):
         inactive_mark(book, day, today, recorded_at=stamp, reviews=reviews)

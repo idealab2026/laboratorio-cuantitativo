@@ -18,7 +18,7 @@ on:
       recovery_kind:
         description: 'Passive marks or reviewed merger conversion with provisional receivables'
         type: choice
-        options: [passive, merger]
+        options: [passive, merger, inactive]
         default: passive
 
 permissions:
@@ -53,7 +53,9 @@ jobs:
         env:
           RECOVERY_KIND: ${{ inputs.recovery_kind }}
         run: |
-          if [ "$RECOVERY_KIND" = 'merger' ]; then
+          if [ "$RECOVERY_KIND" = 'inactive' ]; then
+            python strategy_comparison/inactive_recovery.py --engine classic --phase check
+          elif [ "$RECOVERY_KIND" = 'merger' ]; then
             python classic_sp500/corporate_actions.py --phase check
           else
             python classic_sp500/passive_recover_cli.py --phase check
@@ -63,7 +65,9 @@ jobs:
         env:
           RECOVERY_KIND: ${{ inputs.recovery_kind }}
         run: |
-          if [ "$RECOVERY_KIND" = 'merger' ]; then
+          if [ "$RECOVERY_KIND" = 'inactive' ]; then
+            python strategy_comparison/inactive_recovery.py --engine classic --phase recover
+          elif [ "$RECOVERY_KIND" = 'merger' ]; then
             python classic_sp500/corporate_actions.py --phase recover
           else
             python classic_sp500/passive_recover_cli.py --phase recover

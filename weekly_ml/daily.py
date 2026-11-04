@@ -107,7 +107,8 @@ def _price(prices, ticker, key):
     return n
 
 
-def process_day(config, state, day, prices, *, previous_session, first_after_signal, week_end):
+def process_day(config, state, day, prices, *, previous_session, first_after_signal, week_end,
+                quote_identity=None):
     """Pure, atomic daily transition. Caller verifies NYSE calendar and vendor freshness."""
     _check_config(state, config)
     if day <= state["last_session"]:
@@ -118,6 +119,14 @@ def process_day(config, state, day, prices, *, previous_session, first_after_sig
         raise ValueError("La valoración precede a la señal")
     policy = config["paper_policy"]
     result = copy.deepcopy(state)
+    if day < state.get("outage_control", {}).get("first_trading_session", ""):
+        from strategy_comparison.inactive_recovery import weekly_mark
+        for book in result["strategies"].values():
+            weekly_mark(book, day, prices, stamp=datetime.now(timezone.utc).isoformat(timespec="seconds"),
+                        identity=quote_identity)
+        result["last_session"] = day
+        result["gap_sessions"] = sorted(set(result.get("gap_sessions", [])) | {day})
+        return result, True
     for name, book in result["strategies"].items():
         pending = book["pending"]
         if pending:
@@ -262,7 +271,9 @@ def run(config_path, forecast_dir, output, phase):
     updated, changed = process_day(config, state, day, prices,
                                     previous_session=previous,
                                     first_after_signal=first,
-                                    week_end=week_end)
+                                    week_end=week_end,
+                                    quote_identity={"snapshot_sha256": quote_source["hash"],
+                                                    "effective_sha256": quote_source["effective_sha256"]})
     if changed:
         write(output, updated)
     return {"status": "daily_recorded", "session": day,
