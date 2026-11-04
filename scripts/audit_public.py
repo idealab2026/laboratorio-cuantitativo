@@ -19,6 +19,13 @@ if engine_manifest.exists():
     REPOSITORY |= set(engine_paths) | {"data/engine-files.json"}
     for directory in ["market_data/snapshots/XNYS","weekly_ml_state/forecasts","weekly_ml_daily_state/forecasts"]:
         REPOSITORY |= {str(p.relative_to(ROOT)) for p in (ROOT/directory).rglob("*.json") if p.is_file()}
+# Buy The Dip semantic reviews are internal machine outputs keyed by exactly
+# eleven-character YouTube video IDs. They are never added to RELEASE or dist.
+REPOSITORY |= {
+    str(p.relative_to(ROOT))
+    for p in (ROOT/"buy_the_dip_state/reviews").glob("*.json")
+    if p.is_file() and re.fullmatch(r"[A-Za-z0-9_-]{11}\.json", p.name)
+}
 issues = []
 try:
     private_terms = configured_terms()
