@@ -528,13 +528,13 @@ test("MIDAS operational health exposes a separate DAILY RUN ledger, not the buy/
  const css=readFileSync(new URL("../styles.css",import.meta.url),"utf8");
  const flow=readFileSync(new URL("../.github/workflows/pages.yml",import.meta.url),"utf8");
  for(const expected of [
-  "Ejecución diaria","monitoring-panel-daily","monitoring-panel-operations",
+  "Histórico de sesiones","monitoring-panel-daily","monitoring-panel-operations",
   'data-action="monitoring-tab"',"function verifyExecutionHistory(doc)",
   "function renderDailyExecutionTable(doc,status,roster)",
   "loadExecutionHistory()","./data/execution-history.json",
   "state.executionHistoryStatus","daily-execution-table",
-  "Correctos","Fallidos","No ejecutados","Pendientes","Sin programación",
-  "Ver '+day.expected+' algoritmos","laboratorio-cuantitativo"
+  "Correctos","Fallos originales","No ejecutados","Pendientes","Sin programación",
+  "Ver '+ids.length+' algoritmos","laboratorio-cuantitativo"
  ])assert.ok(src.includes(expected),"Missing daily execution UI or source: "+expected);
  assert.ok(src.includes("d.expected+d.not_scheduled!==64"),"Missing 64-slot daily accounting reconciliation");
  assert.ok(src.includes("sum!==d.expected"),"Missing per-day result invariant");
@@ -549,13 +549,49 @@ test("MIDAS operational health exposes a separate DAILY RUN ledger, not the buy/
 test("MIDAS October history displays unavailable CI data as N/D rather than fabricating zero runs",()=>{
  const site=readFileSync(new URL("../src/site.mjs",import.meta.url),"utf8");
  const python=readFileSync(new URL("../scripts/build_execution_history.py",import.meta.url),"utf8");
- assert.ok(site.includes("doc.days.length>65"));
+ assert.ok(site.includes("doc.days.length>500"));
  assert.ok(site.includes('d.data_status==="not_verifiable"'));
- assert.ok(site.includes('Sin datos verificables de GitHub Actions para esta sesión'));
+ assert.ok(site.includes('Automatización sin verificar'));
+ assert.ok(site.includes('Valoración registrada'));
+ assert.ok(site.includes('day.journal_count'));
  assert.ok(site.includes('"<th>Sin verificar</th>"')||site.includes('<th>Sin verificar</th>'));
  assert.ok(site.includes("day.unverified"));
  assert.ok(python.includes("dt.date(2026, 10, 1)"));
  assert.ok(python.includes('"data_status": "not_verifiable"'));
  assert.ok(python.includes('"oldest_retained_run_session":'));
  assert.ok(python.includes('status, matched = "unverified", None'));
+});
+
+test("Session history renders preserved journals and subsequent recovery without rewriting automation outcomes",async()=>{
+ const {runInNewContext}=await import("node:vm");
+ const source=readFileSync(new URL("../src/site.mjs",import.meta.url),"utf8");
+ const segment=source.slice(source.indexOf("function verifyExecutionHistory(doc)"),source.indexOf("function monitoring(){"));
+ const context={Intl,esc:v=>String(v).replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll('"',"&quot;")};
+ runInNewContext(segment+";this.api={verifyExecutionHistory,renderDailyExecutionTable};",context);
+ const journal={slot:"IL-010",cohort:"Campaña actual",nav:100123.45,currency:"USD",inactive:true,recovered:true,
+  source_path:"classic_sp500_state/ledger.json",source_sha256:"a".repeat(64),
+  source_url:"https://github.com/idealab2026/laboratorio-cuantitativo/blob/main/classic_sp500_state/ledger.json",
+  recorded_at_utc:"2026-11-04T18:03:09+00:00",first_trading_session:"2026-11-05"};
+ const old={date:"2026-10-30",data_status:"not_verifiable",expected:null,success:null,failure:null,not_run:null,
+  pending:null,unverified:null,not_scheduled:null,complete:null,details:[],journals:[{...journal,inactive:false,recovered:false}],
+  journal_count:1,recovered_count:0,recovered_failures:0};
+ const current={date:"2026-11-03",data_status:"verified",expected:1,success:0,failure:1,not_run:0,pending:0,
+  unverified:0,not_scheduled:63,complete:true,journals:[journal],journal_count:1,recovered_count:1,recovered_failures:1,
+  details:[{slot:"IL-010",status:"failure",reason:"Missing OHLC",workflows:[{workflow:"classic_sp500.yml",
+   run_url:"https://github.com/idealab2026/laboratorio-cuantitativo/actions/runs/123"}]}]};
+ const doc={schema:"midas_daily_execution_health_v1",status:"verified_github_actions",slot_count:64,automated_slots:26,
+  first_tracked_session:"2026-02-27",oldest_retained_run_session:"2026-11-02",as_of_utc:"2026-11-04T18:00:00Z",days:[current,old]};
+ context.api.verifyExecutionHistory(doc);
+ const html=context.api.renderDailyExecutionTable(doc,"verified",{entries:[{slot:"IL-010",name:"Equiponderación"}]});
+ assert.ok(html.includes("Valoración registrada")&&html.includes("30/10/2026"));
+ assert.ok(html.includes("Recuperación posterior documentada"));
+ assert.ok(html.includes("Falló originalmente"));
+ assert.ok(html.includes("1 recuperados"));
+ assert.ok(html.includes("100.123,45 USD"));
+ assert.ok(html.includes(journal.source_url));
+ assert.ok(!html.includes("Cierre verificado")&&!html.includes("Histórico no disponible"));
+ const tampered=structuredClone(doc);tampered.days[0].recovered_count=0;
+ assert.throws(()=>context.api.verifyExecutionHistory(tampered),/no conciliados/);
+ const external=structuredClone(doc);external.days[0].journals[0].source_url="https://example.com/private";
+ assert.throws(()=>context.api.verifyExecutionHistory(external),/trazabilidad/);
 });
