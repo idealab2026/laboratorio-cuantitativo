@@ -66,6 +66,10 @@
         {
           "date": "2026-11-03",
           "nav": 98384.50647700501
+        },
+        {
+          "date": "2026-11-04",
+          "nav": 99926.99078530274
         }
       ],
       "events": [
@@ -85,7 +89,7 @@
           "type": "buy"
         }
       ],
-      "nav": 98384.50647700501,
+      "nav": 99926.99078530274,
       "pending": {},
       "positions": {
         "SPY": {
@@ -162,6 +166,10 @@
         {
           "buys": 0,
           "date": "2026-11-03"
+        },
+        {
+          "buys": 0,
+          "date": "2026-11-04"
         }
       ],
       "trades": []
@@ -238,6 +246,13 @@
             "snapshot_sha256": "050cbb868646b3035dfe9b37c23da92b3c75ebba2ff2972ef5ffdcce671aa4ae"
           },
           "recorded_at_utc": "2026-11-04T18:03:08+00:00"
+        },
+        {
+          "date": "2026-11-04",
+          "inactive_no_fills": true,
+          "nav": 105663.56496718364,
+          "quote_identity": null,
+          "recorded_at_utc": "2026-11-04T23:44:34+00:00"
         }
       ],
       "events": [
@@ -338,14 +353,32 @@
           },
           "recorded_at_utc": "2026-11-04T18:03:08+00:00",
           "type": "inactive_mark_no_trades"
+        },
+        {
+          "date": "2026-11-04",
+          "recorded_at_utc": "2026-11-04T23:44:34+00:00",
+          "ticker": "DLTR",
+          "trigger": "target",
+          "type": "unexecuted_during_outage"
+        },
+        {
+          "date": "2026-11-04",
+          "expired_unfilled_orders": {},
+          "recorded_at_utc": "2026-11-04T23:44:34+00:00",
+          "type": "inactive_mark_no_trades"
         }
       ],
-      "nav": 102355.90161372935,
+      "nav": 105663.56496718364,
       "outage_control": {
         "first_trading_session": "2026-11-05",
         "registered_at_utc": "2026-11-04T18:03:08+00:00"
       },
-      "pending": {},
+      "pending": {
+        "MRNA": {
+          "side": "buy",
+          "signal_date": "2026-11-04"
+        }
+      },
       "positions": {
         "ABBV": {
           "cost": 11874.999758862768,
@@ -471,6 +504,10 @@
         {
           "buys": 1,
           "date": "2026-11-02"
+        },
+        {
+          "buys": 1,
+          "date": "2026-11-04"
         }
       ],
       "trades": [
@@ -4487,12 +4524,79 @@
           "expired_unfilled_orders": {},
           "recorded_at_utc": "2026-11-04T18:03:08+00:00",
           "type": "inactive_mark_no_trades"
+        },
+        {
+          "date": "2026-11-04",
+          "missing_tickers": [
+            "APH",
+            "AZO",
+            "BALL",
+            "BF-B",
+            "CMI",
+            "COP",
+            "CVS",
+            "DECK",
+            "DVA",
+            "GNRC",
+            "GRMN",
+            "IEX",
+            "J",
+            "KMX",
+            "L",
+            "MTCH",
+            "NVR",
+            "OKE",
+            "ORCL",
+            "OXY",
+            "PG",
+            "PPG",
+            "PWR",
+            "RVTY",
+            "SOLV",
+            "TDY",
+            "VTRS"
+          ],
+          "type": "book_quarantined_missing_held_bar"
         }
       ],
       "nav": 102893.04840944425,
       "outage_control": {
         "first_trading_session": "2026-11-05",
         "registered_at_utc": "2026-11-04T18:03:08+00:00"
+      },
+      "paused_missing_quotes": {
+        "last_valued_session": "2026-11-03",
+        "missing_tickers": [
+          "APH",
+          "AZO",
+          "BALL",
+          "BF-B",
+          "CMI",
+          "COP",
+          "CVS",
+          "DECK",
+          "DVA",
+          "GNRC",
+          "GRMN",
+          "IEX",
+          "J",
+          "KMX",
+          "L",
+          "MTCH",
+          "NVR",
+          "OKE",
+          "ORCL",
+          "OXY",
+          "PG",
+          "PPG",
+          "PWR",
+          "RVTY",
+          "SOLV",
+          "TDY",
+          "VTRS"
+        ],
+        "reason": "required same-session bar unavailable",
+        "since": "2026-11-04"
       },
       "pending": {},
       "positions": {
@@ -9115,12 +9219,27 @@
           "expired_unfilled_orders": {},
           "recorded_at_utc": "2026-11-04T18:03:08+00:00",
           "type": "inactive_mark_no_trades"
+        },
+        {
+          "date": "2026-11-04",
+          "missing_tickers": [
+            "BF-B"
+          ],
+          "type": "book_quarantined_missing_held_bar"
         }
       ],
       "nav": 102678.70868641301,
       "outage_control": {
         "first_trading_session": "2026-11-05",
         "registered_at_utc": "2026-11-04T18:03:08+00:00"
+      },
+      "paused_missing_quotes": {
+        "last_valued_session": "2026-11-03",
+        "missing_tickers": [
+          "BF-B"
+        ],
+        "reason": "required same-session bar unavailable",
+        "since": "2026-11-04"
       },
       "pending": {},
       "positions": {
@@ -9360,6 +9479,18 @@
             "KVUE_KMB_2026-11-02"
           ],
           "valuation_reference_url": "https://infomemo.theocc.com/infomemos?number=60113"
+        },
+        {
+          "date": "2026-11-04",
+          "inactive_no_fills": true,
+          "nav": 110271.90384131426,
+          "provisional_corporate_valuation": true,
+          "quote_identity": null,
+          "recorded_at_utc": "2026-11-04T23:44:34+00:00",
+          "unsettled_receivables": [
+            "KVUE_KMB_2026-11-02"
+          ],
+          "valuation_reference_url": "https://infomemo.theocc.com/infomemos?number=60113"
         }
       ],
       "events": [
@@ -9483,9 +9614,22 @@
           "expired_unfilled_orders": {},
           "recorded_at_utc": "2026-11-04T18:03:08+00:00",
           "type": "inactive_mark_no_trades"
+        },
+        {
+          "date": "2026-11-04",
+          "recorded_at_utc": "2026-11-04T23:44:34+00:00",
+          "ticker": "IDXX",
+          "trigger": "target",
+          "type": "unexecuted_during_outage"
+        },
+        {
+          "date": "2026-11-04",
+          "expired_unfilled_orders": {},
+          "recorded_at_utc": "2026-11-04T23:44:34+00:00",
+          "type": "inactive_mark_no_trades"
         }
       ],
-      "nav": 106272.08288858409,
+      "nav": 110271.90384131426,
       "outage_control": {
         "first_trading_session": "2026-11-05",
         "registered_at_utc": "2026-11-04T18:03:08+00:00"
@@ -9638,6 +9782,10 @@
         {
           "buys": 0,
           "date": "2026-10-30"
+        },
+        {
+          "buys": 0,
+          "date": "2026-11-04"
         }
       ],
       "trades": []
@@ -9908,9 +10056,24 @@
           "date": "2026-11-03",
           "ticker": "DG",
           "type": "unfilled"
+        },
+        {
+          "date": "2026-11-04",
+          "missing_tickers": [
+            "BF-B"
+          ],
+          "type": "book_quarantined_missing_held_bar"
         }
       ],
       "nav": 104093.29888252575,
+      "paused_missing_quotes": {
+        "last_valued_session": "2026-11-03",
+        "missing_tickers": [
+          "BF-B"
+        ],
+        "reason": "required same-session bar unavailable",
+        "since": "2026-11-04"
+      },
       "pending": {
         "WRB": {
           "side": "buy",
@@ -10103,7 +10266,7 @@
       ]
     },
     "rsi_reversion_14": {
-      "cash": 26278.775811073087,
+      "cash": 10227.871558032546,
       "equity": [
         {
           "date": "2026-10-12",
@@ -10168,6 +10331,10 @@
         {
           "date": "2026-11-03",
           "nav": 105828.04621956663
+        },
+        {
+          "date": "2026-11-04",
+          "nav": 107999.53676710556
         }
       ],
       "events": [
@@ -10300,20 +10467,44 @@
           "reason": "target",
           "ticker": "APH",
           "type": "sell"
+        },
+        {
+          "date": "2026-11-04",
+          "shares": 223.995182,
+          "ticker": "ADM",
+          "type": "buy"
+        },
+        {
+          "date": "2026-11-04",
+          "ticker": "ZBRA",
+          "type": "unfilled"
         }
       ],
-      "nav": 105828.04621956663,
+      "nav": 107999.53676710556,
       "pending": {
-        "ADM": {
-          "side": "buy",
-          "signal_date": "2026-11-03"
+        "BEN": {
+          "side": "sell",
+          "signal_date": "2026-11-04"
         },
-        "ZBRA": {
+        "CMI": {
           "side": "buy",
-          "signal_date": "2026-11-03"
+          "signal_date": "2026-11-04"
+        },
+        "TPL": {
+          "side": "buy",
+          "signal_date": "2026-11-04"
         }
       },
       "positions": {
+        "ADM": {
+          "cost": 16050.90425304054,
+          "dividends": 0.0,
+          "entry_date": "2026-11-04",
+          "entry_price": 71.58577805328369,
+          "shares": 223.995182,
+          "stop": 65.858915809021,
+          "target": 82.32364476127624
+        },
         "BEN": {
           "cost": 11874.999989915017,
           "dividends": 0.0,
@@ -10433,6 +10624,10 @@
         {
           "buys": 2,
           "date": "2026-11-03"
+        },
+        {
+          "buys": 2,
+          "date": "2026-11-04"
         }
       ],
       "trades": [
@@ -10560,6 +10755,13 @@
             "snapshot_sha256": "050cbb868646b3035dfe9b37c23da92b3c75ebba2ff2972ef5ffdcce671aa4ae"
           },
           "recorded_at_utc": "2026-11-04T18:03:08+00:00"
+        },
+        {
+          "date": "2026-11-04",
+          "inactive_no_fills": true,
+          "nav": 97721.41597447569,
+          "quote_identity": null,
+          "recorded_at_utc": "2026-11-04T23:44:34+00:00"
         }
       ],
       "events": [
@@ -10699,14 +10901,25 @@
           },
           "recorded_at_utc": "2026-11-04T18:03:08+00:00",
           "type": "inactive_mark_no_trades"
+        },
+        {
+          "date": "2026-11-04",
+          "expired_unfilled_orders": {},
+          "recorded_at_utc": "2026-11-04T23:44:34+00:00",
+          "type": "inactive_mark_no_trades"
         }
       ],
-      "nav": 97598.32624424911,
+      "nav": 97721.41597447569,
       "outage_control": {
         "first_trading_session": "2026-11-05",
         "registered_at_utc": "2026-11-04T18:03:08+00:00"
       },
-      "pending": {},
+      "pending": {
+        "POOL": {
+          "side": "buy",
+          "signal_date": "2026-11-04"
+        }
+      },
       "positions": {
         "ALLE": {
           "cost": 14388.290263124516,
@@ -10832,6 +11045,10 @@
         {
           "buys": 1,
           "date": "2026-11-02"
+        },
+        {
+          "buys": 1,
+          "date": "2026-11-04"
         }
       ],
       "trades": [
@@ -10943,6 +11160,10 @@
         {
           "date": "2026-11-03",
           "nav": 96725.03767250893
+        },
+        {
+          "date": "2026-11-04",
+          "nav": 97879.95364199321
         }
       ],
       "events": [
@@ -11004,8 +11225,33 @@
           "type": "buy"
         }
       ],
-      "nav": 96725.03767250893,
-      "pending": {},
+      "nav": 97879.95364199321,
+      "pending": {
+        "ACN": {
+          "side": "buy",
+          "signal_date": "2026-11-04"
+        },
+        "MPC": {
+          "side": "sell",
+          "signal_date": "2026-11-04"
+        },
+        "MRNA": {
+          "side": "buy",
+          "signal_date": "2026-11-04"
+        },
+        "POOL": {
+          "side": "buy",
+          "signal_date": "2026-11-04"
+        },
+        "PSX": {
+          "side": "sell",
+          "signal_date": "2026-11-04"
+        },
+        "VLO": {
+          "side": "sell",
+          "signal_date": "2026-11-04"
+        }
+      },
       "positions": {
         "ABBV": {
           "cost": 11874.999758862768,
@@ -11144,6 +11390,10 @@
         {
           "buys": 0,
           "date": "2026-11-03"
+        },
+        {
+          "buys": 3,
+          "date": "2026-11-04"
         }
       ],
       "trades": []
@@ -11605,13 +11855,77 @@
       "verified_price_source_aliases": {
         "PSKY": "SKYD"
       }
+    },
+    {
+      "date": "2026-11-04",
+      "eligible": 488,
+      "missing": {
+        "AVB": "invalid_current_ohlc",
+        "BK": "invalid_current_ohlc",
+        "CTRA": "invalid_current_ohlc",
+        "DAY": "invalid_current_ohlc",
+        "EA": "invalid_current_ohlc",
+        "EQR": "invalid_current_ohlc",
+        "FI": "invalid_current_ohlc",
+        "HOLX": "invalid_current_ohlc",
+        "IPG": "invalid_current_ohlc",
+        "K": "invalid_current_ohlc",
+        "KVUE": "invalid_current_ohlc",
+        "MMC": "invalid_current_ohlc",
+        "PSKY": "invalid_current_ohlc",
+        "WBA": "invalid_current_ohlc",
+        "WBD": "invalid_current_ohlc"
+      },
+      "paused_books_missing_held_quotes": {
+        "buy_hold_equal_weight": [
+          "APH",
+          "AZO",
+          "BALL",
+          "BF-B",
+          "CMI",
+          "COP",
+          "CVS",
+          "DECK",
+          "DVA",
+          "GNRC",
+          "GRMN",
+          "IEX",
+          "J",
+          "KMX",
+          "L",
+          "MTCH",
+          "NVR",
+          "OKE",
+          "ORCL",
+          "OXY",
+          "PG",
+          "PPG",
+          "PWR",
+          "RVTY",
+          "SOLV",
+          "TDY",
+          "VTRS"
+        ],
+        "ema_rsi_fixed": [
+          "BF-B"
+        ],
+        "macd_12_26_9": [
+          "BF-B"
+        ]
+      },
+      "ticker_coverage_pct": 97.018,
+      "total": 503,
+      "unfilled_pending_buys_missing_bar": [],
+      "verified_price_source_aliases": {
+        "PSKY": "SKYD"
+      }
     }
   ],
   "currency": "USD",
   "engine": "classic_sp500_next_open_v2",
   "first_session": "2026-10-12",
   "initial_capital": 100000,
-  "last_session": "2026-11-03",
+  "last_session": "2026-11-04",
   "late_recorded_sessions": [
     "2026-10-19",
     "2026-10-20"
