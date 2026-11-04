@@ -668,3 +668,41 @@ p{line-height:1.6;text-align:justify;text-align-last:left;hyphens:auto}p.lead{co
  .nav-session-table-wrap .nav-session-table{min-width:960px}
  .nav-session-table th,.nav-session-table td{padding:7px;font-size:.69rem}
 }
+
+
+/* MIDAS daily institutional paper runner census (separate from trade ledger). */
+.monitoring-tabs{max-width:100%;overflow-x:auto;scrollbar-width:thin}
+.monitoring-tabs button{white-space:nowrap;flex:0 0 auto}
+.daily-ledger-header{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;margin:5px 0 12px}
+.daily-ledger-header strong{font:760 .94rem system-ui,sans-serif;color:#173554}
+.daily-ledger-header span{font:560 .72rem system-ui,sans-serif;color:#637a8d}
+.daily-execution-scroll{max-height:65vh;overflow:auto;scrollbar-gutter:stable}
+.daily-execution-table{min-width:870px;width:100%;font:.76rem/1.4 system-ui,sans-serif;font-variant-numeric:tabular-nums}
+.daily-execution-table th,.daily-execution-table td{padding:11px 10px;vertical-align:top}
+.daily-execution-table thead{position:sticky;top:0;z-index:2}
+.daily-execution-table th{font-size:.72rem;white-space:nowrap;background:#f3f6f8}
+.daily-execution-table td small{display:block;font:.66rem/1.5 system-ui,sans-serif;color:#718497;margin-top:3px}
+.daily-execution-table tbody>tr:nth-child(even){background:#fbfcfd}
+.daily-execution-table .daily-count{font-weight:800;text-align:center}
+.daily-execution-table .daily-ok{color:#177652}
+.daily-execution-table .daily-fail{color:#b04444}
+.daily-execution-table .daily-absent{color:#956221}
+.daily-execution-table .daily-neutral{color:#76899a}
+.daily-execution-details summary{cursor:pointer;color:#1a5b89;font:720 .72rem system-ui,sans-serif;white-space:nowrap}
+.daily-execution-details[open] summary{margin-bottom:9px}
+.daily-execution-subtable{max-height:330px;overflow:auto;min-width:370px;border:1px solid #e1e9f0;border-radius:6px;background:#fff}
+.daily-execution-subtable table{min-width:580px;font-size:.68rem}
+.daily-execution-subtable th,.daily-execution-subtable td{padding:7px 8px;vertical-align:top;white-space:normal}
+.daily-execution-subtable a{color:#216eaa;word-break:break-word}
+.daily-run-state{display:inline-block;border-radius:4px;padding:2px 6px;font:760 .65rem system-ui,sans-serif;background:#f3f5f7}
+.daily-run-state.success{color:#136a47;background:#e6f4ee}
+.daily-run-state.failure{color:#a83737;background:#fbebea}
+.daily-run-state.not_run{color:#8d5c1a;background:#fff2dd}
+.daily-run-state.pending{color:#486e90;background:#eef3f8}
+@media(max-width:650px){
+ .daily-execution-scroll{max-height:64vh}
+ .daily-execution-table{min-width:790px}
+ .daily-execution-table th,.daily-execution-table td{padding:9px 7px;font-size:.69rem}
+ .monitoring-tabs button{flex:0 0 auto}
+ .daily-ledger-header{align-items:flex-start;gap:5px}
+}
