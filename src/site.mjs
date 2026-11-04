@@ -304,13 +304,28 @@ function verifyExecutionHistory(doc){
   if(doc.days.length)throw Error("Fuente caída con recuentos ficticios");
   return doc;
  }
- if(doc.slot_count!==64||doc.automated_slots!==26||doc.days.length>65)
+ if(doc.slot_count!==64||doc.automated_slots!==26||doc.days.length>500)
   throw Error("Inventario diario inesperado");
  let previous="9999-99-99";
  for(const d of doc.days){
   if(!/^\d{4}-\d{2}-\d{2}$/.test(d.date)||d.date>=previous)
    throw Error("Fecha diaria inválida");
   previous=d.date;
+  if(!Array.isArray(d.journals)||d.journals.length>128)throw Error("Sin evidencia contable válida");
+  const journalKeys=new Set(), recovered=new Set(), journalSlots=new Set();
+  for(const j of d.journals){
+   const key=j.slot+"/"+j.cohort;
+   if(!/^IL-\d{3}$/.test(j.slot)||Number(j.slot.slice(3))<1||Number(j.slot.slice(3))>64||journalKeys.has(key)||
+      !Number.isFinite(j.nav)||j.nav<0||!/^[A-Z]{3}$/.test(j.currency)||
+      typeof j.cohort!=="string"||typeof j.inactive!=="boolean"||typeof j.recovered!=="boolean"||
+      !/^[a-f0-9]{64}$/.test(j.source_sha256)||
+      !/^https:\/\/github\.com\/idealab2026\/laboratorio-cuantitativo\/blob\/(?:main|[a-f0-9]{40})\/[A-Za-z0-9_./-]+$/.test(j.source_url)||
+      j.source_url.includes("/../"))throw Error("Diario sin trazabilidad institucional");
+   journalKeys.add(key);journalSlots.add(j.slot);if(j.recovered)recovered.add(j.slot);
+  }
+  if(d.journal_count!==journalSlots.size||d.recovered_count!==recovered.size||
+     d.recovered_failures!==d.details.filter(x=>x.status==="failure"&&recovered.has(x.slot)).length)
+   throw Error("Recuperaciones y diarios no conciliados");
   if(d.data_status==="not_verifiable"){
    if(d.details.length!==0||d.complete!==null||
       ["expected","success","failure","not_run","pending","unverified","not_scheduled"].some(k=>d[k]!==null))
@@ -344,54 +359,74 @@ function verifyExecutionHistory(doc){
  return doc;
 }
 function renderDailyExecutionTable(doc,status,roster){
- if(status==="pending")return '<p class="audit-method-note">Consultando el registro de ejecuciones programadas…</p>';
+ if(status==="pending")return '<p class="audit-method-note">Consultando diarios conservados y ejecuciones programadas…</p>';
  if(status!=="verified"||!doc||doc.status!=="verified_github_actions")
-  return '<p class="audit-method-note">No se ha podido verificar el historial de GitHub Actions. No se muestran ceros ni fallos inventados.</p>';
- const num=v=>new Intl.NumberFormat("es-ES").format(v);
+  return '<p class="audit-method-note">No se ha podido verificar el histórico de sesiones. No se muestran ceros ni fallos inventados.</p>';
+ const num=v=>v===null?"N/D":new Intl.NumberFormat("es-ES").format(v);
  const names=new Map((roster?.entries||[]).map(e=>[e.slot,e.name]));
- const captions={success:"Correcto",failure:"Fallido",not_run:"Sin ejecución",pending:"Pendiente",unverified:"Sin evidencia histórica"};
+ const captions={success:"Correcto",failure:"Falló originalmente",not_run:"Sin ejecución",pending:"Pendiente",unverified:"Sin evidencia histórica"};
  const rows=doc.days.map(day=>{
   const label=day.date.split("-").reverse().join("/");
-  if(day.data_status==="not_verifiable")
-   return '<tr class="daily-unverifiable"><td><strong>'+esc(label)+'</strong>'+
-    '<small>Histórico no disponible</small></td>'+
-    '<td colspan="7">Sin datos verificables de GitHub Actions para esta sesión. '+
-    'No se atribuyen fallos ni ausencias de ejecución.</td></tr>';
-  const details=[...day.details].sort((a,b)=>{
+  const bySlot=new Map(day.details.map(d=>[d.slot,d]));
+  const journals=new Map();
+  for(const j of day.journals){if(!journals.has(j.slot))journals.set(j.slot,[]);journals.get(j.slot).push(j);}
+  const ids=[...new Set([...bySlot.keys(),...journals.keys()])].sort((a,b)=>{
    const rank={failure:0,not_run:1,unverified:2,pending:3,success:4};
-   return rank[a.status]-rank[b.status]||a.slot.localeCompare(b.slot);
+   return (rank[bySlot.get(a)?.status]??5)-(rank[bySlot.get(b)?.status]??5)||a.localeCompare(b);
   });
-  const expanded='<details class="daily-execution-details"><summary>Ver '+day.expected+' algoritmos</summary>'+
-   '<div class="daily-execution-subtable"><table><thead><tr><th>Algoritmo</th><th>Resultado</th><th>Automatismo y evidencia</th></tr></thead><tbody>'+
-   details.map(d=>{
-    const links=d.workflows.map(w=>{
+  const expanded=ids.length?'<details class="daily-execution-details"><summary>Ver '+ids.length+' algoritmos</summary>'+
+   '<div class="daily-execution-subtable"><table><thead><tr><th>Algoritmo</th><th>Diario conservado</th><th>Automatización</th><th>Evidencia</th></tr></thead><tbody>'+
+   ids.map(sid=>{
+    const d=bySlot.get(sid), records=journals.get(sid)||[];
+    const journalText=records.length?records.map(j=>{
+     const label=j.inactive?"Recuperada · sin operaciones":j.recovered?"Valoración recuperada":"Valoración registrada";
+     const nav=new Intl.NumberFormat("es-ES",{minimumFractionDigits:2,maximumFractionDigits:2}).format(j.nav);
+     return '<strong>'+esc(label)+'</strong><small>'+esc(j.cohort)+' · NAV '+esc(nav)+' '+esc(j.currency)+
+      (j.recorded_at_utc?' · registrada '+esc(j.recorded_at_utc.replace("T"," ").slice(0,16))+' UTC':"")+
+      (j.first_trading_session?' · reanudación habilitada '+esc(j.first_trading_session):"")+'</small>';
+    }).join(""):'Sin valoración registrada para esta fecha';
+    const links=(d?.workflows||[]).map(w=>{
      const textLabel=esc(w.workflow.replace(/\.yml$/,"").replaceAll("_"," "));
      return w.run_url?'<a href="'+esc(w.run_url)+'" target="_blank" rel="noopener noreferrer">'+textLabel+'</a>':
       '<span>'+textLabel+' · sin ejecución registrada</span>';
-    }).join(" · ");
-    return '<tr><td><strong>'+esc(d.slot)+'</strong><small>'+esc(names.get(d.slot)||"")+'</small></td>'+
-     '<td><span class="daily-run-state '+esc(d.status)+'">'+esc(captions[d.status])+'</span>'+
-     (d.reason?'<small>'+esc(d.reason)+'</small>':"")+'</td><td>'+links+'</td></tr>';
-   }).join("")+'</tbody></table></div></details>';
-  return '<tr><td><strong>'+esc(label)+'</strong><small>'+esc(day.complete?"Cierre verificado":"Cierre pendiente")+'</small></td>'+
+    });
+    for(const j of records)links.push('<a href="'+esc(j.source_url)+'" target="_blank" rel="noopener noreferrer">Diario · '+esc(j.cohort)+'</a><small>SHA-256 '+esc(j.source_sha256)+'</small>');
+    const recovered=records.some(j=>j.recovered);
+    const runLabel=d?captions[d.status]:day.data_status==="not_verifiable"?"Sin verificar":"Sin automatización acreditada";
+    return '<tr><td><strong>'+esc(sid)+'</strong><small>'+esc(names.get(sid)||"")+'</small></td>'+
+     '<td>'+journalText+'</td><td><span class="daily-run-state '+esc(d?.status||"unverified")+'">'+esc(runLabel)+'</span>'+
+     (d?.status==="failure"&&recovered?'<small class="daily-recovery-note">Recuperación posterior documentada; se conserva el fallo original.</small>':"")+
+     (d?.reason?'<small>'+esc(d.reason)+'</small>':"")+'</td><td>'+links.join("<br>")+'</td></tr>';
+   }).join("")+'</tbody></table></div></details>':'Sin registros disponibles';
+  const technical=day.data_status==="not_verifiable"?"Automatización sin verificar":day.complete?"Registro técnico completo":"Registro técnico pendiente";
+  return '<tr'+(day.data_status==="not_verifiable"?' class="daily-unverifiable"':"")+'><td><strong>'+esc(label)+'</strong><small>'+esc(technical)+'</small></td>'+
+   '<td class="daily-count">'+num(day.journal_count)+'</td>'+
+   '<td class="daily-count daily-ok">'+num(day.recovered_count)+'</td>'+
    '<td class="daily-count daily-ok">'+num(day.success)+'</td>'+
-   '<td class="daily-count daily-fail">'+num(day.failure)+'</td>'+
+   '<td class="daily-count daily-fail">'+num(day.failure)+(day.recovered_failures?'<small class="daily-recovery-note">'+num(day.recovered_failures)+' recuperados</small>':"")+'</td>'+
    '<td class="daily-count daily-absent">'+num(day.not_run)+'</td>'+
    '<td class="daily-count">'+num(day.pending)+'</td>'+
    '<td class="daily-count daily-unverified">'+num(day.unverified)+'</td>'+
    '<td class="daily-count daily-neutral">'+num(day.not_scheduled)+'</td>'+
    '<td>'+expanded+'</td></tr>';
  }).join("");
- return '<div class="daily-ledger-header"><strong>Registro por sesión bursátil</strong>'+
-   '<span>Fuente GitHub Actions · actualizado '+esc(doc.as_of_utc.replace("T"," ").slice(0,16))+' UTC</span></div>'+
-  '<p class="audit-method-note">Histórico mostrado desde el 01/10/2026. Primer registro programado recuperable: '+
-    esc(doc.oldest_retained_run_session||"N/D")+
-    '. Las sesiones anteriores aparecen como «Sin datos verificables», no como cero ejecuciones.</p>'+
+ return '<div class="daily-ledger-header"><strong>Histórico de sesiones y automatización</strong>'+
+   '<span>Diarios conservados + GitHub Actions · actualizado '+esc(doc.as_of_utc.replace("T"," ").slice(0,16))+' UTC</span></div>'+
+  '<p class="audit-method-note">Registros conservados desde '+esc(doc.first_tracked_session.split("-").reverse().join("/"))+
+   '. «Diarios» cuenta algoritmos con valoración registrada; «Recuperadas» identifica valoraciones añadidas después de una interrupción. '+
+   'Las cohortes archivadas conservan su identidad y no se unen a la campaña activa. '+
+   (doc.actions_available===false?'GitHub Actions no está disponible: se conservan los diarios y la automatización aparece como N/D.':
+    'Primera sesión con automatización verificable: '+esc(doc.oldest_retained_run_session||"N/D")+'. Antes de esa fecha, N/D no significa que el diario esté vacío.')+'</p>'+
   '<div class="table-scroll daily-execution-scroll"><table class="daily-execution-table"><thead><tr>'+
-   '<th>Sesión</th><th>Correctos</th><th>Fallidos</th><th>No ejecutados</th>'+
+   '<th>Fecha / sesión</th><th>Diarios</th><th>Recuperadas</th><th>Correctos</th><th>Fallos originales</th><th>No ejecutados</th>'+
    '<th>Pendientes</th><th>Sin verificar</th><th>Sin programación</th><th>Detalle</th></tr></thead><tbody>'+
    rows+'</tbody></table></div>'+
-  '<p class="monitoring-caveat">Recuento limitado a los 26 algoritmos vinculados a workflows programados de los 64 catalogados. Se atribuye la ejecución a la fecha de sesión estadounidense (los reintentos de madrugada corresponden a la sesión anterior). Un workflow compartido cuenta por cada algoritmo asociado, pero su éxito no acredita independientemente todos los libros ni implica compras o ventas. «No ejecutados» solo cuenta ejecuciones ya vencidas sin run; las futuras permanecen pendientes. «Sin programación» incluye históricos, propuestas y algoritmos no previstos ese día. Desde octubre se muestran todas las sesiones laborables; los días sin registros recuperables se distinguen de los workflows no ejecutados. Los estados anteriores a la primera ejecución registrada de cada workflow permanecen sin verificar.</p>';
+  '<p class="monitoring-caveat">Los diarios acreditan valoraciones conservadas, no una ejecución automática puntual ni compraventas. '+
+   'Una sesión recuperada sin operaciones mantiene las posiciones y no inventa órdenes pasadas. Los fallos originales siguen visibles junto a su recuperación. '+
+   'Los recuentos de automatización cubren los 26 algoritmos vinculados a workflows programados de los 64 catalogados. '+
+   'Un workflow compartido cuenta por cada algoritmo asociado, pero su éxito no acredita independientemente todos los libros. '+
+   'Los reintentos de madrugada corresponden a la sesión estadounidense anterior. «No ejecutados» solo cuenta ejecuciones vencidas sin registro; las futuras permanecen pendientes. '+
+   '«Sin programación» incluye archivos, propuestas y algoritmos no previstos ese día. Las fechas históricas se conservan tal como constan en sus diarios.</p>';
 }
 function monitoring(){
  const roster=state.fullRoster, candidates=state.strategyCandidates, audit=state.operationsAudit;
@@ -408,7 +443,7 @@ function monitoring(){
  const latestTrade=summary?.latestTrade||null;
  const selectedTab=["summary","operations","daily"].includes(state.monitoringTab)?state.monitoringTab:"summary";
  const tabs='<div class="monitoring-tabs" id="monitoring-tab-strip" role="tablist" aria-label="Paneles de salud operativa">'+
-  [['summary',"Indicadores"],['operations',"Operaciones"],['daily',"Ejecución diaria"]].map(([key,label])=>
+  [['summary',"Indicadores"],['operations',"Operaciones"],['daily',"Histórico de sesiones"]].map(([key,label])=>
    '<button type="button" role="tab" data-action="monitoring-tab" data-value="'+key+
    '" aria-selected="'+(selectedTab===key)+'" aria-controls="monitoring-panel-'+key+'">'+label+'</button>').join("")+'</div>';
  const health=summary?summary.withExecutions:null;

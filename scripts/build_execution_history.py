@@ -9,6 +9,8 @@ Unconfigured/historical algorithm slots must never be called failed.
 import argparse
 import datetime as dt
 import json
+import hashlib
+import math
 import os
 from pathlib import Path
 import re
@@ -23,7 +25,7 @@ SCHEMA = "midas_daily_execution_health_v1"
 # Include the entire historical competition window in the calendar, rather
 # than limiting it to the date on which this UI was first implemented.
 START = dt.date(2026, 10, 1)
-HISTORY_DAYS = 65
+HISTORY_DAYS = 500
 GRACE = dt.timedelta(minutes=150)
 UTC = dt.timezone.utc
 
@@ -188,6 +190,96 @@ def classic_quarantines(root=ROOT):
     return result
 
 
+
+def journal_evidence(root=ROOT):
+    """Read committed accounting observations, never infer an automation run.
+
+    Archived cohorts retain their own identity and source hash. Their NAV is
+    not spliced into an active campaign and never proves a historical fill.
+    """
+    from build_operations_audit import source_for, source_book
+    root = Path(root)
+    mapping = json.loads((root / "data/original-track-map.json").read_text())
+    if len(mapping) != 64 or set(mapping.values()) != {slot(n) for n in range(1,65)}:
+        raise ValueError("Invalid accounting slot map")
+    cache, result = {}, {}
+    ref = os.getenv("GITHUB_SHA", "main")
+    if ref != "main" and not re.fullmatch(r"[a-f0-9]{40}", ref):
+        raise ValueError("Invalid public accounting source ref")
+
+    def read(path):
+        if path not in cache:
+            raw = (root / path).read_bytes()
+            cache[path] = json.loads(raw), hashlib.sha256(raw).hexdigest()
+        return cache[path]
+
+    def add(sid, path, book, parent, cohort):
+        _doc, digest = read(path)
+        points = book.get("equity", [])
+        if isinstance(book.get("equity_history"), dict):
+            points = [{"date": d, "nav": n} for d,n in book["equity_history"].items()]
+        if not isinstance(points, list):
+            raise ValueError("Invalid accounting history")
+        seen = set()
+        for point in points:
+            day, nav = point.get("date"), point.get("nav")
+            dt.date.fromisoformat(day)
+            if day in seen or isinstance(nav,bool) or not isinstance(nav,(int,float)) or not math.isfinite(nav) or nav < 0:
+                raise ValueError("Duplicate or invalid accounting observation")
+            seen.add(day)
+            provenance = book.get("equity_provenance", {}).get(day, {})
+            inactive = bool(point.get("inactive_no_fills") or day in book.get("inactive_sessions", []))
+            recovered = bool(inactive or point.get("late_mark_only") or point.get("late_recorded_verified_date"))
+            result.setdefault(day, []).append({
+                "slot": sid, "cohort": cohort, "nav": nav,
+                "currency": parent.get("currency", "USD"),
+                "inactive": inactive, "recovered": recovered,
+                "recorded_at_utc": point.get("recorded_at_utc", provenance.get("recorded_at_utc")),
+                "first_trading_session": book.get("outage_control", parent.get("outage_control", {})).get("first_trading_session"),
+                "source_path": path, "source_sha256": digest,
+                "source_url": "https://github.com/" + REPO + "/blob/" + ref + "/" + path,
+            })
+
+    for source_id, sid in mapping.items():
+        if sid == "IL-044":
+            for name,cohort in (("diario_portfolio.json", "Histórico de cierre · archivado"),
+                                ("diario_portfolio_forward.json", "Prospectivo archivado"),
+                                ("diario_portfolio_forward_2026-10-12.json", "Prospectivo activo")):
+                path = "AGENTE/genetic_invest_agent/registro_historico/" + name
+                doc,_ = read(path)
+                add(sid,path,doc,doc,cohort)
+            continue
+        if source_id in ("timesfm_2p5_daily_eur_paper", "timesfm_daily_spy_eur"):
+            path = "timesfm_daily_state/ledger.json"
+            key = "timesfm_daily" if source_id == "timesfm_2p5_daily_eur_paper" else "benchmark_spy"
+        else:
+            path,key = source_for(source_id)
+        if path is None:
+            continue
+        doc,_ = read(path)
+        book = (doc.get("books",{}).get(key) if path == "timesfm_daily_state/ledger.json"
+                else source_book(doc,path,key))
+        if not isinstance(book, dict):
+            raise ValueError("Mapped accounting book absent: " + sid)
+        cohort = ("Archivo de ocho activos" if path == "paper_state/state.json" else
+                  "Archivo semanal" if path == "weekly_ml_state/ledger.json" else
+                  "Archivo de modelos" if path == "tfm_state/ledger.json" else "Campaña actual")
+        add(sid,path,book,doc,cohort)
+    return result
+
+
+def attach_journals(row, evidence):
+    records = evidence.get(row["date"], [])
+    if len({(x["slot"],x["cohort"]) for x in records}) != len(records):
+        raise ValueError("Duplicate cohort accounting evidence")
+    row["journals"] = records
+    row["journal_count"] = len({x["slot"] for x in records})
+    row["recovered_count"] = len({x["slot"] for x in records if x["recovered"]})
+    recovered = {x["slot"] for x in records if x["recovered"]}
+    row["recovered_failures"] = sum(x["status"] == "failure" and x["slot"] in recovered
+                                     for x in row["details"])
+    return row
+
 def one_workflow_status(due, runs, now):
     if not due:
         return "not_due", None
@@ -204,9 +296,11 @@ def one_workflow_status(due, runs, now):
     return "not_run", linked[-1] if linked else None
 
 
-def build(now, runs, schedules, quarantines=None):
+def build(now, runs, schedules, quarantines=None, journals=None, *, actions_available=True):
     now = now.astimezone(UTC)
     quarantines = quarantines or {}
+    journals = journals or {}
+    first_day = min([START] + [dt.date.fromisoformat(d) for d in journals if d <= now.date().isoformat()])
     unique_slots = sorted({slot(x) for v in WORKFLOWS.values() for x in v})
     if len(unique_slots) >= 64 or len(unique_slots) != 26:
         raise ValueError("Unexpected scheduled-algorithm inventory")
@@ -225,20 +319,20 @@ def build(now, runs, schedules, quarantines=None):
     days = []
     count = 0
     day = end
-    while day >= START and count < HISTORY_DAYS:
-        if day.weekday() < 5:
+    while day >= first_day and count < HISTORY_DAYS:
+        if day.weekday() < 5 or day.isoformat() in journals:
             # Historical NAV dates must remain visible, but the GitHub Actions
             # API currently has no corresponding retained scheduled-run logs.
             # We cannot retrospectively claim either zero runs or 64 failures.
-            if archive_first is None or day < archive_first:
-                days.append({
+            if not actions_available or archive_first is None or day < archive_first:
+                days.append(attach_journals({
                     "date": day.isoformat(),
                     "data_status": "not_verifiable",
                     "expected": None,
                     "success": None, "failure": None, "not_run": None,
                     "pending": None, "unverified": None,
                     "not_scheduled": None, "details": [], "complete": None,
-                })
+                }, journals))
                 count += 1
                 day -= dt.timedelta(days=1)
                 continue
@@ -282,22 +376,23 @@ def build(now, runs, schedules, quarantines=None):
             expected = len(records)
             if sum(totals.values()) != expected:
                 raise ValueError("Execution totals do not reconcile")
-            days.append({
+            days.append(attach_journals({
                 "date": day.isoformat(), "expected": expected, **totals,
                 "data_status": "partially_verified" if totals["unverified"] else "verified",
                 "not_scheduled": 64 - expected,
                 "details": records,
                 "complete": totals["pending"] == 0 and totals["unverified"] == 0,
-            })
+            }, journals))
             count += 1
         day -= dt.timedelta(days=1)
     return {
         "schema": SCHEMA,
         "status": "verified_github_actions",
-        "source": "GitHub Actions schedule runs + explicit MIDAS slot mapping",
+        "source": "Committed paper journals + scheduled GitHub Actions; independent evidence",
+        "actions_available": actions_available,
         "repository": REPO,
         "as_of_utc": now.isoformat().replace("+00:00", "Z"),
-        "first_tracked_session": START.isoformat(),
+        "first_tracked_session": first_day.isoformat(),
         "oldest_retained_run_session": archive_first.isoformat() if archive_first else None,
         "slot_count": 64,
         "automated_slots": len(unique_slots),
@@ -327,6 +422,20 @@ def verify(document):
         if prev is not None and date >= prev:
             raise ValueError("Daily history not descending")
         prev = date
+        journals = row.get("journals", [])
+        keys = {(x.get("slot"),x.get("cohort")) for x in journals}
+        if len(keys) != len(journals) or any(
+            x.get("slot") not in {slot(i) for i in range(1,65)} or
+            not re.fullmatch(r"[a-f0-9]{64}", x.get("source_sha256", "")) or
+            not x.get("source_url", "").startswith("https://github.com/" + REPO + "/blob/") or
+            type(x.get("inactive")) is not bool or type(x.get("recovered")) is not bool
+            for x in journals):
+            raise ValueError("Unverifiable accounting evidence")
+        if (row.get("journal_count") != len({x["slot"] for x in journals}) or
+            row.get("recovered_count") != len({x["slot"] for x in journals if x["recovered"]}) or
+            row.get("recovered_failures") != sum(x["status"] == "failure" and x["slot"] in {
+                j["slot"] for j in journals if j["recovered"]} for x in row["details"])):
+            raise ValueError("Accounting and recovery counts do not reconcile")
         if row.get("data_status") == "not_verifiable":
             if row["details"] != [] or row.get("complete") is not None or any(
                 row.get(k) is not None for k in
@@ -367,8 +476,14 @@ def main():
     now = dt.datetime.now(UTC)
     try:
         token = os.getenv("GH_TOKEN", "")
-        runs = collect_runs(token, now)
-        document = build(now, runs, workflow_schedule(), classic_quarantines())
+        journals = journal_evidence()
+        try:
+            runs = collect_runs(token, now)
+            available = True
+        except (ValueError, OSError, urllib.error.URLError, KeyError, json.JSONDecodeError):
+            runs, available = [], False
+        document = build(now, runs, workflow_schedule(), classic_quarantines(),
+                         journals, actions_available=available)
     except (ValueError, OSError, urllib.error.URLError, KeyError, json.JSONDecodeError) as exc:
         # A source outage must not turn into a fabricated zero-execution day.
         document = {

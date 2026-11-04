@@ -146,6 +146,71 @@ class ExecutionHistoryTests(unittest.TestCase):
         with self.assertRaises(ValueError):
             h.verify(doc)
 
+    def journal(self, sid="IL-010", recovered=False):
+        return {"slot":sid,"cohort":"Campaña actual","nav":100000.,"currency":"USD",
+                "source_path":"classic_sp500_state/ledger.json","source_sha256":"a"*64,
+                "source_url":"https://github.com/idealab2026/laboratorio-cuantitativo/blob/main/classic_sp500_state/ledger.json",
+                "inactive":recovered,"recovered":recovered,"recorded_at_utc":None,
+                "first_trading_session":None}
+
+    def test_october_journals_survive_absent_actions_without_inventing_successes(self):
+        evidence={"2026-10-30":[self.journal()]}
+        runs=[event("classic_sp500.yml","2026-11-03T00:20:00Z","success")]
+        doc=h.build(self.now,runs,self.schedules,journals=evidence)
+        h.verify(doc)
+        old=next(d for d in doc["days"] if d["date"]=="2026-10-30")
+        self.assertEqual(old["journal_count"],1)
+        self.assertEqual(old["journals"][0]["nav"],100000.)
+        self.assertIsNone(old["success"])
+        self.assertIsNone(old["not_run"])
+        self.assertEqual(old["data_status"],"not_verifiable")
+
+    def test_recovery_does_not_erase_original_automation_failure(self):
+        runs=[event("classic_sp500.yml","2026-11-04T00:20:00Z","success",1),
+              event("weekly_ml_daily.yml","2026-11-04T02:20:00Z","failure",2)]
+        journals={"2026-11-03":[self.journal("IL-010",True),self.journal("IL-019",True)]}
+        doc=h.build(self.now,runs,self.schedules,{("IL-010","2026-11-03"):"Missing OHLC"},journals)
+        h.verify(doc)
+        day=next(d for d in doc["days"] if d["date"]=="2026-11-03")
+        self.assertEqual(day["journal_count"],2)
+        self.assertEqual(day["recovered_count"],2)
+        self.assertEqual(day["recovered_failures"],2)
+        self.assertEqual(next(d for d in day["details"] if d["slot"]=="IL-010")["status"],"failure")
+        self.assertEqual(next(d for d in day["details"] if d["slot"]=="IL-019")["status"],"failure")
+
+    def test_actions_outage_does_not_hide_accounting_history(self):
+        doc=h.build(self.now,[],self.schedules,journals={"2026-10-30":[self.journal()]},actions_available=False)
+        h.verify(doc)
+        self.assertFalse(doc["actions_available"])
+        day=next(d for d in doc["days"] if d["date"]=="2026-10-30")
+        self.assertEqual(day["journal_count"],1)
+        self.assertIsNone(day["failure"])
+
+    def test_all_three_genetic_cohorts_are_read_separately_from_original_files(self):
+        evidence=h.journal_evidence()
+        records=[(d,x) for d,rows in evidence.items() for x in rows if x["slot"]=="IL-044"]
+        historical=[x for d,x in records if x["cohort"]=="Histórico de cierre · archivado"]
+        archived=[x for d,x in records if x["cohort"]=="Prospectivo archivado"]
+        active=[x for d,x in records if x["cohort"]=="Prospectivo activo"]
+        self.assertEqual(len(historical),149)
+        self.assertEqual(len(archived),7)
+        self.assertGreaterEqual(len(active),17)
+        self.assertEqual(len({x["source_sha256"] for x in historical+archived+active}),3)
+        doc=h.build(self.now,[],self.schedules,journals=evidence)
+        h.verify(doc)
+        self.assertEqual(doc["first_tracked_session"],"2026-02-27")
+        self.assertTrue(any(d["date"]=="2026-10-30" and d["journal_count"]>0 for d in doc["days"]))
+
+    def test_rejects_recovery_count_tampering_and_duplicate_cohort_records(self):
+        j=self.journal(recovered=True)
+        with self.assertRaisesRegex(ValueError,"Duplicate cohort"):
+            h.build(self.now,[],self.schedules,journals={"2026-10-30":[j,j]})
+        doc=h.build(self.now,[],self.schedules,journals={"2026-10-30":[j]})
+        day=next(d for d in doc["days"] if d["date"]=="2026-10-30")
+        day["recovered_count"]=0
+        with self.assertRaisesRegex(ValueError,"recovery counts"):
+            h.verify(doc)
+
     def test_unavailable_cannot_publish_made_up_no_run_counts(self):
         h.verify({"schema": h.SCHEMA, "status": "unavailable", "days": []})
         with self.assertRaises(ValueError):

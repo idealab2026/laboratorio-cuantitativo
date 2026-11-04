@@ -677,11 +677,11 @@ p{line-height:1.6;text-align:justify;text-align-last:left;hyphens:auto}p.lead{co
 .daily-ledger-header strong{font:760 .94rem system-ui,sans-serif;color:#173554}
 .daily-ledger-header span{font:560 .72rem system-ui,sans-serif;color:#637a8d}
 .daily-execution-scroll{max-height:65vh;overflow:auto;scrollbar-gutter:stable}
-.daily-execution-table{min-width:870px;width:100%;font:.76rem/1.4 system-ui,sans-serif;font-variant-numeric:tabular-nums}
+.daily-execution-table{min-width:1080px;width:100%;font:.76rem/1.4 system-ui,sans-serif;font-variant-numeric:tabular-nums}
 .daily-execution-table th,.daily-execution-table td{padding:11px 10px;vertical-align:top}
 .daily-execution-table thead{position:sticky;top:0;z-index:2}
 .daily-execution-table th{font-size:.72rem;white-space:nowrap;background:#f3f6f8}
-.daily-execution-table td small{display:block;font:.66rem/1.5 system-ui,sans-serif;color:#718497;margin-top:3px}
+.daily-execution-table td small{display:block;font:.66rem/1.5 system-ui,sans-serif;color:#52677a;margin-top:3px}
 .daily-execution-table tbody>tr:nth-child(even){background:#fbfcfd}
 .daily-execution-table .daily-count{font-weight:800;text-align:center}
 .daily-execution-table .daily-ok{color:#177652}
@@ -701,7 +701,7 @@ p{line-height:1.6;text-align:justify;text-align-last:left;hyphens:auto}p.lead{co
 .daily-run-state.pending{color:#486e90;background:#eef3f8}
 @media(max-width:650px){
  .daily-execution-scroll{max-height:64vh}
- .daily-execution-table{min-width:790px}
+ .daily-execution-table{min-width:1000px}
  .daily-execution-table th,.daily-execution-table td{padding:9px 7px;font-size:.69rem}
  .monitoring-tabs button{flex:0 0 auto}
  .daily-ledger-header{align-items:flex-start;gap:5px}
@@ -712,3 +712,5 @@ p{line-height:1.6;text-align:justify;text-align-last:left;hyphens:auto}p.lead{co
 .daily-execution-table .daily-unverifiable td{color:#738395}
 .daily-execution-table .daily-unverifiable td[colspan]{font-style:italic;font-weight:500}
 .daily-run-state.unverified{background:#f5f1e8;color:#866b3d}
+
+.daily-execution-table .daily-recovery-note{color:#177652;font-weight:650}
