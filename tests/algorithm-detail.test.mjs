@@ -545,3 +545,17 @@ test("MIDAS operational health exposes a separate DAILY RUN ledger, not the buy/
  assert.ok(flow.includes("build_execution_history.py --validate"));
  assert.ok(flow.includes("actions: read"));
 });
+
+test("MIDAS October history displays unavailable CI data as N/D rather than fabricating zero runs",()=>{
+ const site=readFileSync(new URL("../src/site.mjs",import.meta.url),"utf8");
+ const python=readFileSync(new URL("../scripts/build_execution_history.py",import.meta.url),"utf8");
+ assert.ok(site.includes("doc.days.length>65"));
+ assert.ok(site.includes('d.data_status==="not_verifiable"'));
+ assert.ok(site.includes('Sin datos verificables de GitHub Actions para esta sesión'));
+ assert.ok(site.includes('"<th>Sin verificar</th>"')||site.includes('<th>Sin verificar</th>'));
+ assert.ok(site.includes("day.unverified"));
+ assert.ok(python.includes("dt.date(2026, 10, 1)"));
+ assert.ok(python.includes('"data_status": "not_verifiable"'));
+ assert.ok(python.includes('"oldest_retained_run_session":'));
+ assert.ok(python.includes('status, matched = "unverified", None'));
+});
