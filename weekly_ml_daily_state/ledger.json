@@ -4,10 +4,16 @@
   "engine": "weekly_ml_daily_next_open_v1",
   "execution_model": "paper_open_recorded_after_session_close",
   "first_session": "2026-10-09",
-  "gap_sessions": [],
+  "gap_sessions": [
+    "2026-11-03"
+  ],
   "initial_capital": 100000.0,
-  "last_session": "2026-11-02",
+  "last_session": "2026-11-03",
   "last_signal_session": "2026-10-30",
+  "outage_control": {
+    "first_trading_session": "2026-11-05",
+    "registered_at_utc": "2026-11-04T18:03:52+00:00"
+  },
   "schema_version": 1,
   "signal_hash": "1d9395966b04c72c8f087bbed55eafebc572cf340070b68da80fc8ea72cdcedf",
   "strategies": {
@@ -98,6 +104,31 @@
           "date": "2026-11-02",
           "decision_recorded": false,
           "nav": 88218.70022247733
+        },
+        {
+          "date": "2026-11-03",
+          "decision_recorded": false,
+          "inactive_no_fills": true,
+          "nav": 88482.72890779852,
+          "quote_identity": {
+            "effective_sha256": "9b25e618f47478e7b61fbe5a019eea93de2d02fb50058e5fbee9953a2c105d24",
+            "independent_captured_at_utc": "2026-11-04T18:03:52+00:00",
+            "independent_observations": {
+              "RSP": {
+                "close": 219.25999450683594,
+                "date": "2026-11-03",
+                "dividend": 0.0,
+                "high": 220.5,
+                "low": 218.5500030517578,
+                "open": 219.60000610351562,
+                "split": 0.0,
+                "volume": 10759600.0
+              }
+            },
+            "independent_sha256": "3a49f26435f4e9dadd8465cf0342f114ab67516028d38f8f78692e1fdd82a0e9",
+            "snapshot_sha256": "050cbb868646b3035dfe9b37c23da92b3c75ebba2ff2972ef5ffdcce671aa4ae"
+          },
+          "recorded_at_utc": "2026-11-04T18:03:52+00:00"
         }
       ],
       "events": [
@@ -750,9 +781,15 @@
           "shares": 19.435132,
           "ticker": "MPC",
           "type": "buy"
+        },
+        {
+          "date": "2026-11-03",
+          "expired_unfilled_orders": [],
+          "recorded_at_utc": "2026-11-04T18:03:52+00:00",
+          "type": "inactive_mark_no_trades"
         }
       ],
-      "nav": 88218.70022247733,
+      "nav": 88482.72890779852,
       "pending": [],
       "positions": {
         "BBY": {
@@ -1276,6 +1313,31 @@
           "date": "2026-11-02",
           "decision_recorded": false,
           "nav": 101131.39367841867
+        },
+        {
+          "date": "2026-11-03",
+          "decision_recorded": false,
+          "inactive_no_fills": true,
+          "nav": 100816.92995207115,
+          "quote_identity": {
+            "effective_sha256": "9b25e618f47478e7b61fbe5a019eea93de2d02fb50058e5fbee9953a2c105d24",
+            "independent_captured_at_utc": "2026-11-04T18:03:52+00:00",
+            "independent_observations": {
+              "RSP": {
+                "close": 219.25999450683594,
+                "date": "2026-11-03",
+                "dividend": 0.0,
+                "high": 220.5,
+                "low": 218.5500030517578,
+                "open": 219.60000610351562,
+                "split": 0.0,
+                "volume": 10759600.0
+              }
+            },
+            "independent_sha256": "3a49f26435f4e9dadd8465cf0342f114ab67516028d38f8f78692e1fdd82a0e9",
+            "snapshot_sha256": "050cbb868646b3035dfe9b37c23da92b3c75ebba2ff2972ef5ffdcce671aa4ae"
+          },
+          "recorded_at_utc": "2026-11-04T18:03:52+00:00"
         }
       ],
       "events": [
@@ -1361,9 +1423,15 @@
           "shares": 436.754435,
           "ticker": "RSP",
           "type": "buy"
+        },
+        {
+          "date": "2026-11-03",
+          "expired_unfilled_orders": [],
+          "recorded_at_utc": "2026-11-04T18:03:52+00:00",
+          "type": "inactive_mark_no_trades"
         }
       ],
-      "nav": 101131.39367841867,
+      "nav": 100816.92995207115,
       "pending": [],
       "positions": {
         "RSP": {
@@ -1500,6 +1568,31 @@
           "date": "2026-11-02",
           "decision_recorded": false,
           "nav": 94598.14809395775
+        },
+        {
+          "date": "2026-11-03",
+          "decision_recorded": false,
+          "inactive_no_fills": true,
+          "nav": 94866.84838595774,
+          "quote_identity": {
+            "effective_sha256": "9b25e618f47478e7b61fbe5a019eea93de2d02fb50058e5fbee9953a2c105d24",
+            "independent_captured_at_utc": "2026-11-04T18:03:52+00:00",
+            "independent_observations": {
+              "RSP": {
+                "close": 219.25999450683594,
+                "date": "2026-11-03",
+                "dividend": 0.0,
+                "high": 220.5,
+                "low": 218.5500030517578,
+                "open": 219.60000610351562,
+                "split": 0.0,
+                "volume": 10759600.0
+              }
+            },
+            "independent_sha256": "3a49f26435f4e9dadd8465cf0342f114ab67516028d38f8f78692e1fdd82a0e9",
+            "snapshot_sha256": "050cbb868646b3035dfe9b37c23da92b3c75ebba2ff2972ef5ffdcce671aa4ae"
+          },
+          "recorded_at_utc": "2026-11-04T18:03:52+00:00"
         }
       ],
       "events": [
@@ -1585,9 +1678,15 @@
           "shares": 119.422352,
           "ticker": "SPY",
           "type": "buy"
+        },
+        {
+          "date": "2026-11-03",
+          "expired_unfilled_orders": [],
+          "recorded_at_utc": "2026-11-04T18:03:52+00:00",
+          "type": "inactive_mark_no_trades"
         }
       ],
-      "nav": 94598.14809395775,
+      "nav": 94866.84838595774,
       "pending": [],
       "positions": {
         "SPY": {
@@ -1724,6 +1823,31 @@
           "date": "2026-11-02",
           "decision_recorded": false,
           "nav": 83775.86664653396
+        },
+        {
+          "date": "2026-11-03",
+          "decision_recorded": false,
+          "inactive_no_fills": true,
+          "nav": 83461.41937835242,
+          "quote_identity": {
+            "effective_sha256": "9b25e618f47478e7b61fbe5a019eea93de2d02fb50058e5fbee9953a2c105d24",
+            "independent_captured_at_utc": "2026-11-04T18:03:52+00:00",
+            "independent_observations": {
+              "RSP": {
+                "close": 219.25999450683594,
+                "date": "2026-11-03",
+                "dividend": 0.0,
+                "high": 220.5,
+                "low": 218.5500030517578,
+                "open": 219.60000610351562,
+                "split": 0.0,
+                "volume": 10759600.0
+              }
+            },
+            "independent_sha256": "3a49f26435f4e9dadd8465cf0342f114ab67516028d38f8f78692e1fdd82a0e9",
+            "snapshot_sha256": "050cbb868646b3035dfe9b37c23da92b3c75ebba2ff2972ef5ffdcce671aa4ae"
+          },
+          "recorded_at_utc": "2026-11-04T18:03:52+00:00"
         }
       ],
       "events": [
@@ -2376,9 +2500,15 @@
           "shares": 20.225678,
           "ticker": "VLO",
           "type": "buy"
+        },
+        {
+          "date": "2026-11-03",
+          "expired_unfilled_orders": [],
+          "recorded_at_utc": "2026-11-04T18:03:52+00:00",
+          "type": "inactive_mark_no_trades"
         }
       ],
-      "nav": 83775.86664653396,
+      "nav": 83461.41937835242,
       "pending": [],
       "positions": {
         "AON": {
@@ -2902,6 +3032,31 @@
           "date": "2026-11-02",
           "decision_recorded": false,
           "nav": 100692.64930089214
+        },
+        {
+          "date": "2026-11-03",
+          "decision_recorded": false,
+          "inactive_no_fills": true,
+          "nav": 100692.64930089214,
+          "quote_identity": {
+            "effective_sha256": "9b25e618f47478e7b61fbe5a019eea93de2d02fb50058e5fbee9953a2c105d24",
+            "independent_captured_at_utc": "2026-11-04T18:03:52+00:00",
+            "independent_observations": {
+              "RSP": {
+                "close": 219.25999450683594,
+                "date": "2026-11-03",
+                "dividend": 0.0,
+                "high": 220.5,
+                "low": 218.5500030517578,
+                "open": 219.60000610351562,
+                "split": 0.0,
+                "volume": 10759600.0
+              }
+            },
+            "independent_sha256": "3a49f26435f4e9dadd8465cf0342f114ab67516028d38f8f78692e1fdd82a0e9",
+            "snapshot_sha256": "050cbb868646b3035dfe9b37c23da92b3c75ebba2ff2972ef5ffdcce671aa4ae"
+          },
+          "recorded_at_utc": "2026-11-04T18:03:52+00:00"
         }
       ],
       "events": [
@@ -3464,6 +3619,12 @@
           "count": 0,
           "date": "2026-10-30",
           "type": "signal_frozen"
+        },
+        {
+          "date": "2026-11-03",
+          "expired_unfilled_orders": [],
+          "recorded_at_utc": "2026-11-04T18:03:52+00:00",
+          "type": "inactive_mark_no_trades"
         }
       ],
       "nav": 100692.64930089214,
@@ -3919,6 +4080,31 @@
           "date": "2026-11-02",
           "decision_recorded": false,
           "nav": 88645.41324221832
+        },
+        {
+          "date": "2026-11-03",
+          "decision_recorded": false,
+          "inactive_no_fills": true,
+          "nav": 90602.4778633169,
+          "quote_identity": {
+            "effective_sha256": "9b25e618f47478e7b61fbe5a019eea93de2d02fb50058e5fbee9953a2c105d24",
+            "independent_captured_at_utc": "2026-11-04T18:03:52+00:00",
+            "independent_observations": {
+              "RSP": {
+                "close": 219.25999450683594,
+                "date": "2026-11-03",
+                "dividend": 0.0,
+                "high": 220.5,
+                "low": 218.5500030517578,
+                "open": 219.60000610351562,
+                "split": 0.0,
+                "volume": 10759600.0
+              }
+            },
+            "independent_sha256": "3a49f26435f4e9dadd8465cf0342f114ab67516028d38f8f78692e1fdd82a0e9",
+            "snapshot_sha256": "050cbb868646b3035dfe9b37c23da92b3c75ebba2ff2972ef5ffdcce671aa4ae"
+          },
+          "recorded_at_utc": "2026-11-04T18:03:52+00:00"
         }
       ],
       "events": [
@@ -4571,9 +4757,15 @@
           "shares": 159.098432,
           "ticker": "HPE",
           "type": "buy"
+        },
+        {
+          "date": "2026-11-03",
+          "expired_unfilled_orders": [],
+          "recorded_at_utc": "2026-11-04T18:03:52+00:00",
+          "type": "inactive_mark_no_trades"
         }
       ],
-      "nav": 88645.41324221832,
+      "nav": 90602.4778633169,
       "pending": [],
       "positions": {
         "AKAM": {
@@ -5097,6 +5289,31 @@
           "date": "2026-11-02",
           "decision_recorded": false,
           "nav": 83291.89980045031
+        },
+        {
+          "date": "2026-11-03",
+          "decision_recorded": false,
+          "inactive_no_fills": true,
+          "nav": 83291.89980045031,
+          "quote_identity": {
+            "effective_sha256": "9b25e618f47478e7b61fbe5a019eea93de2d02fb50058e5fbee9953a2c105d24",
+            "independent_captured_at_utc": "2026-11-04T18:03:52+00:00",
+            "independent_observations": {
+              "RSP": {
+                "close": 219.25999450683594,
+                "date": "2026-11-03",
+                "dividend": 0.0,
+                "high": 220.5,
+                "low": 218.5500030517578,
+                "open": 219.60000610351562,
+                "split": 0.0,
+                "volume": 10759600.0
+              }
+            },
+            "independent_sha256": "3a49f26435f4e9dadd8465cf0342f114ab67516028d38f8f78692e1fdd82a0e9",
+            "snapshot_sha256": "050cbb868646b3035dfe9b37c23da92b3c75ebba2ff2972ef5ffdcce671aa4ae"
+          },
+          "recorded_at_utc": "2026-11-04T18:03:52+00:00"
         }
       ],
       "events": [
@@ -5479,6 +5696,12 @@
           "count": 0,
           "date": "2026-10-30",
           "type": "signal_frozen"
+        },
+        {
+          "date": "2026-11-03",
+          "expired_unfilled_orders": [],
+          "recorded_at_utc": "2026-11-04T18:03:52+00:00",
+          "type": "inactive_mark_no_trades"
         }
       ],
       "nav": 83291.89980045031,
@@ -5814,6 +6037,31 @@
           "date": "2026-11-02",
           "decision_recorded": false,
           "nav": 96811.61578318397
+        },
+        {
+          "date": "2026-11-03",
+          "decision_recorded": false,
+          "inactive_no_fills": true,
+          "nav": 96573.03821895998,
+          "quote_identity": {
+            "effective_sha256": "9b25e618f47478e7b61fbe5a019eea93de2d02fb50058e5fbee9953a2c105d24",
+            "independent_captured_at_utc": "2026-11-04T18:03:52+00:00",
+            "independent_observations": {
+              "RSP": {
+                "close": 219.25999450683594,
+                "date": "2026-11-03",
+                "dividend": 0.0,
+                "high": 220.5,
+                "low": 218.5500030517578,
+                "open": 219.60000610351562,
+                "split": 0.0,
+                "volume": 10759600.0
+              }
+            },
+            "independent_sha256": "3a49f26435f4e9dadd8465cf0342f114ab67516028d38f8f78692e1fdd82a0e9",
+            "snapshot_sha256": "050cbb868646b3035dfe9b37c23da92b3c75ebba2ff2972ef5ffdcce671aa4ae"
+          },
+          "recorded_at_utc": "2026-11-04T18:03:52+00:00"
         }
       ],
       "events": [
@@ -6466,9 +6714,15 @@
           "shares": 81.618961,
           "ticker": "CHTR",
           "type": "buy"
+        },
+        {
+          "date": "2026-11-03",
+          "expired_unfilled_orders": [],
+          "recorded_at_utc": "2026-11-04T18:03:52+00:00",
+          "type": "inactive_mark_no_trades"
         }
       ],
-      "nav": 96811.61578318397,
+      "nav": 96573.03821895998,
       "pending": [],
       "positions": {
         "APTV": {
@@ -6992,6 +7246,31 @@
           "date": "2026-11-02",
           "decision_recorded": false,
           "nav": 88300.21757968554
+        },
+        {
+          "date": "2026-11-03",
+          "decision_recorded": false,
+          "inactive_no_fills": true,
+          "nav": 87163.59371114352,
+          "quote_identity": {
+            "effective_sha256": "9b25e618f47478e7b61fbe5a019eea93de2d02fb50058e5fbee9953a2c105d24",
+            "independent_captured_at_utc": "2026-11-04T18:03:52+00:00",
+            "independent_observations": {
+              "RSP": {
+                "close": 219.25999450683594,
+                "date": "2026-11-03",
+                "dividend": 0.0,
+                "high": 220.5,
+                "low": 218.5500030517578,
+                "open": 219.60000610351562,
+                "split": 0.0,
+                "volume": 10759600.0
+              }
+            },
+            "independent_sha256": "3a49f26435f4e9dadd8465cf0342f114ab67516028d38f8f78692e1fdd82a0e9",
+            "snapshot_sha256": "050cbb868646b3035dfe9b37c23da92b3c75ebba2ff2972ef5ffdcce671aa4ae"
+          },
+          "recorded_at_utc": "2026-11-04T18:03:52+00:00"
         }
       ],
       "events": [
@@ -7644,9 +7923,15 @@
           "shares": 11.945916,
           "ticker": "FICO",
           "type": "buy"
+        },
+        {
+          "date": "2026-11-03",
+          "expired_unfilled_orders": [],
+          "recorded_at_utc": "2026-11-04T18:03:52+00:00",
+          "type": "inactive_mark_no_trades"
         }
       ],
-      "nav": 88300.21757968554,
+      "nav": 87163.59371114352,
       "pending": [],
       "positions": {
         "BLDR": {
