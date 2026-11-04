@@ -4,6 +4,7 @@ import copy
 import json
 import hashlib
 import tempfile
+import io
 from pathlib import Path
 import unittest
 from unittest import mock
@@ -70,6 +71,54 @@ class ExecutionHistoryTests(unittest.TestCase):
         self.assertEqual(row["unverified"], 6)
         self.assertEqual(row["pending"], 0)
         self.assertEqual(sum(row[k] for k in ("success", "failure", "not_run", "pending", "unverified")), row["expected"])
+
+    def test_scheduled_common_consumer_jobs_are_attributed_individually(self):
+        parent={"id":200,"event":"schedule","path":".github/workflows/market_data_xnys.yml",
+                "created_at":"2026-11-04T23:40:00Z","status":"completed","conclusion":"failure",
+                "html_url":"https://github.com/idealab2026/laboratorio-cuantitativo/actions/runs/200"}
+        jobs=[{"name":"capture","status":"completed","conclusion":"success"}]
+        for filename in h.COMMON_ACCOUNTING_STEPS:
+            outcome="failure" if filename=="weekly_ml_daily.yml" else "success"
+            jobs.append({"name":"consume-"+filename[:-4]+" / runner","status":"completed","conclusion":outcome,
+                         "steps":[{"name":h.COMMON_ACCOUNTING_STEPS[filename],"conclusion":outcome}]})
+        def opener(req, timeout):
+            payload={"jobs":jobs} if "/200/jobs?" in req.full_url else {"workflow_runs":[parent]}
+            return io.StringIO(json.dumps(payload))
+        now=dt.datetime(2026,11,4,23,50,tzinfo=U)
+        runs=h.collect_runs("",now,opener=opener)
+        self.assertEqual(len(runs),6)
+        doc=h.build(now,runs,self.schedules)
+        h.verify(doc)
+        row=next(d for d in doc["days"] if d["date"]=="2026-11-04")
+        by_slot={d["slot"]:d for d in row["details"]}
+        self.assertEqual(by_slot["IL-019"]["status"],"failure")
+        self.assertEqual(by_slot["IL-010"]["status"],"success")
+        self.assertEqual(by_slot["IL-039"]["status"],"success")
+        self.assertEqual(by_slot["IL-044"]["status"],"unverified")  # Not a called consumer.
+        self.assertEqual(row["failure"],9)
+        self.assertEqual(row["success"],15)
+        self.assertTrue(all(w["run_id"]==200 for d in row["details"] for w in d["workflows"] if w["run_id"]))
+
+    def test_green_capture_cannot_certify_missing_or_skipped_consumer_accounting(self):
+        parent={"id":200,"created_at":"2026-11-04T23:40:00Z",
+                "html_url":"https://github.com/idealab2026/laboratorio-cuantitativo/actions/runs/200"}
+        jobs=[{"name":"capture","conclusion":"success"},
+              {"name":"consume-classic_sp500 / classic","status":"completed","conclusion":"success",
+               "steps":[{"name":"Record next-open paper ledger","conclusion":"skipped"}]}]
+        runs=h.common_consumer_runs(parent,"",lambda req,timeout:io.StringIO(json.dumps({"jobs":jobs})))
+        self.assertEqual(len(runs),1)
+        self.assertEqual(runs[0]["conclusion"],"unverified")
+        jobs=[]
+        self.assertEqual(h.common_consumer_runs(parent,"",lambda req,timeout:io.StringIO(json.dumps({"jobs":jobs}))),[])
+        with self.assertRaises(ValueError):
+            h.common_consumer_runs(parent,"",lambda req,timeout:io.StringIO('{}'))
+
+    def test_observed_failure_is_visible_before_future_backup_but_missing_run_stays_pending(self):
+        due=h.due_times_for_session(dt.date(2026,11,4),self.schedules["weekly_ml_daily.yml"])
+        now=dt.datetime(2026,11,4,23,50,tzinfo=U)
+        status,_=h.one_workflow_status(due,[event("weekly_ml_daily.yml","2026-11-04T23:40:00Z","failure")],now)
+        self.assertEqual(status,"failure")
+        self.assertEqual(h.one_workflow_status(due,[],now)[0],"pending")
 
     def test_pre_grace_missing_is_pending_not_automatically_failed(self):
         early = dt.datetime(2026, 11, 4, 22, 30, tzinfo=U)
