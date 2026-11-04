@@ -1,0 +1,299 @@
+{
+  "schema_version": 1,
+  "status": "machine_first_pass",
+  "reviewed_at_utc": "2026-11-04T15:34:59.556966+00:00",
+  "source_identity": "Buy The Dip YouTube channel",
+  "transport": {
+    "kind": "official_podcast_mirror",
+    "provider": "iVoox",
+    "guid": "https://www.ivoox.com/114788615",
+    "published_date": "2023-08-23",
+    "youtube_video_id": "2iXVLrxC-5s",
+    "match_score": 1.0,
+    "audio_bytes_processed_transiently": 31370597
+  },
+  "models": {
+    "asr": {
+      "language": "es",
+      "language_probability": 1.0,
+      "duration_seconds": 3921.2669375,
+      "word_count": 10879,
+      "segment_count": 643,
+      "model": "small"
+    },
+    "semantic": {
+      "repo": "Qwen/Qwen3-4B-GGUF",
+      "file": "Qwen3-4B-Q4_K_M.gguf"
+    }
+  },
+  "metadata": {
+    "video_id": "2iXVLrxC-5s",
+    "youtube_url": "https://www.youtube.com/watch?v=2iXVLrxC-5s",
+    "title": "INVERTIR en EMPRESAS AGRÍCOLAS | BUY THE DIP PODCAST",
+    "category": "company_or_theme",
+    "guest_likely": false,
+    "podcast_guid": "https://www.ivoox.com/114788615",
+    "published_date": "2023-08-23",
+    "source": "official_podcast_mirror",
+    "match_score": 1.0
+  },
+  "analysis": {
+    "episode_summary": "El episodio presenta una estrategia de inversión en el sector agrícola, destacando la importancia de empresas agrícolas, la tesis de inversión en agricultura como activo descorrelacionado, la resiliencia de los activos agrícolas frente a la volatilidad y la inflación, y el modelo de alquiler de tierras agrícolas en EE. UU. Se analizan ejemplos concretos de valorización de terrenos agrícolas en California debido a la escasez de agua y la demanda de alimentos, así como la estrategia de inversión en Gladstone con una cap rate del 5,4% y diversificación geográfica. Se menciona el crecimiento de Mosaic en producción de fertilizantes, su exposición a factores geopolíticos y su capacidad de retorno a accionistas. También se discuten riesgos como la especulación en activos volátiles y la dependencia de factores como la guerra en Ucrania. La estrategia se basa en la estabilidad de ingresos fijos, la resistencia a la inflación y la proyección de crecimiento orgánico, con un enfoque en la diversificación y la gestión de riesgos.",
+    "process": {
+      "idea_generation": [],
+      "quality": [],
+      "balance_sheet": [],
+      "valuation": [
+        "La valorización de terrenos agrícolas en California aumenta debido a la escasez de agua y la demanda de alimentos.",
+        "La empresa Gladstone tiene una cap rate del 5,4% con un premium sobre el net asset value del 7,5%."
+      ],
+      "cycle_macro": [
+        "El 40% de la tierra agrícola en EE. UU. es alquilada por personas que no poseen la tierra, lo que implica un modelo de inversión basado en arrendamientos."
+      ],
+      "entry": [
+        "Las granjas en California han experimentado un aumento del 212% en valor debido a la escasez de agua y la demanda de cultivos irrigados."
+      ],
+      "sizing": [],
+      "add_hold": [],
+      "exit": [],
+      "risk": [
+        "Los activos agrícolas son resilientes a la volatilidad y ofrecen retornos estables, especialmente en periodos de inflación y crisis climáticas."
+      ],
+      "technical": [],
+      "management": [],
+      "mistakes": []
+    },
+    "candidate_rules": [
+      {
+        "rule": "paráfrasis compacta",
+        "scope": "hosts|uncertain_or_guest",
+        "confidence": 0.0,
+        "evidence_timestamps": [],
+        "automation_proxy": "variable/cálculo posible o null",
+        "cross_video_confirmation_required": true
+      }
+    ],
+    "contradictions_or_uncertainties": [],
+    "named_examples": [
+      "La empresa Gladstone con cap rate del 5,4% y premium sobre el net asset value del 7,5%.",
+      "Mosaic con crecimiento en producción de fertilizantes y exposición a factores geopolíticos."
+    ],
+    "automation_readiness": "medium"
+  },
+  "chunk_evidence": [
+    {
+      "chunk": 1,
+      "evidence": [
+        {
+          "stage": "entry",
+          "paraphrase": "El podcast introduce tres empresas agrícolas y menciona la importancia del sector agrícola en la inversión.",
+          "timestamp": "00:00:49",
+          "scope": "hosts",
+          "confidence": 0.9,
+          "automation_hint": "proxy observable"
+        },
+        {
+          "stage": "valuation",
+          "paraphrase": "Se destaca la tesis de inversión en agricultura como un activo descorrelacionado y resistente a la inflación.",
+          "timestamp": "00:04:21",
+          "scope": "hosts",
+          "confidence": 0.8,
+          "automation_hint": "proxy observable"
+        },
+        {
+          "stage": "risk",
+          "paraphrase": "Se menciona que el 62% de los operadores del sector agrícola tienen más de 55 años, lo que sugiere una falta de generaciones jóvenes en el sector.",
+          "timestamp": "00:09:49",
+          "scope": "hosts",
+          "confidence": 0.7,
+          "automation_hint": "proxy observable"
+        },
+        {
+          "stage": "cycle_macro",
+          "paraphrase": "Se señala que el 40% de la tierra agrícola en EE. UU. es alquilada por personas que no poseen la tierra, lo que implica un modelo de inversión basado en arrendamientos.",
+          "timestamp": "00:10:06",
+          "scope": "hosts",
+          "confidence": 0.6,
+          "automation_hint": "proxy observable"
+        }
+      ],
+      "named_examples": [],
+      "chunk_summary": "El podcast presenta una estrategia de inversión en el sector agrícola, destacando la importancia de empresas agrícolas, la tesis de inversión en agricultura como activo descorrelacionado, el riesgo de obsolencia bajo, y el modelo de alquiler de tierras agrícolas en EE. UU."
+    },
+    {
+      "chunk": 2,
+      "evidence": [
+        {
+          "stage": "valuation",
+          "paraphrase": "El valor de los terrenos agrícolas aumenta significativamente debido a la escasez de agua y la demanda creciente de alimentos.",
+          "timestamp": "00:17:10",
+          "scope": "hosts",
+          "confidence": 0.9,
+          "automation_hint": "proxy observable"
+        },
+        {
+          "stage": "entry",
+          "paraphrase": "Las granjas en California han experimentado un aumento del 212% en valor debido a la escasez de agua y la demanda de cultivos irrigados.",
+          "timestamp": "00:18:01",
+          "scope": "hosts",
+          "confidence": 0.8,
+          "automation_hint": "proxy observable"
+        },
+        {
+          "stage": "risk",
+          "paraphrase": "Los activos agrícolas son resilientes a la volatilidad y ofrecen retornos estables, especialmente en periodos de inflación y crisis climáticas.",
+          "timestamp": "00:15:44",
+          "scope": "hosts",
+          "confidence": 0.7,
+          "automation_hint": "proxy observable"
+        }
+      ],
+      "named_examples": [],
+      "chunk_summary": "El fragmento destaca la valorización de terrenos agrícolas debido a la escasez de agua y la demanda de alimentos, destacando la resiliencia de estos activos frente a la volatilidad y la inflación. Se mencionan ejemplos concretos de aumento de valor en terrenos de California y la importancia de la localización y la escasez de recursos en la determinación de precios."
+    },
+    {
+      "chunk": 3,
+      "evidence": [
+        {
+          "stage": "valuation",
+          "paraphrase": "El activo agrícola de Gladstone se valora a una cap rate del 5,4% con una calidad de terreno prima, generando un premium sobre el net asset value del 7,5%.",
+          "timestamp": "00:28:21",
+          "scope": "hosts",
+          "confidence": 0.8,
+          "automation_hint": "proxy observable"
+        },
+        {
+          "stage": "risk",
+          "paraphrase": "Los activos agrícolas de Gladstone tienen una diversificación geográfica y de productos, reduciendo el riesgo de impacto local, como huracanes o enfermedades.",
+          "timestamp": "00:22:55",
+          "scope": "hosts",
+          "confidence": 0.7,
+          "automation_hint": "proxy observable"
+        },
+        {
+          "stage": "entry",
+          "paraphrase": "La estrategia de inversión en Gladstone se basa en la estabilidad de los ingresos fijos, la resistencia a la inflación y la proyección de crecimiento orgánico de los precios de los lises.",
+          "timestamp": "00:24:52",
+          "scope": "hosts",
+          "confidence": 0.6,
+          "automation_hint": "proxy observable"
+        }
+      ],
+      "named_examples": [],
+      "chunk_summary": "El análisis de Gladstone muestra una estrategia de inversión basada en la valoración de activos agrícolas con alta calidad, diversificación geográfica, ingresos fijos estables, y resistencia a la inflación. La valoración del activo se basa en una cap rate del 5,4%, con un premium sobre el net asset value del 7,5%, y se espera un crecimiento orgánico constante de los precios de los lises, lo que refuerza la estabilidad y la rentabilidad a largo plazo."
+    },
+    {
+      "chunk": 4,
+      "evidence": [
+        {
+          "stage": "entry",
+          "paraphrase": "La empresa se dedica a auditar granjas para certificar la calidad de la comida, lo que le permite generar un premium en el precio de los productos.",
+          "timestamp": "00:32:52",
+          "scope": "hosts",
+          "confidence": 0.8,
+          "automation_hint": "proxy observable"
+        },
+        {
+          "stage": "valuation",
+          "paraphrase": "La empresa tiene un mercado fragmentado con pocas barreras de entrada, lo que permite su crecimiento a través de adquisiciones de empresas en el sector.",
+          "timestamp": "00:34:45",
+          "scope": "hosts",
+          "confidence": 0.7,
+          "automation_hint": "proxy observable"
+        },
+        {
+          "stage": "risk",
+          "paraphrase": "La empresa ha comprado bitcoins, lo que podría indicar un riesgo elevado debido a la especulación en activos volátiles.",
+          "timestamp": "00:38:53",
+          "scope": "hosts",
+          "confidence": 0.6,
+          "automation_hint": "proxy observable"
+        },
+        {
+          "stage": "cycle_macro",
+          "paraphrase": "El sector de fertilizantes está en una etapa de crecimiento, con oportunidades de inversión en productos como fosfato y potasa.",
+          "timestamp": "00:43:06",
+          "scope": "uncertain_or_guest",
+          "confidence": 0.5,
+          "automation_hint": "null"
+        }
+      ],
+      "named_examples": [],
+      "chunk_summary": "El fragmento describe una estrategia de inversión en una empresa que audita la calidad de la comida para generar premium en precios, con un mercado fragmentado y posibles riesgos de especulación. Se menciona el crecimiento a través de adquisiciones y la posibilidad de inversión en fertilizantes, aunque con un alto margen de seguridad en la valoración."
+    },
+    {
+      "chunk": 5,
+      "evidence": [
+        {
+          "stage": "valuation",
+          "paraphrase": "Los precios de los fertilizantes subieron drásticamente en 2020, alcanzando máximos de 1200 dólares por tonelada, pero luego cayeron alrededor del 60-70% de sus niveles máximos en 2022 debido a factores como la guerra en Ucrania y sanciones.",
+          "timestamp": "00:43:34",
+          "scope": "hosts",
+          "confidence": 0.9,
+          "automation_hint": "proxy observable"
+        },
+        {
+          "stage": "entry",
+          "paraphrase": "Mosaic es el líder mundial en producción de potasa y fertilizantes de fosfato, con operaciones en Estados Unidos, Canadá y Brasil, y una posición sólida en mercados desarrollados y con alta demanda de fertilizantes.",
+          "timestamp": "00:47:30",
+          "scope": "hosts",
+          "confidence": 0.8,
+          "automation_hint": "proxy observable"
+        },
+        {
+          "stage": "risk",
+          "paraphrase": "La caída de precios de fertilizantes en 2023 afectó negativamente los resultados de Mosaic en el segundo trimestre, con caídas del 37% en ventas y del 78% en beneficios operativos, reflejando la volatilidad del mercado y la dependencia de factores geopolíticos.",
+          "timestamp": "00:52:32",
+          "scope": "hosts",
+          "confidence": 0.7,
+          "automation_hint": "proxy observable"
+        }
+      ],
+      "named_examples": [],
+      "chunk_summary": "El fragmento analiza la evolución de los precios de fertilizantes entre 2020 y 2023, destacando un auge drástico seguido de una caída significativa. Mosaic, líder mundial en producción de potasa y fertilizantes, tiene una posición sólida en mercados desarrollados y con alta demanda, pero enfrenta riesgos de volatilidad y dependencia de factores geopolíticos, como sanciones y conflictos, que afectan su rendimiento financiero. La empresa ha mostrado una capacidad de retorno a accionistas y generación de liquidez, pero la caída de precios en 2023 ha impactado sus resultados, reflejando la inestabilidad del mercado de commodities agrícolas."
+    },
+    {
+      "chunk": 6,
+      "evidence": [
+        {
+          "stage": "entry",
+          "paraphrase": "La empresa tiene planes de inversión para este año, incluyendo un cap de 1 billón de dólares con proyectos de crecimiento y una facilidad de préstamo de 700 millones.",
+          "timestamp": "00:54:49",
+          "scope": "hosts",
+          "confidence": 0.9
+        },
+        {
+          "stage": "valuation",
+          "paraphrase": "La empresa tiene un free cash flow de 200 millones en el segundo trimestre de 2023, con perspectivas de crecimiento hacia 800 millones anuales, lo que sugiere una valoración de 16 veces el free cash flow.",
+          "timestamp": "00:58:41",
+          "scope": "hosts",
+          "confidence": 0.8
+        },
+        {
+          "stage": "risk",
+          "paraphrase": "La empresa enfrenta incertidumbre por el impacto de la guerra en Rusia y Ucrania en el precio del fosfato, lo que podría afectar sus ingresos y beneficios.",
+          "timestamp": "01:00:31",
+          "scope": "uncertain_or_guest",
+          "confidence": 0.6
+        },
+        {
+          "stage": "entry",
+          "paraphrase": "La empresa tiene proyectos de expansión en Brasil y América del Norte, con inversiones de 34 billones en producción y 81 millones en fertilizantes, con márgenes de 80% después de impuestos.",
+          "timestamp": "00:55:58",
+          "scope": "hosts",
+          "confidence": 0.7
+        },
+        {
+          "stage": "risk",
+          "paraphrase": "La empresa tiene una deuda controlada de 625 millones y un apalancamiento operativo significativo, lo que podría amplificar ganancias en un mercado favorable al fosfato.",
+          "timestamp": "01:00:16",
+          "scope": "hosts",
+          "confidence": 0.7
+        }
+      ],
+      "named_examples": [],
+      "chunk_summary": "El análisis destaca la estrategia de inversión de una empresa en sectores de crecimiento, con proyectos de expansión en Brasil y América del Norte, una valoración basada en free cash flow, y riesgos relacionados con la guerra en Rusia y Ucrania. La empresa tiene un apalancamiento operativo significativo y una deuda controlada, lo que sugiere una valoración positiva si el mercado del fosfato se recupera."
+    }
+  ],
+  "copyright_note": "No audio or verbatim transcript is persisted; only derived paraphrases."
+}
