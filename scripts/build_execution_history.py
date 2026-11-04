@@ -20,8 +20,10 @@ import urllib.request
 ROOT = Path(__file__).resolve().parents[1]
 REPO = "idealab2026/laboratorio-cuantitativo"
 SCHEMA = "midas_daily_execution_health_v1"
-START = dt.date(2026, 11, 3)
-HISTORY_DAYS = 21
+# Include the entire historical competition window in the calendar, rather
+# than limiting it to the date on which this UI was first implemented.
+START = dt.date(2026, 10, 1)
+HISTORY_DAYS = 65
 GRACE = dt.timedelta(minutes=150)
 UTC = dt.timezone.utc
 
@@ -208,16 +210,38 @@ def build(now, runs, schedules, quarantines=None):
     unique_slots = sorted({slot(x) for v in WORKFLOWS.values() for x in v})
     if len(unique_slots) >= 64 or len(unique_slots) != 26:
         raise ValueError("Unexpected scheduled-algorithm inventory")
+
     indexed = {}
+    first_observed = {}
     for run in runs:
-        key = (run["workflow"], session_of_run(run))
+        when = session_of_run(run)
+        key = (run["workflow"], when)
         indexed.setdefault(key, []).append(run)
+        earlier = first_observed.get(run["workflow"])
+        if earlier is None or when < earlier:
+            first_observed[run["workflow"]] = when
+    archive_first = min(first_observed.values(), default=None)
     end = now.date()
     days = []
     count = 0
     day = end
     while day >= START and count < HISTORY_DAYS:
         if day.weekday() < 5:
+            # Historical NAV dates must remain visible, but the GitHub Actions
+            # API currently has no corresponding retained scheduled-run logs.
+            # We cannot retrospectively claim either zero runs or 64 failures.
+            if archive_first is None or day < archive_first:
+                days.append({
+                    "date": day.isoformat(),
+                    "data_status": "not_verifiable",
+                    "expected": None,
+                    "success": None, "failure": None, "not_run": None,
+                    "pending": None, "unverified": None,
+                    "not_scheduled": None, "details": [], "complete": None,
+                })
+                count += 1
+                day -= dt.timedelta(days=1)
+                continue
             records = []
             for sid in unique_slots:
                 workflow_details = []
@@ -227,8 +251,14 @@ def build(now, runs, schedules, quarantines=None):
                     due = due_times_for_session(day, schedules[workflow])
                     if not due:
                         continue
-                    status, matched = one_workflow_status(
-                        due, indexed.get((workflow, day), []), now)
+
+                    if workflow not in first_observed or day < first_observed[workflow]:
+                        # The absence of a workflow from the retained Actions
+                        # history is not evidence that an algorithm failed.
+                        status, matched = "unverified", None
+                    else:
+                        status, matched = one_workflow_status(
+                            due, indexed.get((workflow, day), []), now)
                     workflow_details.append({
                         "workflow": workflow, "status": status,
                         "run_url": matched["url"] if matched else None,
@@ -239,6 +269,7 @@ def build(now, runs, schedules, quarantines=None):
                     continue
                 statuses = [w["status"] for w in workflow_details]
                 status = ("failure" if "failure" in statuses else
+                          "unverified" if "unverified" in statuses else
                           "not_run" if "not_run" in statuses else
                           "pending" if "pending" in statuses else "success")
                 reason = quarantines.get((sid, day.isoformat()))
@@ -247,15 +278,16 @@ def build(now, runs, schedules, quarantines=None):
                 records.append({"slot": sid, "status": status,
                                 "reason": reason, "workflows": workflow_details})
             totals = {name: sum(x["status"] == name for x in records)
-                      for name in ("success", "failure", "not_run", "pending")}
+                      for name in ("success", "failure", "not_run", "pending", "unverified")}
             expected = len(records)
             if sum(totals.values()) != expected:
                 raise ValueError("Execution totals do not reconcile")
             days.append({
                 "date": day.isoformat(), "expected": expected, **totals,
+                "data_status": "partially_verified" if totals["unverified"] else "verified",
                 "not_scheduled": 64 - expected,
                 "details": records,
-                "complete": totals["pending"] == 0,
+                "complete": totals["pending"] == 0 and totals["unverified"] == 0,
             })
             count += 1
         day -= dt.timedelta(days=1)
@@ -266,6 +298,7 @@ def build(now, runs, schedules, quarantines=None):
         "repository": REPO,
         "as_of_utc": now.isoformat().replace("+00:00", "Z"),
         "first_tracked_session": START.isoformat(),
+        "oldest_retained_run_session": archive_first.isoformat() if archive_first else None,
         "slot_count": 64,
         "automated_slots": len(unique_slots),
         "unconfigured_slots": 64 - len(unique_slots),
@@ -294,14 +327,25 @@ def verify(document):
         if prev is not None and date >= prev:
             raise ValueError("Daily history not descending")
         prev = date
-        count = sum(row[k] for k in ("success", "failure", "not_run", "pending"))
+        if row.get("data_status") == "not_verifiable":
+            if row["details"] != [] or row.get("complete") is not None or any(
+                row.get(k) is not None for k in
+                ("expected", "success", "failure", "not_run", "pending",
+                 "unverified", "not_scheduled")
+            ):
+                raise ValueError("Unverifiable date must not invent execution counts")
+            continue
+        if row.get("data_status") not in ("verified", "partially_verified"):
+            raise ValueError("Unexpected coverage status")
+        count = sum(row[k] for k in
+                    ("success", "failure", "not_run", "pending", "unverified"))
         if count != row["expected"] or row["expected"] + row["not_scheduled"] != 64:
             raise ValueError("Daily totals do not reconcile")
         details = row["details"]
         if len(details) != row["expected"] or len({x["slot"] for x in details}) != len(details):
             raise ValueError("Duplicated or missing algorithm statuses")
         for item in details:
-            if item["status"] not in ("success", "failure", "not_run", "pending"):
+            if item["status"] not in ("success", "failure", "not_run", "pending", "unverified"):
                 raise ValueError("Invalid workflow status")
             if item["slot"] not in {slot(x) for v in WORKFLOWS.values() for x in v}:
                 raise ValueError("Unmapped algorithm")
