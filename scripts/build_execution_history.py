@@ -280,6 +280,76 @@ def attach_journals(row, evidence):
                                      for x in row["details"])
     return row
 
+def reviewed_archive(root=ROOT):
+    """Verify the privacy-reviewed projection, never expose original identifiers."""
+    path = Path(root) / "data/execution-history-archive.json"
+    raw = path.read_bytes()
+    doc = json.loads(raw)
+    core = {k:v for k,v in doc.items() if k != "sha256"}
+    digest = hashlib.sha256(json.dumps(core,sort_keys=True,separators=(",", ":"),
+                                     ensure_ascii=False).encode()).hexdigest()
+    allowed_top={"schema","period_start","period_end","evidence_class","date_basis",
+                 "privacy","count_semantics","records","sha256"}
+    if (set(doc) != allowed_top or doc.get("schema") != "midas_reviewed_execution_archive_v1" or
+        doc.get("evidence_class") != "reviewed_migration_schedule_metadata" or
+        doc.get("sha256") != digest or
+        doc.get("period_start") != "2026-10-01" or doc.get("period_end") != "2026-11-01"):
+        raise ValueError("Unreviewed automation archive")
+    seen=set()
+    allowed={"evidence_id","date","workflow","slots","outcome","attempts",
+             "successful_attempts","failed_attempts"}
+    for record in doc.get("records",[]):
+        key=(record.get("date"),record.get("workflow"))
+        if (set(record) != allowed or key in seen or
+            not doc["period_start"] <= record["date"] <= doc["period_end"] or
+            record["workflow"] not in WORKFLOWS or
+            record["slots"] != [slot(i) for i in WORKFLOWS[record["workflow"]]] or
+            record["outcome"] not in ("success","failure","unverified") or
+            not re.fullmatch(r"ARCH-\d{4}",record["evidence_id"]) or
+            any(type(record[k]) is not int or record[k]<0 for k in
+                ("attempts","successful_attempts","failed_attempts")) or
+            record["attempts"] < 1 or
+            record["successful_attempts"] + record["failed_attempts"] > record["attempts"] or
+            (record["outcome"]=="success") != (record["successful_attempts"]>0) or
+            (record["outcome"]=="failure") != (record["successful_attempts"]==0 and record["failed_attempts"]>0)):
+            raise ValueError("Invalid or identifying automation archive record")
+        dt.date.fromisoformat(record["date"])
+        seen.add(key)
+    if not seen:
+        raise ValueError("Empty automation archive")
+    doc["source_sha256"] = hashlib.sha256(raw).hexdigest()
+    return doc
+
+
+def archived_day(day, archive, quarantines):
+    """Only observed outcomes; no fabricated historical schedule inventory."""
+    mapped={}
+    ref=os.getenv("GITHUB_SHA","main")
+    if ref != "main" and not re.fullmatch(r"[a-f0-9]{40}",ref):
+        raise ValueError("Invalid public evidence ref")
+    for record in archive["records"]:
+        if record["date"] != day:
+            continue
+        for sid in record["slots"]:
+            mapped.setdefault(sid,[]).append({
+                "workflow":record["workflow"],"status":record["outcome"],
+                "run_url":None,"run_id":None,"source_kind":"reviewed_archive",
+                "evidence_id":record["evidence_id"],"attempts":record["attempts"],
+                "evidence_sha256":archive["source_sha256"],
+                "evidence_url":"https://github.com/"+REPO+"/blob/"+ref+"/data/execution-history-archive.json"})
+    details=[]
+    for sid,workflows in sorted(mapped.items()):
+        values=[w["status"] for w in workflows]
+        status="failure" if "failure" in values else "unverified" if "unverified" in values else "success"
+        reason=quarantines.get((sid,day))
+        if status=="success" and reason:
+            status="failure"
+        details.append({"slot":sid,"status":status,"reason":reason,"workflows":workflows})
+    return {"date":day,"data_status":"archived_observations","expected":len(details),
+            **{k:sum(d["status"]==k for d in details) for k in ("success","failure","unverified")},
+            "not_run":None,"pending":None,"not_scheduled":None,"complete":None,"details":details}
+
+
 def one_workflow_status(due, runs, now):
     if not due:
         return "not_due", None
@@ -296,7 +366,7 @@ def one_workflow_status(due, runs, now):
     return "not_run", linked[-1] if linked else None
 
 
-def build(now, runs, schedules, quarantines=None, journals=None, *, actions_available=True):
+def build(now, runs, schedules, quarantines=None, journals=None, *, actions_available=True, archive=None):
     now = now.astimezone(UTC)
     quarantines = quarantines or {}
     journals = journals or {}
@@ -321,6 +391,11 @@ def build(now, runs, schedules, quarantines=None, journals=None, *, actions_avai
     day = end
     while day >= first_day and count < HISTORY_DAYS:
         if day.weekday() < 5 or day.isoformat() in journals:
+            if archive and any(r["date"] == day.isoformat() for r in archive["records"]):
+                days.append(attach_journals(archived_day(day.isoformat(),archive,quarantines),journals))
+                count += 1
+                day -= dt.timedelta(days=1)
+                continue
             # Historical NAV dates must remain visible, but the GitHub Actions
             # API currently has no corresponding retained scheduled-run logs.
             # We cannot retrospectively claim either zero runs or 64 failures.
@@ -390,6 +465,10 @@ def build(now, runs, schedules, quarantines=None, journals=None, *, actions_avai
         "status": "verified_github_actions",
         "source": "Committed paper journals + scheduled GitHub Actions; independent evidence",
         "actions_available": actions_available,
+        "reviewed_archive": None if not archive else {
+            "first_session": min(r["date"] for r in archive["records"]),
+            "last_session": max(r["date"] for r in archive["records"]),
+            "records": len(archive["records"]), "source_sha256": archive["source_sha256"]},
         "repository": REPO,
         "as_of_utc": now.isoformat().replace("+00:00", "Z"),
         "first_tracked_session": first_day.isoformat(),
@@ -436,6 +515,29 @@ def verify(document):
             row.get("recovered_failures") != sum(x["status"] == "failure" and x["slot"] in {
                 j["slot"] for j in journals if j["recovered"]} for x in row["details"])):
             raise ValueError("Accounting and recovery counts do not reconcile")
+        if row.get("data_status") == "archived_observations":
+            if (any(row.get(k) is not None for k in ("not_run","pending","not_scheduled","complete")) or
+                sum(row[k] for k in ("success","failure","unverified")) != row["expected"] or
+                len(row["details"]) != row["expected"] or
+                len({d["slot"] for d in row["details"]}) != row["expected"] or
+                any(row[k] != sum(d["status"] == k for d in row["details"])
+                    for k in ("success","failure","unverified"))):
+                raise ValueError("Archive invented schedule inventory or invalid outcome counts")
+            for detail in row["details"]:
+                if detail["status"] not in ("success","failure","unverified") or not detail["workflows"]:
+                    raise ValueError("Invalid archived workflow outcome")
+                for w in detail["workflows"]:
+                    if (w.get("source_kind") != "reviewed_archive" or w.get("run_url") is not None or
+                        w.get("run_id") is not None or
+                        w.get("status") not in ("success","failure","unverified") or
+                        not re.fullmatch(r"ARCH-\d{4}", w.get("evidence_id", "")) or
+                        type(w.get("attempts")) is not int or w["attempts"] < 1 or
+                        w.get("workflow") not in WORKFLOWS or
+                        detail["slot"] not in [slot(n) for n in WORKFLOWS[w["workflow"]]] or
+                        not re.fullmatch(r"[a-f0-9]{64}", w.get("evidence_sha256", "")) or
+                        not re.fullmatch(r"https://github.com/idealab2026/laboratorio-cuantitativo/blob/(?:main|[a-f0-9]{40})/data/execution-history-archive\.json",w.get("evidence_url", ""))):
+                        raise ValueError("Unreviewed archived evidence or identifying original link")
+            continue
         if row.get("data_status") == "not_verifiable":
             if row["details"] != [] or row.get("complete") is not None or any(
                 row.get(k) is not None for k in
@@ -483,7 +585,7 @@ def main():
         except (ValueError, OSError, urllib.error.URLError, KeyError, json.JSONDecodeError):
             runs, available = [], False
         document = build(now, runs, workflow_schedule(), classic_quarantines(),
-                         journals, actions_available=available)
+                         journals, actions_available=available, archive=reviewed_archive())
     except (ValueError, OSError, urllib.error.URLError, KeyError, json.JSONDecodeError) as exc:
         # A source outage must not turn into a fabricated zero-execution day.
         document = {

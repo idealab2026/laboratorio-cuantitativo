@@ -326,6 +326,30 @@ function verifyExecutionHistory(doc){
   if(d.journal_count!==journalSlots.size||d.recovered_count!==recovered.size||
      d.recovered_failures!==d.details.filter(x=>x.status==="failure"&&recovered.has(x.slot)).length)
    throw Error("Recuperaciones y diarios no conciliados");
+  if(d.data_status==="archived_observations"){
+   const keys=["success","failure","unverified"];
+   if(keys.some(k=>!Number.isInteger(d[k])||d[k]<0)||
+      keys.reduce((n,k)=>n+d[k],0)!==d.expected||d.details.length!==d.expected||
+      keys.some(k=>d[k]!==d.details.filter(x=>x.status===k).length)||
+      ["not_run","pending","not_scheduled","complete"].some(k=>d[k]!==null))
+    throw Error("Archivo histórico con programación inventada");
+   const ids=new Set();
+   for(const item of d.details){
+    if(!/^IL-\d{3}$/.test(item.slot)||Number(item.slot.slice(3))<1||Number(item.slot.slice(3))>64||ids.has(item.slot)||
+       !["success","failure","unverified"].includes(item.status)||!Array.isArray(item.workflows)||!item.workflows.length)
+     throw Error("Resultado archivado inválido");
+    ids.add(item.slot);
+    for(const w of item.workflows){
+     if(w.source_kind!=="reviewed_archive"||w.run_url!==null||w.run_id!==null||
+        !/^[a-z0-9_-]+\.yml$/.test(w.workflow)||!/^ARCH-\d{4}$/.test(w.evidence_id)||
+        !Number.isInteger(w.attempts)||w.attempts<1||!keys.includes(w.status)||
+        !/^[a-f0-9]{64}$/.test(w.evidence_sha256)||
+        !/^https:\/\/github\.com\/idealab2026\/laboratorio-cuantitativo\/blob\/(?:main|[a-f0-9]{40})\/data\/execution-history-archive\.json$/.test(w.evidence_url))
+      throw Error("Evidencia archivada sin revisión institucional");
+    }
+   }
+   continue;
+  }
   if(d.data_status==="not_verifiable"){
    if(d.details.length!==0||d.complete!==null||
       ["expected","success","failure","not_run","pending","unverified","not_scheduled"].some(k=>d[k]!==null))
@@ -374,7 +398,7 @@ function renderDailyExecutionTable(doc,status,roster){
    const rank={failure:0,not_run:1,unverified:2,pending:3,success:4};
    return (rank[bySlot.get(a)?.status]??5)-(rank[bySlot.get(b)?.status]??5)||a.localeCompare(b);
   });
-  const expanded=ids.length?'<details class="daily-execution-details"><summary>Ver '+ids.length+' algoritmos</summary>'+
+  const expanded=ids.length?'<details class="daily-execution-details"><summary>Ver '+ids.length+(ids.length===1?' algoritmo':' algoritmos')+'</summary>'+
    '<div class="daily-execution-subtable"><table><thead><tr><th>Algoritmo</th><th>Diario conservado</th><th>Automatización</th><th>Evidencia</th></tr></thead><tbody>'+
    ids.map(sid=>{
     const d=bySlot.get(sid), records=journals.get(sid)||[];
@@ -387,6 +411,7 @@ function renderDailyExecutionTable(doc,status,roster){
     }).join(""):'Sin valoración registrada para esta fecha';
     const links=(d?.workflows||[]).map(w=>{
      const textLabel=esc(w.workflow.replace(/\.yml$/,"").replaceAll("_"," "));
+     if(w.source_kind==="reviewed_archive")return '<a href="'+esc(w.evidence_url)+'" target="_blank" rel="noopener noreferrer">Archivo técnico · '+textLabel+'</a><small>'+esc(w.evidence_id)+' · '+num(w.attempts)+' intentos · SHA-256 '+esc(w.evidence_sha256)+'</small>';
      return w.run_url?'<a href="'+esc(w.run_url)+'" target="_blank" rel="noopener noreferrer">'+textLabel+'</a>':
       '<span>'+textLabel+' · sin ejecución registrada</span>';
     });
@@ -398,16 +423,19 @@ function renderDailyExecutionTable(doc,status,roster){
      (d?.status==="failure"&&recovered?'<small class="daily-recovery-note">Recuperación posterior documentada; se conserva el fallo original.</small>':"")+
      (d?.reason?'<small>'+esc(d.reason)+'</small>':"")+'</td><td>'+links.join("<br>")+'</td></tr>';
    }).join("")+'</tbody></table></div></details>':'Sin registros disponibles';
-  const technical=day.data_status==="not_verifiable"?"Automatización sin verificar":day.complete?"Registro técnico completo":"Registro técnico pendiente";
+  const technical=day.data_status==="archived_observations"?"Archivo técnico recuperado":day.data_status==="not_verifiable"?"Automatización sin verificar":day.complete?"Registro técnico completo":"Registro técnico pendiente";
   return '<tr'+(day.data_status==="not_verifiable"?' class="daily-unverifiable"':"")+'><td><strong>'+esc(label)+'</strong><small>'+esc(technical)+'</small></td>'+
    '<td class="daily-count">'+num(day.journal_count)+'</td>'+
    '<td class="daily-count daily-ok">'+num(day.recovered_count)+'</td>'+
+   (day.data_status==="not_verifiable"?'<td colspan="6">Sin registro técnico acreditado para esta fecha</td>':
    '<td class="daily-count daily-ok">'+num(day.success)+'</td>'+
    '<td class="daily-count daily-fail">'+num(day.failure)+(day.recovered_failures?'<small class="daily-recovery-note">'+num(day.recovered_failures)+' recuperados</small>':"")+'</td>'+
+   (day.data_status==="archived_observations"?'<td colspan="4">Archivo de ejecuciones; programación histórica no reconstruida'+
+    (day.unverified?' · '+num(day.unverified)+' resultados sin verificar':"")+'</td>':
    '<td class="daily-count daily-absent">'+num(day.not_run)+'</td>'+
    '<td class="daily-count">'+num(day.pending)+'</td>'+
    '<td class="daily-count daily-unverified">'+num(day.unverified)+'</td>'+
-   '<td class="daily-count daily-neutral">'+num(day.not_scheduled)+'</td>'+
+   '<td class="daily-count daily-neutral">'+num(day.not_scheduled)+'</td>'))+
    '<td>'+expanded+'</td></tr>';
  }).join("");
  return '<div class="daily-ledger-header"><strong>Histórico de sesiones y automatización</strong>'+
@@ -415,15 +443,17 @@ function renderDailyExecutionTable(doc,status,roster){
   '<p class="audit-method-note">Registros conservados desde '+esc(doc.first_tracked_session.split("-").reverse().join("/"))+
    '. «Diarios» cuenta algoritmos con valoración registrada; «Recuperadas» identifica valoraciones añadidas después de una interrupción. '+
    'Las cohortes archivadas conservan su identidad y no se unen a la campaña activa. '+
-   (doc.actions_available===false?'GitHub Actions no está disponible: se conservan los diarios y la automatización aparece como N/D.':
-    'Primera sesión con automatización verificable: '+esc(doc.oldest_retained_run_session||"N/D")+'. Antes de esa fecha, N/D no significa que el diario esté vacío.')+'</p>'+
+   (doc.reviewed_archive?'Archivo técnico recuperado: '+esc(doc.reviewed_archive.first_session)+' a '+esc(doc.reviewed_archive.last_session)+'. ':"")+
+   (doc.actions_available===false?'La consulta actual de GitHub Actions no está disponible; se conservan los diarios y el archivo recuperado.':
+    'Automatización institucional verificable desde '+esc(doc.oldest_retained_run_session||"fecha aún no acreditada")+'. Las fechas sin registro técnico conservan sus valoraciones.')+'</p>'+
   '<div class="table-scroll daily-execution-scroll"><table class="daily-execution-table"><thead><tr>'+
    '<th>Fecha / sesión</th><th>Diarios</th><th>Recuperadas</th><th>Correctos</th><th>Fallos originales</th><th>No ejecutados</th>'+
    '<th>Pendientes</th><th>Sin verificar</th><th>Sin programación</th><th>Detalle</th></tr></thead><tbody>'+
    rows+'</tbody></table></div>'+
   '<p class="monitoring-caveat">Los diarios acreditan valoraciones conservadas, no una ejecución automática puntual ni compraventas. '+
    'Una sesión recuperada sin operaciones mantiene las posiciones y no inventa órdenes pasadas. Los fallos originales siguen visibles junto a su recuperación. '+
-   'Los recuentos de automatización cubren los 26 algoritmos vinculados a workflows programados de los 64 catalogados. '+
+   'El archivo recuperado acredita los resultados observados; no permite inferir ejecuciones ausentes ni reconstruir toda la programación histórica. '+
+   'Los recuentos de automatización institucional cubren los 26 algoritmos vinculados a workflows programados de los 64 catalogados. '+
    'Un workflow compartido cuenta por cada algoritmo asociado, pero su éxito no acredita independientemente todos los libros. '+
    'Los reintentos de madrugada corresponden a la sesión estadounidense anterior. «No ejecutados» solo cuenta ejecuciones vencidas sin registro; las futuras permanecen pendientes. '+
    '«Sin programación» incluye archivos, propuestas y algoritmos no previstos ese día. Las fechas históricas se conservan tal como constan en sus diarios.</p>';

@@ -1,5 +1,10 @@
 """Regression contracts for the published read-only MIDAS execution ledger."""
 import datetime as dt
+import copy
+import json
+import hashlib
+import tempfile
+from pathlib import Path
 import unittest
 from unittest import mock
 
@@ -210,6 +215,69 @@ class ExecutionHistoryTests(unittest.TestCase):
         day["recovered_count"]=0
         with self.assertRaisesRegex(ValueError,"recovery counts"):
             h.verify(doc)
+
+    def test_reviewed_october_archive_fills_observed_outcomes_without_inventing_schedule(self):
+        archive=h.reviewed_archive()
+        self.assertEqual(len(archive["records"]),141)
+        self.assertEqual(sum(x["attempts"] for x in archive["records"]),245)
+        runs=[event("classic_sp500.yml","2026-11-04T00:20:00Z","failure")]
+        doc=h.build(self.now,runs,self.schedules,h.classic_quarantines(),h.journal_evidence(),archive=archive)
+        h.verify(doc)
+        old=next(d for d in doc["days"] if d["date"]=="2026-10-30")
+        self.assertEqual((old["success"],old["failure"],old["journal_count"]),(24,2,35))
+        self.assertEqual(old["data_status"],"archived_observations")
+        for key in ("not_run","pending","not_scheduled","complete"):
+            self.assertIsNone(old[key])
+        # The archive cannot turn a later institutional failure into success.
+        current=next(d for d in doc["days"] if d["date"]=="2026-11-03")
+        self.assertEqual(next(d for d in current["details"] if d["slot"]=="IL-010")["status"],"failure")
+        # Journals before the archive survive without invented automation outcomes.
+        earlier=next(d for d in doc["days"] if d["date"]=="2026-09-30")
+        self.assertGreater(earlier["journal_count"],0)
+        self.assertIsNone(earlier["success"])
+
+    def test_reviewed_archive_retains_original_failure_alongside_recovered_journal(self):
+        archive=h.reviewed_archive()
+        doc=h.build(self.now,[],self.schedules,journals={"2026-10-30":[self.journal("IL-044",True)]},archive=archive)
+        h.verify(doc)
+        old=next(d for d in doc["days"] if d["date"]=="2026-10-30")
+        self.assertEqual(old["recovered_failures"],1)
+        self.assertEqual(next(d for d in old["details"] if d["slot"]=="IL-044")["status"],"failure")
+        self.assertIsNone(old["not_run"])
+
+    def test_archive_checksum_and_original_identifier_fields_fail_closed(self):
+        original=json.loads((h.ROOT/"data/execution-history-archive.json").read_text())
+        for field in (None,"original_location","original_record_id"):
+            doc=copy.deepcopy(original)
+            if field is None:
+                doc["records"][0]["attempts"]+=1  # checksum mismatch
+            elif field=="original_location":
+                doc[field]="must remain private"
+            else:
+                doc["records"][0][field]="must remain private"
+            if field:
+                core={k:v for k,v in doc.items() if k!="sha256"}
+                doc["sha256"]=hashlib.sha256(json.dumps(core,sort_keys=True,separators=(",",":"),ensure_ascii=False).encode()).hexdigest()
+            with tempfile.TemporaryDirectory() as directory:
+                root=Path(directory);(root/"data").mkdir()
+                (root/"data/execution-history-archive.json").write_text(json.dumps(doc))
+                with self.assertRaises(ValueError):
+                    h.reviewed_archive(root)
+
+    def test_published_archive_rejects_identifying_links_and_false_missed_runs(self):
+        doc=h.build(self.now,[],self.schedules,archive=h.reviewed_archive())
+        day=next(d for d in doc["days"] if d["date"]=="2026-10-30")
+        w=day["details"][0]["workflows"][0]
+        self.assertTrue(w["evidence_url"].endswith("/data/execution-history-archive.json"))
+        self.assertIsNone(w["run_url"])
+        self.assertIsNone(w["run_id"])
+        day["not_run"]=0
+        with self.assertRaises(ValueError): h.verify(doc)
+        day["not_run"]=None
+        w["run_id"]=123
+        with self.assertRaises(ValueError): h.verify(doc)
+        w["run_id"]=None; w["evidence_url"]="https://example.com/original"
+        with self.assertRaises(ValueError): h.verify(doc)
 
     def test_unavailable_cannot_publish_made_up_no_run_counts(self):
         h.verify({"schema": h.SCHEMA, "status": "unavailable", "days": []})

@@ -159,6 +159,7 @@
     "classic_sp500/tests/test_engine.py",
     "classic_sp500/tests/test_recovery.py",
     "classic_sp500_state/ledger.json",
+    "data/execution-history-archive.json",
     "docs/ENGINE.md",
     "market_data/README.md",
     "market_data/collect.py",
