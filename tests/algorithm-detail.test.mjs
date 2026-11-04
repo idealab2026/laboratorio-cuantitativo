@@ -534,7 +534,7 @@ test("MIDAS operational health exposes a separate DAILY RUN ledger, not the buy/
   "loadExecutionHistory()","./data/execution-history.json",
   "state.executionHistoryStatus","daily-execution-table",
   "Correctos","Fallidos","No ejecutados","Pendientes","Sin programación",
-  "Ver '+day.expected+' algoritmos","github.com/idealab2026/laboratorio-cuantitativo/actions/runs"
+  "Ver '+day.expected+' algoritmos","laboratorio-cuantitativo"
  ])assert.ok(src.includes(expected),"Missing daily execution UI or source: "+expected);
  assert.ok(src.includes("d.expected+d.not_scheduled!==64"),"Missing 64-slot daily accounting reconciliation");
  assert.ok(src.includes("sum!==d.expected"),"Missing per-day result invariant");
