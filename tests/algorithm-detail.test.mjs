@@ -521,3 +521,27 @@ test("NAV row renderer and per-session accordion use the exact same ticker and p
  const src=readFileSync(new URL("../src/operations-audit.mjs",import.meta.url),"utf8");
  assert.ok(src.includes("const sessionTickers=renderSessionTickerList;"));
 });
+
+
+test("MIDAS operational health exposes a separate DAILY RUN ledger, not the buy/sell table",()=>{
+ const src=readFileSync(new URL("../src/site.mjs",import.meta.url),"utf8");
+ const css=readFileSync(new URL("../styles.css",import.meta.url),"utf8");
+ const flow=readFileSync(new URL("../.github/workflows/pages.yml",import.meta.url),"utf8");
+ for(const expected of [
+  "Ejecución diaria","monitoring-panel-daily","monitoring-panel-operations",
+  'data-action="monitoring-tab"',"function verifyExecutionHistory(doc)",
+  "function renderDailyExecutionTable(doc,status,roster)",
+  "loadExecutionHistory()","./data/execution-history.json",
+  "state.executionHistoryStatus","daily-execution-table",
+  "Correctos","Fallidos","No ejecutados","Pendientes","Sin programación",
+  "Ver '+day.expected+' algoritmos","laboratorio-cuantitativo"
+ ])assert.ok(src.includes(expected),"Missing daily execution UI or source: "+expected);
+ assert.ok(src.includes("d.expected+d.not_scheduled!==64"),"Missing 64-slot daily accounting reconciliation");
+ assert.ok(src.includes("sum!==d.expected"),"Missing per-day result invariant");
+ assert.ok(src.includes("Un workflow compartido cuenta por cada algoritmo asociado"),
+   "Must explain shared workflow semantics, not pretend independent executions");
+ assert.ok(css.includes(".daily-execution-table")&&css.includes(".daily-run-state.not_run"));
+ assert.ok(flow.includes("GH_TOKEN=")&&flow.includes("build_execution_history.py --output"));
+ assert.ok(flow.includes("build_execution_history.py --validate"));
+ assert.ok(flow.includes("actions: read"));
+});
