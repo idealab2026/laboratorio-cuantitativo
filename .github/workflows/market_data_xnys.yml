@@ -8,6 +8,9 @@ on:
       - '.github/workflows/market_data_xnys.yml'
   schedule:
     - cron: '07 23 * * 1-5'
+    # Re-read only missing observations before the next XNYS open. Vendor
+    # corrections must be append-only revisions, followed by the same consumers.
+    - cron: '07 1 * * 2-6'
   workflow_dispatch:
     inputs:
       run_consumers:

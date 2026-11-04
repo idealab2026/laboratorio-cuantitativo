@@ -397,6 +397,14 @@ def build(registry, paper_config, paper_state=None, legacy_state=None, now=None,
             row.update(_activity(book["positions"], book.get("pending"),
                                  pending_label="órdenes paper para próxima apertura"))
             late = [p["date"] for p in hist if p.get("late_recorded_verified_date")]
+            inactive = [p["date"] for p in hist if p.get("inactive_no_fills")]
+            if inactive:
+                row["inactive_sessions"] = inactive
+                row["activity_label"] += " · Inactividad sin operaciones: " + ", ".join(inactive)
+                row["outage_control"] = book.get("outage_control", {})
+                first = row["outage_control"].get("first_trading_session")
+                if first:
+                    row["activity_label"] += " · Reanudación desde apertura: " + first
             if late:
                 row["late_calculation_sessions"] = late
                 row["activity_label"] += " · Cálculo tardío: " + ", ".join(late)
@@ -408,7 +416,7 @@ def build(registry, paper_config, paper_state=None, legacy_state=None, now=None,
                 row["data_quality_status"] = "provisional_corporate_receivable"
                 row["activity_label"] += " · CANJE CON VALORACIÓN PROVISIONAL; cobro separado del efectivo"
                 row["note"] += " Derecho de cobro pendiente; referencia temporal OCC, no importe final de liquidación."
-                first = book.get("outage_control", {}).get("first_trading_session")
+                first = None if inactive else book.get("outage_control", {}).get("first_trading_session")
                 if first:
                     row["activity_label"] += " · Reanudación desde apertura: " + first
             if quarantined:
@@ -454,6 +462,14 @@ def build(registry, paper_config, paper_state=None, legacy_state=None, now=None,
                                 for ticker, p in positions.items()]
             row.update(_activity(positions, book.get("pending"),
                                  pending_label="señales para próxima apertura paper"))
+            inactive = [p["date"] for p in history if p.get("inactive_no_fills")]
+            if inactive:
+                row["inactive_sessions"] = inactive
+                row["outage_control"] = weekly_daily_state.get("outage_control", {})
+                row["activity_label"] += " · Inactividad sin operaciones: " + ", ".join(inactive)
+                first = row["outage_control"].get("first_trading_session")
+                if first:
+                    row["activity_label"] += " · Reanudación desde apertura: " + first
         rows.append(row)
 
         # The original weekly settlement book is preserved as a separate reference,

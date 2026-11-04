@@ -15,12 +15,16 @@ on:
       - 'strategy_comparison/report.py'
   schedule:
     # XNYS close + market-data margin, Mon-Fri; Tuesday-Saturday backup.
-    - cron: '17 22 * * 1-5'
-    - cron: '27 1 * * 2-6'
+    - cron: '17 0 * * 2-6'
+    - cron: '27 3 * * 2-6'
   workflow_dispatch:
     inputs:
       preflight_only:
         description: 'Run tests without creating or valuing a paper session'
+        type: boolean
+        default: false
+      recover_inactive:
+        description: 'Value missed closed sessions without trades; resume at a future open'
         type: boolean
         default: false
 
@@ -52,12 +56,17 @@ jobs:
           python -m py_compile weekly_ml/daily.py strategy_comparison/report.py
           python -m unittest discover -s weekly_ml/tests -p test_daily.py -v
           python -m unittest discover -s strategy_comparison/tests -v
+      - name: Reconcile missed marks without historical fills
+        if: ${{ github.event_name == 'workflow_dispatch' && inputs.recover_inactive && !inputs.preflight_only }}
+        run: |
+          python strategy_comparison/inactive_recovery.py --engine weekly --phase check
+          python strategy_comparison/inactive_recovery.py --engine weekly --phase recover
       - name: Require the published common XNYS source before accounting
-        if: ${{ github.event_name != 'pull_request' && !inputs.preflight_only }}
+        if: ${{ github.event_name != 'pull_request' && !inputs.preflight_only && !inputs.recover_inactive }}
         run: python market_data/health.py --eligible
       - name: Value one completed XNYS session
         id: execute
-        if: ${{ github.event_name != 'pull_request' && !inputs.preflight_only }}
+        if: ${{ github.event_name != 'pull_request' && !inputs.preflight_only && !inputs.recover_inactive }}
         run: python weekly_ml/daily.py --phase daily
       - name: Record daily runtime health
         if: ${{ always() && github.event_name == 'schedule' && !inputs.preflight_only && !inputs.common_capture }}
