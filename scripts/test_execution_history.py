@@ -57,17 +57,19 @@ class ExecutionHistoryTests(unittest.TestCase):
         self.assertEqual(by_slot["IL-010"]["status"], "failure")
         self.assertEqual(by_slot["IL-011"]["status"], "success")
         self.assertEqual(by_slot["IL-039"]["status"], "success")
-        self.assertEqual(by_slot["IL-038"]["status"], "not_run")
+        self.assertEqual(by_slot["IL-038"]["status"], "unverified")
         self.assertNotIn("IL-037", by_slot)  # Weekly-only algorithm on Wednesday.
         self.assertEqual(row["failure"], 10)
         self.assertEqual(row["success"], 9)  # Classic 8 + BTD 1.
-        self.assertEqual(row["not_run"], 6)
+        self.assertEqual(row["not_run"], 0)
+        self.assertEqual(row["unverified"], 6)
         self.assertEqual(row["pending"], 0)
-        self.assertEqual(sum(row[k] for k in ("success", "failure", "not_run", "pending")), row["expected"])
+        self.assertEqual(sum(row[k] for k in ("success", "failure", "not_run", "pending", "unverified")), row["expected"])
 
     def test_pre_grace_missing_is_pending_not_automatically_failed(self):
         early = dt.datetime(2026, 11, 4, 22, 30, tzinfo=U)
-        doc = h.build(early, [], self.schedules)
+        runs = [event("classic_sp500.yml", "2026-11-03T00:20:00Z", "success")]
+        doc = h.build(early, runs, self.schedules)
         row = doc["days"][0]
         self.assertEqual(row["date"], "2026-11-04")
         self.assertGreater(row["pending"], 0)
@@ -90,19 +92,57 @@ class ExecutionHistoryTests(unittest.TestCase):
         self.assertTrue(h.due_times_for_session(date, self.schedules["tfg_ahp.yml"]))
         self.assertTrue(h.due_times_for_session(date, self.schedules["weekly_ml.yml"]))
         self.assertTrue(h.due_times_for_session(date, self.schedules["timesfm_weekly.yml"]))
-        doc = h.build(dt.datetime(2026, 11, 7, 9, tzinfo=U), [], self.schedules)
+        runs = [event("classic_sp500.yml", "2026-11-03T00:20:00Z", "success")]
+        doc = h.build(dt.datetime(2026, 11, 7, 9, tzinfo=U), runs, self.schedules)
         friday = next(x for x in doc["days"] if x["date"] == "2026-11-06")
         self.assertEqual(friday["expected"], 26)
         self.assertEqual(friday["not_scheduled"], 38)
 
     def test_rejects_unbalanced_and_duplicate_execution_reports(self):
-        doc = h.build(self.now, [], self.schedules)
+        runs = [event("classic_sp500.yml", "2026-11-05T02:20:00Z", "success")]
+        doc = h.build(self.now, runs, self.schedules)
         h.verify(doc)
         doc["days"][0]["success"] = 1
         with self.assertRaises(ValueError):
             h.verify(doc)
         doc["days"][0]["success"] = 0
         doc["days"][0]["details"].append(dict(doc["days"][0]["details"][0]))
+        with self.assertRaises(ValueError):
+            h.verify(doc)
+
+    def test_october_is_visible_but_missing_actions_archive_is_not_false_failure(self):
+        runs = [
+            event("classic_sp500.yml", "2026-11-03T00:20:00Z", "success"),
+            event("weekly_ml_daily.yml", "2026-11-02T22:53:00Z", "success"),
+        ]
+        doc = h.build(self.now, runs, self.schedules)
+        h.verify(doc)
+        self.assertEqual(doc["first_tracked_session"], "2026-10-01")
+        self.assertEqual(doc["oldest_retained_run_session"], "2026-11-02")
+        self.assertGreaterEqual(len(doc["days"]), 25)
+        older = next(x for x in doc["days"] if x["date"] == "2026-10-01")
+        self.assertEqual(older["data_status"], "not_verifiable")
+        self.assertIsNone(older["expected"])
+        self.assertIsNone(older["failure"])
+        self.assertIsNone(older["not_run"])
+        self.assertIsNone(older["success"])
+        self.assertEqual(older["details"], [])
+
+    def test_unverified_workflow_must_not_be_counted_as_missed(self):
+        runs = [event("classic_sp500.yml", "2026-11-03T00:20:00Z", "success")]
+        doc = h.build(self.now, runs, self.schedules)
+        row = next(x for x in doc["days"] if x["date"] == "2026-11-04")
+        per_slot = {x["slot"]: x for x in row["details"]}
+        self.assertEqual(per_slot["IL-038"]["status"], "unverified")
+        self.assertIsNone(per_slot["IL-038"]["workflows"][0]["run_url"])
+        self.assertEqual(per_slot["IL-010"]["status"], "not_run")
+        self.assertEqual(row["data_status"], "partially_verified")
+
+    def test_unverifiable_date_rejects_fake_zero_and_false_success(self):
+        runs = [event("classic_sp500.yml", "2026-11-03T00:20:00Z", "success")]
+        doc = h.build(self.now, runs, self.schedules)
+        old = next(x for x in doc["days"] if x["date"] == "2026-10-01")
+        old["failure"] = 0
         with self.assertRaises(ValueError):
             h.verify(doc)
 

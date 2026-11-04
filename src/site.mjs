@@ -304,25 +304,33 @@ function verifyExecutionHistory(doc){
   if(doc.days.length)throw Error("Fuente caída con recuentos ficticios");
   return doc;
  }
- if(doc.slot_count!==64||doc.automated_slots!==26||doc.days.length>21)
+ if(doc.slot_count!==64||doc.automated_slots!==26||doc.days.length>65)
   throw Error("Inventario diario inesperado");
  let previous="9999-99-99";
  for(const d of doc.days){
   if(!/^\d{4}-\d{2}-\d{2}$/.test(d.date)||d.date>=previous)
    throw Error("Fecha diaria inválida");
   previous=d.date;
+  if(d.data_status==="not_verifiable"){
+   if(d.details.length!==0||d.complete!==null||
+      ["expected","success","failure","not_run","pending","unverified","not_scheduled"].some(k=>d[k]!==null))
+    throw Error("Sin histórico pero con resultados inventados");
+   continue;
+  }
+  if(!["verified","partially_verified"].includes(d.data_status))
+   throw Error("Cobertura diaria desconocida");
   if(!Number.isInteger(d.expected)||!Number.isInteger(d.not_scheduled)||
      d.expected+d.not_scheduled!==64||!Array.isArray(d.details)||d.details.length!==d.expected)
    throw Error("Inventario diario no conciliado");
   let sum=0;const ids=new Set();
-  for(const key of ["success","failure","not_run","pending"]){
+  for(const key of ["success","failure","not_run","pending","unverified"]){
    if(!Number.isInteger(d[key])||d[key]<0)throw Error("Recuento diario incorrecto");
    sum+=d[key];
   }
   if(sum!==d.expected)throw Error("Resultados de ejecución no conciliados");
   for(const item of d.details){
    if(!/^IL-\d{3}$/.test(item.slot)||ids.has(item.slot)||
-      !["success","failure","not_run","pending"].includes(item.status)||
+      !["success","failure","not_run","pending","unverified"].includes(item.status)||
       !Array.isArray(item.workflows)||!item.workflows.length)
     throw Error("Algoritmo duplicado o sin trazabilidad");
    ids.add(item.slot);
@@ -341,11 +349,16 @@ function renderDailyExecutionTable(doc,status,roster){
   return '<p class="audit-method-note">No se ha podido verificar el historial de GitHub Actions. No se muestran ceros ni fallos inventados.</p>';
  const num=v=>new Intl.NumberFormat("es-ES").format(v);
  const names=new Map((roster?.entries||[]).map(e=>[e.slot,e.name]));
- const captions={success:"Correcto",failure:"Fallido",not_run:"Sin ejecución",pending:"Pendiente"};
+ const captions={success:"Correcto",failure:"Fallido",not_run:"Sin ejecución",pending:"Pendiente",unverified:"Sin evidencia histórica"};
  const rows=doc.days.map(day=>{
   const label=day.date.split("-").reverse().join("/");
+  if(day.data_status==="not_verifiable")
+   return '<tr class="daily-unverifiable"><td><strong>'+esc(label)+'</strong>'+
+    '<small>Histórico no disponible</small></td>'+
+    '<td colspan="7">Sin datos verificables de GitHub Actions para esta sesión. '+
+    'No se atribuyen fallos ni ausencias de ejecución.</td></tr>';
   const details=[...day.details].sort((a,b)=>{
-   const rank={failure:0,not_run:1,pending:2,success:3};
+   const rank={failure:0,not_run:1,unverified:2,pending:3,success:4};
    return rank[a.status]-rank[b.status]||a.slot.localeCompare(b.slot);
   });
   const expanded='<details class="daily-execution-details"><summary>Ver '+day.expected+' algoritmos</summary>'+
@@ -365,16 +378,20 @@ function renderDailyExecutionTable(doc,status,roster){
    '<td class="daily-count daily-fail">'+num(day.failure)+'</td>'+
    '<td class="daily-count daily-absent">'+num(day.not_run)+'</td>'+
    '<td class="daily-count">'+num(day.pending)+'</td>'+
+   '<td class="daily-count daily-unverified">'+num(day.unverified)+'</td>'+
    '<td class="daily-count daily-neutral">'+num(day.not_scheduled)+'</td>'+
    '<td>'+expanded+'</td></tr>';
  }).join("");
  return '<div class="daily-ledger-header"><strong>Registro por sesión bursátil</strong>'+
    '<span>Fuente GitHub Actions · actualizado '+esc(doc.as_of_utc.replace("T"," ").slice(0,16))+' UTC</span></div>'+
+  '<p class="audit-method-note">Histórico mostrado desde el 01/10/2026. Primer registro programado recuperable: '+
+    esc(doc.oldest_retained_run_session||"N/D")+
+    '. Las sesiones anteriores aparecen como «Sin datos verificables», no como cero ejecuciones.</p>'+
   '<div class="table-scroll daily-execution-scroll"><table class="daily-execution-table"><thead><tr>'+
    '<th>Sesión</th><th>Correctos</th><th>Fallidos</th><th>No ejecutados</th>'+
-   '<th>Pendientes</th><th>Sin programación</th><th>Detalle</th></tr></thead><tbody>'+
+   '<th>Pendientes</th><th>Sin verificar</th><th>Sin programación</th><th>Detalle</th></tr></thead><tbody>'+
    rows+'</tbody></table></div>'+
-  '<p class="monitoring-caveat">Recuento limitado a los 26 algoritmos vinculados a workflows programados de los 64 catalogados. Se atribuye la ejecución a la fecha de sesión estadounidense (los reintentos de madrugada corresponden a la sesión anterior). Un workflow compartido cuenta por cada algoritmo asociado, pero su éxito no acredita independientemente todos los libros ni implica compras o ventas. «No ejecutados» solo cuenta ejecuciones ya vencidas sin run; las futuras permanecen pendientes. «Sin programación» incluye históricos, propuestas y algoritmos no previstos ese día. Las fechas anteriores al inicio de seguimiento no se reconstruyen artificialmente.</p>';
+  '<p class="monitoring-caveat">Recuento limitado a los 26 algoritmos vinculados a workflows programados de los 64 catalogados. Se atribuye la ejecución a la fecha de sesión estadounidense (los reintentos de madrugada corresponden a la sesión anterior). Un workflow compartido cuenta por cada algoritmo asociado, pero su éxito no acredita independientemente todos los libros ni implica compras o ventas. «No ejecutados» solo cuenta ejecuciones ya vencidas sin run; las futuras permanecen pendientes. «Sin programación» incluye históricos, propuestas y algoritmos no previstos ese día. Desde octubre se muestran todas las sesiones laborables; los días sin registros recuperables se distinguen de los workflows no ejecutados. Los estados anteriores a la primera ejecución registrada de cada workflow permanecen sin verificar.</p>';
 }
 function monitoring(){
  const roster=state.fullRoster, candidates=state.strategyCandidates, audit=state.operationsAudit;
