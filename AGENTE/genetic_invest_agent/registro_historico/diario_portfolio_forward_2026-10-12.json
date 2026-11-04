@@ -288,9 +288,10 @@
     "2026-10-28": 99262.59256310256,
     "2026-10-29": 101312.10088710875,
     "2026-10-30": 101545.79842132085,
-    "2026-11-02": 103472.20536268542
+    "2026-11-02": 103472.20536268542,
+    "2026-11-03": 103083.95673579503
   },
-  "last_session": "2026-11-02",
+  "last_session": "2026-11-03",
   "execution": {
     "fractional_shares": true,
     "share_precision": 6,
@@ -316,6 +317,18 @@
         "sells": []
       },
       "recorded_at_utc": "2026-11-03T14:30:59+00:00"
+    },
+    {
+      "date": "2026-11-03",
+      "type": "outage_valuations_reconciled_no_trades",
+      "sessions": [
+        "2026-11-03"
+      ],
+      "expired_unfilled_orders": {
+        "buys": {},
+        "sells": []
+      },
+      "recorded_at_utc": "2026-11-04T02:15:49+00:00"
     }
   ],
   "equity_provenance": {
@@ -348,12 +361,23 @@
       },
       "recorded_at_utc": "2026-11-03T14:30:59+00:00",
       "trades_executed": 0
+    },
+    "2026-11-03": {
+      "kind": "inactive_holding_mark_only",
+      "quote_identity": {
+        "session": "2026-11-03",
+        "snapshot_sha256": "050cbb868646b3035dfe9b37c23da92b3c75ebba2ff2972ef5ffdcce671aa4ae",
+        "effective_sha256": "050cbb868646b3035dfe9b37c23da92b3c75ebba2ff2972ef5ffdcce671aa4ae"
+      },
+      "recorded_at_utc": "2026-11-04T02:15:49+00:00",
+      "trades_executed": 0
     }
   },
   "inactive_sessions": [
     "2026-10-29",
     "2026-10-30",
-    "2026-11-02"
+    "2026-11-02",
+    "2026-11-03"
   ],
   "outage_control": {
     "previous_last_session": "2026-10-28",
