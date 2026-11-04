@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "generated_at_utc": "2026-11-04T05:13:11.836972+00:00",
+  "generated_at_utc": "2026-11-04T18:03:05.779937+00:00",
   "principle": "Comparar rentabilidad acumulada y riesgo observado; no ordenar carteras con distintas fechas de inicio o supuestos de ejecución.",
   "counts": {
     "paper_with_diary": 18,
@@ -751,7 +751,7 @@
       "evaluated_universe_symbols": 488,
       "eligible_universe_symbols": 503,
       "activity_state": "active",
-      "activity_label": "VALORACIÓN PAUSADA · falta cotización; 489 posiciones abiertas · CANJE CON VALORACIÓN PROVISIONAL; cobro separado del efectivo · Reanudación desde apertura: 2026-11-04",
+      "activity_label": "VALORACIÓN PAUSADA · falta cotización; 489 posiciones abiertas · Inactividad sin operaciones: 2026-11-02 · Reanudación desde apertura: 2026-11-04 · CANJE CON VALORACIÓN PROVISIONAL; cobro separado del efectivo",
       "activity_tickers": [
         "A",
         "AAPL",
@@ -768,6 +768,13 @@
       ],
       "open_positions_count": 489,
       "pending_orders_count": 0,
+      "inactive_sessions": [
+        "2026-11-02"
+      ],
+      "outage_control": {
+        "first_trading_session": "2026-11-04",
+        "registered_at_utc": "2026-11-03T16:28:14+00:00"
+      },
       "provisional_valuation_sessions": [
         "2026-11-02"
       ],
@@ -964,7 +971,7 @@
       "evaluated_universe_symbols": 488,
       "eligible_universe_symbols": 503,
       "activity_state": "active",
-      "activity_label": "VALORACIÓN PAUSADA · falta cotización; 8 posiciones abiertas · CANJE CON VALORACIÓN PROVISIONAL; cobro separado del efectivo · Reanudación desde apertura: 2026-11-04",
+      "activity_label": "VALORACIÓN PAUSADA · falta cotización; 8 posiciones abiertas · Inactividad sin operaciones: 2026-11-02 · Reanudación desde apertura: 2026-11-04 · CANJE CON VALORACIÓN PROVISIONAL; cobro separado del efectivo",
       "activity_tickers": [
         "ABT",
         "DRI",
@@ -977,6 +984,13 @@
       ],
       "open_positions_count": 8,
       "pending_orders_count": 0,
+      "inactive_sessions": [
+        "2026-11-02"
+      ],
+      "outage_control": {
+        "first_trading_session": "2026-11-04",
+        "registered_at_utc": "2026-11-03T16:28:14+00:00"
+      },
       "provisional_valuation_sessions": [
         "2026-11-02"
       ],
