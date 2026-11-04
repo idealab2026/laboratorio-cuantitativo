@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "generated_at_utc": "2026-11-04T23:48:20.532797+00:00",
+  "generated_at_utc": "2026-11-04T23:48:35.032131+00:00",
   "principle": "Comparar rentabilidad acumulada y riesgo observado; no ordenar carteras con distintas fechas de inicio o supuestos de ejecución.",
   "counts": {
     "paper_with_diary": 18,
@@ -5882,51 +5882,53 @@
     }
   ],
   "market_data": {
-    "age_seconds": 320,
-    "captured_at_utc": "2026-11-03T23:39:29+00:00",
-    "checked_at_utc": "2026-11-03T23:44:49.337345+00:00",
+    "age_seconds": 378,
+    "captured_at_utc": "2026-11-04T23:42:16+00:00",
+    "checked_at_utc": "2026-11-04T23:48:34.370417+00:00",
     "consumers": {
       "buy_the_dip_strategy": {
         "ledger_status": "observed",
-        "paused_book_ids": [],
-        "paused_books": 0,
-        "updated_books": 1,
+        "paused_book_ids": [
+          "buy_the_dip_strategy"
+        ],
+        "paused_books": 1,
+        "updated_books": 0,
         "valuation_sessions": {
           "buy_the_dip_strategy": "2026-11-03"
         },
-        "workflow_outcome": "success"
+        "workflow_outcome": "failure"
       },
       "capital_cycle": {
         "ledger_status": "observed",
-        "paused_book_ids": [],
-        "paused_books": 0,
-        "updated_books": 1,
+        "paused_book_ids": [
+          "capital_cycle"
+        ],
+        "paused_books": 1,
+        "updated_books": 0,
         "valuation_sessions": {
           "capital_cycle": "2026-11-03"
         },
-        "workflow_outcome": "success"
+        "workflow_outcome": "failure"
       },
       "classic_sp500": {
         "ledger_status": "observed",
         "paused_book_ids": [
-          "bollinger_breakout_20",
           "buy_hold_equal_weight",
           "ema_rsi_fixed",
-          "genetic_frozen",
-          "turtle_20_10_long"
+          "macd_12_26_9"
         ],
-        "paused_books": 5,
-        "updated_books": 4,
+        "paused_books": 3,
+        "updated_books": 6,
         "valuation_sessions": {
-          "benchmark_spy": "2026-11-03",
-          "bollinger_breakout_20": "2026-11-02",
-          "buy_hold_equal_weight": "2026-11-02",
-          "ema_rsi_fixed": "2026-11-02",
-          "genetic_frozen": "2026-11-02",
+          "benchmark_spy": "2026-11-04",
+          "bollinger_breakout_20": "2026-11-04",
+          "buy_hold_equal_weight": "2026-11-03",
+          "ema_rsi_fixed": "2026-11-03",
+          "genetic_frozen": "2026-11-04",
           "macd_12_26_9": "2026-11-03",
-          "rsi_reversion_14": "2026-11-03",
-          "turtle_20_10_long": "2026-11-02",
-          "turtle_55_20_long": "2026-11-03"
+          "rsi_reversion_14": "2026-11-04",
+          "turtle_20_10_long": "2026-11-04",
+          "turtle_55_20_long": "2026-11-04"
         },
         "workflow_outcome": "success"
       },
@@ -5936,8 +5938,8 @@
         "paused_books": 0,
         "updated_books": 2,
         "valuation_sessions": {
-          "benchmark_spy": "2026-11-03",
-          "timesfm": "2026-11-03"
+          "benchmark_spy": "2026-11-04",
+          "timesfm": "2026-11-04"
         },
         "workflow_outcome": "success"
       },
@@ -5947,8 +5949,8 @@
         "paused_books": 0,
         "updated_books": 2,
         "valuation_sessions": {
-          "benchmark_spy": "2026-11-03",
-          "timesfm_daily": "2026-11-03"
+          "benchmark_spy": "2026-11-04",
+          "timesfm_daily": "2026-11-04"
         },
         "workflow_outcome": "success"
       },
@@ -5968,71 +5970,77 @@
         "paused_books": 9,
         "updated_books": 0,
         "valuation_sessions": {
-          "arima_return": "2026-11-02",
-          "benchmark_rsp": "2026-11-02",
-          "benchmark_spy": "2026-11-02",
-          "ensemble_consensus": "2026-11-02",
-          "lgbm_direction": "2026-11-02",
-          "lgbm_ranker": "2026-11-02",
-          "lgbm_return": "2026-11-02",
-          "lstm_return": "2026-11-02",
-          "mlp_return": "2026-11-02"
+          "arima_return": "2026-11-03",
+          "benchmark_rsp": "2026-11-03",
+          "benchmark_spy": "2026-11-03",
+          "ensemble_consensus": "2026-11-03",
+          "lgbm_direction": "2026-11-03",
+          "lgbm_ranker": "2026-11-03",
+          "lgbm_return": "2026-11-03",
+          "lstm_return": "2026-11-03",
+          "mlp_return": "2026-11-03"
         },
         "workflow_outcome": "failure"
       }
     },
     "coverage": {
-      "frozen_constituents_observed": 468,
-      "missing": 35,
-      "observed": 469,
+      "frozen_constituents_observed": 462,
+      "missing": 41,
+      "observed": 463,
       "requested": 504
     },
-    "effective_sha256": "050cbb868646b3035dfe9b37c23da92b3c75ebba2ff2972ef5ffdcce671aa4ae",
+    "effective_sha256": "7a4eabfe31d00d5e07981eb35f7f43228eaeaeab538dc1641e11d305996ca702",
     "engine_health": "not_assessed",
-    "expected_session": "2026-11-03",
+    "expected_session": "2026-11-04",
     "market": "XNYS",
     "missing_symbols": [
-      "ADBE",
-      "ALLE",
+      "APH",
       "AVB",
+      "AZO",
+      "BALL",
+      "BF-B",
       "BK",
-      "CAH",
+      "CMI",
+      "COP",
       "CTRA",
+      "CVS",
       "DAY",
-      "DOC",
+      "DECK",
       "DVA",
       "EA",
       "EQR",
-      "ESS",
       "FI",
-      "FITB",
-      "GM",
+      "GNRC",
       "GRMN",
       "HOLX",
-      "HUBB",
+      "IEX",
       "IPG",
+      "J",
       "K",
-      "KKR",
+      "KMX",
       "KVUE",
+      "L",
       "MMC",
+      "MTCH",
       "NVR",
-      "PEG",
-      "PNR",
+      "OKE",
+      "ORCL",
+      "OXY",
+      "PG",
       "PPG",
-      "RSG",
-      "SNA",
-      "SPGI",
-      "UNP",
-      "VMC",
+      "PWR",
+      "RVTY",
+      "SOLV",
+      "TDY",
+      "VTRS",
       "WBA",
-      "WBD",
-      "WELL"
+      "WBD"
     ],
     "policy": "common_raw_daily_primary",
     "revision_hashes": [],
-    "run_id": "41740691906",
+    "run_id": "41935614344",
     "schema": "midas.xnys_source_health.v1",
-    "sha256": "050cbb868646b3035dfe9b37c23da92b3c75ebba2ff2972ef5ffdcce671aa4ae",
+    "sha256": "7a4eabfe31d00d5e07981eb35f7f43228eaeaeab538dc1641e11d305996ca702",
     "status": "snapshot_verified",
     "trigger_event": "schedule"
   }
