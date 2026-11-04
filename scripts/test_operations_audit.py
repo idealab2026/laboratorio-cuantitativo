@@ -1,6 +1,6 @@
 """Offline regression for the audited operations evidence exporter."""
 import unittest
-from build_operations_audit import build, normalize_ledger, rule_reason, price_history
+from build_operations_audit import build, normalize_ledger, rule_reason, price_history, explain_classic_hold
 
 class OperationsAuditTests(unittest.TestCase):
     @classmethod
@@ -89,16 +89,35 @@ class ClassicDecisionTraceTests(unittest.TestCase):
         self.assertIsNone(hold["price"],"Market closing price is NOT a trade execution")
         self.assertEqual(hold["reason_basis"],"inferred_position_continuity")
         self.assertIn("Reglas genéticas congeladas",hold["reason"])
-        self.assertIn("stop",hold["reason"])
-        self.assertIn("objetivo",hold["reason"])
-        self.assertIn("continuidad contable",hold["reason"])
-        self.assertIn("no una señal explícita de MANTENER",hold["reason"])
+        # Current thresholds are evidenced only at the book's final close.
+        # A daily append must not project today's thresholds onto 2 November.
+        if latest["date"] == sessions[-1]["date"]:
+            self.assertIn("stop vigente",hold["reason"])
+            self.assertIn("objetivo vigente",hold["reason"])
+            self.assertIn("no cruzó",hold["reason"])
+        else:
+            self.assertNotIn("stop vigente",hold["reason"])
+            self.assertNotIn("objetivo vigente",hold["reason"])
         self.assertEqual(hold["rule_source"],"classic_sp500/run.py")
         older=next(x for x in sessions if x["date"]=="2026-10-16")
         old_hold=next(x for x in older["actions"] if x["ticker"]=="ABT" and x["side"]=="hold")
         self.assertAlmostEqual(old_hold["quantity"],112.925792)
         self.assertNotIn("reference_close",old_hold,"Cannot synthesize an absent market close")
         self.assertNotIn("stop vigente",old_hold["reason"],"Do not project final thresholds backwards")
+
+    def test_current_risk_thresholds_are_not_projected_into_previous_sessions(self):
+        position={"entry_price":105.0525,"stop":100.,"target":120.}
+        prices={"low":105.,"high":115.}
+        current=explain_classic_hold("genetic_frozen","ABT","2026-11-03",position,prices,True)
+        previous=explain_classic_hold("genetic_frozen","ABT","2026-11-02",position,prices,False)
+        self.assertIn("stop vigente 100.000",current)
+        self.assertIn("objetivo vigente 120.000",current)
+        self.assertIn("no cruzó",current)
+        self.assertNotIn("stop vigente",previous)
+        self.assertNotIn("objetivo vigente",previous)
+        crossed=explain_classic_hold("genetic_frozen","ABT","2026-11-03",position,
+                                     {"low":95.,"high":115.},True)
+        self.assertIn("cruzó un umbral",crossed)
 
     def test_final_position_shares_replay_and_buy_hold_policy(self):
         track=self.data["tracks"]["IL-010"]
