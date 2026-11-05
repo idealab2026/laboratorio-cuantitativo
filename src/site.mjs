@@ -207,7 +207,7 @@ function theses(){
 
 function thesisView(){
  const requested=(new URLSearchParams(location.search).get("ticker")||"").toUpperCase();
- const known=/^[A-Z0-9]{1,8}(?:\\.[A-Z]{1,3})?$/.test(requested)&&
+ const known=/^[A-Z0-9]{1,8}(?:\.[A-Z]{1,3})?$/.test(requested)&&
   (state.publicTheses.has(requested)||state.universe.issuers.some(i=>i.ticker===requested));
  const back='<p><a href="./index.html?view=theses">← Volver al seguimiento de tesis</a></p>';
  if(!known)return head("TESIS · CONSULTA","Ficha no disponible","No hay un expediente público para el ticker solicitado.")+back;
@@ -1029,7 +1029,7 @@ function openCompetitionRow(id){
  window.scrollTo({top:0,behavior:"auto"});
 }
 function openIssuerRow(id){
- if(!/^[A-Z0-9]{1,8}(?:\\.[A-Z]{1,3})?$/.test(id))return;
+ if(!/^[A-Z0-9]{1,8}(?:\.[A-Z]{1,3})?$/.test(id))return;
  if(!state.publicTheses.has(id)&&!state.universe.issuers.some(i=>i.ticker===id))return;
  const url="./index.html?view=thesis&ticker="+encodeURIComponent(id);
  window.open(url,"_blank","noopener,noreferrer");
