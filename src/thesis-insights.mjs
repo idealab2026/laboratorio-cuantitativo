@@ -1,4 +1,4 @@
-import {isHistoricalFigure,renderHistoricalFigure} from "./thesis-historical-figures.mjs?v=figureaudit1";
+import {isHistoricalFigure,renderHistoricalFigure} from "./thesis-historical-figures.mjs?v=3462e534f6e8";
 /* Structured public research appendix and explanatory SVG figures.
    Data are taken from the dated MIDAS thesis record, not current prices.
    Historical source prose is kept verbatim apart from visual grouping. */
