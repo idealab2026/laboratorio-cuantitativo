@@ -40,6 +40,33 @@ class ThesisPDFTests(unittest.TestCase):
         self.assertIsNone(mod.accumulated_chart(no_values))
         self.assertIsNone(mod.entry_chart(no_values))
 
+    def test_snapshot_structured_matrices_across_complete_issuers(self):
+        records,approved=mod.verify(self.theses,self.reports)
+        matrices={}
+        for ticker,report in approved.items():
+            tokens=mod.canonical_source_blocks(report["source_text"])
+            matrices[ticker]=[value for kind,value in tokens if kind=="table"]
+            self.assertTrue(matrices[ticker],ticker)
+        msft=matrices["MSFT"]
+        self.assertTrue(any("EV/FCF IDC implícito" in str(t[0]) for t in msft))
+        self.assertTrue(any("132,63 USD" in str(t) for t in msft))
+        self.assertTrue(any("106,20 USD" in str(t) for t in msft))
+        adobe=matrices["ADBE"]
+        self.assertTrue(any("386,86 USD" in str(t) and "866,02 USD" in str(t) for t in adobe))
+        self.assertTrue(any("331,80 USD" in str(t) for t in adobe))
+        pltr=matrices["PLTR"]
+        self.assertTrue(any("107,59 USD" in str(t) for t in pltr))
+        cat=matrices["CAT"]
+        self.assertTrue(any("16,19×" in str(t) for t in cat))
+        self.assertTrue(any("439 USD" in str(t) for t in cat))
+        meta=matrices["META"]
+        self.assertTrue(any("Referencia del informe" in str(t) for t in meta))
+        msft_labels=[v for kind,v in mod.canonical_source_blocks(approved["MSFT"]["source_text"]) if kind=="heading"]
+        self.assertIn("Riesgos prioritarios",msft_labels)
+        self.assertIn("Indicadores a vigilar",msft_labels)
+        self.assertIsNone(mod.snapshot_inline_tokens("Precio de referencia no acreditado: 300 USD"))
+        self.assertIsNone(mod.snapshot_run_tokens(["No hay datos"],0))
+
     def test_private_workpaper_links_are_rejected(self):
         broken={"schema":self.reports["schema"],"reports":[{
             "ticker":"MSFT","publication_gate":"approved",
