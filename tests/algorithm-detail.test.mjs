@@ -625,3 +625,76 @@ test("Recovered execution archive shows real outcomes, institutional proof and u
   const bad=structuredClone(doc);mutate(bad);assert.throws(()=>context.api.verifyExecutionHistory(bad));
  }
 });
+
+
+test("Three lifecycle cohorts exhaust the 64 validated slots with no overlap",async()=>{
+ const {verifyFullRoster,strategyCompetitionPhase,partitionCompetitionRows}=await import("../src/competition-roster.mjs");
+ const roster=JSON.parse(readFileSync(new URL("../data/competition-roster.json",import.meta.url),"utf8"));
+ const candidates=JSON.parse(readFileSync(new URL("../data/strategy-candidates.json",import.meta.url),"utf8"));
+ verifyFullRoster(roster);
+ const all=roster.entries.map(e=>({id:e.slot,record:null,group:e.group}));
+ const parts=partitionCompetitionRows([...all,...candidates.candidates.map(e=>({id:e.id,candidate:e,group:e.group}))]);
+ assert.equal(parts.active.length,35);
+ assert.equal(parts.obsolete.length,13);
+ assert.equal(parts.development.length,17);
+ assert.equal(parts.development.filter(r=>r.candidate).length,1);
+ assert.equal(parts.active.length+parts.obsolete.length+parts.development.length,65);
+ assert.equal(parts.active[0].id,"IL-010");
+ assert.equal(parts.active.at(-1).id,"IL-044");
+ assert.equal(parts.obsolete[0].id,"IL-001");
+ assert.equal(parts.obsolete.at(-1).id,"IL-048");
+ assert.equal(parts.development[0].id,"IL-049");
+ assert.equal(parts.development[15].id,"IL-064");
+ assert.equal(parts.development[16].id,"IL-R001");
+ assert.equal(strategyCompetitionPhase("IL-037"),"active");
+ assert.equal(strategyCompetitionPhase("IL-044"),"active");
+ assert.equal(strategyCompetitionPhase("IL-045"),"obsolete");
+ assert.equal(strategyCompetitionPhase("IL-064"),"development");
+ assert.throws(()=>strategyCompetitionPhase("IL-065"),/outside signed catalogue/);
+ assert.throws(()=>strategyCompetitionPhase("IL-000"),/outside signed catalogue/);
+ assert.throws(()=>partitionCompetitionRows([{id:"IL-010"},{id:"IL-010"}]),/Duplicate/);
+});
+
+test("Only active paper cohort is considered for the competition leader",async()=>{
+ const {partitionCompetitionRows}=await import("../src/competition-roster.mjs");
+ const roster=JSON.parse(readFileSync(new URL("../data/competition-roster.json",import.meta.url),"utf8"));
+ const phases=partitionCompetitionRows(roster.entries);
+ const current=phases.active.map(e=>({id:e.slot,record:archive.bySlot.get(e.slot)||null}));
+ const leader=paperLeaderboard(current);
+ assert.ok(leader);
+ assert.ok(phases.active.some(x=>x.slot===leader.id));
+ assert.ok(!phases.obsolete.some(x=>x.slot===leader.id));
+ assert.ok(!phases.development.some(x=>x.slot===leader.id));
+ // A retired leader with a fabricated high return must not enter the active cohort.
+ const fakeRetired={id:"IL-001",record:{
+  first_session:"2026-10-01",session_count:12,return_pct:900,history:[]}};
+ const considered=paperLeaderboard([...current]);
+ assert.equal(considered.id,leader.id);
+ assert.ok(fakeRetired.record.return_pct>leader.record.return_pct);
+});
+
+test("Competition view defaults to active lifecycle tab with three filtered, ordered cohorts",()=>{
+ const site=readFileSync(new URL("../src/site.mjs",import.meta.url),"utf8");
+ const css=readFileSync(new URL("../styles.css",import.meta.url),"utf8");
+ for(const expected of [
+  'competitionPhase:"active"',
+  'role="tablist" aria-label="Fase de las estrategias"',
+  '"Activos"',
+  '"Obsoletos"',
+  '"En desarrollo"',
+  'data-action="competition-phase"',
+  'strategyCompetitionPhase(item.slot)===selected',
+  'selected==="development"&&state.strategyCandidates',
+  'const leader=phase==="active"?paperLeaderboard(phases.active.map',
+  'state.competitionPhase=value;',
+  'state.fullRosterGroup="";state.fullRosterQuery="";',
+  'class="competition-phase-count"',
+  'No participan en la clasificación ni en el liderazgo',
+  'No se asigna rentabilidad ni líder'
+ ])assert.ok(site.includes(expected),"Missing lifecycle functionality: "+expected);
+ assert.ok(css.includes(".competition-lifecycle-tabs"));
+ assert.ok(css.includes(".competition-phase-notice"));
+ assert.ok(site.includes("sortFullCompetitionRows([...existing,...proposals]"),
+  "Sorting still applies only to the current filtered rows");
+ assert.ok(site.includes("fullRosterRows()"),"Keep existing columns and profile links");
+});
