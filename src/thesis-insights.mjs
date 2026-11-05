@@ -1,4 +1,4 @@
-import {semanticBlock,semanticHeading,semanticParagraph,runningHeader} from "./thesis-source-structure.mjs?v=sem20261106";
+import {semanticBlock,semanticHeading,semanticParagraph,runningHeader} from "./thesis-source-structure.mjs?v=45e1d7b7f53a";
 import {isHistoricalFigure,renderHistoricalFigure} from "./thesis-historical-figures.mjs?v=3462e534f6e8";
 /* Structured public research appendix and explanatory SVG figures.
    Data are taken from the dated MIDAS thesis record, not current prices.
