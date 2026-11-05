@@ -5,10 +5,11 @@
   "execution_model": "paper_open_recorded_after_session_close",
   "first_session": "2026-10-09",
   "gap_sessions": [
-    "2026-11-03"
+    "2026-11-03",
+    "2026-11-04"
   ],
   "initial_capital": 100000.0,
-  "last_session": "2026-11-03",
+  "last_session": "2026-11-04",
   "last_signal_session": "2026-10-30",
   "outage_control": {
     "first_trading_session": "2026-11-05",
@@ -129,6 +130,17 @@
             "snapshot_sha256": "050cbb868646b3035dfe9b37c23da92b3c75ebba2ff2972ef5ffdcce671aa4ae"
           },
           "recorded_at_utc": "2026-11-04T18:03:52+00:00"
+        },
+        {
+          "date": "2026-11-04",
+          "decision_recorded": false,
+          "inactive_no_fills": true,
+          "nav": 90892.27011219709,
+          "quote_identity": {
+            "effective_sha256": "d8bb48d517a4e7557c3634c2f072518b48ccc34b307d1669812143cad1b2f7bd",
+            "snapshot_sha256": "7a4eabfe31d00d5e07981eb35f7f43228eaeaeab538dc1641e11d305996ca702"
+          },
+          "recorded_at_utc": "2026-11-05T00:25:34+00:00"
         }
       ],
       "events": [
@@ -787,9 +799,15 @@
           "expired_unfilled_orders": [],
           "recorded_at_utc": "2026-11-04T18:03:52+00:00",
           "type": "inactive_mark_no_trades"
+        },
+        {
+          "date": "2026-11-04",
+          "expired_unfilled_orders": [],
+          "recorded_at_utc": "2026-11-05T00:25:34+00:00",
+          "type": "inactive_mark_no_trades"
         }
       ],
-      "nav": 88482.72890779852,
+      "nav": 90892.27011219709,
       "pending": [],
       "positions": {
         "BBY": {
@@ -1338,6 +1356,17 @@
             "snapshot_sha256": "050cbb868646b3035dfe9b37c23da92b3c75ebba2ff2972ef5ffdcce671aa4ae"
           },
           "recorded_at_utc": "2026-11-04T18:03:52+00:00"
+        },
+        {
+          "date": "2026-11-04",
+          "decision_recorded": false,
+          "inactive_no_fills": true,
+          "nav": 102594.52370140619,
+          "quote_identity": {
+            "effective_sha256": "d8bb48d517a4e7557c3634c2f072518b48ccc34b307d1669812143cad1b2f7bd",
+            "snapshot_sha256": "7a4eabfe31d00d5e07981eb35f7f43228eaeaeab538dc1641e11d305996ca702"
+          },
+          "recorded_at_utc": "2026-11-05T00:25:34+00:00"
         }
       ],
       "events": [
@@ -1429,9 +1458,15 @@
           "expired_unfilled_orders": [],
           "recorded_at_utc": "2026-11-04T18:03:52+00:00",
           "type": "inactive_mark_no_trades"
+        },
+        {
+          "date": "2026-11-04",
+          "expired_unfilled_orders": [],
+          "recorded_at_utc": "2026-11-05T00:25:34+00:00",
+          "type": "inactive_mark_no_trades"
         }
       ],
-      "nav": 100816.92995207115,
+      "nav": 102594.52370140619,
       "pending": [],
       "positions": {
         "RSP": {
@@ -1593,6 +1628,17 @@
             "snapshot_sha256": "050cbb868646b3035dfe9b37c23da92b3c75ebba2ff2972ef5ffdcce671aa4ae"
           },
           "recorded_at_utc": "2026-11-04T18:03:52+00:00"
+        },
+        {
+          "date": "2026-11-04",
+          "decision_recorded": false,
+          "inactive_no_fills": true,
+          "nav": 96354.85351590403,
+          "quote_identity": {
+            "effective_sha256": "d8bb48d517a4e7557c3634c2f072518b48ccc34b307d1669812143cad1b2f7bd",
+            "snapshot_sha256": "7a4eabfe31d00d5e07981eb35f7f43228eaeaeab538dc1641e11d305996ca702"
+          },
+          "recorded_at_utc": "2026-11-05T00:25:34+00:00"
         }
       ],
       "events": [
@@ -1684,9 +1730,15 @@
           "expired_unfilled_orders": [],
           "recorded_at_utc": "2026-11-04T18:03:52+00:00",
           "type": "inactive_mark_no_trades"
+        },
+        {
+          "date": "2026-11-04",
+          "expired_unfilled_orders": [],
+          "recorded_at_utc": "2026-11-05T00:25:34+00:00",
+          "type": "inactive_mark_no_trades"
         }
       ],
-      "nav": 94866.84838595774,
+      "nav": 96354.85351590403,
       "pending": [],
       "positions": {
         "SPY": {
@@ -1848,6 +1900,17 @@
             "snapshot_sha256": "050cbb868646b3035dfe9b37c23da92b3c75ebba2ff2972ef5ffdcce671aa4ae"
           },
           "recorded_at_utc": "2026-11-04T18:03:52+00:00"
+        },
+        {
+          "date": "2026-11-04",
+          "decision_recorded": false,
+          "inactive_no_fills": true,
+          "nav": 84832.10738975221,
+          "quote_identity": {
+            "effective_sha256": "d8bb48d517a4e7557c3634c2f072518b48ccc34b307d1669812143cad1b2f7bd",
+            "snapshot_sha256": "7a4eabfe31d00d5e07981eb35f7f43228eaeaeab538dc1641e11d305996ca702"
+          },
+          "recorded_at_utc": "2026-11-05T00:25:34+00:00"
         }
       ],
       "events": [
@@ -2506,9 +2569,15 @@
           "expired_unfilled_orders": [],
           "recorded_at_utc": "2026-11-04T18:03:52+00:00",
           "type": "inactive_mark_no_trades"
+        },
+        {
+          "date": "2026-11-04",
+          "expired_unfilled_orders": [],
+          "recorded_at_utc": "2026-11-05T00:25:34+00:00",
+          "type": "inactive_mark_no_trades"
         }
       ],
-      "nav": 83461.41937835242,
+      "nav": 84832.10738975221,
       "pending": [],
       "positions": {
         "AON": {
@@ -3057,6 +3126,17 @@
             "snapshot_sha256": "050cbb868646b3035dfe9b37c23da92b3c75ebba2ff2972ef5ffdcce671aa4ae"
           },
           "recorded_at_utc": "2026-11-04T18:03:52+00:00"
+        },
+        {
+          "date": "2026-11-04",
+          "decision_recorded": false,
+          "inactive_no_fills": true,
+          "nav": 100692.64930089214,
+          "quote_identity": {
+            "effective_sha256": "d8bb48d517a4e7557c3634c2f072518b48ccc34b307d1669812143cad1b2f7bd",
+            "snapshot_sha256": "7a4eabfe31d00d5e07981eb35f7f43228eaeaeab538dc1641e11d305996ca702"
+          },
+          "recorded_at_utc": "2026-11-05T00:25:34+00:00"
         }
       ],
       "events": [
@@ -3625,6 +3705,12 @@
           "expired_unfilled_orders": [],
           "recorded_at_utc": "2026-11-04T18:03:52+00:00",
           "type": "inactive_mark_no_trades"
+        },
+        {
+          "date": "2026-11-04",
+          "expired_unfilled_orders": [],
+          "recorded_at_utc": "2026-11-05T00:25:34+00:00",
+          "type": "inactive_mark_no_trades"
         }
       ],
       "nav": 100692.64930089214,
@@ -4105,6 +4191,17 @@
             "snapshot_sha256": "050cbb868646b3035dfe9b37c23da92b3c75ebba2ff2972ef5ffdcce671aa4ae"
           },
           "recorded_at_utc": "2026-11-04T18:03:52+00:00"
+        },
+        {
+          "date": "2026-11-04",
+          "decision_recorded": false,
+          "inactive_no_fills": true,
+          "nav": 89316.2837861811,
+          "quote_identity": {
+            "effective_sha256": "d8bb48d517a4e7557c3634c2f072518b48ccc34b307d1669812143cad1b2f7bd",
+            "snapshot_sha256": "7a4eabfe31d00d5e07981eb35f7f43228eaeaeab538dc1641e11d305996ca702"
+          },
+          "recorded_at_utc": "2026-11-05T00:25:34+00:00"
         }
       ],
       "events": [
@@ -4763,9 +4860,15 @@
           "expired_unfilled_orders": [],
           "recorded_at_utc": "2026-11-04T18:03:52+00:00",
           "type": "inactive_mark_no_trades"
+        },
+        {
+          "date": "2026-11-04",
+          "expired_unfilled_orders": [],
+          "recorded_at_utc": "2026-11-05T00:25:34+00:00",
+          "type": "inactive_mark_no_trades"
         }
       ],
-      "nav": 90602.4778633169,
+      "nav": 89316.2837861811,
       "pending": [],
       "positions": {
         "AKAM": {
@@ -5314,6 +5417,17 @@
             "snapshot_sha256": "050cbb868646b3035dfe9b37c23da92b3c75ebba2ff2972ef5ffdcce671aa4ae"
           },
           "recorded_at_utc": "2026-11-04T18:03:52+00:00"
+        },
+        {
+          "date": "2026-11-04",
+          "decision_recorded": false,
+          "inactive_no_fills": true,
+          "nav": 83291.89980045031,
+          "quote_identity": {
+            "effective_sha256": "d8bb48d517a4e7557c3634c2f072518b48ccc34b307d1669812143cad1b2f7bd",
+            "snapshot_sha256": "7a4eabfe31d00d5e07981eb35f7f43228eaeaeab538dc1641e11d305996ca702"
+          },
+          "recorded_at_utc": "2026-11-05T00:25:34+00:00"
         }
       ],
       "events": [
@@ -5702,6 +5816,12 @@
           "expired_unfilled_orders": [],
           "recorded_at_utc": "2026-11-04T18:03:52+00:00",
           "type": "inactive_mark_no_trades"
+        },
+        {
+          "date": "2026-11-04",
+          "expired_unfilled_orders": [],
+          "recorded_at_utc": "2026-11-05T00:25:34+00:00",
+          "type": "inactive_mark_no_trades"
         }
       ],
       "nav": 83291.89980045031,
@@ -6062,6 +6182,17 @@
             "snapshot_sha256": "050cbb868646b3035dfe9b37c23da92b3c75ebba2ff2972ef5ffdcce671aa4ae"
           },
           "recorded_at_utc": "2026-11-04T18:03:52+00:00"
+        },
+        {
+          "date": "2026-11-04",
+          "decision_recorded": false,
+          "inactive_no_fills": true,
+          "nav": 97490.51580897775,
+          "quote_identity": {
+            "effective_sha256": "d8bb48d517a4e7557c3634c2f072518b48ccc34b307d1669812143cad1b2f7bd",
+            "snapshot_sha256": "7a4eabfe31d00d5e07981eb35f7f43228eaeaeab538dc1641e11d305996ca702"
+          },
+          "recorded_at_utc": "2026-11-05T00:25:34+00:00"
         }
       ],
       "events": [
@@ -6720,9 +6851,15 @@
           "expired_unfilled_orders": [],
           "recorded_at_utc": "2026-11-04T18:03:52+00:00",
           "type": "inactive_mark_no_trades"
+        },
+        {
+          "date": "2026-11-04",
+          "expired_unfilled_orders": [],
+          "recorded_at_utc": "2026-11-05T00:25:34+00:00",
+          "type": "inactive_mark_no_trades"
         }
       ],
-      "nav": 96573.03821895998,
+      "nav": 97490.51580897775,
       "pending": [],
       "positions": {
         "APTV": {
@@ -7271,6 +7408,17 @@
             "snapshot_sha256": "050cbb868646b3035dfe9b37c23da92b3c75ebba2ff2972ef5ffdcce671aa4ae"
           },
           "recorded_at_utc": "2026-11-04T18:03:52+00:00"
+        },
+        {
+          "date": "2026-11-04",
+          "decision_recorded": false,
+          "inactive_no_fills": true,
+          "nav": 88272.98907336431,
+          "quote_identity": {
+            "effective_sha256": "d8bb48d517a4e7557c3634c2f072518b48ccc34b307d1669812143cad1b2f7bd",
+            "snapshot_sha256": "7a4eabfe31d00d5e07981eb35f7f43228eaeaeab538dc1641e11d305996ca702"
+          },
+          "recorded_at_utc": "2026-11-05T00:25:34+00:00"
         }
       ],
       "events": [
@@ -7929,9 +8077,15 @@
           "expired_unfilled_orders": [],
           "recorded_at_utc": "2026-11-04T18:03:52+00:00",
           "type": "inactive_mark_no_trades"
+        },
+        {
+          "date": "2026-11-04",
+          "expired_unfilled_orders": [],
+          "recorded_at_utc": "2026-11-05T00:25:34+00:00",
+          "type": "inactive_mark_no_trades"
         }
       ],
-      "nav": 87163.59371114352,
+      "nav": 88272.98907336431,
       "pending": [],
       "positions": {
         "BLDR": {
