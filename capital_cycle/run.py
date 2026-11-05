@@ -200,6 +200,29 @@ def run(config_path, output_dir, now=None):
     if state is not None and state.get("universe_hash") not in (None, universe_hash):
         raise ValueError("El universo congelado cambió: iniciar otra campaña")
 
+    if state is not None and state.get("last_session") == asof:
+        # Confirm the persisted close before asking the provider for historical
+        # data. The engine still checks the ledger's campaign and config hash.
+        equity = state.get("equity")
+        market_hash = state.get("market_hashes", {}).get(asof)
+        if not equity or equity[-1].get("date") != asof or not market_hash:
+            raise ValueError("El cierre capital-cycle guardado no tiene valoración verificable")
+        benchmark_close = state["benchmark_last_close"]
+        confirmed, _ = advance(config, {}, asof, benchmark_close, state=state)
+        return {
+            "status": "ok",
+            "session": asof,
+            "quote_source": {"status": "recorded_ledger", "hash": market_hash},
+            "month_end": context["is_month_end"],
+            "decision_recorded": False,
+            "recovered_mark_sessions": 0,
+            "changed": False,
+            "nav": confirmed["nav"],
+            "positions": len(confirmed["positions"]),
+            "pending_targets": len((confirmed.get("pending") or {}).get("target_weights", {})),
+            "benchmark_return_pct": benchmark_return_pct(confirmed),
+        }
+
     symbols, sectors, _ = load_universe(universe_path, config["allowed_sectors"])
     benchmark = config["benchmark_ticker"]
     due = _decision_due(state, asof, context["is_month_end"])

@@ -1,4 +1,5 @@
 """A current snapshot can recover a mark, never a missing historical replay."""
+import json
 import sys
 import tempfile
 import unittest
@@ -75,3 +76,26 @@ class CommonMarksTests(unittest.TestCase):
         self.assertEqual(result["quote_source"]["hash"], self.sha)
         fundamentals.assert_not_called()
         save.assert_not_called()
+
+    def test_recorded_close_retries_without_market_download_or_ledger_write(self):
+        config_path = Path(__file__).resolve().parents[1] / "config.json"
+        config = runner._read(config_path)
+        output = self.root / "state"
+        output.mkdir()
+        ledger_path = output / "ledger.json"
+        state, _ = runner.advance(config, {}, DAY, 102.)
+        ledger_path.write_text(json.dumps(state))
+        before = ledger_path.read_bytes()
+
+        with (patch.object(runner, "eligible_session", return_value=DAY),
+              patch.object(runner, "download_panel", side_effect=AssertionError("Unexpected market download"))):
+            result = runner.run(config_path, output)
+            self.assertEqual(result["session"], DAY)
+            self.assertEqual(result["quote_source"]["hash"], state["market_hashes"][DAY])
+            self.assertFalse(result["changed"])
+            self.assertEqual(ledger_path.read_bytes(), before)
+
+            state["equity"].clear()
+            ledger_path.write_text(json.dumps(state))
+            with self.assertRaisesRegex(ValueError, "sin valoración|no tiene valoración"):
+                runner.run(config_path, output)
