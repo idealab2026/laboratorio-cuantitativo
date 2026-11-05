@@ -138,3 +138,25 @@ test("The served module URLs change with the exact issuer-rendering code",async(
  assert.ok(html.includes('src="./src/site.mjs?v='+digest("../src/site.mjs")+'"'));
  assert.ok(site.includes('"./public-theses.mjs?v='+digest("../src/public-theses.mjs")+'"'));
 });
+
+test("Thesis tracking never embeds a company fiche and supports independent ticker navigation",async()=>{
+ const site=readFileSync(new URL("../src/site.mjs",import.meta.url),"utf8");
+ const from=site.indexOf("function theses(){"),to=site.indexOf("function thesisView(){",from);
+ assert.ok(from>=0&&to>from);
+ const tracking=site.slice(from,to);
+ assert.ok(tracking.includes("issuerTableRows()"));
+ assert.ok(!tracking.includes("issuerDetail("));
+ assert.ok(!tracking.includes('id="issuer-ficha"'));
+ assert.ok(!tracking.includes("Ficha de tesis / empresa"));
+ const detail=site.slice(to,site.indexOf("function officialFxPanel(){",to));
+ assert.ok(detail.includes("issuerDetail(requested)"));
+ assert.ok(detail.includes('new URLSearchParams(location.search).get("ticker")'));
+ assert.ok(site.includes('window.open(url,"_blank","noopener,noreferrer")'));
+ assert.ok(site.includes('thesis:thesisView'));
+ const {publicThesisTableRows}=await import("../src/public-theses.mjs");
+ const records=new Map([["MSFT",{ticker:"MSFT",company:"Microsoft",market:"NASDAQ",theme:"Software",currency:"USD",thesisStatus:"Revisada",valuationStatus:"Revisada",studyDate:"2026-10-13"}]]);
+ const html=publicThesisTableRows([{issuer:{ticker:"MSFT",company:"Microsoft",market:"NASDAQ",currency:"USD",sector:"Software"},screen:null}],records,new Map(),null);
+ assert.ok(html.includes('href="./index.html?view=thesis&amp;ticker=MSFT"'));
+ assert.ok(html.includes('target="_blank" rel="noopener noreferrer"'));
+ assert.ok(!html.includes('data-action="issuer-select"'));
+});
