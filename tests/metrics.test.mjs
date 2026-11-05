@@ -537,3 +537,26 @@ test("MIDAS glossary is reachable from navigation, searchable and includes speci
  assert.ok(workflow.includes("src/glossary.mjs src/algorithm-detail.mjs"));
  assert.ok(workflow.includes("dist/src/"));
 });
+
+test("La vista pública de tesis mantiene la tabla pero no muestra herramientas auxiliares",()=>{
+ const site=readFileSync(new URL("../src/site.mjs",import.meta.url),"utf8");
+ const start=site.indexOf("function theses(){");
+ const end=site.indexOf("function officialFxPanel(){",start);
+ assert.ok(start>=0&&end>start);
+ const view=site.slice(start,end);
+ for(const label of [
+  "N/D indica que el expediente",
+  "Metadatos SEC contrastados",
+  "Comparar con un CSV local",
+  "Buscar ticker o empresa",
+  "id=\"issuer-sort\"",
+  "issuer-direction",
+  "Exportar CSV",
+  "Tesis ficticias · demo",
+  "issuer-visible-count"
+ ])assert.ok(!view.includes(label),"Control auxiliar visible: "+label);
+ assert.ok(view.includes("thesis-public-table"));
+ assert.ok(view.includes("issuerTableRows()"));
+ assert.ok(view.includes('data-action="issuer-column"'));
+ assert.ok(view.includes('id="issuer-ficha"'));
+});
