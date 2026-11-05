@@ -1,7 +1,8 @@
 """Synthetic fixtures test temporal validation; they are not satellite observations."""
 import unittest
 from copy import deepcopy
-from satellite_pilot import audit_batch, SCHEMA
+from datetime import date
+from satellite_pilot import audit_batch, catalog_dates, SCHEMA
 
 def observation(date, available, cars, mask="a"*64, hashval="b"*64):
     return {
@@ -73,6 +74,26 @@ class SatellitePilotTests(unittest.TestCase):
         self.assertFalse(r["paper_ready"])
         self.assertIsNone(r["trading_signal"])
         self.assertIsNone(r["return_pct"])
+
+class NAIPCoverageTests(unittest.TestCase):
+    def test_distinct_flights_and_quarters_are_not_tile_counts(self):
+        def tile(day, gsd):
+            return {"collection": "naip", "properties": {"datetime": day + "T16:00:00Z", "gsd": gsd}}
+        doc = {"type": "FeatureCollection", "links": [], "features": [
+            tile("2023-07-22", 0.6), tile("2023-07-22", 0.3),
+            tile("2023-08-03", 0.3), tile("2024-08-03", 1.0),
+        ]}
+        result = catalog_dates(doc, date(2026, 11, 5))
+        self.assertEqual(result["submeter_dates"], [
+            {"date": "2023-07-22", "best_gsd_m": 0.3}, {"date": "2023-08-03", "best_gsd_m": 0.3}])
+        self.assertEqual(result["distinct_submeter_quarters"], 1)
+        self.assertEqual(result["largest_gap_days"], 12)
+
+    def test_paginated_catalogue_does_not_appear_complete(self):
+        doc = {"type": "FeatureCollection", "links": [{"rel": "next"}], "features": []}
+        with self.assertRaisesRegex(ValueError, "Incomplete"):
+            catalog_dates(doc, date(2026, 11, 5))
+
 
 if __name__=="__main__":
     unittest.main()
