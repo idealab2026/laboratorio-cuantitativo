@@ -38,7 +38,7 @@ test("META late source matrices are converted into 6 legible tables with origina
  assert.match(output,/Escenarios económicos FY2031/);
  assert.match(output,/Puente de caja FY2031/);
  assert.match(output,/Sensibilidades económicas Base/);
- assert.match(output,/Escenarios de invalidación/);
+ assert.match(output,/Rutas de invalidación/);
  assert.match(output,/Indicadores de seguimiento/);
  assert.match(output,/Thesis Delta · histórica frente a canónica/);
  assert.match(output,/<td>−141,01<\/td>/);
