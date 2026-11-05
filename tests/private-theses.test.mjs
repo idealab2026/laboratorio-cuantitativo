@@ -160,3 +160,41 @@ test("Thesis tracking never embeds a company fiche and supports independent tick
  assert.ok(html.includes('target="_blank" rel="noopener noreferrer"'));
  assert.ok(!html.includes('data-action="issuer-select"'));
 });
+
+
+test("Last-close feed refuses unlicensed or future stock quotes and preserves thesis historical prices",async()=>{
+ const {verifyPublicCloseFeed,publicThesisTableRows}=await import("../src/public-theses.mjs");
+ const allowed=new Set(["MSFT"]);
+ const now=Date.parse("2026-11-05T16:00:00Z");
+ const stub=JSON.parse(readFileSync(new URL("../data/public-closes.json",import.meta.url),"utf8"));
+ const pending=verifyPublicCloseFeed(stub,allowed,now);
+ assert.equal(pending.status,"not_configured");
+ assert.equal(pending.quotes.size,0);
+ const source={name:"Licensed provider",url:"https://example.org/reference",display_rights:"confirmed_public_redistribution"};
+ const base={schema:"midas.public_closes.v1",status:"verified",source,collected_at:"2026-11-05T15:00:00Z",
+  quotes:[{ticker:"MSFT",session:"2026-11-04",close:543.21,currency:"USD"}]};
+ const accepted=verifyPublicCloseFeed(base,allowed,now);
+ assert.equal(accepted.quotes.get("MSFT").close,543.21);
+ for(const bad of [
+  {...base,source:{...source,display_rights:"personal_only"}},
+  {...base,quotes:[{ticker:"MSFT",session:"2026-11-06",close:543.21,currency:"USD"}]},
+  {...base,quotes:[{ticker:"FAKE",session:"2026-11-04",close:543.21,currency:"USD"}]},
+  {...base,quotes:[{ticker:"MSFT",session:"2026-11-04",close:0,currency:"USD"}]},
+  {...stub,quotes:base.quotes}
+ ])assert.throws(()=>verifyPublicCloseFeed(bad,allowed,now));
+ const record={ticker:"MSFT",company:"Microsoft",market:"NASDAQ",currency:"USD",theme:"Software",
+  recordedPrice:526.30,priceDate:"2026-10-07",referencePrice:526.30,baseCagr:-.9};
+ const rows=[{issuer:{ticker:"MSFT",company:"Microsoft",market:"NASDAQ",currency:"USD",sector:"Software"},screen:null}];
+ const records=new Map([["MSFT",record]]);
+ const absent=publicThesisTableRows(rows,records,new Map(),null);
+ assert.match(absent,/Sin cierre público verificado/);
+ assert.doesNotMatch(absent,/526,30/);
+ const verified=publicThesisTableRows(rows,records,new Map(),null,accepted.quotes);
+ assert.match(verified,/543,21/);
+ assert.match(verified,/Cierre 2026-11-04/);
+ assert.doesNotMatch(verified,/526,30/);
+ const css=readFileSync(new URL("../styles.css",import.meta.url),"utf8");
+ assert.match(css,/\.thesis-public-table table\{table-layout:fixed/);
+ assert.match(css,/\.thesis-public-table td:last-child \.smallbtn\{display:inline-flex/);
+ assert.match(css,/\.thesis-public-table \.thesis-earnings\{display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis/);
+});
