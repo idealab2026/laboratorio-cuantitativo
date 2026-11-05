@@ -1,0 +1,578 @@
+{
+  "schema_version": 1,
+  "status": "machine_first_pass",
+  "reviewed_at_utc": "2026-11-05T16:47:01.144623+00:00",
+  "source_identity": "Buy The Dip YouTube channel",
+  "transport": {
+    "kind": "official_podcast_mirror",
+    "provider": "iVoox",
+    "guid": "https://www.ivoox.com/82816656",
+    "published_date": "2022-02-27",
+    "youtube_video_id": "3yG_4HLQU18",
+    "match_score": 1.0,
+    "audio_bytes_processed_transiently": 43837693
+  },
+  "models": {
+    "asr": {
+      "language": "es",
+      "language_probability": 1.0,
+      "duration_seconds": 5479.706125,
+      "word_count": 14714,
+      "segment_count": 2453,
+      "model": "small"
+    },
+    "semantic": {
+      "repo": "Qwen/Qwen3-4B-GGUF",
+      "file": "Qwen3-4B-Q4_K_M.gguf"
+    }
+  },
+  "metadata": {
+    "video_id": "3yG_4HLQU18",
+    "youtube_url": "https://www.youtube.com/watch?v=3yG_4HLQU18",
+    "title": "INVERTIR EN EL ESPACIO | BUY THE DIP PODCAST",
+    "category": "company_or_theme",
+    "guest_likely": false,
+    "podcast_guid": "https://www.ivoox.com/82816656",
+    "published_date": "2022-02-27",
+    "source": "official_podcast_mirror",
+    "match_score": 1.0
+  },
+  "analysis": {
+    "episode_summary": "El episodio analiza la evolución histórica y actual de la industria espacial y aeroespacial, destacando su relevancia en la inversión y su impacto tecnológico. Se discuten aspectos como la historia militar y tecnológica, la influencia de eventos como la Guerra Fría, la evolución desde la inversión gubernamental hasta el sector privado, y el crecimiento del sector espacial con empresas como SpaceX. Se mencionan oportunidades de inversión en sectores como la minería espacial, la exploración lunar, y la industria de satélites, con ejemplos como Spire Global y MaxArte. Se analizan riesgos, valoraciones, y estrategias de inversión, destacando la eficiencia operativa y el potencial de crecimiento en sectores innovadores, aunque con desafíos como la subida de tipos de interés y la competencia geopolítica.",
+    "process": {
+      "idea_generation": [],
+      "quality": [],
+      "balance_sheet": [],
+      "valuation": [],
+      "cycle_macro": [],
+      "entry": [],
+      "sizing": [],
+      "add_hold": [],
+      "exit": [],
+      "risk": [],
+      "technical": [],
+      "management": [],
+      "mistakes": []
+    },
+    "candidate_rules": [
+      {
+        "rule": "paráfrasis compacta",
+        "scope": "hosts|uncertain_or_guest",
+        "confidence": 0.0,
+        "evidence_timestamps": [],
+        "automation_proxy": "variable/cálculo posible o null",
+        "cross_video_confirmation_required": true
+      }
+    ],
+    "contradictions_or_uncertainties": [],
+    "named_examples": [],
+    "automation_readiness": "low"
+  },
+  "chunk_evidence": [
+    {
+      "chunk": 1,
+      "evidence": [
+        {
+          "stage": "idea_generation",
+          "paraphrase": "El podcast discute la industria espacial y aeroespacial, destacando su evolución histórica y su relevancia en la inversión.",
+          "timestamp": "00:00:01",
+          "scope": "hosts",
+          "confidence": 0.9,
+          "automation_hint": "proxy observable"
+        },
+        {
+          "stage": "quality",
+          "paraphrase": "La industria aeroespacial ha sido fundamental en la historia militar y tecnológica, con orígenes en el siglo XX y un impacto en el prestigio internacional de los países.",
+          "timestamp": "00:00:06",
+          "scope": "hosts",
+          "confidence": 0.8,
+          "automation_hint": "proxy observable"
+        },
+        {
+          "stage": "balance_sheet",
+          "paraphrase": "La empresa de los hermanos Wright fue la primera en producir aviones de propósito militar, con un valor de mercado inicial de un millón de dólares.",
+          "timestamp": "00:00:11",
+          "scope": "hosts",
+          "confidence": 0.7,
+          "automation_hint": "proxy observable"
+        },
+        {
+          "stage": "valuation",
+          "paraphrase": "La industria espacial y aeroespacial ha experimentado un crecimiento significativo, con empresas grandes y potentes dominando el mercado.",
+          "timestamp": "00:00:16",
+          "scope": "hosts",
+          "confidence": 0.6,
+          "automation_hint": "proxy observable"
+        },
+        {
+          "stage": "cycle_macro",
+          "paraphrase": "La industria aeroespacial ha sido influenciada por eventos históricos como la Guerra Fría, donde la carrera tecnológica espacial fue un factor de prestigio internacional.",
+          "timestamp": "00:00:20",
+          "scope": "hosts",
+          "confidence": 0.5,
+          "automation_hint": "proxy observable"
+        },
+        {
+          "stage": "entry",
+          "paraphrase": "La industria aeroespacial ha tenido un impacto en la inversión, con oportunidades en sectores como la agricultura y la tecnología privada.",
+          "timestamp": "00:00:25",
+          "scope": "hosts",
+          "confidence": 0.4,
+          "automation_hint": "proxy observable"
+        },
+        {
+          "stage": "sizing",
+          "paraphrase": "La industria aeroespacial ha crecido desde el siglo XX, con empresas como los hermanos Wright liderando el desarrollo de aviones militares y comerciales.",
+          "timestamp": "00:00:29",
+          "scope": "hosts",
+          "confidence": 0.3,
+          "automation_hint": "proxy observable"
+        },
+        {
+          "stage": "add_hold",
+          "paraphrase": "La industria aeroespacial ha sido clave en la evolución tecnológica, con avances que han permitido el desarrollo de tecnologías modernas en sectores diversos.",
+          "timestamp": "00:00:31",
+          "scope": "hosts",
+          "confidence": 0.2,
+          "automation_hint": "proxy observable"
+        },
+        {
+          "stage": "exit",
+          "paraphrase": "La industria aeroespacial ha tenido un impacto en la historia militar y tecnológica, con empresas grandes dominando el mercado y oportunidades de inversión en sectores complementarios.",
+          "timestamp": "00:00:37",
+          "scope": "hosts",
+          "confidence": 0.1,
+          "automation_hint": "proxy observable"
+        },
+        {
+          "stage": "risk",
+          "paraphrase": "La industria aeroespacial implica riesgos significativos, con empresas grandes y potentes dominando el mercado y oportunidades de inversión en sectores complementarios.",
+          "timestamp": "00:00:40",
+          "scope": "hosts",
+          "confidence": 0.0,
+          "automation_hint": "proxy observable"
+        },
+        {
+          "stage": "technical",
+          "paraphrase": "La industria aeroespacial ha sido influenciada por avances tecnológicos, con empresas grandes y potentes dominando el mercado y oportunidades de inversión en sectores complementarios.",
+          "timestamp": "00:00:44",
+          "scope": "hosts",
+          "confidence": 0.0,
+          "automation_hint": "proxy observable"
+        },
+        {
+          "stage": "management",
+          "paraphrase": "La industria aeroespacial ha sido influenciada por avances tecnológicos, con empresas grandes y potentes dominando el mercado y oportunidades de inversión en sectores complementarios.",
+          "timestamp": "00:00:47",
+          "scope": "hosts",
+          "confidence": 0.0,
+          "automation_hint": "proxy observable"
+        },
+        {
+          "stage": "mistake",
+          "paraphrase": "La industria aeroespacial ha sido influenciada por avances tecnológicos, con empresas grandes y potentes dominando el mercado y oportunidades de inversión en sectores complementarios.",
+          "timestamp": "00:00:50",
+          "scope": "hosts",
+          "confidence": 0.0,
+          "automation_hint": "proxy observable"
+        },
+        {
+          "stage": "other",
+          "paraphrase": "La industria aeroespacial ha sido influenciada por avances tecnológicos, con empresas grandes y potentes dominando el mercado y oportunidades de inversión en sectores complementarios.",
+          "timestamp": "00:00:54",
+          "scope": "hosts",
+          "confidence": 0.0,
+          "automation_hint": "proxy observable"
+        }
+      ],
+      "named_examples": [],
+      "chunk_summary": "El podcast analiza la evolución histórica de la industria aeroespacial y espacial, destacando su relevancia en la inversión y su impacto en la tecnología y el prestigio internacional. Se mencionan orígenes en el siglo XX, el papel de empresas como los hermanos Wright, y la influencia de eventos históricos como la Guerra Fría en el desarrollo de la industria."
+    },
+    {
+      "chunk": 2,
+      "evidence": [
+        {
+          "stage": "entry",
+          "paraphrase": "La industria aeronáutica de EE. UU. se reinventó tras la Segunda Guerra Mundial al especializarse en bombarderos y aviones de combate, lo que llevó a una diferenciación en la producción.",
+          "timestamp": "00:17:20",
+          "scope": "hosts",
+          "confidence": 0.9,
+          "automation_hint": "proxy observable"
+        },
+        {
+          "stage": "valuation",
+          "paraphrase": "La guerra civil española permitió a varios países probar nuevas aeronaves, lo que impulsó la innovación en la industria aeronáutica.",
+          "timestamp": "00:15:59",
+          "scope": "hosts",
+          "confidence": 0.8,
+          "automation_hint": "proxy observable"
+        },
+        {
+          "stage": "risk",
+          "paraphrase": "La industria aeronáutica de Alemania se revitalizó tras la eliminación de las restricciones del Tratado de Versalles, lo que la convirtió en una potencia tecnológica líder.",
+          "timestamp": "00:15:13",
+          "scope": "hosts",
+          "confidence": 0.7,
+          "automation_hint": "proxy observable"
+        }
+      ],
+      "named_examples": [],
+      "chunk_summary": "El fragmento describe cómo la industria aeronáutica se adaptó a cambios tecnológicos y políticos, como la reinventación post-guerra, la innovación en aviones de combate, y el impacto de la Guerra Fría en la competencia tecnológica. Se destacan momentos clave como la especialización en bombarderos, la adopción de aviones reactivos, y el desarrollo de tecnologías espaciales."
+    },
+    {
+      "chunk": 3,
+      "evidence": [
+        {
+          "stage": "entry",
+          "paraphrase": "La industria espacial ha evolucionado desde la inversión gubernamental militar hacia el sector privado y aplicaciones civiles, con ejemplos como la NASA y empresas privadas que impulsan la exploración y minería espacial.",
+          "timestamp": "00:20:44",
+          "scope": "hosts",
+          "confidence": 0.9,
+          "automation_hint": "proxy observable"
+        },
+        {
+          "stage": "valuation",
+          "paraphrase": "El espacio ofrece oportunidades infinitas para inversiones, desde minería de asteroides hasta aplicaciones civiles, con ejemplos como la NASA y empresas privadas que buscan dominar nuevas zonas y recursos.",
+          "timestamp": "00:26:00",
+          "scope": "hosts",
+          "confidence": 0.8,
+          "automation_hint": "proxy observable"
+        },
+        {
+          "stage": "risk",
+          "paraphrase": "La minería espacial y la exploración de asteroides representan riesgos altos, pero también ofrecen oportunidades de inversión en recursos valiosos, como el hielo lunar y la energía nuclear para bases espaciales.",
+          "timestamp": "00:27:01",
+          "scope": "hosts",
+          "confidence": 0.7,
+          "automation_hint": "proxy observable"
+        }
+      ],
+      "named_examples": [],
+      "chunk_summary": "El fragmento describe la evolución de la industria espacial desde la inversión militar hasta el sector privado, destacando oportunidades de inversión en minería de asteroides, exploración lunar y aplicaciones civiles. Menciona la participación de gobiernos y empresas privadas, así como la competencia entre Estados Unidos y China en la minería espacial y la exploración de la luna."
+    },
+    {
+      "chunk": 4,
+      "evidence": [
+        {
+          "stage": "valuation",
+          "paraphrase": "El sector espacial ha visto un aumento significativo en el número de inversores y empresas, con Estados Unidos liderando el crecimiento y la inversión, especialmente con empresas como SpaceX reduciendo costos de lanzamiento y permitiendo un mayor acceso a oportunidades de inversión.",
+          "timestamp": "00:30:01",
+          "scope": "hosts",
+          "confidence": 0.0,
+          "automation_hint": "proxy observable"
+        },
+        {
+          "stage": "entry",
+          "paraphrase": "La reducción de costos de lanzamiento por parte de empresas como SpaceX ha permitido que más empresas entran al sector espacial, transformando la industria y permitiendo que empresas privadas inviertan en satélites y otros proyectos espaciales.",
+          "timestamp": "00:36:14",
+          "scope": "hosts",
+          "confidence": 0.0,
+          "automation_hint": "proxy observable"
+        },
+        {
+          "stage": "cycle_macro",
+          "paraphrase": "El sector espacial ha experimentado un crecimiento explosivo desde la década de 1960, con un auge comercial desde 2016, impulsado por la reducción de costos y el apoyo gubernamental, lo que ha transformado la industria y permitido un acceso masivo a oportunidades de inversión.",
+          "timestamp": "00:35:49",
+          "scope": "hosts",
+          "confidence": 0.0,
+          "automation_hint": "proxy observable"
+        }
+      ],
+      "named_examples": [],
+      "chunk_summary": "El fragmento destaca el crecimiento del sector espacial, liderado por Estados Unidos y empresas como SpaceX, con un aumento significativo en el número de inversores y empresas. La reducción de costos de lanzamiento y el apoyo gubernamental han permitido un auge comercial desde 2016, transformando la industria y permitiendo un acceso masivo a oportunidades de inversión. La evolución del sector ha sido impulsada por innovaciones tecnológicas y políticas que han facilitado la entrada de empresas privadas y el desarrollo de proyectos tangibles en el sector espacial."
+    },
+    {
+      "chunk": 5,
+      "evidence": [
+        {
+          "stage": "valuation",
+          "paraphrase": "La industria de satélites muestra una caída generalizada en precios y valor, con una mayoría de empresas en pérdida y un 70% de caída en precios.",
+          "timestamp": "00:38:30",
+          "scope": "hosts",
+          "confidence": 0.8,
+          "automation_hint": "proxy observable"
+        },
+        {
+          "stage": "risk",
+          "paraphrase": "La industria de satélites enfrenta altos riesgos debido a la escasez de conocimiento técnico, la necesidad de capital, y la complejidad de fabricar cohetes y satélites.",
+          "timestamp": "00:38:50",
+          "scope": "hosts",
+          "confidence": 0.7,
+          "automation_hint": "proxy observable"
+        },
+        {
+          "stage": "entry",
+          "paraphrase": "Spire Global se destaca como una empresa con un modelo de negocio eficiente, enfocado en fabricar satélites y ofrecer servicios de datos, con un crecimiento proyectado del 8% anual en el mercado de tiempo.",
+          "timestamp": "00:40:28",
+          "scope": "hosts",
+          "confidence": 0.9,
+          "automation_hint": "proxy observable"
+        },
+        {
+          "stage": "valuation",
+          "paraphrase": "Spire Global tiene un valor de 66 mil millones de dólares en 2021, con proyecciones de 91 mil millones en 2025, y potencial de crecimiento hasta 300 mil millones en el largo plazo.",
+          "timestamp": "00:44:20",
+          "scope": "hosts",
+          "confidence": 0.8,
+          "automation_hint": "proxy observable"
+        },
+        {
+          "stage": "cycle_macro",
+          "paraphrase": "La caída en precios y valor de la industria de satélites refleja una situación macro no óptima, influenciada por factores como la subida de tipos de interés y la competencia entre países como China, Rusia y EE. UU.",
+          "timestamp": "00:38:46",
+          "scope": "hosts",
+          "confidence": 0.7,
+          "automation_hint": "proxy observable"
+        },
+        {
+          "stage": "sizing",
+          "paraphrase": "Spire Global opera en múltiples industrias, incluyendo transporte marítimo, aviación, logística, agricultura, y energía, con un enfoque en la recopilación de datos a través de satélites para ofrecer servicios de valor agregado.",
+          "timestamp": "00:42:00",
+          "scope": "hosts",
+          "confidence": 0.6,
+          "automation_hint": "proxy observable"
+        },
+        {
+          "stage": "entry",
+          "paraphrase": "Spire Global se destaca por su enfoque en fabricar satélites y no en cohetes, lo que le permite reducir costos y enfocarse en la eficiencia, mientras que otras empresas se enfocan en la fabricación de cohetes, una actividad más intensiva en capital y compleja.",
+          "timestamp": "00:40:30",
+          "scope": "hosts",
+          "confidence": 0.7,
+          "automation_hint": "proxy observable"
+        },
+        {
+          "stage": "risk",
+          "paraphrase": "Spire Global enfrenta riesgos significativos debido a la alta complejidad de fabricar satélites, la dependencia de lanzadores de cohetes con costos reducidos, y la necesidad de una infraestructura global para mapear y analizar datos satelitales.",
+          "timestamp": "00:44:30",
+          "scope": "hosts",
+          "confidence": 0.6,
+          "automation_hint": "proxy observable"
+        },
+        {
+          "stage": "valuation",
+          "paraphrase": "Spire Global tiene un modelo de negocio basado en sus satélites para recopilar y vender datos, con un crecimiento proyectado del 8% anual en el mercado de tiempo, y potencial de escala global para servicios en múltiples industrias.",
+          "timestamp": "00:44:20",
+          "scope": "hosts",
+          "confidence": 0.8,
+          "automation_hint": "proxy observable"
+        },
+        {
+          "stage": "entry",
+          "paraphrase": "Spire Global se destaca por su enfoque en la eficiencia y la escala, con un modelo de negocio basado en la recopilación de datos a través de satélites, lo que le permite ofrecer servicios de valor agregado a múltiples industrias con un enfoque en la eficiencia y la reducción de costos.",
+          "timestamp": "00:40:28",
+          "scope": "hosts",
+          "confidence": 0.7,
+          "automation_hint": "proxy observable"
+        }
+      ],
+      "named_examples": [],
+      "chunk_summary": "El fragmento analiza la caída en valor y precios de la industria de satélites, destacando el papel de Spire Global como una empresa con un modelo de negocio eficiente y escalable, enfocado en la recopilación de datos a través de satélites para múltiples industrias. Se mencionan factores macroeconómicos como la subida de tipos de interés y la competencia geopolítica, que influyen en el mercado. Spire Global se destaca por su enfoque en fabricar satélites y no cohetes, lo que le permite reducir costos y enfocarse en la eficiencia, mientras que otras empresas se enfocan en la fabricación de cohetes, una actividad más intensiva en capital y compleja. El fragmento también destaca el potencial de crecimiento del mercado de satélites, con proyecciones de crecimiento anual del 8% y un valor potencial de 300 mil millones de dólares en el largo plazo."
+    },
+    {
+      "chunk": 6,
+      "evidence": [
+        {
+          "stage": "valuation",
+          "paraphrase": "La empresa Spire tiene un valor de empresa (enterprise value) de 330 millones, con un free cash flow positivo y una caja neta de 45,5 millones, lo que la hace única en su sector.",
+          "timestamp": "00:47:36",
+          "scope": "hosts",
+          "confidence": 0.0,
+          "automation_hint": "proxy observable"
+        },
+        {
+          "stage": "valuation",
+          "paraphrase": "Spire cotiza a un valor de 2 veces su free cash flow de 2023, mientras que la mayoría del sector cotiza a 9,7 veces sus ingresos recurrentes, lo que sugiere un potencial de crecimiento significativo.",
+          "timestamp": "00:50:10",
+          "scope": "hosts",
+          "confidence": 0.0,
+          "automation_hint": "proxy observable"
+        },
+        {
+          "stage": "valuation",
+          "paraphrase": "Spire tiene un margen de 66% actualmente y espera alcanzar un margen del 91% en 2025, lo que refleja una eficiencia operativa y un modelo de negocio sostenible.",
+          "timestamp": "00:49:40",
+          "scope": "hosts",
+          "confidence": 0.0,
+          "automation_hint": "proxy observable"
+        },
+        {
+          "stage": "valuation",
+          "paraphrase": "Spire ha experimentado un crecimiento acelerado en sus ingresos recurrentes, pasando de 8 millones en 2018 a 145 millones en 2023, con proyecciones de 1 billón en 2025, lo que demuestra un modelo de crecimiento sostenible.",
+          "timestamp": "00:50:20",
+          "scope": "hosts",
+          "confidence": 0.0,
+          "automation_hint": "proxy observable"
+        },
+        {
+          "stage": "valuation",
+          "paraphrase": "Spire tiene un modelo de negocio probado con clientes que solicitan más servicios, lo que genera un crecimiento positivo y una retención de clientes alta, lo que refuerza su valor de mercado.",
+          "timestamp": "00:48:24",
+          "scope": "hosts",
+          "confidence": 0.0,
+          "automation_hint": "proxy observable"
+        }
+      ],
+      "named_examples": [],
+      "chunk_summary": "El análisis destaca la valoración de Spire, destacando su valor de empresa, free cash flow positivo, margenes altos, crecimiento sostenido en ingresos recurrentes y un modelo de negocio probado con alta retención de clientes, lo que sugiere un potencial de inversión significativo en el sector de satélites en la nube."
+    },
+    {
+      "chunk": 7,
+      "evidence": [
+        {
+          "stage": "valuation",
+          "paraphrase": "La empresa MaxArte cotiza a 200 mil millones y se ha depreciado un 60% desde 2021, con un valor actual que refleja su capacidad de resolución satelital de 8 veces, lo que permite mapear zonas con alta precisión, incluso en mal tiempo.",
+          "timestamp": "00:56:33",
+          "scope": "hosts",
+          "confidence": 0.8,
+          "automation_hint": "proxy observable"
+        },
+        {
+          "stage": "cycle_macro",
+          "paraphrase": "El mercado muestra un comportamiento inusual, con empresas tecnológicas y de defensa como MaxArte enfrentando caídas significativas, pero manteniendo ventajas competitivas en resolución satelital que no se replican fácilmente.",
+          "timestamp": "00:56:43",
+          "scope": "uncertain_or_guest",
+          "confidence": 0.6,
+          "automation_hint": "proxy observable"
+        },
+        {
+          "stage": "entry",
+          "paraphrase": "MaxArte tiene una trayectoria sólida en satelital con aplicaciones en defensa, logística y tecnología, y su capacidad de resolución satelital es única, lo que lo convierte en un candidato para inversión en sectores que requieren precisión en tiempo real.",
+          "timestamp": "00:57:03",
+          "scope": "hosts",
+          "confidence": 0.9,
+          "automation_hint": "proxy observable"
+        }
+      ],
+      "named_examples": [],
+      "chunk_summary": "El análisis de MaxArte muestra una valoración de 200 mil millones con una depreciación del 60% desde 2021, pero su tecnología satelital de alta resolución permite aplicaciones en defensa, logística y tecnología, con un negocio irreplicable y múltiplos razonables. El mercado muestra un comportamiento inusual, con empresas tecnológicas y de defensa enfrentando caídas significativas, pero manteniendo ventajas competitivas en resolución satelital que no se replican fácilmente."
+    },
+    {
+      "chunk": 8,
+      "evidence": [
+        {
+          "stage": "entry",
+          "paraphrase": "El CEO de Maxar menciona planes para reducir la deuda y menciona un nuevo proyecto, el satélite Legion, que podría generar 300 millones en flujo de caja para 2024-2025.",
+          "timestamp": "01:05:43",
+          "scope": "hosts",
+          "confidence": 0.0
+        },
+        {
+          "stage": "valuation",
+          "paraphrase": "Rocket Lab tiene una valoración de 4 billones de dólares, significativamente inferior a la de SpaceX (más de 80 billones, posiblemente 100 billones).",
+          "timestamp": "01:07:21",
+          "scope": "hosts",
+          "confidence": 0.0
+        },
+        {
+          "stage": "technical",
+          "paraphrase": "Rocket Lab tiene un cohete reutilizable (Electron) que cuesta 5 millones de dólares por lanzamiento, con un proceso de aterrizado eficiente y más rápido que el de SpaceX.",
+          "timestamp": "01:12:18",
+          "scope": "hosts",
+          "confidence": 0.0
+        },
+        {
+          "stage": "entry",
+          "paraphrase": "El CEO de Rocket Lab no es un fanático de SpaceX, pero ha centrado su negocio en lanzar satélites pequeños para clientes que no necesitan la tecnología de SpaceX.",
+          "timestamp": "01:08:41",
+          "scope": "hosts",
+          "confidence": 0.0
+        },
+        {
+          "stage": "cycle_macro",
+          "paraphrase": "Rocket Lab ha logrado 16 lanzamientos exitosos, mientras que Virgin Orbit, con un presupuesto similar, solo logró 1 lanzamiento exitoso, lo que refleja su superioridad en eficiencia y eficacia.",
+          "timestamp": "01:12:00",
+          "scope": "hosts",
+          "confidence": 0.0
+        },
+        {
+          "stage": "entry",
+          "paraphrase": "El CEO de Rocket Lab ha sido reconocido por Elon Musk por sus logros, lo que refuerza su posición en el mercado y su capacidad para competir con SpaceX en un nicho específico.",
+          "timestamp": "01:11:09",
+          "scope": "hosts",
+          "confidence": 0.0
+        }
+      ],
+      "named_examples": [],
+      "chunk_summary": "El análisis destaca la estrategia de Rocket Lab en el mercado de satélites pequeños, con un cohete reutilizable (Electron) que ofrece un costo de lanzamiento muy competitivo. Aunque SpaceX lidera en tecnología y valoración, Rocket Lab se especializa en un nicho específico, lo que le permite competir en un segmento donde su enfoque es más eficiente y efectivo. La valoración de Rocket Lab (4 billones) es significativamente inferior a la de SpaceX (más de 80 billones), lo que refleja su enfoque en un mercado más específico y con un enfoque en la simplicidad y la eficiencia, en lugar de la innovación a largo plazo."
+    },
+    {
+      "chunk": 9,
+      "evidence": [
+        {
+          "stage": "entry",
+          "paraphrase": "El lanzamiento de satélites con el Falcon 9 es significativamente más barato que el electrón, con costos de 60 millones vs 5 millones por lanzamiento.",
+          "timestamp": "01:15:14",
+          "scope": "hosts",
+          "confidence": 0.9,
+          "automation_hint": "proxy observable"
+        },
+        {
+          "stage": "valuation",
+          "paraphrase": "Rocket Lab estima que su valor será de 1,5 trillones para 2030, lo que refleja su potencial de crecimiento en el mercado de lanzamiento de satélites.",
+          "timestamp": "01:18:20",
+          "scope": "hosts",
+          "confidence": 0.8,
+          "automation_hint": "proxy observable"
+        },
+        {
+          "stage": "cycle_macro",
+          "paraphrase": "La industria de lanzamiento de satélites tiene un gran potencial de crecimiento, con más del 50% de los satélites accesibles aún no lanzados, lo que sugiere una oportunidad significativa para empresas como Rocket Lab.",
+          "timestamp": "01:17:00",
+          "scope": "hosts",
+          "confidence": 0.7,
+          "automation_hint": "proxy observable"
+        }
+      ],
+      "named_examples": [],
+      "chunk_summary": "El fragmento destaca la ventaja competitiva de Rocket Lab en el lanzamiento de satélites, comparando costos entre el Falcon 9 y el electrón, mencionando proyecciones de valor futuro y el potencial de crecimiento en un mercado con un alto número de satélites no lanzados. Se enfatiza la eficiencia operativa y la innovación de Rocket Lab, así como su posición en el mercado frente a competidores como SpaceX."
+    },
+    {
+      "chunk": 10,
+      "evidence": [
+        {
+          "stage": "valuation",
+          "paraphrase": "La empresa se valora muy alta, con un precio de 2,7 por acción, pero ahora está a 2 por acción, lo que refleja una caída significativa.",
+          "timestamp": "01:24:02",
+          "scope": "hosts",
+          "confidence": 0.8,
+          "automation_hint": "proxy observable"
+        },
+        {
+          "stage": "quality",
+          "paraphrase": "La empresa tiene una alta calidad, con directivos experimentados y participación en sectores innovadores como la 3D y el espacio.",
+          "timestamp": "01:24:12",
+          "scope": "hosts",
+          "confidence": 0.7,
+          "automation_hint": "proxy observable"
+        },
+        {
+          "stage": "entry",
+          "paraphrase": "Se sugiere comprar acciones de la empresa a partir del 5% de un fondo, aunque se menciona que es un proceso complejo y con limitaciones.",
+          "timestamp": "01:27:00",
+          "scope": "hosts",
+          "confidence": 0.6,
+          "automation_hint": "proxy observable"
+        },
+        {
+          "stage": "risk",
+          "paraphrase": "Se menciona que la empresa tiene un riesgo elevado debido a su alta valoración y la incertidumbre sobre su futuro, especialmente en relación con la AIPO.",
+          "timestamp": "01:26:38",
+          "scope": "hosts",
+          "confidence": 0.5,
+          "automation_hint": "proxy observable"
+        },
+        {
+          "stage": "technical",
+          "paraphrase": "La empresa tiene una participación en sectores tecnológicos innovadores, como la 3D y el espacio, lo que sugiere un potencial de crecimiento.",
+          "timestamp": "01:24:30",
+          "scope": "hosts",
+          "confidence": 0.6,
+          "automation_hint": "proxy observable"
+        }
+      ],
+      "named_examples": [],
+      "chunk_summary": "El análisis sugiere que la empresa tiene alta calidad y potencial de crecimiento en sectores innovadores, aunque su valoración actual refleja una caída significativa. Se recomienda considerar la inversión a partir del 5% de un fondo, aunque con riesgos elevados debido a la incertidumbre sobre su futuro."
+    }
+  ],
+  "copyright_note": "No audio or verbatim transcript is persisted; only derived paraphrases."
+}
