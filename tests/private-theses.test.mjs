@@ -149,7 +149,7 @@ test("Thesis tracking never embeds a company fiche and supports independent tick
  assert.ok(!tracking.includes('id="issuer-ficha"'));
  assert.ok(!tracking.includes("Ficha de tesis / empresa"));
  const detail=site.slice(to,site.indexOf("function officialFxPanel(){",to));
- assert.ok(detail.includes("issuerDetail(requested)"));
+ assert.ok(detail.includes("renderThesisReport(state.publicTheses.get(ticker),state.fullReports.get(ticker)||null)"));
  assert.ok(detail.includes('new URLSearchParams(location.search).get("ticker")'));
  assert.ok(site.includes('window.open(url,"_blank","noopener,noreferrer")'));
  assert.ok(site.includes('thesis:thesisView'));

@@ -348,7 +348,7 @@ test("Official independent forecast journal is scheduled and available as an aud
  assert.ok(yaml.includes("cron: '40 17 * * 1-5'"));
  assert.ok(yaml.includes("Record audited prospective ECB fixing signal"));
  assert.ok(yaml.includes("PYTHONDONTWRITEBYTECODE"));
- assert.ok(pages.includes("cp data/demo.json data/public-theses.json data/public-closes.json data/fx-forecast-ledger.json data/sec-filings.json data/competition-roster.json data/strategy-candidates.json data/institutional-paper-feed.json dist/data/"));
+ assert.ok(pages.includes("cp data/demo.json data/public-theses.json data/thesis-reports.json data/public-closes.json data/fx-forecast-ledger.json data/sec-filings.json data/competition-roster.json data/strategy-candidates.json data/institutional-paper-feed.json dist/data/"));
  assert.ok(site.includes("function prospectiveForecastPanel()"));
  assert.ok(site.includes('fetch("./data/fx-forecast-ledger.json"'));
  assert.ok(site.includes("No son operaciones financieras"));
@@ -558,5 +558,5 @@ test("La vista pública de tesis mantiene la tabla pero no muestra herramientas 
  assert.ok(view.includes("thesis-public-table"));
  assert.ok(view.includes("issuerTableRows()"));
  assert.ok(view.includes('data-action="issuer-column"'));
- assert.ok(view.includes('id="issuer-ficha"'));
+ assert.ok(view.includes("renderThesisReport(state.publicTheses.get(ticker),state.fullReports.get(ticker)||null)"));
 });

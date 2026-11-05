@@ -1,0 +1,51 @@
+/* MIDAS · Institutional research report. Consistent typography, panels and charts. */
+body.midas-thesis-mode .research-hero{display:none}
+body.midas-thesis-mode main.shell{max-width:1480px}
+body.midas-thesis-mode #app{margin-top:26px}
+.thesis-report{--ink:#102b4e;--muted:#63758a;--edge:#d9e2ec;--light:#f5f8fb;--gold:#aa823b;color:var(--ink);font-family:system-ui,-apple-system,"Segoe UI",sans-serif;max-width:1400px;margin:0 auto}
+.thesis-report-cover{padding:32px 36px 34px;background:linear-gradient(145deg,#0e294d,#193f65);color:#fff;border-radius:14px 14px 0 0}
+.thesis-report-topline{display:flex;align-items:center;justify-content:space-between;gap:18px;flex-wrap:wrap}
+.thesis-report-topline>div:first-child{display:flex;gap:14px;align-items:center;flex-wrap:wrap}
+.thesis-report-brand{font-size:12px;letter-spacing:.15em;font-weight:800;color:#d9b76f}
+.thesis-report-mark{font-size:10px;letter-spacing:.12em;color:#bccde1}
+.thesis-report-actions{display:flex;align-items:center;gap:12px}
+.thesis-report-back{color:#dbe6f3!important;text-decoration:none;font-size:12px;font-weight:650}
+.thesis-report-pdf{background:#fff;color:#0b2447!important;padding:10px 17px;border-radius:7px;font-weight:800;font-size:12px;white-space:nowrap;text-decoration:none;box-shadow:0 3px 14px #061b3438}
+.thesis-report-pdf:focus-visible,.thesis-report-back:focus-visible{outline:3px solid #d9b76f;outline-offset:3px}
+.thesis-report-kicker{margin:38px 0 8px!important;color:#c6d5e6!important;letter-spacing:.08em;font-size:11px;line-height:1.6}
+.thesis-report-cover h1{font-family:Georgia,"Times New Roman",serif;color:#fff;font-size:clamp(31px,4.3vw,55px);margin:0 0 10px;line-height:1.1}
+.thesis-report-cover h1 em{font:600 .40em/1 system-ui,sans-serif;font-style:normal;vertical-align:middle;display:inline-block;background:#ffffff23;padding:8px 12px;border-radius:8px;letter-spacing:.03em}
+.thesis-report-subhead{font-size:12px;letter-spacing:.02em;color:#dbe3ef!important;margin:0!important}
+.thesis-report-nav{display:flex;gap:16px;overflow-x:auto;white-space:nowrap;background:#eaf0f6;padding:13px 22px;border:1px solid var(--edge);border-top:0;position:sticky;top:57px;z-index:10}
+.thesis-report-nav a{font:650 11px/1.5 system-ui,sans-serif;text-decoration:none;color:#32516f}
+.thesis-report-nav a:hover{text-decoration:underline}
+.thesis-report-section{background:#fff;border:1px solid var(--edge);border-top:none;padding:30px 35px;scroll-margin-top:120px}
+.thesis-report-section>h2{font-family:Georgia,"Times New Roman",serif;color:var(--ink);font-size:24px;margin:0 0 22px;padding-bottom:12px;border-bottom:1px solid var(--edge)}
+.thesis-report-section h3{font-family:Georgia,"Times New Roman",serif;font-size:18px;color:var(--ink);margin:22px 0 11px}
+.thesis-report-section p{font:400 13px/1.85 system-ui,sans-serif;color:#41556d;margin:0 0 16px}
+.thesis-report-section strong{color:#193d66}
+.thesis-report-kpis{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+.thesis-stat{background:#f5f8fb;border:1px solid var(--edge);border-radius:9px;padding:17px;min-width:0}
+.thesis-stat>span{display:block;text-transform:uppercase;color:#6a7e95;font-size:10px;font-weight:800;letter-spacing:.07em;margin-bottom:9px}
+.thesis-stat>strong{display:block;color:var(--ink);font-size:clamp(14px,1.3vw,21px);line-height:1.4;overflow-wrap:anywhere}
+.thesis-stat small{display:block;font-size:10px;color:#65798d;margin-top:5px;line-height:1.6}
+.thesis-report-lead{margin-top:20px;border-left:4px solid #b99249;padding:16px 18px;background:#f9fafc}
+.thesis-report-lead p{font-size:14px;color:#243e5d}
+.thesis-report-chartbox{padding:13px 8px;margin:10px 0 16px;background:#f8fafc;border:1px solid var(--edge);border-radius:9px;overflow:auto}
+.thesis-scenarios-chart{display:block;width:100%;min-width:510px;max-height:370px}
+.thesis-scenarios-chart .chart-label{font:700 16px system-ui,sans-serif;fill:#183557}
+.thesis-scenarios-chart .chart-value{font:600 15px system-ui,sans-serif;fill:#17365b}
+.thesis-scenarios-chart .chart-reference{font:600 13px system-ui,sans-serif;fill:#a07d42}
+.thesis-report-casecards{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin:13px 0 20px}
+.thesis-report-table{width:100%;border-collapse:collapse;table-layout:fixed;margin:12px 0 15px}
+.thesis-report-table th,.thesis-report-table td{padding:12px 10px;border-bottom:1px solid var(--edge);font-size:12px;line-height:1.5;text-align:left;overflow-wrap:anywhere}
+.thesis-report-table th{background:var(--light);color:#526d89;font-size:11px;text-transform:uppercase;letter-spacing:.04em}
+.thesis-report-muted{color:#687d91!important;font-size:11px!important}
+.thesis-line-break{display:block;height:4px}
+.thesis-source-body{max-width:950px;margin:0 auto}
+.thesis-source-body p{max-width:950px;white-space:pre-wrap;overflow-wrap:anywhere;font-size:12.5px;line-height:1.8}
+.thesis-source-body h3{padding-top:6px}
+.thesis-report-footer{background:#0d2b4e;color:#cdd9e9;text-align:center;font-size:11px;line-height:1.7;padding:20px 26px;border-radius:0 0 12px 12px}
+@media(max-width:880px){.thesis-report-kpis{grid-template-columns:repeat(2,minmax(0,1fr))}.thesis-report-nav{top:0}.thesis-report-section{padding:24px 20px}}
+@media(max-width:560px){.thesis-report-cover{padding:24px 18px}.thesis-report-section{padding:21px 15px}.thesis-report-kpis,.thesis-report-casecards{grid-template-columns:1fr}.thesis-report-topline{align-items:flex-start}.thesis-report-mark{display:none}.thesis-report-nav{gap:14px}.thesis-report-cover h1{font-size:34px}.thesis-report-actions{gap:8px}.thesis-report-pdf{padding:9px 12px}}
+@media print{body.midas-thesis-mode .topbar,body.midas-thesis-mode .footer,body.midas-thesis-mode .thesis-report-actions,body.midas-thesis-mode .thesis-report-nav{display:none!important}.thesis-report-section{break-inside:avoid;padding:15px 0}.thesis-report-cover{print-color-adjust:exact;-webkit-print-color-adjust:exact}.thesis-report{width:100%}}
