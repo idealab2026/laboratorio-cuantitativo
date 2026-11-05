@@ -311,7 +311,7 @@ La vista pública `?view=theses` diferencia expresamente el **precio de referenc
 histórico de una tesis** de la **última cotización de cierre verificable**.
 No se modifica el CAGR, la fecha del estudio, los escenarios ni las entradas de 15 %.
 
-- La interfaz consulta `data/public-closes.json` al abrirse y cada 180 segundos
+- La interfaz consulta `data/public-closes.json` al abrirse y como máximo cada 24 horas
   mientras la pestaña de seguimiento esté visible; es una **relectura del archivo
   publicado**, no una petición al proveedor de bolsa cada tres minutos.
 - El archivo se distribuye inicialmente como `not_configured`, sin precios.
@@ -333,3 +333,16 @@ No se modifica el CAGR, la fecha del estudio, los escenarios ni las entradas de 
 
 La tabla delimita el ancho de resultados y estados; el botón abre la tesis en una
 pestaña nueva y conserva el resumen histórico dentro de esa ficha, no bajo la tabla.
+
+## Visualización de cotizaciones sin redistribuir el dato
+
+En la tabla de tesis, cuando el cierre propio no está disponible, la columna
+**Cotización** incorpora un widget externo oficial de TradingView para cada
+símbolo cuyo mercado se conoce. TradingView muestra directamente su dato bajo
+sus propias condiciones y atribución, sin que la web copie, descargue, almacene,
+reprocese ni publique el valor numérico. El dato puede estar retrasado según el
+mercado y puede incluir cambios intradía, por lo que **no equivale
+necesariamente al cierre previo**. Si no carga el widget, permanece el enlace
+al proveedor para consultar el precio. El frontend solo admite marcos de
+`s.tradingview.com`, aplica carga perezosa y mantiene referencia visible a
+TradingView. Los escenarios y CAGR son los originales, fechados y separados.
