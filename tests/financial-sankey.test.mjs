@@ -9,14 +9,17 @@ const thesis=JSON.parse(readFileSync(new URL("../data/public-theses.json",import
 const map=verifyFinancialSankeys(doc,new Set(thesis.records.map(x=>x.ticker)));
 
 test("Every MIDAS company has a traceable audited/official Sankey slot",()=>{
- assert.equal(map.size,25);
+ assert.equal(map.size,26);
  const verified=[...map.values()].filter(c=>c.periods.length).map(c=>c.ticker).sort();
  assert.deepEqual(verified,["ADBE","AMZN","CAT","META","MSFT","NFLX","PLTR"]);
- assert.equal([...map.values()].filter(c=>c.status==="awaiting_official_statement").length,18);
+ assert.equal([...map.values()].filter(c=>c.status==="awaiting_official_statement").length,19);
  for(const company of map.values()){
   const out=renderFinancialSankey(company);
   if(company.periods.length){
    assert.match(out,/<svg role="img"/);
+   assert.match(out,/ORIGEN DE LOS INGRESOS/);
+   assert.match(out,/Ingresos consolidados/);
+   assert.match(out,/Conciliación de ingresos por/);
    assert.match(out,/Conciliación exacta del resultado operativo/);
    assert.match(out,/Documento oficial/);
    assert.doesNotMatch(out,/(?:NaN|Infinity|undefined|href="http:)/);
@@ -24,6 +27,8 @@ test("Every MIDAS company has a traceable audited/official Sankey slot",()=>{
     const total=period.expenses.reduce((s,x)=>s+x.value,0)+period.operating_income;
     assert.ok(Math.abs(total-period.revenue)<=.006,company.ticker);
     assert.ok(period.source.url.startsWith("https://"));
+    assert.equal(Math.round(period.revenue_sources.reduce((a,o)=>a+o.value,0)*1000),Math.round(period.revenue*1000));
+    assert.ok(period.revenue_sources.length>=2);
    }
   }else{
    assert.match(out,/Desglose oficial pendiente de verificar/);
@@ -52,6 +57,8 @@ test("Annual and quarterly periods stay separate, and no prices or estimates ent
 test("Wrong issuer, bad source, negative expense and nonreconciling figures fail closed",()=>{
  const copy=structuredClone(doc);copy.companies[0].periods[0].operating_income++;
  assert.throws(()=>verifyFinancialSankeys(copy,new Set(thesis.records.map(x=>x.ticker))),/Descuadre/);
+ const badOrigin=structuredClone(doc);badOrigin.companies[0].periods[0].revenue_sources[0].value+=1;
+ assert.throws(()=>verifyFinancialSankeys(badOrigin,new Set(thesis.records.map(x=>x.ticker))),/Descuadre de ingresos por origen/);
  const wrong=structuredClone(doc);wrong.companies[0].ticker="FAKE";
  assert.throws(()=>verifyFinancialSankeys(wrong,new Set(thesis.records.map(x=>x.ticker))));
  const bad=structuredClone(doc);bad.companies[0].periods[0].source.url="https://random.example.com/123";
@@ -78,3 +85,6 @@ test("All reports display the same finance chapter, and no missing issuer gets f
  assert.match(workflow,/data\/financial-sankeys\.json/);
  assert.match(workflow,/src\/financial-sankey\.mjs/);
 });
+
+
+test("NAUT is in the research pipeline without invented prices or financial Sankey",()=>{const pending=thesis.records.find(x=>x.ticker==="NAUT");assert.ok(pending);assert.equal(pending.baseTarget,null);assert.equal(pending.baseCagr,null);assert.equal(map.get("NAUT").periods.length,0);assert.doesNotMatch(renderFinancialSankey(map.get("NAUT")),/<svg/);});
