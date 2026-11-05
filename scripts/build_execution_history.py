@@ -82,9 +82,9 @@ def cron_values(expression, upper):
     return result
 
 
-def workflow_schedule(root=ROOT):
+def workflow_schedule(root=ROOT, workflows=WORKFLOWS):
     result = {}
-    for filename in WORKFLOWS:
+    for filename in workflows:
         path = root / ".github" / "workflows" / filename
         data = path.read_text(encoding="utf-8")
         crons = re.findall(r"(?m)^\s*-\s*cron:\s*['\"]([^'\"]+)['\"]\s*$", data)
@@ -122,6 +122,38 @@ def due_times_for_session(session, specs):
                     result.append(dt.datetime(day.year, day.month, day.day,
                                               hour, minute, tzinfo=UTC))
     return sorted(result)
+
+
+def live_session_plan(now, schedules):
+    """Publish the next NYSE sessions and the actual workflow schedules."""
+    from zoneinfo import ZoneInfo
+    import pandas_market_calendars as calendars
+
+    today = now.astimezone(ZoneInfo("America/New_York")).date()
+    start = today - dt.timedelta(days=1)
+    end = today + dt.timedelta(days=21)
+    calendar = calendars.get_calendar("XNYS").schedule(start_date=start, end_date=end)
+    source = "market_data_xnys.yml"
+    schedule_map = {**schedules, **workflow_schedule(workflows=(source,))}
+    days = {}
+    for index, row in calendar.iterrows():
+        day = index.date()
+        lanes = []
+        for name, spec in schedule_map.items():
+            due = due_times_for_session(day, spec)
+            if due:
+                lanes.append({
+                    "workflow": name,
+                    "slots": [slot(number) for number in WORKFLOWS.get(name, [])],
+                    "due": [time.isoformat() for time in due],
+                    "accounting_step": COMMON_ACCOUNTING_STEPS.get(name),
+                })
+        days[day.isoformat()] = {
+            "open": row["market_open"].isoformat(),
+            "close": row["market_close"].isoformat(),
+            "lanes": lanes,
+        }
+    return {"from": start.isoformat(), "through": end.isoformat(), "days": days}
 
 
 def session_of_run(run):
@@ -634,6 +666,7 @@ def main():
     if not args.output:
         parser.error("Specify --output or --validate")
     now = dt.datetime.now(UTC)
+    schedules = workflow_schedule()
     try:
         token = os.getenv("GH_TOKEN", "")
         journals = journal_evidence()
@@ -642,7 +675,7 @@ def main():
             available = True
         except (ValueError, OSError, urllib.error.URLError, KeyError, json.JSONDecodeError):
             runs, available = [], False
-        document = build(now, runs, workflow_schedule(), classic_quarantines(),
+        document = build(now, runs, schedules, classic_quarantines(),
                          journals, actions_available=available, archive=reviewed_archive())
     except (ValueError, OSError, urllib.error.URLError, KeyError, json.JSONDecodeError) as exc:
         # A source outage must not turn into a fabricated zero-execution day.
@@ -651,6 +684,7 @@ def main():
             "as_of_utc": now.isoformat().replace("+00:00", "Z"),
             "reason": type(exc).__name__, "days": [],
         }
+    document["live_plan"] = live_session_plan(now, schedules)
     verify(document)
     path = Path(args.output)
     path.parent.mkdir(parents=True, exist_ok=True)

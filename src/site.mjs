@@ -1,3 +1,4 @@
+import {LIVE_REFRESH_MS, readLiveAttempts, renderLiveSession, sessionToday} from "./live-session.mjs?v=df279496ea93";
 import {verifyOriginalPaper} from "./original-paper.mjs?v=b4ab52ea9863";
 import {algorithmTheory,paperLeaderboard} from "./algorithm-detail.mjs";
 import {glossaryGroups,searchGlossary,verifyGlossary} from "./glossary.mjs";
@@ -13,7 +14,7 @@ import {verify,simulate,rank,valuation,thesisRank,formatPct,money,finite,verifyI
 const $=id=>document.getElementById(id);
 const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 const fmt=n=>finite(n)?new Intl.NumberFormat("es-ES",{maximumFractionDigits:2}).format(n):"N/D";
-const state={data:null,universe:null,fx:null,fxCheck:null,fxStatus:"pending",forecastLedger:null,forecastSummary:null,forecastStatus:"pending",secStatus:"pending",secRead:null,secCatalog:null,yieldDoc:null,yieldCheck:null,yieldStatus:"pending",view:"competition",strategy:"P-01",group:"",sort:"returnPct",asc:false,detailOpen:false,thesis:"T-01",query:"",thesisSort:"central",issuerMode:"catalog",issuerQuery:"",issuerSort:"base",issuerAsc:false,issuerTicker:"MSFT",paperDetail:"M-10",originalPaper:null,originalPaperStatus:"pending",historicalPaper:null,historicalCurves:null,historicalPaperStatus:"pending",fullRoster:null,fullRosterStatus:"pending",strategyCandidates:null,strategyCandidatesStatus:"pending",fullRosterGroup:"",fullRosterQuery:"",fullRosterSort:"return",fullRosterAsc:false,algorithmId:null,operationsAudit:null,operationsAuditStatus:"pending",auditTicker:null,auditTab:"sessions",auditSort:"recent",auditDesc:true,monitoringTab:"summary",monitoringStrategy:"IL-039",monitoringSort:"recent",monitoringDesc:true,executionHistory:null,executionHistoryStatus:"pending",institutionalFeedStatus:"pending",paperFeed:null,paperFeedRead:null,localCagr:new Map(),localCagrError:"",publicTheses:new Map(),publicThesesMetadata:null};
+const state={data:null,universe:null,fx:null,fxCheck:null,fxStatus:"pending",forecastLedger:null,forecastSummary:null,forecastStatus:"pending",secStatus:"pending",secRead:null,secCatalog:null,yieldDoc:null,yieldCheck:null,yieldStatus:"pending",view:"competition",strategy:"P-01",group:"",sort:"returnPct",asc:false,detailOpen:false,thesis:"T-01",query:"",thesisSort:"central",issuerMode:"catalog",issuerQuery:"",issuerSort:"base",issuerAsc:false,issuerTicker:"MSFT",paperDetail:"M-10",originalPaper:null,originalPaperStatus:"pending",historicalPaper:null,historicalCurves:null,historicalPaperStatus:"pending",fullRoster:null,fullRosterStatus:"pending",strategyCandidates:null,strategyCandidatesStatus:"pending",fullRosterGroup:"",fullRosterQuery:"",fullRosterSort:"return",fullRosterAsc:false,algorithmId:null,operationsAudit:null,operationsAuditStatus:"pending",auditTicker:null,auditTab:"sessions",auditSort:"recent",auditDesc:true,monitoringTab:"today",monitoringStrategy:"IL-039",monitoringSort:"recent",monitoringDesc:true,executionHistory:null,executionHistoryStatus:"pending",institutionalFeedStatus:"pending",paperFeed:null,paperFeedRead:null,localCagr:new Map(),localCagrError:"",publicTheses:new Map(),publicThesesMetadata:null};
 const viewNames=["competition","algorithm","algorithms","theses","monitoring","method","glossary","ported","full","synthetic"];
 const button=(label,action,value,cls="smallbtn")=>'<button type="button" class="'+cls+'" data-action="'+esc(action)+'" data-value="'+esc(value)+'">'+esc(label)+'</button>';
 const head=(label,title,body)=>'<div class="section-heading"><div><span class="kicker">'+esc(label)+'</span><h2>'+esc(title)+'</h2><p class="section-context">'+esc(body)+'</p></div></div>';
@@ -296,6 +297,50 @@ function prospectiveForecastPanel(){
  * A workflow shared by 9 slots can report 9 affected algorithms, while the
  * source badge discloses that all share one execution event.
  */
+const monitoringTabs=[["today","Sesión de hoy"],["summary","Indicadores"],["operations","Operaciones"],["daily","Histórico de sesiones"]];
+const liveJobCache=new Map();
+let liveSessionData=null, liveSessionRequest=null, liveLastRequest=0;
+const liveSessionActive=()=>state.view==="monitoring"&&state.monitoringTab==="today";
+const currentSession=()=>sessionToday(state.executionHistory?.live_plan);
+function liveSessionHTML(){
+ return renderLiveSession(currentSession(),liveSessionData,Date.now(),state.executionHistoryStatus==="pending");
+}
+function paintLiveSession(){
+ const panel=$("monitoring-panel-today");
+ if(!panel||!liveSessionActive())return;
+ const scroll=panel.querySelector(".session-live-scroll")?.scrollLeft??0;
+ const focused=panel.contains(document.activeElement)?document.activeElement:null;
+ panel.innerHTML=liveSessionHTML();
+ const chart=panel.querySelector(".session-live-scroll");
+ if(chart)chart.scrollLeft=scroll;
+ if(focused?.dataset.action==="live-session-refresh"){
+  panel.querySelector("[data-action='live-session-refresh']")?.focus({preventScroll:true});
+ }else if(focused?.href){
+  [...panel.querySelectorAll("a")].find(link=>link.href===focused.href)?.focus({preventScroll:true});
+ }else if(focused?.classList.contains("session-live-scroll"))chart?.focus({preventScroll:true});
+}
+async function refreshLiveSession(force=false){
+ if(!liveSessionActive()||document.hidden||liveSessionRequest)return;
+ const session=currentSession();
+ if(!session.lanes){paintLiveSession();return;}
+ const now=Date.now();
+ if(liveSessionData?.date===session.date&&now-liveLastRequest<(force?30_000:LIVE_REFRESH_MS))return;
+ liveLastRequest=now;
+ liveSessionRequest=readLiveAttempts(session,fetch,liveJobCache);
+ try{
+  const result=await liveSessionRequest;
+  liveSessionData={date:session.date,status:"ok",checked:Date.now(),...result};
+ }catch{
+  const previous=liveSessionData?.date===session.date?liveSessionData:null;
+  liveSessionData={date:session.date,status:"error",checked:previous?.checked,attempts:previous?.attempts??[]};
+ }finally{
+  liveSessionRequest=null;
+  paintLiveSession();
+ }
+}
+document.addEventListener("visibilitychange",()=>{if(!document.hidden)void refreshLiveSession();});
+setInterval(()=>{void refreshLiveSession();},LIVE_REFRESH_MS);
+
 function verifyExecutionHistory(doc){
  if(!doc||doc.schema!=="midas_daily_execution_health_v1"||
     !["verified_github_actions","unavailable"].includes(doc.status))throw Error("Registro diario inválido");
@@ -471,9 +516,9 @@ function monitoring(){
    feed?.status==="not_connected"?0:null;
  const latestPaper=summary?.latestSession||state.originalPaper?.latest||null;
  const latestTrade=summary?.latestTrade||null;
- const selectedTab=["summary","operations","daily"].includes(state.monitoringTab)?state.monitoringTab:"summary";
+ const selectedTab=["summary","operations","daily"].includes(state.monitoringTab)?state.monitoringTab:"today";
  const tabs='<div class="monitoring-tabs" id="monitoring-tab-strip" role="tablist" aria-label="Paneles de salud operativa">'+
-  [['summary',"Indicadores"],['operations',"Operaciones"],['daily',"Histórico de sesiones"]].map(([key,label])=>
+  monitoringTabs.map(([key,label])=>
    '<button type="button" role="tab" data-action="monitoring-tab" data-value="'+key+
    '" aria-selected="'+(selectedTab===key)+'" aria-controls="monitoring-panel-'+key+'">'+label+'</button>').join("")+'</div>';
  const health=summary?summary.withExecutions:null;
@@ -523,7 +568,8 @@ function monitoring(){
   renderDailyExecutionTable(state.executionHistory,state.executionHistoryStatus,roster)+'</div>';
  return head("SALUD OPERATIVA","Estado del laboratorio MIDAS",
   "Propuestas, actividad paper documentada y evidencia de producción, separadas para no confundir simulaciones con ejecución automática.")+
-  tabs+summaryPanel+operationPanel+dailyPanel;
+  tabs+'<div id="monitoring-panel-today" role="tabpanel"'+(selectedTab!=="today"?' hidden':'')+'>'+
+  liveSessionHTML()+'</div>'+summaryPanel+operationPanel+dailyPanel;
 }
 function syntheticMonitoring(){
  const s=active(),audit=causalLedger();
@@ -904,6 +950,7 @@ function render(){
  const pages={competition,algorithm:algorithmFiche,synthetic:syntheticCompetition,algorithms,theses,monitoring,ported,full,method:methodology,glossary};
  document.querySelectorAll(".product-tabs [data-view]").forEach(b=>{const active=b.dataset.view===state.view||(state.view==="algorithm"&&b.dataset.view==="competition");b.classList.toggle("active",active);b.setAttribute("aria-pressed",String(active));});
  $("app").innerHTML=(pages[state.view]||competition)();chart();
+ if(liveSessionActive())void refreshLiveSession();
 }
 function resolveMidasView(){
  const requested=new URLSearchParams(location.search).get("view");
@@ -1008,17 +1055,19 @@ $("app").addEventListener("click",e=>{
    ]);
   }
  }
+ else if(action==="live-session-refresh"){void refreshLiveSession(true);}
  else if(action==="monitoring-tab"){
-  state.monitoringTab=["summary","operations","daily"].includes(value)?value:"summary";
+  state.monitoringTab=monitoringTabs.some(([key])=>key===value)?value:"today";
   const tabs=document.querySelector("#monitoring-tab-strip");
   if(tabs){
    for(const tab of tabs.querySelectorAll("[data-action='monitoring-tab']"))
     tab.setAttribute("aria-selected",String(tab.dataset.value===state.monitoringTab));
-   for(const key of ["summary","operations","daily"]){
+   for(const [key] of monitoringTabs){
     const el=document.querySelector("#monitoring-panel-"+key);
     if(el)el.hidden=key!==state.monitoringTab;
    }
   }
+  if(liveSessionActive()){paintLiveSession();void refreshLiveSession();}
  }
  else if(action==="audit-tab"){
   state.auditTab=value==="operations"?"operations":"sessions";
