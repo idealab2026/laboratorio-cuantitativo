@@ -68,3 +68,49 @@ test("View styling and Pages build always publish both web and PDF reports",()=>
  assert.ok(build.includes("data/thesis-reports.json"));
  assert.ok(build.includes("dist/reports"));
 });
+
+
+test("Canonical research documents restore typographic hierarchy, tables and bullet lists",async()=>{
+ const {renderCanonicalSource}=await import("../src/thesis-insights.mjs");
+ const records=new Map(published.reports.map(x=>[x.ticker,x]));
+ const msft=renderCanonicalSource(records.get("MSFT").source_text);
+ assert.ok(msft.includes('class="thesis-source-body"'));
+ assert.match(msft,/<table class="thesis-source-table">/);
+ assert.match(msft,/<caption>FY2031 · tabla del documento original<\/caption>/);
+ assert.match(msft,/<td>213,61<\/td>/);
+ assert.match(msft,/class="thesis-source-heading">1\. Resumen ejecutivo de inversión<\/h3>/);
+ assert.doesNotMatch(msft,/<span class="thesis-line-break">/);
+ const meta=renderCanonicalSource(records.get("META").source_text);
+ assert.match(meta,/Ficha de parámetros del informe original/);
+ assert.match(meta,/META \| FY2031 \| ESCENARIOS ECONÓMICOS/);
+ assert.match(meta,/<td>724,29 USD/);
+ const pltr=renderCanonicalSource(records.get("PLTR").source_text);
+ assert.match(pltr,/<ul class="thesis-source-list">/);
+ assert.match(pltr,/<li>U\.S\. Commercial/);
+ const cat=renderCanonicalSource(records.get("CAT").source_text);
+ assert.match(cat,/negocio industrial de calidad/);
+ const escaped=renderCanonicalSource("1. CABECERA\n<script>alert('x')</script>");
+ assert.ok(!escaped.includes("<script>"));
+ assert.match(escaped,/&lt;script&gt;/);
+});
+test("Explainers use only dated thesis data and clearly label interpolation, not live markets",async()=>{
+ const {renderExplanatoryCharts}=await import("../src/thesis-insights.mjs");
+ const msft=theses.records.find(x=>x.ticker==="MSFT");
+ const graphic=renderExplanatoryCharts(msft);
+ assert.equal((graphic.match(/class="thesis-insight-card/g)||[]).length,3);
+ assert.equal((graphic.match(/class="thesis-explainer-svg"/g)||[]).length,3);
+ assert.match(graphic,/2026–2031/);
+ assert.match(graphic,/Evolución ilustrativa/);
+ assert.match(graphic,/Rentabilidad total del periodo/);
+ assert.match(graphic,/Disciplina de entrada/);
+ assert.match(graphic,/526,30/);
+ assert.match(graphic,/250,15/);
+ assert.match(graphic,/52,47 %/);
+ assert.match(graphic,/No es una cotización actual/);
+ assert.doesNotMatch(graphic,/NaN|Infinity|undefined/);
+ const full=renderThesisReport(msft,new Map(published.reports.map(x=>[x.ticker,x])).get("MSFT"));
+ assert.ok(full.includes("render")===false||full.includes("thesis-source-body"));
+ assert.equal((full.match(/class="thesis-explainer-svg"/g)||[]).length,3);
+ const lacking=renderExplanatoryCharts({ticker:"TEST",referencePrice:null,bearTarget:null,baseTarget:null,bullTarget:null});
+ assert.match(lacking,/No hay escenarios fechados/);
+});
