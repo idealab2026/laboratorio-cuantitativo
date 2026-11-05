@@ -280,10 +280,24 @@ submétricas recurrentes; normalizar por tienda, día y hora y estimar sorpresa
 de ventas con pruebas walk-forward. Piloto WMT, TGT y COST.
 Fuente: Katona et al., Journal of Financial and Quantitative Analysis, 2025,
 doi:10.1017/S0022109023001448.
-Sentinel-2 de 10m no distingue coches; NAIP con 0,3-0,6m tiene cadencia
-de 2-3 años y no sirve para adelantar resultados trimestrales.
-Sin un proveedor comercial autorizado, inferencia validada ni ledger
-prospectivo, permanece pendiente con métricas N/D.
+Sentinel-2 a 10 m no distingue coches. El piloto de cobertura del 05/11/2026
+consultó el catálogo abierto [USDA NAIP](https://www.usgs.gov/centers/eros/science/usgs-eros-archive-aerial-photography-national-agriculture-imagery-program-naip)
+a través de Microsoft Planetary Computer en tres ubicaciones comerciales públicas:
+
+| Muestra | Fechas con resolución < 1 m | Trimestres distintos | Última captura | Mayor intervalo |
+| --- | ---: | ---: | --- | ---: |
+| WMT · Bentonville, AR | 3 | 3 | 2023-09-30 | 781 días |
+| TGT · Richfield, MN | 4 | 3 | 2023-08-03 | 764 días |
+| COST · Issaquah, WA | 2 | 2 | 2023-10-07 | 1457 días |
+
+`python3 scripts/satellite_pilot.py --naip-coverage` repite la consulta, agrupa
+teselas por fecha de adquisición e identifica cada respuesta con su SHA-256.
+El resultado comprueba la cadencia del catálogo en una muestra, no demuestra
+que un aparcamiento sea visible ni cuándo llegó la imagen al investigador.
+NAIP es útil para ensayar el detector con recortes históricos. La competición
+requiere una fuente recurrente con licencia, prueba del detector, validación
+fuera de muestra y registro prospectivo con precios de mercado. Hasta entonces
+la propuesta no abre operaciones ni publica rentabilidad.
 
 
 ## Admisión independiente de emisores
