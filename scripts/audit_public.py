@@ -67,6 +67,17 @@ for path in sorted(files):
     source=(ROOT/path).read_text(encoding="utf8")
     if contains_private_term(path+"\n"+source, private_terms):
         issues.append("Private disclosure guard rejected repository content in "+path)
+        if path=="data/thesis-reports.json":
+            flat=source.casefold()
+            hit_positions=[]
+            for ix, term in enumerate(private_terms):
+                start=0
+                while True:
+                    at=flat.find(term,start)
+                    if at<0:break
+                    hit_positions.append([ix,at,len(term)])
+                    start=at+max(1,len(term))
+            print("REDACTION_OFFSETS_ONLY:", hit_positions[:120])
     if path in RELEASE or path == "README.md" or path.startswith("docs/"):
         if re.search(r"[\w.+-]+@[\w.-]+\.[A-Za-z]{2,}",source):
             issues.append("Email address found in public content")
