@@ -202,7 +202,7 @@ function theses(){
  '<div><span class="label">Modelos exploratorios</span><strong>'+screens+' modelos</strong><small>Escenarios independientes; no tesis aprobadas</small></div>'+
  '<div><span class="label">Corte documental</span><strong>'+esc(state.publicThesesMetadata?.published_as_of||"N/D")+'</strong><small>Los datos no se recalculan en tiempo real</small></div></div>'+
  '<p class="thesis-quotes-status" id="thesis-quotes-status" role="status">'+(state.closeFeedStatus==="verified"?
-   'Cierres públicos verificados: '+state.publicCloses.size+' empresas · fuente: '+esc(state.closeFeedSource?.name||"no indicada")+' · última ingestión '+esc(state.closeFeedUpdatedAt||"N/D")+'. Revisión de publicación cada 3 minutos.':
+   'Cierres públicos verificados: '+state.publicCloses.size+' empresas · fuente: '+esc(state.closeFeedSource?.name||"no indicada")+' · última ingestión '+esc(state.closeFeedUpdatedAt||"N/D")+'. Actualización del feed público cada 24 horas, si está habilitado.':
    'Cotizaciones mostradas por TradingView (según disponibilidad y retraso por mercado). Los cierres autorizados, cuando existan, prevalecen; los precios históricos de las tesis siguen separados.')+'</p>'+
  '<div class="table-scroll table-compact thesis-public-table"><table><thead><tr>'+headers+'</tr></thead><tbody id="issuer-rows">'+issuerTableRows()+'</tbody></table></div>'+
  '<p id="issuer-empty" class="table-note" '+(found?'hidden':'')+'>No hay empresas coincidentes.</p>';
@@ -1273,7 +1273,7 @@ async function loadPublicCloses(){
   if(element)element.scrollLeft=scroll;
  }
 }
-window.setInterval(()=>{if(state.view==="theses")void loadPublicCloses();},180000);
+window.setInterval(()=>{if(state.view==="theses")void loadPublicCloses();},86400000);
 window.addEventListener("focus",()=>{if(state.view==="theses")void loadPublicCloses();});
 document.addEventListener("visibilitychange",()=>{if(!document.hidden&&state.view==="theses")void loadPublicCloses();});
 
