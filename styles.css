@@ -802,3 +802,14 @@ p{line-height:1.6;text-align:justify;text-align-last:left;hyphens:auto}p.lead{co
  .competition-phase-count{min-width:22px;padding:2px 5px;font-size:.65rem}
  .competition-phase-notice{padding:12px;font-size:.73rem}
 }
+
+/* Explain the difference between the active cohort and today's due workflows. */
+.session-live-cohort{display:flex;align-items:center;flex-wrap:wrap;gap:6px 10px;
+  margin:0 0 10px;padding:9px 12px;border:1px solid #e0e9f0;border-radius:7px;
+  background:#f6f9fb;color:#415f79;font:650 .78rem/1.4 system-ui,sans-serif}
+.session-live-cohort strong{color:#173854;font-variant-numeric:tabular-nums;font-weight:850}
+.session-live-cohort-equals{color:#889bab;font-weight:650}
+.session-live-cohort-pending{color:#61778d;font:.76rem/1.5 system-ui,sans-serif;margin:0 0 8px}
+@media(max-width:600px){
+  .session-live-cohort{padding:9px;gap:5px 7px;font-size:.7rem}
+}
