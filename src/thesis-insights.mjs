@@ -253,7 +253,7 @@ export function renderCanonicalSource(source){
   let paragraph=t,lastLine=t;
   while(i+1<lines.length){
     const next=lines[i+1];
-    if(!next||decoration(next)||heading(next)||figure(next)||bullet(next)||startsScenario(lines,i+1)||next==="Parámetro")break;
+    if(!next||decoration(next)||heading(next)||figure(next)||bullet(next)||startsScenario(lines,i+1)||next==="Parámetro"||/^Hurdle anual\b|^Entrada USD\b/iu.test(next))break;
     // Merge hard-wrapped PDF lines to the next sentence boundary, not an
     // arbitrary number of characters; leave pre-formatted long lines alone.
     if(lastLine.length>150||/[.!?:;”"]$/u.test(lastLine))break;
