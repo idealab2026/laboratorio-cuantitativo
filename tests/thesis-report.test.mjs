@@ -114,3 +114,52 @@ test("Explainers use only dated thesis data and clearly label interpolation, not
  const lacking=renderExplanatoryCharts({ticker:"TEST",referencePrice:null,bearTarget:null,baseTarget:null,bullTarget:null});
  assert.match(lacking,/No hay escenarios fechados/);
 });
+
+
+test("Executive investment snapshots promote documented scenarios, hurdle prices and risk lists to tables",async()=>{
+ const {renderCanonicalSource,renderFocusList}=await import("../src/thesis-insights.mjs");
+ const research=new Map(published.reports.map(r=>[r.ticker,r.source_text]));
+ const msft=renderCanonicalSource(research.get("MSFT"));
+ assert.match(msft,/Escenarios FY2031 · datos del informe canónico/);
+ assert.match(msft,/<th scope="col">EV\/FCF IDC implícito<\/th>/);
+ assert.match(msft,/<td>11,98×<\/td>/);
+ assert.match(msft,/<td>106,20 USD<\/td>/);
+ assert.match(msft,/Precios de entrada por retorno exigido/);
+ assert.match(msft,/<td>132,63 USD<\/td>/);
+ assert.match(msft,/<td>568,50 USD<\/td>/);
+ assert.match(msft,/<div class="thesis-source-fact-grid">/);
+ assert.match(msft,/Motivos para el seguimiento/);
+ assert.match(msft,/Riesgos prioritarios/);
+ assert.match(msft,/Indicadores a vigilar/);
+ assert.match(msft,/paid Copilot seats y RPO excluyendo OpenAI/);
+ const adbe=renderCanonicalSource(research.get("ADBE"));
+ assert.match(adbe,/Escenarios canónicos FY2031/);
+ assert.match(adbe,/386,86 USD/);
+ assert.match(adbe,/17,87880995×/);
+ assert.match(adbe,/Umbrales de entrada a cinco años/);
+ assert.match(adbe,/<td>331,80 USD<\/td>/);
+ assert.match(adbe,/Catalizadores/);
+ assert.match(adbe,/<ul><li>workflows Creative\/Acrobat\/PDF/);
+ const pltr=renderCanonicalSource(research.get("PLTR"));
+ assert.match(pltr,/Valoración canónica de Palantir/);
+ assert.match(pltr,/Sensibilidad de valoración/);
+ assert.match(pltr,/Precios máximos de entrada/);
+ assert.match(pltr,/107,59 USD/);
+ const cat=renderCanonicalSource(research.get("CAT"));
+ assert.match(cat,/Escenarios industriales FY2031/);
+ assert.match(cat,/Entrada condicionada al caso Base/);
+ assert.match(cat,/Riesgos decisivos/);
+ const meta=renderCanonicalSource(research.get("META"));
+ assert.match(meta,/Ficha de parámetros del informe original/);
+ for(const issuer of theses.records){
+  const html=renderThesisReport(issuer,full.get(issuer.ticker)||null);
+  assert.match(html,/Hipótesis y catalizadores/);
+  assert.match(html,/Riesgos e invalidación/);
+  if(issuer.drivers?.includes(";")) assert.match(html,/class="thesis-source-fact"/);
+ }
+ const list=renderFocusList("Azure; Copilot; GitHub","Catalizadores");
+ assert.match(list,/<li>Azure<\/li><li>Copilot<\/li><li>GitHub<\/li>/);
+ const ambiguous=renderCanonicalSource("Investment Committee Snapshot\nCAGR 5a: +4,00 % sin precio o escenario.\nPrecio ficticio: 100 USD");
+ assert.doesNotMatch(ambiguous,/thesis-source-recovered/);
+ assert.match(ambiguous,/Precio ficticio: 100 USD/);
+});

@@ -161,6 +161,99 @@ def entry_chart(record):
                       fontName=FONT,fontSize=7.8,fillColor=NAVY))
     return dr
 
+def editorial_items(text):
+    """Respect original semicolon separation, or explicit three-item comma lists."""
+    values=[x.strip() for x in text.strip().split(";") if x.strip()]
+    if len(values)>1:return values
+    commas=[x.strip() for x in text.strip().split(", ") if x.strip()]
+    if len(commas)>=3 and all(len(x)>=8 for x in commas):return commas
+    return [text.strip()]
+
+def snapshot_inline_tokens(line):
+    """Convert only unambiguous literal source matrices to printable tables."""
+    t=line.strip()
+    if re.match(r"^VALORACIÓN ECONÓMICA CANÓNICA FY2031\s*[—–-]",t,re.I):
+        cases=list(re.finditer(r"\b(Bear|Base|Bull)\s+([\d.,]+)\s+USD\s*\(([−\-+]?\d[\d.,]*)%\s*CAGR\)",t,re.I))
+        multiples=re.search(r"EV/FCF IDC implícito:\s*([\d.,]+)x\s*/\s*([\d.,]+)x\s*/\s*([\d.,]+)x",t,re.I)
+        p15=re.search(r"\bP15:\s*([\d.,]+)\s*/\s*([\d.,]+)\s*/\s*([\d.,]+)\s*USD",t,re.I)
+        if len(cases)==3 and multiples and p15:
+            rows=[["Escenario","Objetivo FY2031","CAGR 5 años","EV/FCF IDC implícito","Umbral P15"]]
+            for i,m in enumerate(cases):
+                rows.append([m.group(1),m.group(2)+" USD",m.group(3)+" %",
+                             multiples.group(i+1)+"×",p15.group(i+1)+" USD"])
+            return [("heading","Valoración económica · tabla canónica"),("table",rows)]
+    if t.startswith("Precios de entrada Bear/Base/Bull para retornos anuales"):
+        matches=list(re.finditer(r"(?:del|para)\s+(\d{1,2})\s*%:\s*([\d.,]+)\s*/\s*([\d.,]+)\s*/\s*([\d.,]+)\s*USD",t,re.I))
+        if len(matches)>=2:
+            rows=[["Retorno anual","Bear","Base","Bull"]]+[[m.group(1)+" %",
+                    m.group(2)+" USD",m.group(3)+" USD",m.group(4)+" USD"] for m in matches]
+            detail=t[matches[-1].end():].strip(" .;")
+            return [("heading","Precios de entrada · escenarios históricos"),("table",rows)]+([("paragraph",detail)] if detail else [])
+    if re.match(r"^Razones que sustentan el seguimiento:",t,re.I):
+        m=re.match(r"^Razones que sustentan el seguimiento:\s*(.*?)\.\s*Riesgos prioritarios:\s*(.+)$",t,re.I)
+        if m:
+            return [("heading","Motivos para el seguimiento"),("bullets",editorial_items(m.group(1))),
+                    ("heading","Riesgos prioritarios"),("bullets",editorial_items(m.group(2)))]
+    if re.match(r"^Próximo punto de control:",t,re.I):
+        m=re.match(r"^Próximo punto de control:\s*(.*?)\.\s*Deben vigilarse\s+(.+)$",t,re.I)
+        if m:
+            return [("heading","Próximo punto de control"),("paragraph",m.group(1)+"."),
+                    ("heading","Indicadores a vigilar"),("bullets",editorial_items(m.group(2)))]
+    if re.match(r"^Precios de entrada por rentabilidad a cinco años:",t,re.I):
+        matches=list(re.finditer(r"\b(Base|Bull|Bear)\s+P10\s+([\d.,]+)\s*\|\s*P12\s+([\d.,]+)\s*\|\s*P15\s+([\d.,]+)\s*\|\s*P20\s+([\d.,]+)\s*USD",t,re.I))
+        if matches:
+            rows=[["Escenario","P10","P12","P15","P20"]]
+            for m in matches:rows.append([m.group(1)]+[x+" USD" for x in m.groups()[1:]])
+            detail=t[matches[-1].end():].strip(" .;")
+            return [("heading","Precios de entrada · retornos a cinco años"),("table",rows)]+([("paragraph",detail)] if detail else [])
+    if re.match(r"^Métricas \(tesis canónica\)\s*[—–-]",t,re.I):
+        ref=re.search(r"\bReferencia\s+([\d.,]+)\s*USD",t,re.I)
+        cases=list(re.finditer(r"\b(Bear|Base underwriting|Bull)\s+([\d.,]+)\s*USD\s*/\s*([−\-+]?\d[\d.,]*)\s*%",t,re.I))
+        if ref and len(cases)==3:
+            return [("heading","Escenarios canónicos · precio histórico "+ref.group(1)+" USD"),
+                    ("table",[["Escenario","Objetivo 2031","CAGR cinco años"]]+[[m.group(1),m.group(2)+" USD",m.group(3)+" %"] for m in cases])]
+    if re.match(r"^Hurdles Base\s+[\d.,]+x\s*[—–-]",t,re.I):
+        entries=list(re.finditer(r"\bP(10|12|15|20)\s+([\d.,]+)",t,re.I))
+        if len(entries)>=3:
+            return [("heading","Umbrales de entrada Base"),("table",[["Retorno anual","Precio de entrada"]]+[[m.group(1)+" %",m.group(2)+" USD"] for m in entries])]
+    if re.match(r"^Sensibilidad de calidad\s*\(WACC",t,re.I):
+        w=re.search(r"\bWACC\s+([\d.,]+)\s*%",t,re.I)
+        cases=list(re.finditer(r"\bg\s+([\d.,]+)\s*%\s*→\s*([\d.,]+)x\s*/\s*([\d.,]+)\s*USD",t,re.I))
+        if w and len(cases)>=2:
+            rows=[["WACC","g terminal","Múltiplo","Precio"]]+[[w.group(1)+" %",
+                     m.group(1)+" %",m.group(2)+"×",m.group(3)+" USD"] for m in cases]
+            detail=t[cases[-1].end():].strip(" .;")
+            return [("heading","Sensibilidad de valoración"),("table",rows)]+([("paragraph",detail)] if detail else [])
+    label=re.match(r"^(Fortalezas|Riesgos(?: prioritarios| decisivos)?|Catalizadores|Invalidación|Razones para seguirla):\s*(.+)$",t,re.I)
+    if label:
+        parts=editorial_items(label.group(2))
+        return [("heading",label.group(1)),("bullets",parts)] if len(parts)>1 else [("heading",label.group(1)),("paragraph",label.group(2))]
+    return None
+
+def snapshot_run_tokens(lines,i):
+    adobe=re.compile(r"^(Bear|Base|Bull)\s+FY2031\b[^:]*:\s*[\d.,]+\s*USD\s*\|",re.I)
+    if i+2<len(lines) and all(adobe.match(x) for x in lines[i:i+3]):
+        pattern=re.compile(r"^(Bear|Base|Bull)\s+FY2031[^:]*:\s*([\d.,]+)\s*USD\s*\|\s*([−\-+]?\d[\d.,]*)%\s*CAGR\s*\|\s*([\d.,]+)×\s*(.*)$",re.I)
+        matches=[pattern.match(x) for x in lines[i:i+3]]
+        if all(matches):
+            matrix=[["Escenario","Objetivo","CAGR","EV/FCF","Reservas"]]
+            matrix.extend([[m.group(1),m.group(2)+" USD",m.group(3)+" %",m.group(4)+"×",m.group(5)] for m in matches])
+            return i+3,[("heading","Escenarios FY2031 · hipótesis con reservas"),("table",matrix)]
+    if i+3<len(lines) and re.fullmatch(r"Escenario\s+Objetivo 2031 USD\s+CAGR precio\s+Múltiplo IDC",lines[i],re.I):
+        pattern=re.compile(r"^(Bear|Base|Bull)\s+([\d.,]+)\s+([−\-+]?\d[\d.,]*)\s*%\s+([\d.,]+)x$",re.I)
+        matches=[pattern.match(x) for x in lines[i+1:i+4]]
+        if all(matches):
+            matrix=[["Escenario","Objetivo 2031","CAGR precio","Múltiplo IDC"]]
+            matrix.extend([[m.group(1),m.group(2)+" USD",m.group(3)+" %",m.group(4)+"×"] for m in matches])
+            return i+4,[("heading","Escenarios Caterpillar · FY2031"),("table",matrix)]
+    if i+1<len(lines) and re.fullmatch(r"Hurdle anual\s+10\s*%\s+12\s*%\s+15\s*%\s+20\s*%",lines[i],re.I) and re.match(r"^Entrada USD",lines[i+1],re.I):
+        vals=re.findall(r"[\d.,]+",lines[i+1])
+        if len(vals)==4:
+            rows=[["Hurdle anual","Entrada histórica"]]
+            rows.extend([[str(rate)+" %",vals[j]+" USD"] for j,rate in enumerate([10,12,15,20])])
+            return i+2,[("heading","Precios de entrada Caterpillar"),("table",rows)]
+    return None
+
 def canonical_source_blocks(text):
     """Preserve source order and meaning while repairing flattened text layout."""
     lines=[x.strip().replace("\t"," ") for x in text.replace("\r","").split("\n")]
@@ -177,6 +270,11 @@ def canonical_source_blocks(text):
         line=lines[i]
         if not line or separator.fullmatch(line):i+=1;continue
         if cat_front and i<5:tokens.append(("frontmatter",line));i+=1;continue
+        structured=snapshot_run_tokens(lines,i)
+        if structured:
+            i,blocks=structured
+            tokens.extend(blocks)
+            continue
         if (scenario_header.fullmatch(line) and i+3<len(lines) and re.search("Bear|Bajista",lines[i+1],re.I)
             and re.search("Base|Central",lines[i+2],re.I) and re.search("Bull|Alcista",lines[i+3],re.I)):
             data=[["Indicador"]+lines[i+1:i+4]];j=i+4
@@ -204,11 +302,15 @@ def canonical_source_blocks(text):
         while i+1<len(lines):
             next_line=lines[i+1]
             if (not next_line or is_heading(next_line) or separator.fullmatch(next_line) or is_figure.match(next_line)
-                or bullet.match(next_line) or scenario_header.fullmatch(next_line) or next_line=="Parámetro"):break
+                or bullet.match(next_line) or scenario_header.fullmatch(next_line) or next_line=="Parámetro"
+                or re.match(r"^(?:Hurdle anual|Entrada USD)\b",next_line,re.I)):break
             if len(last_line)>150 or last_line.endswith((".","!","?",":",";","”",'"')):break
             paragraph+=" "+next_line
             last_line=next_line;i+=1
-        tokens.append(("paragraph",paragraph));i+=1
+        blocks=snapshot_inline_tokens(paragraph)
+        if blocks:tokens.extend(blocks)
+        else:tokens.append(("paragraph",paragraph))
+        i+=1
     return tokens
 
 def styles():
@@ -273,7 +375,8 @@ def report_pdf(record, extra, target):
     heading("2. Negocio y ventajas competitivas")
     para((extra or {}).get("business") or record.get("summary") or "No documentado")
     heading("3. Hipótesis y catalizadores")
-    para((extra or {}).get("drivers") or record.get("drivers") or "No documentado")
+    for item in editorial_items((extra or {}).get("drivers") or record.get("drivers") or "No documentado"):
+        para("• "+item)
     heading("4. Valoración y escenarios")
     drawing=chart(record)
     if drawing:story.append(drawing)
@@ -300,7 +403,8 @@ def report_pdf(record, extra, target):
         v=record["priceFor15"] if own else (record.get("baseTarget")/((1+rate)**5) if numeric(record.get("baseTarget")) else None)
         para(str(int(rate*100))+" % anual: "+amount(v,cc)+(" · Expediente original" if own else " · Cálculo indicativo"),"small")
     heading("5. Riesgos e invalidación")
-    para((extra or {}).get("risks") or record.get("risks") or "No documentado")
+    for item in editorial_items((extra or {}).get("risks") or record.get("risks") or "No documentado"):
+        para("• "+item)
     heading("6. Resultados y seguimiento")
     para(record.get("earningsRecord") or "Sin fechas documentales verificadas")
     heading("7. Investigación íntegra" if extra else "7. Estado documental")
