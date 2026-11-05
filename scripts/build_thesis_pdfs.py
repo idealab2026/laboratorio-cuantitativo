@@ -301,7 +301,8 @@ def canonical_source_blocks(text):
         while i+1<len(lines):
             next_line=lines[i+1]
             if (not next_line or is_heading(next_line) or separator.fullmatch(next_line) or is_figure.match(next_line)
-                or bullet.match(next_line) or scenario_header.fullmatch(next_line) or next_line=="Parámetro"):break
+                or bullet.match(next_line) or scenario_header.fullmatch(next_line) or next_line=="Parámetro"
+                or re.match(r"^(?:Hurdle anual|Entrada USD)\b",next_line,re.I)):break
             if len(last_line)>150 or last_line.endswith((".","!","?",":",";","”",'"')):break
             paragraph+=" "+next_line
             last_line=next_line;i+=1
