@@ -105,3 +105,45 @@ body.midas-thesis-mode #app{margin-top:26px}
 
 .thesis-report .thesis-source-body .thesis-source-frontmatter{font:650 12px/1.6 system-ui,-apple-system,sans-serif;color:#69819a;text-transform:none;letter-spacing:.03em;margin:3px 0;white-space:normal}
 .thesis-report .thesis-source-body .thesis-source-frontmatter.thesis-source-cover-title{font:800 19px/1.5 Georgia,"Times New Roman",serif;color:#16385c;margin:7px 0 5px}
+
+
+/* Structured editorial facts: scenario matrices, investment merits, risks and
+   catalysts extracted only from explicitly labelled source paragraphs. */
+.thesis-source-fact-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;margin:21px 0 28px}
+.thesis-source-fact,.thesis-source-monitor,.thesis-source-callout{
+ border:1px solid #d8e3ed;border-left:4px solid #2c608c;border-radius:8px;
+ background:#f7f9fc;padding:16px 19px;margin:19px 0;
+}
+.thesis-source-fact-grid .thesis-source-fact{margin:0;min-width:0}
+.thesis-source-fact-grid .thesis-source-fact:nth-child(2){border-left-color:#ac6073;background:#fcf8f9}
+.thesis-source-monitor{border-left-color:#b18e44;background:#fdfbf5}
+.thesis-source-callout{border-left-color:#688ca6}
+.thesis-source-fact h4,.thesis-source-monitor h4{margin:0 0 12px;font:800 14px/1.5 system-ui,-apple-system,sans-serif;color:#1b3c63}
+.thesis-source-callout strong{display:block;color:#244663;font:800 13px/1.5 system-ui,sans-serif;letter-spacing:.02em;margin-bottom:8px}
+.thesis-report .thesis-source-fact p,.thesis-report .thesis-source-monitor p,.thesis-report .thesis-source-callout p{
+ font-size:14px;line-height:1.7;margin:0 0 8px;overflow-wrap:break-word
+}
+.thesis-source-fact ul{margin:0;padding-left:20px;display:grid;gap:9px;list-style:disc}
+.thesis-source-fact li{font:500 14px/1.65 system-ui,-apple-system,sans-serif;color:#294764;padding-left:2px}
+.thesis-source-monitor .thesis-source-fact{margin:12px 0 0;background:#fff}
+.thesis-source-recovered{margin-top:19px;margin-bottom:24px;max-width:100%}
+.thesis-source-recovered .thesis-source-table{table-layout:auto;width:100%;min-width:640px}
+.thesis-source-recovered .thesis-source-table th,.thesis-source-recovered .thesis-source-table td{
+ white-space:normal;overflow-wrap:break-word;vertical-align:top
+}
+.thesis-source-recovered .thesis-source-table tbody tr:hover{background:#edf4fa}
+.thesis-source-recovered .thesis-source-table-note{
+ margin:0;padding:10px 16px 13px;background:#f7f9fc;border-top:1px solid #e3ebf1;
+ color:#59718b;font:500 12px/1.7 system-ui,-apple-system,sans-serif
+}
+.thesis-report-section> .thesis-source-fact{margin:10px 0 19px}
+@media(max-width:760px){
+ .thesis-source-fact-grid{grid-template-columns:1fr;gap:10px}
+ .thesis-source-recovered .thesis-source-table{min-width:560px}
+ .thesis-source-fact,.thesis-source-monitor,.thesis-source-callout{padding:13px 15px}
+ .thesis-source-fact li{font-size:13.5px}
+}
+@media print{
+ .thesis-source-fact,.thesis-source-fact-grid,.thesis-source-monitor,.thesis-source-callout{break-inside:avoid}
+ .thesis-source-recovered .thesis-source-table{min-width:0}
+}
