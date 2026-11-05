@@ -8,13 +8,13 @@ import {signalResearchSummary,methodCatalog} from "./paper-methods.mjs";
 import {parseLocalCagr2031} from "./private-theses.mjs";
 import {verifyPublicTheses,publicResearchRows,orderedThesisRows,publicThesisTableRows,publicThesisDetail,publicThesisCsv} from "./public-theses.mjs?v=24b9692353a2";
 import {artificialCampaignComparison} from "./paper-ledger.mjs";
-import {verifyFullRoster,filterRoster,technicalStage,technicalCoverage,verifyStrategyCandidates,filterStrategyCandidates,FULL_SORT_KEYS,sortFullCompetitionRows} from "./competition-roster.mjs";
+import {verifyFullRoster,filterRoster,technicalStage,technicalCoverage,verifyStrategyCandidates,filterStrategyCandidates,FULL_SORT_KEYS,sortFullCompetitionRows,COMPETITION_PHASES,strategyCompetitionPhase,partitionCompetitionRows} from "./competition-roster.mjs";
 import {verifyPaperFeed} from "./paper-feed.mjs";
 import {verify,simulate,rank,valuation,thesisRank,formatPct,money,finite,verifyIssuerCatalog,filterIssuers,syntheticBarsFromDemo,nextOpenPaper,evaluateIssuerScreen,competitionReadModel,publicIssuerReadModel,verifyOfficialFx,summarizeFxForecastLedger,verifySecFilings,verifyOfficialYield} from "./metrics.mjs";
 const $=id=>document.getElementById(id);
 const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 const fmt=n=>finite(n)?new Intl.NumberFormat("es-ES",{maximumFractionDigits:2}).format(n):"N/D";
-const state={data:null,universe:null,fx:null,fxCheck:null,fxStatus:"pending",forecastLedger:null,forecastSummary:null,forecastStatus:"pending",secStatus:"pending",secRead:null,secCatalog:null,yieldDoc:null,yieldCheck:null,yieldStatus:"pending",view:"competition",strategy:"P-01",group:"",sort:"returnPct",asc:false,detailOpen:false,thesis:"T-01",query:"",thesisSort:"central",issuerMode:"catalog",issuerQuery:"",issuerSort:"base",issuerAsc:false,issuerTicker:"MSFT",paperDetail:"M-10",originalPaper:null,originalPaperStatus:"pending",historicalPaper:null,historicalCurves:null,historicalPaperStatus:"pending",fullRoster:null,fullRosterStatus:"pending",strategyCandidates:null,strategyCandidatesStatus:"pending",fullRosterGroup:"",fullRosterQuery:"",fullRosterSort:"return",fullRosterAsc:false,algorithmId:null,operationsAudit:null,operationsAuditStatus:"pending",auditTicker:null,auditTab:"sessions",auditSort:"recent",auditDesc:true,monitoringTab:"today",monitoringStrategy:"IL-039",monitoringSort:"recent",monitoringDesc:true,executionHistory:null,executionHistoryStatus:"pending",institutionalFeedStatus:"pending",paperFeed:null,paperFeedRead:null,localCagr:new Map(),localCagrError:"",publicTheses:new Map(),publicThesesMetadata:null};
+const state={data:null,universe:null,fx:null,fxCheck:null,fxStatus:"pending",forecastLedger:null,forecastSummary:null,forecastStatus:"pending",secStatus:"pending",secRead:null,secCatalog:null,yieldDoc:null,yieldCheck:null,yieldStatus:"pending",view:"competition",strategy:"P-01",group:"",sort:"returnPct",asc:false,detailOpen:false,thesis:"T-01",query:"",thesisSort:"central",issuerMode:"catalog",issuerQuery:"",issuerSort:"base",issuerAsc:false,issuerTicker:"MSFT",paperDetail:"M-10",originalPaper:null,originalPaperStatus:"pending",historicalPaper:null,historicalCurves:null,historicalPaperStatus:"pending",fullRoster:null,fullRosterStatus:"pending",strategyCandidates:null,strategyCandidatesStatus:"pending",fullRosterGroup:"",fullRosterQuery:"",fullRosterSort:"return",fullRosterAsc:false,competitionPhase:"active",algorithmId:null,operationsAudit:null,operationsAuditStatus:"pending",auditTicker:null,auditTab:"sessions",auditSort:"recent",auditDesc:true,monitoringTab:"today",monitoringStrategy:"IL-039",monitoringSort:"recent",monitoringDesc:true,executionHistory:null,executionHistoryStatus:"pending",institutionalFeedStatus:"pending",paperFeed:null,paperFeedRead:null,localCagr:new Map(),localCagrError:"",publicTheses:new Map(),publicThesesMetadata:null};
 const viewNames=["competition","algorithm","algorithms","theses","monitoring","method","glossary","ported","full","synthetic"];
 const button=(label,action,value,cls="smallbtn")=>'<button type="button" class="'+cls+'" data-action="'+esc(action)+'" data-value="'+esc(value)+'">'+esc(label)+'</button>';
 const head=(label,title,body)=>'<div class="section-heading"><div><span class="kicker">'+esc(label)+'</span><h2>'+esc(title)+'</h2><p class="section-context">'+esc(body)+'</p></div></div>';
@@ -681,11 +681,13 @@ function compactCell(label,html,cls="",tooltip=""){
 function sortedFullRosterRows(){
  if(!state.fullRoster)return [];
  const q=state.fullRosterQuery.trim().toLocaleLowerCase("es");
+ const selected=COMPETITION_PHASES.includes(state.competitionPhase)?state.competitionPhase:"active";
  const existing=filterRoster(state.fullRoster,{group:state.fullRosterGroup}).filter(item=>
-  !q||[item.slot,item.group,item.name,originalStrategyName(item)].some(x=>x.toLocaleLowerCase("es").includes(q))
+  strategyCompetitionPhase(item.slot)===selected&&
+  (!q||[item.slot,item.group,item.name,originalStrategyName(item)].some(x=>x.toLocaleLowerCase("es").includes(q)))
  ).map(item=>({id:item.slot,name:originalStrategyName(item),group:item.group,
   item,record:economicPaperRecord(item.slot),candidate:null}));
- const proposals=state.strategyCandidates?
+ const proposals=selected==="development"&&state.strategyCandidates?
   filterStrategyCandidates(state.strategyCandidates,{group:state.fullRosterGroup,query:state.fullRosterQuery}).map(candidate=>({
    id:candidate.id,name:candidate.name,group:candidate.group,item:null,record:null,candidate
   })):[];
@@ -775,26 +777,54 @@ function full(){
  if(!d)return '<div class="competition-heading"><h2>Clasificación de algoritmos</h2></div>'+
   card('<p>Inventario institucional no verificable. No se muestran rentabilidades inventadas.</p>');
  const meta=verifyFullRoster(d);
- const candidate=state.strategyCandidates?.candidates?.[0]||null;
- const leader=paperLeaderboard(d.entries.map(item=>({
+ const phase=COMPETITION_PHASES.includes(state.competitionPhase)?state.competitionPhase:"active";
+ const phases=partitionCompetitionRows(d.entries);
+ const research=state.strategyCandidates?.candidates||[];
+ const counts={
+  active:phases.active.length,
+  obsolete:phases.obsolete.length,
+  development:phases.development.length+research.length
+ };
+ // Only source-admitted CURRENT paper slots may lead the active leaderboard.
+ // The historical campaigns are never ranked against active paper campaigns.
+ const leader=phase==="active"?paperLeaderboard(phases.active.map(item=>({
   id:item.slot,name:originalStrategyName(item),record:economicPaperRecord(item.slot)
- })));
- const winner=leader?'<div class="paper-leader" role="status" aria-label="Algoritmo líder por rentabilidad acumulada histórica">'+
+ }))):null;
+ const tabs='<div class="competition-lifecycle-tabs" role="tablist" aria-label="Fase de las estrategias">'+
+  [["active","Activos"],["obsolete","Obsoletos"],["development","En desarrollo"]].map(([key,label])=>
+   '<button type="button" role="tab" data-action="competition-phase" data-value="'+key+
+   '" aria-selected="'+(phase===key)+'" aria-controls="competition-lifecycle-panel">'+
+   esc(label)+' <span class="competition-phase-count">'+counts[key]+'</span></button>').join("")+
+  '</div>';
+ const leaderBlock=leader?'<div class="paper-leader" role="status" aria-label="Líder de la cohorte paper activa">'+
   '<div><span class="paper-leader-label">LÍDER PROVISIONAL · RENTABILIDAD ACUMULADA PAPER</span>'+
   '<strong>'+esc(leader.name)+'</strong>'+
   '<small>'+esc(leader.id)+' · inicio '+esc(shortPaperDate(leader.record.first_session))+
   ' · '+esc(leader.record.session_count)+' sesiones · último cierre '+esc(shortPaperDate(leader.record.last_session))+'</small></div>'+
   '<div class="paper-leader-return">'+pctText(leader.record.return_pct)+'</div>'+
   button("Ver ficha","full-detail",leader.id,"outline-btn")+'</div>':
-  '<div class="paper-leader"><strong>Sin líder verificable</strong><small>No hay diarios con retorno, inicio y sesiones contrastados.</small></div>';
+  '<div class="paper-leader"><strong>Sin líder verificable</strong><small>No hay resultados actuales con trazabilidad suficiente para una clasificación de rentabilidad.</small></div>';
+ const context=phase==="active"?
+   '<p class="competition-phase-context">Estrategias y referencias con seguimiento en la cohorte paper vigente. No implica que cada workflow se haya completado hoy. Rentabilidades entre grupos no necesariamente comparables.</p>':
+  phase==="obsolete"?
+   '<div class="competition-phase-notice"><strong>Campañas históricas retiradas</strong><span>Sus sesiones y resultados se conservan para consulta. No participan en la clasificación ni en el liderazgo de la competición vigente.</span></div>':
+   '<div class="competition-phase-notice"><strong>Investigación y desarrollo</strong><span>'+
+   phases.development.length+' estrategias sin operativa comparable acreditada'+
+   (state.strategyCandidates?'; '+research.length+' propuesta de investigación adicional.':'; las propuestas adicionales aún no se han podido verificar.')+
+   ' No se asigna rentabilidad ni líder a proyectos sin operaciones documentadas.</span></div>';
+ const summary=phase==="active"?counts.active+' estrategias con seguimiento vigente':
+  phase==="obsolete"?counts.obsolete+' campañas históricas retiradas':
+  phases.development.length+' estrategias en desarrollo'+(state.strategyCandidates?' · '+research.length+' propuesta adicional':" · propuestas sin verificar");
  return '<div class="competition-heading"><h2>Clasificación de algoritmos</h2>'+
-  '<span>'+meta.count+' estrategias · '+(candidate?"1 propuesta sin operativa · ":"")+
-  'archivo paper con precios de mercado</span></div>'+
-  winner+
+  '<span>'+esc(summary)+' · '+meta.count+' fichas catalogadas</span></div>'+
+  tabs+'<section id="competition-lifecycle-panel" role="tabpanel" aria-label="'+
+   esc(phase==="active"?"Activos":phase==="obsolete"?"Obsoletos":"En desarrollo")+'">'+
+  (phase==="active"?leaderBlock:context)+
+  (phase==="active"?context:"")+
   fullMobileSortControls()+
   '<div class="table-scroll table-compact full-competition-table"><table><thead><tr>'+
   fullRosterHeaders()+'</tr></thead><tbody id="full-rows">'+fullRosterRows()+
-  '</tbody></table></div>';
+  '</tbody></table></div></section>';
 }
 function fullHistoryChart(points){
  if(!Array.isArray(points)||points.length<2)return "";
@@ -1029,7 +1059,18 @@ $("app").addEventListener("click",e=>{
  else if(action==="paper-select"){state.paperDetail=value;render();}
  else if(action==="full-focus"){
   if(!["IL-038","IL-039"].includes(value))return;
-  state.fullRosterGroup="";state.fullRosterQuery=value;render();
+  state.competitionPhase="active";state.fullRosterGroup="";state.fullRosterQuery=value;render();
+ }
+ else if(action==="competition-phase"){
+  if(!COMPETITION_PHASES.includes(value))return;
+  const previous=document.querySelector(".competition-lifecycle-tabs")?.getBoundingClientRect().top;
+  state.competitionPhase=value;
+  state.fullRosterGroup="";state.fullRosterQuery="";
+  render();
+  if(Number.isFinite(previous)){
+   const after=document.querySelector(".competition-lifecycle-tabs")?.getBoundingClientRect().top;
+   if(Number.isFinite(after))window.scrollBy({top:after-previous,behavior:"auto"});
+  }
  }
  else if(action==="full-sort-direction"){state.fullRosterAsc=!state.fullRosterAsc;render();}
  else if(action==="full-column"){
