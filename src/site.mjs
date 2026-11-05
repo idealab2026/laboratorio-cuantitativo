@@ -303,7 +303,11 @@ let liveSessionData=null, liveSessionRequest=null, liveLastRequest=0;
 const liveSessionActive=()=>state.view==="monitoring"&&state.monitoringTab==="today";
 const currentSession=()=>sessionToday(state.executionHistory?.live_plan);
 function liveSessionHTML(){
- return renderLiveSession(currentSession(),liveSessionData,Date.now(),state.executionHistoryStatus==="pending");
+ // Verified public lifecycle roster, not the daily workflow denominator.
+ const competing=Array.isArray(state.fullRoster?.entries)?
+  state.fullRoster.entries.filter(entry=>strategyCompetitionPhase(entry.slot)==="active").length:null;
+ return renderLiveSession(currentSession(),liveSessionData,Date.now(),
+  state.executionHistoryStatus==="pending",competing);
 }
 function paintLiveSession(){
  const panel=$("monitoring-panel-today");
