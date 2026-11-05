@@ -8,8 +8,8 @@ const published=JSON.parse(readFileSync(new URL("../data/thesis-reports.json",im
 const allowed=new Set(theses.records.map(r=>r.ticker));
 const full=verifyFullReports(published,allowed);
 
-test("Canonical website has 25 same-layout thesis routes with exactly 5 full research documents",()=>{
- assert.equal(theses.records.length,25);
+test("Canonical website has 26 same-layout thesis routes with exactly 5 full research documents",()=>{
+ assert.equal(theses.records.length,26);
  assert.deepEqual([...full.keys()].sort(),["ADBE","CAT","META","MSFT","PLTR"]);
  const site=readFileSync(new URL("../src/site.mjs",import.meta.url),"utf8");
  assert.match(site,/renderThesisReport\(state\.publicTheses\.get\(ticker\),state\.fullReports\.get\(ticker\)\|\|null,state\.financialSankeys\.get\(ticker\)\|\|null/);
