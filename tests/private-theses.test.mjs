@@ -90,10 +90,10 @@ test("Import surface excludes external telemetry and uses an origin-constrained 
 test("Reviewed historical research is rendered without inventing absent values or accepting private links",async()=>{
  const {verifyPublicTheses,publicResearchRows,publicThesisCsv,publicThesisTableRows}=await import("../src/public-theses.mjs");
  const doc=JSON.parse(readFileSync(new URL("../data/public-theses.json",import.meta.url),"utf8"));
- assert.deepEqual(verifyPublicTheses(doc),{count:25,withCagr:9,withPrice:7});
+ assert.deepEqual(verifyPublicTheses(doc),{count:26,withCagr:9,withPrice:7});
  const records=new Map(doc.records.map(r=>[r.ticker,r])),rows=publicResearchRows([],records);
- assert.equal(rows.length,25);assert.equal(publicThesisCsv(rows,records,new Map()).length,26);
- assert.equal((publicThesisTableRows(rows,records,new Map(),"MSFT").match(/<tr /g)||[]).length,25);
+ assert.equal(rows.length,26);assert.equal(publicThesisCsv(rows,records,new Map()).length,27);
+ assert.equal((publicThesisTableRows(rows,records,new Map(),"MSFT").match(/<tr /g)||[]).length,26);
  assert.equal(publicResearchRows([],records,{query:"Caterpillar"})[0].issuer.ticker,"CAT");
  for(const edit of [r=>{r.summary="https://invalid.example"},r=>{r.account="secret"}]){const bad=structuredClone(doc);edit(bad.records[0]);assert.throws(()=>verifyPublicTheses(bad));}
  assert.throws(()=>verifyPublicTheses({...doc,records:[...doc.records,doc.records[0]]}));
