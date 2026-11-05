@@ -191,3 +191,113 @@ body.midas-thesis-mode #app{margin-top:26px}
  .thesis-restored-chart-box{overflow:visible}
  .thesis-restored-svg{min-width:0;max-width:100%}
 }
+
+
+/* MIDAS editorial audit 2026-11-06: full-depth hierarchy and source-native matrices */
+.thesis-report .thesis-source-subheading{
+ font:750 clamp(16px,1.3vw,19px)/1.4 system-ui,-apple-system,"Segoe UI",sans-serif;
+ color:#16395e;margin:28px 0 14px;padding:11px 15px;
+ background:linear-gradient(90deg,#eef4fa,rgba(238,244,250,0));
+ border-left:3px solid #6686a6;border-bottom:1px solid #e1eaf2;break-after:avoid
+}
+.thesis-report .thesis-source-heading{
+ margin-top:43px;padding:16px 16px 14px;border-left:4px solid #a78b50;
+ border-bottom:1px solid #ced9e5;background:#f6f8fb;
+ font-family:Georgia,"Times New Roman",serif;font-size:23px;line-height:1.35;
+ break-after:avoid;page-break-after:avoid
+}
+.thesis-report .thesis-source-paragraph{
+ line-height:1.78;color:#273e5b;max-width:92ch;
+ margin-bottom:17px;white-space:normal
+}
+.thesis-report .thesis-source-labelled{
+ padding:11px 15px;background:#f5f8fb;border-left:3px solid #5d7d9f;
+ border-radius:0 7px 7px 0;margin:16px 0 20px
+}
+.thesis-report .thesis-source-labelled strong{
+ display:inline;color:#173b61;font-weight:850
+}
+.thesis-report .thesis-source-reference{
+ font:500 12px/1.65 system-ui,-apple-system,"Segoe UI",sans-serif;
+ color:#536b83;background:#f7f9fb;padding:8px 13px;
+ border-bottom:1px solid #e5ecf3;overflow-wrap:anywhere;margin:0
+}
+.thesis-report .thesis-source-running-header{
+ text-transform:uppercase;letter-spacing:.035em;font-size:10px;line-height:1.5;
+ color:#74879b;background:#f6f8fb;border-top:1px solid #e2eaf3;
+ padding:8px 10px;margin:30px 0 15px
+}
+.thesis-report .thesis-source-semantic-table{
+ margin:18px 0 30px;border-color:#c9d8e6;box-shadow:0 2px 12px #153f6810
+}
+.thesis-report .thesis-source-semantic-table .thesis-source-table{
+ min-width:640px;font-size:13px;line-height:1.55
+}
+.thesis-report .thesis-source-semantic-table caption{
+ font-size:14px;background:#183b5e;color:#fff;padding:14px 17px;
+ font-weight:800
+}
+.thesis-report .thesis-source-semantic-table th[scope="col"]{
+ color:#214669;background:#e9f0f6
+}
+.thesis-report .thesis-source-semantic-table td:not(:last-child){
+ font-variant-numeric:tabular-nums
+}
+.thesis-report .thesis-source-semantic-table tbody th{
+ width:30%;font-weight:800
+}
+.thesis-report .thesis-source-verdict-grid{
+ display:grid;grid-template-columns:repeat(2,minmax(0,1fr));
+ gap:12px;margin:24px 0 32px
+}
+.thesis-report .thesis-source-verdict-grid>div{
+ background:#f5f8fb;border:1px solid #d8e3ed;border-radius:9px;
+ padding:15px 17px;min-width:0
+}
+.thesis-report .thesis-source-verdict-grid dt{
+ font:800 12px/1.55 system-ui,sans-serif;text-transform:uppercase;
+ letter-spacing:.04em;color:#516b84;margin-bottom:7px
+}
+.thesis-report .thesis-source-verdict-grid dd{
+ margin:0;color:#173956;font-size:14px;line-height:1.65
+}
+.thesis-report .thesis-source-risk-set{
+ margin:25px 0 31px;padding:17px 19px 23px;background:#f8fafc;
+ border:1px solid #d9e4ee;border-radius:11px
+}
+.thesis-report .thesis-source-risk-set h4{
+ font:800 18px/1.4 system-ui,sans-serif;color:#1a3d60;margin:0 0 17px
+}
+.thesis-report .thesis-source-risk-set ol{
+ display:grid;grid-template-columns:repeat(2,minmax(0,1fr));
+ gap:11px;list-style:decimal;margin:0;padding-left:25px
+}
+.thesis-report .thesis-source-risk-set li{
+ margin:0;padding:9px 13px;font-size:13px;line-height:1.65;
+ background:white;border:1px solid #e0e9f0;border-radius:7px
+}
+.thesis-report .thesis-source-risk-set li strong{display:block;color:#183d62;margin-bottom:4px}
+.thesis-report .thesis-source-risk-set li p{font-size:13px;margin:0}
+.thesis-report .thesis-source-risk-cards{
+ display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:11px
+}
+.thesis-report .thesis-source-risk-cards article{
+ background:#fff;border:1px solid #e0e9f0;padding:13px 15px;border-radius:7px
+}
+.thesis-report .thesis-source-risk-cards h5{
+ font:800 14px/1.4 system-ui,sans-serif;color:#153d63;margin:0 0 8px
+}
+.thesis-report .thesis-source-risk-cards p{font-size:13px;margin:0}
+@media(max-width:660px){
+ .thesis-report .thesis-source-heading{font-size:20px;margin-top:30px;padding:12px}
+ .thesis-report .thesis-source-subheading{font-size:16px;margin-top:22px}
+ .thesis-report .thesis-source-verdict-grid,
+ .thesis-report .thesis-source-risk-set ol,
+ .thesis-report .thesis-source-risk-cards{grid-template-columns:1fr}
+ .thesis-report .thesis-source-paragraph{max-width:100%}
+}
+@media print{
+ .thesis-report .thesis-source-heading,.thesis-report .thesis-source-subheading{break-after:avoid}
+ .thesis-source-semantic-table{break-inside:avoid}
+ .thesis-report .thesis-source-risk-set{break-inside:avoid}
+}
