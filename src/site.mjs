@@ -6,7 +6,7 @@ import {verifyOperationsAudit,renderOperationsAudit,renderTradeLotsTable,summari
 import {parseLocalPaperResults,parseLocalPaperCurves,summarizePrivatePaper} from "./private-paper.mjs?v=4baff08a2202";
 import {signalResearchSummary,methodCatalog} from "./paper-methods.mjs";
 import {parseLocalCagr2031} from "./private-theses.mjs";
-import {verifyPublicTheses,publicResearchRows,orderedThesisRows,publicThesisTableRows,publicThesisDetail,publicThesisCsv,verifyPublicCloseFeed} from "./public-theses.mjs?v=6a07e1e7658f";
+import {verifyPublicTheses,publicResearchRows,orderedThesisRows,publicThesisTableRows,publicThesisDetail,publicThesisCsv,verifyPublicCloseFeed} from "./public-theses.mjs?v=d2c0814b34b8";
 import {artificialCampaignComparison} from "./paper-ledger.mjs";
 import {verifyFullRoster,filterRoster,technicalStage,technicalCoverage,verifyStrategyCandidates,filterStrategyCandidates,FULL_SORT_KEYS,sortFullCompetitionRows,COMPETITION_PHASES,strategyCompetitionPhase,partitionCompetitionRows} from "./competition-roster.mjs?v=0e6d86112171";
 import {verifyPaperFeed} from "./paper-feed.mjs";
