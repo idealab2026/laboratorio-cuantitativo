@@ -12,7 +12,7 @@ test("Canonical website has 25 same-layout thesis routes with exactly 5 full res
  assert.equal(theses.records.length,25);
  assert.deepEqual([...full.keys()].sort(),["ADBE","CAT","META","MSFT","PLTR"]);
  const site=readFileSync(new URL("../src/site.mjs",import.meta.url),"utf8");
- assert.match(site,/renderThesisReport\(state\.publicTheses\.get\(ticker\),state\.fullReports\.get\(ticker\)\|\|null\)/);
+ assert.match(site,/renderThesisReport\(state\.publicTheses\.get\(ticker\),state\.fullReports\.get\(ticker\)\|\|null,state\.financialSankeys\.get\(ticker\)\|\|null/);
  assert.match(site,/midas-thesis-mode/);
  assert.match(site,/verifyFullReports\(await full\.json\(\)/);
  for(const row of theses.records){
