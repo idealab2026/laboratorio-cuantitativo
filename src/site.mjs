@@ -191,7 +191,7 @@ function issuerDetail(ticker){
 
 function theses(){
  if(state.issuerMode==="demo")return syntheticTheses();
- const columns=[["ticker","Ticker"],["company","Nombre empresa"],["market","Mercado"],["price","Último cierre / sesión"],
+ const columns=[["ticker","Ticker"],["company","Nombre empresa"],["market","Mercado"],["price","Cotización"],
  ["bull","Bull 5a"],["bear","Bear 5a"],["base","Central 5a"],["entry","Precio 15 %"],
  ["target","Objetivo 5a"],["earnings","Resultados (registro)"],["report","Ficha pública"]];
  const headers=columns.map(([key,label])=>'<th scope="col" aria-sort="'+(state.issuerSort===key?(state.issuerAsc?"ascending":"descending"):"none")+'"><button class="table-sort" type="button" data-action="issuer-column" data-value="'+key+'" aria-label="Ordenar por '+esc(label)+'">'+esc(label)+' <span aria-hidden="true">'+(state.issuerSort===key?(state.issuerAsc?"↑":"↓"):"↕")+'</span></button></th>').join("");
@@ -202,8 +202,8 @@ function theses(){
  '<div><span class="label">Modelos exploratorios</span><strong>'+screens+' modelos</strong><small>Escenarios independientes; no tesis aprobadas</small></div>'+
  '<div><span class="label">Corte documental</span><strong>'+esc(state.publicThesesMetadata?.published_as_of||"N/D")+'</strong><small>Los datos no se recalculan en tiempo real</small></div></div>'+
  '<p class="thesis-quotes-status" id="thesis-quotes-status" role="status">'+(state.closeFeedStatus==="verified"?
-   'Cierres verificados: '+state.publicCloses.size+' empresas · fuente: '+esc(state.closeFeedSource?.name||"no indicada")+' · última ingestión '+esc(state.closeFeedUpdatedAt||"N/D")+'. Revisión de publicación cada 3 minutos.':
-   'Último cierre: N/D hasta disponer de una fuente con permiso de exhibición pública. Se verifica el feed cada 3 minutos; los precios históricos de las tesis no se presentan como cierres actuales.')+'</p>'+
+   'Cierres públicos verificados: '+state.publicCloses.size+' empresas · fuente: '+esc(state.closeFeedSource?.name||"no indicada")+' · última ingestión '+esc(state.closeFeedUpdatedAt||"N/D")+'. Revisión de publicación cada 3 minutos.':
+   'Cotizaciones mostradas por TradingView (según disponibilidad y retraso por mercado). Los cierres autorizados, cuando existan, prevalecen; los precios históricos de las tesis siguen separados.')+'</p>'+
  '<div class="table-scroll table-compact thesis-public-table"><table><thead><tr>'+headers+'</tr></thead><tbody id="issuer-rows">'+issuerTableRows()+'</tbody></table></div>'+
  '<p id="issuer-empty" class="table-note" '+(found?'hidden':'')+'>No hay empresas coincidentes.</p>';
 }
