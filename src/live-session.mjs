@@ -206,8 +206,8 @@ export function renderLiveSession(session, live, now = Date.now(), loadingPlan =
       statuses[row.status] + '<small>' + clock(row.observed.at(-1)?.time ?? row.due[0], session) + '</small></span></div>';
   }).join("");
   const counts = latest?.checked ? '<strong>' + done + ' / ' + slots.size +
-    '</strong><span>estrategias con sus flujos completados hoy</span><span>' + running + ' en cola o en curso</span>' :
-    '<strong>' + slots.size + '</strong><span>estrategias previstas hoy</span>';
+    '</strong><span>algoritmos con sus flujos completados</span><span>' + running + ' en cola o en curso</span>' :
+    '<strong>' + slots.size + '</strong><span>algoritmos previstos</span>';
   // The comparison cohort is defined by the verified roster. The plan alone
   // cannot prove how many strategies are active but not scheduled today.
   const hasCohort = Number.isInteger(competingStrategies) && competingStrategies >= slots.size;
