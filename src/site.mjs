@@ -1,4 +1,4 @@
-import {LIVE_REFRESH_MS, readLiveAttempts, renderLiveSession, sessionToday} from "./live-session.mjs?v=df279496ea93";
+import {LIVE_REFRESH_MS, readLiveAttempts, renderLiveSession, sessionToday} from "./live-session.mjs?v=0322eeee3197";
 import {verifyOriginalPaper} from "./original-paper.mjs?v=b4ab52ea9863";
 import {algorithmTheory,paperLeaderboard} from "./algorithm-detail.mjs";
 import {glossaryGroups,searchGlossary,verifyGlossary} from "./glossary.mjs";
