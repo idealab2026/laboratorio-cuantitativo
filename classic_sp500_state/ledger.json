@@ -645,6 +645,25 @@
             "KVUE_KMB_2026-11-02"
           ],
           "valuation_reference_url": "https://infomemo.theocc.com/infomemos?number=60113"
+        },
+        {
+          "date": "2026-11-04",
+          "late_mark_only": true,
+          "nav": 104930.22395960381,
+          "provisional_corporate_valuation": true,
+          "quote_identity": {
+            "closing_mark_hashes": [
+              "b40ef3b981b68b195db52759b0a2567700e1690a532e66e35fa9305aaa201114"
+            ],
+            "closing_mark_scope": "passive_nav_only",
+            "effective_sha256": "d8bb48d517a4e7557c3634c2f072518b48ccc34b307d1669812143cad1b2f7bd",
+            "snapshot_sha256": "7a4eabfe31d00d5e07981eb35f7f43228eaeaeab538dc1641e11d305996ca702"
+          },
+          "recorded_at_utc": "2026-11-05T00:25:14+00:00",
+          "unsettled_receivables": [
+            "KVUE_KMB_2026-11-02"
+          ],
+          "valuation_reference_url": "https://infomemo.theocc.com/infomemos?number=60113"
         }
       ],
       "events": [
@@ -4557,46 +4576,21 @@
             "VTRS"
           ],
           "type": "book_quarantined_missing_held_bar"
+        },
+        {
+          "date": "2026-11-04",
+          "expired_unfilled_buys": [],
+          "recorded_at_utc": "2026-11-05T00:25:14+00:00",
+          "sessions": [
+            "2026-11-04"
+          ],
+          "type": "passive_marks_recovered_no_fills"
         }
       ],
-      "nav": 102893.04840944425,
+      "nav": 104930.22395960381,
       "outage_control": {
         "first_trading_session": "2026-11-05",
         "registered_at_utc": "2026-11-04T18:03:08+00:00"
-      },
-      "paused_missing_quotes": {
-        "last_valued_session": "2026-11-03",
-        "missing_tickers": [
-          "APH",
-          "AZO",
-          "BALL",
-          "BF-B",
-          "CMI",
-          "COP",
-          "CVS",
-          "DECK",
-          "DVA",
-          "GNRC",
-          "GRMN",
-          "IEX",
-          "J",
-          "KMX",
-          "L",
-          "MTCH",
-          "NVR",
-          "OKE",
-          "ORCL",
-          "OXY",
-          "PG",
-          "PPG",
-          "PWR",
-          "RVTY",
-          "SOLV",
-          "TDY",
-          "VTRS"
-        ],
-        "reason": "required same-session bar unavailable",
-        "since": "2026-11-04"
       },
       "pending": {},
       "positions": {
@@ -9135,6 +9129,22 @@
             "snapshot_sha256": "050cbb868646b3035dfe9b37c23da92b3c75ebba2ff2972ef5ffdcce671aa4ae"
           },
           "recorded_at_utc": "2026-11-04T18:03:08+00:00"
+        },
+        {
+          "date": "2026-11-04",
+          "inactive_no_fills": true,
+          "late_recorded_verified_date": true,
+          "nav": 106481.82052334736,
+          "quote_identity": {
+            "closing_mark_hashes": [
+              "b40ef3b981b68b195db52759b0a2567700e1690a532e66e35fa9305aaa201114"
+            ],
+            "closing_mark_scope": "passive_nav_only",
+            "effective_sha256": "d8bb48d517a4e7557c3634c2f072518b48ccc34b307d1669812143cad1b2f7bd",
+            "snapshot_sha256": "7a4eabfe31d00d5e07981eb35f7f43228eaeaeab538dc1641e11d305996ca702"
+          },
+          "reconciliation_kind": "previously_frozen_order_exact_bar_replay",
+          "recorded_at_utc": "2026-11-05T00:26:45+00:00"
         }
       ],
       "events": [
@@ -9226,20 +9236,100 @@
             "BF-B"
           ],
           "type": "book_quarantined_missing_held_bar"
+        },
+        {
+          "date": "2026-11-04",
+          "late_recorded_verified_date": true,
+          "quote_identity": {
+            "closing_mark_hashes": [
+              "b40ef3b981b68b195db52759b0a2567700e1690a532e66e35fa9305aaa201114"
+            ],
+            "closing_mark_scope": "passive_nav_only",
+            "effective_sha256": "d8bb48d517a4e7557c3634c2f072518b48ccc34b307d1669812143cad1b2f7bd",
+            "snapshot_sha256": "7a4eabfe31d00d5e07981eb35f7f43228eaeaeab538dc1641e11d305996ca702"
+          },
+          "reconciliation_kind": "previously_frozen_order_exact_bar_replay",
+          "recorded_at_utc": "2026-11-05T00:26:45+00:00",
+          "ticker": "STZ",
+          "trigger": "target",
+          "type": "unexecuted_during_outage"
+        },
+        {
+          "date": "2026-11-04",
+          "late_recorded_verified_date": true,
+          "quote_identity": {
+            "closing_mark_hashes": [
+              "b40ef3b981b68b195db52759b0a2567700e1690a532e66e35fa9305aaa201114"
+            ],
+            "closing_mark_scope": "passive_nav_only",
+            "effective_sha256": "d8bb48d517a4e7557c3634c2f072518b48ccc34b307d1669812143cad1b2f7bd",
+            "snapshot_sha256": "7a4eabfe31d00d5e07981eb35f7f43228eaeaeab538dc1641e11d305996ca702"
+          },
+          "reconciliation_kind": "previously_frozen_order_exact_bar_replay",
+          "recorded_at_utc": "2026-11-05T00:26:45+00:00",
+          "ticker": "ZTS",
+          "trigger": "target",
+          "type": "unexecuted_during_outage"
+        },
+        {
+          "date": "2026-11-04",
+          "expired_unfilled_orders": {},
+          "late_recorded_verified_date": true,
+          "quote_identity": {
+            "closing_mark_hashes": [
+              "b40ef3b981b68b195db52759b0a2567700e1690a532e66e35fa9305aaa201114"
+            ],
+            "closing_mark_scope": "passive_nav_only",
+            "effective_sha256": "d8bb48d517a4e7557c3634c2f072518b48ccc34b307d1669812143cad1b2f7bd",
+            "snapshot_sha256": "7a4eabfe31d00d5e07981eb35f7f43228eaeaeab538dc1641e11d305996ca702"
+          },
+          "reconciliation_kind": "previously_frozen_order_exact_bar_replay",
+          "recorded_at_utc": "2026-11-05T00:26:45+00:00",
+          "type": "inactive_mark_no_trades"
+        },
+        {
+          "date": "2026-11-04",
+          "frozen_signal_session": "2026-11-03",
+          "late_recorded_verified_date": true,
+          "quote_identity": {
+            "closing_mark_hashes": [
+              "b40ef3b981b68b195db52759b0a2567700e1690a532e66e35fa9305aaa201114"
+            ],
+            "closing_mark_scope": "passive_nav_only",
+            "effective_sha256": "d8bb48d517a4e7557c3634c2f072518b48ccc34b307d1669812143cad1b2f7bd",
+            "snapshot_sha256": "7a4eabfe31d00d5e07981eb35f7f43228eaeaeab538dc1641e11d305996ca702"
+          },
+          "reconciliation_kind": "previously_frozen_order_exact_bar_replay",
+          "recorded_at_utc": "2026-11-05T00:26:45+00:00",
+          "signal_coverage": {
+            "eligible": 488,
+            "missing": {
+              "AVB": "invalid_current_ohlc",
+              "BK": "invalid_current_ohlc",
+              "CTRA": "invalid_current_ohlc",
+              "DAY": "invalid_current_ohlc",
+              "EA": "invalid_current_ohlc",
+              "EQR": "invalid_current_ohlc",
+              "FI": "invalid_current_ohlc",
+              "HOLX": "invalid_current_ohlc",
+              "IPG": "invalid_current_ohlc",
+              "K": "invalid_current_ohlc",
+              "KVUE": "invalid_current_ohlc",
+              "MMC": "invalid_current_ohlc",
+              "PSKY": "invalid_current_ohlc",
+              "WBA": "invalid_current_ohlc",
+              "WBD": "invalid_current_ohlc"
+            },
+            "ticker_coverage_pct": 97.018,
+            "total": 503
+          },
+          "type": "single_session_quarantine_reconciled"
         }
       ],
-      "nav": 102678.70868641301,
+      "nav": 106481.82052334736,
       "outage_control": {
         "first_trading_session": "2026-11-05",
         "registered_at_utc": "2026-11-04T18:03:08+00:00"
-      },
-      "paused_missing_quotes": {
-        "last_valued_session": "2026-11-03",
-        "missing_tickers": [
-          "BF-B"
-        ],
-        "reason": "required same-session bar unavailable",
-        "since": "2026-11-04"
       },
       "pending": {},
       "positions": {
@@ -9376,6 +9466,11 @@
         {
           "buys": 0,
           "date": "2026-11-02"
+        },
+        {
+          "buys": 0,
+          "date": "2026-11-04",
+          "recorded_at_utc": "2026-11-05T00:26:45+00:00"
         }
       ],
       "trades": [
@@ -9791,7 +9886,7 @@
       "trades": []
     },
     "macd_12_26_9": {
-      "cash": 7983.426803572345,
+      "cash": 35353.91190974792,
       "equity": [
         {
           "date": "2026-10-12",
@@ -9863,6 +9958,21 @@
         {
           "date": "2026-11-03",
           "nav": 104093.29888252575
+        },
+        {
+          "date": "2026-11-04",
+          "late_recorded_verified_date": true,
+          "nav": 107709.0312784586,
+          "quote_identity": {
+            "closing_mark_hashes": [
+              "b40ef3b981b68b195db52759b0a2567700e1690a532e66e35fa9305aaa201114"
+            ],
+            "closing_mark_scope": "passive_nav_only",
+            "effective_sha256": "d8bb48d517a4e7557c3634c2f072518b48ccc34b307d1669812143cad1b2f7bd",
+            "snapshot_sha256": "7a4eabfe31d00d5e07981eb35f7f43228eaeaeab538dc1641e11d305996ca702"
+          },
+          "reconciliation_kind": "previously_frozen_order_exact_bar_replay",
+          "recorded_at_utc": "2026-11-05T00:26:45+00:00"
         }
       ],
       "events": [
@@ -10063,21 +10173,117 @@
             "BF-B"
           ],
           "type": "book_quarantined_missing_held_bar"
+        },
+        {
+          "date": "2026-11-04",
+          "late_recorded_verified_date": true,
+          "quote_identity": {
+            "closing_mark_hashes": [
+              "b40ef3b981b68b195db52759b0a2567700e1690a532e66e35fa9305aaa201114"
+            ],
+            "closing_mark_scope": "passive_nav_only",
+            "effective_sha256": "d8bb48d517a4e7557c3634c2f072518b48ccc34b307d1669812143cad1b2f7bd",
+            "snapshot_sha256": "7a4eabfe31d00d5e07981eb35f7f43228eaeaeab538dc1641e11d305996ca702"
+          },
+          "reconciliation_kind": "previously_frozen_order_exact_bar_replay",
+          "recorded_at_utc": "2026-11-05T00:26:45+00:00",
+          "ticker": "WRB",
+          "type": "unfilled"
+        },
+        {
+          "date": "2026-11-04",
+          "late_recorded_verified_date": true,
+          "quote_identity": {
+            "closing_mark_hashes": [
+              "b40ef3b981b68b195db52759b0a2567700e1690a532e66e35fa9305aaa201114"
+            ],
+            "closing_mark_scope": "passive_nav_only",
+            "effective_sha256": "d8bb48d517a4e7557c3634c2f072518b48ccc34b307d1669812143cad1b2f7bd",
+            "snapshot_sha256": "7a4eabfe31d00d5e07981eb35f7f43228eaeaeab538dc1641e11d305996ca702"
+          },
+          "reason": "target",
+          "reconciliation_kind": "previously_frozen_order_exact_bar_replay",
+          "recorded_at_utc": "2026-11-05T00:26:45+00:00",
+          "ticker": "EW",
+          "type": "sell"
+        },
+        {
+          "date": "2026-11-04",
+          "late_recorded_verified_date": true,
+          "quote_identity": {
+            "closing_mark_hashes": [
+              "b40ef3b981b68b195db52759b0a2567700e1690a532e66e35fa9305aaa201114"
+            ],
+            "closing_mark_scope": "passive_nav_only",
+            "effective_sha256": "d8bb48d517a4e7557c3634c2f072518b48ccc34b307d1669812143cad1b2f7bd",
+            "snapshot_sha256": "7a4eabfe31d00d5e07981eb35f7f43228eaeaeab538dc1641e11d305996ca702"
+          },
+          "reason": "target",
+          "reconciliation_kind": "previously_frozen_order_exact_bar_replay",
+          "recorded_at_utc": "2026-11-05T00:26:45+00:00",
+          "ticker": "MMM",
+          "type": "sell"
+        },
+        {
+          "date": "2026-11-04",
+          "frozen_signal_session": "2026-11-03",
+          "late_recorded_verified_date": true,
+          "quote_identity": {
+            "closing_mark_hashes": [
+              "b40ef3b981b68b195db52759b0a2567700e1690a532e66e35fa9305aaa201114"
+            ],
+            "closing_mark_scope": "passive_nav_only",
+            "effective_sha256": "d8bb48d517a4e7557c3634c2f072518b48ccc34b307d1669812143cad1b2f7bd",
+            "snapshot_sha256": "7a4eabfe31d00d5e07981eb35f7f43228eaeaeab538dc1641e11d305996ca702"
+          },
+          "reconciliation_kind": "previously_frozen_order_exact_bar_replay",
+          "recorded_at_utc": "2026-11-05T00:26:45+00:00",
+          "signal_coverage": {
+            "eligible": 488,
+            "missing": {
+              "AVB": "invalid_current_ohlc",
+              "BK": "invalid_current_ohlc",
+              "CTRA": "invalid_current_ohlc",
+              "DAY": "invalid_current_ohlc",
+              "EA": "invalid_current_ohlc",
+              "EQR": "invalid_current_ohlc",
+              "FI": "invalid_current_ohlc",
+              "HOLX": "invalid_current_ohlc",
+              "IPG": "invalid_current_ohlc",
+              "K": "invalid_current_ohlc",
+              "KVUE": "invalid_current_ohlc",
+              "MMC": "invalid_current_ohlc",
+              "PSKY": "invalid_current_ohlc",
+              "WBA": "invalid_current_ohlc",
+              "WBD": "invalid_current_ohlc"
+            },
+            "ticker_coverage_pct": 97.018,
+            "total": 503
+          },
+          "type": "single_session_quarantine_reconciled"
         }
       ],
-      "nav": 104093.29888252575,
-      "paused_missing_quotes": {
-        "last_valued_session": "2026-11-03",
-        "missing_tickers": [
-          "BF-B"
-        ],
-        "reason": "required same-session bar unavailable",
-        "since": "2026-11-04"
-      },
+      "nav": 107709.0312784586,
       "pending": {
-        "WRB": {
+        "ADI": {
+          "side": "sell",
+          "signal_date": "2026-11-04"
+        },
+        "BBY": {
           "side": "buy",
-          "signal_date": "2026-11-03"
+          "signal_date": "2026-11-04"
+        },
+        "EL": {
+          "side": "buy",
+          "signal_date": "2026-11-04"
+        },
+        "ISRG": {
+          "side": "buy",
+          "signal_date": "2026-11-04"
+        },
+        "MRNA": {
+          "side": "buy",
+          "signal_date": "2026-11-04"
         }
       },
       "positions": {
@@ -10099,15 +10305,6 @@
           "stop": 27.264025972480773,
           "target": 34.080032465600965
         },
-        "EW": {
-          "cost": 11874.999926756047,
-          "dividends": 0.0,
-          "entry_date": "2026-10-15",
-          "entry_price": 86.66331274795532,
-          "shares": 136.887645,
-          "stop": 79.7302477281189,
-          "target": 99.66280966014861
-        },
         "GDDY": {
           "cost": 15862.891711303739,
           "dividends": 0.0,
@@ -10125,15 +10322,6 @@
           "shares": 75.8182,
           "stop": 143.95073883819578,
           "target": 179.93842354774472
-        },
-        "MMM": {
-          "cost": 11874.999933883753,
-          "dividends": 0.0,
-          "entry_date": "2026-10-15",
-          "entry_price": 166.02297244262695,
-          "shares": 71.454791,
-          "stop": 152.7411346472168,
-          "target": 190.926418309021
         },
         "PFE": {
           "cost": 11874.999977487154,
@@ -10210,6 +10398,11 @@
         {
           "buys": 1,
           "date": "2026-11-03"
+        },
+        {
+          "buys": 4,
+          "date": "2026-11-04",
+          "recorded_at_utc": "2026-11-05T00:26:45+00:00"
         }
       ],
       "trades": [
@@ -10262,6 +10455,48 @@
           "proceeds": 11864.848767931628,
           "reason": "signal_next_open",
           "ticker": "DHR"
+        },
+        {
+          "dividends": 0.0,
+          "entry_cost": 11874.999926756047,
+          "entry_date": "2026-10-15",
+          "exit_date": "2026-11-04",
+          "late_recorded_verified_date": true,
+          "net_pnl": 1747.1502920459097,
+          "proceeds": 13622.150218801957,
+          "quote_identity": {
+            "closing_mark_hashes": [
+              "b40ef3b981b68b195db52759b0a2567700e1690a532e66e35fa9305aaa201114"
+            ],
+            "closing_mark_scope": "passive_nav_only",
+            "effective_sha256": "d8bb48d517a4e7557c3634c2f072518b48ccc34b307d1669812143cad1b2f7bd",
+            "snapshot_sha256": "7a4eabfe31d00d5e07981eb35f7f43228eaeaeab538dc1641e11d305996ca702"
+          },
+          "reason": "target",
+          "reconciliation_kind": "previously_frozen_order_exact_bar_replay",
+          "recorded_at_utc": "2026-11-05T00:26:45+00:00",
+          "ticker": "EW"
+        },
+        {
+          "dividends": 0.0,
+          "entry_cost": 11874.999933883753,
+          "entry_date": "2026-10-15",
+          "exit_date": "2026-11-04",
+          "late_recorded_verified_date": true,
+          "net_pnl": 1873.3349534898625,
+          "proceeds": 13748.334887373616,
+          "quote_identity": {
+            "closing_mark_hashes": [
+              "b40ef3b981b68b195db52759b0a2567700e1690a532e66e35fa9305aaa201114"
+            ],
+            "closing_mark_scope": "passive_nav_only",
+            "effective_sha256": "d8bb48d517a4e7557c3634c2f072518b48ccc34b307d1669812143cad1b2f7bd",
+            "snapshot_sha256": "7a4eabfe31d00d5e07981eb35f7f43228eaeaeab538dc1641e11d305996ca702"
+          },
+          "reason": "target",
+          "reconciliation_kind": "previously_frozen_order_exact_bar_replay",
+          "recorded_at_utc": "2026-11-05T00:26:45+00:00",
+          "ticker": "MMM"
         }
       ]
     },
