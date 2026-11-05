@@ -117,7 +117,7 @@ if report_manifest.exists():
             for entry in rows:
                 symbol=entry.get("ticker","")
                 body=entry.get("source_text","")
-                if symbol in symbols or not re.fullmatch(r"[A-Z0-9]{1,8}(?:\\.[A-Z]{1,3})?",symbol) or entry.get("publication_gate")!="approved" or not isinstance(body,str) or not 500<=len(body)<=180000 or re.search(r"https?://|personal_[a-z0-9_]+|[\\w.+-]+@[\\w.-]+\\.[A-Za-z]{2,}",body,re.I):
+                if symbol in symbols or not re.fullmatch(r"[A-Z0-9]{1,8}(?:\.[A-Z]{1,3})?",symbol) or entry.get("publication_gate")!="approved" or not isinstance(body,str) or not 500<=len(body)<=180000 or re.search(r"https?://|personal_[a-z0-9_]+|[\w.+-]+@[\w.-]+\.[A-Za-z]{2,}",body,re.I):
                     issues.append("Unreviewed or unsafe corporate report")
                 symbols.add(symbol)
     except (OSError,ValueError,TypeError,AttributeError):
