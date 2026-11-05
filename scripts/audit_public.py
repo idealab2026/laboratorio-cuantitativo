@@ -14,6 +14,7 @@ REPOSITORY = RELEASE | {"tests/live-session.test.mjs", "scripts/private_disclosu
 # Institutionally reviewed web/PDF research templates and their source manifest.
 RELEASE |= {"src/thesis-report.mjs", "src/thesis-report.css", "src/thesis-insights.mjs", "data/thesis-reports.json", "src/financial-sankey.mjs", "src/financial-sankey.css", "data/financial-sankeys.json"}
 REPOSITORY |= RELEASE | {"tests/financial-sankey.test.mjs", "tests/thesis-report.test.mjs", "scripts/build_thesis_pdfs.py", "scripts/test_thesis_pdf_builder.py"}
+REPOSITORY.add("docs/NAUT_RESEARCH_BRIEF_2026-11-05.md")
 engine_manifest=ROOT/"data/engine-files.json"
 if engine_manifest.exists():
     engine_paths=json.loads(engine_manifest.read_text(encoding="utf8")).get("paths",[])
