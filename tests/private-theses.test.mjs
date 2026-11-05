@@ -221,3 +221,48 @@ test("A licensed market-price widget supplies a visible quote without scraping o
  assert.match(html,/frame-src https:\/\/s.tradingview.com/);
  assert.ok(!html.includes("script-src 'self' https://"));
 });
+
+
+test("The thesis watchlist uses one TradingView issuer column, without redundant ticker/name/quote columns",async()=>{
+ const {publicThesisTableRows}=await import("../src/public-theses.mjs");
+ const source=readFileSync(new URL("../src/site.mjs",import.meta.url),"utf8");
+ const start=source.indexOf("function theses(){"),end=source.indexOf("function thesisView(){",start);
+ assert.ok(start>=0&&end>start);
+ const section=source.slice(start,end);
+ const match=section.match(/const columns=\[([\s\S]*?)\];/);
+ assert.ok(match);
+ const names=[...match[1].matchAll(/\["([^"]+)","([^"]+)"\]/g)].map(x=>x[1]);
+ assert.deepEqual(names,["company","market","bull","bear","base","entry","target","earnings","report"]);
+ const rec={ticker:"MSFT",company:"Microsoft",market:"NASDAQ",currency:"USD",theme:"Software"};
+ const row={issuer:{ticker:"MSFT",company:"Microsoft",market:"NASDAQ",currency:"USD",sector:"Software"},screen:null};
+ const html=publicThesisTableRows([row],new Map([["MSFT",rec]]),new Map(),null);
+ assert.equal((html.match(/<td(?:\s|>)/g)||[]).length,9);
+ assert.match(html,/<td class="thesis-issuer-cell"><div class="thesis-market-quote">/);
+ assert.match(html,/s.tradingview.com\/embed-widget\/single-quote/);
+ assert.ok(!html.includes("<td><strong>MSFT</strong></td>"));
+ assert.ok(!html.includes("<td><strong>Microsoft</strong>"));
+ const css=readFileSync(new URL("../styles.css",import.meta.url),"utf8");
+ assert.match(css,/\.thesis-public-table table\{table-layout:fixed;width:100%;min-width:1170px/);
+ assert.match(css,/\.thesis-issuer-cell\{overflow:hidden;text-align:left/);
+ const withClose=publicThesisTableRows([row],new Map([["MSFT",rec]]),new Map(),null,
+   new Map([["MSFT",{close:512.8,currency:"USD",session:"2026-11-04"}]]));
+ assert.equal((withClose.match(/<td(?:\s|>)/g)||[]).length,9);
+ assert.match(withClose,/Cierre 2026-11-04/);
+ assert.match(withClose,/Microsoft/);
+});
+
+test("MIDAS displays IDEA LAB identity beside the title in a responsive one-row header",()=>{
+ const html=readFileSync(new URL("../index.html",import.meta.url),"utf8");
+ const start=html.indexOf('<div class="midas-header-identity">');
+ const end=html.indexOf('</div>',start);
+ assert.ok(start>0&&end>start);
+ const part=html.slice(start,end);
+ assert.match(part,/midas-header-brand/);
+ assert.match(part,/Un producto de/);
+ assert.match(part,/href="https:\/\/idealab2026.github.io\/"/);
+ assert.match(part,/<img src="\.\/logo.svg" alt="IDEA LAB" width="72" height="17"/);
+ const css=readFileSync(new URL("../styles.css",import.meta.url),"utf8");
+ assert.match(css,/\.midas-header-identity\{display:inline-flex;align-items:center/);
+ assert.match(css,/@media\(max-width:650px\)\{\.midas-header-parent span\{display:none\}/);
+ assert.doesNotMatch(part,/<button/);
+});
