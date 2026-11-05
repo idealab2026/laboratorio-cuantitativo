@@ -1,5 +1,5 @@
 import {renderCanonicalSource,renderExplanatoryCharts,renderFocusList} from "./thesis-insights.mjs?v=bcbecb4d97ea";
-import {renderFinancialSankey} from "./financial-sankey.mjs";
+import {renderFinancialSankey} from "./financial-sankey.mjs?v=5cbe1ea43143";
 /* IDEA LAB / MIDAS — one editorial renderer for every public investment thesis.
    Immutable source: data/public-theses.json. Canonical prose is only shown when
    data/thesis-reports.json passed its public redaction/approval contract. */
