@@ -8,7 +8,7 @@ import {signalResearchSummary,methodCatalog} from "./paper-methods.mjs";
 import {parseLocalCagr2031} from "./private-theses.mjs";
 import {verifyPublicTheses,publicResearchRows,orderedThesisRows,publicThesisTableRows,publicThesisDetail,publicThesisCsv} from "./public-theses.mjs?v=24b9692353a2";
 import {artificialCampaignComparison} from "./paper-ledger.mjs";
-import {verifyFullRoster,filterRoster,technicalStage,technicalCoverage,verifyStrategyCandidates,filterStrategyCandidates,FULL_SORT_KEYS,sortFullCompetitionRows,COMPETITION_PHASES,strategyCompetitionPhase,partitionCompetitionRows} from "./competition-roster.mjs";
+import {verifyFullRoster,filterRoster,technicalStage,technicalCoverage,verifyStrategyCandidates,filterStrategyCandidates,FULL_SORT_KEYS,sortFullCompetitionRows,COMPETITION_PHASES,strategyCompetitionPhase,partitionCompetitionRows} from "./competition-roster.mjs?v=3cdbf68170ad";
 import {verifyPaperFeed} from "./paper-feed.mjs";
 import {verify,simulate,rank,valuation,thesisRank,formatPct,money,finite,verifyIssuerCatalog,filterIssuers,syntheticBarsFromDemo,nextOpenPaper,evaluateIssuerScreen,competitionReadModel,publicIssuerReadModel,verifyOfficialFx,summarizeFxForecastLedger,verifySecFilings,verifyOfficialYield} from "./metrics.mjs";
 const $=id=>document.getElementById(id);
