@@ -12,8 +12,10 @@
 .financial-metric strong{display:block;font:800 clamp(13px,1.5vw,21px)/1.45 system-ui,sans-serif;color:#11355a;margin-top:5px;overflow-wrap:anywhere}
 .financial-metric small{display:block;font:500 11px/1.5 system-ui,sans-serif;color:#54708a;margin-top:4px}
 .financial-sankey-canvas{width:100%;overflow-x:auto;background:#fff;border:1px solid #dce5ee;border-radius:11px;padding:12px 5px;scrollbar-width:thin}
-.financial-sankey-canvas svg{display:block;width:100%;min-width:770px;height:auto;max-width:1120px;margin:0 auto;font-family:system-ui,-apple-system,sans-serif}
+.financial-sankey-canvas svg{display:block;width:100%;min-width:1080px;height:auto;max-width:1380px;margin:0 auto;font-family:system-ui,-apple-system,sans-serif}
 .financial-sankey-caption{font-size:12px;font-weight:850;letter-spacing:.1em;fill:#6d8399}
+.financial-sankey-origin-name{font-size:14px;font-weight:800;fill:#163c5e}
+.financial-sankey-origin-amount{font-size:11.5px;font-weight:600;fill:#58738d}
 .financial-sankey-name{font-size:15px;font-weight:800;fill:#183859}
 .financial-sankey-amount{font-size:12px;font-weight:550;fill:#58738d}
 .financial-sankey-revenue{font-size:15px;font-weight:800;fill:#14385d}
@@ -41,7 +43,7 @@
  .financial-metric{padding:10px}
  .financial-sankey-period{width:100%;min-width:0}
  .financial-sankey-kind{margin-left:0}
- .financial-sankey-canvas svg{min-width:780px}
+ .financial-sankey-canvas svg{min-width:1120px}
  .financial-breakdown table{min-width:500px}
 }
 @media print{

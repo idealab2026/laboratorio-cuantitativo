@@ -14,6 +14,7 @@ REPOSITORY = RELEASE | {"tests/live-session.test.mjs", "scripts/private_disclosu
 # Institutionally reviewed web/PDF research templates and their source manifest.
 RELEASE |= {"src/thesis-report.mjs", "src/thesis-report.css", "src/thesis-insights.mjs", "data/thesis-reports.json", "src/financial-sankey.mjs", "src/financial-sankey.css", "data/financial-sankeys.json"}
 REPOSITORY |= RELEASE | {"tests/financial-sankey.test.mjs", "tests/thesis-report.test.mjs", "scripts/build_thesis_pdfs.py", "scripts/test_thesis_pdf_builder.py"}
+REPOSITORY.add("docs/NAUT_RESEARCH_BRIEF_2026-11-05.md")
 engine_manifest=ROOT/"data/engine-files.json"
 if engine_manifest.exists():
     engine_paths=json.loads(engine_manifest.read_text(encoding="utf8")).get("paths",[])
@@ -99,7 +100,7 @@ if publication.exists():
     try:
         text=publication.read_text(encoding="utf-8")
         doc=json.loads(text)
-        if doc.get("schema") != "midas_public_theses_v1" or doc.get("data_class") != "author_approved_public_research_snapshot" or not isinstance(doc.get("records"), list) or len(doc["records"]) != 25:
+        if doc.get("schema") != "midas_public_theses_v1" or doc.get("data_class") != "author_approved_public_research_snapshot" or not isinstance(doc.get("records"), list) or len(doc["records"]) != 26:
             issues.append("Unapproved thesis publication contract")
         if re.search(r"https?://|[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}|personal_[a-z0-9_]+",text,re.I):
             issues.append("Private links or origins in thesis publication")

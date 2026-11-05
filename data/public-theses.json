@@ -1,7 +1,7 @@
 {
   "schema": "midas_public_theses_v1",
   "data_class": "author_approved_public_research_snapshot",
-  "published_as_of": "2026-11-02",
+  "published_as_of": "2026-11-05",
   "source_label": "Idea Lab · archivo de investigación y escenarios históricos",
   "notice": "Escenarios históricos de investigación. Se conservan cifras, hipótesis y fechas de cada estudio. No son cotizaciones actuales ni rentabilidades obtenidas.",
   "records": [
@@ -629,6 +629,31 @@
       "summary": "Candidata detectada en un reel sobre robótica. La hipótesis a investigar es que Symbotic ofrece una exposición directa a automatización robótica de almacenes a gran escala; el reel menciona Walmart, pero el encaje, concentración y economía unitaria deben verificarse.",
       "drivers": "Hipótesis: automatización end-to-end; robots de almacén; software/IA; despliegues a gran escala; expansión de backlog.",
       "risks": "Concentración de clientes; dependencia de grandes despliegues; reconocimiento de ingresos por proyectos; ejecución/márgenes; competencia; valoración."
+    },
+    {
+      "ticker": "NAUT",
+      "company": "Nautilus Biotechnology, Inc.",
+      "theme": "Proteómica / plataforma de análisis de proteínas / biotecnología precomercial",
+      "lastReview": "2026-11-05",
+      "studyDate": "",
+      "market": "NASDAQ",
+      "currency": "USD",
+      "recordedPrice": null,
+      "priceDate": "",
+      "referencePrice": null,
+      "bearCagr": null,
+      "baseCagr": null,
+      "bullCagr": null,
+      "bearTarget": null,
+      "baseTarget": null,
+      "bullTarget": null,
+      "priceFor15": null,
+      "earningsRecord": "Q3 2026 publicado 27/10/2026; próxima fecha por anunciar",
+      "thesisStatus": "POR ANALIZAR · GATE DOCUMENTAL PENDIENTE",
+      "valuationStatus": "PENDIENTE OBJETIVO Y CAGR 2031",
+      "summary": "Nautilus desarrolla la plataforma Voyager de proteómica molecular. En Q3 2026 ingresó 0,234 MUSD, fundamentalmente por subvenciones y servicios early access; perdió 15,636 MUSD y disponía de 114,3 MUSD de efectivo e inversiones a septiembre. Comercialización inicial prevista para mediados de 2027. No hay todavía valoración MIDAS ni escenario de rentabilidad aprobado.",
+      "drivers": "Validación reproducible de Iterative Mapping; ensayos Tau/AKT1 y ampliación de proteoformas; salida comercial Voyager 2027; adopción por laboratorios; consumibles recurrentes y servicios; acuerdos de investigación.",
+      "risks": "Fase precomercial y ventas aún no representativas; retrasos de instrumento y ensayos; mercado proteómico competitivo; quema de caja y necesidad potencial de financiación/dilución; incertidumbre sobre precio, adopción, márgenes y retorno de capital."
     }
   ]
 }

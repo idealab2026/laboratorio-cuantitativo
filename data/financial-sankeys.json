@@ -1,7 +1,7 @@
 {
-  "schema": "midas_official_financial_sankeys_v1",
+  "schema": "midas_official_financial_sankeys_v2",
   "as_of": "2026-11-05",
-  "description": "Flujos operativos consolidados por periodo; importes en millones de USD, tomados de documentación oficial. Sin datos no se representan cifras.",
+  "description": "Flujos GAAP por periodo: orígenes oficiales desglosados → ingresos consolidados → costes y EBIT. Todos los importes se concilian en millones de USD; no mezclar segmentos/periodos.",
   "companies": [
     {
       "ticker": "PLTR",
@@ -44,7 +44,18 @@
           ],
           "operating_income": 1414.015,
           "net_income": null,
-          "notes": "10-K presenta cifras en miles de USD, convertidas a millones dividiendo entre 1.000."
+          "notes": "10-K presenta cifras en miles de USD, convertidas a millones dividiendo entre 1.000.",
+          "revenue_source_basis": "Clientes: gobierno / comercial",
+          "revenue_sources": [
+            {
+              "label": "Gobierno",
+              "value": 2402.287
+            },
+            {
+              "label": "Comercial",
+              "value": 2073.159
+            }
+          ]
         }
       ],
       "status": "verified_official"
@@ -95,7 +106,19 @@
           ],
           "operating_income": 11151,
           "net_income": 8884,
-          "notes": "Los intereses de Financial Products forman parte de costes operativos de la presentación consolidada. Beneficio atribuible según resultado publicado."
+          "notes": "Los intereses de Financial Products forman parte de costes operativos de la presentación consolidada. Beneficio atribuible según resultado publicado.",
+          "revenue_source_basis": "Áreas consolidadas netas de eliminaciones",
+          "revenue_sources": [
+            {
+              "label": "Maquinaria, Energía y Transporte",
+              "value": 63980
+            },
+            {
+              "label": "Productos Financieros",
+              "value": 3609
+            }
+          ],
+          "revenue_source_url": "https://www.sec.gov/Archives/edgar/data/18230/000001823026000008/cat-20251231.htm"
         }
       ],
       "status": "verified_official"
@@ -141,7 +164,27 @@
           ],
           "operating_income": 4458.6,
           "net_income": 3663.927,
-          "notes": "Carta oficial de accionistas; cifras originales en miles de USD divididas entre 1.000; margen operativo incluye amortización de contenido."
+          "notes": "Carta oficial de accionistas; cifras originales en miles de USD divididas entre 1.000; margen operativo incluye amortización de contenido.",
+          "revenue_source_basis": "Regiones geográficas (importe exacto SEC)",
+          "revenue_sources": [
+            {
+              "label": "UCAN",
+              "value": 5628.215
+            },
+            {
+              "label": "EMEA",
+              "value": 4106.572
+            },
+            {
+              "label": "LATAM",
+              "value": 1602.603
+            },
+            {
+              "label": "APAC",
+              "value": 1536.786
+            }
+          ],
+          "revenue_source_url": "https://www.sec.gov/Archives/edgar/data/1065280/000106528026000291/nflx-20260930.htm"
         }
       ],
       "status": "verified_official"
@@ -187,7 +230,18 @@
           ],
           "operating_income": 45915,
           "net_income": 36629,
-          "notes": "Resultados trimestrales GAAP; no anualizados."
+          "notes": "Resultados trimestrales GAAP; no anualizados.",
+          "revenue_source_basis": "Segmentos reorganizados FY2027 Q1",
+          "revenue_sources": [
+            {
+              "label": "Agents and Infra",
+              "value": 76795
+            },
+            {
+              "label": "Devices and Consumer",
+              "value": 15484
+            }
+          ]
         },
         {
           "id": "2026FY",
@@ -226,7 +280,22 @@
           ],
           "operating_income": 155237,
           "net_income": 133749,
-          "notes": "Informe anual consolidado."
+          "notes": "Informe anual consolidado.",
+          "revenue_source_basis": "Segmentos FY2026",
+          "revenue_sources": [
+            {
+              "label": "Productividad y negocio",
+              "value": 139996
+            },
+            {
+              "label": "Nube inteligente",
+              "value": 137791
+            },
+            {
+              "label": "Computación personal",
+              "value": 54052
+            }
+          ]
         }
       ],
       "status": "verified_official"
@@ -313,7 +382,22 @@
           ],
           "operating_income": 8706,
           "net_income": 7130,
-          "notes": "10-K del ejercicio cerrado el 28 de noviembre de 2025. Importe en millones de USD."
+          "notes": "10-K del ejercicio cerrado el 28 de noviembre de 2025. Importe en millones de USD.",
+          "revenue_source_basis": "Segmentos FY2025",
+          "revenue_sources": [
+            {
+              "label": "Digital Media",
+              "value": 17649
+            },
+            {
+              "label": "Digital Experience",
+              "value": 5864
+            },
+            {
+              "label": "Publishing & Advertising",
+              "value": 256
+            }
+          ]
         }
       ],
       "status": "verified_official"
@@ -375,7 +459,22 @@
           ],
           "operating_income": 28076,
           "net_income": null,
-          "notes": "Technology and infrastructure NO equivale a I+D; se conserva la denominación oficial."
+          "notes": "Technology and infrastructure NO equivale a I+D; se conserva la denominación oficial.",
+          "revenue_source_basis": "Segmentos consolidados",
+          "revenue_sources": [
+            {
+              "label": "Norteamérica",
+              "value": 112852
+            },
+            {
+              "label": "Internacional",
+              "value": 43108
+            },
+            {
+              "label": "AWS",
+              "value": 45984
+            }
+          ]
         },
         {
           "id": "2025FY",
@@ -424,7 +523,23 @@
           ],
           "operating_income": 79975,
           "net_income": null,
-          "notes": "Resultados anuales reportados. Technology and infrastructure conserva su presentación oficial."
+          "notes": "Resultados anuales reportados. Technology and infrastructure conserva su presentación oficial.",
+          "revenue_source_basis": "Segmentos consolidados",
+          "revenue_sources": [
+            {
+              "label": "Norteamérica",
+              "value": 426305
+            },
+            {
+              "label": "Internacional",
+              "value": 161894
+            },
+            {
+              "label": "AWS",
+              "value": 128725
+            }
+          ],
+          "revenue_source_url": "https://www.sec.gov/Archives/edgar/data/1018724/000101872426000004/amzn-20251231.htm"
         }
       ],
       "status": "verified_official"
@@ -518,7 +633,18 @@
           ],
           "operating_income": 12988,
           "net_income": 9860,
-          "notes": "G&A incluye cargo judicial extraordinario de 9.890 M USD; importes GAAP sin ajustes."
+          "notes": "G&A incluye cargo judicial extraordinario de 9.890 M USD; importes GAAP sin ajustes.",
+          "revenue_source_basis": "Segmentos (sin duplicar publicidad)",
+          "revenue_sources": [
+            {
+              "label": "Family of Apps",
+              "value": 64158
+            },
+            {
+              "label": "Reality Labs",
+              "value": 443
+            }
+          ]
         },
         {
           "id": "2025FY",
@@ -557,7 +683,18 @@
           ],
           "operating_income": 83276,
           "net_income": 60458,
-          "notes": "Resultados anuales comunicados por el emisor; fuente IR no sustituye comprobación del 10-K."
+          "notes": "Resultados anuales comunicados por el emisor; fuente IR no sustituye comprobación del 10-K.",
+          "revenue_source_basis": "Segmentos (sin duplicar publicidad)",
+          "revenue_sources": [
+            {
+              "label": "Family of Apps",
+              "value": 198759
+            },
+            {
+              "label": "Reality Labs",
+              "value": 2207
+            }
+          ]
         }
       ],
       "status": "verified_official"
@@ -577,6 +714,12 @@
     {
       "ticker": "SYM",
       "name": "Symbotic",
+      "periods": [],
+      "status": "awaiting_official_statement"
+    },
+    {
+      "ticker": "NAUT",
+      "name": "Nautilus Biotechnology",
       "periods": [],
       "status": "awaiting_official_statement"
     }

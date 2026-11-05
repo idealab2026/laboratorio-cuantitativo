@@ -1,6 +1,6 @@
 import {LIVE_REFRESH_MS, readLiveAttempts, renderLiveSession, sessionToday} from "./live-session.mjs?v=2057d4fd24d2";
-import {renderThesisReport,verifyFullReports} from "./thesis-report.mjs?v=f31debb7b47f";
-import {verifyFinancialSankeys} from "./financial-sankey.mjs?v=5cbe1ea43143";
+import {renderThesisReport,verifyFullReports} from "./thesis-report.mjs?v=a50f0cb89012";
+import {verifyFinancialSankeys} from "./financial-sankey.mjs?v=a50f0cb89012";
 import {verifyOriginalPaper} from "./original-paper.mjs?v=b4ab52ea9863";
 import {algorithmTheory,paperLeaderboard} from "./algorithm-detail.mjs";
 import {glossaryGroups,searchGlossary,verifyGlossary} from "./glossary.mjs";
