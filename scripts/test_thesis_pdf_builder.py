@@ -22,6 +22,24 @@ class ThesisPDFTests(unittest.TestCase):
         self.assertEqual(set(approved),{"ADBE","CAT","MSFT","META","PLTR"})
         self.assertEqual(len(records)-len(approved),20)
 
+    def test_visual_explainers_and_semantic_source_tables(self):
+        rows,approved=mod.verify(self.theses,self.reports)
+        msft=next(x for x in rows if x["ticker"]=="MSFT")
+        self.assertIsNotNone(mod.trajectory_chart(msft))
+        self.assertIsNotNone(mod.accumulated_chart(msft))
+        self.assertIsNotNone(mod.entry_chart(msft))
+        blocks=mod.canonical_source_blocks(approved["MSFT"]["source_text"])
+        tables=[data for kind,data in blocks if kind=="table"]
+        self.assertTrue(any(len(row)==4 for table in tables for row in table))
+        self.assertTrue(any(kind=="heading" and "Resumen ejecutivo" in value for kind,value in blocks if isinstance(value,str)))
+        meta=mod.canonical_source_blocks(approved["META"]["source_text"])
+        self.assertTrue(any(kind=="table" and any("Referencia del informe" in str(cell) for row in value for cell in row)
+                            for kind,value in meta if isinstance(value,list)))
+        no_values={"referencePrice":None,"bearTarget":None,"baseTarget":None,"bullTarget":None}
+        self.assertIsNone(mod.trajectory_chart(no_values))
+        self.assertIsNone(mod.accumulated_chart(no_values))
+        self.assertIsNone(mod.entry_chart(no_values))
+
     def test_private_workpaper_links_are_rejected(self):
         broken={"schema":self.reports["schema"],"reports":[{
             "ticker":"MSFT","publication_gate":"approved",

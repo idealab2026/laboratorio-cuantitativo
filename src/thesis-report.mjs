@@ -1,3 +1,4 @@
+import {renderCanonicalSource,renderExplanatoryCharts} from "./thesis-insights.mjs?v=6cc79bd8fe16";
 /* IDEA LAB / MIDAS — one editorial renderer for every public investment thesis.
    Immutable source: data/public-theses.json. Canonical prose is only shown when
    data/thesis-reports.json passed its public redaction/approval contract. */
@@ -14,17 +15,7 @@ function paragraphs(value){
  if(!text)return '<p class="thesis-report-muted">Aún no documentado en el expediente publicado.</p>';
  return text.split(/\n\s*\n/).filter(Boolean).map(p=>'<p>'+h(p).replace(/\n/g,'<span class="thesis-line-break"></span>')+'</p>').join("");
 }
-function sourceBody(source){
- if(!source)return '<p class="thesis-report-muted">El informe ejecutivo íntegro no está disponible en la edición pública. Esta vista conserva los escenarios y fundamentos que figuran en el expediente.</p>';
- const blocks=source.trim().split(/\n\s*\n/).filter(Boolean);
- return '<div class="thesis-source-body">'+blocks.map(block=>{
-  block=block.trim();const title=block.split("\n")[0].trim();
-  if(block.length<135&&(/^\d{1,2}[.)]\s+\S/.test(title)||/^[A-ZÁÉÍÓÚÑ\s0-9·.:-]{10,}$/.test(title)||/^(Investment Committee|Investment conclusion|Executive Investment|ESCENARIOS)/i.test(title))){
-    return '<h3>'+h(title)+'</h3>';
-  }
-  return '<p>'+h(block).replace(/\n/g,'<span class="thesis-line-break"></span>')+'</p>';
- }).join("")+'</div>';
-}
+function sourceBody(source){return renderCanonicalSource(source);}
 function stat(title,value,detail){
  return '<div class="thesis-stat"><span>'+h(title)+'</span><strong>'+value+'</strong>'+(detail?'<small>'+h(detail)+'</small>':'')+'</div>';
 }
@@ -91,7 +82,7 @@ export function renderThesisReport(record,full=null){
  stat("Entrada para 15 % anual",money(record.priceFor15,record.currency))+
  stat("Última revisión",h(record.lastReview||"N/D"))+
  '</div><div class="thesis-report-lead">'+paragraphs(record.summary)+'</div>';
- const valuation='<div class="thesis-report-chartbox">'+chart+'</div><div class="thesis-report-casecards">'+boxes+'</div><h3>Umbrales de entrada: horizonte de cinco años</h3>'+entries(record)+'<p class="thesis-report-muted">El umbral P15 procede del expediente histórico cuando está disponible. Los demás se calculan solo por capitalización compuesta a partir del objetivo central; no sustituyen el modelo de valoración original.</p>';
+ const valuation='<h3>Comparación de objetivos a 2031</h3><div class="thesis-report-chartbox">'+chart+'</div><div class="thesis-report-casecards">'+boxes+'</div><h3>Lectura visual de la valoración</h3>'+renderExplanatoryCharts(record)+'<h3>Umbrales de entrada: horizonte de cinco años</h3>'+entries(record)+'<p class="thesis-report-muted">El umbral P15 procede del expediente histórico cuando está disponible. Los demás se calculan solo por capitalización compuesta a partir del objetivo central; no sustituyen el modelo de valoración original.</p>';
  const conclusion='<p><strong>Estado documental:</strong> '+h(record.thesisStatus||"Pendiente")+'</p><p><strong>Estado de valoración:</strong> '+h(record.valuationStatus||"Pendiente")+'</p><p class="thesis-report-muted">Escenarios históricos del estudio '+h(record.studyDate||"sin fecha")+'. No son cotizaciones actuales ni resultados obtenidos; no constituye asesoramiento personalizado.</p>';
  return '<article class="thesis-report" data-thesis="'+h(record.ticker)+'">'+cover+'<nav class="thesis-report-nav" aria-label="Apartados del informe">'+nav+'</nav>'+
  sec("summary","Resumen para el comité",snapshot)+
@@ -100,7 +91,7 @@ export function renderThesisReport(record,full=null){
  sec("valuation","Valoración y escenarios",valuation)+
  sec("risks","Riesgos e invalidación",paragraphs(full?.risks||record.risks))+
  sec("monitoring","Resultados y seguimiento",paragraphs(record.earningsRecord||"Resultados pendientes"))+
- sec("original",approved?"Informe de inversión completo · edición pública":"Estado de documentación",sourceBody(approved?full.source_text:null))+
+ sec("original",approved?"Informe original · edición web estructurada":"Estado de documentación",'<p class="thesis-source-intro">Contenido íntegro conservado del expediente canónico, con tablas y jerarquía editorial adaptadas para lectura en pantalla. Los gráficos explicativos anteriores se calculan exclusivamente a partir de los escenarios documentados; las figuras históricas sin serie tabular se conservan como referencia.</p>'+sourceBody(approved?full.source_text:null))+
  sec("conclusion","Conclusión de inversión",conclusion)+
  '<footer class="thesis-report-footer">IDEA LAB · MIDAS · Fuente: tesis histórica documentada · Edición pública · No es asesoramiento financiero</footer></article>';
 }

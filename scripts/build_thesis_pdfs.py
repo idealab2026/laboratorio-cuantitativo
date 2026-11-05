@@ -18,7 +18,7 @@ from reportlab.lib.units import mm
 from reportlab.pdfbase import pdfmetrics
 from reportlab.pdfbase.ttfonts import TTFont
 from reportlab.platypus import SimpleDocTemplate, Paragraph, Table, TableStyle, Spacer, KeepTogether
-from reportlab.graphics.shapes import Drawing, Rect, String, Line
+from reportlab.graphics.shapes import Drawing, Rect, String, Line, Circle
 
 TICKER=re.compile(r'^[A-Z0-9]{1,8}(?:\.[A-Z]{1,3})?$')
 BAD_SOURCE=re.compile(r'https?://|[\w.+-]+@[\w.-]+\.[A-Za-z]{2,}|\bpersonal_[a-z0-9_]+', re.I)
@@ -93,6 +93,124 @@ def chart(record):
         out.add(String(95,3,"Referencia histórica: "+amount(reference,record.get("currency","USD")),fontName=FONT,fontSize=8,fillColor=GOLD))
     return out
 
+def trajectory_chart(record):
+    """Geometric interpolation, not a prediction for intermediate fiscal years."""
+    ref=record.get("referencePrice")
+    pairs=[("Bear","bearTarget","#aa5465"),("Base","baseTarget","#1a4674"),("Bull","bullTarget","#168c7b")]
+    filtered=[(name,record.get(key),color) for name,key,color in pairs if numeric(record.get(key)) and record[key]>0]
+    if not numeric(ref) or ref<=0 or not filtered:return None
+    high=max([ref]+[value for _,value,_ in filtered])*1.14
+    dr=Drawing(485,216)
+    l,r,b,t=48,445,34,183
+    for i in range(5):
+        yy=b+(t-b)*i/4
+        dr.add(Line(l,yy,r,yy,strokeColor=EDGE,strokeWidth=.6))
+        dr.add(String(l-5,yy-2,amount(high*i/4,"").strip(),fontName=FONT,fontSize=6.7,fillColor=MUTED,textAnchor="end"))
+    for yr in range(6):
+        xx=l+(r-l)*yr/5
+        dr.add(String(xx,21,str(2026+yr),fontName=FONT,fontSize=7,fillColor=MUTED,textAnchor="middle"))
+    for idx,(name,target,color) in enumerate(filtered):
+        points=[]
+        for yr in range(6):
+            value=ref*((target/ref)**(yr/5))
+            xx=l+(r-l)*yr/5
+            yy=b+(value/high)*(t-b)
+            points.append((xx,yy))
+        for (x1,y1),(x2,y2) in zip(points,points[1:]):
+            dr.add(Line(x1,y1,x2,y2,strokeColor=colors.HexColor(color),strokeWidth=2.3))
+        for x,y in points:dr.add(Circle(x,y,2.7,fillColor=colors.HexColor(color),strokeColor=None))
+        dr.add(Rect(15+idx*150,196,10,7,fillColor=colors.HexColor(color),strokeColor=None))
+        dr.add(String(30+idx*150,195,name+" "+amount(target,record.get("currency") or "USD"),fontName=FONT,fontSize=7.1,fillColor=NAVY))
+    return dr
+
+def accumulated_chart(record):
+    ref=record.get("referencePrice")
+    if not numeric(ref) or ref<=0:return None
+    pairs=[("Bear","bearTarget","#aa5465"),("Base","baseTarget","#1a4674"),("Bull","bullTarget","#168c7b")]
+    vals=[(name,(record[key]/ref-1)*100,color) for name,key,color in pairs if numeric(record.get(key))]
+    if not vals:return None
+    lo=min(0,*[v for _,v,_ in vals]);hi=max(0,*[v for _,v,_ in vals])
+    dr=Drawing(485,150)
+    l,r=105,414
+    zero=l+(-lo)/(hi-lo or 1)*(r-l)
+    dr.add(Line(zero,10,zero,143,strokeColor=MUTED,strokeWidth=1))
+    for i,(name,change,color) in enumerate(vals):
+        y=110-i*47
+        end=zero+change/(hi-lo or 1)*(r-l)
+        dr.add(String(10,y+11,name,fontName=FONT_BOLD,fontSize=9,fillColor=NAVY))
+        dr.add(Rect(min(zero,end),y,max(1,abs(end-zero)),22,fillColor=colors.HexColor(color),strokeColor=None,rx=3,ry=3))
+        label=percent(change)
+        dr.add(String(min(463,max(25,end+7 if change>=0 else end-7)),y+7,label,
+                      fontName=FONT_BOLD,fontSize=8,fillColor=NAVY,textAnchor="start" if change>=0 else "end"))
+    return dr
+
+def entry_chart(record):
+    ref,threshold=record.get("referencePrice"),record.get("priceFor15")
+    if not numeric(ref) or ref<=0 or not numeric(threshold) or threshold<=0:return None
+    vals=[("Referencia histórica",ref,"#b28d4e"),("Umbral P15",threshold,"#1a4674")]
+    base=record.get("baseTarget")
+    if numeric(base) and base>0:vals.append(("Base FY2031",base,"#168c7b"))
+    mx=max(x for _,x,_ in vals)*1.15
+    dr=Drawing(485,150)
+    for i,(label,value,color) in enumerate(vals):
+        y=109-i*45
+        dr.add(String(9,y+8,label,fontName=FONT_BOLD,fontSize=7.8,fillColor=NAVY))
+        right=125+270*value/mx
+        dr.add(Rect(125,y,270*value/mx,25,fillColor=colors.HexColor(color),strokeColor=None,rx=3,ry=3))
+        dr.add(String(min(right+9,460),y+9,amount(value,record.get("currency") or "USD"),
+                      fontName=FONT,fontSize=7.8,fillColor=NAVY))
+    return dr
+
+def canonical_source_blocks(text):
+    """Preserve source order and meaning while repairing flattened text layout."""
+    lines=[x.strip().replace("\t"," ") for x in text.replace("\r","").split("\n")]
+    heading=re.compile(r"^\d{1,2}(?:\.\d+)?[.)]\s+\D")
+    is_figure=re.compile(r"^(?:Figura|Gráfico|Figure|Chart)\s*\d+[.:]",re.I)
+    scenario_header=re.compile(r"^(?:FY2031|Indicador|Escenario|Métrica)$",re.I)
+    separator=re.compile(r"^[_━─═\-\s]{7,}$")
+    bullet=re.compile(r"^(?:[•▪◦]|[-*]\s)\s*")
+    tokens=[];i=0;cat_front=(lines[0].startswith("MIDAS | CAT |") if lines else False)
+    def is_heading(t):
+        return bool(heading.match(t) or re.fullmatch(r"(?:Investment Committee Snapshot|Investment conclusion|Executive summary|Resumen ejecutivo|Conclusión|Riesgos|Catalizadores|Por qué invertir)",t,re.I) or
+                (11<len(t)<115 and re.fullmatch(r"[A-ZÁÉÍÓÚÑ0-9\s·:—–/\-()]+",t) and "USD" not in t and len(t.split())<=12))
+    while i<len(lines):
+        line=lines[i]
+        if not line or separator.fullmatch(line):i+=1;continue
+        if cat_front and i<5:tokens.append(("frontmatter",line));i+=1;continue
+        if (scenario_header.fullmatch(line) and i+3<len(lines) and re.search("Bear|Bajista",lines[i+1],re.I)
+            and re.search("Base|Central",lines[i+2],re.I) and re.search("Bull|Alcista",lines[i+3],re.I)):
+            data=[["Indicador"]+lines[i+1:i+4]];j=i+4
+            while j+3<len(lines) and len(data)<17:
+                row=lines[j:j+4]
+                if not all(row) or len(row[0])>83 or any(len(x)>80 for x in row[1:]) or is_heading(row[0]) or separator.fullmatch(row[0]):break
+                data.append(row);j+=4
+            if len(data)>=3:tokens.append(("table",data));i=j;continue
+        if line=="Parámetro" and i+1<len(lines) and lines[i+1]=="Referencia del informe":
+            data=[["Parámetro","Referencia del informe"]];j=i+2
+            while j+1<len(lines) and len(data)<25:
+                k,v=lines[j:j+2]
+                if not k or not v or len(k)>88 or len(v)>180 or is_heading(k) or separator.fullmatch(k):break
+                data.append([k,v]);j+=2
+            if len(data)>=4:tokens.append(("table",data));i=j;continue
+        if is_figure.match(line):tokens.append(("figure",line));i+=1;continue
+        if is_heading(line):tokens.append(("heading",line));i+=1;continue
+        if bullet.match(line):
+            group=[]
+            while i<len(lines) and bullet.match(lines[i]):
+                group.append(bullet.sub("",lines[i]));i+=1
+            tokens.append(("bullets",group));continue
+        paragraph=line
+        last_line=line
+        while i+1<len(lines):
+            next_line=lines[i+1]
+            if (not next_line or is_heading(next_line) or separator.fullmatch(next_line) or is_figure.match(next_line)
+                or bullet.match(next_line) or scenario_header.fullmatch(next_line) or next_line=="Parámetro"):break
+            if len(last_line)>150 or last_line.endswith((".","!","?",":",";","”",'"')):break
+            paragraph+=" "+next_line
+            last_line=next_line;i+=1
+        tokens.append(("paragraph",paragraph));i+=1
+    return tokens
+
 def styles():
     base=getSampleStyleSheet()
     return {
@@ -101,7 +219,7 @@ def styles():
       "subtitle":ParagraphStyle("MidasSub",parent=base["Normal"],fontName=FONT,fontSize=8,leading=13,textColor=MUTED,spaceAfter=15),
       "heading":ParagraphStyle("MidasHeading",parent=base["Heading2"],fontName=FONT_BOLD,fontSize=14,leading=19,textColor=NAVY,spaceBefore=16,spaceAfter=10,keepWithNext=True),
       "minor":ParagraphStyle("MidasMinor",parent=base["Heading3"],fontName=FONT_BOLD,fontSize=10,leading=15,textColor=NAVY,spaceBefore=14,spaceAfter=6,keepWithNext=True),
-      "text":ParagraphStyle("MidasText",parent=base["BodyText"],fontName=FONT,fontSize=8.6,leading=14,textColor=NAVY,spaceAfter=8,splitLongWords=True),
+      "text":ParagraphStyle("MidasText",parent=base["BodyText"],fontName=FONT,fontSize=9.2,leading=15.3,textColor=NAVY,spaceAfter=10,splitLongWords=True),
       "small":ParagraphStyle("MidasSmall",parent=base["Normal"],fontName=FONT,fontSize=7.3,leading=11,textColor=MUTED,spaceAfter=8,splitLongWords=True),
       "meta":ParagraphStyle("MidasMeta",parent=base["Normal"],fontName=FONT_BOLD,fontSize=7.1,leading=10,textColor=MUTED),
       "metric":ParagraphStyle("MidasMetric",parent=base["Normal"],fontName=FONT_BOLD,fontSize=10,leading=15,textColor=NAVY,splitLongWords=True),
@@ -159,6 +277,16 @@ def report_pdf(record, extra, target):
     heading("4. Valoración y escenarios")
     drawing=chart(record)
     if drawing:story.append(drawing)
+    for label,figure_fn,footnote in [
+       ("Lectura visual A · Trayectorias matemáticas 2026–2031",trajectory_chart,"Interpolación geométrica ilustrativa; no son previsiones anuales."),
+       ("Lectura visual B · Retorno acumulado del precio en cinco años",accumulated_chart,"Objetivo frente al precio histórico; excluye dividendos."),
+       ("Lectura visual C · Referencia, umbral P15 y Base",entry_chart,"El umbral de entrada es histórico, no una cotización ni instrucción de compra.")
+    ]:
+        graph=figure_fn(record)
+        if graph is not None:
+            para(label,"minor")
+            story.append(graph)
+            para(footnote,"small")
     rows=[[P(k,s["meta"]) for k in ["ESCENARIO","PRECIO OBJETIVO FY2031","CAGR HISTÓRICO"]]]
     for title,price,cagr in [("Bajista","bearTarget","bearCagr"),("Central","baseTarget","baseCagr"),("Alcista","bullTarget","bullCagr")]:
         rows.append([P(title,s["text"]),P(amount(record.get(price),cc),s["text"]),P(percent(record.get(cagr)),s["text"])])
@@ -178,14 +306,35 @@ def report_pdf(record, extra, target):
     heading("7. Investigación íntegra" if extra else "7. Estado documental")
     source=(extra or {}).get("source_text","")
     if source:
-        for block in re.split(r"\n\s*\n",source.replace("\r","")):
-            block=block.strip()
-            if not block:continue
-            if len(block)<125 and (re.match(r"^\d{1,2}[.)]\s",block) or (block.isupper() and len(block)>10)):
-                para(block,"minor")
-            else:
-                for start in range(0,len(block),1800):
-                    para(block[start:start+1800])
+        for kind,value in canonical_source_blocks(source):
+            if kind=="heading":
+                para(value,"minor")
+            elif kind=="frontmatter":
+                para(value,"small")
+            elif kind=="figure":
+                para("Referencia de ilustración del documento original: "+value,"small")
+                para("Serie original no reconstruida al no disponer de la tabla fuente.","small")
+            elif kind=="table":
+                ncol=len(value[0])
+                widths=[(171/ncol)*mm]*ncol
+                matrix=[[P(str(v),s["meta" if i==0 else "small"]) for i,v in enumerate(row)] for row in value]
+                table=Table(matrix,colWidths=widths,repeatRows=1,hAlign="LEFT")
+                table.setStyle(TableStyle([
+                    ("BACKGROUND",(0,0),(-1,0),PALE),
+                    ("LINEBELOW",(0,0),(-1,-1),.45,EDGE),
+                    ("VALIGN",(0,0),(-1,-1),"TOP"),
+                    ("LEFTPADDING",(0,0),(-1,-1),9),
+                    ("RIGHTPADDING",(0,0),(-1,-1),9),
+                    ("TOPPADDING",(0,0),(-1,-1),7),
+                    ("BOTTOMPADDING",(0,0),(-1,-1),7),
+                ]))
+                story.append(table)
+                story.append(Spacer(1,8))
+            elif kind=="bullets":
+                for item in value:
+                    para("• "+item)
+            elif kind=="paragraph":
+                para(value)
     else:
         para("No se ha aprobado todavía un informe ejecutivo íntegro para esta compañía. La ficha recoge solo los datos del expediente histórico.","small")
     heading("8. Conclusión de inversión")
