@@ -57,10 +57,18 @@ export function verifyPublicCloseFeed(doc,allowedTickers,now=Date.now()){
    throw Error("Fecha de obtención de los cierres no válida");
  const quotes=new Map();
  const day=new Date(now).toISOString().slice(0,10);
+ const nyParts=Object.fromEntries(new Intl.DateTimeFormat("en-US",{
+  timeZone:"America/New_York",year:"numeric",month:"2-digit",day:"2-digit",hour:"2-digit",
+  minute:"2-digit",hourCycle:"h23"
+ }).formatToParts(new Date(now)).filter(x=>x.type!=="literal").map(x=>[x.type,x.value]));
+ const nyDay=nyParts.year+"-"+nyParts.month+"-"+nyParts.day;
+ const nyMinute=Number(nyParts.hour)*60+Number(nyParts.minute);
  for(const q of doc.quotes){
   if(!q||typeof q.ticker!=="string"||!allowedTickers.has(q.ticker)||quotes.has(q.ticker)||
      !/^\d{4}-\d{2}-\d{2}$/.test(q.session)||q.session>day||
      !Number.isFinite(Date.parse(q.session+"T00:00:00Z"))||
+     new Date(q.session+"T00:00:00Z").toISOString().slice(0,10)!==q.session||
+     (q.session===nyDay&&nyMinute<16*60+15)||
      !Number.isFinite(q.close)||q.close<=0||q.close>1e9||
      !["USD","EUR","GBP","JPY"].includes(q.currency))
    throw Error("Cotización sin fecha, símbolo o valor admisibles");
