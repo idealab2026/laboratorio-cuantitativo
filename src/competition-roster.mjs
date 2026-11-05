@@ -188,7 +188,7 @@ export function sortFullCompetitionRows(rows,{key="name",ascending=true}={}){
  * These ranges are versioned against the audited 64-slot public roster:
  *  - IL-001..009: retired 8-asset campaign
  *  - IL-010..044: current paper cohort (daily/weekly/genetic, benchmarks too)
- *  - IL-045..048: retired TFM campaign
+ *  - IL-045..048: retired four-model historical campaign
  *  - IL-049..064: unfunded/unadmitted historical ideas or development
  */
 export const COMPETITION_PHASES=Object.freeze(["active","obsolete","development"]);
