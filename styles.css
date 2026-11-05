@@ -819,7 +819,7 @@ p{line-height:1.6;text-align:justify;text-align-last:left;hyphens:auto}p.lead{co
 .thesis-public-table{max-width:100%;overflow-x:auto}
 .thesis-public-table table{table-layout:fixed;min-width:1380px;width:100%;font:500 .72rem/1.4 system-ui,sans-serif}
 .thesis-public-table td,.thesis-public-table th{padding:9px 7px;min-width:0;max-width:none;overflow:hidden;vertical-align:middle}
-.thesis-public-table td:nth-child(1),.thesis-public-table th:nth-child(1){width:6%}
+.table-compact.thesis-public-table td:nth-child(1),.thesis-public-table th:nth-child(1){width:6%;min-width:0}
 .thesis-public-table td:nth-child(2),.thesis-public-table th:nth-child(2){width:16%;min-width:0}
 .thesis-public-table td:nth-child(3),.thesis-public-table th:nth-child(3){width:7%}
 .thesis-public-table td:nth-child(4),.thesis-public-table th:nth-child(4){width:12%}
