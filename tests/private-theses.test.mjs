@@ -68,7 +68,7 @@ test("CAGR2031 private Sheet export overlays only historical numeric scenarios",
 });
 test("Public site never hardcodes canonical private CAGR values",()=>{
  const code=readFileSync(new URL("../src/site.mjs",import.meta.url),"utf8");
- assert.ok(code.includes('id="cagr-file"'));
+ assert.ok(!code.includes('id="cagr-file"'),"El comparador CSV está oculto de la vista pública");
  assert.ok(code.includes("parseLocalCagr2031"));
  assert.ok(!code.includes("−12,25%"));
 });
