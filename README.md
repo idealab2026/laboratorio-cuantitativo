@@ -303,3 +303,33 @@ la propuesta no abre operaciones ni publica rentabilidad.
 ## Admisión independiente de emisores
 
 El catálogo público se limita a Microsoft (screening exploratorio con fuente primaria fechada) y Rocket Lab (identidad bursátil contrastada en sus Investor FAQs). Cualquier alta adicional requiere revisión explícita de fuentes y procedencia. La selección de expedientes del archivo previo permanece en custodia privada y no se usa como lista pública. Los lectores locales siguen disponibles para consultar ese archivo sin transferirlo.
+
+
+## Seguimiento de tesis — cierres bursátiles (noviembre de 2026)
+
+La vista pública `?view=theses` diferencia expresamente el **precio de referencia
+histórico de una tesis** de la **última cotización de cierre verificable**.
+No se modifica el CAGR, la fecha del estudio, los escenarios ni las entradas de 15 %.
+
+- La interfaz consulta `data/public-closes.json` al abrirse y cada 180 segundos
+  mientras la pestaña de seguimiento esté visible; es una **relectura del archivo
+  publicado**, no una petición al proveedor de bolsa cada tres minutos.
+- El archivo se distribuye inicialmente como `not_configured`, sin precios.
+  Hasta disponer de un proveedor con permisos de visualización y redistribución
+  pública, el último cierre figurará `N/D`. Los precios del estudio no se
+  reutilizan como si fuesen precios actuales.
+- Para activar el feed deben acreditarse derechos de fuente y publicación,
+  capturar únicamente sesiones de mercado finalizadas y escribir en el esquema
+  `midas.public_closes.v1` la fuente, su enlace HTTPS, el sello temporal y cada
+  `{ticker,session,close,currency}`. La bandera contractual requerida es
+  `source.display_rights = confirmed_public_redistribution`. La validación
+  rechaza importes no numéricos, símbolos ajenos, fechas futuras y duplicados.
+- Las capturas comunes Yahoo/yfinance de `market_data/` mantienen su contrato
+  operacional independiente; **no autorizan automáticamente su divulgación**
+  en GitHub Pages. La cadencia real del EOD será la del proveedor autorizado,
+  habitualmente una publicación por sesión cerrada, no una cotización cada 180 s.
+- No hay un recolector EOD público habilitado actualmente. La alimentación
+  productiva exige un feed licenciado y un publicador con control de fuente y QA.
+
+La tabla delimita el ancho de resultados y estados; el botón abre la tesis en una
+pestaña nueva y conserva el resumen histórico dentro de esa ficha, no bajo la tabla.

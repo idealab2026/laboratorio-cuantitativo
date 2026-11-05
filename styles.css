@@ -813,3 +813,30 @@ p{line-height:1.6;text-align:justify;text-align-last:left;hyphens:auto}p.lead{co
 @media(max-width:600px){
   .session-live-cohort{padding:9px;gap:5px 7px;font-size:.7rem}
 }
+
+
+/* Tesis: ancho determinista y contenido largo encapsulado (sin solapes). */
+.thesis-public-table{max-width:100%;overflow-x:auto}
+.thesis-public-table table{table-layout:fixed;min-width:1380px;width:100%;font:500 .72rem/1.4 system-ui,sans-serif}
+.thesis-public-table td,.thesis-public-table th{padding:9px 7px;min-width:0;max-width:none;overflow:hidden;vertical-align:middle}
+.table-compact.thesis-public-table td:nth-child(1),.thesis-public-table th:nth-child(1){width:6%;min-width:0}
+.thesis-public-table td:nth-child(2),.thesis-public-table th:nth-child(2){width:16%;min-width:0}
+.thesis-public-table td:nth-child(3),.thesis-public-table th:nth-child(3){width:7%}
+.thesis-public-table td:nth-child(4),.thesis-public-table th:nth-child(4){width:12%}
+.thesis-public-table td:nth-child(5),.thesis-public-table th:nth-child(5),
+.thesis-public-table td:nth-child(6),.thesis-public-table th:nth-child(6),
+.thesis-public-table td:nth-child(7),.thesis-public-table th:nth-child(7){width:7%}
+.thesis-public-table td:nth-child(8),.thesis-public-table th:nth-child(8){width:7%}
+.thesis-public-table td:nth-child(9),.thesis-public-table th:nth-child(9){width:8%}
+.thesis-public-table td:nth-child(10),.thesis-public-table th:nth-child(10){width:13%}
+.thesis-public-table td:nth-child(11),.thesis-public-table th:nth-child(11){width:10%}
+.thesis-public-table th .table-sort{white-space:normal;line-height:1.3;overflow-wrap:normal}
+.thesis-public-table .thesis-earnings{display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%}
+.thesis-public-table .thesis-close{display:block;font-weight:700;white-space:nowrap}
+.thesis-public-table .thesis-quote-date{display:block;color:#74869a;font:.65rem/1.35 system-ui,sans-serif;margin-top:3px;white-space:normal}
+.thesis-public-table td:last-child{white-space:normal;overflow-wrap:anywhere}
+.thesis-public-table td:last-child .smallbtn{display:inline-flex;align-items:center;justify-content:center;vertical-align:top;line-height:1.3;min-height:30px;margin-bottom:5px;white-space:nowrap}
+.thesis-public-table td:last-child .smallline{display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;line-clamp:2;overflow:hidden;white-space:normal;line-height:1.4;margin-top:2px;overflow-wrap:anywhere}
+.thesis-public-table td:nth-child(2) .smallline{white-space:normal;overflow-wrap:anywhere;line-height:1.35}
+.thesis-quotes-status{font:500 .73rem/1.5 system-ui,sans-serif;color:#60738a;margin:0 0 9px}
+@media(max-width:700px){.thesis-public-table table{min-width:1320px}}

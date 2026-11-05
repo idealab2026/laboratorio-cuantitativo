@@ -36,6 +36,47 @@ export function verifyPublicTheses(doc){
  }
  return {count:doc.records.length,withCagr:doc.records.filter(r=>r.baseCagr!==null).length,withPrice:doc.records.filter(r=>r.recordedPrice!==null).length};
 }
+
+/* Only independently licensed, already-closed public quotes may replace the table's
+   last-close column; historical thesis anchors are never recalculated here. */
+export function verifyPublicCloseFeed(doc,allowedTickers,now=Date.now()){
+ if(!doc||doc.schema!=="midas.public_closes.v1"||!Array.isArray(doc.quotes)||
+    !["not_configured","verified"].includes(doc.status)||doc.quotes.length>1000)
+  throw Error("Feed de cierres no válido");
+ if(doc.status==="not_configured"){
+  if(doc.quotes.length||doc.source!==null||doc.collected_at!==null)throw Error("Feed no habilitado con precios");
+  return {status:"not_configured",quotes:new Map(),source:null};
+ }
+ const source=doc.source;
+ if(!source||source.display_rights!=="confirmed_public_redistribution"||
+    typeof source.name!=="string"||source.name.length<2||source.name.length>90||
+    !/^https:\/\//.test(source.url||"")||/[@<>]/.test(source.url))
+   throw Error("Derechos públicos o procedencia no acreditados");
+ const stamp=Date.parse(doc.collected_at);
+ if(!Number.isFinite(stamp)||stamp>now+60000||stamp<now-14*86400000)
+   throw Error("Fecha de obtención de los cierres no válida");
+ const quotes=new Map();
+ const day=new Date(now).toISOString().slice(0,10);
+ const nyParts=Object.fromEntries(new Intl.DateTimeFormat("en-US",{
+  timeZone:"America/New_York",year:"numeric",month:"2-digit",day:"2-digit",hour:"2-digit",
+  minute:"2-digit",hourCycle:"h23"
+ }).formatToParts(new Date(now)).filter(x=>x.type!=="literal").map(x=>[x.type,x.value]));
+ const nyDay=nyParts.year+"-"+nyParts.month+"-"+nyParts.day;
+ const nyMinute=Number(nyParts.hour)*60+Number(nyParts.minute);
+ for(const q of doc.quotes){
+  if(!q||typeof q.ticker!=="string"||!allowedTickers.has(q.ticker)||quotes.has(q.ticker)||
+     !/^\d{4}-\d{2}-\d{2}$/.test(q.session)||q.session>day||
+     !Number.isFinite(Date.parse(q.session+"T00:00:00Z"))||
+     new Date(q.session+"T00:00:00Z").toISOString().slice(0,10)!==q.session||
+     (q.session===nyDay&&nyMinute<16*60+15)||
+     !Number.isFinite(q.close)||q.close<=0||q.close>1e9||
+     !["USD","EUR","GBP","JPY"].includes(q.currency))
+   throw Error("Cotización sin fecha, símbolo o valor admisibles");
+  quotes.set(q.ticker,{close:q.close,currency:q.currency,session:q.session});
+ }
+ return {status:"verified",quotes,source,updatedAt:doc.collected_at};
+}
+
 function thesisValues(row,records,local){
  const i=row.issuer,r=records.get(i.ticker),l=local.get(i.ticker),s=row.screen;
  return {ticker:i.ticker,company:r?.company||i.company,market:r?.market||i.market,
@@ -52,8 +93,12 @@ function thesisValues(row,records,local){
   target:l?null:r?r.baseTarget:s?.scenarios.base.target??null,
   earnings:r?.earningsRecord||null,report:r?.summary?"Sí":s?"Modelo exploratorio":null};
 }
-export function orderedThesisRows(rows,records,local,sort,ascending){
- const values=new Map(rows.map(row=>[row.issuer.ticker,thesisValues(row,records,local)]));
+export function orderedThesisRows(rows,records,local,sort,ascending,verifiedCloses=new Map()){
+ const values=new Map(rows.map(row=>{
+  const values=thesisValues(row,records,local);
+  if(sort==="price")values.price=verifiedCloses.get(row.issuer.ticker)?.close??null;
+  return [row.issuer.ticker,values];
+ }));
  const texts=new Set(["ticker","company","market","earnings","report"]);
  return rows.sort((a,b)=>{
   const x=values.get(a.issuer.ticker)[sort],y=values.get(b.issuer.ticker)[sort];
@@ -63,18 +108,20 @@ export function orderedThesisRows(rows,records,local,sort,ascending){
   return (ascending?delta:-delta)||a.issuer.ticker.localeCompare(b.issuer.ticker,"es");
  });
 }
-export function publicThesisTableRows(rows,records,local,selected){
+export function publicThesisTableRows(rows,records,local,selected,verifiedCloses=new Map()){
  return rows.map(row=>{
   const v=thesisValues(row,records,local);
-  const price=num(v.price)?money(v.price,v)+" · "+esc(v.priceDate):"N/D";
+  const q=verifiedCloses.get(v.ticker);
+  const price=q?'<strong class="thesis-close">'+money(q.close,q)+'</strong><small class="thesis-quote-date">Cierre '+esc(q.session)+'</small>':
+   '<span class="thesis-close">N/D</span><small class="thesis-quote-date">Sin cierre público verificado</small>';
   return '<tr class="interactive-table-row '+(selected===v.ticker?"is-selected":"")+'" data-issuer-id="'+esc(v.ticker)+'" tabindex="0">'+
    '<td><strong>'+esc(v.ticker)+'</strong></td><td><strong>'+esc(v.company)+'</strong><small class="smallline">'+esc(v.theme)+'</small></td>'+
    '<td>'+esc(v.market)+'</td><td class="number">'+price+'</td>'+
    '<td class="number">'+percent(v.bull)+'</td><td class="number">'+percent(v.bear)+'</td><td class="number">'+percent(v.base)+'</td>'+
    '<td class="number">'+money(v.entry,v)+'</td><td class="number">'+money(v.target,v)+'</td>'+
-   '<td><small>'+esc(v.earnings||"N/D")+'</small></td>'+
+   '<td><span class="thesis-earnings" title="'+esc(v.earnings||"N/D")+'">'+esc(v.earnings||"N/D")+'</span></td>'+
    '<td><a class="smallbtn" href="./index.html?view=thesis&amp;ticker='+encodeURIComponent(v.ticker)+'" target="_blank" rel="noopener noreferrer" aria-label="Abrir análisis de '+esc(v.ticker)+' en nueva pestaña">'+(v.record?"Abrir análisis":row.screen?"Ver modelo":"Ver ficha")+'</a>'+
-   '<small class="smallline">'+esc(v.status)+'</small></td></tr>';
+   '<small class="smallline" title="'+esc(v.status)+'">'+esc(v.status)+'</small></td></tr>';
  }).join("");
 }
 export function publicThesisDetail(r,l){
