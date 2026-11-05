@@ -101,3 +101,7 @@ body.midas-thesis-mode #app{margin-top:26px}
  .thesis-insight-card,.thesis-source-table-wrap,.thesis-source-figure-reference{break-inside:avoid}
  .thesis-report .thesis-source-body .thesis-source-paragraph{font-size:11pt}
 }
+
+
+.thesis-report .thesis-source-body .thesis-source-frontmatter{font:650 12px/1.6 system-ui,-apple-system,sans-serif;color:#69819a;text-transform:none;letter-spacing:.03em;margin:3px 0;white-space:normal}
+.thesis-report .thesis-source-body .thesis-source-frontmatter.thesis-source-cover-title{font:800 19px/1.5 Georgia,"Times New Roman",serif;color:#16385c;margin:7px 0 5px}
