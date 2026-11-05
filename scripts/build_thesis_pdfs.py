@@ -216,7 +216,7 @@ def styles():
       "subtitle":ParagraphStyle("MidasSub",parent=base["Normal"],fontName=FONT,fontSize=8,leading=13,textColor=MUTED,spaceAfter=15),
       "heading":ParagraphStyle("MidasHeading",parent=base["Heading2"],fontName=FONT_BOLD,fontSize=14,leading=19,textColor=NAVY,spaceBefore=16,spaceAfter=10,keepWithNext=True),
       "minor":ParagraphStyle("MidasMinor",parent=base["Heading3"],fontName=FONT_BOLD,fontSize=10,leading=15,textColor=NAVY,spaceBefore=14,spaceAfter=6,keepWithNext=True),
-      "text":ParagraphStyle("MidasText",parent=base["BodyText"],fontName=FONT,fontSize=8.6,leading=14,textColor=NAVY,spaceAfter=8,splitLongWords=True),
+      "text":ParagraphStyle("MidasText",parent=base["BodyText"],fontName=FONT,fontSize=9.2,leading=15.3,textColor=NAVY,spaceAfter=10,splitLongWords=True),
       "small":ParagraphStyle("MidasSmall",parent=base["Normal"],fontName=FONT,fontSize=7.3,leading=11,textColor=MUTED,spaceAfter=8,splitLongWords=True),
       "meta":ParagraphStyle("MidasMeta",parent=base["Normal"],fontName=FONT_BOLD,fontSize=7.1,leading=10,textColor=MUTED),
       "metric":ParagraphStyle("MidasMetric",parent=base["Normal"],fontName=FONT_BOLD,fontSize=10,leading=15,textColor=NAVY,splitLongWords=True),
@@ -274,6 +274,16 @@ def report_pdf(record, extra, target):
     heading("4. Valoración y escenarios")
     drawing=chart(record)
     if drawing:story.append(drawing)
+    for label,figure_fn,footnote in [
+       ("Lectura visual A · Trayectorias matemáticas 2026–2031",trajectory_chart,"Interpolación geométrica ilustrativa; no son previsiones anuales."),
+       ("Lectura visual B · Retorno acumulado del precio en cinco años",accumulated_chart,"Objetivo frente al precio histórico; excluye dividendos."),
+       ("Lectura visual C · Referencia, umbral P15 y Base",entry_chart,"El umbral de entrada es histórico, no una cotización ni instrucción de compra.")
+    ]:
+        graph=figure_fn(record)
+        if graph is not None:
+            para(label,"minor")
+            story.append(graph)
+            para(footnote,"small")
     rows=[[P(k,s["meta"]) for k in ["ESCENARIO","PRECIO OBJETIVO FY2031","CAGR HISTÓRICO"]]]
     for title,price,cagr in [("Bajista","bearTarget","bearCagr"),("Central","baseTarget","baseCagr"),("Alcista","bullTarget","bullCagr")]:
         rows.append([P(title,s["text"]),P(amount(record.get(price),cc),s["text"]),P(percent(record.get(cagr)),s["text"])])
@@ -293,14 +303,33 @@ def report_pdf(record, extra, target):
     heading("7. Investigación íntegra" if extra else "7. Estado documental")
     source=(extra or {}).get("source_text","")
     if source:
-        for block in re.split(r"\n\s*\n",source.replace("\r","")):
-            block=block.strip()
-            if not block:continue
-            if len(block)<125 and (re.match(r"^\d{1,2}[.)]\s",block) or (block.isupper() and len(block)>10)):
-                para(block,"minor")
-            else:
-                for start in range(0,len(block),1800):
-                    para(block[start:start+1800])
+        for kind,value in canonical_source_blocks(source):
+            if kind=="heading":
+                para(value,"minor")
+            elif kind=="figure":
+                para("Referencia de ilustración del documento original: "+value,"small")
+                para("Serie original no reconstruida al no disponer de la tabla fuente.","small")
+            elif kind=="table":
+                ncol=len(value[0])
+                widths=[(171/ncol)*mm]*ncol
+                matrix=[[P(str(v),s["meta" if i==0 else "small"]) for i,v in enumerate(row)] for row in value]
+                table=Table(matrix,colWidths=widths,repeatRows=1,hAlign="LEFT")
+                table.setStyle(TableStyle([
+                    ("BACKGROUND",(0,0),(-1,0),PALE),
+                    ("LINEBELOW",(0,0),(-1,-1),.45,EDGE),
+                    ("VALIGN",(0,0),(-1,-1),"TOP"),
+                    ("LEFTPADDING",(0,0),(-1,-1),9),
+                    ("RIGHTPADDING",(0,0),(-1,-1),9),
+                    ("TOPPADDING",(0,0),(-1,-1),7),
+                    ("BOTTOMPADDING",(0,0),(-1,-1),7),
+                ]))
+                story.append(table)
+                story.append(Spacer(1,8))
+            elif kind=="bullets":
+                for item in value:
+                    para("• "+item)
+            elif kind=="paragraph":
+                para(value)
     else:
         para("No se ha aprobado todavía un informe ejecutivo íntegro para esta compañía. La ficha recoge solo los datos del expediente histórico.","small")
     heading("8. Conclusión de inversión")
