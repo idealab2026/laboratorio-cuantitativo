@@ -373,7 +373,8 @@ def report_pdf(record, extra, target):
     heading("2. Negocio y ventajas competitivas")
     para((extra or {}).get("business") or record.get("summary") or "No documentado")
     heading("3. Hipótesis y catalizadores")
-    para((extra or {}).get("drivers") or record.get("drivers") or "No documentado")
+    for item in editorial_items((extra or {}).get("drivers") or record.get("drivers") or "No documentado"):
+        para("• "+item)
     heading("4. Valoración y escenarios")
     drawing=chart(record)
     if drawing:story.append(drawing)
@@ -400,7 +401,8 @@ def report_pdf(record, extra, target):
         v=record["priceFor15"] if own else (record.get("baseTarget")/((1+rate)**5) if numeric(record.get("baseTarget")) else None)
         para(str(int(rate*100))+" % anual: "+amount(v,cc)+(" · Expediente original" if own else " · Cálculo indicativo"),"small")
     heading("5. Riesgos e invalidación")
-    para((extra or {}).get("risks") or record.get("risks") or "No documentado")
+    for item in editorial_items((extra or {}).get("risks") or record.get("risks") or "No documentado"):
+        para("• "+item)
     heading("6. Resultados y seguimiento")
     para(record.get("earningsRecord") or "Sin fechas documentales verificadas")
     heading("7. Investigación íntegra" if extra else "7. Estado documental")
