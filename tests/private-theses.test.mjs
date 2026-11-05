@@ -115,7 +115,7 @@ test("The public issuer table and CSV keep independently evaluated screens when 
  assert.equal(valued[12],"Screening exploratorio");
  assert.equal(pending[3],"N/D");
  const html=publicThesisTableRows(rows,new Map(),new Map(),"MSFT");
- assert.ok(html.includes("Sin cierre público verificado"));
+ assert.ok(html.includes("s.tradingview.com/embed-widget/single-quote/"));
  assert.ok(html.includes("Screening exploratorio"));
  for(const ascending of [true,false]){
   assert.equal(orderedThesisRows([...rows],new Map(),new Map(),"base",ascending)[0].issuer.ticker,"MSFT");
@@ -187,7 +187,7 @@ test("Last-close feed refuses unlicensed or future stock quotes and preserves th
  const rows=[{issuer:{ticker:"MSFT",company:"Microsoft",market:"NASDAQ",currency:"USD",sector:"Software"},screen:null}];
  const records=new Map([["MSFT",record]]);
  const absent=publicThesisTableRows(rows,records,new Map(),null);
- assert.match(absent,/Sin cierre público verificado/);
+ assert.match(absent,/s.tradingview.com\/embed-widget\/single-quote/);
  assert.doesNotMatch(absent,/526,30/);
  const verified=publicThesisTableRows(rows,records,new Map(),null,accepted.quotes);
  assert.match(verified,/543,21/);
@@ -197,4 +197,27 @@ test("Last-close feed refuses unlicensed or future stock quotes and preserves th
  assert.match(css,/\.thesis-public-table table\{table-layout:fixed/);
  assert.match(css,/\.thesis-public-table td:last-child \.smallbtn\{display:inline-flex/);
  assert.match(css,/\.thesis-public-table \.thesis-earnings\{display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis/);
+});
+
+test("A licensed market-price widget supplies a visible quote without scraping or republishing it",async()=>{
+ const {tradingViewSymbol,tradingViewPriceWidget,publicThesisTableRows}=await import("../src/public-theses.mjs");
+ for(const [ticker,market,expected] of [
+  ["MSFT","NASDAQ","NASDAQ:MSFT"],["CAT","NYSE","NYSE:CAT"],
+  ["6324","Tokyo Stock Exchange","TSE:6324"],["ACS.MC","BME","BME:ACS"],
+  ["ZEG.L","London Stock Exchange","LSE:ZEG"],["XE","","NASDAQ:XE"],
+  ["MOG.A","","NYSE:MOG.A"],["MP","","NYSE:MP"],["SYM","","NASDAQ:SYM"]
+ ])assert.equal(tradingViewSymbol(ticker,market),expected);
+ assert.equal(tradingViewSymbol("FROG",""),null);
+ assert.equal(tradingViewSymbol("<script>","NASDAQ"),null);
+ const sample=tradingViewPriceWidget("MSFT","NASDAQ");
+ assert.match(sample,/iframe loading="lazy"/);
+ assert.match(sample,/referrerpolicy="no-referrer"/);
+ assert.match(sample,/s.tradingview.com\/embed-widget\/single-quote/);
+ assert.match(sample,/tradingview.com\/symbols\//);
+ assert.doesNotMatch(sample,/526,30/);
+ const site=readFileSync(new URL("../src/site.mjs",import.meta.url),"utf8");
+ assert.match(site,/Cotizaciones mostradas por TradingView/);
+ const html=readFileSync(new URL("../index.html",import.meta.url),"utf8");
+ assert.match(html,/frame-src https:\/\/s.tradingview.com/);
+ assert.ok(!html.includes("script-src 'self' https://"));
 });

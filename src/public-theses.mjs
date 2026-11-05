@@ -108,12 +108,35 @@ export function orderedThesisRows(rows,records,local,sort,ascending,verifiedClos
   return (ascending?delta:-delta)||a.issuer.ticker.localeCompare(b.issuer.ticker,"es");
  });
 }
+/* TradingView embeds its own delayed quotes. No vendor prices are copied to MIDAS.
+   Exact market identity is needed: ticker alone can represent another instrument. */
+export function tradingViewSymbol(ticker,market){
+ if(typeof ticker!=="string"||!/^[A-Z0-9]{1,8}(?:\.[A-Z]{1,3})?$/.test(ticker))return null;
+ const exchange=market==="NASDAQ"?"NASDAQ":market==="NYSE"?"NYSE":
+  market==="Tokyo Stock Exchange"?"TSE":market==="London Stock Exchange"?"LSE":
+  market==="BME"?"BME":null;
+ const known={"XE":"NASDAQ","MP":"NYSE","SYM":"NASDAQ","MOG.A":"NYSE"};
+ const prefix=exchange||known[ticker];
+ if(!prefix)return null;
+ const symbol=prefix==="BME"?ticker.replace(/\.MC$/,""):prefix==="LSE"?ticker.replace(/\.L$/,""):ticker;
+ return prefix+":"+symbol;
+}
+export function tradingViewPriceWidget(ticker,market){
+ const symbol=tradingViewSymbol(ticker,market);
+ if(!symbol)return '<span class="thesis-close">N/D</span><small class="thesis-quote-date">Mercado pendiente de verificar</small>';
+ const config={symbol,width:"100%",locale:"es",colorTheme:"light",isTransparent:true};
+ const source="https://s.tradingview.com/embed-widget/single-quote/?locale=es#"+encodeURIComponent(JSON.stringify(config));
+ const link="https://www.tradingview.com/symbols/"+encodeURIComponent(symbol.replace(":","-"))+"/";
+ return '<div class="thesis-market-quote"><iframe loading="lazy" title="Cotización externa de '+esc(ticker)+' (TradingView)" src="'+esc(source)+'" referrerpolicy="no-referrer" width="180" height="90"></iframe>'+
+  '<small class="thesis-quote-date"><a href="'+esc(link)+'" rel="noopener noreferrer" target="_blank">TradingView</a> · cotización externa</small></div>';
+}
+
 export function publicThesisTableRows(rows,records,local,selected,verifiedCloses=new Map()){
  return rows.map(row=>{
   const v=thesisValues(row,records,local);
   const q=verifiedCloses.get(v.ticker);
   const price=q?'<strong class="thesis-close">'+money(q.close,q)+'</strong><small class="thesis-quote-date">Cierre '+esc(q.session)+'</small>':
-   '<span class="thesis-close">N/D</span><small class="thesis-quote-date">Sin cierre público verificado</small>';
+   tradingViewPriceWidget(v.ticker,v.market);
   return '<tr class="interactive-table-row '+(selected===v.ticker?"is-selected":"")+'" data-issuer-id="'+esc(v.ticker)+'" tabindex="0">'+
    '<td><strong>'+esc(v.ticker)+'</strong></td><td><strong>'+esc(v.company)+'</strong><small class="smallline">'+esc(v.theme)+'</small></td>'+
    '<td>'+esc(v.market)+'</td><td class="number">'+price+'</td>'+
