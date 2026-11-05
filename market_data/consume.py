@@ -28,6 +28,7 @@ def canonical(session: str, requested, root: Path) -> tuple[dict, dict]:
     return bars, {"status": "common_raw_primary", "hash": data["base"]["sha256"],
                   "effective_sha256": data["effective_sha256"],
                   "revision_hashes": data["revision_hashes"],
+                  "recovered_bar_methods": {s:m for s,m in data["observation_methods"].items() if s in requested},
                   "missing": sorted(requested & set(data["missing"])),
                   "independent_symbols": sorted(requested - set(data["base"]["requested_symbols"]))}
 

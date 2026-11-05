@@ -93,3 +93,23 @@ inactivo y la reanudación se fija en una apertura futura. Los derechos de cobro
 corporativos conservan su valoración provisional y no se convierten en efectivo.
 Las acciones corporativas no revisadas o cotizaciones ausentes siguen bloqueando
 la recuperación; nunca usar cierres rellenados ni resultados sintéticos.
+
+## Recuperación verificable de discrepancias del proveedor
+
+La captura diaria original sigue siendo inmutable. Si una barra diaria de Yahoo
+presenta un rango imposible, se conserva rechazada. Solo se puede añadir una
+observación derivada si la cinta de cinco minutos cubre toda la sesión regular
+XNYS, sin huecos ni barras inválidas, y sus aperturas y cierres coinciden con los
+anclajes diarios RAW. H/L proceden de los extremos realmente observados en esa
+cinta; O/C y volumen conservan los valores diarios. No se recortan rangos al
+precio de apertura ni se rellenan intervalos. La revisión conserva ambos cuerpos
+HTTP originales, sus URLs, hashes y el método `yahoo_regular_range_daily_ocv_v1`.
+El lector vuelve a verificar y reproducir la derivación al consumirla.
+
+Una cartera pasiva sin stops ni ventas pendientes puede valorarse con el cierre
+fechado coincidente de las lecturas diaria e intradía, aunque no exista un rango
+completo. Esos registros se guardan aparte en `XNYS/FECHA.closes/`, con alcance
+`passive_nav_only`; nunca entran en el mapa canónico de barras ni permiten
+compraventas o señales intradía. Se conservan posiciones, caja, operaciones e
+histórico anteriores. Dividendos, splits, conflictos de cierre o ausencia de un
+cierre terminal siguen bloqueando la recuperación hasta su revisión.

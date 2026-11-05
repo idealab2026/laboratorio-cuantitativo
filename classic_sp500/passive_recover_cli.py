@@ -42,10 +42,8 @@ def recover(*, root=ROOT, write=False, clock=None):
         return [str(x.date()) for x in index if str(x.date()) > start]
 
     def quote_loader(day):
-        effective = load_effective(root / "market_data/snapshots", day)
-        return effective["bars"], {
-            "snapshot_sha256": effective["base"]["sha256"],
-            "effective_sha256": effective["effective_sha256"]}
+        from market_data.close_marks import passive_marks
+        return passive_marks(root / "market_data/snapshots", day)
 
     reviews = classic.market.read(root / "market_data/corporate_action_reviews.json")
     # Make accounting blockers visible to audit; do not auto-approve vendor

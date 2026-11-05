@@ -45,6 +45,7 @@ def inspect_source(root: Path, session: str, *, now=None) -> dict:
             "sha256": record["sha256"], "captured_at_utc": record["captured_at_utc"],
             "effective_sha256": effective["effective_sha256"],
             "revision_hashes": effective["revision_hashes"],
+            "recovered_bar_methods": effective["observation_methods"],
             "age_seconds": int(age), "coverage": {
                 "observed": len(effective["bars"]), "requested": 504,
                 "missing": len(effective["missing"]),
