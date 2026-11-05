@@ -264,6 +264,7 @@ export function renderCanonicalSource(source,record=null){
     if(!next||decoration(next)||heading(next)||semanticHeading(next,record?.ticker||"")||runningHeader(next,record?.ticker)||(record?.ticker&&semanticBlock(lines,i+1,record.ticker))||figure(next)||(record?.ticker&&isHistoricalFigure(next))||bullet(next)||startsScenario(lines,i+1)||next==="Parámetro"||/^Hurdle anual\b|^Entrada USD\b/iu.test(next))break;
     // Merge hard-wrapped PDF lines to the next sentence boundary, not an
     // arbitrary number of characters; leave pre-formatted long lines alone.
+    if(lastLine.includes("Referencia externa omitida en edición pública")||next.includes("Referencia externa omitida en edición pública"))break;
     if(lastLine.length>150||/[.!?:;”"]$/u.test(lastLine))break;
     paragraph+=" "+next;lastLine=next;i++;
   }
