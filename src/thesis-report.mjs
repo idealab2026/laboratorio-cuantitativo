@@ -1,4 +1,5 @@
 import {renderCanonicalSource,renderExplanatoryCharts,renderFocusList} from "./thesis-insights.mjs?v=bcbecb4d97ea";
+import {renderFinancialSankey} from "./financial-sankey.mjs";
 /* IDEA LAB / MIDAS — one editorial renderer for every public investment thesis.
    Immutable source: data/public-theses.json. Canonical prose is only shown when
    data/thesis-reports.json passed its public redaction/approval contract. */
@@ -8,7 +9,7 @@ const fmt=(n,d=2)=>valid(n)?new Intl.NumberFormat("es-ES",{minimumFractionDigits
 const money=(n,c)=>valid(n)?fmt(n)+" "+h(c||"USD"):"N/D";
 const pct=n=>valid(n)?(n>0?"+":"")+fmt(n)+" %":"N/D";
 const tickerPattern=/^[A-Z0-9]{1,8}(?:\.[A-Z]{1,3})?$/;
-const SECTIONS=[["summary","Resumen para el comité"],["business","Negocio y ventajas competitivas"],["drivers","Hipótesis y catalizadores"],["valuation","Valoración y escenarios"],["risks","Riesgos e invalidación"],["monitoring","Seguimiento documental"],["original","Investigación íntegra"],["conclusion","Conclusión de inversión"]];
+const SECTIONS=[["summary","Resumen para el comité"],["business","Negocio y ventajas competitivas"],["financial","Mapa financiero oficial · Sankey"],["drivers","Hipótesis y catalizadores"],["valuation","Valoración y escenarios"],["risks","Riesgos e invalidación"],["monitoring","Seguimiento documental"],["original","Investigación íntegra"],["conclusion","Conclusión de inversión"]];
 const sec=(id,title,body)=>'<section class="thesis-report-section" id="report-'+id+'"><h2>'+h(title)+'</h2>'+body+'</section>';
 function paragraphs(value){
  const text=String(value??"").trim();
@@ -63,7 +64,7 @@ export function verifyFullReports(doc,allowed){
  }
  return out;
 }
-export function renderThesisReport(record,full=null){
+export function renderThesisReport(record,full=null,financial=null,financialPeriod=null){
  if(!record||!tickerPattern.test(record.ticker||""))return '<p class="thesis-report-muted">No existe informe para el ticker solicitado.</p>';
  const approved=full?.publication_gate==="approved"&&typeof full?.source_text==="string"&&full.source_text.length>500;
  const status=approved?"INFORME EJECUTIVO · EDICIÓN WEB ÍNTEGRA":"FICHA DOCUMENTAL · INFORME ÍNTEGRO NO PUBLICADO";
@@ -87,6 +88,7 @@ export function renderThesisReport(record,full=null){
  return '<article class="thesis-report" data-thesis="'+h(record.ticker)+'">'+cover+'<nav class="thesis-report-nav" aria-label="Apartados del informe">'+nav+'</nav>'+
  sec("summary","Resumen para el comité",snapshot)+
  sec("business","Negocio y ventajas competitivas",paragraphs(full?.business||record.summary))+
+ sec("financial","Mapa financiero oficial · Sankey",renderFinancialSankey(financial,financialPeriod))+
  sec("drivers","Hipótesis y catalizadores",renderFocusList(full?.drivers||record.drivers,"Catalizadores documentados"))+
  sec("valuation","Valoración y escenarios",valuation)+
  sec("risks","Riesgos e invalidación",renderFocusList(full?.risks||record.risks,"Riesgos documentados"))+
