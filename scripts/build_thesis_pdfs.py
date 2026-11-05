@@ -18,7 +18,7 @@ from reportlab.lib.units import mm
 from reportlab.pdfbase import pdfmetrics
 from reportlab.pdfbase.ttfonts import TTFont
 from reportlab.platypus import SimpleDocTemplate, Paragraph, Table, TableStyle, Spacer, KeepTogether
-from reportlab.graphics.shapes import Drawing, Rect, String, Line
+from reportlab.graphics.shapes import Drawing, Rect, String, Line, Circle
 
 TICKER=re.compile(r'^[A-Z0-9]{1,8}(?:\.[A-Z]{1,3})?$')
 BAD_SOURCE=re.compile(r'https?://|[\w.+-]+@[\w.-]+\.[A-Za-z]{2,}|\bpersonal_[a-z0-9_]+', re.I)
@@ -92,6 +92,121 @@ def chart(record):
         out.add(Line(x,23,x,174,strokeColor=GOLD,strokeWidth=1,strokeDashArray=[4,3]))
         out.add(String(95,3,"Referencia histórica: "+amount(reference,record.get("currency","USD")),fontName=FONT,fontSize=8,fillColor=GOLD))
     return out
+
+def trajectory_chart(record):
+    """Geometric interpolation, not a prediction for intermediate fiscal years."""
+    ref=record.get("referencePrice")
+    pairs=[("Bear","bearTarget","#aa5465"),("Base","baseTarget","#1a4674"),("Bull","bullTarget","#168c7b")]
+    filtered=[(name,record.get(key),color) for name,key,color in pairs if numeric(record.get(key)) and record[key]>0]
+    if not numeric(ref) or ref<=0 or not filtered:return None
+    high=max([ref]+[value for _,value,_ in filtered])*1.14
+    dr=Drawing(485,216)
+    l,r,b,t=48,445,34,183
+    for i in range(5):
+        yy=b+(t-b)*i/4
+        dr.add(Line(l,yy,r,yy,strokeColor=EDGE,strokeWidth=.6))
+        dr.add(String(l-5,yy-2,amount(high*i/4,"").strip(),fontName=FONT,fontSize=6.7,fillColor=MUTED,textAnchor="end"))
+    for yr in range(6):
+        xx=l+(r-l)*yr/5
+        dr.add(String(xx,21,str(2026+yr),fontName=FONT,fontSize=7,fillColor=MUTED,textAnchor="middle"))
+    for idx,(name,target,color) in enumerate(filtered):
+        points=[]
+        for yr in range(6):
+            value=ref*((target/ref)**(yr/5))
+            xx=l+(r-l)*yr/5
+            yy=b+(value/high)*(t-b)
+            points.append((xx,yy))
+        for (x1,y1),(x2,y2) in zip(points,points[1:]):
+            dr.add(Line(x1,y1,x2,y2,strokeColor=colors.HexColor(color),strokeWidth=2.3))
+        for x,y in points:dr.add(Circle(x,y,2.7,fillColor=colors.HexColor(color),strokeColor=None))
+        dr.add(Rect(15+idx*150,196,10,7,fillColor=colors.HexColor(color),strokeColor=None))
+        dr.add(String(30+idx*150,195,name+" "+amount(target,record.get("currency") or "USD"),fontName=FONT,fontSize=7.1,fillColor=NAVY))
+    return dr
+
+def accumulated_chart(record):
+    ref=record.get("referencePrice")
+    if not numeric(ref) or ref<=0:return None
+    pairs=[("Bear","bearTarget","#aa5465"),("Base","baseTarget","#1a4674"),("Bull","bullTarget","#168c7b")]
+    vals=[(name,(record[key]/ref-1)*100,color) for name,key,color in pairs if numeric(record.get(key))]
+    if not vals:return None
+    lo=min(0,*[v for _,v,_ in vals]);hi=max(0,*[v for _,v,_ in vals])
+    dr=Drawing(485,150)
+    l,r=105,414
+    zero=l+(-lo)/(hi-lo or 1)*(r-l)
+    dr.add(Line(zero,10,zero,143,strokeColor=MUTED,strokeWidth=1))
+    for i,(name,change,color) in enumerate(vals):
+        y=110-i*47
+        end=zero+change/(hi-lo or 1)*(r-l)
+        dr.add(String(10,y+11,name,fontName=FONT_BOLD,fontSize=9,fillColor=NAVY))
+        dr.add(Rect(min(zero,end),y,max(1,abs(end-zero)),22,fillColor=colors.HexColor(color),strokeColor=None,rx=3,ry=3))
+        label=percent(change)
+        dr.add(String(min(463,max(25,end+7 if change>=0 else end-7)),y+7,label,
+                      fontName=FONT_BOLD,fontSize=8,fillColor=NAVY,textAnchor="start" if change>=0 else "end"))
+    return dr
+
+def entry_chart(record):
+    ref,threshold=record.get("referencePrice"),record.get("priceFor15")
+    if not numeric(ref) or ref<=0 or not numeric(threshold) or threshold<=0:return None
+    vals=[("Referencia histórica",ref,"#b28d4e"),("Umbral P15",threshold,"#1a4674")]
+    base=record.get("baseTarget")
+    if numeric(base) and base>0:vals.append(("Base FY2031",base,"#168c7b"))
+    mx=max(x for _,x,_ in vals)*1.15
+    dr=Drawing(485,150)
+    for i,(label,value,color) in enumerate(vals):
+        y=109-i*45
+        dr.add(String(9,y+8,label,fontName=FONT_BOLD,fontSize=7.8,fillColor=NAVY))
+        right=125+270*value/mx
+        dr.add(Rect(125,y,270*value/mx,25,fillColor=colors.HexColor(color),strokeColor=None,rx=3,ry=3))
+        dr.add(String(min(right+9,460),y+9,amount(value,record.get("currency") or "USD"),
+                      fontName=FONT,fontSize=7.8,fillColor=NAVY))
+    return dr
+
+def canonical_source_blocks(text):
+    """Preserve source order and meaning while repairing flattened text layout."""
+    lines=[x.strip().replace("\t"," ") for x in text.replace("\r","").split("\n")]
+    heading=re.compile(r"^\d{1,2}(?:\.\d+)?[.)]\s+\D")
+    is_figure=re.compile(r"^(?:Figura|Gráfico|Figure|Chart)\s*\d+[.:]",re.I)
+    scenario_header=re.compile(r"^(?:FY2031|Indicador|Escenario|Métrica)$",re.I)
+    separator=re.compile(r"^[_━─═\-\s]{7,}$")
+    bullet=re.compile(r"^(?:[•▪◦]|[-*]\s)\s*")
+    tokens=[];i=0
+    def is_heading(t):
+        return bool(heading.match(t) or re.fullmatch(r"(?:Investment Committee Snapshot|Investment conclusion|Executive summary|Resumen ejecutivo|Conclusión|Riesgos|Catalizadores|Por qué invertir)",t,re.I) or
+                (11<len(t)<115 and re.fullmatch(r"[A-ZÁÉÍÓÚÑ0-9\s·:—–/\-()]+",t) and "USD" not in t and len(t.split())<=12))
+    while i<len(lines):
+        line=lines[i]
+        if not line or separator.fullmatch(line):i+=1;continue
+        if (scenario_header.fullmatch(line) and i+3<len(lines) and re.search("Bear|Bajista",lines[i+1],re.I)
+            and re.search("Base|Central",lines[i+2],re.I) and re.search("Bull|Alcista",lines[i+3],re.I)):
+            data=[["Indicador"]+lines[i+1:i+4]];j=i+4
+            while j+3<len(lines) and len(data)<17:
+                row=lines[j:j+4]
+                if not all(row) or len(row[0])>83 or any(len(x)>80 for x in row[1:]) or is_heading(row[0]) or separator.fullmatch(row[0]):break
+                data.append(row);j+=4
+            if len(data)>=3:tokens.append(("table",data));i=j;continue
+        if line=="Parámetro" and i+1<len(lines) and lines[i+1]=="Referencia del informe":
+            data=[["Parámetro","Referencia del informe"]];j=i+2
+            while j+1<len(lines) and len(data)<25:
+                k,v=lines[j:j+2]
+                if not k or not v or len(k)>88 or len(v)>180 or is_heading(k) or separator.fullmatch(k):break
+                data.append([k,v]);j+=2
+            if len(data)>=4:tokens.append(("table",data));i=j;continue
+        if is_figure.match(line):tokens.append(("figure",line));i+=1;continue
+        if is_heading(line):tokens.append(("heading",line));i+=1;continue
+        if bullet.match(line):
+            group=[]
+            while i<len(lines) and bullet.match(lines[i]):
+                group.append(bullet.sub("",lines[i]));i+=1
+            tokens.append(("bullets",group));continue
+        paragraph=line
+        while i+1<len(lines):
+            next_line=lines[i+1]
+            if (not next_line or is_heading(next_line) or separator.fullmatch(next_line) or is_figure.match(next_line)
+                or bullet.match(next_line) or scenario_header.fullmatch(next_line) or next_line=="Parámetro"):break
+            if len(paragraph)>145 or paragraph.endswith((".","!","?",":",";","”",'"')):break
+            paragraph+=" "+next_line;i+=1
+        tokens.append(("paragraph",paragraph));i+=1
+    return tokens
 
 def styles():
     base=getSampleStyleSheet()
