@@ -56,8 +56,8 @@ def P(text,style):
     return Paragraph(escape(str(text if text is not None else "N/D")).replace("\n","<br/>"),style)
 def verify(theses,reports):
     records=theses.get("records",[])
-    if len(records)!=25 or len({r.get("ticker") for r in records})!=25:
-        raise ValueError("Public thesis catalog must contain 25 unique records")
+    if len(records)!=26 or len({r.get("ticker") for r in records})!=26:
+        raise ValueError("Public thesis catalog must contain 26 unique records")
     if reports.get("schema")!="midas_canonical_web_reports_v1" or not isinstance(reports.get("reports"),list):
         raise ValueError("Canonical report manifest invalid")
     tickers={r["ticker"] for r in records}
@@ -460,7 +460,7 @@ def main():
     output=Path(opt.output);output.mkdir(parents=True,exist_ok=True)
     for record in records:report_pdf(record,reports.get(record["ticker"]),output/(record["ticker"]+".pdf"))
     pdfs=list(output.glob("*.pdf"))
-    if len(pdfs)!=25:raise RuntimeError("Se esperaban 25 PDFs; obtenidos "+str(len(pdfs)))
+    if len(pdfs)!=26:raise RuntimeError("Se esperaban 26 PDFs; obtenidos "+str(len(pdfs)))
     print("OK:",len(pdfs),"PDFs reproducibles desde el catálogo MIDAS")
 
 if __name__=="__main__":main()
