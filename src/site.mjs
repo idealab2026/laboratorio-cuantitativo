@@ -191,7 +191,7 @@ function issuerDetail(ticker){
 
 function theses(){
  if(state.issuerMode==="demo")return syntheticTheses();
- const columns=[["ticker","Ticker"],["company","Nombre empresa"],["market","Mercado"],["price","Cotización"],
+ const columns=[["company","Empresa · cotización"],["market","Mercado"],
  ["bull","Bull 5a"],["bear","Bear 5a"],["base","Central 5a"],["entry","Precio 15 %"],
  ["target","Objetivo 5a"],["earnings","Resultados (registro)"],["report","Ficha pública"]];
  const headers=columns.map(([key,label])=>'<th scope="col" aria-sort="'+(state.issuerSort===key?(state.issuerAsc?"ascending":"descending"):"none")+'"><button class="table-sort" type="button" data-action="issuer-column" data-value="'+key+'" aria-label="Ordenar por '+esc(label)+'">'+esc(label)+' <span aria-hidden="true">'+(state.issuerSort===key?(state.issuerAsc?"↑":"↓"):"↕")+'</span></button></th>').join("");
