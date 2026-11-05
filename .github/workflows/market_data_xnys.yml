@@ -85,6 +85,7 @@ jobs:
           path: |
             market_data/snapshots/XNYS/*.json
             market_data/snapshots/XNYS/*.revisions/*.json
+            market_data/snapshots/XNYS/*.closes/*.json
           if-no-files-found: error
           retention-days: 30
 

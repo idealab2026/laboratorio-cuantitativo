@@ -131,17 +131,56 @@ def recover_missing():
         return {"status": "no_missing_bars", "session": session}
     found, failures = collect(session, missing, include_benchmark=False,
                               attempts=MAX_RECOVERY_RETRIES)
+    # Independent chart receipts recover only missing observations. Invalid daily
+    # ranges need a complete regular tape with matching RAW opening/closing anchors.
+    from market_data.verified_chart import fetch_verified_bar
+    evidence = {}
+    for symbol in sorted(failures)[:MAX_RECOVERY_RETRIES]:
+        try:
+            bar, receipt = fetch_verified_bar(symbol, session)
+            found[symbol] = {k:v for k,v in bar.items() if k != "provider_symbol"}
+            evidence[symbol] = receipt
+            failures.pop(symbol, None)
+        except Exception as exc:
+            failures[symbol] = "verified_chart_rejected_" + type(exc).__name__
+    # Passive buy-and-hold NAV needs only a cross-checked dated close. These
+    # records stay separate and can never provide an opening fill or stop range.
+    from market_data.close_marks import append_marks, load_marks
+    from market_data.verified_chart import fetch_verified_close
+    existing_closes, _, _ = load_marks(SNAPSHOTS, session)
+    passive_held = set()
+    config_path = ROOT / "classic_sp500/config.json"
+    ledger_path = ROOT / "classic_sp500_state/ledger.json"
+    if config_path.exists() and ledger_path.exists():
+        cfg = json.loads(config_path.read_text())
+        ledger = json.loads(ledger_path.read_text())
+        for name, book in ledger.get("books", {}).items():
+            if cfg.get("strategies", {}).get(name, {}).get("kind") == "equal_weight_hold":
+                passive_held.update(book.get("positions", {}))
+    closes, close_evidence = {}, {}
+    for symbol in sorted(set(failures) & passive_held - set(existing_closes)):
+        try:
+            mark, receipt = fetch_verified_close(symbol, session)
+            closes[symbol], close_evidence[symbol] = mark, receipt
+        except Exception:
+            pass  # Absent/conflicting closing evidence remains blocked.
+    if closes:
+        append_marks(SNAPSHOTS, session, closes, close_evidence,
+                     captured_at_utc=datetime.now(timezone.utc).isoformat(timespec="seconds"))
     review = sorted(s for s, r in found.items() if r["dividend"] or r["split"])
     found = {s: r for s, r in found.items() if s not in review}
     if not found:
-        return {"status": "missing_bars_not_recovered", "session": session,
+        return {"status": "passive_close_marks_written" if closes else "missing_bars_not_recovered", "session": session,
+                "passive_closes": sorted(closes),
                 "missing_symbols": missing, "corporate_review_required": review}
     path, record = append_missing(SNAPSHOTS, session, found,
-                                 captured_at_utc=datetime.now(timezone.utc).isoformat(timespec="seconds"))
+                                 captured_at_utc=datetime.now(timezone.utc).isoformat(timespec="seconds"),
+                                 observation_evidence={s:e for s,e in evidence.items() if s in found})
     return {"status": "missing_revision_written", "session": session,
             "sha256": record["sha256"], "parent_sha256": record["parent_sha256"],
             "path": str(path.relative_to(ROOT)), "recovered": sorted(found),
-            "corporate_review_required": review, "still_missing": sorted(failures)}
+            "corporate_review_required": review, "still_missing": sorted(failures),
+            "passive_closes": sorted(closes)}
 
 
 def main():

@@ -36,6 +36,16 @@ def load_effective(root, session):
                 or item.get("sha256") != _digest(item)
                 or path.stem != item["sha256"] or not item.get("bars")):
             raise ValueError("Invalid source revision identity")
+        evidence = item.get("observation_evidence", {})
+        if not isinstance(evidence, dict) or not set(evidence) <= set(item["bars"]):
+            raise ValueError("Unexpected recovery evidence")
+        if evidence:
+            from market_data.verified_chart import reconstruct
+            for symbol, receipt in evidence.items():
+                if (receipt.get("session") != session or
+                    receipt.get("provider_symbol") != provider_symbol(symbol, session) or
+                    reconstruct(receipt) != item["bars"][symbol]):
+                    raise ValueError("Recovery observation and receipt disagree")
         parent = item["parent_sha256"]
         if parent in children:
             raise ValueError("Ambiguous source revision branch")
@@ -44,6 +54,7 @@ def load_effective(root, session):
     head = base["sha256"]
     timestamp = _timestamp(base["captured_at_utc"])
     used = []
+    methods = {}
     while head in children:
         item = children[head]
         newer = _timestamp(item["captured_at_utc"])
@@ -55,16 +66,17 @@ def load_effective(root, session):
                 raise ValueError("Revision corporate action requires separate review")
             bars[symbol] = normalized
             del missing[symbol]
+        methods.update({symbol:receipt["method"] for symbol,receipt in item.get("observation_evidence",{}).items()})
         head, timestamp = item["sha256"], newer
         used.append(head)
     if len(used) != len(records):
         raise ValueError("Unlinked source revision")
     return {"base": base, "bars": bars, "missing": missing,
             "effective_sha256": head, "revision_hashes": used,
-            "last_captured_at_utc": timestamp.isoformat()}
+            "last_captured_at_utc": timestamp.isoformat(), "observation_methods": methods}
 
 
-def append_missing(root, session, observations, *, captured_at_utc):
+def append_missing(root, session, observations, *, captured_at_utc, observation_evidence=None):
     effective = load_effective(root, session)
     if not observations or not set(observations) <= set(effective["missing"]):
         raise ValueError("Revision must contain only genuinely missing symbols")
@@ -79,6 +91,16 @@ def append_missing(root, session, observations, *, captured_at_utc):
             "parent_sha256": effective["effective_sha256"],
             "captured_at_utc": captured_at_utc, "bars": bars,
             "source": base["source"].copy()}
+    if observation_evidence:
+        from market_data.verified_chart import reconstruct
+        if not set(observation_evidence) <= set(bars):
+            raise ValueError("Unexpected recovery evidence")
+        for symbol, receipt in observation_evidence.items():
+            if (receipt.get("session") != session or
+                receipt.get("provider_symbol") != provider_symbol(symbol, session) or
+                reconstruct(receipt) != bars[symbol]):
+                raise ValueError("Recovery observation and receipt disagree")
+        item["observation_evidence"] = observation_evidence
     item["sha256"] = _digest(item)
     folder = revision_dir(root, session)
     folder.mkdir(parents=True, exist_ok=True)

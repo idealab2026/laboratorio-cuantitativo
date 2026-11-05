@@ -561,6 +561,37 @@ class SAndP500ClassicTests(unittest.TestCase):
 
 
 
+    def test_same_cycle_passive_close_recovery_never_supplies_a_tradable_bar(self):
+        from unittest.mock import patch
+        from tempfile import TemporaryDirectory
+        import json
+        prices={"AAPL":{"open":100.,"high":103.,"low":99.,"close":101.},
+                "MSFT":{"open":100.,"high":103.,"low":99.,"close":101.},
+                "SPY":{"open":400.,"high":405.,"low":399.,"close":402.}}
+        state,_=classic.settle(self.config,self.book,"2026-10-14",self.day,prices)
+        old=copy.deepcopy(state["books"]["buy_hold_equal_weight"])
+        full={"SPY":prices["SPY"]}
+        closes={**full,"AAPL":{"date":"2026-10-15","close":102.,"dividend":0.,"split":0.,"price_scope":"passive_close_only"},
+                "MSFT":{"date":"2026-10-15","close":103.,"dividend":0.,"split":0.,"price_scope":"passive_close_only"}}
+        with TemporaryDirectory() as folder:
+            root=Path(folder);path=root/"ledger.json";path.write_text(json.dumps(state))
+            (root/"market_data/snapshots/XNYS/2026-10-15.closes").mkdir(parents=True)
+            (root/"market_data/corporate_action_reviews.json").write_text("{}")
+            with (patch.object(classic,"ROOT",root),
+                  patch.object(classic.market,"calendar",return_value=("2026-10-15","2026-10-14","2026-10-16",False)),
+                  patch.object(classic,"fetch_live",return_value=({},full)),
+                  patch.object(classic,"rank_signals",return_value=({},self.diagnostic)),
+                  patch("market_data.close_marks.passive_marks",return_value=(closes,{"snapshot_sha256":"a"*64,"effective_sha256":"b"*64,"closing_mark_hashes":["c"*64]}))):
+                result=classic.run(Path(__file__).resolve().parents[1]/"config.json",path)
+            got=json.loads(path.read_text())["books"]["buy_hold_equal_weight"]
+            self.assertNotIn("buy_hold_equal_weight",result["paused_books"])
+            self.assertEqual(got["equity"][-1]["date"],"2026-10-15")
+            self.assertEqual(got["positions"],old["positions"])
+            self.assertEqual(got["cash"],old["cash"])
+            self.assertEqual(got["trades"],old["trades"])
+            self.assertEqual(got["equity"][:-1],old["equity"])
+
+
 class SingleSessionRecoveryTests(unittest.TestCase):
     def setUp(self):
         self.config = classic.market.read(Path(__file__).resolve().parents[1] / "config.json")
@@ -660,6 +691,8 @@ class SingleSessionRecoveryTests(unittest.TestCase):
         self.coverage["eligible"] = 1
         with self.assertRaisesRegex(ValueError, "signal coverage"):
             self.recover()
+
+
 
 
 if __name__ == "__main__":

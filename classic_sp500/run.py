@@ -575,9 +575,8 @@ def run(config_path, state_path):
             return [str(value.date()) for value in days if str(value.date()) > start]
 
         def quotes(session):
-            record = load_effective(ROOT / "market_data/snapshots", session)
-            return record["bars"], {"snapshot_sha256": record["base"]["sha256"],
-                                   "effective_sha256": record["effective_sha256"]}
+            from market_data.close_marks import passive_marks
+            return passive_marks(ROOT / "market_data/snapshots", session)
 
         previous_valuations = {name: book["equity"][-1]["date"] for name, book in state["books"].items()}
         state, recovered, blocked = recover_passive_books(
@@ -656,6 +655,13 @@ def run(config_path, state_path):
         t: b["verified_price_source_symbol"] for t, b in today.items()
         if "verified_price_source_symbol" in b}
     updated, changed = settle(config, state, day, previous, today, allow_partial=True)
+    # A complete cross-checked close can mark the passive no-stop book in
+    # this same cycle, without supplying fake intraday bars to trading engines.
+    if changed and (ROOT / "market_data/snapshots/XNYS" / (day + ".closes")).is_dir():
+        updated, _passive_recovered, _passive_blocked = recover_passive_books(
+            config, updated, sessions_after, quotes,
+            recorded_at=datetime.now(timezone.utc).isoformat(timespec="seconds"),
+            reviews=market.read(ROOT / "market_data/corporate_action_reviews.json"))
     paused = {name: item["paused_missing_quotes"]
               for name, item in updated["books"].items()
               if item.get("paused_missing_quotes")}
