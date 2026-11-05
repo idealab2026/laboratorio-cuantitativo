@@ -6,7 +6,7 @@ import {verifyOperationsAudit,renderOperationsAudit,renderTradeLotsTable,summari
 import {parseLocalPaperResults,parseLocalPaperCurves,summarizePrivatePaper} from "./private-paper.mjs?v=4baff08a2202";
 import {signalResearchSummary,methodCatalog} from "./paper-methods.mjs";
 import {parseLocalCagr2031} from "./private-theses.mjs";
-import {verifyPublicTheses,publicResearchRows,orderedThesisRows,publicThesisTableRows,publicThesisDetail,publicThesisCsv} from "./public-theses.mjs?v=6a07e1e7658f";
+import {verifyPublicTheses,publicResearchRows,orderedThesisRows,publicThesisTableRows,publicThesisDetail,publicThesisCsv,verifyPublicCloseFeed} from "./public-theses.mjs?v=6a07e1e7658f";
 import {artificialCampaignComparison} from "./paper-ledger.mjs";
 import {verifyFullRoster,filterRoster,technicalStage,technicalCoverage,verifyStrategyCandidates,filterStrategyCandidates,FULL_SORT_KEYS,sortFullCompetitionRows,COMPETITION_PHASES,strategyCompetitionPhase,partitionCompetitionRows} from "./competition-roster.mjs?v=0e6d86112171";
 import {verifyPaperFeed} from "./paper-feed.mjs";
@@ -14,7 +14,7 @@ import {verify,simulate,rank,valuation,thesisRank,formatPct,money,finite,verifyI
 const $=id=>document.getElementById(id);
 const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 const fmt=n=>finite(n)?new Intl.NumberFormat("es-ES",{maximumFractionDigits:2}).format(n):"N/D";
-const state={data:null,universe:null,fx:null,fxCheck:null,fxStatus:"pending",forecastLedger:null,forecastSummary:null,forecastStatus:"pending",secStatus:"pending",secRead:null,secCatalog:null,yieldDoc:null,yieldCheck:null,yieldStatus:"pending",view:"competition",strategy:"P-01",group:"",sort:"returnPct",asc:false,detailOpen:false,thesis:"T-01",query:"",thesisSort:"central",issuerMode:"catalog",issuerQuery:"",issuerSort:"base",issuerAsc:false,issuerTicker:"MSFT",paperDetail:"M-10",originalPaper:null,originalPaperStatus:"pending",historicalPaper:null,historicalCurves:null,historicalPaperStatus:"pending",fullRoster:null,fullRosterStatus:"pending",strategyCandidates:null,strategyCandidatesStatus:"pending",fullRosterGroup:"",fullRosterQuery:"",fullRosterSort:"return",fullRosterAsc:false,competitionPhase:"active",algorithmId:null,operationsAudit:null,operationsAuditStatus:"pending",auditTicker:null,auditTab:"sessions",auditSort:"recent",auditDesc:true,monitoringTab:"today",monitoringStrategy:"IL-039",monitoringSort:"recent",monitoringDesc:true,executionHistory:null,executionHistoryStatus:"pending",institutionalFeedStatus:"pending",paperFeed:null,paperFeedRead:null,localCagr:new Map(),localCagrError:"",publicTheses:new Map(),publicThesesMetadata:null};
+const state={data:null,universe:null,fx:null,fxCheck:null,fxStatus:"pending",forecastLedger:null,forecastSummary:null,forecastStatus:"pending",secStatus:"pending",secRead:null,secCatalog:null,yieldDoc:null,yieldCheck:null,yieldStatus:"pending",view:"competition",strategy:"P-01",group:"",sort:"returnPct",asc:false,detailOpen:false,thesis:"T-01",query:"",thesisSort:"central",issuerMode:"catalog",issuerQuery:"",issuerSort:"base",issuerAsc:false,issuerTicker:"MSFT",paperDetail:"M-10",originalPaper:null,originalPaperStatus:"pending",historicalPaper:null,historicalCurves:null,historicalPaperStatus:"pending",fullRoster:null,fullRosterStatus:"pending",strategyCandidates:null,strategyCandidatesStatus:"pending",fullRosterGroup:"",fullRosterQuery:"",fullRosterSort:"return",fullRosterAsc:false,competitionPhase:"active",algorithmId:null,operationsAudit:null,operationsAuditStatus:"pending",auditTicker:null,auditTab:"sessions",auditSort:"recent",auditDesc:true,monitoringTab:"today",monitoringStrategy:"IL-039",monitoringSort:"recent",monitoringDesc:true,executionHistory:null,executionHistoryStatus:"pending",institutionalFeedStatus:"pending",paperFeed:null,paperFeedRead:null,localCagr:new Map(),localCagrError:"",publicTheses:new Map(),publicThesesMetadata:null,publicCloses:new Map(),closeFeedStatus:"not_configured",closeFeedSource:null,closeFeedUpdatedAt:null};
 const viewNames=["competition","algorithm","algorithms","theses","thesis","monitoring","method","glossary","ported","full","synthetic"];
 const button=(label,action,value,cls="smallbtn")=>'<button type="button" class="'+cls+'" data-action="'+esc(action)+'" data-value="'+esc(value)+'">'+esc(label)+'</button>';
 const head=(label,title,body)=>'<div class="section-heading"><div><span class="kicker">'+esc(label)+'</span><h2>'+esc(title)+'</h2><p class="section-context">'+esc(body)+'</p></div></div>';
@@ -156,11 +156,11 @@ function secSourcePanel(ticker){
 
 function issuerReadRows(){
  const rows=publicResearchRows(publicIssuerReadModel(state.universe),state.publicTheses,{query:state.issuerQuery,sort:state.issuerSort,ascending:state.issuerAsc});
- return orderedThesisRows(rows,state.publicTheses,state.localCagr,state.issuerSort,state.issuerAsc);
+ return orderedThesisRows(rows,state.publicTheses,state.localCagr,state.issuerSort,state.issuerAsc,state.publicCloses);
 }
 function researchIssuerCount(){return new Set([...state.universe.issuers.map(x=>x.ticker),...state.publicTheses.keys()]).size;}
 function issuerTableRows(){
- return publicThesisTableRows(issuerReadRows(),state.publicTheses,state.localCagr,null);
+ return publicThesisTableRows(issuerReadRows(),state.publicTheses,state.localCagr,null,state.publicCloses);
 }
 
 function issuerDetail(ticker){
@@ -191,7 +191,7 @@ function issuerDetail(ticker){
 
 function theses(){
  if(state.issuerMode==="demo")return syntheticTheses();
- const columns=[["ticker","Ticker"],["company","Nombre empresa"],["market","Mercado"],["price","Precio registrado / fecha"],
+ const columns=[["ticker","Ticker"],["company","Nombre empresa"],["market","Mercado"],["price","Último cierre / sesión"],
  ["bull","Bull 5a"],["bear","Bear 5a"],["base","Central 5a"],["entry","Precio 15 %"],
  ["target","Objetivo 5a"],["earnings","Resultados (registro)"],["report","Ficha pública"]];
  const headers=columns.map(([key,label])=>'<th scope="col" aria-sort="'+(state.issuerSort===key?(state.issuerAsc?"ascending":"descending"):"none")+'"><button class="table-sort" type="button" data-action="issuer-column" data-value="'+key+'" aria-label="Ordenar por '+esc(label)+'">'+esc(label)+' <span aria-hidden="true">'+(state.issuerSort===key?(state.issuerAsc?"↑":"↓"):"↕")+'</span></button></th>').join("");
@@ -201,6 +201,9 @@ function theses(){
  '<div class="source-health-strip"><div><span class="label">Empresas analizadas</span><strong>'+state.publicTheses.size+' tesis</strong><small>Expedientes históricos publicados</small></div>'+
  '<div><span class="label">Modelos exploratorios</span><strong>'+screens+' modelos</strong><small>Escenarios independientes; no tesis aprobadas</small></div>'+
  '<div><span class="label">Corte documental</span><strong>'+esc(state.publicThesesMetadata?.published_as_of||"N/D")+'</strong><small>Los datos no se recalculan en tiempo real</small></div></div>'+
+ '<p class="thesis-quotes-status" id="thesis-quotes-status" role="status">'+(state.closeFeedStatus==="verified"?
+   'Cierres verificados: '+state.publicCloses.size+' empresas · fuente: '+esc(state.closeFeedSource?.name||"no indicada")+' · última ingestión '+esc(state.closeFeedUpdatedAt||"N/D")+'. Revisión de publicación cada 3 minutos.':
+   'Último cierre: N/D hasta disponer de una fuente con permiso de exhibición pública. Se verifica el feed cada 3 minutos; los precios históricos de las tesis no se presentan como cierres actuales.')+'</p>'+
  '<div class="table-scroll table-compact thesis-public-table"><table><thead><tr>'+headers+'</tr></thead><tbody id="issuer-rows">'+issuerTableRows()+'</tbody></table></div>'+
  '<p id="issuer-empty" class="table-note" '+(found?'hidden':'')+'>No hay empresas coincidentes.</p>';
 }
@@ -1237,9 +1240,43 @@ async function init(){
   const stats=verifyPublicTheses(publication);
   state.publicTheses=new Map(publication.records.map(x=>[x.ticker,x]));
   state.publicThesesMetadata={...stats,published_as_of:publication.published_as_of};
-  state.data=data;state.universe=universe;state.view=resolveMidasView();state.algorithmId=new URLSearchParams(location.search).get("algorithm");render();void loadOfficialFx();void loadForecastLedger();void loadSecFilings();void loadOfficialYield();void loadOriginalPaper();void loadHistoricalPaper();void loadFullRoster();void loadStrategyCandidates();void loadInstitutionalPaperFeed();void loadOperationsAudit();void loadExecutionHistory();
+  state.data=data;state.universe=universe;state.view=resolveMidasView();state.algorithmId=new URLSearchParams(location.search).get("algorithm");render();void loadPublicCloses();void loadOfficialFx();void loadForecastLedger();void loadSecFilings();void loadOfficialYield();void loadOriginalPaper();void loadHistoricalPaper();void loadFullRoster();void loadStrategyCandidates();void loadInstitutionalPaperFeed();void loadOperationsAudit();void loadExecutionHistory();
  }catch(e){$("app").textContent="No se ha podido cargar el catálogo de emisores o el laboratorio sintético; no se muestran datos no verificados.";}
 }
+/* The public snapshot is refreshed in-browser; it never queries a market vendor.
+   An authorised EOD publisher must update the canonical JSON independently. */
+let publicCloseLoadInProgress=false;
+async function loadPublicCloses(){
+ if(!state.universe||publicCloseLoadInProgress||document.visibilityState==="hidden")return;
+ publicCloseLoadInProgress=true;
+ const previous=JSON.stringify([...state.publicCloses]);
+ const previousStatus=state.closeFeedStatus;
+ try{
+  const response=await fetch("./data/public-closes.json",{cache:"no-store"});
+  if(!response.ok)throw Error("Public price feed missing");
+  const allowed=new Set([...state.universe.issuers.map(x=>x.ticker),...state.publicTheses.keys()]);
+  const checked=verifyPublicCloseFeed(await response.json(),allowed);
+  state.publicCloses=checked.quotes;
+  state.closeFeedStatus=checked.status;
+  state.closeFeedSource=checked.source;
+  state.closeFeedUpdatedAt=checked.updatedAt||null;
+ }catch(_error){
+  state.publicCloses=new Map();
+  state.closeFeedStatus="unavailable";
+  state.closeFeedSource=null;
+  state.closeFeedUpdatedAt=null;
+ }finally{publicCloseLoadInProgress=false;}
+ if(state.view==="theses"&&(previous!==JSON.stringify([...state.publicCloses])||previousStatus!==state.closeFeedStatus)){
+  const scroll=document.querySelector(".thesis-public-table")?.scrollLeft||0;
+  render();
+  const element=document.querySelector(".thesis-public-table");
+  if(element)element.scrollLeft=scroll;
+ }
+}
+window.setInterval(()=>{if(state.view==="theses")void loadPublicCloses();},180000);
+window.addEventListener("focus",()=>{if(state.view==="theses")void loadPublicCloses();});
+document.addEventListener("visibilitychange",()=>{if(!document.hidden&&state.view==="theses")void loadPublicCloses();});
+
 async function loadOfficialFx(){
  try{
   const res=await fetch("./data/official-fx.json",{cache:"no-store"});
