@@ -197,22 +197,10 @@ function theses(){
  const headers=columns.map(([key,label])=>'<th scope="col" aria-sort="'+(state.issuerSort===key?(state.issuerAsc?"ascending":"descending"):"none")+'"><button class="table-sort" type="button" data-action="issuer-column" data-value="'+key+'" aria-label="Ordenar por '+esc(label)+'">'+esc(label)+' <span aria-hidden="true">'+(state.issuerSort===key?(state.issuerAsc?"↑":"↓"):"↕")+'</span></button></th>').join("");
  const found=issuerReadRows().length;
  const screens=state.universe.publicScreens?.length||0;
- const secExpected=state.universe.issuers.filter(i=>i.secCik).length;
- const indexed=state.secRead?.byTicker.size||0;
  return head("TESIS · SEGUIMIENTO PÚBLICO","Investigación de empresas","Tesis, hipótesis y escenarios históricos de Idea Lab. Cada ficha conserva las fechas y cifras de su estudio; no son cotizaciones actuales ni rentabilidades obtenidas.")+
  '<div class="source-health-strip"><div><span class="label">Empresas analizadas</span><strong>'+state.publicTheses.size+' tesis</strong><small>Expedientes históricos publicados</small></div>'+
  '<div><span class="label">Modelos exploratorios</span><strong>'+screens+' modelos</strong><small>Escenarios independientes; no tesis aprobadas</small></div>'+
  '<div><span class="label">Corte documental</span><strong>'+esc(state.publicThesesMetadata?.published_as_of||"N/D")+'</strong><small>Los datos no se recalculan en tiempo real</small></div></div>'+
- disclaimer("N/D indica que el expediente no contiene esa cifra. Los escenarios históricos se conservan con su fecha y sus reservas; el modelo exploratorio independiente se identifica por separado.")+
- '<p class="table-note">Metadatos SEC contrastados: '+indexed+' de '+secExpected+' emisores con identidad SEC contrastada. Los demás expedientes conservan sus pendientes.</p>'+
- '<details class="panel"><summary>Comparar con un CSV local (solo durante esta sesión)</summary><label><strong>CSV local de CAGR2031</strong><input id="cagr-file" type="file" accept=".csv,text/csv"></label><p class="small-note">Lectura temporal y local del archivo, sin envíos al servidor ni alteración de los datos públicos.</p><p role="status">'+(state.localCagrError?esc(state.localCagrError):state.localCagr.size?state.localCagr.size+" registros locales cargados":"Sin CSV adicional")+'</p>'+
- (state.localCagr.size?button("Descartar CAGR locales","issuer-local-clear","","outline-btn"):"")+'</details>'+
- '<div class="filters"><label>Buscar ticker o empresa<input id="issuer-query" type="search" autocomplete="off" placeholder="Ej.: MSFT o Microsoft" value="'+esc(state.issuerQuery)+'"></label>'+
- '<label>Ordenar<select id="issuer-sort">'+columns.map(([k,n])=>'<option value="'+k+'" '+(k===state.issuerSort?"selected":"")+'>'+esc(n)+'</option>').join("")+'</select></label>'+
- button(state.issuerAsc?"↑ Ascendente":"↓ Descendente","issuer-direction","","outline-btn")+
- button("Exportar CSV","export","issuers","outline-btn")+
- button("Tesis ficticias · demo","issuer-mode","demo","outline-btn")+'</div>'+
- '<p id="issuer-visible-count" class="table-note" aria-live="polite">'+found+' de '+researchIssuerCount()+' empresas · CAGR central (2031) descendente; sin cifras al final.</p>'+
  '<div class="table-scroll table-compact thesis-public-table"><table><thead><tr>'+headers+'</tr></thead><tbody id="issuer-rows">'+issuerTableRows()+'</tbody></table></div>'+
  '<p id="issuer-empty" class="table-note" '+(found?'hidden':'')+'>No hay empresas coincidentes.</p>'+
  head("ANÁLISIS","Ficha de tesis / empresa","Cada expediente público documenta qué fuentes y supuestos están acreditados y cuáles faltan.")+
