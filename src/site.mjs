@@ -15,7 +15,7 @@ const $=id=>document.getElementById(id);
 const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 const fmt=n=>finite(n)?new Intl.NumberFormat("es-ES",{maximumFractionDigits:2}).format(n):"N/D";
 const state={data:null,universe:null,fx:null,fxCheck:null,fxStatus:"pending",forecastLedger:null,forecastSummary:null,forecastStatus:"pending",secStatus:"pending",secRead:null,secCatalog:null,yieldDoc:null,yieldCheck:null,yieldStatus:"pending",view:"competition",strategy:"P-01",group:"",sort:"returnPct",asc:false,detailOpen:false,thesis:"T-01",query:"",thesisSort:"central",issuerMode:"catalog",issuerQuery:"",issuerSort:"base",issuerAsc:false,issuerTicker:"MSFT",paperDetail:"M-10",originalPaper:null,originalPaperStatus:"pending",historicalPaper:null,historicalCurves:null,historicalPaperStatus:"pending",fullRoster:null,fullRosterStatus:"pending",strategyCandidates:null,strategyCandidatesStatus:"pending",fullRosterGroup:"",fullRosterQuery:"",fullRosterSort:"return",fullRosterAsc:false,competitionPhase:"active",algorithmId:null,operationsAudit:null,operationsAuditStatus:"pending",auditTicker:null,auditTab:"sessions",auditSort:"recent",auditDesc:true,monitoringTab:"today",monitoringStrategy:"IL-039",monitoringSort:"recent",monitoringDesc:true,executionHistory:null,executionHistoryStatus:"pending",institutionalFeedStatus:"pending",paperFeed:null,paperFeedRead:null,localCagr:new Map(),localCagrError:"",publicTheses:new Map(),publicThesesMetadata:null};
-const viewNames=["competition","algorithm","algorithms","theses","monitoring","method","glossary","ported","full","synthetic"];
+const viewNames=["competition","algorithm","algorithms","theses","thesis","monitoring","method","glossary","ported","full","synthetic"];
 const button=(label,action,value,cls="smallbtn")=>'<button type="button" class="'+cls+'" data-action="'+esc(action)+'" data-value="'+esc(value)+'">'+esc(label)+'</button>';
 const head=(label,title,body)=>'<div class="section-heading"><div><span class="kicker">'+esc(label)+'</span><h2>'+esc(title)+'</h2><p class="section-context">'+esc(body)+'</p></div></div>';
 const card=(html)=>'<article class="panel">'+html+'</article>';
@@ -160,13 +160,13 @@ function issuerReadRows(){
 }
 function researchIssuerCount(){return new Set([...state.universe.issuers.map(x=>x.ticker),...state.publicTheses.keys()]).size;}
 function issuerTableRows(){
- return publicThesisTableRows(issuerReadRows(),state.publicTheses,state.localCagr,state.issuerTicker);
+ return publicThesisTableRows(issuerReadRows(),state.publicTheses,state.localCagr,null);
 }
 
-function issuerDetail(){
- const publicRecord=state.publicTheses.get(state.issuerTicker);
- if(publicRecord)return publicThesisDetail(publicRecord,state.localCagr.get(state.issuerTicker));
- const i=state.universe.issuers.find(x=>x.ticker===state.issuerTicker)||state.universe.issuers[0];
+function issuerDetail(ticker){
+ const publicRecord=state.publicTheses.get(ticker);
+ if(publicRecord)return publicThesisDetail(publicRecord,state.localCagr.get(ticker));
+ const i=state.universe.issuers.find(x=>x.ticker===ticker)||state.universe.issuers[0];
  const s=independentScreen(i.ticker);
  const local=state.localCagr.get(i.ticker);
  const source=i.secCik?'<p>Expediente regulatorio SEC: <a href="https://www.sec.gov/edgar/browse/?CIK='+esc(i.secCik)+'" target="_blank" rel="noopener noreferrer">10-K, 10-Q y 8-K oficiales</a>. Los enlaces no prueban por sí solos las hipótesis financieras.</p>':'<p>Identificador de expediente regulatorio pendiente de contrastar.</p>';
@@ -202,10 +202,23 @@ function theses(){
  '<div><span class="label">Modelos exploratorios</span><strong>'+screens+' modelos</strong><small>Escenarios independientes; no tesis aprobadas</small></div>'+
  '<div><span class="label">Corte documental</span><strong>'+esc(state.publicThesesMetadata?.published_as_of||"N/D")+'</strong><small>Los datos no se recalculan en tiempo real</small></div></div>'+
  '<div class="table-scroll table-compact thesis-public-table"><table><thead><tr>'+headers+'</tr></thead><tbody id="issuer-rows">'+issuerTableRows()+'</tbody></table></div>'+
- '<p id="issuer-empty" class="table-note" '+(found?'hidden':'')+'>No hay empresas coincidentes.</p>'+
- head("ANÁLISIS","Ficha de tesis / empresa","Cada expediente público documenta qué fuentes y supuestos están acreditados y cuáles faltan.")+
- '<div id="issuer-ficha">'+issuerDetail()+'</div>'+
- disclaimer("Las fichas públicas muestran hipótesis, riesgos y cifras fechadas. Los documentos originales no se abren sin verificar previamente su contenido y permisos.");
+ '<p id="issuer-empty" class="table-note" '+(found?'hidden':'')+'>No hay empresas coincidentes.</p>';
+}
+
+function thesisView(){
+ const requested=(new URLSearchParams(location.search).get("ticker")||"").toUpperCase();
+ const known=/^[A-Z0-9]{1,8}(?:\\.[A-Z]{1,3})?$/.test(requested)&&
+  (state.publicTheses.has(requested)||state.universe.issuers.some(i=>i.ticker===requested));
+ const back='<p><a href="./index.html?view=theses">← Volver al seguimiento de tesis</a></p>';
+ if(!known)return head("TESIS · CONSULTA","Ficha no disponible","No hay un expediente público para el ticker solicitado.")+back;
+ const record=state.publicTheses.get(requested);
+ const issuer=state.universe.issuers.find(i=>i.ticker===requested);
+ const company=record?.company||issuer?.company||requested;
+ return head("TESIS · EMPRESA",company+" · "+requested,
+  record?"Extracto público del análisis histórico. El documento ejecutivo íntegro y sus anexos no están publicados en esta web.":"Ficha exploratoria pública, sin tesis fundamental publicada.")+
+  back+
+  '<div id="issuer-ficha">'+issuerDetail(requested)+'</div>'+
+  '<p class="table-note">Las cifras y escenarios están fechados. No son cotizaciones en tiempo real ni una recomendación de inversión.</p>';
 }
 
 function officialFxPanel(){
@@ -969,8 +982,8 @@ function chart(){
 }
 function render(){
  if(!state.data)return;
- const pages={competition,algorithm:algorithmFiche,synthetic:syntheticCompetition,algorithms,theses,monitoring,ported,full,method:methodology,glossary};
- document.querySelectorAll(".product-tabs [data-view]").forEach(b=>{const active=b.dataset.view===state.view||(state.view==="algorithm"&&b.dataset.view==="competition");b.classList.toggle("active",active);b.setAttribute("aria-pressed",String(active));});
+ const pages={competition,algorithm:algorithmFiche,synthetic:syntheticCompetition,algorithms,theses,thesis:thesisView,monitoring,ported,full,method:methodology,glossary};
+ document.querySelectorAll(".product-tabs [data-view]").forEach(b=>{const active=b.dataset.view===state.view||(state.view==="algorithm"&&b.dataset.view==="competition")||(state.view==="thesis"&&b.dataset.view==="theses");b.classList.toggle("active",active);b.setAttribute("aria-pressed",String(active));});
  $("app").innerHTML=(pages[state.view]||competition)();chart();
  if(liveSessionActive())void refreshLiveSession();
 }
@@ -1016,17 +1029,17 @@ function openCompetitionRow(id){
  window.scrollTo({top:0,behavior:"auto"});
 }
 function openIssuerRow(id){
- if(!state.universe.issuers.some(i=>i.ticker===id))return;
- state.issuerTicker=id;
- state.issuerMode="catalog";
- if(state.view==="theses")render();else go("theses");
- document.querySelector("#issuer-ficha")?.scrollIntoView({block:"start",behavior:"auto"});
+ if(!/^[A-Z0-9]{1,8}(?:\\.[A-Z]{1,3})?$/.test(id))return;
+ if(!state.publicTheses.has(id)&&!state.universe.issuers.some(i=>i.ticker===id))return;
+ const url="./index.html?view=thesis&ticker="+encodeURIComponent(id);
+ window.open(url,"_blank","noopener,noreferrer");
 }
 $("app").addEventListener("click",e=>{
  const b=e.target.closest("button[data-action]");
  if(!b){
   const row=e.target.closest("tr[data-competition-id]");
   if(row){openCompetitionRow(row.dataset.competitionId);return;}
+  if(e.target.closest("a[href]"))return;
   const issuer=e.target.closest("tr[data-issuer-id]");
   if(issuer)openIssuerRow(issuer.dataset.issuerId);
   return;
@@ -1252,7 +1265,7 @@ async function loadSecFilings(){
   const read=verifySecFilings(doc,state.universe);
   state.secRead=read;state.secCatalog=doc;state.secStatus=read.status==="verified_filings"?"ok":"not_collected";
  }catch(_error){state.secRead=null;state.secCatalog=null;state.secStatus="unavailable";}
- if(state.view==="theses"&&state.data)render();
+ if(["theses","thesis"].includes(state.view)&&state.data)render();
 }
 async function loadOfficialYield(){
  try{
