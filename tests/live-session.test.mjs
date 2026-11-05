@@ -49,3 +49,34 @@ test("Unavailable and truncated data show the plan without a fabricated executio
   assert.doesNotMatch(html, /0 \/ 1/);
   assert.match(html, /GitHub no responde/);
 });
+
+
+test("Today's headline explains active cohort versus scheduled and unscheduled strategies", () => {
+ const now=Date.parse("2026-11-05T14:10:00Z");
+ const session=sessionToday(plan,now);
+ const sample={date,status:"ok",checked:now,attempts:[],partial:false};
+ const html=renderLiveSession(session,sample,now,false,35);
+ assert.match(html,/0 \/ 1/);
+ assert.match(html,/<strong>35<\/strong> en competición/);
+ assert.match(html,/<strong>1<\/strong> programadas hoy/);
+ assert.match(html,/<strong>34<\/strong> sin ejecución prevista hoy/);
+ assert.match(html,/class="session-live-cohort"/);
+ assert.match(html,/estrategias con sus flujos completados hoy/);
+ const withoutRoster=renderLiveSession(session,sample,now,false,null);
+ assert.doesNotMatch(withoutRoster,/<strong>35<\/strong> en competición/);
+ assert.match(withoutRoster,/comprobando el catálogo activo/);
+ const badRoster=renderLiveSession(session,sample,now,false,0);
+ assert.doesNotMatch(badRoster,/sin ejecución prevista hoy/);
+});
+
+test("The session count is calculated from the actual slots, not hardcoded at 25", () => {
+ const many=structuredClone(plan);
+ many.days[date].lanes[1].slots=Array.from({length:25},(_,i)=>"IL-"+String(10+i).padStart(3,"0"));
+ const session=sessionToday(many,Date.parse("2026-11-05T14:00:00Z"));
+ const now=Date.parse("2026-11-05T14:00:00Z");
+ const html=renderLiveSession(session,{date,status:"ok",checked:now,attempts:[],partial:false},now,false,35);
+ assert.match(html,/0 \/ 25/);
+ assert.match(html,/<strong>35<\/strong> en competición/);
+ assert.match(html,/<strong>25<\/strong> programadas hoy/);
+ assert.match(html,/<strong>10<\/strong> sin ejecución prevista hoy/);
+});
