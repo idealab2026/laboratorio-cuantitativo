@@ -1,4 +1,4 @@
-import {renderCanonicalSource,renderExplanatoryCharts,renderFocusList} from "./thesis-insights.mjs?v=bcbecb4d97ea";
+import {renderCanonicalSource,renderExplanatoryCharts,renderFocusList} from "./thesis-insights.mjs?v=f86c4c36ee27";
 import {renderFinancialSankey} from "./financial-sankey.mjs?v=a50f0cb89012";
 /* IDEA LAB / MIDAS — one editorial renderer for every public investment thesis.
    Immutable source: data/public-theses.json. Canonical prose is only shown when
@@ -16,7 +16,7 @@ function paragraphs(value){
  if(!text)return '<p class="thesis-report-muted">Aún no documentado en el expediente publicado.</p>';
  return text.split(/\n\s*\n/).filter(Boolean).map(p=>'<p>'+h(p).replace(/\n/g,'<span class="thesis-line-break"></span>')+'</p>').join("");
 }
-function sourceBody(source){return renderCanonicalSource(source);}
+function sourceBody(source,record){return renderCanonicalSource(source,record);}
 function stat(title,value,detail){
  return '<div class="thesis-stat"><span>'+h(title)+'</span><strong>'+value+'</strong>'+(detail?'<small>'+h(detail)+'</small>':'')+'</div>';
 }
@@ -93,7 +93,7 @@ export function renderThesisReport(record,full=null,financial=null,financialPeri
  sec("valuation","Valoración y escenarios",valuation)+
  sec("risks","Riesgos e invalidación",renderFocusList(full?.risks||record.risks,"Riesgos documentados"))+
  sec("monitoring","Resultados y seguimiento",paragraphs(record.earningsRecord||"Resultados pendientes"))+
- sec("original",approved?"Informe original · edición web estructurada":"Estado de documentación",'<p class="thesis-source-intro">Contenido íntegro conservado del expediente canónico, con tablas y jerarquía editorial adaptadas para lectura en pantalla. Los gráficos explicativos anteriores se calculan exclusivamente a partir de los escenarios documentados; las figuras históricas sin serie tabular se conservan como referencia.</p>'+sourceBody(approved?full.source_text:null))+
+ sec("original",approved?"Informe original · edición web estructurada":"Estado de documentación",'<p class="thesis-source-intro">Contenido íntegro conservado del expediente canónico, con tablas y jerarquía editorial adaptadas para lectura en pantalla. Los gráficos explicativos anteriores se calculan exclusivamente a partir de los escenarios documentados; las figuras con datos suficientes se reconstruyen como comparativas explícitamente acotadas; cuando faltan series, la ausencia se indica en la propia figura.</p>'+sourceBody(approved?full.source_text:null,record))+
  sec("conclusion","Conclusión de inversión",conclusion)+
  '<footer class="thesis-report-footer">IDEA LAB · MIDAS · Fuente: tesis histórica documentada · Edición pública · No es asesoramiento financiero</footer></article>';
 }

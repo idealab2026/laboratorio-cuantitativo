@@ -1,3 +1,4 @@
+import {isHistoricalFigure,renderHistoricalFigure} from "./thesis-historical-figures.mjs?v=3462e534f6e8";
 /* Structured public research appendix and explanatory SVG figures.
    Data are taken from the dated MIDAS thesis record, not current prices.
    Historical source prose is kept verbatim apart from visual grouping. */
@@ -230,7 +231,7 @@ export function renderFocusList(value,label){
 }
 
 function dataParagraph(text){return '<p class="thesis-source-paragraph">'+esc(text)+'</p>';}
-export function renderCanonicalSource(source){
+export function renderCanonicalSource(source,record=null){
  if(!source)return '<p class="thesis-report-muted">El informe ejecutivo íntegro no está disponible en la edición pública. Esta vista conserva exclusivamente las hipótesis documentadas.</p>';
  const lines=sanitizeLines(String(source).normalize("NFC"));
  const firstPageCover=/^MIDAS\s*\|\s*CAT\s*\|/i.test(lines[0]||"");
@@ -246,6 +247,7 @@ export function renderCanonicalSource(source){
   if(structured){closeList();out.push(structured.html);i=structured.next;continue;}
   const tab=scenarioTable(lines,i)||keyValueTable(lines,i);
   if(tab){closeList();out.push(tab.html);i=tab.next;continue;}
+  if(record?.ticker&&isHistoricalFigure(t)){closeList();out.push(renderHistoricalFigure(record.ticker,t,record));i++;continue;}
   if(figure(t)){closeList();out.push('<aside class="thesis-source-figure-reference"><span>REFERENCIA DEL DOCUMENTO ORIGINAL</span><p>'+esc(t)+'</p><small>La figura original se cita aquí, pero no se reconstruye sin su serie de datos verificable.</small></aside>');i++;continue;}
   if(heading(t)){closeList();out.push('<h3 class="thesis-source-heading">'+esc(t)+'</h3>');i++;continue;}
   if(bullet(t)){items.push(t.replace(/^\s*(?:[•▪◦]|[-*]\s)\s*/u,""));i++;continue;}
@@ -253,7 +255,7 @@ export function renderCanonicalSource(source){
   let paragraph=t,lastLine=t;
   while(i+1<lines.length){
     const next=lines[i+1];
-    if(!next||decoration(next)||heading(next)||figure(next)||bullet(next)||startsScenario(lines,i+1)||next==="Parámetro"||/^Hurdle anual\b|^Entrada USD\b/iu.test(next))break;
+    if(!next||decoration(next)||heading(next)||figure(next)||(record?.ticker&&isHistoricalFigure(next))||bullet(next)||startsScenario(lines,i+1)||next==="Parámetro"||/^Hurdle anual\b|^Entrada USD\b/iu.test(next))break;
     // Merge hard-wrapped PDF lines to the next sentence boundary, not an
     // arbitrary number of characters; leave pre-formatted long lines alone.
     if(lastLine.length>150||/[.!?:;”"]$/u.test(lastLine))break;
