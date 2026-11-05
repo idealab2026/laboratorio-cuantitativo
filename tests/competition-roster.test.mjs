@@ -175,7 +175,9 @@ test("Capital Cycle and Buy The Dip are searchable by their canonical names and 
  const site=readFileSync(new URL("../src/site.mjs",import.meta.url),"utf8");
  assert.ok(site.includes('button("Ver detalle","full-detail",id'));
  assert.ok(site.includes('state.algorithmId=value;go("algorithm")'));
- assert.ok(site.includes('paperLeaderboard(d.entries.map('));
+ assert.ok(site.includes('const leader=phase==="active"?paperLeaderboard(phases.active.map('),
+  "Only active paper strategies should be eligible as current leader");
+ assert.ok(site.includes('const phases=partitionCompetitionRows(d.entries);'));
 });
 
 

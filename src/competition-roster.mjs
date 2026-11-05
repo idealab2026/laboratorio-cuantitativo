@@ -176,3 +176,39 @@ export function sortFullCompetitionRows(rows,{key="name",ascending=true}={}){
   return collator.compare(String(a.id),String(b.id));
  });
 }
+
+
+/**
+ * MIDAS competition lifecycle is orthogonal to market return and technical
+ * readiness. "Active" means a slot belongs to the CURRENT paper comparison
+ * cohort, NOT that a scheduled job necessarily succeeded on a given day.
+ * Historical books stay visible but cannot win the current leaderboard.
+ * A research candidate does not consume one of the 64 institutional slots.
+ *
+ * These ranges are versioned against the audited 64-slot public roster:
+ *  - IL-001..009: retired 8-asset campaign
+ *  - IL-010..044: current paper cohort (daily/weekly/genetic, benchmarks too)
+ *  - IL-045..048: retired four-model historical campaign
+ *  - IL-049..064: unfunded/unadmitted historical ideas or development
+ */
+export const COMPETITION_PHASES=Object.freeze(["active","obsolete","development"]);
+export function strategyCompetitionPhase(id){
+ if(/^IL-R\d{3}$/.test(id))return "development";
+ if(!IDENTIFIER.test(id))throw Error("Unknown competition strategy ID");
+ const n=Number(id.slice(3));
+ if(!Number.isInteger(n)||n<1||n>64)throw Error("Strategy slot outside signed catalogue");
+ if(n>=10&&n<=44)return "active";
+ if(n<=9||(n>=45&&n<=48))return "obsolete";
+ return "development";
+}
+export function partitionCompetitionRows(rows){
+ if(!Array.isArray(rows))throw Error("Expected competition strategy rows");
+ const groups={active:[],obsolete:[],development:[]},seen=new Set();
+ for(const row of rows){
+  const id=row?.id??row?.slot;
+  if(typeof id!=="string"||seen.has(id))throw Error("Duplicate or missing competition identity");
+  seen.add(id);
+  groups[strategyCompetitionPhase(id)].push(row);
+ }
+ return groups;
+}
