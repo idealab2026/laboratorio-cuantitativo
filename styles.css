@@ -840,3 +840,11 @@ p{line-height:1.6;text-align:justify;text-align-last:left;hyphens:auto}p.lead{co
 .thesis-public-table td:nth-child(2) .smallline{white-space:normal;overflow-wrap:anywhere;line-height:1.35}
 .thesis-quotes-status{font:500 .73rem/1.5 system-ui,sans-serif;color:#60738a;margin:0 0 9px}
 @media(max-width:700px){.thesis-public-table table{min-width:1320px}}
+
+
+/* Native third-party quote frame. Preserve TradingView branding, clip no attribution. */
+.thesis-public-table table{min-width:1500px}
+.thesis-market-quote{display:block;max-width:175px;min-width:0;text-align:left}
+.thesis-market-quote iframe{display:block;width:100%;max-width:175px;height:94px;border:0;background:#fff;border-radius:5px}
+.thesis-market-quote .thesis-quote-date{white-space:normal;font-size:.62rem;line-height:1.35;margin-top:3px}
+.thesis-market-quote a{color:#536d89;text-decoration:underline}
