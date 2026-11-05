@@ -249,8 +249,9 @@ def snapshot_run_tokens(lines,i):
     if i+1<len(lines) and re.fullmatch(r"Hurdle anual\s+10\s*%\s+12\s*%\s+15\s*%\s+20\s*%",lines[i],re.I) and re.match(r"^Entrada USD",lines[i+1],re.I):
         vals=re.findall(r"[\d.,]+",lines[i+1])
         if len(vals)==4:
-            return i+2,[("heading","Precios de entrada Caterpillar"),
-                        ("table",[["Hurdle anual","Entrada histórica"]]+[[str(rate)+" %",vals[j]+" USD"] for j,rate in enumerate([10,12,15,20])]]
+            rows=[["Hurdle anual","Entrada histórica"]]
+            rows.extend([[str(rate)+" %",vals[j]+" USD"] for j,rate in enumerate([10,12,15,20])])
+            return i+2,[("heading","Precios de entrada Caterpillar"),("table",rows)]
     return None
 
 def canonical_source_blocks(text):
