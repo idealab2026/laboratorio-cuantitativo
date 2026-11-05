@@ -762,3 +762,43 @@ p{line-height:1.6;text-align:justify;text-align-last:left;hyphens:auto}p.lead{co
  .session-live-summary{gap:5px 10px}
 }
 .session-live-lane>.session-live-status small{display:block;font-weight:500;color:#526980;font-variant-numeric:tabular-nums;margin-top:2px}
+
+
+/* MIDAS competition lifecycle: separate active, retired and research tracks. */
+.competition-lifecycle-tabs{
+ display:flex;align-items:stretch;gap:6px;max-width:100%;overflow-x:auto;
+ border-bottom:1px solid #d9e3ed;margin:8px 0 16px;padding:0;
+ scrollbar-width:thin;
+}
+.competition-lifecycle-tabs button{
+ display:flex;align-items:center;gap:9px;flex:0 0 auto;padding:12px 16px;
+ border:0;border-bottom:3px solid transparent;background:transparent;
+ cursor:pointer;color:#5b7087;font:750 .84rem/1.3 system-ui,sans-serif;
+}
+.competition-lifecycle-tabs button[aria-selected="true"]{
+ color:#14517b;border-bottom-color:#176aae;background:#f4f8fb;
+}
+.competition-lifecycle-tabs button:hover{background:#f0f5f8}
+.competition-lifecycle-tabs button:focus-visible{outline:2px solid #1668ad;outline-offset:-2px}
+.competition-phase-count{
+ display:inline-block;min-width:27px;text-align:center;padding:3px 7px;
+ border-radius:7px;border:1px solid #dbe4ea;background:#f1f4f8;
+ font:800 .72rem/1.2 system-ui,sans-serif;color:#566d80;
+}
+.competition-lifecycle-tabs button[aria-selected="true"] .competition-phase-count{
+ color:#14517b;border-color:#bad7e9;background:#e4f0f8;
+}
+.competition-phase-context{font:560 .75rem/1.55 system-ui,sans-serif;color:#62758a;margin:0 0 13px}
+.competition-phase-notice{
+ display:flex;align-items:baseline;gap:13px;flex-wrap:wrap;
+ margin:0 0 16px;padding:14px 16px;border-radius:9px;
+ border:1px solid #e2e8ed;background:#f7f9fb;color:#576d81;
+ font:560 .78rem/1.55 system-ui,sans-serif;
+}
+.competition-phase-notice strong{color:#213c56;font-weight:770}
+@media(max-width:650px){
+ .competition-lifecycle-tabs{gap:2px;margin-bottom:10px}
+ .competition-lifecycle-tabs button{gap:6px;padding:10px 9px;font-size:.72rem}
+ .competition-phase-count{min-width:22px;padding:2px 5px;font-size:.65rem}
+ .competition-phase-notice{padding:12px;font-size:.73rem}
+}
