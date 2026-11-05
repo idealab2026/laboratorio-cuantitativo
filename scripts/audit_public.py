@@ -66,7 +66,7 @@ for path in sorted(files):
     if path not in REPOSITORY: continue
     source=(ROOT/path).read_text(encoding="utf8")
     if contains_private_term(path+"\n"+source, private_terms):
-        issues.append("Private disclosure guard rejected repository content")
+        issues.append("Private disclosure guard rejected repository content in "+path)
     if path in RELEASE or path == "README.md" or path.startswith("docs/"):
         if re.search(r"[\w.+-]+@[\w.-]+\.[A-Za-z]{2,}",source):
             issues.append("Email address found in public content")
