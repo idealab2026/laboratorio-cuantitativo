@@ -1,0 +1,584 @@
+{
+  "schema": "midas_official_financial_sankeys_v1",
+  "as_of": "2026-11-05",
+  "description": "Flujos operativos consolidados por periodo; importes en millones de USD, tomados de documentación oficial. Sin datos no se representan cifras.",
+  "companies": [
+    {
+      "ticker": "PLTR",
+      "name": "Palantir Technologies",
+      "periods": [
+        {
+          "id": "2025FY",
+          "period_start": "2025-01-01",
+          "period_end": "2025-12-31",
+          "label": "FY2025 · ejercicio anual",
+          "kind": "annual_audited",
+          "unit": "USD millions",
+          "basis": "reported GAAP",
+          "source": {
+            "publisher": "Investor Relations / official issuer",
+            "url": "https://investors.palantir.com/files/2025%20FY%20PLTR%2010-K.pdf"
+          },
+          "revenue": 4475.446,
+          "expenses": [
+            {
+              "code": "cogs",
+              "label": "Coste de ingresos",
+              "value": 789.177
+            },
+            {
+              "code": "marketing",
+              "label": "Ventas y marketing",
+              "value": 1056.859
+            },
+            {
+              "code": "rnd",
+              "label": "I+D",
+              "value": 557.677
+            },
+            {
+              "code": "gna",
+              "label": "Generales y administración",
+              "value": 657.718
+            }
+          ],
+          "operating_income": 1414.015,
+          "net_income": null,
+          "notes": "10-K presenta cifras en miles de USD, convertidas a millones dividiendo entre 1.000."
+        }
+      ],
+      "status": "verified_official"
+    },
+    {
+      "ticker": "CAT",
+      "name": "Caterpillar",
+      "periods": [
+        {
+          "id": "2025FY",
+          "period_start": "2025-01-01",
+          "period_end": "2025-12-31",
+          "label": "FY2025 · ejercicio anual",
+          "kind": "annual_reported",
+          "unit": "USD millions",
+          "basis": "reported GAAP",
+          "source": {
+            "publisher": "Investor Relations / official issuer",
+            "url": "https://investors.caterpillar.com/news/news-details/2026/Caterpillar-Reports-Fourth-Quarter-and-Full-Year-2025-Results/default.aspx"
+          },
+          "revenue": 67589,
+          "expenses": [
+            {
+              "code": "cogs",
+              "label": "Coste de ventas",
+              "value": 44752
+            },
+            {
+              "code": "gna",
+              "label": "Venta, generales y administración",
+              "value": 6985
+            },
+            {
+              "code": "rnd",
+              "label": "I+D",
+              "value": 2148
+            },
+            {
+              "code": "finance",
+              "label": "Intereses productos financieros (operativo)",
+              "value": 1359
+            },
+            {
+              "code": "other",
+              "label": "Otros gastos operativos",
+              "value": 1194
+            }
+          ],
+          "operating_income": 11151,
+          "net_income": 8884,
+          "notes": "Los intereses de Financial Products forman parte de costes operativos de la presentación consolidada. Beneficio atribuible según resultado publicado."
+        }
+      ],
+      "status": "verified_official"
+    },
+    {
+      "ticker": "NFLX",
+      "name": "Netflix",
+      "periods": [
+        {
+          "id": "2026Q3",
+          "period_start": "2026-07-01",
+          "period_end": "2026-09-30",
+          "label": "Q3 2026 · jul–sep",
+          "kind": "quarterly_unaudited",
+          "unit": "USD millions",
+          "basis": "reported GAAP",
+          "source": {
+            "publisher": "Investor Relations / official issuer",
+            "url": "https://ir.netflix.net/files/doc_financials/2026/q3/FINAL-Q3-26-Shareholder-Letter.pdf"
+          },
+          "revenue": 12874.176,
+          "expenses": [
+            {
+              "code": "cogs",
+              "label": "Coste de ingresos (contenido incluido)",
+              "value": 6079.016
+            },
+            {
+              "code": "marketing",
+              "label": "Ventas y marketing",
+              "value": 837.051
+            },
+            {
+              "code": "tech",
+              "label": "Tecnología y desarrollo",
+              "value": 1033.142
+            },
+            {
+              "code": "gna",
+              "label": "Generales y administración",
+              "value": 466.367
+            }
+          ],
+          "operating_income": 4458.6,
+          "net_income": 3663.927,
+          "notes": "Carta oficial de accionistas; cifras originales en miles de USD divididas entre 1.000; margen operativo incluye amortización de contenido."
+        }
+      ],
+      "status": "verified_official"
+    },
+    {
+      "ticker": "MSFT",
+      "name": "Microsoft",
+      "periods": [
+        {
+          "id": "2026Q3",
+          "period_start": "2026-07-01",
+          "period_end": "2026-09-30",
+          "label": "Q1 FY2027 · jul–sep 2026",
+          "kind": "quarterly_unaudited",
+          "unit": "USD millions",
+          "basis": "reported GAAP",
+          "source": {
+            "publisher": "Investor Relations / official issuer",
+            "url": "https://www.microsoft.com/en-us/investor/earnings/fy-2027-q1/press-release-webcast"
+          },
+          "revenue": 92279,
+          "expenses": [
+            {
+              "code": "cogs",
+              "label": "Coste de ingresos",
+              "value": 29720
+            },
+            {
+              "code": "rnd",
+              "label": "I+D",
+              "value": 9047
+            },
+            {
+              "code": "marketing",
+              "label": "Ventas y marketing",
+              "value": 5716
+            },
+            {
+              "code": "gna",
+              "label": "Generales y administración",
+              "value": 1881
+            }
+          ],
+          "operating_income": 45915,
+          "net_income": 36629,
+          "notes": "Resultados trimestrales GAAP; no anualizados."
+        },
+        {
+          "id": "2026FY",
+          "period_start": "2025-07-01",
+          "period_end": "2026-06-30",
+          "label": "FY2026 · año fiscal completo",
+          "kind": "annual_audited",
+          "unit": "USD millions",
+          "basis": "reported GAAP",
+          "source": {
+            "publisher": "Investor Relations / official issuer",
+            "url": "https://www.microsoft.com/investor/reports/ar26/"
+          },
+          "revenue": 331839,
+          "expenses": [
+            {
+              "code": "cogs",
+              "label": "Coste de ingresos",
+              "value": 106374
+            },
+            {
+              "code": "rnd",
+              "label": "I+D",
+              "value": 35562
+            },
+            {
+              "code": "marketing",
+              "label": "Ventas y marketing",
+              "value": 26710
+            },
+            {
+              "code": "gna",
+              "label": "Generales y administración",
+              "value": 7956
+            }
+          ],
+          "operating_income": 155237,
+          "net_income": 133749,
+          "notes": "Informe anual consolidado."
+        }
+      ],
+      "status": "verified_official"
+    },
+    {
+      "ticker": "ASTS",
+      "name": "AST SpaceMobile",
+      "periods": [],
+      "status": "awaiting_official_statement"
+    },
+    {
+      "ticker": "6324",
+      "name": "Harmonic Drive Systems",
+      "periods": [],
+      "status": "awaiting_official_statement"
+    },
+    {
+      "ticker": "NOVT",
+      "name": "Novanta",
+      "periods": [],
+      "status": "awaiting_official_statement"
+    },
+    {
+      "ticker": "NVEC",
+      "name": "NVE Corporation",
+      "periods": [],
+      "status": "awaiting_official_statement"
+    },
+    {
+      "ticker": "6268",
+      "name": "Nabtesco",
+      "periods": [],
+      "status": "awaiting_official_statement"
+    },
+    {
+      "ticker": "ZEG.L",
+      "name": "Zegona Communications",
+      "periods": [],
+      "status": "awaiting_official_statement"
+    },
+    {
+      "ticker": "ADBE",
+      "name": "Adobe Inc.",
+      "periods": [
+        {
+          "id": "2025FY",
+          "period_start": "2024-11-30",
+          "period_end": "2025-11-28",
+          "label": "FY2025 · ejercicio cerrado",
+          "kind": "annual_audited",
+          "unit": "USD millions",
+          "basis": "reported GAAP",
+          "source": {
+            "publisher": "Investor Relations / official issuer",
+            "url": "https://www.adobe.com/cc-shared/assets/investor-relations/pdfs/adbe-2025-annual-report.pdf"
+          },
+          "revenue": 23769,
+          "expenses": [
+            {
+              "code": "cogs",
+              "label": "Coste de ingresos",
+              "value": 2551
+            },
+            {
+              "code": "rnd",
+              "label": "I+D",
+              "value": 4294
+            },
+            {
+              "code": "marketing",
+              "label": "Ventas y marketing",
+              "value": 6488
+            },
+            {
+              "code": "gna",
+              "label": "Generales y administración",
+              "value": 1573
+            },
+            {
+              "code": "amort",
+              "label": "Amortización de intangibles",
+              "value": 157
+            }
+          ],
+          "operating_income": 8706,
+          "net_income": 7130,
+          "notes": "10-K del ejercicio cerrado el 28 de noviembre de 2025. Importe en millones de USD."
+        }
+      ],
+      "status": "verified_official"
+    },
+    {
+      "ticker": "ACS.MC",
+      "name": "ACS",
+      "periods": [],
+      "status": "awaiting_official_statement"
+    },
+    {
+      "ticker": "AMZN",
+      "name": "Amazon",
+      "periods": [
+        {
+          "id": "2026Q3",
+          "period_start": "2026-07-01",
+          "period_end": "2026-09-30",
+          "label": "Q3 2026 · jul–sep",
+          "kind": "quarterly_unaudited",
+          "unit": "USD millions",
+          "basis": "reported GAAP",
+          "source": {
+            "publisher": "Investor Relations / official issuer",
+            "url": "https://ir.aboutamazon.com/news-release/news-release-details/2026/Amazon-com-Announces-Third-Quarter-Results/default.aspx"
+          },
+          "revenue": 201944,
+          "expenses": [
+            {
+              "code": "cogs",
+              "label": "Coste de ventas",
+              "value": 94573
+            },
+            {
+              "code": "fulfill",
+              "label": "Logística y fulfillment",
+              "value": 29997
+            },
+            {
+              "code": "tech",
+              "label": "Tecnología e infraestructura",
+              "value": 34814
+            },
+            {
+              "code": "marketing",
+              "label": "Ventas y marketing",
+              "value": 11649
+            },
+            {
+              "code": "gna",
+              "label": "Generales y administración",
+              "value": 2701
+            },
+            {
+              "code": "other",
+              "label": "Otros gastos operativos",
+              "value": 134
+            }
+          ],
+          "operating_income": 28076,
+          "net_income": null,
+          "notes": "Technology and infrastructure NO equivale a I+D; se conserva la denominación oficial."
+        },
+        {
+          "id": "2025FY",
+          "period_start": "2025-01-01",
+          "period_end": "2025-12-31",
+          "label": "FY2025 · ejercicio anual",
+          "kind": "annual_reported",
+          "unit": "USD millions",
+          "basis": "reported GAAP",
+          "source": {
+            "publisher": "Investor Relations / official issuer",
+            "url": "https://ir.aboutamazon.com/news-release/news-release-details/2026/Amazon-com-Announces-Fourth-Quarter-Results/"
+          },
+          "revenue": 716924,
+          "expenses": [
+            {
+              "code": "cogs",
+              "label": "Coste de ventas",
+              "value": 356414
+            },
+            {
+              "code": "fulfill",
+              "label": "Logística y fulfillment",
+              "value": 109074
+            },
+            {
+              "code": "tech",
+              "label": "Tecnología e infraestructura",
+              "value": 108521
+            },
+            {
+              "code": "marketing",
+              "label": "Ventas y marketing",
+              "value": 47129
+            },
+            {
+              "code": "gna",
+              "label": "Generales y administración",
+              "value": 11172
+            },
+            {
+              "code": "other",
+              "label": "Otros gastos operativos",
+              "value": 4639
+            }
+          ],
+          "operating_income": 79975,
+          "net_income": null,
+          "notes": "Resultados anuales reportados. Technology and infrastructure conserva su presentación oficial."
+        }
+      ],
+      "status": "verified_official"
+    },
+    {
+      "ticker": "VIST",
+      "name": "Vista Energy",
+      "periods": [],
+      "status": "awaiting_official_statement"
+    },
+    {
+      "ticker": "VST",
+      "name": "Vistra",
+      "periods": [],
+      "status": "awaiting_official_statement"
+    },
+    {
+      "ticker": "AEP",
+      "name": "American Electric Power",
+      "periods": [],
+      "status": "awaiting_official_statement"
+    },
+    {
+      "ticker": "DTE",
+      "name": "DTE Energy",
+      "periods": [],
+      "status": "awaiting_official_statement"
+    },
+    {
+      "ticker": "FE",
+      "name": "FirstEnergy",
+      "periods": [],
+      "status": "awaiting_official_statement"
+    },
+    {
+      "ticker": "CMS",
+      "name": "CMS Energy",
+      "periods": [],
+      "status": "awaiting_official_statement"
+    },
+    {
+      "ticker": "XE",
+      "name": "X-Energy",
+      "periods": [],
+      "status": "awaiting_official_statement"
+    },
+    {
+      "ticker": "NET",
+      "name": "Cloudflare",
+      "periods": [],
+      "status": "awaiting_official_statement"
+    },
+    {
+      "ticker": "META",
+      "name": "Meta Platforms",
+      "periods": [
+        {
+          "id": "2026Q3",
+          "period_start": "2026-07-01",
+          "period_end": "2026-09-30",
+          "label": "Q3 2026 · jul–sep",
+          "kind": "quarterly_unaudited",
+          "unit": "USD millions",
+          "basis": "reported GAAP",
+          "source": {
+            "publisher": "Investor Relations / official issuer",
+            "url": "https://investor.atmeta.com/investor-news/press-release-details/2026/Meta-Reports-Third-Quarter-2026-Results/"
+          },
+          "revenue": 64601,
+          "expenses": [
+            {
+              "code": "cogs",
+              "label": "Coste de ingresos",
+              "value": 13369
+            },
+            {
+              "code": "rnd",
+              "label": "I+D",
+              "value": 20054
+            },
+            {
+              "code": "marketing",
+              "label": "Marketing y ventas",
+              "value": 3333
+            },
+            {
+              "code": "gna",
+              "label": "Generales y administración",
+              "value": 14857
+            }
+          ],
+          "operating_income": 12988,
+          "net_income": 9860,
+          "notes": "G&A incluye cargo judicial extraordinario de 9.890 M USD; importes GAAP sin ajustes."
+        },
+        {
+          "id": "2025FY",
+          "period_start": "2025-01-01",
+          "period_end": "2025-12-31",
+          "label": "FY2025 · año natural",
+          "kind": "annual_reported",
+          "unit": "USD millions",
+          "basis": "reported GAAP",
+          "source": {
+            "publisher": "Investor Relations / official issuer",
+            "url": "https://investor.atmeta.com/investor-news/press-release-details/2026/Meta-Reports-Fourth-Quarter-and-Full-Year-2025-Results/"
+          },
+          "revenue": 200966,
+          "expenses": [
+            {
+              "code": "cogs",
+              "label": "Coste de ingresos",
+              "value": 36175
+            },
+            {
+              "code": "rnd",
+              "label": "I+D",
+              "value": 57372
+            },
+            {
+              "code": "marketing",
+              "label": "Marketing y ventas",
+              "value": 11991
+            },
+            {
+              "code": "gna",
+              "label": "Generales y administración",
+              "value": 12152
+            }
+          ],
+          "operating_income": 83276,
+          "net_income": 60458,
+          "notes": "Resultados anuales comunicados por el emisor; fuente IR no sustituye comprobación del 10-K."
+        }
+      ],
+      "status": "verified_official"
+    },
+    {
+      "ticker": "MOG.A",
+      "name": "Moog Inc.",
+      "periods": [],
+      "status": "awaiting_official_statement"
+    },
+    {
+      "ticker": "MP",
+      "name": "MP Materials",
+      "periods": [],
+      "status": "awaiting_official_statement"
+    },
+    {
+      "ticker": "SYM",
+      "name": "Symbotic",
+      "periods": [],
+      "status": "awaiting_official_statement"
+    }
+  ]
+}

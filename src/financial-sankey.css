@@ -1,0 +1,52 @@
+
+/* MIDAS · Sankey financiero auditado. Todos los flujos conservan la misma escala. */
+.thesis-report .financial-sankey-panel{display:grid;gap:16px}
+.financial-sankey-toolbar{display:flex;align-items:center;gap:12px;flex-wrap:wrap;background:#f5f8fb;border:1px solid #dde6ee;padding:12px 16px;border-radius:8px}
+.financial-sankey-period-label,.financial-sankey-kind,.financial-sankey-single{font:700 12px/1.5 system-ui,-apple-system,sans-serif;color:#496781}
+.financial-sankey-period{max-width:100%;min-width:220px;border:1px solid #bfcfe0;padding:9px 12px;border-radius:7px;background:white;color:#0f3054;font:650 13px system-ui,sans-serif}
+.financial-sankey-period:focus-visible{outline:3px solid #b99a66;outline-offset:2px}
+.financial-sankey-kind{margin-left:auto;color:#315a7e}
+.financial-sankey-metrics{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:9px}
+.financial-metric{border:1px solid #dae3ed;background:#f8fafc;border-radius:9px;padding:13px 14px;min-width:0}
+.financial-metric span{display:block;font:750 10px/1.45 system-ui,sans-serif;color:#697e94;text-transform:uppercase;letter-spacing:.045em}
+.financial-metric strong{display:block;font:800 clamp(13px,1.5vw,21px)/1.45 system-ui,sans-serif;color:#11355a;margin-top:5px;overflow-wrap:anywhere}
+.financial-metric small{display:block;font:500 11px/1.5 system-ui,sans-serif;color:#54708a;margin-top:4px}
+.financial-sankey-canvas{width:100%;overflow-x:auto;background:#fff;border:1px solid #dce5ee;border-radius:11px;padding:12px 5px;scrollbar-width:thin}
+.financial-sankey-canvas svg{display:block;width:100%;min-width:770px;height:auto;max-width:1120px;margin:0 auto;font-family:system-ui,-apple-system,sans-serif}
+.financial-sankey-caption{font-size:12px;font-weight:850;letter-spacing:.1em;fill:#6d8399}
+.financial-sankey-name{font-size:15px;font-weight:800;fill:#183859}
+.financial-sankey-amount{font-size:12px;font-weight:550;fill:#58738d}
+.financial-sankey-revenue{font-size:15px;font-weight:800;fill:#14385d}
+.financial-sankey-revenue-amount{font-size:13px;font-weight:800;fill:#375a7e}
+.financial-breakdown{overflow-x:auto;border:1px solid #dce5ee;border-radius:9px}
+.financial-breakdown table{width:100%;border-collapse:collapse;table-layout:auto;font:500 12px/1.65 system-ui,sans-serif}
+.financial-breakdown caption{text-align:left;padding:12px 17px;font-size:13px;font-weight:800;color:#173859;background:#f1f5fa}
+.financial-breakdown thead th{background:#f7f9fc;text-transform:uppercase;letter-spacing:.04em;color:#58708a;font-size:10px}
+.financial-breakdown td,.financial-breakdown th{padding:9px 14px;border-bottom:1px solid #e4ebf2;text-align:left}
+.financial-breakdown td:nth-child(2),.financial-breakdown td:nth-child(3){text-align:right;white-space:nowrap;font-variant-numeric:tabular-nums}
+.financial-breakdown th[scope="row"],.financial-breakdown tbody th{font-weight:650;color:#294d70}
+.financial-breakdown-total{background:#e8f2f5;font-weight:850}
+.thesis-report .financial-sankey-interpretation{font:500 12px/1.7 system-ui,sans-serif;color:#61788f;padding:9px 12px;border-left:3px solid #a78a50;background:#f9f9f6;margin:0}
+.financial-sankey-source{display:flex;flex-wrap:wrap;align-items:center;gap:7px 18px;font:600 11.5px/1.65 system-ui,sans-serif;color:#526f8d}
+.financial-sankey-source a{color:#1f5d93;text-decoration:underline;overflow-wrap:anywhere}
+.thesis-report .financial-sankey-notes{font:500 12px/1.7 system-ui,sans-serif;color:#637a90;margin:0}
+.financial-sankey-empty{padding:20px;border-radius:10px;border:1px dashed #b7c6d5;background:#f8fafc}
+.financial-sankey-empty-graphic{display:flex;gap:18px;align-items:center;justify-content:center;min-height:120px;flex-wrap:wrap}
+.financial-sankey-empty-graphic span{border:2px dashed #c4d0dc;color:#778ba0;font:800 13px/1.4 system-ui,sans-serif;border-radius:8px;padding:18px 22px}
+.financial-sankey-empty-graphic i{display:block;width:60px;height:18px;background:linear-gradient(90deg,#d9e1ea,#f7fafc);border-radius:60%}
+.thesis-report .financial-sankey-empty p{max-width:750px;margin:0 auto;text-align:center;font:500 12.5px/1.75 system-ui,sans-serif;color:#61778e}
+@media(max-width:950px){.financial-sankey-metrics{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:600px){
+ .financial-sankey-metrics{gap:6px}
+ .financial-metric{padding:10px}
+ .financial-sankey-period{width:100%;min-width:0}
+ .financial-sankey-kind{margin-left:0}
+ .financial-sankey-canvas svg{min-width:780px}
+ .financial-breakdown table{min-width:500px}
+}
+@media print{
+ .financial-sankey-toolbar{display:none!important}
+ .financial-sankey-metrics{grid-template-columns:repeat(3,minmax(0,1fr))}
+ .financial-sankey-canvas{overflow:visible}
+ .financial-sankey-canvas svg{min-width:0}
+}

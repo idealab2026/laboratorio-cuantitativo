@@ -1,5 +1,6 @@
 import {LIVE_REFRESH_MS, readLiveAttempts, renderLiveSession, sessionToday} from "./live-session.mjs?v=2057d4fd24d2";
-import {renderThesisReport,verifyFullReports} from "./thesis-report.mjs?v=d348ef3d0a4f";
+import {renderThesisReport,verifyFullReports} from "./thesis-report.mjs?v=f31debb7b47f";
+import {verifyFinancialSankeys} from "./financial-sankey.mjs?v=5cbe1ea43143";
 import {verifyOriginalPaper} from "./original-paper.mjs?v=b4ab52ea9863";
 import {algorithmTheory,paperLeaderboard} from "./algorithm-detail.mjs";
 import {glossaryGroups,searchGlossary,verifyGlossary} from "./glossary.mjs";
@@ -15,7 +16,7 @@ import {verify,simulate,rank,valuation,thesisRank,formatPct,money,finite,verifyI
 const $=id=>document.getElementById(id);
 const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 const fmt=n=>finite(n)?new Intl.NumberFormat("es-ES",{maximumFractionDigits:2}).format(n):"N/D";
-const state={data:null,universe:null,fx:null,fxCheck:null,fxStatus:"pending",forecastLedger:null,forecastSummary:null,forecastStatus:"pending",secStatus:"pending",secRead:null,secCatalog:null,yieldDoc:null,yieldCheck:null,yieldStatus:"pending",view:"competition",strategy:"P-01",group:"",sort:"returnPct",asc:false,detailOpen:false,thesis:"T-01",query:"",thesisSort:"central",issuerMode:"catalog",issuerQuery:"",issuerSort:"base",issuerAsc:false,issuerTicker:"MSFT",paperDetail:"M-10",originalPaper:null,originalPaperStatus:"pending",historicalPaper:null,historicalCurves:null,historicalPaperStatus:"pending",fullRoster:null,fullRosterStatus:"pending",strategyCandidates:null,strategyCandidatesStatus:"pending",fullRosterGroup:"",fullRosterQuery:"",fullRosterSort:"return",fullRosterAsc:false,competitionPhase:"active",algorithmId:null,operationsAudit:null,operationsAuditStatus:"pending",auditTicker:null,auditTab:"sessions",auditSort:"recent",auditDesc:true,monitoringTab:"today",monitoringStrategy:"IL-039",monitoringSort:"recent",monitoringDesc:true,executionHistory:null,executionHistoryStatus:"pending",institutionalFeedStatus:"pending",paperFeed:null,paperFeedRead:null,localCagr:new Map(),localCagrError:"",publicTheses:new Map(),publicThesesMetadata:null,fullReports:new Map(),publicCloses:new Map(),closeFeedStatus:"not_configured",closeFeedSource:null,closeFeedUpdatedAt:null};
+const state={data:null,universe:null,fx:null,fxCheck:null,fxStatus:"pending",forecastLedger:null,forecastSummary:null,forecastStatus:"pending",secStatus:"pending",secRead:null,secCatalog:null,yieldDoc:null,yieldCheck:null,yieldStatus:"pending",view:"competition",strategy:"P-01",group:"",sort:"returnPct",asc:false,detailOpen:false,thesis:"T-01",query:"",thesisSort:"central",issuerMode:"catalog",issuerQuery:"",issuerSort:"base",issuerAsc:false,issuerTicker:"MSFT",paperDetail:"M-10",originalPaper:null,originalPaperStatus:"pending",historicalPaper:null,historicalCurves:null,historicalPaperStatus:"pending",fullRoster:null,fullRosterStatus:"pending",strategyCandidates:null,strategyCandidatesStatus:"pending",fullRosterGroup:"",fullRosterQuery:"",fullRosterSort:"return",fullRosterAsc:false,competitionPhase:"active",algorithmId:null,operationsAudit:null,operationsAuditStatus:"pending",auditTicker:null,auditTab:"sessions",auditSort:"recent",auditDesc:true,monitoringTab:"today",monitoringStrategy:"IL-039",monitoringSort:"recent",monitoringDesc:true,executionHistory:null,executionHistoryStatus:"pending",institutionalFeedStatus:"pending",paperFeed:null,paperFeedRead:null,localCagr:new Map(),localCagrError:"",publicTheses:new Map(),publicThesesMetadata:null,fullReports:new Map(),financialSankeys:new Map(),financialPeriodByTicker:new Map(),publicCloses:new Map(),closeFeedStatus:"not_configured",closeFeedSource:null,closeFeedUpdatedAt:null};
 const viewNames=["competition","algorithm","algorithms","theses","thesis","monitoring","method","glossary","ported","full","synthetic"];
 const button=(label,action,value,cls="smallbtn")=>'<button type="button" class="'+cls+'" data-action="'+esc(action)+'" data-value="'+esc(value)+'">'+esc(label)+'</button>';
 const head=(label,title,body)=>'<div class="section-heading"><div><span class="kicker">'+esc(label)+'</span><h2>'+esc(title)+'</h2><p class="section-context">'+esc(body)+'</p></div></div>';
@@ -213,7 +214,7 @@ function thesisView(){
  const ticker=(new URLSearchParams(location.search).get("ticker")||"").toUpperCase();
  if(!/^[A-Z0-9]{1,8}(?:\.[A-Z]{1,3})?$/.test(ticker)||!state.publicTheses.has(ticker))
   return head("TESIS · CONSULTA","Informe no disponible","No existe una tesis pública validada para el símbolo solicitado.")+'<p><a href="./index.html?view=theses">← Volver al seguimiento</a></p>';
- return renderThesisReport(state.publicTheses.get(ticker),state.fullReports.get(ticker)||null);
+ return renderThesisReport(state.publicTheses.get(ticker),state.fullReports.get(ticker)||null,state.financialSankeys.get(ticker)||null,state.financialPeriodByTicker.get(ticker)||null);
 }
 
 function officialFxPanel(){
@@ -980,7 +981,15 @@ function render(){
  document.body.classList.toggle("midas-thesis-mode",state.view==="thesis");
  const pages={competition,algorithm:algorithmFiche,synthetic:syntheticCompetition,algorithms,theses,thesis:thesisView,monitoring,ported,full,method:methodology,glossary};
  document.querySelectorAll(".product-tabs [data-view]").forEach(b=>{const active=b.dataset.view===state.view||(state.view==="algorithm"&&b.dataset.view==="competition")||(state.view==="thesis"&&b.dataset.view==="theses");b.classList.toggle("active",active);b.setAttribute("aria-pressed",String(active));});
- $("app").innerHTML=(pages[state.view]||competition)();chart();
+ $("app").innerHTML=(pages[state.view]||competition)();
+ const financialPicker=document.getElementById("financial-sankey-period");
+ if(financialPicker)financialPicker.addEventListener("change",()=>{
+  const ticker=(new URLSearchParams(location.search).get("ticker")||"").toUpperCase();
+  if(state.financialSankeys.has(ticker)){
+   state.financialPeriodByTicker.set(ticker,financialPicker.value);render();
+  }
+ });
+ chart();
  if(liveSessionActive())void refreshLiveSession();
 }
 function resolveMidasView(){
@@ -1226,12 +1235,13 @@ document.querySelectorAll(".product-tabs [data-view]").forEach(b=>b.addEventList
 window.addEventListener("popstate",()=>{state.view=resolveMidasView();state.algorithmId=new URLSearchParams(location.search).get("algorithm");state.detailOpen=false;render();});
 async function init(){
  try{
-  const [r,p,full]=await Promise.all([fetch("./data/demo.json",{cache:"no-store"}),fetch("./data/public-theses.json",{cache:"no-store"}),fetch("./data/thesis-reports.json",{cache:"no-store"})]);
-  if(!r.ok||!p.ok||!full.ok)throw Error("Public datasets or full thesis publication missing");
+  const [r,p,full,financial]=await Promise.all([fetch("./data/demo.json",{cache:"no-store"}),fetch("./data/public-theses.json",{cache:"no-store"}),fetch("./data/thesis-reports.json",{cache:"no-store"}),fetch("./data/financial-sankeys.json",{cache:"no-store"})]);
+  if(!r.ok||!p.ok||!full.ok||!financial.ok)throw Error("Public datasets or official financial Sankey catalog missing");
   const data=await r.json(),universe=data.issuerCatalog,publication=await p.json();
   verify(data);verifyIssuerCatalog(universe);
   const stats=verifyPublicTheses(publication);
   state.fullReports=verifyFullReports(await full.json(),new Set(publication.records.map(x=>x.ticker)));
+  state.financialSankeys=verifyFinancialSankeys(await financial.json(),new Set(publication.records.map(x=>x.ticker)));
   state.publicTheses=new Map(publication.records.map(x=>[x.ticker,x]));
   state.publicThesesMetadata={...stats,published_as_of:publication.published_as_of};
   state.data=data;state.universe=universe;state.view=resolveMidasView();state.algorithmId=new URLSearchParams(location.search).get("algorithm");render();void loadPublicCloses();void loadOfficialFx();void loadForecastLedger();void loadSecFilings();void loadOfficialYield();void loadOriginalPaper();void loadHistoricalPaper();void loadFullRoster();void loadStrategyCandidates();void loadInstitutionalPaperFeed();void loadOperationsAudit();void loadExecutionHistory();
