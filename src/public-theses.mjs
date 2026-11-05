@@ -135,11 +135,12 @@ export function publicThesisTableRows(rows,records,local,selected,verifiedCloses
  return rows.map(row=>{
   const v=thesisValues(row,records,local);
   const q=verifiedCloses.get(v.ticker);
-  const price=q?'<strong class="thesis-close">'+money(q.close,q)+'</strong><small class="thesis-quote-date">Cierre '+esc(q.session)+'</small>':
-   tradingViewPriceWidget(v.ticker,v.market);
+  const identity=q?
+   '<div class="thesis-issuer-fallback"><strong>'+esc(v.company)+'</strong><small>'+esc(v.ticker)+'</small><span class="thesis-close">'+money(q.close,q)+'</span><small class="thesis-quote-date">Cierre '+esc(q.session)+'</small></div>':
+   tradingViewSymbol(v.ticker,v.market)?tradingViewPriceWidget(v.ticker,v.market):
+   '<div class="thesis-issuer-fallback"><strong>'+esc(v.company)+'</strong><small>'+esc(v.ticker)+'</small><span class="thesis-quote-date">Cotización no disponible para este mercado</span></div>';
   return '<tr class="interactive-table-row '+(selected===v.ticker?"is-selected":"")+'" data-issuer-id="'+esc(v.ticker)+'" tabindex="0">'+
-   '<td><strong>'+esc(v.ticker)+'</strong></td><td><strong>'+esc(v.company)+'</strong><small class="smallline">'+esc(v.theme)+'</small></td>'+
-   '<td>'+esc(v.market)+'</td><td class="number">'+price+'</td>'+
+   '<td class="thesis-issuer-cell">'+identity+'</td><td>'+esc(v.market||"N/D")+'</td>'+
    '<td class="number">'+percent(v.bull)+'</td><td class="number">'+percent(v.bear)+'</td><td class="number">'+percent(v.base)+'</td>'+
    '<td class="number">'+money(v.entry,v)+'</td><td class="number">'+money(v.target,v)+'</td>'+
    '<td><span class="thesis-earnings" title="'+esc(v.earnings||"N/D")+'">'+esc(v.earnings||"N/D")+'</span></td>'+
