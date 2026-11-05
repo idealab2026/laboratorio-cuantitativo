@@ -92,6 +92,7 @@ const bullet=l=>/^\s*(?:[•▪◦]|[-*]\s)\s*/u.test(l);
 const sanitizeLines=source=>source.replace(/\r/g,"").split("\n").map(x=>x.replace(/\t/g," ").trim());
 const startsScenario=(a,i)=>i+3<a.length&&(/^(FY2031|Indicador|Escenario|M[eé]trica)$/i.test(a[i])||/FY2031.*ESCENARIOS/i.test(a[i]))&&/Bear|Bajista/i.test(a[i+1])&&/Base|Central/i.test(a[i+2])&&/Bull|Alcista/i.test(a[i+3]);
 function scenarioTable(lines,start){
+ if(!startsScenario(lines,start))return null;
  let i=start+4;const headings=lines.slice(start+1,start+4);
  const body=[];
  while(i+3<lines.length&&body.length<16){
@@ -116,7 +117,7 @@ function keyValueTable(lines,start){
 }
 function dataParagraph(text){return '<p class="thesis-source-paragraph">'+esc(text)+'</p>';}
 export function renderCanonicalSource(source){
- if(!source)return '<p class="thesis-report-muted">No se ha publicado un informe ejecutivo íntegro para este expediente.</p>';
+ if(!source)return '<p class="thesis-report-muted">El informe ejecutivo íntegro no está disponible en la edición pública. Esta vista conserva exclusivamente las hipótesis documentadas.</p>';
  const lines=sanitizeLines(String(source).normalize("NFC"));
  let i=0,out=[],items=[];
  const closeList=()=>{if(items.length){out.push('<ul class="thesis-source-list">'+items.map(x=>'<li>'+esc(x)+'</li>').join("")+'</ul>');items=[];}};
