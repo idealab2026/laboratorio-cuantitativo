@@ -1,4 +1,4 @@
-import {renderCanonicalSource,renderExplanatoryCharts} from "./thesis-insights.mjs?v=6cc79bd8fe16";
+import {renderCanonicalSource,renderExplanatoryCharts,renderFocusList} from "./thesis-insights.mjs?v=6cc79bd8fe16";
 /* IDEA LAB / MIDAS — one editorial renderer for every public investment thesis.
    Immutable source: data/public-theses.json. Canonical prose is only shown when
    data/thesis-reports.json passed its public redaction/approval contract. */
@@ -87,9 +87,9 @@ export function renderThesisReport(record,full=null){
  return '<article class="thesis-report" data-thesis="'+h(record.ticker)+'">'+cover+'<nav class="thesis-report-nav" aria-label="Apartados del informe">'+nav+'</nav>'+
  sec("summary","Resumen para el comité",snapshot)+
  sec("business","Negocio y ventajas competitivas",paragraphs(full?.business||record.summary))+
- sec("drivers","Hipótesis y catalizadores",paragraphs(full?.drivers||record.drivers))+
+ sec("drivers","Hipótesis y catalizadores",renderFocusList(full?.drivers||record.drivers,"Catalizadores documentados"))+
  sec("valuation","Valoración y escenarios",valuation)+
- sec("risks","Riesgos e invalidación",paragraphs(full?.risks||record.risks))+
+ sec("risks","Riesgos e invalidación",renderFocusList(full?.risks||record.risks,"Riesgos documentados"))+
  sec("monitoring","Resultados y seguimiento",paragraphs(record.earningsRecord||"Resultados pendientes"))+
  sec("original",approved?"Informe original · edición web estructurada":"Estado de documentación",'<p class="thesis-source-intro">Contenido íntegro conservado del expediente canónico, con tablas y jerarquía editorial adaptadas para lectura en pantalla. Los gráficos explicativos anteriores se calculan exclusivamente a partir de los escenarios documentados; las figuras históricas sin serie tabular se conservan como referencia.</p>'+sourceBody(approved?full.source_text:null))+
  sec("conclusion","Conclusión de inversión",conclusion)+
