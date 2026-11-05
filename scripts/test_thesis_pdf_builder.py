@@ -16,9 +16,9 @@ class ThesisPDFTests(unittest.TestCase):
         cls.theses=json.loads((ROOT/"data/public-theses.json").read_text("utf8"))
         cls.reports=json.loads((ROOT/"data/thesis-reports.json").read_text("utf8"))
 
-    def test_canonical_five_full_and_twenty_summary(self):
+    def test_canonical_five_full_and_twenty_one_summary(self):
         records,approved=mod.verify(self.theses,self.reports)
-        self.assertEqual(len(records),25)
+        self.assertEqual(len(records),26)
         self.assertEqual(set(approved),{"ADBE","CAT","MSFT","META","PLTR"})
         self.assertEqual(len(records)-len(approved),20)
 
