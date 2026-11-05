@@ -142,6 +142,8 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
+      - name: Install shared calendar verification dependencies
+        run: python -m pip install -r timesfm_strategy/requirements-daily.txt
       - name: Record source identity and consumer outcomes independently
         env:
           COMMON_SESSION: ${{ needs.capture.outputs.session }}
