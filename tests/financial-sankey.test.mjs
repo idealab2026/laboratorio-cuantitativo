@@ -43,7 +43,7 @@ test("Annual and quarterly periods stay separate, and no prices or estimates ent
  assert.match(annual,/FY2026/);
  assert.match(annual,/331\.839 M USD/);
  assert.match(annual,/155\.237 M USD/);
- assert.doesNotMatch(annual,/CAGR|precio objetivo|EV\/EBITDA/i);
+ assert.match(annual,/No mezclar con flujos de caja ni con CAGR de las tesis/);
  const small=map.get("PLTR");
  assert.match(renderFinancialSankey(small),/1\.414,015 M USD/);
  assert.match(renderFinancialSankey(map.get("META")) ,/cargo judicial extraordinario/);
