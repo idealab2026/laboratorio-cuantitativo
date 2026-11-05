@@ -115,7 +115,7 @@ test("The public issuer table and CSV keep independently evaluated screens when 
  assert.equal(valued[12],"Screening exploratorio");
  assert.equal(pending[3],"N/D");
  const html=publicThesisTableRows(rows,new Map(),new Map(),"MSFT");
- assert.ok(html.includes("2026-10-30"));
+ assert.ok(html.includes("Sin cierre público verificado"));
  assert.ok(html.includes("Screening exploratorio"));
  for(const ascending of [true,false]){
   assert.equal(orderedThesisRows([...rows],new Map(),new Map(),"base",ascending)[0].issuer.ticker,"MSFT");
