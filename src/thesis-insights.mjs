@@ -246,8 +246,6 @@ export function renderCanonicalSource(source){
   if(structured){closeList();out.push(structured.html);i=structured.next;continue;}
   const tab=scenarioTable(lines,i)||keyValueTable(lines,i);
   if(tab){closeList();out.push(tab.html);i=tab.next;continue;}
-  const promoted=structuredInline(t);
-  if(promoted){closeList();out.push(promoted);i++;continue;}
   if(figure(t)){closeList();out.push('<aside class="thesis-source-figure-reference"><span>REFERENCIA DEL DOCUMENTO ORIGINAL</span><p>'+esc(t)+'</p><small>La figura original se cita aquí, pero no se reconstruye sin su serie de datos verificable.</small></aside>');i++;continue;}
   if(heading(t)){closeList();out.push('<h3 class="thesis-source-heading">'+esc(t)+'</h3>');i++;continue;}
   if(bullet(t)){items.push(t.replace(/^\s*(?:[•▪◦]|[-*]\s)\s*/u,""));i++;continue;}
@@ -261,7 +259,8 @@ export function renderCanonicalSource(source){
     if(lastLine.length>150||/[.!?:;”"]$/u.test(lastLine))break;
     paragraph+=" "+next;lastLine=next;i++;
   }
-  out.push(dataParagraph(paragraph));i++;
+  const promoted=structuredInline(paragraph);
+  out.push(promoted||dataParagraph(paragraph));i++;
  }
  closeList();
  return '<div class="thesis-source-body" aria-label="Texto canónico editado para lectura en la web">'+out.join("")+'</div>';
