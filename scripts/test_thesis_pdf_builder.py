@@ -20,7 +20,7 @@ class ThesisPDFTests(unittest.TestCase):
         records,approved=mod.verify(self.theses,self.reports)
         self.assertEqual(len(records),26)
         self.assertEqual(set(approved),{"ADBE","CAT","MSFT","META","PLTR"})
-        self.assertEqual(len(records)-len(approved),20)
+        self.assertEqual(len(records)-len(approved),21)
 
     def test_visual_explainers_and_semantic_source_tables(self):
         rows,approved=mod.verify(self.theses,self.reports)
