@@ -152,7 +152,7 @@ function clock(time, session) {
   return madrid.format(time) + (next ? " (+1)" : "");
 }
 
-export function renderLiveSession(session, live, now = Date.now(), loadingPlan = false) {
+export function renderLiveSession(session, live, now = Date.now(), loadingPlan = false, competingStrategies = null) {
   const date = longDate.format(new Date(session.date + "T12:00:00Z"));
   const phase = {before: "Antes de la apertura", open: "Mercado abierto",
     after: "Mercado cerrado", closed: "Sin sesión bursátil", unavailable: "Calendario pendiente"};
@@ -208,9 +208,21 @@ export function renderLiveSession(session, live, now = Date.now(), loadingPlan =
   const counts = latest?.checked ? '<strong>' + done + ' / ' + slots.size +
     '</strong><span>algoritmos con sus flujos completados</span><span>' + running + ' en cola o en curso</span>' :
     '<strong>' + slots.size + '</strong><span>algoritmos previstos</span>';
+  // The comparison cohort is defined by the verified roster. The plan alone
+  // cannot prove how many strategies are active but not scheduled today.
+  const hasCohort = Number.isInteger(competingStrategies) && competingStrategies >= slots.size;
+  const unscheduled = hasCohort ? competingStrategies - slots.size : null;
+  const cohortLine = hasCohort ?
+    '<div class="session-live-cohort" role="note" aria-label="Desglose de estrategias en competición para esta sesión">' +
+    '<span><strong>' + competingStrategies + '</strong> en competición</span>' +
+    '<span class="session-live-cohort-equals">=</span>' +
+    '<span><strong>' + slots.size + '</strong> programadas hoy</span>' +
+    '<span class="session-live-cohort-equals">+</span>' +
+    '<span><strong>' + unscheduled + '</strong> sin ejecución prevista hoy</span></div>' :
+    '<p class="session-live-cohort-pending">Mostrando solo las programadas para esta sesión; comprobando el catálogo activo.</p>';
   return header + '<div class="session-live-summary">' + counts +
     (failures ? '<span class="session-live-status failure">' + failures + (failures === 1 ? ' flujo con incidencias' : ' flujos con incidencias') + '</span>' : "") +
-    '</div><p class="session-live-freshness" role="status">' + statusText + ' Actualización cada 3 min.</p>' +
+    '</div>' + cohortLine + '<p class="session-live-freshness" role="status">' + statusText + ' Actualización cada 3 min.</p>' +
     '<div class="session-live-scroll" tabindex="0" role="region" aria-label="Cronología de ejecuciones">' +
     '<div class="session-live-chart"><div class="session-live-lane session-live-axis"><span>Motor</span><div class="session-live-track">' +
     '<span class="session-live-open">Apertura ' + clock(session.open, session) + '</span>' +

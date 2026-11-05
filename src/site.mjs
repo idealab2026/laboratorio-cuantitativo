@@ -1,4 +1,4 @@
-import {LIVE_REFRESH_MS, readLiveAttempts, renderLiveSession, sessionToday} from "./live-session.mjs?v=df279496ea93";
+import {LIVE_REFRESH_MS, readLiveAttempts, renderLiveSession, sessionToday} from "./live-session.mjs?v=2057d4fd24d2";
 import {verifyOriginalPaper} from "./original-paper.mjs?v=b4ab52ea9863";
 import {algorithmTheory,paperLeaderboard} from "./algorithm-detail.mjs";
 import {glossaryGroups,searchGlossary,verifyGlossary} from "./glossary.mjs";
@@ -303,7 +303,11 @@ let liveSessionData=null, liveSessionRequest=null, liveLastRequest=0;
 const liveSessionActive=()=>state.view==="monitoring"&&state.monitoringTab==="today";
 const currentSession=()=>sessionToday(state.executionHistory?.live_plan);
 function liveSessionHTML(){
- return renderLiveSession(currentSession(),liveSessionData,Date.now(),state.executionHistoryStatus==="pending");
+ // Verified public lifecycle roster, not the daily workflow denominator.
+ const competing=Array.isArray(state.fullRoster?.entries)?
+  state.fullRoster.entries.filter(entry=>strategyCompetitionPhase(entry.slot)==="active").length:null;
+ return renderLiveSession(currentSession(),liveSessionData,Date.now(),
+  state.executionHistoryStatus==="pending",competing);
 }
 function paintLiveSession(){
  const panel=$("monitoring-panel-today");
