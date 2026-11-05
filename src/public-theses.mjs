@@ -73,7 +73,7 @@ export function publicThesisTableRows(rows,records,local,selected){
    '<td class="number">'+percent(v.bull)+'</td><td class="number">'+percent(v.bear)+'</td><td class="number">'+percent(v.base)+'</td>'+
    '<td class="number">'+money(v.entry,v)+'</td><td class="number">'+money(v.target,v)+'</td>'+
    '<td><small>'+esc(v.earnings||"N/D")+'</small></td>'+
-   '<td><button type="button" class="smallbtn" data-action="issuer-select" data-value="'+esc(v.ticker)+'">'+(v.record?"Ver ficha":row.screen?"Ver modelo":"Ficha")+'</button>'+
+   '<td><a class="smallbtn" href="./index.html?view=thesis&amp;ticker='+encodeURIComponent(v.ticker)+'" target="_blank" rel="noopener noreferrer" aria-label="Abrir análisis de '+esc(v.ticker)+' en nueva pestaña">'+(v.record?"Abrir análisis":row.screen?"Ver modelo":"Ver ficha")+'</a>'+
    '<small class="smallline">'+esc(v.status)+'</small></td></tr>';
  }).join("");
 }
