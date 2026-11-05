@@ -115,6 +115,120 @@ function keyValueTable(lines,start){
  if(body.length<3)return null;
  return {next:i,html:'<div class="thesis-source-table-wrap"><table class="thesis-source-table"><caption>Ficha de parámetros del informe original</caption><thead><tr><th>Parámetro</th><th>Referencia del informe</th></tr></thead><tbody>'+body.map(([k,v])=>'<tr><th scope="row">'+esc(k)+'</th><td>'+esc(v)+'</td></tr>').join("")+'</tbody></table></div>'};
 }
+
+/* The public source documents have several flattened committee-snapshot blocks.
+   Promote only explicitly labelled and auditable source figures to tables.
+   All values are transcribed, not reestimated. An ambiguous block stays prose. */
+const escTable=(title,headers,rows,detail="")=>'<div class="thesis-source-table-wrap thesis-source-recovered"><table class="thesis-source-table"><caption>'+esc(title)+'</caption><thead><tr>'+headers.map(h=>'<th scope="col">'+esc(h)+'</th>').join("")+'</tr></thead><tbody>'+rows.map(row=>'<tr>'+row.map((cell,j)=>j===0?'<th scope="row">'+esc(cell)+'</th>':'<td>'+esc(cell)+'</td>').join("")+'</tr>').join("")+'</tbody></table>'+(detail?'<p class="thesis-source-table-note">'+esc(detail)+'</p>':"")+'</div>';
+function asList(text,byComma=false){
+ const cleaned=String(text||"").trim().replace(/\s+/g," ");
+ const semi=cleaned.split(/\s*;\s*/).filter(Boolean);
+ if(semi.length>=2)return semi;
+ if(byComma){
+  const commas=cleaned.split(/,\s+/).filter(Boolean);
+  if(commas.length>=3&&commas.every(x=>x.length>=8))return commas;
+ }
+ return [cleaned];
+}
+function factList(label,items){
+ return '<div class="thesis-source-fact"><h4>'+esc(label)+'</h4><ul>'+items.map(item=>'<li>'+esc(item)+'</li>').join("")+'</ul></div>';
+}
+const sourceFactBlock=(label,content)=>{
+ const values=asList(content,true);
+ return values.length>1?factList(label,values):
+ '<div class="thesis-source-fact"><h4>'+esc(label)+'</h4><p>'+esc(content.trim())+'</p></div>';
+};
+function structuredInline(line){
+ const t=line.trim(),val=x=>String(x||"").trim();
+ // MSFT: three FY2031 cases, implicit multiples and 15% entry thresholds.
+ if(/^VALORACIÓN ECONÓMICA CANÓNICA FY2031\s*[—–-]/iu.test(t)){
+  const hits=[...t.matchAll(/\b(Bear|Base|Bull)\s+([\d.,]+)\s+USD\s*\(([−\-+]?\d[\d.,]*)%\s*CAGR\)/giu)];
+  const mult=t.match(/EV\/FCF IDC implícito:\s*([\d.,]+)x\s*\/\s*([\d.,]+)x\s*\/\s*([\d.,]+)x/iu);
+  const p15=t.match(/\bP15:\s*([\d.,]+)\s*\/\s*([\d.,]+)\s*\/\s*([\d.,]+)\s*USD/iu);
+  if(hits.length===3&&mult&&p15){
+   const rows=hits.map((m,i)=>[m[1],m[2]+" USD",m[3]+" %",mult[i+1]+"×",p15[i+1]+" USD"]);
+   return escTable("Escenarios FY2031 · datos del informe canónico",["Escenario","Objetivo","CAGR 5 años","EV/FCF IDC implícito","Entrada P15"],rows);
+  }
+ }
+ // MSFT: fixed 10%/12%/20% matrix; do not infer unstated rows.
+ if(/^Precios de entrada Bear\/Base\/Bull para retornos anuales/iu.test(t)){
+  const hits=[...t.matchAll(/(?:del|para)\s+(\d{1,2})\s*%:\s*([\d.,]+)\s*\/\s*([\d.,]+)\s*\/\s*([\d.,]+)\s*USD/giu)];
+  if(hits.length>=2){
+   const last=hits[hits.length-1],tail=t.slice(last.index+last[0].length).replace(/^[.\s]+/u,"");
+   return escTable("Precios de entrada por retorno exigido · documento original",["Retorno anual","Bajista","Central","Alcista"],hits.map(m=>[m[1]+" %",m[2]+" USD",m[3]+" USD",m[4]+" USD"]),tail);
+  }
+ }
+ // MSFT: deliberately separate supporting reasons from the red-team objections.
+ if(/^Razones que sustentan el seguimiento:/iu.test(t)&&/Riesgos prioritarios:/iu.test(t)){
+  const parts=t.match(/^Razones que sustentan el seguimiento:\s*(.*?)\.\s*Riesgos prioritarios:\s*(.+)$/iu);
+  if(parts)return '<div class="thesis-source-fact-grid">'+factList("Motivos para el seguimiento",asList(parts[1]))+factList("Riesgos prioritarios",asList(parts[2]))+'</div>';
+ }
+ if(/^Próximo punto de control:/iu.test(t)&&/\bDeben vigilarse\b/iu.test(t)){
+  const parts=t.match(/^Próximo punto de control:\s*(.*?)\.\s*Deben vigilarse\s+(.+)$/iu);
+  if(parts){
+   const indicators=asList(parts[2].replace(/\.\s*$/,""),true);
+   return '<div class="thesis-source-monitor"><h4>Próximo punto de control</h4><p>'+esc(parts[1])+'.</p>'+factList("Indicadores a vigilar",indicators)+'</div>';
+  }
+ }
+ // Adobe: stage-by-stage assumptions, complete with the original caveats.
+ if(/^Precios de entrada por rentabilidad a cinco años:/iu.test(t)){
+  const cases=[...t.matchAll(/\b(Base|Bull|Bear)\s+P10\s+([\d.,]+)\s*\|\s*P12\s+([\d.,]+)\s*\|\s*P15\s+([\d.,]+)\s*\|\s*P20\s+([\d.,]+)\s*USD/giu)];
+  if(cases.length>=1){
+   const last=cases[cases.length-1];const tail=t.slice(last.index+last[0].length).replace(/^[.\s]+/u,"");
+   return escTable("Umbrales de entrada a cinco años · hipótesis de cada escenario",["Escenario","P10","P12","P15","P20"],cases.map(m=>[m[1],...m.slice(2,6).map(x=>x+" USD")]),tail);
+  }
+ }
+ // Palantir: snapshot with reference, three scenarios and their stated CAGR.
+ if(/^Métricas \(tesis canónica\)\s*[—–-]/iu.test(t)){
+  const ref=t.match(/\bReferencia\s+([\d.,]+)\s*USD/iu);
+  const hits=[...t.matchAll(/\b(Bear|Base underwriting|Bull)\s+([\d.,]+)\s*USD\s*\/\s*([−\-+]?\d[\d.,]*)\s*%/giu)];
+  if(ref&&hits.length===3)return escTable("Valoración canónica de Palantir · FY2031",["Escenario","Objetivo","CAGR 5 años"],hits.map(m=>[m[1],m[2]+" USD",m[3]+" %"]),"Precio histórico de referencia: "+ref[1]+" USD.");
+ }
+ if(/^Hurdles Base\s+[\d.,]+x\s*[—–-]/iu.test(t)){
+  const vals=[...t.matchAll(/\bP(10|12|15|20)\s+([\d.,]+)/giu)];
+  if(vals.length>=3)return escTable("Precios máximos de entrada · caso Base",["Rentabilidad anual exigida","Precio de entrada"],vals.map(m=>[m[1]+" %",m[2]+" USD"]));
+ }
+ if(/^Sensibilidad de calidad\s*\(WACC/iu.test(t)){
+  const wacc=t.match(/\bWACC\s+([\d.,]+)\s*%/iu);
+  const hits=[...t.matchAll(/\bg\s+([\d.,]+)\s*%\s*→\s*([\d.,]+)x\s*\/\s*([\d.,]+)\s*USD/giu)];
+  if(wacc&&hits.length>=2){
+   const last=hits[hits.length-1],detail=t.slice(last.index+last[0].length).replace(/^[.\s;]+/u,"");
+   return escTable("Sensibilidad de valoración · supuestos indicados",["WACC","Crecimiento terminal g","Múltiplo implícito","Precio"],hits.map(m=>[wacc[1]+" %",m[1]+" %",m[2]+"×",m[3]+" USD"]),detail);
+  }
+ }
+ // Generic, explicitly titled research factors: preserve every item as supplied.
+ const category=t.match(/^(Fortalezas|Riesgos(?: prioritarios| decisivos)?|Catalizadores|Invalidación|Razones para seguirla):\s*(.+)$/iu);
+ if(category)return sourceFactBlock(category[1],category[2]);
+ const watch=t.match(/^(Próximo catalizador|Catalizador|Postura MIDAS|Postura|Clasificación):\s*(.+)$/iu);
+ if(watch)return '<div class="thesis-source-callout"><strong>'+esc(watch[1])+'</strong><p>'+esc(watch[2])+'</p></div>';
+ return null;
+}
+function structuredRun(lines,i){
+ const t=lines[i];
+ const adobe=/^(Bear|Base|Bull)\s+FY2031\b[^:]*:\s*[\d.,]+\s*USD\s*\|/iu;
+ if(adobe.test(t)&&i+2<lines.length&&adobe.test(lines[i+1])&&adobe.test(lines[i+2])){
+  const hits=lines.slice(i,i+3).map(line=>line.match(/^(Bear|Base|Bull)\s+FY2031[^:]*:\s*([\d.,]+)\s*USD\s*\|\s*([−\-+]?\d[\d.,]*)%\s*CAGR\s*\|\s*([\d.,]+)×\s*(.*)$/iu));
+  if(hits.every(Boolean))return {next:i+3,html:escTable("Escenarios canónicos FY2031 · con reservas originales",["Escenario","Objetivo","CAGR","EV/FCF","Reserva documental"],hits.map(m=>[m[1],m[2]+" USD",m[3]+" %",m[4]+"×",m[5]]))};
+ }
+ const cat=/^Escenario\s+Objetivo 2031 USD\s+CAGR precio\s+Múltiplo IDC$/iu;
+ if(cat.test(t)&&i+3<lines.length){
+  const hits=lines.slice(i+1,i+4).map(line=>line.match(/^(Bear|Base|Bull)\s+([\d.,]+)\s+([−\-+]?\d[\d.,]*)\s*%\s+([\d.,]+)x$/iu));
+  if(hits.every(Boolean))return {next:i+4,html:escTable("Escenarios industriales FY2031 · Caterpillar",["Escenario","Precio objetivo","CAGR precio","Múltiplo IDC"],hits.map(m=>[m[1],m[2]+" USD",m[3]+" %",m[4]+"×"]))};
+ }
+ if(/^Hurdle anual\s+10\s*%\s+12\s*%\s+15\s*%\s+20\s*%$/iu.test(t)&&/^Entrada USD\s+/iu.test(lines[i+1]||"")){
+  const values=(lines[i+1].match(/[\d.,]+/g)||[]);
+  if(values.length===4)return {next:i+2,html:escTable("Entrada condicionada al caso Base · Caterpillar",["Retorno anual","Entrada del estudio"],["10","12","15","20"].map((n,j)=>[n+" %",values[j]+" USD"]))};
+ }
+ return null;
+}
+export function renderFocusList(value,label){
+ const content=String(value||"").trim();
+ if(!content)return '<p class="thesis-report-muted">Aún no documentado en el expediente.</p>';
+ const items=asList(content,true);
+ if(items.length===1)return '<p>'+esc(content)+'</p>';
+ return factList(label,items);
+}
+
 function dataParagraph(text){return '<p class="thesis-source-paragraph">'+esc(text)+'</p>';}
 export function renderCanonicalSource(source){
  if(!source)return '<p class="thesis-report-muted">El informe ejecutivo íntegro no está disponible en la edición pública. Esta vista conserva exclusivamente las hipótesis documentadas.</p>';
@@ -128,8 +242,12 @@ export function renderCanonicalSource(source){
    out.push('<p class="thesis-source-frontmatter'+(i===1?' thesis-source-cover-title':'')+'">'+esc(t)+'</p>');
    i++;continue;
   }
+  const structured=structuredRun(lines,i);
+  if(structured){closeList();out.push(structured.html);i=structured.next;continue;}
   const tab=scenarioTable(lines,i)||keyValueTable(lines,i);
   if(tab){closeList();out.push(tab.html);i=tab.next;continue;}
+  const promoted=structuredInline(t);
+  if(promoted){closeList();out.push(promoted);i++;continue;}
   if(figure(t)){closeList();out.push('<aside class="thesis-source-figure-reference"><span>REFERENCIA DEL DOCUMENTO ORIGINAL</span><p>'+esc(t)+'</p><small>La figura original se cita aquí, pero no se reconstruye sin su serie de datos verificable.</small></aside>');i++;continue;}
   if(heading(t)){closeList();out.push('<h3 class="thesis-source-heading">'+esc(t)+'</h3>');i++;continue;}
   if(bullet(t)){items.push(t.replace(/^\s*(?:[•▪◦]|[-*]\s)\s*/u,""));i++;continue;}
