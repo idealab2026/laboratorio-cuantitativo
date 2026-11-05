@@ -1004,6 +1004,7 @@ function go(view){
  u.searchParams.set("view",view);
  if(view==="algorithm"&&state.algorithmId)u.searchParams.set("algorithm",state.algorithmId);
  else u.searchParams.delete("algorithm");
+ if(view!=="thesis")u.searchParams.delete("ticker");
  history.pushState({view,algorithm:state.algorithmId},"",u);
  render();window.scrollTo({top:0,behavior:"auto"});
 }
