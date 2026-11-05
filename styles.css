@@ -714,3 +714,51 @@ p{line-height:1.6;text-align:justify;text-align-last:left;hyphens:auto}p.lead{co
 .daily-run-state.unverified{background:#f5f1e8;color:#866b3d}
 
 .daily-execution-table .daily-recovery-note{color:#177652;font-weight:650}
+
+.session-live-heading{display:flex;justify-content:space-between;align-items:center;gap:16px;margin:20px 0 16px}
+.session-live-heading h3{font-family:Georgia,serif;font-size:clamp(1.25rem,2.5vw,1.8rem);margin:0;color:#102c49}
+.session-live-heading h3::first-letter{text-transform:uppercase}
+.session-live-heading p{margin:5px 0 0;color:#526980;font-size:.85rem}
+.session-live-heading button{flex:none;min-height:40px}
+.session-live-summary{display:flex;align-items:baseline;flex-wrap:wrap;gap:6px 16px;border-top:1px solid #dce4eb;padding:12px 0;color:#294c68;font-size:.88rem}
+.session-live-summary strong{font-size:1.5rem;font-variant-numeric:tabular-nums;color:#102c49}
+.session-live-freshness,.session-live-note{color:#526980;font-size:.82rem;line-height:1.55;margin:6px 0 14px}
+.session-live-scroll{overflow-x:auto;max-width:100%;border:1px solid #dce4eb;border-radius:12px;scrollbar-width:thin}
+.session-live-chart{min-width:650px}
+.session-live-lane{display:grid;grid-template-columns:minmax(152px,1.25fr) minmax(345px,4fr) 112px;gap:18px;align-items:center;min-height:49px;padding:0 16px;border-top:1px solid #e6edf2;font-family:system-ui,sans-serif}
+.session-live-axis{border-top:0;min-height:38px;background:#f4f7fa;color:#4e647c;font-size:.75rem;font-weight:700}
+.session-live-lane-name strong,.session-live-lane-name small{display:block}
+.session-live-lane-name strong{font-size:.8rem;color:#173854}
+.session-live-lane-name small{font-size:.71rem;color:#526980;margin-top:2px}
+.session-live-track{position:relative;height:31px}
+.session-live-lane:not(.session-live-axis) .session-live-track::before{content:"";position:absolute;inset:3px auto 3px 0;width:var(--market-width);background:#edf3f6;border-right:1px solid #c7d9e3}
+.session-live-lane:not(.session-live-axis) .session-live-track::after{content:"";position:absolute;inset:50% 0 auto;border-top:1px solid #c4d3df}
+.session-live-axis .session-live-track span{position:absolute;top:7px;white-space:nowrap;font-variant-numeric:tabular-nums}
+.session-live-open{left:0}
+.session-live-close{transform:translateX(-50%)}
+.session-live-end{right:0}
+.session-live-now{position:absolute;inset:0 auto 0;border-left:1px solid #967327;z-index:1}
+.session-live-marker{position:absolute;z-index:2;display:block;transform:translate(-50%,-50%);top:67%;width:13px;height:13px;border-radius:50%;background:#586d81;border:2px solid white}
+.session-live-marker.planned{top:32%;width:8px;height:8px;background:white;border:1px solid #526980}
+.session-live-marker.success{background:#157462}
+.session-live-marker.failure{background:#a73739;border-radius:3px}
+.session-live-marker.running,.session-live-marker.queued{background:#17669d}
+.session-live-marker.unknown{background:#675b76}
+.session-live-status{font-size:.74rem;color:#526980;font-weight:700}
+.session-live-status.success{color:#126555}
+.session-live-status.failure{color:#973236}
+.session-live-status.running,.session-live-status.queued{color:#155c8d}
+.session-live-status.unknown{color:#62516e}
+.session-live-legend{display:flex;flex-wrap:wrap;gap:7px 17px;margin:12px 0 7px;color:#526980;font-size:.75rem}
+.session-live-legend span{display:inline-flex;align-items:center;gap:6px}
+.session-live-legend i{display:inline-block;width:9px;height:9px;flex:none}
+.legend-planned{border:1px solid #526980;border-radius:50%}
+.legend-run{background:#157462;border-radius:50%}
+.legend-market{background:#e1ebf0}
+.session-live-legend .legend-now{width:1px;height:12px;background:#967327}
+@media(max-width:600px){
+ .session-live-heading{align-items:flex-start;gap:10px}
+ .session-live-lane{grid-template-columns:142px minmax(345px,1fr) 102px;gap:13px;padding:0 12px}
+ .session-live-summary{gap:5px 10px}
+}
+.session-live-lane>.session-live-status small{display:block;font-weight:500;color:#526980;font-variant-numeric:tabular-nums;margin-top:2px}
