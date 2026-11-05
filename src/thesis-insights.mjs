@@ -119,23 +119,29 @@ function dataParagraph(text){return '<p class="thesis-source-paragraph">'+esc(te
 export function renderCanonicalSource(source){
  if(!source)return '<p class="thesis-report-muted">El informe ejecutivo íntegro no está disponible en la edición pública. Esta vista conserva exclusivamente las hipótesis documentadas.</p>';
  const lines=sanitizeLines(String(source).normalize("NFC"));
+ const firstPageCover=/^MIDAS\s*\|\s*CAT\s*\|/i.test(lines[0]||"");
  let i=0,out=[],items=[];
  const closeList=()=>{if(items.length){out.push('<ul class="thesis-source-list">'+items.map(x=>'<li>'+esc(x)+'</li>').join("")+'</ul>');items=[];}};
  while(i<lines.length){
   const t=lines[i];if(blank(t)||decoration(t)){closeList();i++;continue;}
+  if(firstPageCover&&i<5){
+   out.push('<p class="thesis-source-frontmatter'+(i===1?' thesis-source-cover-title':'')+'">'+esc(t)+'</p>');
+   i++;continue;
+  }
   const tab=scenarioTable(lines,i)||keyValueTable(lines,i);
   if(tab){closeList();out.push(tab.html);i=tab.next;continue;}
   if(figure(t)){closeList();out.push('<aside class="thesis-source-figure-reference"><span>REFERENCIA DEL DOCUMENTO ORIGINAL</span><p>'+esc(t)+'</p><small>La figura original se cita aquí, pero no se reconstruye sin su serie de datos verificable.</small></aside>');i++;continue;}
   if(heading(t)){closeList();out.push('<h3 class="thesis-source-heading">'+esc(t)+'</h3>');i++;continue;}
   if(bullet(t)){items.push(t.replace(/^\s*(?:[•▪◦]|[-*]\s)\s*/u,""));i++;continue;}
   closeList();
-  let paragraph=t;
+  let paragraph=t,lastLine=t;
   while(i+1<lines.length){
     const next=lines[i+1];
     if(!next||decoration(next)||heading(next)||figure(next)||bullet(next)||startsScenario(lines,i+1)||next==="Parámetro")break;
-    // Merge hard-wrapped PDF lines, never join already complete long paragraphs.
-    if(paragraph.length>850||paragraph.length>145||/[.!?:;”"]$/u.test(paragraph))break;
-    paragraph+=" "+next;i++;
+    // Merge hard-wrapped PDF lines to the next sentence boundary, not an
+    // arbitrary number of characters; leave pre-formatted long lines alone.
+    if(lastLine.length>150||/[.!?:;”"]$/u.test(lastLine))break;
+    paragraph+=" "+next;lastLine=next;i++;
   }
   out.push(dataParagraph(paragraph));i++;
  }
