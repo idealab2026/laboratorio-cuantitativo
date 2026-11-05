@@ -17,7 +17,7 @@ test("Canonical website has 25 same-layout thesis routes with exactly 5 full res
  assert.match(site,/verifyFullReports\(await full\.json\(\)/);
  for(const row of theses.records){
   const html=renderThesisReport(row,full.get(row.ticker)||null);
-  assert.equal((html.match(/class="thesis-report-section"/g)||[]).length,8);
+  assert.equal((html.match(/class="thesis-report-section"/g)||[]).length,9);
   assert.ok(html.includes('href="./reports/'+row.ticker+'.pdf"'));
   assert.ok(html.includes('target="_blank" rel="noopener noreferrer"'));
   assert.ok(html.includes("Valoración y escenarios"));
@@ -66,6 +66,8 @@ test("View styling and Pages build always publish both web and PDF reports",()=>
  assert.ok(build.includes("build_thesis_pdfs.py"));
  assert.ok(build.includes("src/thesis-report.mjs"));
  assert.ok(build.includes("data/thesis-reports.json"));
+ assert.ok(build.includes("data/financial-sankeys.json"));
+ assert.ok(build.includes("src/financial-sankey.mjs"));
  assert.ok(build.includes("dist/reports"));
 });
 
