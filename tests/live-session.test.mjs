@@ -61,7 +61,7 @@ test("Today's headline explains active cohort versus scheduled and unscheduled s
  assert.match(html,/<strong>1<\/strong> programadas hoy/);
  assert.match(html,/<strong>34<\/strong> sin ejecución prevista hoy/);
  assert.match(html,/class="session-live-cohort"/);
- assert.match(html,/estrategias con sus flujos completados hoy/);
+ assert.match(html,/algoritmos con sus flujos completados/);
  const withoutRoster=renderLiveSession(session,sample,now,false,null);
  assert.doesNotMatch(withoutRoster,/<strong>35<\/strong> en competición/);
  assert.match(withoutRoster,/comprobando el catálogo activo/);
