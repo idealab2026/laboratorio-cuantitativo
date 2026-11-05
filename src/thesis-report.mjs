@@ -1,4 +1,4 @@
-import {renderCanonicalSource,renderExplanatoryCharts} from "./thesis-insights.mjs";
+import {renderCanonicalSource,renderExplanatoryCharts} from "./thesis-insights.mjs?v=98a96d885faa";
 /* IDEA LAB / MIDAS — one editorial renderer for every public investment thesis.
    Immutable source: data/public-theses.json. Canonical prose is only shown when
    data/thesis-reports.json passed its public redaction/approval contract. */
