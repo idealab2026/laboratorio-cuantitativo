@@ -169,13 +169,14 @@ def canonical_source_blocks(text):
     scenario_header=re.compile(r"^(?:FY2031|Indicador|Escenario|Métrica)$",re.I)
     separator=re.compile(r"^[_━─═\-\s]{7,}$")
     bullet=re.compile(r"^(?:[•▪◦]|[-*]\s)\s*")
-    tokens=[];i=0
+    tokens=[];i=0;cat_front=(lines[0].startswith("MIDAS | CAT |") if lines else False)
     def is_heading(t):
         return bool(heading.match(t) or re.fullmatch(r"(?:Investment Committee Snapshot|Investment conclusion|Executive summary|Resumen ejecutivo|Conclusión|Riesgos|Catalizadores|Por qué invertir)",t,re.I) or
                 (11<len(t)<115 and re.fullmatch(r"[A-ZÁÉÍÓÚÑ0-9\s·:—–/\-()]+",t) and "USD" not in t and len(t.split())<=12))
     while i<len(lines):
         line=lines[i]
         if not line or separator.fullmatch(line):i+=1;continue
+        if cat_front and i<5:tokens.append(("frontmatter",line));i+=1;continue
         if (scenario_header.fullmatch(line) and i+3<len(lines) and re.search("Bear|Bajista",lines[i+1],re.I)
             and re.search("Base|Central",lines[i+2],re.I) and re.search("Bull|Alcista",lines[i+3],re.I)):
             data=[["Indicador"]+lines[i+1:i+4]];j=i+4
@@ -199,12 +200,14 @@ def canonical_source_blocks(text):
                 group.append(bullet.sub("",lines[i]));i+=1
             tokens.append(("bullets",group));continue
         paragraph=line
+        last_line=line
         while i+1<len(lines):
             next_line=lines[i+1]
             if (not next_line or is_heading(next_line) or separator.fullmatch(next_line) or is_figure.match(next_line)
                 or bullet.match(next_line) or scenario_header.fullmatch(next_line) or next_line=="Parámetro"):break
-            if len(paragraph)>145 or paragraph.endswith((".","!","?",":",";","”",'"')):break
-            paragraph+=" "+next_line;i+=1
+            if len(last_line)>150 or last_line.endswith((".","!","?",":",";","”",'"')):break
+            paragraph+=" "+next_line
+            last_line=next_line;i+=1
         tokens.append(("paragraph",paragraph));i+=1
     return tokens
 
@@ -306,6 +309,8 @@ def report_pdf(record, extra, target):
         for kind,value in canonical_source_blocks(source):
             if kind=="heading":
                 para(value,"minor")
+            elif kind=="frontmatter":
+                para(value,"small")
             elif kind=="figure":
                 para("Referencia de ilustración del documento original: "+value,"small")
                 para("Serie original no reconstruida al no disponer de la tabla fuente.","small")
