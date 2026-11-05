@@ -69,6 +69,8 @@ jobs:
         run: python3 -m pip install --disable-pip-version-check -r scripts/requirements-research.txt
       - name: Install the exchange calendar for the live session plan
         run: python3 -m pip install --disable-pip-version-check "pandas-market-calendars>=4.4,<6"
+      - name: Install PDF builder
+        run: python3 -m pip install --disable-pip-version-check "reportlab>=4.2,<5"
       - name: Unit tests
         run: |
           node --test tests/*.test.mjs
@@ -87,9 +89,9 @@ jobs:
         run: |
           mkdir -p dist/src dist/data
           cp index.html research.html private-paper.html private-theses.html styles.css logo.svg favicon.svg dist/
-          cp src/original-paper.mjs src/site.mjs src/live-session.mjs src/glossary.mjs src/algorithm-detail.mjs src/operations-audit.mjs src/operation-lots.mjs src/metrics.mjs src/learning.mjs src/learning-view.mjs src/paper-methods.mjs src/paper-ledger.mjs src/competition-roster.mjs src/paper-feed.mjs src/private-paper.mjs src/private-paper-view.mjs src/private-theses.mjs src/private-theses-view.mjs src/public-theses.mjs dist/src/
+          cp src/original-paper.mjs src/site.mjs src/live-session.mjs src/glossary.mjs src/algorithm-detail.mjs src/operations-audit.mjs src/operation-lots.mjs src/metrics.mjs src/learning.mjs src/learning-view.mjs src/paper-methods.mjs src/paper-ledger.mjs src/competition-roster.mjs src/paper-feed.mjs src/private-paper.mjs src/private-paper-view.mjs src/private-theses.mjs src/private-theses-view.mjs src/public-theses.mjs src/thesis-report.mjs src/thesis-report.css dist/src/
           cp data/original-track-map.json data/historical-paper-results.csv data/historical-paper-curves.csv dist/data/
-          cp data/demo.json data/public-theses.json data/public-closes.json data/fx-forecast-ledger.json data/sec-filings.json data/competition-roster.json data/strategy-candidates.json data/institutional-paper-feed.json dist/data/
+          cp data/demo.json data/public-theses.json data/thesis-reports.json data/public-closes.json data/fx-forecast-ledger.json data/sec-filings.json data/competition-roster.json data/strategy-candidates.json data/institutional-paper-feed.json dist/data/
           python3 scripts/refresh_sec.py --validate dist/data/sec-filings.json
           python3 scripts/paper_feed.py --validate dist/data/institutional-paper-feed.json
           python3 scripts/build_operations_audit.py --output dist/data/operations-audit.json
@@ -97,18 +99,19 @@ jobs:
           GH_TOKEN="${{ github.token }}" python3 scripts/build_execution_history.py --output dist/data/execution-history.json
           python3 scripts/build_execution_history.py --validate dist/data/execution-history.json
           test -s dist/data/execution-history.json
-          test "$(find dist -type f | wc -l)" -eq 39
+          python3 scripts/build_thesis_pdfs.py --theses dist/data/public-theses.json --reports dist/data/thesis-reports.json --output dist/reports
+          test "$(find dist -type f | wc -l)" -eq 67
       - name: Acquire official ECB reference observations (not tradable quotes)
         run: |
           python3 scripts/refresh_ecb.py --output dist/data/official-fx.json
           python3 scripts/refresh_ecb.py --validate dist/data/official-fx.json
           python3 -c "import json,sys;sys.path.insert(0,'scripts');from advance_fx import verify_ledger;verify_ledger(json.load(open('dist/data/fx-forecast-ledger.json',encoding='utf8')))"
-          test "$(find dist -type f | wc -l)" -eq 40
+          test "$(find dist -type f | wc -l)" -eq 68
       - name: Acquire independently checked ECB euro area AAA ten-year model yield
         run: |
           python3 scripts/refresh_ecb_yield.py --out dist/data/official-eur-yield.json
           python3 scripts/refresh_ecb_yield.py --validate dist/data/official-eur-yield.json
-          test "$(find dist -type f | wc -l)" -eq 41
+          test "$(find dist -type f | wc -l)" -eq 69
       - uses: actions/upload-artifact@v4
         with:
           name: audited-site
