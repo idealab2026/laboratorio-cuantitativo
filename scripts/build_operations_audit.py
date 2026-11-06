@@ -343,16 +343,16 @@ def source_book(doc,source,key):
     if source=="tfm_state/ledger.json":return (doc.get("models") or {}).get(key)
     return doc
 
-def signal_book(source_id, book, source, parent):
+def signal_book(source_id, book, source, parent, *, read_source=read):
     """Read admitted paper orders without exposing forecasts or position sizes."""
     if source_id in ("timesfm_2p5_daily_eur_paper", "timesfm_daily_spy_eur"):
         source = "timesfm_daily_state/ledger.json"
-        parent, _ = read(source)
+        parent, _ = read_source(source)
         key = "timesfm_daily" if source_id == "timesfm_2p5_daily_eur_paper" else "benchmark_spy"
         book = (parent or {}).get("books", {}).get(key)
     elif source_id == "genetic_sp500_legacy":
         source = "AGENTE/genetic_invest_agent/registro_historico/diario_portfolio_forward_2026-10-12.json"
-        book, _ = read(source)
+        book, _ = read_source(source)
         parent = book
     return book, source, parent
 
@@ -595,15 +595,21 @@ def main():
     parser=argparse.ArgumentParser()
     parser.add_argument("--output",type=Path,required=True)
     parser.add_argument("--signals-output", type=Path)
+    parser.add_argument("--opening-plans", action="store_true")
     args=parser.parse_args()
     signal_tracks = {} if args.signals_output else None
     doc=build(signal_tracks)
     if args.signals_output:
         assert len(signal_tracks) == 35
         args.signals_output.parent.mkdir(parents=True, exist_ok=True)
+        now = datetime.now(timezone.utc)
+        extra = {}
+        if args.opening_plans:
+            from build_opening_plan import opening_plans
+            extra["opening_plans"] = opening_plans(now)
         args.signals_output.write_text(json.dumps({
             "schema": "midas_execution_signals_v1", "tracks": signal_tracks,
-            "published_at_utc": datetime.now(timezone.utc).isoformat(),
+            "published_at_utc": now.isoformat(), **extra,
         }, ensure_ascii=False, separators=(",", ":"), sort_keys=True) + "\n", encoding="utf8")
     assert len(doc["tracks"])==64
     args.output.parent.mkdir(parents=True,exist_ok=True)

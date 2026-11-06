@@ -302,10 +302,11 @@ const dailyHistoryActive=()=>state.view==="monitoring"&&state.monitoringTab==="d
 const currentSession=()=>sessionToday(state.executionHistory?.live_plan);
 const SIGNAL_REFRESH_MS=60_000;
 const signalNames={buy:"Comprar",sell:"Vender",hold:"Mantener",rebalance:"Rebalancear"};
-let signalFeed=null,signalFeedError=false,signalRequest=null,signalChecked=0,signalSlot="IL-038";
+let signalFeed=null,signalFeedError=false,signalRequest=null,signalChecked=0,signalSlot="IL-038",signalPlanDate=null;
 
+const signalDate=d=>typeof d==="string"&&/^\d{4}-\d{2}-\d{2}$/.test(d);
 function verifyLiveSignals(doc){
- const validDate=d=>d===null||typeof d==="string"&&/^\d{4}-\d{2}-\d{2}$/.test(d);
+ const validDate=d=>d===null||signalDate(d);
  const validPrice=p=>p===null||typeof p==="number"&&Number.isFinite(p)&&p>0;
  if(doc?.schema!=="midas_execution_signals_v1"||!Number.isFinite(Date.parse(doc.published_at_utc))||
     !doc.tracks||Object.keys(doc.tracks).length!==35)throw Error("Registro de señales incompleto");
@@ -325,8 +326,24 @@ function verifyLiveSignals(doc){
       !validPrice(fill.price)||!validDate(fill.decision_session))throw Error("Operación no verificable");
   }
  }
+ for(const [day,plan] of Object.entries(doc.opening_plans||{})){
+  if(!signalDate(day)||!signalDate(plan.previous_session)||plan.previous_session>=day||
+     !Number.isFinite(Date.parse(plan.opens_at))||!/^([a-f0-9]{40})$/.test(plan.source_commit))
+   throw Error("Fecha del plan no verificable");
+  for(const [id,track] of Object.entries(plan.tracks)){
+   if(!doc.tracks[id]||!["recorded","paused","stale","archived","unavailable"].includes(track.status)||
+      !validDate(track.session)||!Array.isArray(track.orders)||!Array.isArray(track.holdings)||
+      !Number.isSafeInteger(track.undated)||track.undated<0||
+      track.holdings.some(t=>!validSignalTicker(t))||track.orders.some(o=>!validSignalTicker(o.ticker)||
+       !["buy","sell","rebalance"].includes(o.action)||!signalDate(o.decision_session)||
+       o.decision_session>=day||o.target_session!==day||!validPrice(o.limit_price)||
+       !(o.target_weight===null||Number.isFinite(o.target_weight)&&o.target_weight>=0&&o.target_weight<=1)))
+    throw Error("Plan de apertura no verificable");
+  }
+ }
  return doc;
 }
+const validSignalTicker=t=>typeof t==="string"&&/^[A-Z0-9.-]{1,14}$/.test(t);
 function renderSignalRows(rows,currency,executed){
  const money=value=>value===null||!currency?"N/D":
   new Intl.NumberFormat("es-ES",{style:"currency",currency,currencyDisplay:"code"}).format(value);
@@ -346,26 +363,60 @@ function renderSignalRows(rows,currency,executed){
     esc(timing)+'</small></td><td>'+esc(value)+'</td></tr>';
   }).join("")+'</tbody></table>';
 }
+function openingPlanDay(){
+ const days=Object.keys(signalFeed?.opening_plans||{}).sort();
+ if(days.includes(signalPlanDate))return signalPlanDate;
+ const nyDate=new Intl.DateTimeFormat("sv-SE",{timeZone:"America/New_York",dateStyle:"short"}).format(new Date());
+ return days.filter(day=>day<=nyDate).at(-1)||days[0];
+}
+function openingPlanOptions(){
+ const selected=openingPlanDay();
+ return Object.keys(signalFeed?.opening_plans||{}).sort().reverse().map(day=>
+  '<option value="'+esc(day)+'"'+(day===selected?' selected':'')+'>'+esc(shortPaperDate(day))+'</option>').join("");
+}
+function openingPlanContent(track){
+ const day=openingPlanDay(), plan=signalFeed.opening_plans[day];
+ const entry=plan.tracks[signalSlot];
+ const marketTime=new Intl.DateTimeFormat("es-ES",{timeStyle:"short",timeZone:"Europe/Madrid"})
+  .format(new Date(plan.opens_at));
+ const before=Date.parse(signalFeed.published_at_utc)<Date.parse(plan.opens_at);
+ const notes={
+  archived:"El libro está archivado. No hay un plan operativo para esta sesión.",
+  unavailable:"No hay un diario verificable para esta estrategia y sesión.",
+  stale:"El diario no incorpora la sesión anterior. El plan puede estar incompleto.",
+  paused:"El diario estaba pausado. El plan puede estar incompleto."
+ };
+ const note=entry?notes[entry.status]:notes.unavailable;
+ return '<h4>Plan para la apertura del '+esc(shortPaperDate(day))+'</h4>'+
+  '<p class="midas-signal-meta">Apertura a las '+esc(marketTime)+' (Madrid) · '+
+  (before?'Último plan publicado antes de abrir. Puede actualizarse.':'Reconstruido del diario guardado antes de abrir.')+
+  (entry?.session?' Diario hasta el '+esc(shortPaperDate(entry.session))+'.':"")+'</p>'+
+  (note?'<p class="monitoring-explanation">'+esc(note)+'</p>':"")+
+  (entry?.orders.length?renderSignalRows(entry.orders,track.currency,false):
+   !note&&!entry?.undated?'<p class="monitoring-explanation">Sin órdenes previstas para esta apertura.</p>':"")+
+  (signalSlot==="IL-042"&&entry?.orders.length?'<p class="monitoring-explanation">TimesFM diario prevé cerrar al final de la sesión las posiciones que consiga abrir.</p>':"")+
+  (entry?.undated?'<p class="monitoring-explanation">Hay órdenes pendientes sin una fecha de ejecución verificable para esta apertura.</p>':"")+
+  (entry?.holdings.length&&!["archived","unavailable"].includes(entry.status)?
+   '<details class="midas-signal-holdings"><summary>Posiciones del diario sin orden pendiente · '+entry.holdings.length+'</summary>'+
+   renderSignalRows(entry.holdings.map(ticker=>({ticker,action:"hold",limit_price:null,target_weight:null})),
+    track.currency,false)+'</details>':"");
+}
 function liveSignalsContent(){
  const track=signalFeed?.tracks[signalSlot];
  if(!track)return '<p class="monitoring-explanation" role="status">'+
   (signalFeedError?"El registro de señales no está disponible. Usa «Actualizar» para volver a consultarlo.":"Consultando el diario de señales…")+'</p>';
- if(track.status==="unavailable")return '<p class="monitoring-explanation" role="status">El diario de esta cartera aún no ofrece señales verificables.</p>';
  const published=new Intl.DateTimeFormat("es-ES",{dateStyle:"short",timeStyle:"short",timeZone:"Europe/Madrid"})
   .format(new Date(signalFeed.published_at_utc));
  const pending=track.signals.filter(row=>row.action!=="hold");
  const holdings=track.signals.filter(row=>row.action==="hold");
- return '<p class="midas-signal-meta" role="status">'+
-  (track.status==="paused"?'<strong>Valoración pausada</strong> · ':"")+
-  'Última sesión registrada '+esc(shortPaperDate(track.session))+
-  (track.decision_session?' · Última señal '+esc(shortPaperDate(track.decision_session)):"")+
-  ' · Publicado '+esc(published)+' (Madrid)'+
+ const plan=openingPlanDay();
+ return '<p class="midas-signal-meta" role="status">Publicado '+esc(published)+' (Madrid)'+
   (signalFeedError?' · Se muestra la última copia disponible':"")+'</p>'+
-  '<h4>Órdenes pendientes</h4>'+
-  (pending.length?renderSignalRows(pending,track.currency,false):'<p class="monitoring-explanation">El diario no muestra órdenes pendientes.</p>')+
-  (holdings.length?'<details class="midas-signal-holdings"><summary>Posiciones que mantiene · '+holdings.length+'</summary>'+
-   renderSignalRows(holdings,track.currency,false)+'</details>':"")+
-  '<h4>Operaciones registradas en la última sesión</h4>'+
+  (plan?openingPlanContent(track):'<h4>Órdenes pendientes del último diario</h4>'+
+   (pending.length?renderSignalRows(pending,track.currency,false):'<p class="monitoring-explanation">El diario no muestra órdenes pendientes.</p>')+
+   (holdings.length?'<details class="midas-signal-holdings"><summary>Posiciones del diario sin orden pendiente · '+holdings.length+'</summary>'+
+    renderSignalRows(holdings,track.currency,false)+'</details>':""))+
+  '<h4>Operaciones registradas'+(track.session?' el '+esc(shortPaperDate(track.session)):"")+'</h4>'+
   (track.executions.length?renderSignalRows(track.executions,track.currency,true):
    '<p class="monitoring-explanation">No hay compras ni ventas individuales documentadas para esa sesión.</p>');
 }
@@ -378,8 +429,9 @@ function liveSignalsPanel(){
  return '<section class="midas-live-signals" aria-labelledby="midas-signal-title">'+
   '<div class="daily-ledger-header"><h3 id="midas-signal-title">Señales de los algoritmos</h3>'+
   '<button type="button" class="outline-btn" data-action="live-signals-refresh">Actualizar señales</button></div>'+
-  '<p class="monitoring-explanation">Consulta órdenes paper, posiciones abiertas y operaciones registradas. '+
-  'El diario se vuelve a consultar cada minuto con esta vista abierta. Un precio pendiente se conoce cuando se registra la ejecución simulada.</p>'+
+  '<p class="monitoring-explanation">Consulta qué tenía previsto cada estrategia para una apertura y qué operaciones simuladas se registraron después. El diario se consulta cada minuto con esta vista abierta. La vista cubre 35 carteras con diario; las demás estrategias del catálogo no tienen plan disponible aquí.</p>'+
+  '<div id="midas-opening-date-control" class="monitoring-operation-controls"'+(openingPlanDay()?"":' hidden')+'>'+
+  '<label for="midas-opening-date">Sesión prevista</label><select id="midas-opening-date">'+openingPlanOptions()+'</select></div>'+
   '<div class="monitoring-operation-controls"><label for="live-signal-algorithm">Algoritmo</label>'+
   '<select id="live-signal-algorithm"'+(options?"":' disabled')+'>'+
   (options||'<option>Consultando algoritmos…</option>')+'</select></div>'+
@@ -406,6 +458,11 @@ async function refreshLiveSignals(force=false){
    picker.disabled=false;
   }
   if(content&&(previous?.published_at_utc!==signalFeed?.published_at_utc||failed!==signalFeedError)){
+   const dateControl=$("midas-opening-date-control"),datePicker=$("midas-opening-date");
+   if(dateControl&&datePicker){
+    dateControl.hidden=!openingPlanDay();
+    datePicker.innerHTML=openingPlanOptions();
+   }
    const open=content.querySelector(".midas-signal-holdings")?.open;
    content.innerHTML=liveSignalsContent();
    const details=content.querySelector(".midas-signal-holdings");
@@ -1331,6 +1388,11 @@ $("app").addEventListener("change",e=>{
  if(el.id==="issuer-sort"){state.issuerSort=el.value;state.issuerAsc=["ticker","company","market"].includes(el.value);render();}
  if(el.id==="journal-select"){state.strategy=el.value;render();}
  if(el.id==="audit-ticker"){state.auditTicker=el.value;render();}
+ if(el.id==="midas-opening-date"&&signalFeed?.opening_plans?.[el.value]){
+  signalPlanDate=el.value;
+  const content=$("midas-signal-content");
+  if(content)content.innerHTML=liveSignalsContent();
+ }
  if(el.id==="live-signal-algorithm"&&signalFeed?.tracks[el.value]){
   signalSlot=el.value;
   const content=$("midas-signal-content");

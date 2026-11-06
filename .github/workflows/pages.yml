@@ -8,7 +8,8 @@ on:
     - cron: '25 18 * * 1-5'
     # Reconcile the preceding NYSE session after the overnight paper runs.
     - cron: '43 7 * * 2-6'
-    - cron: '13 11 * * 2-6'
+    # Republish the opening plan well before NYSE opens, including Mondays.
+    - cron: '13 11 * * 1-6'
   workflow_run:
     workflows:
       - MIDAS common XNYS OHLC capture
@@ -118,7 +119,7 @@ jobs:
           cp data/demo.json data/public-theses.json data/thesis-reports.json data/financial-sankeys.json data/public-closes.json data/fx-forecast-ledger.json data/sec-filings.json data/competition-roster.json data/strategy-candidates.json data/institutional-paper-feed.json dist/data/
           python3 scripts/refresh_sec.py --validate dist/data/sec-filings.json
           python3 scripts/paper_feed.py --validate dist/data/institutional-paper-feed.json
-          python3 scripts/build_operations_audit.py --output dist/data/operations-audit.json --signals-output dist/data/execution-signals.json
+          python3 scripts/build_operations_audit.py --output dist/data/operations-audit.json --signals-output dist/data/execution-signals.json --opening-plans
           test -s dist/data/operations-audit.json
           test -s dist/data/execution-signals.json
           GITHUB_SHA="$(git rev-parse HEAD)" GH_TOKEN="${{ github.token }}" python3 scripts/build_execution_history.py --output dist/data/execution-history.json
