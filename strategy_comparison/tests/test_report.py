@@ -225,6 +225,18 @@ class ReportTests(unittest.TestCase):
         self.assertNotEqual(row["initial_capital"], None)
         self.assertEqual(row["first_session"], "2026-10-09")
 
+        book = daily["strategies"]["ensemble_consensus"]
+        book["equity"].pop()
+        book["paused_missing_quotes"] = {"date": "2026-10-12", "missing_tickers": ["AAA"]}
+        result = build(self.registry, self.config, now=self.now,
+                       weekly_config=config, weekly_state=legacy, weekly_daily_state=daily)
+        blocked = next(x for x in result["tracks"] if x["id"] == "weekly_ml_ensemble_2026")
+        healthy = next(x for x in result["tracks"] if x["id"] == "weekly_ml_benchmark_spy")
+        self.assertEqual(blocked["last_session"], "2026-10-09")
+        self.assertIsNone(blocked["day_return_pct"])
+        self.assertIn("AAA", blocked["activity_label"])
+        self.assertEqual(healthy["last_session"], "2026-10-12")
+
     def test_one_weekly_mark_never_counts_as_a_settled_return(self):
         config = {"models": ["lgbm_return", "lgbm_direction", "lgbm_ranker",
                              "mlp_return", "lstm_return", "arima_return", "ensemble_consensus"],

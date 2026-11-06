@@ -128,7 +128,7 @@ class InactiveRecoveryTests(unittest.TestCase):
                  "strategies": {n: copy.deepcopy(b) for n in strategy_ids(config)},
                  "outage_control": {"first_trading_session": "2026-11-05"}}
         result, changed = process_day(config, state, "2026-11-04", {"AAA": bar("2026-11-04")},
-            previous_session="2026-11-03", first_after_signal=False, week_end=True,
+            previous_session="2026-11-03", week_end=True,
             quote_identity=IDENTITY)
         self.assertTrue(changed)
         for n, got in result["strategies"].items():

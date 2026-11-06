@@ -232,6 +232,29 @@ class ExecutionHistoryTests(unittest.TestCase):
         self.assertEqual(next(d for d in day["details"] if d["slot"]=="IL-010")["status"],"failure")
         self.assertEqual(next(d for d in day["details"] if d["slot"]=="IL-019")["status"],"failure")
 
+    def test_weekly_quote_pause_overrides_only_affected_slot(self):
+        mapping = json.loads((h.ROOT / "data/original-track-map.json").read_text())
+        from build_operations_audit import source_for
+        relative = "weekly_ml_daily_state/ledger.json"
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            (root / "data").mkdir()
+            (root / "data/original-track-map.json").write_text(json.dumps(mapping))
+            books = {key: {"events": []} for source, key in map(source_for, mapping) if source == relative}
+            books["lgbm_return"]["events"].append({
+                "type": "weekly_book_paused", "date": "2026-11-04", "missing_tickers": ["CRWD"]
+            })
+            (root / relative).parent.mkdir()
+            (root / relative).write_text(json.dumps({"strategies": books}))
+            pauses = h.weekly_quarantines(root)
+        runs = [event("weekly_ml_daily.yml", "2026-11-05T02:20:00Z", "success")]
+        doc = h.build(self.now, runs, self.schedules, pauses)
+        h.verify(doc)
+        day = next(row for row in doc["days"] if row["date"] == "2026-11-04")
+        affected = next(row for row in day["details"] if row["slot"] == "IL-021")
+        self.assertEqual((day["success"], day["failure"]), (8, 1))
+        self.assertIn("CRWD", affected["reason"])
+
     def test_actions_outage_does_not_hide_accounting_history(self):
         doc=h.build(self.now,[],self.schedules,journals={"2026-10-30":[self.journal()]},actions_available=False)
         h.verify(doc)
