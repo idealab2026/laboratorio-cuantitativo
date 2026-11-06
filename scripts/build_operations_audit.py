@@ -7,6 +7,7 @@ Inferred holds are visibly identified and are NOT original trading decisions.
 """
 from __future__ import annotations
 import argparse
+from datetime import datetime, timezone
 import hashlib
 import json
 from collections import defaultdict
@@ -206,7 +207,7 @@ def normalize_ledger(ledger, source):
                 score=score_map.get((day,ticker))
                 reason,basis=rule_reason(event,score)
                 qty=event.get("quantity",event.get("shares"))
-                pr=event.get("price",event.get("price_eur"))
+                pr=event.get("price",event.get("price_eur",event.get("entry_eur")))
                 price_basis="book_fill" if number(pr) else "not_recorded"
                 recovered=classic_prices.get((day,ticker,action))
                 if pr is None and recovered:
@@ -342,7 +343,90 @@ def source_book(doc,source,key):
     if source=="tfm_state/ledger.json":return (doc.get("models") or {}).get(key)
     return doc
 
-def build():
+def signal_book(source_id, book, source, parent):
+    """Read admitted paper orders without exposing forecasts or position sizes."""
+    if source_id in ("timesfm_2p5_daily_eur_paper", "timesfm_daily_spy_eur"):
+        source = "timesfm_daily_state/ledger.json"
+        parent, _ = read(source)
+        key = "timesfm_daily" if source_id == "timesfm_2p5_daily_eur_paper" else "benchmark_spy"
+        book = (parent or {}).get("books", {}).get(key)
+    elif source_id == "genetic_sp500_legacy":
+        source = "AGENTE/genetic_invest_agent/registro_historico/diario_portfolio_forward_2026-10-12.json"
+        book, _ = read(source)
+        parent = book
+    return book, source, parent
+
+
+def pending_signals(book):
+    positions = {ticker for ticker in (book.get("positions") or {}) if clean_ticker(ticker)}
+    pending = book.get("pending")
+    output = []
+
+    def add(ticker, action, order, *, weight=None):
+        if not clean_ticker(ticker) or action not in ("buy", "sell", "rebalance", "hold"):
+            return
+        output.append({"ticker": ticker, "action": action,
+                       "decision_session": date(order.get("signal_date") or order.get("asof")),
+                       "target_session": date(order.get("expected_fill_session")),
+                       "limit_price": number(order.get("limit_price")), "target_weight": weight})
+
+    if isinstance(pending, dict) and isinstance(pending.get("target_weights"), dict):
+        targets = {t: w for t, w in pending["target_weights"].items()
+                   if clean_ticker(t) and number(w) is not None and w <= 1}
+        for ticker in sorted(positions - targets.keys()):
+            add(ticker, "sell", pending, weight=0)
+        for ticker, weight in sorted(targets.items()):
+            add(ticker, "rebalance" if ticker in positions else "buy", pending, weight=weight)
+    elif isinstance(pending, dict) and ("buys" in pending or "sells" in pending):
+        for ticker, order in sorted(pending.get("buys", {}).items()):
+            add(ticker, "buy", order if isinstance(order, dict) else pending)
+        for ticker in sorted(pending.get("sells", [])):
+            add(ticker, "sell", pending)
+    elif isinstance(pending, dict):
+        for ticker, order in sorted(pending.items()):
+            if isinstance(order, dict):
+                add(ticker, order.get("side"), order)
+    elif isinstance(pending, list):
+        for order in pending:
+            if isinstance(order, dict):
+                add(order.get("ticker"), order.get("side", "buy"), order)
+    weekly = book.get("pending_signal")
+    if isinstance(weekly, dict):
+        for item in weekly.get("selections", []):
+            if isinstance(item, dict):
+                add(item.get("ticker"), "buy", weekly)
+    for ticker in sorted(positions - {row["ticker"] for row in output}):
+        add(ticker, "hold", {})
+    return output
+
+
+def live_book(original, book, source, parent):
+    latest = date(original.get("last_session"))
+    base = {"label": original["label"], "currency": original.get("currency"),
+            "session": latest, "decision_session": None,
+            "status": "unavailable", "signals": [], "executions": []}
+    if not isinstance(book, dict):
+        return base
+    history = book.get("equity") or []
+    latest = (date(history[-1].get("date")) if history else date(book.get("last_session"))) or latest
+    signals = pending_signals(book)
+    decision = max([d for d in [date(book.get("last_signal_session")),
+                    date((parent or {}).get("last_signal_session")),
+                    *(item["decision_session"] for item in signals)] if d], default=None)
+    actions = normalize_ledger(book, source).get(latest, [])
+    if source == "AGENTE/genetic_invest_agent/registro_historico/diario_portfolio_forward_2026-10-12.json":
+        actions = [{"ticker": trade["ticker"], "side": trade["side"].lower(),
+                    "price": number(trade.get("fill")), "signal_date": date(trade.get("signal_date"))}
+                   for trade in book.get("trades", []) if trade.get("session") == latest
+                   and clean_ticker(trade.get("ticker")) and str(trade.get("side")).lower() in SIDES]
+    executions = [{"ticker": item["ticker"], "action": item["side"], "price": item["price"],
+                   "decision_session": item["signal_date"]} for item in actions]
+    return {**base, "session": latest, "decision_session": decision, "signals": signals,
+            "status": "paused" if book.get("paused_missing_quotes") else "recorded",
+            "executions": executions}
+
+
+def build(signal_tracks=None):
     registry,_=read("data/original-track-map.json")
     dashboard,_=read("strategy_state/dashboard.json")
     if not isinstance(registry,dict) or len(registry)!=64 or len(dashboard.get("tracks",[]))!=64:
@@ -355,6 +439,8 @@ def build():
         filename,key=source_for(source_id)
         doc,digest=read(filename) if filename else (None,None)
         book=source_book(doc,filename,key) if filename else None
+        if signal_tracks is not None and 10 <= int(slot[3:]) <= 44:
+            signal_tracks[slot] = live_book(original, *signal_book(source_id, book, filename, doc))
         journal_days=[x["date"] for x in original.get("equity_history",[]) if date(x.get("date"))]
         if not isinstance(book,dict):
             tracks[slot]={"source_id":source_id,"status":"no_executed_actions_documented",
@@ -508,8 +594,17 @@ def build():
 def main():
     parser=argparse.ArgumentParser()
     parser.add_argument("--output",type=Path,required=True)
+    parser.add_argument("--signals-output", type=Path)
     args=parser.parse_args()
-    doc=build()
+    signal_tracks = {} if args.signals_output else None
+    doc=build(signal_tracks)
+    if args.signals_output:
+        assert len(signal_tracks) == 35
+        args.signals_output.parent.mkdir(parents=True, exist_ok=True)
+        args.signals_output.write_text(json.dumps({
+            "schema": "midas_execution_signals_v1", "tracks": signal_tracks,
+            "published_at_utc": datetime.now(timezone.utc).isoformat(),
+        }, ensure_ascii=False, separators=(",", ":"), sort_keys=True) + "\n", encoding="utf8")
     assert len(doc["tracks"])==64
     args.output.parent.mkdir(parents=True,exist_ok=True)
     args.output.write_text(json.dumps(doc,ensure_ascii=False,separators=(",",":"),sort_keys=True)+"\n",encoding="utf8")

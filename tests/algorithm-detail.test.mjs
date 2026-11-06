@@ -707,3 +707,27 @@ test("Competition view defaults to active lifecycle tab with three filtered, ord
   "Sorting still applies only to the current filtered rows");
  assert.ok(site.includes("fullRosterRows()"),"Keep existing columns and profile links");
 });
+
+
+test("live signals render a pending order separately from a simulated fill",async()=>{
+ const {runInNewContext}=await import("node:vm");
+ const block=source.slice(source.indexOf("const SIGNAL_REFRESH_MS"),source.indexOf("function liveSessionHTML"));
+ const context={Intl,shortPaperDate:v=>v,esc:v=>String(v),strategyCompetitionPhase:()=>"active"};
+ runInNewContext(block+";this.signalAPI={verifyLiveSignals,renderSignalRows};",context);
+ const pending={ticker:"AAPL",action:"buy",decision_session:"2026-11-05",target_session:"2026-11-06",
+  limit_price:null,target_weight:null};
+ const fill={ticker:"AAPL",action:"buy",decision_session:"2026-11-05",price:221.25};
+ const track={label:"Capital Cycle",currency:"USD",session:"2026-11-06",decision_session:"2026-11-05",
+  status:"recorded",signals:[pending],executions:[fill]};
+ const feed={schema:"midas_execution_signals_v1",published_at_utc:"2026-11-07T00:07:00Z",
+  tracks:Object.fromEntries(Array.from({length:35},(_,i)=>["IL-"+String(i+10).padStart(3,"0"),track]))};
+ assert.equal(context.signalAPI.verifyLiveSignals(feed),feed);
+ const orderHtml=context.signalAPI.renderSignalRows([pending],"USD",false);
+ const fillHtml=context.signalAPI.renderSignalRows([fill],"USD",true);
+ assert.match(orderHtml,/Comprar/);
+ assert.match(orderHtml,/Por determinar/);
+ assert.match(orderHtml,/Apertura prevista/);
+ assert.match(fillHtml,/Compra registrada/);
+ assert.match(fillHtml,/221,25/);
+ assert.throws(()=>context.signalAPI.verifyLiveSignals({...feed,tracks:{"IL-038":track}}),/incompleto/);
+});
