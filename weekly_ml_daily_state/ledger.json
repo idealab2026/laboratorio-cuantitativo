@@ -9,7 +9,7 @@
     "2026-11-04"
   ],
   "initial_capital": 100000.0,
-  "last_session": "2026-11-04",
+  "last_session": "2026-11-06",
   "last_signal_session": "2026-10-30",
   "outage_control": {
     "first_trading_session": "2026-11-05",
@@ -805,9 +805,24 @@
           "expired_unfilled_orders": [],
           "recorded_at_utc": "2026-11-05T00:25:34+00:00",
           "type": "inactive_mark_no_trades"
+        },
+        {
+          "date": "2026-11-06",
+          "missing_tickers": [
+            "FTNT"
+          ],
+          "reason": "missing_ohlc",
+          "type": "weekly_book_paused"
         }
       ],
       "nav": 90892.27011219709,
+      "paused_missing_quotes": {
+        "date": "2026-11-06",
+        "missing_tickers": [
+          "FTNT"
+        ],
+        "reason": "missing_ohlc"
+      },
       "pending": [],
       "positions": {
         "BBY": {
@@ -1245,7 +1260,7 @@
       ]
     },
     "benchmark_rsp": {
-      "cash": 5054.154933134923,
+      "cash": 99273.45793263026,
       "equity": [
         {
           "date": "2026-10-09",
@@ -1367,6 +1382,22 @@
             "snapshot_sha256": "7a4eabfe31d00d5e07981eb35f7f43228eaeaeab538dc1641e11d305996ca702"
           },
           "recorded_at_utc": "2026-11-05T00:25:34+00:00"
+        },
+        {
+          "date": "2026-11-05",
+          "decision_recorded": false,
+          "late_mark_only": true,
+          "nav": 99773.08711899491,
+          "quote_identity": {
+            "effective_sha256": "fe8bd95584b0b4b62e2b538a4697a18e5685f516ad0d172f4e5dffe190e05886",
+            "snapshot_sha256": "26bab09fa7bb46ba02e0f82c8d6d190dc7bf8e7a38a4345a2cdec199f03df947"
+          },
+          "recorded_at_utc": "2026-11-06T23:40:02+00:00"
+        },
+        {
+          "date": "2026-11-06",
+          "decision_recorded": false,
+          "nav": 99273.45793263026
         }
       ],
       "events": [
@@ -1464,19 +1495,20 @@
           "expired_unfilled_orders": [],
           "recorded_at_utc": "2026-11-05T00:25:34+00:00",
           "type": "inactive_mark_no_trades"
+        },
+        {
+          "date": "2026-11-06",
+          "execution": "simulated_week_close",
+          "fee": 94.31361661611146,
+          "price": 215.94197805023194,
+          "shares": 436.754435,
+          "ticker": "RSP",
+          "type": "sell"
         }
       ],
-      "nav": 102594.52370140619,
+      "nav": 99273.45793263026,
       "pending": [],
-      "positions": {
-        "RSP": {
-          "entry_date": "2026-11-02",
-          "entry_fee": 95.93300826045252,
-          "entry_price": 219.64976328277587,
-          "shares": 436.754435,
-          "signal_date": "2026-10-30"
-        }
-      },
+      "positions": {},
       "trades": [
         {
           "buy_commission": 94.90509486176578,
@@ -1513,11 +1545,23 @@
           "shares": 440.617408,
           "signal_date": "2026-10-23",
           "ticker": "RSP"
+        },
+        {
+          "buy_commission": 95.93300826045252,
+          "buy_price": 219.64976328277587,
+          "entry_date": "2026-11-02",
+          "exit_date": "2026-11-06",
+          "net_pnl": -1809.6382692176362,
+          "sell_commission": 94.31361661611146,
+          "sell_price": 215.94197805023194,
+          "shares": 436.754435,
+          "signal_date": "2026-10-30",
+          "ticker": "RSP"
         }
       ]
     },
     "benchmark_spy": {
-      "cash": 4780.600070342509,
+      "cash": 92458.98746555843,
       "equity": [
         {
           "date": "2026-10-09",
@@ -1639,6 +1683,22 @@
             "snapshot_sha256": "7a4eabfe31d00d5e07981eb35f7f43228eaeaeab538dc1641e11d305996ca702"
           },
           "recorded_at_utc": "2026-11-05T00:25:34+00:00"
+        },
+        {
+          "date": "2026-11-05",
+          "decision_recorded": false,
+          "late_mark_only": true,
+          "nav": 92317.18408634252,
+          "quote_identity": {
+            "effective_sha256": "fe8bd95584b0b4b62e2b538a4697a18e5685f516ad0d172f4e5dffe190e05886",
+            "snapshot_sha256": "26bab09fa7bb46ba02e0f82c8d6d190dc7bf8e7a38a4345a2cdec199f03df947"
+          },
+          "recorded_at_utc": "2026-11-06T23:40:02+00:00"
+        },
+        {
+          "date": "2026-11-06",
+          "decision_recorded": false,
+          "nav": 92458.98746555843
         }
       ],
       "events": [
@@ -1736,19 +1796,20 @@
           "expired_unfilled_orders": [],
           "recorded_at_utc": "2026-11-05T00:25:34+00:00",
           "type": "inactive_mark_no_trades"
+        },
+        {
+          "date": "2026-11-06",
+          "execution": "simulated_week_close",
+          "fee": 87.76615354876469,
+          "price": 734.9223330383301,
+          "shares": 119.422352,
+          "ticker": "SPY",
+          "type": "sell"
         }
       ],
-      "nav": 96354.85351590403,
+      "nav": 92458.98746555843,
       "pending": [],
-      "positions": {
-        "SPY": {
-          "entry_date": "2026-11-02",
-          "entry_fee": 90.74065433753448,
-          "entry_price": 759.8297372131348,
-          "shares": 119.422352,
-          "signal_date": "2026-10-30"
-        }
-      },
+      "positions": {},
       "trades": [
         {
           "buy_commission": 94.90509486345954,
@@ -1785,11 +1846,23 @@
           "shares": 120.302162,
           "signal_date": "2026-10-23",
           "ticker": "SPY"
+        },
+        {
+          "buy_commission": 90.74065433753448,
+          "buy_price": 759.8297372131348,
+          "entry_date": "2026-11-02",
+          "exit_date": "2026-11-06",
+          "net_pnl": -3153.0075966560926,
+          "sell_commission": 87.76615354876469,
+          "sell_price": 734.9223330383301,
+          "shares": 119.422352,
+          "signal_date": "2026-10-30",
+          "ticker": "SPY"
         }
       ]
     },
     "ensemble_consensus": {
-      "cash": 4186.3892936468965,
+      "cash": 81871.061608225,
       "equity": [
         {
           "date": "2026-10-09",
@@ -1911,6 +1984,22 @@
             "snapshot_sha256": "7a4eabfe31d00d5e07981eb35f7f43228eaeaeab538dc1641e11d305996ca702"
           },
           "recorded_at_utc": "2026-11-05T00:25:34+00:00"
+        },
+        {
+          "date": "2026-11-05",
+          "decision_recorded": false,
+          "late_mark_only": true,
+          "nav": 82742.34612324364,
+          "quote_identity": {
+            "effective_sha256": "fe8bd95584b0b4b62e2b538a4697a18e5685f516ad0d172f4e5dffe190e05886",
+            "snapshot_sha256": "26bab09fa7bb46ba02e0f82c8d6d190dc7bf8e7a38a4345a2cdec199f03df947"
+          },
+          "recorded_at_utc": "2026-11-06T23:40:02+00:00"
+        },
+        {
+          "date": "2026-11-06",
+          "decision_recorded": false,
+          "nav": 81871.061608225
         }
       ],
       "events": [
@@ -2575,82 +2664,101 @@
           "expired_unfilled_orders": [],
           "recorded_at_utc": "2026-11-05T00:25:34+00:00",
           "type": "inactive_mark_no_trades"
+        },
+        {
+          "date": "2026-11-06",
+          "execution": "simulated_week_close",
+          "fee": 8.193238647067847,
+          "price": 334.6425925598145,
+          "shares": 24.48355,
+          "ticker": "AON",
+          "type": "sell"
+        },
+        {
+          "date": "2026-11-06",
+          "execution": "simulated_week_close",
+          "fee": 7.767479728085743,
+          "price": 248.2258311004639,
+          "shares": 31.291988,
+          "ticker": "BIIB",
+          "type": "sell"
+        },
+        {
+          "date": "2026-11-06",
+          "execution": "simulated_week_close",
+          "fee": 8.25192245949945,
+          "price": 272.93347232055663,
+          "shares": 30.23419,
+          "ticker": "ERIE",
+          "type": "sell"
+        },
+        {
+          "date": "2026-11-06",
+          "execution": "simulated_week_close",
+          "fee": 7.887491795381726,
+          "price": 327.7260696411133,
+          "shares": 24.067331,
+          "ticker": "FDS",
+          "type": "sell"
+        },
+        {
+          "date": "2026-11-06",
+          "execution": "simulated_week_close",
+          "fee": 7.793592873035579,
+          "price": 416.2617662200928,
+          "shares": 18.722817,
+          "ticker": "MAR",
+          "type": "sell"
+        },
+        {
+          "date": "2026-11-06",
+          "execution": "simulated_week_close",
+          "fee": 8.492324047362105,
+          "price": 32.3238301525116,
+          "shares": 262.726416,
+          "ticker": "MGM",
+          "type": "sell"
+        },
+        {
+          "date": "2026-11-06",
+          "execution": "simulated_week_close",
+          "fee": 7.826764322576298,
+          "price": 146.6566307296753,
+          "shares": 53.367954,
+          "ticker": "MRK",
+          "type": "sell"
+        },
+        {
+          "date": "2026-11-06",
+          "execution": "simulated_week_close",
+          "fee": 7.720202204408043,
+          "price": 101.91901622009279,
+          "shares": 75.748398,
+          "ticker": "NOW",
+          "type": "sell"
+        },
+        {
+          "date": "2026-11-06",
+          "execution": "simulated_week_close",
+          "fee": 6.825735875110161,
+          "price": 160.29981488037112,
+          "shares": 42.581059,
+          "ticker": "PLTR",
+          "type": "sell"
+        },
+        {
+          "date": "2026-11-06",
+          "execution": "simulated_week_close",
+          "fee": 7.0036827968004856,
+          "price": 346.27678720092774,
+          "shares": 20.225678,
+          "ticker": "VLO",
+          "type": "sell"
         }
       ],
-      "nav": 84832.10738975221,
+      "nav": 81871.061608225,
       "pending": [],
-      "positions": {
-        "AON": {
-          "entry_date": "2026-11-02",
-          "entry_fee": 7.946190252717325,
-          "entry_price": 324.5522096557617,
-          "shares": 24.48355,
-          "signal_date": "2026-10-30"
-        },
-        "BIIB": {
-          "entry_date": "2026-11-02",
-          "entry_fee": 7.946190507582486,
-          "entry_price": 253.93690255737303,
-          "shares": 31.291988,
-          "signal_date": "2026-10-30"
-        },
-        "ERIE": {
-          "entry_date": "2026-11-02",
-          "entry_fee": 7.946190554636397,
-          "entry_price": 262.8213474426269,
-          "shares": 30.23419,
-          "signal_date": "2026-10-30"
-        },
-        "FDS": {
-          "entry_date": "2026-11-02",
-          "entry_fee": 7.946190339615,
-          "entry_price": 330.16499999999996,
-          "shares": 24.067331,
-          "signal_date": "2026-10-30"
-        },
-        "MAR": {
-          "entry_date": "2026-11-02",
-          "entry_fee": 7.946190309549986,
-          "entry_price": 424.4121122131347,
-          "shares": 18.722817,
-          "signal_date": "2026-10-30"
-        },
-        "MGM": {
-          "entry_date": "2026-11-02",
-          "entry_fee": 7.946190545131097,
-          "entry_price": 30.245114542007446,
-          "shares": 262.726416,
-          "signal_date": "2026-10-30"
-        },
-        "MRK": {
-          "entry_date": "2026-11-02",
-          "entry_fee": 7.946190414811148,
-          "entry_price": 148.89441732788086,
-          "shares": 53.367954,
-          "signal_date": "2026-10-30"
-        },
-        "NOW": {
-          "entry_date": "2026-11-02",
-          "entry_fee": 7.946190524424476,
-          "entry_price": 104.90242347335816,
-          "shares": 75.748398,
-          "signal_date": "2026-10-30"
-        },
-        "PLTR": {
-          "entry_date": "2026-11-02",
-          "entry_fee": 7.946190416259214,
-          "entry_price": 186.61326427459716,
-          "shares": 42.581059,
-          "signal_date": "2026-10-30"
-        },
-        "VLO": {
-          "entry_date": "2026-11-02",
-          "entry_fee": 7.946190198447161,
-          "entry_price": 392.87633267211913,
-          "shares": 20.225678,
-          "signal_date": "2026-10-30"
-        }
-      },
+      "positions": {},
       "trades": [
         {
           "buy_commission": 9.490509257069236,
@@ -3011,6 +3119,126 @@
           "shares": 57.958754,
           "signal_date": "2026-10-23",
           "ticker": "VST"
+        },
+        {
+          "buy_commission": 7.946190252717325,
+          "buy_price": 324.5522096557617,
+          "entry_date": "2026-11-02",
+          "exit_date": "2026-11-06",
+          "net_pnl": 230.9089654507361,
+          "sell_commission": 8.193238647067847,
+          "sell_price": 334.6425925598145,
+          "shares": 24.48355,
+          "signal_date": "2026-10-30",
+          "ticker": "AON"
+        },
+        {
+          "buy_commission": 7.946190507582486,
+          "buy_price": 253.93690255737303,
+          "entry_date": "2026-11-02",
+          "exit_date": "2026-11-06",
+          "net_pnl": -194.42444973241183,
+          "sell_commission": 7.767479728085743,
+          "sell_price": 248.2258311004639,
+          "shares": 31.291988,
+          "signal_date": "2026-10-30",
+          "ticker": "BIIB"
+        },
+        {
+          "buy_commission": 7.946190554636397,
+          "buy_price": 262.8213474426269,
+          "entry_date": "2026-11-02",
+          "exit_date": "2026-11-06",
+          "net_pnl": 289.53379184891713,
+          "sell_commission": 8.25192245949945,
+          "sell_price": 272.93347232055663,
+          "shares": 30.23419,
+          "signal_date": "2026-10-30",
+          "ticker": "ERIE"
+        },
+        {
+          "buy_commission": 7.946190339615,
+          "buy_price": 330.16499999999996,
+          "entry_date": "2026-11-02",
+          "exit_date": "2026-11-06",
+          "net_pnl": -74.53222636827014,
+          "sell_commission": 7.887491795381726,
+          "sell_price": 327.7260696411133,
+          "shares": 24.067331,
+          "signal_date": "2026-10-30",
+          "ticker": "FDS"
+        },
+        {
+          "buy_commission": 7.946190309549986,
+          "buy_price": 424.4121122131347,
+          "entry_date": "2026-11-02",
+          "exit_date": "2026-11-06",
+          "net_pnl": -168.33721969699235,
+          "sell_commission": 7.793592873035579,
+          "sell_price": 416.2617662200928,
+          "shares": 18.722817,
+          "signal_date": "2026-10-30",
+          "ticker": "MAR"
+        },
+        {
+          "buy_commission": 7.946190545131097,
+          "buy_price": 30.245114542007446,
+          "entry_date": "2026-11-02",
+          "exit_date": "2026-11-06",
+          "net_pnl": 529.6949876385148,
+          "sell_commission": 8.492324047362105,
+          "sell_price": 32.3238301525116,
+          "shares": 262.726416,
+          "signal_date": "2026-10-30",
+          "ticker": "MGM"
+        },
+        {
+          "buy_commission": 7.946190414811148,
+          "buy_price": 148.89441732788086,
+          "entry_date": "2026-11-02",
+          "exit_date": "2026-11-06",
+          "net_pnl": -135.1990469722378,
+          "sell_commission": 7.826764322576298,
+          "sell_price": 146.6566307296753,
+          "shares": 53.367954,
+          "signal_date": "2026-10-30",
+          "ticker": "MRK"
+        },
+        {
+          "buy_commission": 7.946190524424476,
+          "buy_price": 104.90242347335816,
+          "entry_date": "2026-11-02",
+          "exit_date": "2026-11-06",
+          "net_pnl": -241.65471274526516,
+          "sell_commission": 7.720202204408043,
+          "sell_price": 101.91901622009279,
+          "shares": 75.748398,
+          "signal_date": "2026-10-30",
+          "ticker": "NOW"
+        },
+        {
+          "buy_commission": 7.946190416259214,
+          "buy_price": 186.61326427459716,
+          "entry_date": "2026-11-02",
+          "exit_date": "2026-11-06",
+          "net_pnl": -1135.2264674404225,
+          "sell_commission": 6.825735875110161,
+          "sell_price": 160.29981488037112,
+          "shares": 42.581059,
+          "signal_date": "2026-10-30",
+          "ticker": "PLTR"
+        },
+        {
+          "buy_commission": 7.946190198447161,
+          "buy_price": 392.87633267211913,
+          "entry_date": "2026-11-02",
+          "exit_date": "2026-11-06",
+          "net_pnl": -957.4572746419229,
+          "sell_commission": 7.0036827968004856,
+          "sell_price": 346.27678720092774,
+          "shares": 20.225678,
+          "signal_date": "2026-10-30",
+          "ticker": "VLO"
         }
       ]
     },
@@ -3137,6 +3365,22 @@
             "snapshot_sha256": "7a4eabfe31d00d5e07981eb35f7f43228eaeaeab538dc1641e11d305996ca702"
           },
           "recorded_at_utc": "2026-11-05T00:25:34+00:00"
+        },
+        {
+          "date": "2026-11-05",
+          "decision_recorded": false,
+          "late_mark_only": true,
+          "nav": 100692.64930089214,
+          "quote_identity": {
+            "effective_sha256": "fe8bd95584b0b4b62e2b538a4697a18e5685f516ad0d172f4e5dffe190e05886",
+            "snapshot_sha256": "26bab09fa7bb46ba02e0f82c8d6d190dc7bf8e7a38a4345a2cdec199f03df947"
+          },
+          "recorded_at_utc": "2026-11-06T23:40:02+00:00"
+        },
+        {
+          "date": "2026-11-06",
+          "decision_recorded": false,
+          "nav": 100692.64930089214
         }
       ],
       "events": [
@@ -4866,9 +5110,20 @@
           "expired_unfilled_orders": [],
           "recorded_at_utc": "2026-11-05T00:25:34+00:00",
           "type": "inactive_mark_no_trades"
+        },
+        {
+          "date": "2026-11-06",
+          "missing_tickers": [],
+          "reason": "unreconciled_session",
+          "type": "weekly_book_paused"
         }
       ],
       "nav": 89316.2837861811,
+      "paused_missing_quotes": {
+        "date": "2026-11-06",
+        "missing_tickers": [],
+        "reason": "unreconciled_session"
+      },
       "pending": [],
       "positions": {
         "AKAM": {
@@ -5428,6 +5683,22 @@
             "snapshot_sha256": "7a4eabfe31d00d5e07981eb35f7f43228eaeaeab538dc1641e11d305996ca702"
           },
           "recorded_at_utc": "2026-11-05T00:25:34+00:00"
+        },
+        {
+          "date": "2026-11-05",
+          "decision_recorded": false,
+          "late_mark_only": true,
+          "nav": 83291.89980045031,
+          "quote_identity": {
+            "effective_sha256": "fe8bd95584b0b4b62e2b538a4697a18e5685f516ad0d172f4e5dffe190e05886",
+            "snapshot_sha256": "26bab09fa7bb46ba02e0f82c8d6d190dc7bf8e7a38a4345a2cdec199f03df947"
+          },
+          "recorded_at_utc": "2026-11-06T23:40:02+00:00"
+        },
+        {
+          "date": "2026-11-06",
+          "decision_recorded": false,
+          "nav": 83291.89980045031
         }
       ],
       "events": [
@@ -6857,9 +7128,24 @@
           "expired_unfilled_orders": [],
           "recorded_at_utc": "2026-11-05T00:25:34+00:00",
           "type": "inactive_mark_no_trades"
+        },
+        {
+          "date": "2026-11-06",
+          "missing_tickers": [
+            "AXON"
+          ],
+          "reason": "missing_ohlc",
+          "type": "weekly_book_paused"
         }
       ],
       "nav": 97490.51580897775,
+      "paused_missing_quotes": {
+        "date": "2026-11-06",
+        "missing_tickers": [
+          "AXON"
+        ],
+        "reason": "missing_ohlc"
+      },
       "pending": [],
       "positions": {
         "APTV": {
@@ -8083,9 +8369,20 @@
           "expired_unfilled_orders": [],
           "recorded_at_utc": "2026-11-05T00:25:34+00:00",
           "type": "inactive_mark_no_trades"
+        },
+        {
+          "date": "2026-11-06",
+          "missing_tickers": [],
+          "reason": "unreconciled_session",
+          "type": "weekly_book_paused"
         }
       ],
       "nav": 88272.98907336431,
+      "paused_missing_quotes": {
+        "date": "2026-11-06",
+        "missing_tickers": [],
+        "reason": "unreconciled_session"
+      },
       "pending": [],
       "positions": {
         "BLDR": {
