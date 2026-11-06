@@ -58,28 +58,27 @@ def freeze_signal(config, forecast, state=None):
         raise ValueError("Forecast weekly ML de otra configuración")
     if set(forecast.get("models", {})) != set(config["models"]):
         raise ValueError("Forecast weekly ML incompleto")
+    forecast_hash = digest(forecast)
     if state is not None:
         _check_config(state, config)
-        if day == state["last_signal_session"]:
-            if state["signal_hash"] != digest(forecast):
-                raise ValueError("La señal congelada fue revisada")
-            return state, False
-        if day < state["last_signal_session"]:
+        previous_signal = state["last_signal_session"]
+        if day < previous_signal:
             raise ValueError("No se pueden congelar señales antiguas")
+        if day == previous_signal and state["signal_hash"] != forecast_hash:
+            raise ValueError("La señal congelada fue revisada")
         if state["last_session"] != day:
+            if day == previous_signal:
+                return state, False
             raise ValueError("Falta liquidar o valorar el cierre anterior a la nueva señal")
-        for book in state["strategies"].values():
-            if book["positions"] or book["pending"]:
-                raise ValueError("No se puede emitir nueva señal con cartera anterior sin liquidar")
         result = copy.deepcopy(state)
     else:
+        previous_signal = None
         capital = float(config["paper_policy"]["capital"])
         result = {
             "schema_version": 1, "engine": ENGINE_VERSION,
             "config_hash": digest(config), "currency": config["currency"],
             "initial_capital": capital, "first_session": day,
-            "last_session": day, "last_signal_session": day,
-            "signal_hash": digest(forecast), "strategies": {},
+            "last_session": day, "strategies": {},
             "gap_sessions": [], "execution_model": "paper_open_recorded_after_session_close"
         }
         for name in strategy_ids(config):
@@ -89,12 +88,22 @@ def freeze_signal(config, forecast, state=None):
                 "equity": [{"date": day, "nav": capital, "decision_recorded": True}]
             }
     result["last_signal_session"] = day
-    result["signal_hash"] = digest(forecast)
+    result["signal_hash"] = forecast_hash
     for name, book in result["strategies"].items():
+        signal_day = book.get("last_signal_session", previous_signal)
+        if book.get("paused_missing_quotes") or book["equity"][-1]["date"] != day:
+            # Remember the old signal before advancing the shared forecast.
+            book["last_signal_session"] = signal_day
+            continue
+        if signal_day == day:
+            continue
+        if book["positions"] or book["pending"]:
+            raise ValueError("No se puede emitir nueva señal con cartera anterior sin liquidar")
         selected = _select(name, forecast["models"].get(name, {}), config["paper_policy"], day)
+        book["last_signal_session"] = day
         book["pending"] = selected
         book["events"].append({"date": day, "type": "signal_frozen", "count": len(selected)})
-    return result, True
+    return (state, False) if result == state else (result, True)
 
 
 def _price(prices, ticker, key):
@@ -107,89 +116,148 @@ def _price(prices, ticker, key):
     return n
 
 
-def process_day(config, state, day, prices, *, previous_session, first_after_signal, week_end,
-                quote_identity=None):
-    """Pure, atomic daily transition. Caller verifies NYSE calendar and vendor freshness."""
+def _week(day):
+    return datetime.fromisoformat(day).isocalendar()[:2]
+
+
+def _book_symbols(book):
+    return set(book["positions"]) | {order["ticker"] for order in book["pending"]}
+
+
+def _advance_book(name, book, day, prices, policy, *, week_end):
+    pending = book["pending"]
+    if pending:
+        previous_nav = float(book["nav"])
+        budget = previous_nav * float(policy["invest_fraction"])
+        if name not in BENCHMARKS:
+            budget = min(previous_nav * float(policy["max_entry_weight"]),
+                         budget / len(pending))
+        for order in pending:
+            ticker = order["ticker"]
+            entry = _price(prices, ticker, "open") * (1 + float(policy["slippage"]))
+            shares = _fractional_quantity(budget, entry, policy)
+            if shares <= 0:
+                book["events"].append({"date": day, "type": "unfilled",
+                                       "ticker": ticker, "reason": "below_min_notional"})
+                continue
+            fee = entry * shares * float(policy["commission"])
+            if entry * shares + fee > book["cash"] + 1e-7:
+                raise ValueError("Caja insuficiente para la compra paper")
+            if ticker in book["positions"]:
+                raise ValueError("Posición duplicada")
+            book["positions"][ticker] = {
+                "shares": shares, "entry_price": entry, "entry_fee": fee,
+                "signal_date": order["signal_date"], "entry_date": day
+            }
+            book["cash"] -= entry * shares + fee
+            book["events"].append({"date": day, "type": "buy",
+                "ticker": ticker, "shares": shares, "price": entry, "fee": fee,
+                "execution": "simulated_next_open"})
+        book["pending"] = []
+    # Mark with observed prices for the exact session.
+    marks = {ticker: _price(prices, ticker, "close")
+             for ticker in book["positions"]}
+    if week_end:
+        for ticker, position in list(book["positions"].items()):
+            shares = position["shares"]
+            exit_price = marks[ticker] * (1 - float(policy["slippage"]))
+            fee = exit_price * shares * float(policy["commission"])
+            received = shares * exit_price - fee
+            book["cash"] += received
+            net_pnl = received - position["entry_price"] * shares - position["entry_fee"]
+            book["trades"].append({
+                "ticker": ticker, "signal_date": position["signal_date"],
+                "entry_date": position["entry_date"], "exit_date": day,
+                "shares": shares, "buy_price": position["entry_price"],
+                "sell_price": exit_price, "buy_commission": position["entry_fee"],
+                "sell_commission": fee, "net_pnl": net_pnl
+            })
+            book["events"].append({"date": day, "type": "sell",
+                "ticker": ticker, "shares": shares, "price": exit_price,
+                "fee": fee, "execution": "simulated_week_close"})
+        book["positions"] = {}
+    nav = book["cash"] + sum(float(pos["shares"]) * marks[ticker]
+                              for ticker, pos in book["positions"].items())
+    if not math.isfinite(nav) or nav < 0:
+        raise ValueError("NAV paper diario inválido")
+    book["nav"] = nav
+    book["equity"].append({"date": day, "nav": nav, "decision_recorded": False})
+
+
+def _pause_book(book, day, missing, reason):
+    pause = {"date": day, "missing_tickers": sorted(missing), "reason": reason}
+    if book.get("paused_missing_quotes") != pause:
+        book["paused_missing_quotes"] = pause
+        book["events"].append({"type": "weekly_book_paused", **pause})
+
+
+def _recover_book(name, book, historical, previous, policy, stamp):
+    """Recover only passive marks, in order, within the same trading week."""
+    start = book["equity"][-1]["date"]
+    if book["pending"] or _week(start) != _week(previous):
+        return None
+    dates = sorted(date for date in historical if start < date <= previous)
+    if not dates or dates[-1] != previous:
+        return None
+    recovered = copy.deepcopy(book)
+    for date in dates:
+        prices, identity = historical[date]
+        for ticker in book["positions"]:
+            row = prices.get(ticker)
+            if not row or row.get("split") or row.get("dividend"):
+                return None
+        _advance_book(name, recovered, date, prices, policy, week_end=False)
+        recovered["equity"][-1].update(late_mark_only=True, recorded_at_utc=stamp, quote_identity=identity)
+    return recovered
+
+
+def process_day(config, state, day, prices, *, previous_session, week_end,
+                quote_identity=None, historical=None):
+    """Settle each independent book once, even when a peer lacks a quote."""
     _check_config(state, config)
-    if day <= state["last_session"]:
-        return copy.deepcopy(state), False
-    if state["last_session"] != previous_session:
-        raise ValueError("Sesión perdida: no reconstruir fills o NAV retroactivamente")
-    if day <= state["last_signal_session"]:
-        raise ValueError("La valoración precede a la señal")
+    if day < state["last_session"]:
+        return state, False
     policy = config["paper_policy"]
     result = copy.deepcopy(state)
-    if day < state.get("outage_control", {}).get("first_trading_session", ""):
-        from strategy_comparison.inactive_recovery import weekly_mark
-        for book in result["strategies"].values():
-            weekly_mark(book, day, prices, stamp=datetime.now(timezone.utc).isoformat(timespec="seconds"),
-                        identity=quote_identity)
-        result["last_session"] = day
-        result["gap_sessions"] = sorted(set(result.get("gap_sessions", [])) | {day})
-        return result, True
-    for name, book in result["strategies"].items():
-        pending = book["pending"]
-        if pending:
-            if not first_after_signal or state["last_session"] != state["last_signal_session"]:
-                raise ValueError("Apertura semanal no ejecutada en ventana prospectiva")
-        if first_after_signal and pending:
-            previous_nav = float(book["nav"])
-            budget = previous_nav * float(policy["invest_fraction"])
-            if name not in BENCHMARKS:
-                budget = min(previous_nav * float(policy["max_entry_weight"]),
-                             budget / len(pending))
-            for order in pending:
-                ticker = order["ticker"]
-                entry = _price(prices, ticker, "open") * (1 + float(policy["slippage"]))
-                shares = _fractional_quantity(budget, entry, policy)
-                if shares <= 0:
-                    book["events"].append({"date": day, "type": "unfilled",
-                                           "ticker": ticker, "reason": "below_min_notional"})
-                    continue
-                fee = entry * shares * float(policy["commission"])
-                if entry * shares + fee > book["cash"] + 1e-7:
-                    raise ValueError("Caja insuficiente para la compra paper")
-                if ticker in book["positions"]:
-                    raise ValueError("Posición duplicada")
-                book["positions"][ticker] = {
-                    "shares": shares, "entry_price": entry, "entry_fee": fee,
-                    "signal_date": order["signal_date"], "entry_date": day
-                }
-                book["cash"] -= entry * shares + fee
-                book["events"].append({"date": day, "type": "buy",
-                    "ticker": ticker, "shares": shares, "price": entry, "fee": fee,
-                    "execution": "simulated_next_open"})
-            book["pending"] = []
-        # Missing bar -> abort entire atomic transaction. Never silently ffill.
-        marks = {ticker: _price(prices, ticker, "close")
-                 for ticker in book["positions"]}
-        if week_end:
-            for ticker, position in list(book["positions"].items()):
-                shares = position["shares"]
-                exit_price = marks[ticker] * (1 - float(policy["slippage"]))
-                fee = exit_price * shares * float(policy["commission"])
-                received = shares * exit_price - fee
-                book["cash"] += received
-                net_pnl = received - position["entry_price"] * shares - position["entry_fee"]
-                book["trades"].append({
-                    "ticker": ticker, "signal_date": position["signal_date"],
-                    "entry_date": position["entry_date"], "exit_date": day,
-                    "shares": shares, "buy_price": position["entry_price"],
-                    "sell_price": exit_price, "buy_commission": position["entry_fee"],
-                    "sell_commission": fee, "net_pnl": net_pnl
-                })
-                book["events"].append({"date": day, "type": "sell",
-                    "ticker": ticker, "shares": shares, "price": exit_price,
-                    "fee": fee, "execution": "simulated_week_close"})
-            book["positions"] = {}
-        nav = book["cash"] + sum(float(pos["shares"]) * marks[ticker]
-                                  for ticker, pos in book["positions"].items())
-        if not math.isfinite(nav) or nav < 0:
-            raise ValueError("NAV paper diario inválido")
-        book["nav"] = nav
-        book["equity"].append({"date": day, "nav": nav, "decision_recorded": False})
+    inactive = day < state.get("outage_control", {}).get("first_trading_session", "")
+    stamp = datetime.now(timezone.utc).isoformat(timespec="seconds")
+    for name, original in state["strategies"].items():
+        last = original["equity"][-1]["date"]
+        if last >= day:
+            continue
+        book = result["strategies"][name]
+        signal_day = book.get("last_signal_session", state["last_signal_session"])
+        required = set(book["positions"]) if inactive else _book_symbols(book)
+        missing = required - prices.keys()
+        if missing:
+            _pause_book(book, day, missing, "missing_ohlc")
+            continue
+        if last != previous_session:
+            # A gap across a weekly close could hide a sale. Never replay it.
+            same_week = _week(previous_session) == _week(day)
+            recovered = _recover_book(name, book, historical or {}, previous_session, policy, stamp) if same_week else None
+            if recovered is None:
+                _pause_book(book, day, (), "unreconciled_session")
+                continue
+            book = result["strategies"][name] = recovered
+        if not inactive and book["pending"] and (
+                signal_day != previous_session or
+                any(order["signal_date"] != previous_session for order in book["pending"])):
+            _pause_book(book, day, (), "expired_open")
+            continue
+        if inactive:
+            from strategy_comparison.inactive_recovery import weekly_mark
+            weekly_mark(book, day, prices, stamp=stamp, identity=quote_identity)
+        else:
+            _advance_book(name, book, day, prices, policy, week_end=week_end)
+        pause = book.pop("paused_missing_quotes", None)
+        if pause and pause["date"] == day:
+            book["equity"][-1].update(late_recorded_verified_date=True, recorded_at_utc=stamp,
+                                       quote_identity=quote_identity)
     result["last_session"] = day
-    return result, True
+    if inactive:
+        result["gap_sessions"] = sorted(set(result.get("gap_sessions", [])) | {day})
+    return (state, False) if result == state else (result, True)
 
 
 def live_calendar(now=None):
@@ -215,7 +283,7 @@ def live_calendar(now=None):
     return day, previous, next_day, week_end
 
 
-def download_bars(tickers, day, *, diagnostics=None):
+def download_bars(tickers, day, *, diagnostics=None, allow_missing=False):
     if not tickers:
         return {}
     ordered = sorted(set(tickers))
@@ -232,7 +300,7 @@ def download_bars(tickers, day, *, diagnostics=None):
     if diagnostics is not None:
         diagnostics.update(info)
     missing = sorted(set(ordered) - set(prices))
-    if missing:
+    if missing and not allow_missing:
         raise ValueError("Barra OHLC fechada ausente: " + ",".join(missing))
     return prices
 
@@ -259,25 +327,53 @@ def run(config_path, forecast_dir, output, phase):
     if calendar is None:
         return {"status": "market_not_closed", "changed": False}
     day, previous, next_day, week_end = calendar
-    if day <= state["last_session"]:
-        return {"status": "already_recorded", "session": day, "changed": False}
-    first = state["last_session"] == state["last_signal_session"]
-    if first and previous != state["last_signal_session"]:
-        raise ValueError("Primera apertura perdida; nunca hacer backfill")
-    tickers = {x for book in state["strategies"].values()
-               for x in list(book["positions"]) + [p["ticker"] for p in book["pending"]]}
-    quote_source = {}
-    prices = download_bars(tickers, day, diagnostics=quote_source)
-    updated, changed = process_day(config, state, day, prices,
-                                    previous_session=previous,
-                                    first_after_signal=first,
-                                    week_end=week_end,
-                                    quote_identity={"snapshot_sha256": quote_source["hash"],
-                                                    "effective_sha256": quote_source["effective_sha256"]})
+    unfinished = [book for book in state["strategies"].values() if book["equity"][-1]["date"] < day]
+    quote_source, historical = {}, {}
+    if unfinished:
+        tickers = set().union(*(_book_symbols(book) for book in unfinished))
+        prices = download_bars(tickers, day, diagnostics=quote_source, allow_missing=True)
+        lagging = [book for book in unfinished
+                   if not book["pending"] and book["equity"][-1]["date"] < previous
+                   and _week(book["equity"][-1]["date"]) == _week(day)]
+        if lagging:
+            earliest = min(book["equity"][-1]["date"] for book in lagging)
+            import pandas_market_calendars as mcal
+            days = mcal.get_calendar("XNYS").valid_days(start_date=earliest, end_date=previous)
+            held = {ticker for book in lagging for ticker in book["positions"]}
+            for date in (x.date().isoformat() for x in days[1:]):
+                info = {}
+                try:
+                    bars = download_bars(held, date, diagnostics=info, allow_missing=True)
+                except ValueError:
+                    # Keep this date in the sequence: affected held books must
+                    # fail closed, while cash books can still mark observed cash.
+                    bars = {}
+                historical[date] = (bars, {"snapshot_sha256": info.get("hash"),
+                                            "effective_sha256": info.get("effective_sha256")})
+        updated, _ = process_day(config, state, day, prices, previous_session=previous,
+                                 week_end=week_end, historical=historical,
+                                 quote_identity={"snapshot_sha256": quote_source.get("hash"),
+                                                 "effective_sha256": quote_source.get("effective_sha256")})
+    else:
+        updated = state
+    changed = updated != state
     if changed:
         write(output, updated)
-    return {"status": "daily_recorded", "session": day,
-            "quote_source": quote_source,
+    # The weekly forecast can finish before or after the daily publisher.
+    # Admit a repaired book to that same frozen forecast before the next open.
+    forecast_path = Path(forecast_dir) / (day + ".json")
+    if week_end and updated["last_session"] == day and forecast_path.is_file():
+        forecast = read(forecast_path)
+        if forecast["asof"] != day:
+            raise ValueError("La fecha del forecast no coincide con su archivo")
+        updated, frozen = freeze_signal(config, forecast, updated)
+        if frozen:
+            write(output, updated)
+            changed = True
+    paused = {name: book["paused_missing_quotes"] for name, book in updated["strategies"].items()
+              if book.get("paused_missing_quotes")}
+    return {"status": "paper_recorded_partial" if paused else "daily_recorded" if changed else "already_recorded",
+            "session": day, "quote_source": quote_source, "paused_books": paused,
             "week_end": week_end, "changed": changed}
 
 

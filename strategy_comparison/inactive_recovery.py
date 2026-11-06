@@ -93,6 +93,9 @@ def weekly_mark(book, day, bars, *, stamp, identity):
 
 
 def reconcile_weekly(state, loader, *, now):
+    if any(book["equity"][-1]["date"] != state["last_session"]
+           for book in state["strategies"].values()):
+        raise ValueError("Weekly ML has independently paused books; review each book before recovery")
     latest, first, days = window(state["last_session"], now)
     if not days:
         return copy.deepcopy(state), []

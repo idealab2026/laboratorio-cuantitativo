@@ -296,6 +296,28 @@ def classic_quarantines(root=ROOT):
 
 
 
+def weekly_quarantines(root=ROOT):
+    from build_operations_audit import source_for
+
+    relative = "weekly_ml_daily_state/ledger.json"
+    path = root / relative
+    if not path.is_file():
+        return {}
+    books = json.loads(path.read_text(encoding="utf-8"))["strategies"]
+    mapping = json.loads((root / "data/original-track-map.json").read_text(encoding="utf-8"))
+    result = {}
+    for source_id, sid in mapping.items():
+        source, key = source_for(source_id)
+        if source != relative:
+            continue
+        for event in books[key]["events"]:
+            if event.get("type") == "weekly_book_paused":
+                tickers = ", ".join(event["missing_tickers"])
+                result[(sid, event["date"])] = ("Cotización OHLC ausente: " + tickers if tickers
+                                               else "Cartera pendiente de conciliación")
+    return result
+
+
 def journal_evidence(root=ROOT):
     """Read committed accounting observations, never infer an automation run.
 
@@ -720,7 +742,7 @@ def main():
     except (ValueError, OSError, KeyError) as exc:
         print("GitHub Actions history unavailable: " + type(exc).__name__, file=sys.stderr)
         runs, available = [], False
-    document = build(now, runs, schedules, classic_quarantines(),
+    document = build(now, runs, schedules, {**classic_quarantines(), **weekly_quarantines()},
                      journals, actions_available=available, archive=reviewed_archive())
     if any(row["data_status"] == "not_verifiable" for row in document["days"]):
         retain_published_outcomes(document, read_published_history(now), journals)

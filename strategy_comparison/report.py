@@ -448,11 +448,14 @@ def build(registry, paper_config, paper_state=None, legacy_state=None, now=None,
             if not history:
                 raise ValueError("Cartera weekly ML diaria sin patrimonio: " + strategy_key)
             nav = _equity(history[-1].get("nav"), strategy_key)
-            if history[-1].get("date") != weekly_daily_state.get("last_session"):
+            last = history[-1].get("date")
+            paused = book.get("paused_missing_quotes")
+            if (not isinstance(last, str) or last > weekly_daily_state["last_session"]
+                    or (last != weekly_daily_state["last_session"] and not paused)):
                 raise ValueError("Patrimonio weekly ML diario sin fecha válida")
             row.update(status="demo_con_diario",
                        first_session=weekly_daily_state.get("first_session"),
-                       last_session=weekly_daily_state.get("last_session"),
+                       last_session=last,
                        last_equity=nav,
                        return_pct=round(100 * (nav / capital_weekly - 1), 6),
                        day_return_pct=_daily_return(history, strategy_key),
@@ -462,6 +465,13 @@ def build(registry, paper_config, paper_state=None, legacy_state=None, now=None,
                                 for ticker, p in positions.items()]
             row.update(_activity(positions, book.get("pending"),
                                  pending_label="señales para próxima apertura paper"))
+            if paused:
+                row["day_return_pct"] = None
+                row["data_quality_status"] = ("held_quote_unavailable" if paused["missing_tickers"]
+                                              else "session_reconciliation_required")
+                detail = ", ".join(paused["missing_tickers"]) or "sesión anterior pendiente de conciliar"
+                row["activity_label"] = "VALORACIÓN PAUSADA · " + detail + "; " + row["activity_label"]
+                row["note"] += " Última valoración confirmada: " + last + "."
             inactive = [p["date"] for p in history if p.get("inactive_no_fills")]
             if inactive:
                 row["inactive_sessions"] = inactive

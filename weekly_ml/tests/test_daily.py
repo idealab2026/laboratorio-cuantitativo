@@ -142,7 +142,7 @@ class DailyPaperTests(unittest.TestCase):
                             "SPY": {"open": 700, "close": 705},
                             "RSP": {"open": 200, "close": 203}},
                            previous_session="2026-10-09",
-                           first_after_signal=True, week_end=False)[0]
+                           week_end=False)[0]
 
     def test_frozen_signal_does_not_book_historical_open(self):
         state = self.first()
@@ -176,7 +176,7 @@ class DailyPaperTests(unittest.TestCase):
                        {"AAA": {"open": 103, "close": close},
                         "SPY": {"open": 710, "close": 705},
                         "RSP": {"open": 204, "close": 205}},
-                       previous_session=prev, first_after_signal=False,
+                       previous_session=prev,
                        week_end=(day == "2026-10-16"))
             self.assertTrue(changed)
         book = state["strategies"]["lgbm_return"]
@@ -193,25 +193,92 @@ class DailyPaperTests(unittest.TestCase):
         self.assertEqual(state2["last_signal_session"], "2026-10-16")
         self.assertEqual(state2["strategies"]["lgbm_return"]["nav"], book["nav"])
 
-    def test_missing_open_or_missing_bar_fails_atomically(self):
+    def test_run_publishes_unaffected_books_and_retries_only_paused_book(self):
+        quotes = {"SPY": {"open": 700, "close": 705}, "RSP": {"open": 200, "close": 201}}
         state = self.first()
-        before = copy.deepcopy(state)
-        with self.assertRaisesRegex(ValueError, "Sesión perdida"):
-            process_day(self.config, state, "2026-10-13", {},
-                        previous_session="2026-10-12", first_after_signal=True,
-                        week_end=False)
-        with self.assertRaisesRegex(ValueError, "Barra OHLC ausente"):
-            process_day(self.config, state, "2026-10-12",
-                        {"SPY": {"open": 700, "close": 705},
-                         "RSP": {"open": 200, "close": 201}},
-                        previous_session="2026-10-09", first_after_signal=True,
-                        week_end=False)
-        self.assertEqual(state, before)
+        with tempfile.TemporaryDirectory() as path:
+            config, output = Path(path) / "config.json", Path(path) / "ledger.json"
+            daily.write(config, self.config)
+            daily.write(output, state)
+            with patch.object(daily, "live_calendar", return_value=("2026-10-12", "2026-10-09", "2026-10-13", False)), patch.object(
+                    daily, "download_bars", side_effect=[quotes, {"AAA": {"open": 100, "close": 105}}]) as download:
+                partial = daily.run(config, path, output, "daily")
+                books = daily.read(output)["strategies"]
+                self.assertEqual(partial["status"], "paper_recorded_partial")
+                self.assertEqual(list(partial["paused_books"]), ["lgbm_return"])
+                blocked = books["lgbm_return"]
+                self.assertEqual(blocked["cash"], state["strategies"]["lgbm_return"]["cash"])
+                self.assertEqual(blocked["equity"], state["strategies"]["lgbm_return"]["equity"])
+                self.assertEqual(blocked["pending"], state["strategies"]["lgbm_return"]["pending"])
+                self.assertEqual(books["benchmark_rsp"]["equity"][-1]["date"], "2026-10-12")
+                self.assertEqual(books["benchmark_spy"]["equity"][-1]["date"], "2026-10-12")
+                next_day, _ = process_day(self.config, daily.read(output), "2026-10-13",
+                                          {**quotes, "AAA": {"open": 100, "close": 105}},
+                                          previous_session="2026-10-12", week_end=False)
+                missed_open = next_day["strategies"]["lgbm_return"]
+                self.assertEqual(missed_open["equity"], blocked["equity"])
+                self.assertEqual(missed_open["pending"], blocked["pending"])
+                self.assertEqual(missed_open["positions"], {})
+                self.assertEqual(daily.run(config, path, output, "daily")["status"], "daily_recorded")
+                final = daily.read(output)["strategies"]
+                self.assertEqual(final["benchmark_rsp"], books["benchmark_rsp"])
+                self.assertEqual(final["benchmark_spy"], books["benchmark_spy"])
+                self.assertEqual(download.call_args.args[0], {"AAA"})
+                self.assertTrue(final["lgbm_return"]["equity"][-1]["late_recorded_verified_date"])
+                self.assertEqual([e["type"] for e in final["lgbm_return"]["events"]],
+                                 ["signal_frozen", "weekly_book_paused", "buy"])
+                self.assertEqual(daily.run(config, path, output, "daily")["status"], "already_recorded")
+
+    def test_late_marks_do_not_recreate_orders_or_missed_weekly_sales(self):
+        state = self.monday()
+        peer_prices = {"SPY": {"close": 705}, "RSP": {"close": 201}}
+        partial, _ = process_day(self.config, state, "2026-10-13", peer_prices,
+                                 previous_session="2026-10-12", week_end=False)
+        quotes = {**peer_prices, "AAA": {"close": 108}}
+        identity = {"snapshot_sha256": "example"}
+        recovered, _ = process_day(self.config, partial, "2026-10-14", quotes,
+                                   previous_session="2026-10-13", week_end=False,
+                                   historical={"2026-10-13": (quotes, identity)})
+        book = recovered["strategies"]["lgbm_return"]
+        self.assertEqual(book["positions"], state["strategies"]["lgbm_return"]["positions"])
+        self.assertEqual(book["trades"], [])
+        self.assertTrue(book["equity"][-2]["late_mark_only"])
+        self.assertEqual(book["equity"][-2]["quote_identity"], identity)
+        across_week, _ = process_day(self.config, partial, "2026-10-19", quotes,
+                                     previous_session="2026-10-16", week_end=False,
+                                     historical={"2026-10-16": (quotes, identity)})
+        blocked = across_week["strategies"]["lgbm_return"]
+        self.assertEqual(blocked["equity"], partial["strategies"]["lgbm_return"]["equity"])
+        self.assertEqual(blocked["paused_missing_quotes"]["reason"], "unreconciled_session")
+
+    def test_frozen_friday_signal_can_admit_a_recovered_book_once(self):
+        state = self.monday()
+        for day, previous in [("2026-10-13", "2026-10-12"), ("2026-10-14", "2026-10-13"),
+                              ("2026-10-15", "2026-10-14")]:
+            state, _ = process_day(self.config, state, day,
+                                   {"AAA": {"close": 102}, "SPY": {"close": 705}, "RSP": {"close": 201}},
+                                   previous_session=previous, week_end=False)
+        state, _ = process_day(self.config, state, "2026-10-16",
+                               {"SPY": {"close": 705}, "RSP": {"close": 201}},
+                               previous_session="2026-10-15", week_end=True)
+        forecast = self.signal("2026-10-16")
+        state, _ = freeze_signal(self.config, forecast, state)
+        self.assertEqual(state["strategies"]["lgbm_return"]["last_signal_session"], "2026-10-09")
+        self.assertEqual(state["strategies"]["benchmark_spy"]["last_signal_session"], "2026-10-16")
+        settled, _ = process_day(self.config, state, "2026-10-16", {"AAA": {"close": 106}},
+                                 previous_session="2026-10-15", week_end=True)
+        frozen, changed = freeze_signal(self.config, forecast, settled)
+        self.assertTrue(changed)
+        model = frozen["strategies"]["lgbm_return"]
+        self.assertEqual(len(model["trades"]), 1)
+        self.assertEqual(model["pending"][0]["signal_date"], "2026-10-16")
+        self.assertEqual(frozen["strategies"]["benchmark_spy"], state["strategies"]["benchmark_spy"])
+        self.assertEqual(freeze_signal(self.config, forecast, frozen), (frozen, False))
 
     def test_idempotence(self):
         state = self.monday()
         again, changed = process_day(self.config, state, "2026-10-12", {},
-                        previous_session="2026-10-09", first_after_signal=True,
+                        previous_session="2026-10-09",
                         week_end=False)
         self.assertFalse(changed)
         self.assertEqual(again, state)
