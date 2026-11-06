@@ -62,6 +62,10 @@
         {
           "date": "2026-11-05",
           "nav": 96195.62876159731
+        },
+        {
+          "date": "2026-11-06",
+          "nav": 97034.56608462262
         }
       ],
       "events": [
@@ -74,7 +78,7 @@
           "ticker": "SPY"
         }
       ],
-      "nav": 96195.62876159731,
+      "nav": 97034.56608462262,
       "pending": [],
       "positions": {
         "SPY": {
@@ -90,7 +94,7 @@
       "trades": []
     },
     "timesfm": {
-      "cash": 20852.03485244004,
+      "cash": 103117.13597887299,
       "equity": [
         {
           "date": "2026-10-16",
@@ -151,6 +155,10 @@
         {
           "date": "2026-11-05",
           "nav": 104005.66800504128
+        },
+        {
+          "date": "2026-11-06",
+          "nav": 103117.13597887299
         }
       ],
       "events": [
@@ -437,84 +445,59 @@
           "price_eur": 128.56509891110764,
           "shares": 81.014223,
           "ticker": "LDOS"
+        },
+        {
+          "date": "2026-11-06",
+          "event": "sell",
+          "price_eur": 144.10867404275714,
+          "ticker": "BKNG"
+        },
+        {
+          "date": "2026-11-06",
+          "event": "sell",
+          "price_eur": 46.98230987282406,
+          "ticker": "CARR"
+        },
+        {
+          "date": "2026-11-06",
+          "event": "sell",
+          "price_eur": 219.7530676617086,
+          "ticker": "IBM"
+        },
+        {
+          "date": "2026-11-06",
+          "event": "sell",
+          "price_eur": 30.971727175940984,
+          "ticker": "IP"
+        },
+        {
+          "date": "2026-11-06",
+          "event": "sell",
+          "price_eur": 119.00749146055493,
+          "ticker": "LDOS"
+        },
+        {
+          "date": "2026-11-06",
+          "event": "sell",
+          "price_eur": 91.46212480701095,
+          "ticker": "NOW"
+        },
+        {
+          "date": "2026-11-06",
+          "event": "sell",
+          "price_eur": 211.05264282217618,
+          "ticker": "RMD"
+        },
+        {
+          "date": "2026-11-06",
+          "event": "sell",
+          "price_eur": 87.74874698663197,
+          "ticker": "XYL"
         }
       ],
-      "nav": 104005.66800504128,
+      "nav": 103117.13597887299,
       "pending": [],
-      "positions": {
-        "BKNG": {
-          "cost_eur": 10426.017168522196,
-          "dividends_eur": 0.0,
-          "entry_date": "2026-11-02",
-          "entry_fx": 1.1182805299758911,
-          "entry_price_eur": 134.84573609142998,
-          "shares": 77.240867,
-          "signal_date": "2026-10-30"
-        },
-        "CARR": {
-          "cost_eur": 10426.017210004133,
-          "dividends_eur": 0.0,
-          "entry_date": "2026-11-02",
-          "entry_fx": 1.1182805299758911,
-          "entry_price_eur": 48.40203063762996,
-          "shares": 215.189352,
-          "signal_date": "2026-10-30"
-        },
-        "IBM": {
-          "cost_eur": 10426.017113397005,
-          "dividends_eur": 0.0,
-          "entry_date": "2026-11-02",
-          "entry_fx": 1.1182805299758911,
-          "entry_price_eur": 230.93405294314982,
-          "shares": 45.10206,
-          "signal_date": "2026-10-30"
-        },
-        "IP": {
-          "cost_eur": 10426.01722359743,
-          "dividends_eur": 0.0,
-          "entry_date": "2026-11-02",
-          "entry_fx": 1.1182805299758911,
-          "entry_price_eur": 32.9509598389991,
-          "shares": 316.094028,
-          "signal_date": "2026-10-30"
-        },
-        "LDOS": {
-          "cost_eur": 10426.017194794733,
-          "dividends_eur": 0.0,
-          "entry_date": "2026-11-02",
-          "entry_fx": 1.1182805299758911,
-          "entry_price_eur": 128.56509891110764,
-          "shares": 81.014223,
-          "signal_date": "2026-10-30"
-        },
-        "NOW": {
-          "cost_eur": 10426.017210479633,
-          "dividends_eur": 0.0,
-          "entry_date": "2026-11-02",
-          "entry_fx": 1.1182805299758911,
-          "entry_price_eur": 93.80689430014465,
-          "shares": 111.032368,
-          "signal_date": "2026-10-30"
-        },
-        "RMD": {
-          "cost_eur": 10426.01709055402,
-          "dividends_eur": 0.0,
-          "entry_date": "2026-11-02",
-          "entry_fx": 1.1182805299758911,
-          "entry_price_eur": 206.91198055606458,
-          "shares": 50.33832,
-          "signal_date": "2026-10-30"
-        },
-        "XYL": {
-          "cost_eur": 10426.017220887921,
-          "dividends_eur": 0.0,
-          "entry_date": "2026-11-02",
-          "entry_fx": 1.1182805299758911,
-          "entry_price_eur": 83.20497183475597,
-          "shares": 125.180039,
-          "signal_date": "2026-10-30"
-        }
-      },
+      "positions": {},
       "trades": [
         {
           "buy_cost_eur": 11428.571404459093,
@@ -680,6 +663,94 @@
           "shares_at_exit": 153.418867,
           "signal_date": "2026-10-23",
           "ticker": "OTIS"
+        },
+        {
+          "buy_cost_eur": 10426.017168522196,
+          "dividends_eur": 0.0,
+          "entry_date": "2026-11-02",
+          "exit_date": "2026-11-06",
+          "net_pnl_eur": 693.9306778354767,
+          "sell_proceeds_eur": 11119.947846357672,
+          "shares_at_exit": 77.240867,
+          "signal_date": "2026-10-30",
+          "ticker": "BKNG"
+        },
+        {
+          "buy_cost_eur": 10426.017210004133,
+          "dividends_eur": 0.0,
+          "entry_date": "2026-11-02",
+          "exit_date": "2026-11-06",
+          "net_pnl_eur": -326.03448582491546,
+          "sell_proceeds_eur": 10099.982724179217,
+          "shares_at_exit": 215.189352,
+          "signal_date": "2026-10-30",
+          "ticker": "CARR"
+        },
+        {
+          "buy_cost_eur": 10426.017113397005,
+          "dividends_eur": 0.0,
+          "entry_date": "2026-11-02",
+          "exit_date": "2026-11-06",
+          "net_pnl_eur": -524.6123865774262,
+          "sell_proceeds_eur": 9901.404726819579,
+          "shares_at_exit": 45.10206,
+          "signal_date": "2026-10-30",
+          "ticker": "IBM"
+        },
+        {
+          "buy_cost_eur": 10426.01722359743,
+          "dividends_eur": 0.0,
+          "entry_date": "2026-11-02",
+          "exit_date": "2026-11-06",
+          "net_pnl_eur": -645.8292044343398,
+          "sell_proceeds_eur": 9780.18801916309,
+          "shares_at_exit": 316.094028,
+          "signal_date": "2026-10-30",
+          "ticker": "IP"
+        },
+        {
+          "buy_cost_eur": 10426.017194794733,
+          "dividends_eur": 0.0,
+          "entry_date": "2026-11-02",
+          "exit_date": "2026-11-06",
+          "net_pnl_eur": -794.3590423905953,
+          "sell_proceeds_eur": 9631.658152404138,
+          "shares_at_exit": 81.014223,
+          "signal_date": "2026-10-30",
+          "ticker": "LDOS"
+        },
+        {
+          "buy_cost_eur": 10426.017210479633,
+          "dividends_eur": 0.0,
+          "entry_date": "2026-11-02",
+          "exit_date": "2026-11-06",
+          "net_pnl_eur": -280.91616714529846,
+          "sell_proceeds_eur": 10145.101043334334,
+          "shares_at_exit": 111.032368,
+          "signal_date": "2026-10-30",
+          "ticker": "NOW"
+        },
+        {
+          "buy_cost_eur": 10426.01709055402,
+          "dividends_eur": 0.0,
+          "entry_date": "2026-11-02",
+          "exit_date": "2026-11-06",
+          "net_pnl_eur": 187.3943452031599,
+          "sell_proceeds_eur": 10613.41143575718,
+          "shares_at_exit": 50.33832,
+          "signal_date": "2026-10-30",
+          "ticker": "RMD"
+        },
+        {
+          "buy_cost_eur": 10426.017220887921,
+          "dividends_eur": 0.0,
+          "entry_date": "2026-11-02",
+          "exit_date": "2026-11-06",
+          "net_pnl_eur": 547.3899575298128,
+          "sell_proceeds_eur": 10973.407178417734,
+          "shares_at_exit": 125.180039,
+          "signal_date": "2026-10-30",
+          "ticker": "XYL"
         }
       ]
     }
@@ -747,12 +818,16 @@
     {
       "date": "2026-11-05",
       "nav": 104005.66800504128
+    },
+    {
+      "date": "2026-11-06",
+      "nav": 103117.13597887299
     }
   ],
   "first_session": "2026-10-16",
   "fx_method": "previous_XNYS_session_EURUSD_close_at_open; current_EURUSD_close_at_mark",
   "initial_capital": 100000.0,
-  "last_session": "2026-11-05",
+  "last_session": "2026-11-06",
   "last_signal_session": "2026-10-30",
   "schema_version": 1,
   "signals": [
