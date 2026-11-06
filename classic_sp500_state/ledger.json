@@ -74,6 +74,10 @@
         {
           "date": "2026-11-05",
           "nav": 95741.49329483582
+        },
+        {
+          "date": "2026-11-06",
+          "nav": 96024.9803690381
         }
       ],
       "events": [
@@ -93,7 +97,7 @@
           "type": "buy"
         }
       ],
-      "nav": 95741.49329483582,
+      "nav": 96024.9803690381,
       "pending": {},
       "positions": {
         "SPY": {
@@ -178,12 +182,16 @@
         {
           "buys": 0,
           "date": "2026-11-05"
+        },
+        {
+          "buys": 0,
+          "date": "2026-11-06"
         }
       ],
       "trades": []
     },
     "bollinger_breakout_20": {
-      "cash": 28084.57475911382,
+      "cash": 12395.592112910412,
       "equity": [
         {
           "date": "2026-10-12",
@@ -265,6 +273,10 @@
         {
           "date": "2026-11-05",
           "nav": 104743.59871012685
+        },
+        {
+          "date": "2026-11-06",
+          "nav": 104780.02933904149
         }
       ],
       "events": [
@@ -389,21 +401,36 @@
           "reason": "target",
           "ticker": "DLTR",
           "type": "sell"
+        },
+        {
+          "date": "2026-11-06",
+          "shares": 97.854188,
+          "ticker": "EPAM",
+          "type": "buy"
+        },
+        {
+          "date": "2026-11-06",
+          "ticker": "VRSK",
+          "type": "unfilled"
         }
       ],
-      "nav": 104743.59871012685,
+      "nav": 104780.02933904149,
       "outage_control": {
         "first_trading_session": "2026-11-05",
         "registered_at_utc": "2026-11-04T18:03:08+00:00"
       },
       "pending": {
-        "EPAM": {
+        "ABNB": {
           "side": "buy",
-          "signal_date": "2026-11-05"
+          "signal_date": "2026-11-06"
         },
-        "VRSK": {
+        "ALGN": {
           "side": "buy",
-          "signal_date": "2026-11-05"
+          "signal_date": "2026-11-06"
+        },
+        "PFE": {
+          "side": "sell",
+          "signal_date": "2026-11-06"
         }
       },
       "positions": {
@@ -433,6 +460,15 @@
           "shares": 11.87966,
           "stop": 918.7203171166992,
           "target": 1148.400396395874
+        },
+        "EPAM": {
+          "cost": 15688.982646203409,
+          "dividends": 0.0,
+          "entry_date": "2026-11-06",
+          "entry_price": 160.17004133605957,
+          "shares": 97.854188,
+          "stop": 147.3564380291748,
+          "target": 184.1955475364685
         },
         "MTD": {
           "cost": 14927.560445397598,
@@ -530,6 +566,10 @@
         {
           "buys": 2,
           "date": "2026-11-05"
+        },
+        {
+          "buys": 2,
+          "date": "2026-11-06"
         }
       ],
       "trades": [
@@ -711,6 +751,25 @@
             "snapshot_sha256": "26bab09fa7bb46ba02e0f82c8d6d190dc7bf8e7a38a4345a2cdec199f03df947"
           },
           "recorded_at_utc": "2026-11-05T23:48:25+00:00",
+          "unsettled_receivables": [
+            "KVUE_KMB_2026-11-02"
+          ],
+          "valuation_reference_url": "https://infomemo.theocc.com/infomemos?number=60113"
+        },
+        {
+          "date": "2026-11-06",
+          "late_mark_only": true,
+          "nav": 101741.64588309817,
+          "provisional_corporate_valuation": true,
+          "quote_identity": {
+            "closing_mark_hashes": [
+              "0a8b88568f110ad30dd8a39bace40dfcb27abb47b957e35f4722751f11941661"
+            ],
+            "closing_mark_scope": "passive_nav_only",
+            "effective_sha256": "bfea1f97ae96184a1d2d4667cbdf608611e54d97eef9f63f872496b80f2fd9e9",
+            "snapshot_sha256": "a631487625b0226266b3b64885e9d4e28f2a678cf4e5d3082a7aa8de688747c3"
+          },
+          "recorded_at_utc": "2026-11-06T23:41:46+00:00",
           "unsettled_receivables": [
             "KVUE_KMB_2026-11-02"
           ],
@@ -4654,9 +4713,29 @@
             "2026-11-05"
           ],
           "type": "passive_marks_recovered_no_fills"
+        },
+        {
+          "date": "2026-11-06",
+          "missing_tickers": [
+            "ADP",
+            "AXON",
+            "FTNT",
+            "VTRS",
+            "XEL"
+          ],
+          "type": "book_quarantined_missing_held_bar"
+        },
+        {
+          "date": "2026-11-06",
+          "expired_unfilled_buys": [],
+          "recorded_at_utc": "2026-11-06T23:41:46+00:00",
+          "sessions": [
+            "2026-11-06"
+          ],
+          "type": "passive_marks_recovered_no_fills"
         }
       ],
-      "nav": 102336.12398344034,
+      "nav": 101741.64588309817,
       "outage_control": {
         "first_trading_session": "2026-11-05",
         "registered_at_utc": "2026-11-04T18:03:08+00:00"
@@ -9126,12 +9205,16 @@
         {
           "buys": 0,
           "date": "2026-11-05"
+        },
+        {
+          "buys": 0,
+          "date": "2026-11-06"
         }
       ],
       "trades": []
     },
     "ema_rsi_fixed": {
-      "cash": 38750.3166687711,
+      "cash": 7818.389355151279,
       "equity": [
         {
           "date": "2026-10-12",
@@ -9222,6 +9305,10 @@
         {
           "date": "2026-11-05",
           "nav": 104780.06787404633
+        },
+        {
+          "date": "2026-11-06",
+          "nav": 104268.25136934807
         }
       ],
       "events": [
@@ -9419,25 +9506,34 @@
           "reason": "target",
           "ticker": "ZTS",
           "type": "sell"
+        },
+        {
+          "date": "2026-11-06",
+          "shares": 777.582645,
+          "ticker": "DOC",
+          "type": "buy"
+        },
+        {
+          "date": "2026-11-06",
+          "shares": 78.769658,
+          "ticker": "FSLR",
+          "type": "buy"
+        },
+        {
+          "date": "2026-11-06",
+          "ticker": "LVS",
+          "type": "unfilled"
         }
       ],
-      "nav": 104780.06787404633,
+      "nav": 104268.25136934807,
       "outage_control": {
         "first_trading_session": "2026-11-05",
         "registered_at_utc": "2026-11-04T18:03:08+00:00"
       },
       "pending": {
-        "DOC": {
+        "CHTR": {
           "side": "buy",
-          "signal_date": "2026-11-05"
-        },
-        "FSLR": {
-          "side": "buy",
-          "signal_date": "2026-11-05"
-        },
-        "LVS": {
-          "side": "buy",
-          "signal_date": "2026-11-05"
+          "signal_date": "2026-11-06"
         }
       },
       "positions": {
@@ -9467,6 +9563,24 @@
           "shares": 292.626064,
           "stop": 37.29703962135315,
           "target": 46.62129952669143
+        },
+        "DOC": {
+          "cost": 15465.96371340113,
+          "dividends": 0.0,
+          "entry_date": "2026-11-06",
+          "entry_price": 19.869930610656738,
+          "shares": 777.582645,
+          "stop": 18.2803361618042,
+          "target": 22.850420202255247
+        },
+        "FSLR": {
+          "cost": 15465.96360021869,
+          "dividends": 0.0,
+          "entry_date": "2026-11-06",
+          "entry_price": 196.14802805328367,
+          "shares": 78.769658,
+          "stop": 180.45618580902098,
+          "target": 225.5702322612762
         },
         "RSG": {
           "cost": 11874.999838286545,
@@ -9556,6 +9670,10 @@
         {
           "buys": 3,
           "date": "2026-11-05"
+        },
+        {
+          "buys": 1,
+          "date": "2026-11-06"
         }
       ],
       "trades": [
@@ -10016,7 +10134,7 @@
       "trades": []
     },
     "macd_12_26_9": {
-      "cash": 930.5538414935854,
+      "cash": 12231.573533000463,
       "equity": [
         {
           "date": "2026-10-12",
@@ -10107,6 +10225,10 @@
         {
           "date": "2026-11-05",
           "nav": 104656.78390199895
+        },
+        {
+          "date": "2026-11-06",
+          "nav": 102750.24965447054
         }
       ],
       "events": [
@@ -10424,29 +10546,45 @@
           "date": "2026-11-05",
           "ticker": "MRNA",
           "type": "unfilled"
+        },
+        {
+          "date": "2026-11-06",
+          "reason": "signal_next_open",
+          "ticker": "EL",
+          "type": "sell"
+        },
+        {
+          "date": "2026-11-06",
+          "reason": "signal_next_open",
+          "ticker": "PFE",
+          "type": "sell"
+        },
+        {
+          "date": "2026-11-06",
+          "shares": 57.27556,
+          "ticker": "ESS",
+          "type": "buy"
+        },
+        {
+          "date": "2026-11-06",
+          "ticker": "KMB",
+          "type": "unfilled"
+        },
+        {
+          "date": "2026-11-06",
+          "ticker": "XYL",
+          "type": "unfilled"
         }
       ],
-      "nav": 104656.78390199895,
+      "nav": 102750.24965447054,
       "pending": {
-        "EL": {
-          "side": "sell",
-          "signal_date": "2026-11-05"
-        },
-        "ESS": {
+        "CF": {
           "side": "buy",
-          "signal_date": "2026-11-05"
+          "signal_date": "2026-11-06"
         },
-        "KMB": {
+        "GRMN": {
           "side": "buy",
-          "signal_date": "2026-11-05"
-        },
-        "PFE": {
-          "side": "sell",
-          "signal_date": "2026-11-05"
-        },
-        "XYL": {
-          "side": "buy",
-          "signal_date": "2026-11-05"
+          "signal_date": "2026-11-06"
         }
       },
       "positions": {
@@ -10468,14 +10606,14 @@
           "stop": 27.264025972480773,
           "target": 34.080032465600965
         },
-        "EL": {
-          "cost": 16138.895788807127,
+        "ESS": {
+          "cost": 15318.388402952498,
           "dividends": 0.0,
-          "entry_date": "2026-11-05",
-          "entry_price": 113.37665969467163,
-          "shares": 142.205398,
-          "stop": 104.3065269190979,
-          "target": 130.38315864887235
+          "entry_date": "2026-11-06",
+          "entry_price": 267.1835127868652,
+          "shares": 57.27556,
+          "stop": 245.808831763916,
+          "target": 307.261039704895
         },
         "GDDY": {
           "cost": 15862.891711303739,
@@ -10503,15 +10641,6 @@
           "shares": 33.372091,
           "stop": 444.4717292944336,
           "target": 555.5896616180419
-        },
-        "PFE": {
-          "cost": 11874.999977487154,
-          "dividends": 0.0,
-          "entry_date": "2026-10-15",
-          "entry_price": 29.58478469467163,
-          "shares": 400.98777,
-          "stop": 27.2180019190979,
-          "target": 34.02250239887237
         }
       },
       "signal_counts": [
@@ -10588,6 +10717,10 @@
         {
           "buys": 3,
           "date": "2026-11-05"
+        },
+        {
+          "buys": 2,
+          "date": "2026-11-06"
         }
       ],
       "trades": [
@@ -10692,6 +10825,26 @@
           "proceeds": 13993.3290927703,
           "reason": "signal_next_open",
           "ticker": "ADI"
+        },
+        {
+          "dividends": 0.0,
+          "entry_cost": 16138.895788807127,
+          "entry_date": "2026-11-05",
+          "exit_date": "2026-11-06",
+          "net_pnl": -1158.722802705881,
+          "proceeds": 14980.172986101246,
+          "reason": "signal_next_open",
+          "ticker": "EL"
+        },
+        {
+          "dividends": 0.0,
+          "entry_cost": 11874.999977487154,
+          "entry_date": "2026-10-15",
+          "exit_date": "2026-11-06",
+          "net_pnl": -235.7648691290251,
+          "proceeds": 11639.235108358129,
+          "reason": "signal_next_open",
+          "ticker": "PFE"
         }
       ]
     },
@@ -10769,6 +10922,10 @@
         {
           "date": "2026-11-05",
           "nav": 106265.46205053144
+        },
+        {
+          "date": "2026-11-06",
+          "nav": 106466.59813113438
         }
       ],
       "events": [
@@ -10929,13 +11086,18 @@
           "date": "2026-11-05",
           "ticker": "TPL",
           "type": "unfilled"
+        },
+        {
+          "date": "2026-11-06",
+          "ticker": "DVN",
+          "type": "unfilled"
         }
       ],
-      "nav": 106265.46205053144,
+      "nav": 106466.59813113438,
       "pending": {
-        "DVN": {
+        "ROK": {
           "side": "buy",
-          "signal_date": "2026-11-05"
+          "signal_date": "2026-11-06"
         }
       },
       "positions": {
@@ -11075,6 +11237,10 @@
         {
           "buys": 1,
           "date": "2026-11-05"
+        },
+        {
+          "buys": 1,
+          "date": "2026-11-06"
         }
       ],
       "trades": [
@@ -11141,7 +11307,7 @@
       ]
     },
     "turtle_20_10_long": {
-      "cash": 4736.161548507859,
+      "cash": 2215.8062289697555,
       "equity": [
         {
           "date": "2026-10-12",
@@ -11223,6 +11389,10 @@
         {
           "date": "2026-11-05",
           "nav": 95737.26609188039
+        },
+        {
+          "date": "2026-11-06",
+          "nav": 95234.18087562137
         }
       ],
       "events": [
@@ -11373,33 +11543,46 @@
           "date": "2026-11-05",
           "ticker": "POOL",
           "type": "unfilled"
+        },
+        {
+          "date": "2026-11-06",
+          "reason": "signal_next_open",
+          "ticker": "CNP",
+          "type": "sell"
+        },
+        {
+          "date": "2026-11-06",
+          "reason": "signal_next_open",
+          "ticker": "CRL",
+          "type": "sell"
+        },
+        {
+          "date": "2026-11-06",
+          "shares": 89.463644,
+          "ticker": "EPAM",
+          "type": "buy"
+        },
+        {
+          "date": "2026-11-06",
+          "shares": 51.158147,
+          "ticker": "ERIE",
+          "type": "buy"
+        },
+        {
+          "date": "2026-11-06",
+          "ticker": "TYL",
+          "type": "unfilled"
         }
       ],
-      "nav": 95737.26609188039,
+      "nav": 95234.18087562137,
       "outage_control": {
         "first_trading_session": "2026-11-05",
         "registered_at_utc": "2026-11-04T18:03:08+00:00"
       },
       "pending": {
-        "CNP": {
-          "side": "sell",
-          "signal_date": "2026-11-05"
-        },
-        "CRL": {
-          "side": "sell",
-          "signal_date": "2026-11-05"
-        },
-        "EPAM": {
+        "ABNB": {
           "side": "buy",
-          "signal_date": "2026-11-05"
-        },
-        "ERIE": {
-          "side": "buy",
-          "signal_date": "2026-11-05"
-        },
-        "TYL": {
-          "side": "buy",
-          "signal_date": "2026-11-05"
+          "signal_date": "2026-11-06"
         }
       },
       "positions": {
@@ -11412,15 +11595,6 @@
           "stop": null,
           "target": null
         },
-        "CNP": {
-          "cost": 14388.290353731034,
-          "dividends": 0.0,
-          "entry_date": "2026-10-28",
-          "entry_price": 41.99098622131348,
-          "shares": 342.30957,
-          "stop": null,
-          "target": null
-        },
         "COST": {
           "cost": 11874.999008088047,
           "dividends": 17.4631002,
@@ -11430,12 +11604,21 @@
           "stop": null,
           "target": null
         },
-        "CRL": {
-          "cost": 14388.290257360019,
+        "EPAM": {
+          "cost": 14343.724953112072,
           "dividends": 0.0,
-          "entry_date": "2026-10-28",
-          "entry_price": 360.1900147705078,
-          "shares": 39.906482,
+          "entry_date": "2026-11-06",
+          "entry_price": 160.17004133605957,
+          "shares": 89.463644,
+          "stop": null,
+          "target": null
+        },
+        "ERIE": {
+          "cost": 14343.724909690292,
+          "dividends": 0.0,
+          "entry_date": "2026-11-06",
+          "entry_price": 280.09997145080564,
+          "shares": 51.158147,
           "stop": null,
           "target": null
         },
@@ -11535,6 +11718,10 @@
         {
           "buys": 3,
           "date": "2026-11-05"
+        },
+        {
+          "buys": 1,
+          "date": "2026-11-06"
         }
       ],
       "trades": [
@@ -11577,6 +11764,26 @@
           "proceeds": 10123.294360688784,
           "reason": "signal_next_open",
           "ticker": "VLO"
+        },
+        {
+          "dividends": 0.0,
+          "entry_cost": 14388.290353731034,
+          "entry_date": "2026-10-28",
+          "exit_date": "2026-11-06",
+          "net_pnl": -921.5165262797746,
+          "proceeds": 13466.77382745126,
+          "reason": "signal_next_open",
+          "ticker": "CNP"
+        },
+        {
+          "dividends": 0.0,
+          "entry_cost": 14388.290257360019,
+          "entry_date": "2026-10-28",
+          "exit_date": "2026-11-06",
+          "net_pnl": -1687.9695415470178,
+          "proceeds": 12700.320715813,
+          "reason": "signal_next_open",
+          "ticker": "CRL"
         }
       ]
     },
@@ -11654,6 +11861,10 @@
         {
           "date": "2026-11-05",
           "nav": 95968.6176829426
+        },
+        {
+          "date": "2026-11-06",
+          "nav": 96337.45585505707
         }
       ],
       "events": [
@@ -11748,15 +11959,15 @@
           "date": "2026-11-05",
           "ticker": "POOL",
           "type": "unfilled"
+        },
+        {
+          "date": "2026-11-06",
+          "ticker": "EPAM",
+          "type": "unfilled"
         }
       ],
-      "nav": 95968.6176829426,
-      "pending": {
-        "EPAM": {
-          "side": "buy",
-          "signal_date": "2026-11-05"
-        }
-      },
+      "nav": 96337.45585505707,
+      "pending": {},
       "positions": {
         "ABBV": {
           "cost": 11874.999758862768,
@@ -11894,6 +12105,10 @@
         {
           "buys": 1,
           "date": "2026-11-05"
+        },
+        {
+          "buys": 0,
+          "date": "2026-11-06"
         }
       ],
       "trades": [
@@ -12482,13 +12697,45 @@
       "verified_price_source_aliases": {
         "PSKY": "SKYD"
       }
+    },
+    {
+      "date": "2026-11-06",
+      "eligible": 488,
+      "missing": {
+        "AVB": "invalid_current_ohlc",
+        "BK": "invalid_current_ohlc",
+        "CTRA": "invalid_current_ohlc",
+        "DAY": "invalid_current_ohlc",
+        "EA": "invalid_current_ohlc",
+        "EQR": "invalid_current_ohlc",
+        "FI": "invalid_current_ohlc",
+        "HOLX": "invalid_current_ohlc",
+        "IPG": "invalid_current_ohlc",
+        "K": "invalid_current_ohlc",
+        "KVUE": "invalid_current_ohlc",
+        "MMC": "invalid_current_ohlc",
+        "PSKY": "invalid_current_ohlc",
+        "WBA": "invalid_current_ohlc",
+        "WBD": "invalid_current_ohlc"
+      },
+      "paused_books_missing_held_quotes": {
+        "genetic_frozen": [
+          "KMB"
+        ]
+      },
+      "ticker_coverage_pct": 97.018,
+      "total": 503,
+      "unfilled_pending_buys_missing_bar": [],
+      "verified_price_source_aliases": {
+        "PSKY": "SKYD"
+      }
     }
   ],
   "currency": "USD",
   "engine": "classic_sp500_next_open_v2",
   "first_session": "2026-10-12",
   "initial_capital": 100000,
-  "last_session": "2026-11-05",
+  "last_session": "2026-11-06",
   "late_recorded_sessions": [
     "2026-10-19",
     "2026-10-20"
