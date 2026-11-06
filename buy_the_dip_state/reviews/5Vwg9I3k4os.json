@@ -1,0 +1,215 @@
+{
+  "schema_version": 1,
+  "status": "machine_first_pass",
+  "reviewed_at_utc": "2026-11-06T15:22:06.746811+00:00",
+  "source_identity": "Buy The Dip YouTube channel",
+  "transport": {
+    "kind": "official_podcast_mirror",
+    "provider": "iVoox",
+    "guid": "https://www.ivoox.com/151881013",
+    "published_date": "2025-07-06",
+    "youtube_video_id": "5Vwg9I3k4os",
+    "match_score": 1.0,
+    "audio_bytes_processed_transiently": 14240287
+  },
+  "models": {
+    "asr": {
+      "language": "es",
+      "language_probability": 1.0,
+      "duration_seconds": 1779.9314375,
+      "word_count": 5006,
+      "segment_count": 289,
+      "model": "small"
+    },
+    "semantic": {
+      "repo": "Qwen/Qwen3-4B-GGUF",
+      "file": "Qwen3-4B-Q4_K_M.gguf"
+    }
+  },
+  "metadata": {
+    "video_id": "5Vwg9I3k4os",
+    "youtube_url": "https://www.youtube.com/watch?v=5Vwg9I3k4os",
+    "title": "¿Funcionará la \"One Big Beautiful Bill\" de DONALD TRUMP? - La OPEP aumenta producción",
+    "category": "company_or_theme",
+    "guest_likely": false,
+    "podcast_guid": "https://www.ivoox.com/151881013",
+    "published_date": "2025-07-06",
+    "source": "official_podcast_mirror",
+    "match_score": 1.0
+  },
+  "analysis": {
+    "episode_summary": "El episodio analiza la 'One Big Beautiful Bill' como una política fiscal que busca reducir el déficit público en Estados Unidos, aunque su impacto en la deuda y los tipos de interés es incierto. Se destacan preocupaciones sobre la sostenibilidad de la deuda y la volatilidad en los mercados financieros, reflejando inestabilidad en la economía. Además, se menciona la presión a la baja en el precio del petróleo debido a la normalización de la capacidad ociosa de países productores y la posible prolongación del declino de producción en Estados Unidos. Se sugieren oportunidades de inversión en el sector petrolero y en el mercado de acciones, aunque con riesgos elevados. La discusión también aborda la posibilidad de una crisis económica relacionada con la política de tipos de interés y la comparación con la situación de los años 70, donde los déficits eran muy elevados.",
+    "process": {
+      "idea_generation": [],
+      "quality": [],
+      "balance_sheet": [],
+      "valuation": [
+        "El informe semanal destaca la aprobación de la 'one big beautiful bill' como una política fiscal que busca reducir el déficit, aunque su impacto en la deuda y los tipos de interés es incierto."
+      ],
+      "cycle_macro": [
+        "El mercado ha mostrado volatilidad y un aumento en los tipos de interés, reflejando preocupaciones sobre el déficit público y la sostenibilidad de la deuda en Estados Unidos."
+      ],
+      "entry": [
+        "Se menciona una reforma fiscal que redujo tipos impositivos y simplificó procesos burocráticos, lo que permitió aumentar la recaudación."
+      ],
+      "sizing": [
+        "Se menciona un aumento en los déficits, lo que sugiere que la escala de la economía podría estar en un punto crítico, con implicaciones para la estabilidad financiera."
+      ],
+      "add_hold": [
+        "Se sugiere que los inversores podrían considerar mantener posiciones en el mercado de acciones, aprovechando la volatilidad y las oportunidades en un entorno estable pero volátil."
+      ],
+      "exit": [],
+      "risk": [
+        "La 'one big beautiful bill' ha causado polémica por su impacto en programas de salud y gasto público, lo que podría generar inestabilidad en los mercados financieros."
+      ],
+      "technical": [
+        "Se menciona una tendencia de mercado plano con alta volatilidad, lo que sugiere que los inversores en el sector de acciones podrían beneficiarse de oportunidades en un entorno estable pero volátil."
+      ],
+      "management": [],
+      "mistakes": [
+        "Se menciona un error en la política fiscal, como la subida de tarifas que inflacionaron los precios, lo que podría haber afectado negativamente la economía."
+      ]
+    },
+    "candidate_rules": [
+      {
+        "rule": "paráfrasis compacta",
+        "scope": "hosts|uncertain_or_guest",
+        "confidence": 0.0,
+        "evidence_timestamps": [],
+        "automation_proxy": "variable/cálculo posible o null",
+        "cross_video_confirmation_required": true
+      }
+    ],
+    "contradictions_or_uncertainties": [],
+    "named_examples": [],
+    "automation_readiness": "medium"
+  },
+  "chunk_evidence": [
+    {
+      "chunk": 1,
+      "evidence": [
+        {
+          "stage": "valuation",
+          "paraphrase": "El informe semanal destaca la aprobación de la 'one big beautiful bill' como una política fiscal que busca reducir el déficit, aunque su impacto en la deuda y los tipos de interés es incierto.",
+          "timestamp": "00:01:08",
+          "scope": "hosts",
+          "confidence": 0.8,
+          "automation_hint": "proxy observable"
+        },
+        {
+          "stage": "risk",
+          "paraphrase": "La 'one big beautiful bill' ha causado polémica por su impacto en programas de salud y gasto público, lo que podría generar inestabilidad en los mercados financieros.",
+          "timestamp": "00:01:49",
+          "scope": "hosts",
+          "confidence": 0.7,
+          "automation_hint": "proxy observable"
+        },
+        {
+          "stage": "cycle_macro",
+          "paraphrase": "El mercado ha mostrado volatilidad y un aumento en los tipos de interés, reflejando preocupaciones sobre el déficit público y la sostenibilidad de la deuda en Estados Unidos.",
+          "timestamp": "00:01:13",
+          "scope": "hosts",
+          "confidence": 0.9,
+          "automation_hint": "proxy observable"
+        }
+      ],
+      "named_examples": [],
+      "chunk_summary": "El informe semanal analiza la aprobación de la 'one big beautiful bill' como una política fiscal que busca reducir el déficit, aunque su impacto en la deuda y los tipos de interés es incierto. La polémica sobre su efecto en programas de salud y gasto público genera inestabilidad en los mercados financieros, mientras que la volatilidad en los tipos de interés refleja preocupaciones sobre la sostenibilidad de la deuda en Estados Unidos."
+    },
+    {
+      "chunk": 2,
+      "evidence": [
+        {
+          "stage": "entry",
+          "paraphrase": "Se menciona una reforma fiscal que redujo tipos impositivos y simplificó procesos burocráticos, lo que permitió aumentar la recaudación.",
+          "timestamp": "00:11:42",
+          "scope": "hosts",
+          "confidence": 0.8
+        },
+        {
+          "stage": "risk",
+          "paraphrase": "Se observa una volatilidad elevada en el mercado de acciones, con fluctuaciones significativas en los índices, lo que sugiere riesgos elevados para los inversores.",
+          "timestamp": "00:14:39",
+          "scope": "hosts",
+          "confidence": 0.7
+        },
+        {
+          "stage": "valuation",
+          "paraphrase": "Se compara la situación actual con los años 70, donde los déficits eran muy elevados, lo que indica que la valoración actual podría estar en un nivel similar de riesgo.",
+          "timestamp": "00:12:21",
+          "scope": "hosts",
+          "confidence": 0.6
+        },
+        {
+          "stage": "technical",
+          "paraphrase": "Se menciona una tendencia de mercado plano con alta volatilidad, lo que sugiere que los inversores en el sector de acciones podrían beneficiarse de oportunidades en un entorno estable pero volátil.",
+          "timestamp": "00:14:46",
+          "scope": "hosts",
+          "confidence": 0.7
+        },
+        {
+          "stage": "cycle_macro",
+          "paraphrase": "Se señala una posible crisis económica relacionada con la política de tipos de interés, lo que podría afectar la economía global y generar inestabilidad en los mercados financieros.",
+          "timestamp": "00:15:48",
+          "scope": "hosts",
+          "confidence": 0.6
+        },
+        {
+          "stage": "sizing",
+          "paraphrase": "Se menciona un aumento en los déficits, lo que sugiere que la escala de la economía podría estar en un punto crítico, con implicaciones para la estabilidad financiera.",
+          "timestamp": "00:12:10",
+          "scope": "hosts",
+          "confidence": 0.5
+        },
+        {
+          "stage": "mistake",
+          "paraphrase": "Se menciona un error en la política fiscal, como la subida de tarifas que inflacionaron los precios, lo que podría haber afectado negativamente la economía.",
+          "timestamp": "00:16:01",
+          "scope": "hosts",
+          "confidence": 0.6
+        },
+        {
+          "stage": "add_hold",
+          "paraphrase": "Se sugiere que los inversores podrían considerar mantener posiciones en el mercado de acciones, aprovechando la volatilidad y las oportunidades en un entorno estable pero volátil.",
+          "timestamp": "00:14:46",
+          "scope": "hosts",
+          "confidence": 0.7
+        }
+      ],
+      "named_examples": [],
+      "chunk_summary": "El fragmento describe una estrategia de inversión basada en la reforma fiscal, la volatilidad del mercado, y la comparación con la situación de los años 70. Se mencionan riesgos elevados, oportunidades en el mercado de acciones, y la posibilidad de una crisis económica relacionada con la política de tipos de interés. Se sugiere que los inversores podrían beneficiarse de un entorno estable pero volátil, aunque con riesgos significativos."
+    },
+    {
+      "chunk": 3,
+      "evidence": [
+        {
+          "stage": "entry",
+          "paraphrase": "Analistas mencionan que el petróleo tiene presión a la baja debido a la normalización de la capacidad ociosa de países productores y la posible prolongación del declino de producción en Estados Unidos hasta 2026.",
+          "timestamp": "00:23:32",
+          "scope": "hosts",
+          "confidence": 0.8,
+          "automation_hint": "proxy observable"
+        },
+        {
+          "stage": "valuation",
+          "paraphrase": "Se sugiere que las empresas del sector petrolero podrían hacer hedges a largo plazo, afectando la producción de shale en Estados Unidos y posiblemente generando oportunidades de inversión en empresas con posiciones a largo plazo.",
+          "timestamp": "00:24:00",
+          "scope": "hosts",
+          "confidence": 0.7,
+          "automation_hint": "proxy observable"
+        },
+        {
+          "stage": "risk",
+          "paraphrase": "El riesgo geopolítico ha disminuido, lo que podría permitir que empresas como las de shale americano hagan hedges, afectando la volatilidad del mercado y posiblemente generando oportunidades de entrada en el mercado petrolero.",
+          "timestamp": "00:23:32",
+          "scope": "hosts",
+          "confidence": 0.6,
+          "automation_hint": "proxy observable"
+        }
+      ],
+      "named_examples": [],
+      "chunk_summary": "El análisis discute la presión a la baja del petróleo debido a la normalización de la capacidad ociosa de países productores y la posible prolongación del declino de producción en Estados Unidos. Se sugiere que las empresas petroleras podrían hacer hedges a largo plazo, afectando la producción de shale en Estados Unidos y posiblemente generando oportunidades de inversión en empresas con posiciones a largo plazo. Además, se menciona la posibilidad de que la volatilidad del mercado petrolero aumente, lo que podría generar oportunidades de entrada en el mercado, especialmente si se normaliza la capacidad ociosa y se elimina el déficit aparente."
+    }
+  ],
+  "copyright_note": "No audio or verbatim transcript is persisted; only derived paraphrases."
+}
