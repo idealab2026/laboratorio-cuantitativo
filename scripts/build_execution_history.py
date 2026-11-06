@@ -15,6 +15,7 @@ import os
 from pathlib import Path
 import re
 import sys
+import time
 import urllib.error
 import urllib.parse
 import urllib.request
@@ -57,6 +58,7 @@ CLASSIC_BOOKS = {
     18: "benchmark_spy",
 }
 GITHUB_API = "https://api.github.com/repos/" + REPO + "/actions/runs"
+PUBLISHED_HISTORY = "https://idealab2026.github.io/laboratorio-cuantitativo/data/execution-history.json"
 
 
 def slot(number):
@@ -171,6 +173,20 @@ COMMON_ACCOUNTING_STEPS = {
 }
 
 
+def read_actions_json(request, opener):
+    for attempt in range(3):
+        try:
+            with opener(request, timeout=20) as response:
+                return json.load(response)
+        except urllib.error.HTTPError as exc:
+            if exc.code not in (429, 500, 502, 503, 504) or attempt == 2:
+                raise
+        except (OSError, json.JSONDecodeError):
+            if attempt == 2:
+                raise
+        time.sleep(2 ** attempt)
+
+
 def common_consumer_runs(run, token, opener):
     """Read each called job, never infer six successes from a green capture."""
     result = []
@@ -181,8 +197,7 @@ def common_consumer_runs(run, token, opener):
             headers={"Accept":"application/vnd.github+json",
                      "User-Agent":"MIDAS-daily-execution-health/1.0",
                      **({"Authorization":"Bearer " + token} if token else {})})
-        with opener(req, timeout=20) as response:
-            body = json.load(response)
+        body = read_actions_json(req, opener)
         jobs = body.get("jobs")
         if not isinstance(jobs, list):
             raise ValueError("Incomplete common consumer job evidence")
@@ -214,48 +229,52 @@ def common_consumer_runs(run, token, opener):
 
 def collect_runs(token, now, opener=urllib.request.urlopen):
     """Query complete paginated Actions history, fail-closed if incomplete."""
-    since = START - dt.timedelta(days=1)
-    end = now.date() + dt.timedelta(days=2)
+    since = max(START - dt.timedelta(days=1), now.date() - dt.timedelta(days=90))
+    end = now.date() + dt.timedelta(days=1)
     output = []
-    # GitHub Actions list pagination. Refuse truncated data, rather than claim
-    # 0 missing workflows on days whose history was not fully retrieved.
-    for page in range(1, 31):
-        query = urllib.parse.urlencode({
-            "per_page": 100, "page": page,
-            "created": since.isoformat() + ".." + end.isoformat(),
-        })
-        req = urllib.request.Request(
-            GITHUB_API + "?" + query,
-            headers={
-                "Accept": "application/vnd.github+json",
-                "User-Agent": "MIDAS-daily-execution-health/1.0",
-                **({"Authorization": "Bearer " + token} if token else {}),
-            },
-        )
-        with opener(req, timeout=20) as response:
-            body = json.load(response)
-        batch = body.get("workflow_runs")
-        if not isinstance(batch, list):
-            raise ValueError("GitHub returned no workflow_runs array")
-        for run in batch:
-            if run.get("event") != "schedule":
-                continue
-            path = run.get("path", "").split("/")[-1]
-            if path == "market_data_xnys.yml":
-                output.extend(common_consumer_runs(run, token, opener))
-                continue
-            if path not in WORKFLOWS:
-                continue
-            output.append({
-                "workflow": path, "id": run["id"],
-                "created_at": run["created_at"],
-                "status": run.get("status", ""),
-                "conclusion": run.get("conclusion"),
-                "url": run["html_url"],
+    seen = set()
+    # GitHub caps a filtered search at 1,000 results. Bounded date ranges keep
+    # unrelated workflows and accumulated history from exhausting that limit.
+    while since <= end:
+        through = min(since + dt.timedelta(days=13), end)
+        for page in range(1, 11):
+            query = urllib.parse.urlencode({
+                "per_page": 100, "page": page, "event": "schedule",
+                "created": since.isoformat() + ".." + through.isoformat(),
             })
-        if len(batch) < 100:
-            return output
-    raise ValueError("Actions history is truncated at 3000 records")
+            req = urllib.request.Request(
+                GITHUB_API + "?" + query,
+                headers={
+                    "Accept": "application/vnd.github+json",
+                    "User-Agent": "MIDAS-daily-execution-health/1.0",
+                    **({"Authorization": "Bearer " + token} if token else {}),
+                },
+            )
+            body = read_actions_json(req, opener)
+            batch = body.get("workflow_runs")
+            if not isinstance(batch, list):
+                raise ValueError("GitHub returned no workflow_runs array")
+            for run in batch:
+                if run.get("event") != "schedule" or run["id"] in seen:
+                    continue
+                seen.add(run["id"])
+                path = run.get("path", "").split("/")[-1]
+                if path == "market_data_xnys.yml":
+                    output.extend(common_consumer_runs(run, token, opener))
+                elif path in WORKFLOWS:
+                    output.append({
+                        "workflow": path, "id": run["id"],
+                        "created_at": run["created_at"],
+                        "status": run.get("status", ""),
+                        "conclusion": run.get("conclusion"),
+                        "url": run["html_url"],
+                    })
+            if len(batch) < 100:
+                break
+        else:
+            raise ValueError("Actions history is truncated for " + since.isoformat())
+        since = through + dt.timedelta(days=1)
+    return output
 
 
 def classic_quarantines(root=ROOT):
@@ -654,6 +673,32 @@ def verify(document):
                 raise ValueError("Algorithm lacks scheduled workflow evidence")
 
 
+def read_published_history(now, opener=urllib.request.urlopen):
+    """Keep already published technical evidence when the API cannot supply it."""
+    try:
+        with opener(PUBLISHED_HISTORY, timeout=8) as response:
+            previous = json.load(response)
+        verify(previous)
+        if (previous["status"] == "verified_github_actions" and previous["repository"] == REPO
+            and dt.datetime.fromisoformat(previous["as_of_utc"].replace("Z", "+00:00")) <= now):
+            return previous
+    except (ValueError, OSError, KeyError, TypeError, AttributeError):
+        pass
+    return None
+
+
+def retain_published_outcomes(document, previous, journals):
+    if previous is None:
+        return
+    known = {row["date"]: row for row in previous["days"]
+             if row["data_status"] in ("verified", "partially_verified")}
+    for index, row in enumerate(document["days"]):
+        older = known.get(row["date"])
+        if row["data_status"] == "not_verifiable" and older:
+            retained = dict(older, technical_as_of_utc=older.get("technical_as_of_utc", previous["as_of_utc"]))
+            document["days"][index] = attach_journals(retained, journals)
+
+
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--output")
@@ -667,23 +712,18 @@ def main():
         parser.error("Specify --output or --validate")
     now = dt.datetime.now(UTC)
     schedules = workflow_schedule()
+    token = os.getenv("GH_TOKEN", "")
+    journals = journal_evidence()
     try:
-        token = os.getenv("GH_TOKEN", "")
-        journals = journal_evidence()
-        try:
-            runs = collect_runs(token, now)
-            available = True
-        except (ValueError, OSError, urllib.error.URLError, KeyError, json.JSONDecodeError):
-            runs, available = [], False
-        document = build(now, runs, schedules, classic_quarantines(),
-                         journals, actions_available=available, archive=reviewed_archive())
-    except (ValueError, OSError, urllib.error.URLError, KeyError, json.JSONDecodeError) as exc:
-        # A source outage must not turn into a fabricated zero-execution day.
-        document = {
-            "schema": SCHEMA, "status": "unavailable", "repository": REPO,
-            "as_of_utc": now.isoformat().replace("+00:00", "Z"),
-            "reason": type(exc).__name__, "days": [],
-        }
+        runs = collect_runs(token, now)
+        available = True
+    except (ValueError, OSError, KeyError) as exc:
+        print("GitHub Actions history unavailable: " + type(exc).__name__, file=sys.stderr)
+        runs, available = [], False
+    document = build(now, runs, schedules, classic_quarantines(),
+                     journals, actions_available=available, archive=reviewed_archive())
+    if any(row["data_status"] == "not_verifiable" for row in document["days"]):
+        retain_published_outcomes(document, read_published_history(now), journals)
     document["live_plan"] = live_session_plan(now, schedules)
     verify(document)
     path = Path(args.output)

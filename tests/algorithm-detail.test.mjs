@@ -590,6 +590,15 @@ test("Session history renders preserved journals and subsequent recovery without
  assert.ok(html.includes("100.123,45 USD"));
  assert.ok(html.includes(journal.source_url));
  assert.ok(!html.includes("Cierre verificado")&&!html.includes("Histórico no disponible"));
+ const partial=structuredClone(doc);
+ Object.assign(partial.days[0],{data_status:"partially_verified",expected:2,unverified:1,not_scheduled:62,complete:false});
+ partial.days[0].details.push({slot:"IL-011",status:"unverified",workflows:[{workflow:"classic_sp500.yml"}]});
+ context.api.verifyExecutionHistory(partial);
+ const partialHtml=context.api.renderDailyExecutionTable(partial,"stale",{entries:[]});
+ assert.ok(partialHtml.includes("Registro técnico parcial"));
+ assert.ok(partialHtml.includes("No se pudo actualizar el histórico"));
+ assert.ok(partialHtml.includes('class="daily-count daily-ok">N/D'));
+ assert.ok(partialHtml.includes('class="daily-count daily-fail">1'));
  const tampered=structuredClone(doc);tampered.days[0].recovered_count=0;
  assert.throws(()=>context.api.verifyExecutionHistory(tampered),/no conciliados/);
  const external=structuredClone(doc);external.days[0].journals[0].source_url="https://example.com/private";

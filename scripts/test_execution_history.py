@@ -240,6 +240,48 @@ class ExecutionHistoryTests(unittest.TestCase):
         self.assertEqual(day["journal_count"],1)
         self.assertIsNone(day["failure"])
 
+    def test_transient_github_failure_retries_without_counting_run_twice(self):
+        run = {**event("classic_sp500.yml", "2026-11-05T02:20:00Z", "success"),
+               "event": "schedule", "path": ".github/workflows/classic_sp500.yml",
+               "html_url": "https://github.com/idealab2026/laboratorio-cuantitativo/actions/runs/100"}
+        response = json.dumps({"workflow_runs": [run]})
+        attempts = []
+
+        def opener(request, timeout):
+            attempts.append(request.full_url)
+            if len(attempts) == 1:
+                raise h.urllib.error.HTTPError(request.full_url, 503, "Unavailable", {}, None)
+            return io.StringIO(response)
+
+        with mock.patch.object(h.time, "sleep") as delay:
+            runs = h.collect_runs("", self.now, opener)
+        delay.assert_called_once_with(1)
+        self.assertEqual(attempts[0], attempts[1])
+        self.assertTrue(all("event=schedule" in url for url in attempts))
+        self.assertEqual([entry["id"] for entry in runs], [100])
+
+    def test_actions_outage_keeps_original_failures_and_uses_current_journals(self):
+        failed = event("weekly_ml_daily.yml", "2026-11-05T03:28:00Z", "failure")
+        prior = h.build(self.now, [failed], self.schedules)
+        later = self.now + dt.timedelta(days=1)
+        journals = {"2026-11-04": [self.journal("IL-019", recovered=True)]}
+        doc = h.build(later, [], self.schedules, journals=journals, actions_available=False)
+        h.retain_published_outcomes(doc, prior, journals)
+        h.verify(doc)
+        day = next(row for row in doc["days"] if row["date"] == "2026-11-04")
+        self.assertEqual(day["failure"], 9)
+        self.assertEqual(day["journal_count"], 1)
+        self.assertEqual(day["recovered_failures"], 1)
+        self.assertEqual(day["technical_as_of_utc"], prior["as_of_utc"])
+        self.assertIsNone(doc["days"][0]["success"])
+
+        refreshed = h.build(later, [failed, event("classic_sp500.yml", "2026-11-05T02:20:00Z",
+                                                 "success", 101)], self.schedules, journals=journals)
+        h.retain_published_outcomes(refreshed, doc, journals)
+        day = next(row for row in refreshed["days"] if row["date"] == "2026-11-04")
+        self.assertNotIn("technical_as_of_utc", day)
+        self.assertEqual((day["success"], day["failure"], day["journal_count"]), (9, 9, 1))
+
     def test_all_three_genetic_cohorts_are_read_separately_from_original_files(self):
         evidence=h.journal_evidence()
         records=[(d,x) for d,rows in evidence.items() for x in rows if x["slot"]=="IL-044"]

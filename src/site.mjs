@@ -298,6 +298,7 @@ const monitoringTabs=[["today","Sesión de hoy"],["summary","Indicadores"],["ope
 const liveJobCache=new Map();
 let liveSessionData=null, liveSessionRequest=null, liveLastRequest=0;
 const liveSessionActive=()=>state.view==="monitoring"&&state.monitoringTab==="today";
+const dailyHistoryActive=()=>state.view==="monitoring"&&state.monitoringTab==="daily";
 const currentSession=()=>sessionToday(state.executionHistory?.live_plan);
 function liveSessionHTML(){
  // Verified public lifecycle roster, not the daily workflow denominator.
@@ -339,8 +340,13 @@ async function refreshLiveSession(force=false){
   paintLiveSession();
  }
 }
-document.addEventListener("visibilitychange",()=>{if(!document.hidden)void refreshLiveSession();});
-setInterval(()=>{void refreshLiveSession();},LIVE_REFRESH_MS);
+function refreshActiveMonitoring(){
+ if(document.hidden)return;
+ if(dailyHistoryActive())void loadExecutionHistory();
+ else void refreshLiveSession();
+}
+document.addEventListener("visibilitychange",refreshActiveMonitoring);
+setInterval(refreshActiveMonitoring,LIVE_REFRESH_MS);
 
 function verifyExecutionHistory(doc){
  if(!doc||doc.schema!=="midas_daily_execution_health_v1"||
@@ -430,7 +436,7 @@ function verifyExecutionHistory(doc){
 }
 function renderDailyExecutionTable(doc,status,roster){
  if(status==="pending")return '<p class="audit-method-note">Consultando diarios conservados y ejecuciones programadas…</p>';
- if(status!=="verified"||!doc||doc.status!=="verified_github_actions")
+ if(!["verified","stale"].includes(status)||!doc||doc.status!=="verified_github_actions")
   return '<p class="audit-method-note">No se ha podido verificar el histórico de sesiones. No se muestran ceros ni fallos inventados.</p>';
  const num=v=>v===null?"N/D":new Intl.NumberFormat("es-ES").format(v);
  const names=new Map((roster?.entries||[]).map(e=>[e.slot,e.name]));
@@ -469,16 +475,21 @@ function renderDailyExecutionTable(doc,status,roster){
      (d?.status==="failure"&&recovered?'<small class="daily-recovery-note">Recuperación posterior documentada; se conserva el fallo original.</small>':"")+
      (d?.reason?'<small>'+esc(d.reason)+'</small>':"")+'</td><td>'+links.join("<br>")+'</td></tr>';
    }).join("")+'</tbody></table></div></details>':'Sin registros disponibles';
-  const technical=day.data_status==="archived_observations"?"Archivo técnico recuperado":day.data_status==="not_verifiable"?"Automatización sin verificar":day.complete?"Registro técnico completo":"Registro técnico pendiente";
+  const technical=day.technical_as_of_utc?"Último registro técnico disponible · "+day.technical_as_of_utc.replace("T"," ").slice(0,16)+" UTC":
+   day.data_status==="archived_observations"?"Archivo técnico recuperado":
+   day.data_status==="not_verifiable"?"Automatización sin verificar":
+   day.complete?"Registro técnico completo":
+   day.success||day.failure||day.not_run?"Registro técnico parcial":"Registro técnico pendiente";
+  const outcomeCount=value=>num(value===0&&!day.complete&&day.data_status!=="archived_observations"?null:value);
   return '<tr'+(day.data_status==="not_verifiable"?' class="daily-unverifiable"':"")+'><td><strong>'+esc(label)+'</strong><small>'+esc(technical)+'</small></td>'+
    '<td class="daily-count">'+num(day.journal_count)+'</td>'+
    '<td class="daily-count daily-ok">'+num(day.recovered_count)+'</td>'+
    (day.data_status==="not_verifiable"?'<td colspan="6">Sin registro técnico acreditado para esta fecha</td>':
-   '<td class="daily-count daily-ok">'+num(day.success)+'</td>'+
-   '<td class="daily-count daily-fail">'+num(day.failure)+(day.recovered_failures?'<small class="daily-recovery-note">'+num(day.recovered_failures)+' recuperados</small>':"")+'</td>'+
+   '<td class="daily-count daily-ok">'+outcomeCount(day.success)+'</td>'+
+   '<td class="daily-count daily-fail">'+outcomeCount(day.failure)+(day.recovered_failures?'<small class="daily-recovery-note">'+num(day.recovered_failures)+' recuperados</small>':"")+'</td>'+
    (day.data_status==="archived_observations"?'<td colspan="4">Archivo de ejecuciones; programación histórica no reconstruida'+
     (day.unverified?' · '+num(day.unverified)+' resultados sin verificar':"")+'</td>':
-   '<td class="daily-count daily-absent">'+num(day.not_run)+'</td>'+
+   '<td class="daily-count daily-absent">'+outcomeCount(day.not_run)+'</td>'+
    '<td class="daily-count">'+num(day.pending)+'</td>'+
    '<td class="daily-count daily-unverified">'+num(day.unverified)+'</td>'+
    '<td class="daily-count daily-neutral">'+num(day.not_scheduled)+'</td>'))+
@@ -486,11 +497,12 @@ function renderDailyExecutionTable(doc,status,roster){
  }).join("");
  return '<div class="daily-ledger-header"><strong>Histórico de sesiones y automatización</strong>'+
    '<span>Diarios conservados + GitHub Actions · actualizado '+esc(doc.as_of_utc.replace("T"," ").slice(0,16))+' UTC</span></div>'+
+  (status==="stale"?'<p class="audit-method-note">No se pudo actualizar el histórico. Se muestra la última información disponible.</p>':"")+
   '<p class="audit-method-note">Registros conservados desde '+esc(doc.first_tracked_session.split("-").reverse().join("/"))+
    '. «Diarios» cuenta algoritmos con valoración registrada; «Recuperadas» identifica valoraciones añadidas después de una interrupción. '+
    'Las cohortes archivadas conservan su identidad y no se unen a la campaña activa. '+
    (doc.reviewed_archive?'Archivo técnico recuperado: '+esc(doc.reviewed_archive.first_session)+' a '+esc(doc.reviewed_archive.last_session)+'. ':"")+
-   (doc.actions_available===false?'La consulta actual de GitHub Actions no está disponible; se conservan los diarios y el archivo recuperado.':
+   (doc.actions_available===false?'La consulta actual de GitHub Actions no está disponible. Se muestran los diarios y la última evidencia técnica publicada.':
     'Automatización institucional verificable desde '+esc(doc.oldest_retained_run_session||"fecha aún no acreditada")+'. Las fechas sin registro técnico conservan sus valoraciones.')+'</p>'+
   '<div class="table-scroll daily-execution-scroll"><table class="daily-execution-table"><thead><tr>'+
    '<th>Fecha / sesión</th><th>Diarios</th><th>Recuperadas</th><th>Correctos</th><th>Fallos originales</th><th>No ejecutados</th>'+
@@ -1120,6 +1132,7 @@ $("app").addEventListener("click",e=>{
    }
   }
   if(liveSessionActive()){paintLiveSession();void refreshLiveSession();}
+  else if(dailyHistoryActive())void loadExecutionHistory();
  }
  else if(action==="audit-tab"){
   state.auditTab=value==="operations"?"operations":"sessions";
@@ -1373,18 +1386,28 @@ async function loadInstitutionalPaperFeed(){
  }catch(_error){state.paperFeed=null;state.paperFeedRead=null;state.institutionalFeedStatus="unavailable";}
  if(["full","competition","algorithm","monitoring"].includes(state.view)&&state.data)render();
 }
+let executionHistoryLoading=false;
 async function loadExecutionHistory(){
+ if(executionHistoryLoading)return;
+ executionHistoryLoading=true;
+ const previous=state.executionHistory;
+ const previousStatus=state.executionHistoryStatus;
  try{
   const response=await fetch("./data/execution-history.json",{cache:"no-store"});
   if(!response.ok)throw Error("No daily execution ledger");
   const doc=verifyExecutionHistory(await response.json());
-  state.executionHistory=doc;
-  state.executionHistoryStatus=doc.status==="verified_github_actions"?"verified":"unavailable";
+  if(doc.status!=="verified_github_actions"||
+     (previous&&Date.parse(doc.as_of_utc)<Date.parse(previous.as_of_utc)))
+   throw Error("No current execution evidence");
+  if(doc.as_of_utc!==previous?.as_of_utc)state.executionHistory=doc;
+  state.executionHistoryStatus="verified";
  }catch(_error){
-  state.executionHistory=null;
-  state.executionHistoryStatus="unavailable";
+  state.executionHistoryStatus=previous?"stale":"unavailable";
+ }finally{
+  executionHistoryLoading=false;
  }
- if(state.view==="monitoring"&&state.data)render();
+ if(state.view==="monitoring"&&state.data&&
+    (previous!==state.executionHistory||previousStatus!==state.executionHistoryStatus))render();
 }
 async function loadOperationsAudit(){
  try{
