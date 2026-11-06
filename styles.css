@@ -857,3 +857,24 @@ p{line-height:1.6;text-align:justify;text-align-last:left;hyphens:auto}p.lead{co
 .midas-header-parent img{width:72px;height:auto;max-width:72px;aspect-ratio:660/156;display:block}
 @media(max-width:1080px){.midas-header-identity{gap:8px}.midas-topbar .midas-header-inner{gap:13px}.midas-header-parent{font-size:.62rem}}
 @media(max-width:650px){.midas-header-parent span{display:none}.midas-header-parent img{width:55px}.midas-header-identity{gap:7px}}
+
+/* Live paper decision feed reuses the monitoring table and control styles. */
+.midas-live-signals{margin:1.25rem 0 2rem;padding-bottom:1.25rem;border-bottom:1px solid #dce4eb}
+.midas-live-signals h3{margin:0;color:#173554;font-size:1.2rem}
+.midas-live-signals h4{margin:1.05rem 0 .5rem;color:#173554;font-size:.86rem}
+.midas-live-signals .monitoring-explanation{max-width:72ch}
+.midas-signal-meta{font-size:.8rem;color:#425a73;margin:.75rem 0;line-height:1.55}
+.midas-signal-table{width:100%;min-width:0;border-collapse:collapse;font-size:.8rem;line-height:1.45;font-variant-numeric:tabular-nums}
+.midas-signal-table th,.midas-signal-table td{padding:.56rem .62rem;text-align:left;border-bottom:1px solid #dce4eb}
+.midas-signal-table thead{background:#f4f7fa;color:#324d67}
+.midas-signal-table th:last-child,.midas-signal-table td:last-child{text-align:right}
+.midas-signal-table small{display:block;color:#425a73;margin-top:.15rem}
+.midas-signal-holdings{margin-top:.8rem}
+.midas-signal-holdings summary{color:#173554;font-size:.82rem;font-weight:650;cursor:pointer;padding:.35rem 0}
+@media(max-width:530px){
+ .midas-signal-table th,.midas-signal-table td{padding:.5rem .32rem}
+ .midas-signal-table{table-layout:fixed}
+ .midas-signal-table th:first-child{width:20%;overflow-wrap:anywhere}
+ .midas-signal-table th:last-child{width:31%}
+ .midas-signal-table td:last-child{overflow-wrap:anywhere}
+}

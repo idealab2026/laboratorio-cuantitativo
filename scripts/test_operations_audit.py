@@ -1,11 +1,41 @@
 """Offline regression for the audited operations evidence exporter."""
 import unittest
-from build_operations_audit import build, normalize_ledger, rule_reason, price_history
+from build_operations_audit import build, normalize_ledger, rule_reason, price_history, pending_signals
 
 class OperationsAuditTests(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         cls.doc=build()
+
+    def test_live_signals_distinguish_target_weights_from_orders_and_fills(self):
+        current = {"positions": {"KEEP": {}, "EXIT": {}}, "pending": {
+            "signal_date": "2026-11-05", "expected_fill_session": "2026-11-06",
+            "target_weights": {"KEEP": .25, "AAPL": .15},
+        }}
+        signals = {row["ticker"]: row for row in pending_signals(current)}
+        self.assertEqual({ticker: row["action"] for ticker, row in signals.items()},
+                         {"AAPL": "buy", "EXIT": "sell", "KEEP": "rebalance"})
+        self.assertEqual(signals["AAPL"]["target_weight"], .15)
+        self.assertEqual(signals["AAPL"]["target_session"], "2026-11-06")
+        self.assertIsNone(signals["AAPL"]["limit_price"])
+        current["pending"] = {"AAPL": {"side": "buy", "signal_date": "2026-11-05", "limit_price": 221.25}}
+        signals = {row["ticker"]: row for row in pending_signals(current)}
+        self.assertEqual(signals["AAPL"]["limit_price"], 221.25)
+        self.assertEqual(signals["KEEP"]["action"], "hold")
+        self.assertIsNone(signals["KEEP"]["decision_session"])
+
+    def test_live_feed_covers_active_tracks_and_uses_dated_fills(self):
+        signal_tracks = {}
+        audit = build(signal_tracks)
+        self.assertEqual(set(signal_tracks), {"IL-%03d" % n for n in range(10, 45)})
+        self.assertTrue(signal_tracks["IL-042"]["session"])
+        self.assertTrue(signal_tracks["IL-044"]["session"])
+        track = signal_tracks["IL-011"]
+        actions = next(row["actions"] for row in audit["tracks"]["IL-011"]["sessions"]
+                       if row["date"] == track["session"])
+        expected = [(row["ticker"], row["side"], row["price"]) for row in actions
+                    if row["side"] in ("buy", "sell")]
+        self.assertEqual([(r["ticker"], r["action"], r["price"]) for r in track["executions"]], expected)
 
     def test_manifest_has_all_64_ids_and_no_fabricated_orders(self):
         tracks=self.doc["tracks"]

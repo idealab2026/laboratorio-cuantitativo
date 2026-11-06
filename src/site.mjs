@@ -300,6 +300,120 @@ let liveSessionData=null, liveSessionRequest=null, liveLastRequest=0;
 const liveSessionActive=()=>state.view==="monitoring"&&state.monitoringTab==="today";
 const dailyHistoryActive=()=>state.view==="monitoring"&&state.monitoringTab==="daily";
 const currentSession=()=>sessionToday(state.executionHistory?.live_plan);
+const SIGNAL_REFRESH_MS=60_000;
+const signalNames={buy:"Comprar",sell:"Vender",hold:"Mantener",rebalance:"Rebalancear"};
+let signalFeed=null,signalFeedError=false,signalRequest=null,signalChecked=0,signalSlot="IL-038";
+
+function verifyLiveSignals(doc){
+ const validDate=d=>d===null||typeof d==="string"&&/^\d{4}-\d{2}-\d{2}$/.test(d);
+ const validPrice=p=>p===null||typeof p==="number"&&Number.isFinite(p)&&p>0;
+ if(doc?.schema!=="midas_execution_signals_v1"||!Number.isFinite(Date.parse(doc.published_at_utc))||
+    !doc.tracks||Object.keys(doc.tracks).length!==35)throw Error("Registro de señales incompleto");
+ for(const [id,track] of Object.entries(doc.tracks)){
+  if(strategyCompetitionPhase(id)!=="active"||typeof track.label!=="string"||track.label.length>160||
+     !["recorded","paused","unavailable"].includes(track.status)||![null,"USD","EUR"].includes(track.currency)||
+     !validDate(track.session)||!validDate(track.decision_session)||
+     !Array.isArray(track.signals)||!Array.isArray(track.executions))throw Error("Cartera de señales no verificable");
+  for(const signal of track.signals){
+   if(!/^[A-Z0-9.-]{1,14}$/.test(signal.ticker)||!Object.hasOwn(signalNames,signal.action)||
+      !validDate(signal.decision_session)||!validDate(signal.target_session)||!validPrice(signal.limit_price)||
+      !(signal.target_weight===null||Number.isFinite(signal.target_weight)&&signal.target_weight>=0&&signal.target_weight<=1))
+    throw Error("Señal no verificable");
+  }
+  for(const fill of track.executions){
+   if(!/^[A-Z0-9.-]{1,14}$/.test(fill.ticker)||!["buy","sell"].includes(fill.action)||
+      !validPrice(fill.price)||!validDate(fill.decision_session))throw Error("Operación no verificable");
+  }
+ }
+ return doc;
+}
+function renderSignalRows(rows,currency,executed){
+ const money=value=>value===null||!currency?"N/D":
+  new Intl.NumberFormat("es-ES",{style:"currency",currency,currencyDisplay:"code"}).format(value);
+ const percent=new Intl.NumberFormat("es-ES",{style:"percent",maximumFractionDigits:2});
+ return '<table class="midas-signal-table"><thead><tr><th scope="col">Activo</th><th scope="col">Decisión</th><th scope="col">'+
+  (executed?'Precio simulado':'Precio o peso objetivo')+'</th></tr></thead><tbody>'+
+  rows.map(row=>{
+   const label=executed?(row.action==="buy"?"Compra registrada":"Venta registrada"):signalNames[row.action];
+   const timing=executed?(row.decision_session?"Señal del "+shortPaperDate(row.decision_session):"Operación del diario paper"):
+    row.action==="hold"?"Posición abierta sin orden pendiente":
+    (row.decision_session?"Señal del "+shortPaperDate(row.decision_session)+" · ":"")+
+    (row.target_session?"Apertura prevista del "+shortPaperDate(row.target_session):"Orden pendiente en el diario");
+   const value=executed?money(row.price):row.limit_price!==null?money(row.limit_price):
+    row.target_weight!==null?percent.format(row.target_weight):
+    row.action==="hold"?"—":"Por determinar";
+   return '<tr><th scope="row">'+esc(row.ticker)+'</th><td><strong class="audit-'+esc(row.action)+'">'+esc(label)+'</strong><small>'+
+    esc(timing)+'</small></td><td>'+esc(value)+'</td></tr>';
+  }).join("")+'</tbody></table>';
+}
+function liveSignalsContent(){
+ const track=signalFeed?.tracks[signalSlot];
+ if(!track)return '<p class="monitoring-explanation" role="status">'+
+  (signalFeedError?"El registro de señales no está disponible. Usa «Actualizar» para volver a consultarlo.":"Consultando el diario de señales…")+'</p>';
+ if(track.status==="unavailable")return '<p class="monitoring-explanation" role="status">El diario de esta cartera aún no ofrece señales verificables.</p>';
+ const published=new Intl.DateTimeFormat("es-ES",{dateStyle:"short",timeStyle:"short",timeZone:"Europe/Madrid"})
+  .format(new Date(signalFeed.published_at_utc));
+ const pending=track.signals.filter(row=>row.action!=="hold");
+ const holdings=track.signals.filter(row=>row.action==="hold");
+ return '<p class="midas-signal-meta" role="status">'+
+  (track.status==="paused"?'<strong>Valoración pausada</strong> · ':"")+
+  'Última sesión registrada '+esc(shortPaperDate(track.session))+
+  (track.decision_session?' · Última señal '+esc(shortPaperDate(track.decision_session)):"")+
+  ' · Publicado '+esc(published)+' (Madrid)'+
+  (signalFeedError?' · Se muestra la última copia disponible':"")+'</p>'+
+  '<h4>Órdenes pendientes</h4>'+
+  (pending.length?renderSignalRows(pending,track.currency,false):'<p class="monitoring-explanation">El diario no muestra órdenes pendientes.</p>')+
+  (holdings.length?'<details class="midas-signal-holdings"><summary>Posiciones que mantiene · '+holdings.length+'</summary>'+
+   renderSignalRows(holdings,track.currency,false)+'</details>':"")+
+  '<h4>Operaciones registradas en la última sesión</h4>'+
+  (track.executions.length?renderSignalRows(track.executions,track.currency,true):
+   '<p class="monitoring-explanation">No hay compras ni ventas individuales documentadas para esa sesión.</p>');
+}
+function liveSignalOptions(){
+ return Object.entries(signalFeed?.tracks||{}).map(([id,track])=>
+  '<option value="'+esc(id)+'"'+(signalSlot===id?' selected':'')+'>'+esc(id+' · '+track.label)+'</option>').join("");
+}
+function liveSignalsPanel(){
+ const options=liveSignalOptions();
+ return '<section class="midas-live-signals" aria-labelledby="midas-signal-title">'+
+  '<div class="daily-ledger-header"><h3 id="midas-signal-title">Señales de los algoritmos</h3>'+
+  '<button type="button" class="outline-btn" data-action="live-signals-refresh">Actualizar señales</button></div>'+
+  '<p class="monitoring-explanation">Consulta órdenes paper, posiciones abiertas y operaciones registradas. '+
+  'El diario se vuelve a consultar cada minuto con esta vista abierta. Un precio pendiente se conoce cuando se registra la ejecución simulada.</p>'+
+  '<div class="monitoring-operation-controls"><label for="live-signal-algorithm">Algoritmo</label>'+
+  '<select id="live-signal-algorithm"'+(options?"":' disabled')+'>'+
+  (options||'<option>Consultando algoritmos…</option>')+'</select></div>'+
+  '<div id="midas-signal-content">'+liveSignalsContent()+'</div></section>';
+}
+async function refreshLiveSignals(force=false){
+ if(!liveSessionActive()||document.hidden||signalRequest||(!force&&Date.now()-signalChecked<SIGNAL_REFRESH_MS))return;
+ signalChecked=Date.now();
+ const previous=signalFeed,failed=signalFeedError;
+ signalRequest=fetch("./data/execution-signals.json",{cache:"no-store"});
+ try{
+  const response=await signalRequest;
+  if(!response.ok)throw Error("Registro no publicado");
+  const next=verifyLiveSignals(await response.json());
+  if(!previous||Date.parse(next.published_at_utc)>=Date.parse(previous.published_at_utc))signalFeed=next;
+  signalFeedError=false;
+ }catch{
+  signalFeedError=true;
+ }finally{
+  signalRequest=null;
+  const picker=$("live-signal-algorithm"),content=$("midas-signal-content");
+  if(picker&&signalFeed&&(!previous||picker.disabled)){
+   picker.innerHTML=liveSignalOptions();
+   picker.disabled=false;
+  }
+  if(content&&(previous?.published_at_utc!==signalFeed?.published_at_utc||failed!==signalFeedError)){
+   const open=content.querySelector(".midas-signal-holdings")?.open;
+   content.innerHTML=liveSignalsContent();
+   const details=content.querySelector(".midas-signal-holdings");
+   if(details&&open)details.open=true;
+  }
+ }
+}
+
 function liveSessionHTML(){
  // Verified public lifecycle roster, not the daily workflow denominator.
  const competing=Array.isArray(state.fullRoster?.entries)?
@@ -308,7 +422,7 @@ function liveSessionHTML(){
   state.executionHistoryStatus==="pending",competing);
 }
 function paintLiveSession(){
- const panel=$("monitoring-panel-today");
+ const panel=$("monitoring-live-status");
  if(!panel||!liveSessionActive())return;
  const scroll=panel.querySelector(".session-live-scroll")?.scrollLeft??0;
  const focused=panel.contains(document.activeElement)?document.activeElement:null;
@@ -345,8 +459,12 @@ function refreshActiveMonitoring(){
  if(dailyHistoryActive())void loadExecutionHistory();
  else void refreshLiveSession();
 }
-document.addEventListener("visibilitychange",refreshActiveMonitoring);
+document.addEventListener("visibilitychange",()=>{
+ refreshActiveMonitoring();
+ void refreshLiveSignals();
+});
 setInterval(refreshActiveMonitoring,LIVE_REFRESH_MS);
+setInterval(()=>{void refreshLiveSignals();},SIGNAL_REFRESH_MS);
 
 function verifyExecutionHistory(doc){
  if(!doc||doc.schema!=="midas_daily_execution_health_v1"||
@@ -582,7 +700,7 @@ function monitoring(){
  return head("SALUD OPERATIVA","Estado del laboratorio MIDAS",
   "Propuestas, actividad paper documentada y evidencia de producción, separadas para no confundir simulaciones con ejecución automática.")+
   tabs+'<div id="monitoring-panel-today" role="tabpanel"'+(selectedTab!=="today"?' hidden':'')+'>'+
-  liveSessionHTML()+'</div>'+summaryPanel+operationPanel+dailyPanel;
+  liveSignalsPanel()+'<div id="monitoring-live-status">'+liveSessionHTML()+'</div></div>'+summaryPanel+operationPanel+dailyPanel;
 }
 function syntheticMonitoring(){
  const s=active(),audit=causalLedger();
@@ -818,7 +936,9 @@ function full(){
   button("Ver ficha","full-detail",leader.id,"outline-btn")+'</div>':
   '<div class="paper-leader"><strong>Sin líder verificable</strong><small>No hay resultados actuales con trazabilidad suficiente para una clasificación de rentabilidad.</small></div>';
  const context=phase==="active"?
-   '<p class="competition-phase-context">Estrategias y referencias con seguimiento en la cohorte paper vigente. No implica que cada workflow se haya completado hoy. Rentabilidades entre grupos no necesariamente comparables.</p>':
+   '<p class="competition-phase-context">La rentabilidad se calcula sobre capital simulado y precios de mercado registrados en el diario. '+
+   'Consulta el inicio, el último cierre y la divisa de cada cartera antes de comparar. '+
+   '<a href="./index.html?view=monitoring">Ver señales y ejecución de la sesión</a>.</p>':
   phase==="obsolete"?
    '<div class="competition-phase-notice"><strong>Campañas históricas retiradas</strong><span>Sus sesiones y resultados se conservan para consulta. No participan en la clasificación ni en el liderazgo de la competición vigente.</span></div>':
    '<div class="competition-phase-notice"><strong>Investigación y desarrollo</strong><span>'+
@@ -1002,7 +1122,7 @@ function render(){
   }
  });
  chart();
- if(liveSessionActive())void refreshLiveSession();
+ if(liveSessionActive()){void refreshLiveSession();void refreshLiveSignals();}
 }
 function resolveMidasView(){
  const requested=new URLSearchParams(location.search).get("view");
@@ -1120,6 +1240,7 @@ $("app").addEventListener("click",e=>{
   }
  }
  else if(action==="live-session-refresh"){void refreshLiveSession(true);}
+ else if(action==="live-signals-refresh"){void refreshLiveSignals(true);}
  else if(action==="monitoring-tab"){
   state.monitoringTab=monitoringTabs.some(([key])=>key===value)?value:"today";
   const tabs=document.querySelector("#monitoring-tab-strip");
@@ -1131,7 +1252,7 @@ $("app").addEventListener("click",e=>{
     if(el)el.hidden=key!==state.monitoringTab;
    }
   }
-  if(liveSessionActive()){paintLiveSession();void refreshLiveSession();}
+  if(liveSessionActive()){paintLiveSession();void refreshLiveSession();void refreshLiveSignals();}
   else if(dailyHistoryActive())void loadExecutionHistory();
  }
  else if(action==="audit-tab"){
@@ -1210,6 +1331,11 @@ $("app").addEventListener("change",e=>{
  if(el.id==="issuer-sort"){state.issuerSort=el.value;state.issuerAsc=["ticker","company","market"].includes(el.value);render();}
  if(el.id==="journal-select"){state.strategy=el.value;render();}
  if(el.id==="audit-ticker"){state.auditTicker=el.value;render();}
+ if(el.id==="live-signal-algorithm"&&signalFeed?.tracks[el.value]){
+  signalSlot=el.value;
+  const content=$("midas-signal-content");
+  if(content)content.innerHTML=liveSignalsContent();
+ }
  if(el.id==="monitoring-algorithm"){
   if(!/^IL-\d{3}$/.test(el.value)||!state.operationsAudit?.tracks?.[el.value])return;
   state.monitoringStrategy=el.value;
