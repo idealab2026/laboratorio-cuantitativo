@@ -17,7 +17,7 @@ const $=id=>document.getElementById(id);
 const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 const fmt=n=>finite(n)?new Intl.NumberFormat("es-ES",{maximumFractionDigits:2}).format(n):"N/D";
 const state={data:null,universe:null,fx:null,fxCheck:null,fxStatus:"pending",forecastLedger:null,forecastSummary:null,forecastStatus:"pending",secStatus:"pending",secRead:null,secCatalog:null,yieldDoc:null,yieldCheck:null,yieldStatus:"pending",view:"competition",strategy:"P-01",group:"",sort:"returnPct",asc:false,detailOpen:false,thesis:"T-01",query:"",thesisSort:"central",issuerMode:"catalog",issuerQuery:"",issuerSort:"base",issuerAsc:false,issuerTicker:"MSFT",paperDetail:"M-10",originalPaper:null,originalPaperStatus:"pending",historicalPaper:null,historicalCurves:null,historicalPaperStatus:"pending",fullRoster:null,fullRosterStatus:"pending",strategyCandidates:null,strategyCandidatesStatus:"pending",fullRosterGroup:"",fullRosterQuery:"",fullRosterSort:"return",fullRosterAsc:false,competitionPhase:"active",algorithmId:null,operationsAudit:null,operationsAuditStatus:"pending",auditTicker:null,auditTab:"sessions",auditSort:"recent",auditDesc:true,monitoringTab:"today",monitoringStrategy:"IL-039",monitoringSort:"recent",monitoringDesc:true,executionHistory:null,executionHistoryStatus:"pending",institutionalFeedStatus:"pending",paperFeed:null,paperFeedRead:null,localCagr:new Map(),localCagrError:"",publicTheses:new Map(),publicThesesMetadata:null,fullReports:new Map(),financialSankeys:new Map(),financialPeriodByTicker:new Map(),publicCloses:new Map(),closeFeedStatus:"not_configured",closeFeedSource:null,closeFeedUpdatedAt:null};
-const viewNames=["competition","algorithm","algorithms","theses","thesis","monitoring","method","glossary","ported","full","synthetic"];
+const viewNames=["competition","trading","algorithm","algorithms","theses","thesis","monitoring","method","glossary","ported","full","synthetic"];
 const button=(label,action,value,cls="smallbtn")=>'<button type="button" class="'+cls+'" data-action="'+esc(action)+'" data-value="'+esc(value)+'">'+esc(label)+'</button>';
 const head=(label,title,body)=>'<div class="section-heading"><div><span class="kicker">'+esc(label)+'</span><h2>'+esc(title)+'</h2><p class="section-context">'+esc(body)+'</p></div></div>';
 const card=(html)=>'<article class="panel">'+html+'</article>';
@@ -73,6 +73,11 @@ function syntheticCompetition(){
  '<p class="table-note">Verde: positivo · rojo: negativo · gris: sin variación o sin datos. No se oculta ningún modelo por ausencia de órdenes, pero tampoco se interpretan las órdenes simuladas como compras ejecutadas.</p>'+
  button("Ver historial y versiones","navigate","archive","outline-btn")+
  button("Comprobar libro causal","navigate","monitoring","outline-btn");
+}
+function competitionNavigation(inRoom=false){
+ return '<nav class="competition-nav" aria-label="Competición de algoritmos">'+
+  '<a href="./index.html?view=competition"'+(inRoom?"":' aria-current="page"')+'>Clasificación</a>'+
+  '<a href="./index.html?view=trading"'+(inRoom?' aria-current="page"':"")+'>Sala de trading</a></nav>';
 }
 function competition(){return full();}
 
@@ -438,7 +443,9 @@ function liveSignalsPanel(){
   '<div id="midas-signal-content">'+liveSignalsContent()+'</div></section>';
 }
 async function refreshLiveSignals(force=false){
- if(!liveSessionActive()||document.hidden||signalRequest||(!force&&Date.now()-signalChecked<SIGNAL_REFRESH_MS))return;
+ const room=tradingRoomActive();
+ const interval=room?TRADING_REFRESH_MS:SIGNAL_REFRESH_MS;
+ if((!liveSessionActive()&&!room)||document.hidden||signalRequest||(!force&&Date.now()-signalChecked<interval))return;
  signalChecked=Date.now();
  const previous=signalFeed,failed=signalFeedError;
  signalRequest=fetch("./data/execution-signals.json",{cache:"no-store"});
@@ -446,12 +453,13 @@ async function refreshLiveSignals(force=false){
   const response=await signalRequest;
   if(!response.ok)throw Error("Registro no publicado");
   const next=verifyLiveSignals(await response.json());
-  if(!previous||Date.parse(next.published_at_utc)>=Date.parse(previous.published_at_utc))signalFeed=next;
+  if(!previous||Date.parse(next.published_at_utc)>Date.parse(previous.published_at_utc))signalFeed=next;
   signalFeedError=false;
  }catch{
   signalFeedError=true;
  }finally{
   signalRequest=null;
+  if(previous!==signalFeed||failed!==signalFeedError||$("trading-date")?.value!==tradingDay())paintTradingRoom();
   const picker=$("live-signal-algorithm"),content=$("midas-signal-content");
   if(picker&&signalFeed&&(!previous||picker.disabled)){
    picker.innerHTML=liveSignalOptions();
@@ -469,6 +477,143 @@ async function refreshLiveSignals(force=false){
    if(details&&open)details.open=true;
   }
  }
+}
+
+const TRADING_REFRESH_MS=30_000;
+const tradingRoomActive=()=>state.view==="trading";
+const tradingSides={all:"Todas",buy:"Compras",sell:"Ventas",rebalance:"Rebalanceos"};
+const tradingFilter={date:null,slot:"",ticker:"",side:"all"};
+const madridTime=new Intl.DateTimeFormat("es-ES",{timeStyle:"short",timeZone:"Europe/Madrid"});
+const madridDateTime=new Intl.DateTimeFormat("es-ES",{dateStyle:"short",timeStyle:"short",timeZone:"Europe/Madrid"});
+
+function tradingDay(){
+ const days=Object.keys(signalFeed?.opening_plans||{}).sort();
+ if(days.includes(tradingFilter.date))return tradingFilter.date;
+ const today=new Intl.DateTimeFormat("sv-SE",{timeZone:"America/New_York",dateStyle:"short"}).format(new Date());
+ return days.filter(day=>day<=today).at(-1)||days[0];
+}
+function tradingOptions(values,selected){
+ return values.map(([value,label])=>'<option value="'+esc(value)+'"'+
+  (value===selected?' selected':'')+'>'+esc(label)+'</option>').join("");
+}
+function tradingDates(){
+ return tradingOptions(Object.keys(signalFeed?.opening_plans||{}).sort().reverse().map(day=>[day,shortPaperDate(day)]),tradingDay());
+}
+function tradingAlgorithms(){
+ return tradingOptions([["","Todos los algoritmos"],...Object.entries(signalFeed?.tracks||{}).map(([slot,track])=>
+  [slot,slot+" · "+track.label])],tradingFilter.slot);
+}
+function tradingReadModel(feed,day,{slot="",ticker="",side="all"}={}){
+ const plan=feed?.opening_plans?.[day];
+ const ids=slot?[slot]:Object.keys(feed?.tracks||{});
+ const text=ticker.trim().toUpperCase();
+ const base=ids.flatMap(id=>(plan?.tracks[id]?.orders||[]).filter(order=>order.ticker.includes(text)).map(order=>({
+  ...order,id,label:feed.tracks[id].label,currency:feed.tracks[id].currency
+ })));
+ const counts={all:base.length,buy:0,sell:0,rebalance:0};
+ for(const order of base)counts[order.action]++;
+ const orders=base.filter(order=>side==="all"||order.action===side)
+  .sort((a,b)=>a.action.localeCompare(b.action)||a.ticker.localeCompare(b.ticker)||a.id.localeCompare(b.id));
+ const journals=day?ids.filter(id=>feed?.tracks[id]?.session===day):[];
+ const fills=journals.flatMap(id=>feed.tracks[id].executions.filter(fill=>fill.ticker.includes(text)).map(fill=>({
+  ...fill,id,label:feed.tracks[id].label,currency:feed.tracks[id].currency
+ })));
+ return {plan,orders,counts,fills,journals:journals.length};
+}
+function tradingStatus(){
+ if(!signalFeed)return signalFeedError?"Diario no disponible":"Conectando con el diario";
+ const published=madridDateTime.format(new Date(signalFeed.published_at_utc));
+ return (signalFeedError?"Copia guardada del ":"Última publicación · ")+published+" (Madrid)";
+}
+function tradingOrderPrice(order){
+ if(order.limit_price!==null&&order.currency)
+  return ["Precio límite",fmt(order.limit_price)+" "+order.currency];
+ if(order.target_weight!==null)
+  return ["Peso objetivo",new Intl.NumberFormat("es-ES",{style:"percent",maximumFractionDigits:2}).format(order.target_weight)];
+ return ["Precio","Por determinar"];
+}
+function tradingOrderList(orders,filled=false){
+ return '<ul class="trading-tape">'+orders.map(order=>{
+  const [caption,price]=filled?["Precio simulado",order.price===null||!order.currency?"Sin precio publicado":fmt(order.price)+" "+order.currency]:tradingOrderPrice(order);
+  return '<li class="trading-order"><div class="trading-side" data-side="'+esc(order.action)+'">'+
+   esc(filled?(order.action==="buy"?"Compra":"Venta"):signalNames[order.action])+
+   '</div><strong class="trading-symbol">'+esc(order.ticker)+'</strong><div class="trading-origin">'+
+   '<span>'+esc(order.label)+'</span><small>'+esc(order.id)+
+   (order.decision_session?" · Señal del "+esc(shortPaperDate(order.decision_session)):"")+
+   '</small></div><div class="trading-price"><small>'+esc(caption)+'</small><strong>'+esc(price)+'</strong></div></li>';
+ }).join("")+'</ul>';
+}
+function tradingCoverage(plan){
+ const entry=plan.tracks[tradingFilter.slot];
+ if(tradingFilter.slot){
+  if(!entry||entry.status==="unavailable")return "Esta cartera no tiene un diario verificable para la sesión.";
+  if(entry.status==="archived")return "Este diario está archivado.";
+  const notes=[];
+  if(entry.status==="stale")notes.push("Diario atrasado hasta el "+shortPaperDate(entry.session)+".");
+  if(entry.status==="paused")notes.push("El diario estaba pausado antes de abrir.");
+  if(entry.undated)notes.push("Hay órdenes pendientes sin fecha de ejecución verificable.");
+  return notes.join(" ");
+ }
+ const entries=Object.values(plan.tracks).filter(track=>track.status!=="archived");
+ const incomplete=entries.filter(track=>track.status!=="recorded"||track.undated).length;
+ return incomplete?incomplete+" de "+entries.length+" carteras con diario vigente tienen información incompleta para esta sesión.":"";
+}
+function tradingResults(model){
+ if(!signalFeed)return '<p class="trading-empty">'+(signalFeedError?"Usa «Actualizar» para volver a consultar el diario.":"Cargando las señales publicadas…")+'</p>';
+ const {plan,orders,counts,fills,journals}=model;
+ if(!plan)return '<p class="trading-empty">El diario todavía no ofrece un plan de apertura fechado.</p>';
+ const day=tradingDay();
+ const coverage=tradingCoverage(plan);
+ const empty=counts.all?"No hay señales de ese tipo con los filtros actuales.":tradingFilter.ticker?
+  "No hay señales publicadas para ese ticker.":coverage?"No hay señales verificables para esta selección.":"Sin órdenes previstas para esta apertura.";
+ return '<div class="trading-session-line"><h3>Plan de apertura del '+esc(shortPaperDate(day))+'</h3>'+
+  '<time datetime="'+esc(plan.opens_at)+'">'+esc(madridTime.format(new Date(plan.opens_at)))+' Madrid</time></div>'+
+  (coverage?'<p class="trading-coverage">'+esc(coverage)+'</p>':"")+
+  (orders.length?tradingOrderList(orders):'<p class="trading-empty">'+esc(empty)+'</p>')+
+  (orders.some(order=>order.id==="IL-042")?'<p class="trading-rule">TimesFM diario prevé cerrar al final de la sesión las posiciones que llegue a abrir.</p>':"")+
+  '<details class="trading-fills"><summary>Ejecuciones simuladas del '+esc(shortPaperDate(day))+
+  (fills.length?" · "+fills.length:"")+'</summary>'+
+  (fills.length?tradingOrderList(fills,true):'<p class="trading-empty">'+(journals?
+   "Los diarios publicados para esta fecha no muestran operaciones con estos filtros.":
+   "La copia actual del diario no contiene ejecuciones para esta fecha y selección.")+'</p>')+'</details>';
+}
+function tradingRoom(){
+ return '<section class="trading-room" aria-labelledby="trading-title">'+
+  '<header class="trading-mast"><div><h2 id="trading-title">Sala de trading</h2>'+
+  '<p>Señales de los algoritmos para tu operativa manual.</p></div>'+
+  '<div class="trading-feed"><span id="trading-published" role="status">'+esc(tradingStatus())+'</span>'+
+  '<button type="button" data-action="live-signals-refresh">Actualizar</button></div></header>'+
+  '<div class="trading-workspace"><p class="trading-cadence">La sala consulta el diario cada 30 segundos. Las señales aparecen cuando cada motor las publica. Los motores actuales trabajan con datos de sesión.</p>'+
+  '<div class="trading-controls"><div><label for="trading-date">Sesión</label><select id="trading-date"'+
+   (tradingDay()?"":" disabled")+'>'+tradingDates()+'</select></div>'+
+  '<div><label for="trading-algorithm">Algoritmo</label><select id="trading-algorithm"'+
+   (signalFeed?"":" disabled")+'>'+tradingAlgorithms()+'</select></div>'+
+  '<div><label for="trading-ticker">Ticker</label><input id="trading-ticker" type="search" maxlength="14" placeholder="Ej. AAPL" value="'+esc(tradingFilter.ticker)+'"></div></div>'+
+  '<div class="trading-filters" role="group" aria-label="Tipo de señal">'+
+  Object.entries(tradingSides).map(([key,label])=>'<button type="button" data-action="trading-side" data-value="'+key+
+   '" aria-pressed="'+(tradingFilter.side===key)+'">'+label+' <span>—</span></button>').join("")+'</div>'+
+  '<div id="trading-results"></div></div></section>';
+}
+function paintTradingRoom(){
+ if(!tradingRoomActive())return;
+ const results=$("trading-results");
+ if(!results)return;
+ const model=tradingReadModel(signalFeed,tradingDay(),tradingFilter);
+ const date=$("trading-date"),algorithm=$("trading-algorithm");
+ const dates=tradingDates(),algorithms=tradingAlgorithms();
+ if(date.dataset.options!==dates){date.innerHTML=dates;date.dataset.options=dates;}
+ if(algorithm.dataset.options!==algorithms){algorithm.innerHTML=algorithms;algorithm.dataset.options=algorithms;}
+ date.disabled=!tradingDay();
+ algorithm.disabled=!signalFeed;
+ const published=$("trading-published"),status=tradingStatus();
+ if(published.textContent!==status)published.textContent=status;
+ for(const chip of document.querySelectorAll("[data-action='trading-side']")){
+  chip.setAttribute("aria-pressed",String(chip.dataset.value===tradingFilter.side));
+  chip.querySelector("span").textContent=model.plan?model.counts[chip.dataset.value]:"—";
+ }
+ const fillsOpen=results.querySelector(".trading-fills")?.open;
+ results.innerHTML=tradingResults(model);
+ if(fillsOpen&&results.querySelector(".trading-fills"))results.querySelector(".trading-fills").open=true;
 }
 
 function liveSessionHTML(){
@@ -521,7 +666,7 @@ document.addEventListener("visibilitychange",()=>{
  void refreshLiveSignals();
 });
 setInterval(refreshActiveMonitoring,LIVE_REFRESH_MS);
-setInterval(()=>{void refreshLiveSignals();},SIGNAL_REFRESH_MS);
+setInterval(()=>{void refreshLiveSignals();},TRADING_REFRESH_MS);
 
 function verifyExecutionHistory(doc){
  if(!doc||doc.schema!=="midas_daily_execution_health_v1"||
@@ -757,7 +902,7 @@ function monitoring(){
  return head("SALUD OPERATIVA","Estado del laboratorio MIDAS",
   "Propuestas, actividad paper documentada y evidencia de producción, separadas para no confundir simulaciones con ejecución automática.")+
   tabs+'<div id="monitoring-panel-today" role="tabpanel"'+(selectedTab!=="today"?' hidden':'')+'>'+
-  liveSignalsPanel()+'<div id="monitoring-live-status">'+liveSessionHTML()+'</div></div>'+summaryPanel+operationPanel+dailyPanel;
+  '<p><a href="./index.html?view=trading">Abrir Sala de trading para filtrar las señales</a></p>'+liveSignalsPanel()+'<div id="monitoring-live-status">'+liveSessionHTML()+'</div></div>'+summaryPanel+operationPanel+dailyPanel;
 }
 function syntheticMonitoring(){
  const s=active(),audit=causalLedger();
@@ -995,7 +1140,7 @@ function full(){
  const context=phase==="active"?
    '<p class="competition-phase-context">La rentabilidad se calcula sobre capital simulado y precios de mercado registrados en el diario. '+
    'Consulta el inicio, el último cierre y la divisa de cada cartera antes de comparar. '+
-   '<a href="./index.html?view=monitoring">Ver señales y ejecución de la sesión</a>.</p>':
+   '<a href="./index.html?view=trading">Abrir Sala de trading</a>.</p>':
   phase==="obsolete"?
    '<div class="competition-phase-notice"><strong>Campañas históricas retiradas</strong><span>Sus sesiones y resultados se conservan para consulta. No participan en la clasificación ni en el liderazgo de la competición vigente.</span></div>':
    '<div class="competition-phase-notice"><strong>Investigación y desarrollo</strong><span>'+
@@ -1109,7 +1254,9 @@ function algorithmFiche(){
   '<p><strong>Control científico:</strong> '+esc(method.validation)+'</p>';
  return '<div class="algorithm-profile">'+
   '<div class="algorithm-breadcrumb">'+button("← Volver a la tabla","navigate","competition","outline-btn")+
-  '<span>'+esc(id)+' · '+esc(compactGroup(group))+'</span></div>'+
+  '<span>'+esc(id)+' · '+esc(compactGroup(group))+'</span>'+
+  (strategyCompetitionPhase(id)==="active"?
+   '<a class="outline-btn" href="./index.html?view=trading&amp;algorithm='+esc(id)+'">Ver señales en Sala de trading</a>':"")+'</div>'+
   '<header class="algorithm-profile-header"><h2>'+esc(name)+'</h2>'+
   '<p>'+esc(candidate?"Propuesta de investigación · sin operaciones":
    "Campaña de capital virtual · "+(record?.historical?"corte histórico":"diario paper registrado"))+
@@ -1168,8 +1315,16 @@ function chart(){
 function render(){
  if(!state.data)return;
  document.body.classList.toggle("midas-thesis-mode",state.view==="thesis");
- const pages={competition,algorithm:algorithmFiche,synthetic:syntheticCompetition,algorithms,theses,thesis:thesisView,monitoring,ported,full,method:methodology,glossary};
- document.querySelectorAll(".product-tabs [data-view]").forEach(b=>{const active=b.dataset.view===state.view||(state.view==="algorithm"&&b.dataset.view==="competition")||(state.view==="thesis"&&b.dataset.view==="theses");b.classList.toggle("active",active);b.setAttribute("aria-pressed",String(active));});
+ document.body.classList.toggle("midas-trading-mode",tradingRoomActive());
+ const navigation=$("competition-navigation");
+ const inCompetition=["competition","algorithm","trading"].includes(state.view);
+ navigation.hidden=!inCompetition;
+ if(inCompetition&&navigation.dataset.view!==state.view){
+  navigation.innerHTML=competitionNavigation(tradingRoomActive());
+  navigation.dataset.view=state.view;
+ }
+ const pages={competition,algorithm:algorithmFiche,synthetic:syntheticCompetition,algorithms,theses,thesis:thesisView,monitoring,ported,full,method:methodology,glossary,trading:tradingRoom};
+ document.querySelectorAll(".product-tabs [data-view]").forEach(b=>{const active=b.dataset.view===state.view||(["algorithm","trading"].includes(state.view)&&b.dataset.view==="competition")||(state.view==="thesis"&&b.dataset.view==="theses");b.classList.toggle("active",active);b.setAttribute("aria-pressed",String(active));});
  $("app").innerHTML=(pages[state.view]||competition)();
  const financialPicker=document.getElementById("financial-sankey-period");
  if(financialPicker)financialPicker.addEventListener("change",()=>{
@@ -1180,6 +1335,7 @@ function render(){
  });
  chart();
  if(liveSessionActive()){void refreshLiveSession();void refreshLiveSignals();}
+ if(tradingRoomActive()){paintTradingRoom();void refreshLiveSignals();}
 }
 function resolveMidasView(){
  const requested=new URLSearchParams(location.search).get("view");
@@ -1298,6 +1454,9 @@ $("app").addEventListener("click",e=>{
  }
  else if(action==="live-session-refresh"){void refreshLiveSession(true);}
  else if(action==="live-signals-refresh"){void refreshLiveSignals(true);}
+ else if(action==="trading-side"&&Object.hasOwn(tradingSides,value)){
+  tradingFilter.side=value;paintTradingRoom();
+ }
  else if(action==="monitoring-tab"){
   state.monitoringTab=monitoringTabs.some(([key])=>key===value)?value:"today";
   const tabs=document.querySelector("#monitoring-tab-strip");
@@ -1388,6 +1547,17 @@ $("app").addEventListener("change",e=>{
  if(el.id==="issuer-sort"){state.issuerSort=el.value;state.issuerAsc=["ticker","company","market"].includes(el.value);render();}
  if(el.id==="journal-select"){state.strategy=el.value;render();}
  if(el.id==="audit-ticker"){state.auditTicker=el.value;render();}
+ if(el.id==="trading-date"&&signalFeed?.opening_plans?.[el.value]){
+  tradingFilter.date=el.value;paintTradingRoom();
+ }
+ if(el.id==="trading-algorithm"){
+  tradingFilter.slot=el.value;
+  const url=new URL(location.href);
+  if(el.value)url.searchParams.set("algorithm",el.value);
+  else url.searchParams.delete("algorithm");
+  history.replaceState(history.state,"",url);
+  paintTradingRoom();
+ }
  if(el.id==="midas-opening-date"&&signalFeed?.opening_plans?.[el.value]){
   signalPlanDate=el.value;
   const content=$("midas-signal-content");
@@ -1406,6 +1576,7 @@ $("app").addEventListener("change",e=>{
  }
 });
 $("app").addEventListener("input",e=>{
+ if(e.target.id==="trading-ticker"){tradingFilter.ticker=e.target.value;paintTradingRoom();}
  if(e.target.id==="glossary-query"){
   const query=e.target.value;
   const results=$("glossary-results");if(results)results.innerHTML=glossaryRows(query);
@@ -1433,7 +1604,16 @@ $("app").addEventListener("submit",e=>{
  state.strategy=id;state.group="";state.sort="returnPct";state.detailOpen=true;go("competition");
 });
 document.querySelectorAll(".product-tabs [data-view]").forEach(b=>b.addEventListener("click",()=>{state.detailOpen=false;go(b.dataset.view);}));
-window.addEventListener("popstate",()=>{state.view=resolveMidasView();state.algorithmId=new URLSearchParams(location.search).get("algorithm");state.detailOpen=false;render();});
+function readViewFromURL(){
+ state.view=resolveMidasView();
+ state.algorithmId=new URLSearchParams(location.search).get("algorithm");
+ if(tradingRoomActive()){
+  const id=state.algorithmId||"";
+  const slot=Number(id.slice(3));
+  tradingFilter.slot=/^IL-\d{3}$/.test(id)&&slot>=10&&slot<=44?id:"";
+ }
+}
+window.addEventListener("popstate",()=>{readViewFromURL();state.detailOpen=false;render();});
 async function init(){
  try{
   const [r,p,full,financial]=await Promise.all([fetch("./data/demo.json",{cache:"no-store"}),fetch("./data/public-theses.json",{cache:"no-store"}),fetch("./data/thesis-reports.json",{cache:"no-store"}),fetch("./data/financial-sankeys.json",{cache:"no-store"})]);
@@ -1445,7 +1625,7 @@ async function init(){
   state.financialSankeys=verifyFinancialSankeys(await financial.json(),new Set(publication.records.map(x=>x.ticker)));
   state.publicTheses=new Map(publication.records.map(x=>[x.ticker,x]));
   state.publicThesesMetadata={...stats,published_as_of:publication.published_as_of};
-  state.data=data;state.universe=universe;state.view=resolveMidasView();state.algorithmId=new URLSearchParams(location.search).get("algorithm");render();void loadPublicCloses();void loadOfficialFx();void loadForecastLedger();void loadSecFilings();void loadOfficialYield();void loadOriginalPaper();void loadHistoricalPaper();void loadFullRoster();void loadStrategyCandidates();void loadInstitutionalPaperFeed();void loadOperationsAudit();void loadExecutionHistory();
+  state.data=data;state.universe=universe;readViewFromURL();render();void loadPublicCloses();void loadOfficialFx();void loadForecastLedger();void loadSecFilings();void loadOfficialYield();void loadOriginalPaper();void loadHistoricalPaper();void loadFullRoster();void loadStrategyCandidates();void loadInstitutionalPaperFeed();void loadOperationsAudit();void loadExecutionHistory();
  }catch(e){$("app").textContent="No se ha podido cargar el catálogo de emisores o el laboratorio sintético; no se muestran datos no verificados.";}
 }
 /* The public snapshot is refreshed in-browser; it never queries a market vendor.

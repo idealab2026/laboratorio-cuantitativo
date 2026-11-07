@@ -731,3 +731,23 @@ test("live signals render a pending order separately from a simulated fill",asyn
  assert.match(fillHtml,/221,25/);
  assert.throws(()=>context.signalAPI.verifyLiveSignals({...feed,tracks:{"IL-038":track}}),/incompleto/);
 });
+
+test("trading deep links wait for the diary and only show executions for the selected session",async()=>{
+ const {runInNewContext}=await import("node:vm");
+ const context={};
+ const block=source.slice(source.indexOf("function tradingReadModel"),source.indexOf("function tradingStatus"));
+ runInNewContext(block+";this.read=tradingReadModel;",context);
+ const selection={slot:"IL-011"};
+ const loading=context.read(null,undefined,selection);
+ assert.equal(loading.orders.length,0);
+ assert.equal(loading.fills.length,0);
+ const day="2026-11-06", previous="2026-11-05";
+ const feed={
+  opening_plans:{[day]:{tracks:{"IL-011":{orders:[{ticker:"FSLR",action:"buy"}]}}}},
+  tracks:{"IL-011":{label:"EMA/RSI",currency:"USD",session:previous,executions:[{ticker:"FSLR",action:"sell"}]}}
+ };
+ const room=context.read(feed,day,selection);
+ assert.equal(room.orders.length,1);
+ assert.equal(room.fills.length,0);
+ assert.equal(context.read(feed,previous,selection).fills.length,1);
+});
