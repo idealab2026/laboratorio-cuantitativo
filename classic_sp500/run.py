@@ -10,6 +10,7 @@ import copy
 import importlib.util
 import json
 import math
+import os
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
 import sys
@@ -126,11 +127,10 @@ def rank_signals(config, panel, session):
     for name, strategy in config["strategies"].items():
         mode = strategy["kind"]
         ranked = []
-        for ticker in universe:
-            rows = eligible.get(ticker)
-            if rows is None:
-                continue
+        for count, (ticker, rows) in enumerate(eligible.items(), start=1):
             status = signal(mode, rows, strategy.get("params") or {})
+            if os.environ.get("GITHUB_ACTIONS") == "true" and (count % 100 == 0 or count == len(eligible)):
+                print(f"{session} {name}: {count}/{len(eligible)} evaluadas (última: {ticker})", flush=True)
             if status == "hold":
                 continue
             # Deterministic ex-ante priority among same-session buy signals.
@@ -139,7 +139,12 @@ def rank_signals(config, panel, session):
             momentum = rows[-1]["close"] / rows[-22]["close"] - 1
             ranked.append((ticker, status, float(momentum)))
         orders[name] = sorted(ranked, key=lambda x: (-x[2], x[0]))
+    # Record only rule hits. A symbol in the evaluated set without a hit had
+    # no rule trigger. These are raw decisions, before portfolio constraints.
+    hits = {name: {ticker: side for ticker, side, _ in rows}
+            for name, rows in orders.items()}
     return orders, {"eligible": len(eligible), "total": len(universe),
+                    "rule_trace": {"evaluated": sorted(eligible), "hits": hits},
                     "missing": {t: reason for t, reason in coverage.items() if reason != "evaluated"},
                     "ticker_coverage_pct": round(len(eligible) / len(universe) * 100, 3)}
 

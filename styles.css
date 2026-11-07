@@ -949,3 +949,38 @@ p{line-height:1.6;text-align:justify;text-align-last:left;hyphens:auto}p.lead{co
  .trading-origin{grid-column:1/-1;grid-row:2}
  .trading-price{grid-column:3;grid-row:1}
 }
+
+.terminal-mode{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:12px}
+.terminal-mode [aria-pressed="true"]{background:var(--navy);color:#fff;border-color:var(--navy)}
+.trading-filters[hidden]{display:none}
+.terminal-shell{border:1px solid #c8d8e6;border-radius:10px;overflow:hidden;font-family:system-ui,sans-serif}
+.terminal-shell h4{margin:0 0 6px;font-size:1rem}
+.terminal-activity{padding:14px 16px;background:#eff5fa;border-bottom:1px solid #d1ddeb}
+.terminal-activity ul{padding:0;margin:0;list-style:none}
+.terminal-activity li{display:flex;align-items:center;gap:7px 12px;flex-wrap:wrap;padding:5px 0;font-size:.81rem}
+.terminal-activity p,.terminal-heading p{margin:3px 0;font-size:.84rem}
+.terminal-run-state{font-weight:720;color:#334c66}
+.terminal-run-state[data-status="running"],.terminal-run-state[data-status="success"]{color:#146147}
+.terminal-run-state[data-status="failure"]{color:#99383b}
+.terminal-heading{display:flex;align-items:flex-start;justify-content:space-between;flex-wrap:wrap;gap:10px;padding:14px 16px}
+.terminal-buttons{display:flex;gap:6px;flex-wrap:wrap}
+.terminal-buttons button{
+ min-height:39px;padding:6px 10px;border:1px solid #9bb3cb;border-radius:6px;background:#fff;
+ color:var(--navy);font-weight:700;cursor:pointer
+}
+.terminal-buttons button:first-child{background:var(--navy);border-color:var(--navy);color:white}
+.terminal-screen{background:#102237;color:#e0edf8}
+.terminal-progress{display:flex;gap:12px;align-items:center;padding:10px 16px;border-bottom:1px solid #3a5269}
+.terminal-progress progress{flex:1;height:9px;accent-color:#84d3ac}
+.terminal-progress span{font:.8rem ui-monospace,monospace;font-variant-numeric:tabular-nums}
+#terminal-rows{padding:0;margin:0;max-height:25rem;overflow:auto;list-style:none;overscroll-behavior:contain}
+#terminal-rows li{display:grid;grid-template-columns:minmax(63px,.5fr) minmax(135px,1.5fr) minmax(0,1fr);
+ gap:8px;padding:7px 16px;border-bottom:1px solid #30465b;font-size:.82rem}
+#terminal-rows strong{font:700 .88rem ui-monospace,monospace;color:#9ee0b9;overflow-wrap:anywhere}
+#terminal-rows small{color:#c2d6eb}
+.terminal-note{margin:0;padding:9px 16px;color:#496279;font-size:.81rem}
+@media(max-width:540px){
+ #terminal-rows li{grid-template-columns:minmax(55px,.6fr) minmax(0,2fr)}
+ #terminal-rows small{grid-column:2}
+ #terminal-rows small:empty{display:none}
+}
