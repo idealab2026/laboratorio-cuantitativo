@@ -321,6 +321,9 @@ function verifyLiveSignals(doc){
       !(signal.target_weight===null||Number.isFinite(signal.target_weight)&&signal.target_weight>=0&&signal.target_weight<=1))
     throw Error("Señal no verificable");
   }
+  if((track.pause_date!==undefined&&!validDate(track.pause_date))||
+     (track.pause_reason!==undefined&&![null,"missing_ohlc","unreconciled_session","expired_open"].includes(track.pause_reason)))
+   throw Error("Pausa de la cartera no verificable");
   const trace=track.analysis;
   if(trace!=null&&(!signalDate(trace.date)||!["classic","ahp","monthly"].includes(trace.method)||
     !(trace.excluded===null||Number.isSafeInteger(trace.excluded)&&trace.excluded>=0)||
@@ -588,23 +591,56 @@ function tradingResults(model){
 const terminalState={mode:"signals",useLatest:false,count:0,stage:0,timer:null,activity:new Map(),pending:new Set()};
 const terminalLabels={
  buy:"Regla de compra activada",sell:"Regla de venta activada",no_trigger:"Sin activación de regla",
- selected:"Seleccionada",passed:"Superó el filtro técnico",filtered:"Descartada en el filtro técnico"
+ selected:"Seleccionada",passed:"Superó el filtro técnico",filtered:"Descartada en el filtro técnico",
+ recorded_buy:"Compra simulada",recorded_sell:"Venta simulada",
+ next_buy:"Compra prevista",next_sell:"Venta prevista",next_rebalance:"Rebalanceo previsto"
 };
 const terminalRunLabels={running:"En curso",queued:"En cola",success:"Completado",failure:"Con incidencias",unknown:"Sin confirmar"};
 const terminalRules={rsi:"RSI",macd:"MACD",bollinger:"Bollinger",stochastic:"Estocástico"};
 
+function terminalSessionEvidence(feed,day,slot){
+ const track=feed?.tracks[slot];
+ const plans=feed?.opening_plans||{};
+ const nextDay=Object.keys(plans).sort().find(candidate=>plans[candidate].previous_session===day);
+ const next=(plans[nextDay]?.tracks[slot]?.orders||[]).filter(order=>order.decision_session===day);
+ return {track,plan:plans[day]?.tracks[slot],nextDay,next,
+  fills:track&&track.session===day?track.executions:[]};
+}
+function terminalBookNote(evidence){
+ const {track,plan}=evidence;
+ const day=tradingDay();
+ if(track?.status==="paused"&&(track.pause_date===day||plan?.status==="paused")){
+  const explanations={unreconciled_session:"Falta conciliar una sesión anterior.",
+   missing_ohlc:"Faltan precios requeridos para la valoración.",
+   expired_open:"La apertura prevista pasó sin una ejecución conciliada."};
+  return "Cartera pausada. Última valoración del "+shortPaperDate(track.session)+". "+
+   (explanations[track.pause_reason]||"Consulta el estado del motor.");
+ }
+ if(plan?.status==="archived")
+  return "Campaña separada. Sus ejecuciones simuladas se consultan aparte del plan de la cartera vigente.";
+ if(plan?.status==="stale")
+  return "Antes de abrir, el diario solo llegaba al "+shortPaperDate(plan.session)+".";
+ return "";
+}
 function terminalRows(){
  const track=signalFeed?.tracks[tradingFilter.slot];
  const trace=track?.analysis;
  const day=tradingDay();
  const search=tradingFilter.ticker.trim().toUpperCase();
  if(trace&&(trace.date===day||terminalState.useLatest))return {trace,rows:trace.rows.filter(([ticker])=>ticker.includes(search))};
- const plan=signalFeed?.opening_plans?.[day]?.tracks[tradingFilter.slot];
+ const {plan,nextDay,next,fills}=terminalSessionEvidence(signalFeed,day,tradingFilter.slot);
  const rows=(plan?.orders||[]).filter(order=>order.ticker.includes(search)).map(order=>
   [order.ticker,signalNames[order.action],["Señal del "+shortPaperDate(order.decision_session)]]);
+ for(const fill of fills.filter(fill=>fill.ticker.includes(search))){
+  const price=fill.price!=null&&track.currency?" · "+fmt(fill.price)+" "+track.currency:"";
+  rows.push([fill.ticker,"recorded_"+fill.action,["Ejecución simulada del "+shortPaperDate(day)+price]]);
+ }
+ for(const order of next.filter(order=>order.ticker.includes(search)))
+  rows.push([order.ticker,"next_"+order.action,["Decisión del "+shortPaperDate(day)+" · apertura del "+shortPaperDate(nextDay)]]);
  if(plan?.status==="recorded"){
-  for(const ticker of plan.holdings.filter(ticker=>ticker.includes(search)))
-   rows.push([ticker,"Mantener",["Posición abierta sin orden prevista"]]);
+  const changed=new Set([...fills,...next].map(record=>record.ticker));
+  for(const ticker of plan.holdings.filter(ticker=>ticker.includes(search)&&!changed.has(ticker)))
+   rows.push([ticker,"Mantener",["Posición abierta sin orden prevista en el plan de apertura"]]);
  }
  return {trace:null,rows};
 }
@@ -664,7 +700,8 @@ function terminalHTML(){
  };
  const otherDate=!trace&&track.analysis?.date;
  const description=trace?notes[trace.method]:
-  "Órdenes previstas para la apertura y posiciones abiertas. El diario de esta fecha no incluye el análisis empresa por empresa.";
+  "Plan de apertura, ejecuciones simuladas de la sesión y órdenes que quedaron previstas para la siguiente apertura.";
+ const bookNote=terminalBookNote(terminalSessionEvidence(signalFeed,tradingDay(),tradingFilter.slot));
  const more=terminalState.useLatest&&trace?.date!==tradingDay()?
   button("Volver al registro de la sesión","terminal-latest","selected","outline-btn"):
   otherDate?button("Ver análisis del "+shortPaperDate(otherDate),"terminal-latest","latest","outline-btn"):"";
@@ -676,6 +713,7 @@ function terminalHTML(){
    '<button type="button" id="terminal-play" data-action="terminal-play">Reproducir</button>'+
    '<button type="button" data-action="terminal-next">Siguiente empresa</button>'+
    '<button type="button" data-action="terminal-all">Ver todo</button>':"")+'</div></div>'+
+  (bookNote?'<p class="trading-coverage terminal-note">'+esc(bookNote)+'</p>':"")+
   (trace?.excluded?'<p class="terminal-note">'+esc(trace.excluded)+' incidencias de datos registradas.</p>':"")+
   (rows.length?'<div class="terminal-screen"><div class="terminal-progress">'+
    '<progress aria-label="Empresas mostradas" max="'+rows.length+'" value="0"></progress><span id="terminal-count"></span></div>'+
@@ -696,6 +734,11 @@ function terminalOutcome(ticker,result,trace){
   if(plan?.status==="recorded"&&plan.holdings.includes(ticker))
    return ["Mantener","Posición abierta sin orden prevista para la siguiente apertura","hold"];
   return ["Sin señal","La regla no activó una orden","neutral"];
+ }
+ if(result.startsWith("recorded_"))return [terminalLabels[result],"Ejecución registrada en el diario simulado",result.slice(9)];
+ if(result.startsWith("next_")){
+  const side=result.slice(5);
+  return [terminalLabels[result],"Orden prevista para la siguiente apertura",side==="rebalance"?"neutral":side];
  }
  if(result==="Mantener")return [result,"Posición abierta sin orden prevista para la apertura","hold"];
  if(result==="selected")return ["Seleccionada","El algoritmo incluyó la empresa en su selección","buy"];
@@ -837,17 +880,20 @@ function terminalMapHTML(){
  const groups=terminalFamilies.map(family=>{
   const members=entries.filter(([slot])=>mapFamily(slot)===family);
   const orders=plan?members.reduce((total,[slot])=>total+(plan.tracks[slot]?.orders.length||0),0):null;
+  const incomplete=plan&&members.some(([slot])=>["stale","paused","unavailable"].includes(plan.tracks[slot]?.status));
+  const countLabel=!orders&&incomplete?"plan incompleto":"órdenes";
   return '<button type="button" class="terminal-map-family" data-action="terminal-family" data-value="'+family.id+
    '" data-family="'+family.id+'" aria-expanded="'+(selected===family.id)+'" aria-controls="terminal-map-algorithms">'+
    '<span class="terminal-map-dot" aria-hidden="true"></span><span><strong>'+esc(family.label)+'</strong><small>'+
-   esc(family.note)+'</small></span><span class="terminal-map-order-count">'+(orders??"—")+'<small>órdenes</small></span></button>';
+   esc(family.note)+'</small></span><span class="terminal-map-order-count">'+(orders??"—")+'<small>'+countLabel+'</small></span></button>';
  }).join("");
  const family=terminalFamilies.find(item=>item.id===selected);
  const algorithms=family?entries.filter(([slot])=>mapFamily(slot)===family).map(([slot,track])=>{
   const entry=plan?.tracks[slot];
-  const archived=entry?.status==="archived"?" · Archivo":"";
+  const status=entry?.status==="archived"?" · Archivo":
+   track.status==="paused"&&(track.pause_date===day||entry?.status==="paused")?" · Pausada":"";
   return '<button type="button" data-action="terminal-map-algorithm" data-value="'+esc(slot)+
-   '" aria-pressed="'+(tradingFilter.slot===slot)+'"><small>'+esc(slot+archived)+'</small>'+esc(track.label)+'</button>';
+   '" aria-pressed="'+(tradingFilter.slot===slot)+'"><small>'+esc(slot+status)+'</small>'+esc(track.label)+'</button>';
  }).join(""):"";
  const totals=[[terminalFamilies.length,"Familias"],[entries.length,"Carteras con diario"],[count??"—","Órdenes previstas"]];
  const canPlay=terminalRows().rows.length>0;
@@ -891,11 +937,14 @@ function paintTerminalMapFrame(rows=[],trace=null){
  if(play)play.textContent=$("terminal-play")?.textContent||"Reproducir";
  const progress=$("terminal-map-progress");
  progress.textContent=rows.length?visible+" / "+rows.length+" empresas":"Selección de motor";
+ const note=terminalBookNote(terminalSessionEvidence(signalFeed,tradingDay(),tradingFilter.slot));
+ const empty=rows.length?"Pulsa Reproducir para recorrer el registro.":note||
+  (tradingFilter.slot?"Sin registros para esta sesión y filtro.":"Selecciona un algoritmo.");
  const html=visible?'<ul>'+rows.slice(Math.max(0,visible-3),visible).map(([ticker,result])=>{
   const [label,,tone]=terminalOutcome(ticker,result,trace);
   return '<li data-tone="'+esc(tone)+'"><strong>'+esc(ticker)+'</strong><span>'+esc(label)+'</span></li>';
  }).join("")+'</ul>':
-  '<p>'+(rows.length?"Pulsa Reproducir para recorrer el registro.":"Selecciona un algoritmo con resultados para esta sesión.")+'</p>';
+  '<p>'+esc(empty)+'</p>';
  if(events.dataset.content!==html){events.innerHTML=html;events.dataset.content=html;}
 }
 
