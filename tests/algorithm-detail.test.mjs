@@ -751,3 +751,36 @@ test("trading deep links wait for the diary and only show executions for the sel
  assert.equal(room.fills.length,0);
  assert.equal(context.read(feed,previous,selection).fills.length,1);
 });
+
+
+test("Trading room is a standalone top-level MIDAS section, not a duplicated competition subnav",()=>{
+ const html=readFileSync(new URL("../index.html",import.meta.url),"utf8");
+ const site=readFileSync(new URL("../src/site.mjs",import.meta.url),"utf8");
+ const css=readFileSync(new URL("../styles.css",import.meta.url),"utf8");
+ const nav=html.match(/<nav class="product-tabs midas-header-menu"[\s\S]*?<\/nav>/)?.[0];
+ assert.ok(nav,"Missing primary MIDAS header navigation");
+ const competition=nav.indexOf('data-view="competition"');
+ const trading=nav.indexOf('data-view="trading"');
+ const theses=nav.indexOf('data-view="theses"');
+ assert.ok(competition>=0&&trading>competition&&theses>trading,
+  "Trading room belongs between competition and thesis tracking");
+ assert.equal((nav.match(/data-view="trading"/g)||[]).length,1);
+ assert.ok(site.includes('"competition","trading","algorithm"'),
+  "Trading must remain directly navigable by view=trading");
+ assert.ok(site.includes("trading:tradingRoom"),"The main route must render the real existing trading desk");
+ assert.ok(site.includes('b.dataset.view===state.view||'),
+  "Trading is selected by its OWN top-level button");
+ assert.ok(site.includes('(state.view==="algorithm"&&b.dataset.view==="competition")'),
+  "Only individual algorithm detail should select the competition tab");
+ assert.ok(!site.includes('(["algorithm","trading"].includes(state.view)'),
+  "The competition tab must not also appear selected in the trading room");
+ assert.ok(html.includes('class="product-tabs midas-header-menu"'));
+ assert.ok(css.includes(".midas-topbar .midas-header-menu{"));
+ assert.ok(css.includes("overflow-x:auto"),"Primary navigation must stay scrollable on small screens");
+ assert.ok(!html.includes('id="competition-navigation"'));
+ assert.ok(!site.includes("function competitionNavigation("));
+ assert.ok(!css.includes(".competition-nav a[aria-current"),
+  "Remove the duplicate secondary nav, not the signal workspace");
+ assert.ok(site.includes('function tradingRoom(){'));
+ assert.ok(site.includes('function paintTradingRoom(){'));
+});
