@@ -74,11 +74,6 @@ function syntheticCompetition(){
  button("Ver historial y versiones","navigate","archive","outline-btn")+
  button("Comprobar libro causal","navigate","monitoring","outline-btn");
 }
-function competitionNavigation(inRoom=false){
- return '<nav class="competition-nav" aria-label="Competición de algoritmos">'+
-  '<a href="./index.html?view=competition"'+(inRoom?"":' aria-current="page"')+'>Clasificación</a>'+
-  '<a href="./index.html?view=trading"'+(inRoom?' aria-current="page"':"")+'>Sala de trading</a></nav>';
-}
 function competition(){return full();}
 
 function detail(s){
@@ -1316,15 +1311,8 @@ function render(){
  if(!state.data)return;
  document.body.classList.toggle("midas-thesis-mode",state.view==="thesis");
  document.body.classList.toggle("midas-trading-mode",tradingRoomActive());
- const navigation=$("competition-navigation");
- const inCompetition=["competition","algorithm","trading"].includes(state.view);
- navigation.hidden=!inCompetition;
- if(inCompetition&&navigation.dataset.view!==state.view){
-  navigation.innerHTML=competitionNavigation(tradingRoomActive());
-  navigation.dataset.view=state.view;
- }
  const pages={competition,algorithm:algorithmFiche,synthetic:syntheticCompetition,algorithms,theses,thesis:thesisView,monitoring,ported,full,method:methodology,glossary,trading:tradingRoom};
- document.querySelectorAll(".product-tabs [data-view]").forEach(b=>{const active=b.dataset.view===state.view||(["algorithm","trading"].includes(state.view)&&b.dataset.view==="competition")||(state.view==="thesis"&&b.dataset.view==="theses");b.classList.toggle("active",active);b.setAttribute("aria-pressed",String(active));});
+ document.querySelectorAll(".product-tabs [data-view]").forEach(b=>{const active=b.dataset.view===state.view||(state.view==="algorithm"&&b.dataset.view==="competition")||(state.view==="thesis"&&b.dataset.view==="theses");b.classList.toggle("active",active);b.setAttribute("aria-pressed",String(active));});
  $("app").innerHTML=(pages[state.view]||competition)();
  const financialPicker=document.getElementById("financial-sankey-period");
  if(financialPicker)financialPicker.addEventListener("change",()=>{
