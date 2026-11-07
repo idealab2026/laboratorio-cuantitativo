@@ -883,9 +883,6 @@ p{line-height:1.6;text-align:justify;text-align-last:left;hyphens:auto}p.lead{co
 #midas-opening-date{flex:0 1 14rem}
 
 /* The trading desk uses a single tape so repeated tickers keep their strategy identity. */
-.competition-nav{gap:6px;padding:12px 0 0;border-bottom:1px solid var(--line)}
-.competition-nav a{padding:11px 15px;border-bottom:2px solid transparent}
-.competition-nav a[aria-current="page"]{color:var(--navy);border-color:#30749b;font-weight:800}
 .midas-trading-mode .research-hero{display:none}
 .trading-room{margin:20px 0 40px;border:1px solid #d5e0eb;border-radius:12px;background:#fff}
 .trading-room p{text-align:left;hyphens:none}
