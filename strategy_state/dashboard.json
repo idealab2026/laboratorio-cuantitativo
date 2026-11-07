@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "generated_at_utc": "2026-11-07T00:20:11.359118+00:00",
+  "generated_at_utc": "2026-11-07T00:23:48.383613+00:00",
   "principle": "Comparar rentabilidad acumulada y riesgo observado; no ordenar carteras con distintas fechas de inicio o supuestos de ejecución.",
   "counts": {
     "paper_with_diary": 18,
@@ -3684,11 +3684,11 @@
       "group": "tfg_demo_adaptado",
       "status": "demo_con_diario",
       "first_session": "2026-10-02",
-      "last_session": "2026-10-30",
+      "last_session": "2026-11-06",
       "initial_capital": 100000.0,
-      "last_equity": 100000.0,
-      "return_pct": 0.0,
-      "day_return_pct": 0.0,
+      "last_equity": 97448.72793057082,
+      "return_pct": -2.551272,
+      "day_return_pct": -2.551272,
       "currency": "USD",
       "equity_history": [
         {
@@ -3710,24 +3710,28 @@
         {
           "date": "2026-10-30",
           "nav": 100000.0
+        },
+        {
+          "date": "2026-11-06",
+          "nav": 97448.72793057082
         }
       ],
       "note": "Arquitectura TFG 2021 portada con riesgo/beta sobre retornos y ejecución prospectiva next-open.",
       "activity_state": "pending",
       "activity_label": "15 compras para próxima apertura",
       "activity_tickers": [
-        "HST",
         "MAR",
-        "DOV",
-        "TDY",
-        "HON",
+        "LIN",
+        "SPG",
+        "COST",
+        "CHD",
+        "MTD",
+        "HLT",
+        "TSN",
         "FAST",
-        "WMT",
         "PG",
-        "AIG",
-        "DD",
-        "FTV",
-        "MTD"
+        "HST",
+        "ECL"
       ],
       "open_positions_count": 0,
       "pending_orders_count": 15,
@@ -3735,9 +3739,9 @@
       "comparison_universe_id": "SP500_2026-09-29_503",
       "comparison_universe_symbols": 503,
       "comparison_exclusion_reason": null,
-      "risk_observations": 5,
+      "risk_observations": 6,
       "annualized_volatility_pct": null,
-      "max_drawdown_pct": 0.0,
+      "max_drawdown_pct": -2.551272,
       "sharpe_0rf": null
     },
     {

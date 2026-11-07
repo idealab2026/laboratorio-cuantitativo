@@ -1,6 +1,6 @@
 # MIDAS: todas las ideas en paralelo
 
-Actualizado: 2026-11-07T00:20:11.359118+00:00. El tablero distingue resultados observados de ideas aún no ejecutadas.
+Actualizado: 2026-11-07T00:23:48.383613+00:00. El tablero distingue resultados observados de ideas aún no ejecutadas.
 
 La comparación principal sigue **rentabilidad acumulada + riesgo realizado**. Las campañas diarias, TFM, Weekly ML, TFG corregido, Capital Cycle, Buy The Dip y el diario genético antiguo **no forman una clasificación común** si sus fechas, divisas o reglas difieren.
 
@@ -42,7 +42,7 @@ La comparación principal sigue **rentabilidad acumulada + riesgo realizado**. L
 | ML semanal · ARIMA · liquidación diferida | TFM/ML · ARIMA adaptado al horizonte semanal · libro semanal independiente | weekly_settled_demo | 10 señales congeladas · liquidación semanal pendiente | 2026-10-02 | 2026-11-06 | — | -11.65 % | — | -13.45 % | — |
 | ML semanal · ensemble consenso | MIDAS nuevo 2026 · consenso de expertos semanales | demo_con_diario | 10 señales para próxima apertura paper · Inactividad sin operaciones: 2026-11-03, 2026-11-04 · Reanudación desde apertura: 2026-11-05 | 2026-10-09 | 2026-11-06 | -1.05 % | -18.13 % | 30.77 % | -18.13 % | -8.00 |
 | ML semanal · ensemble consenso · liquidación diferida | MIDAS nuevo 2026 · consenso de expertos semanales · libro semanal independiente | weekly_settled_demo | 10 señales congeladas · liquidación semanal pendiente | 2026-10-02 | 2026-11-06 | — | -20.13 % | — | -20.13 % | — |
-| TFG corregido 2026 · técnico + AHP + MAD | TFG 2021 · arquitectura portada y corregida para paper 2026 | demo_con_diario | 15 compras para próxima apertura | 2026-10-02 | 2026-10-30 | 0.00 % | 0.00 % | — | 0.00 % | — |
+| TFG corregido 2026 · técnico + AHP + MAD | TFG 2021 · arquitectura portada y corregida para paper 2026 | demo_con_diario | 15 compras para próxima apertura | 2026-10-02 | 2026-11-06 | -2.55 % | -2.55 % | — | -2.55 % | — |
 | Capital Cycle Inflection · underinvestment + calidad + giro | MIDAS 2026 · estrategia cíclica derivada del marco Capital Cycle | demo_con_diario | 12 posiciones abiertas | 2026-09-30 | 2026-11-06 | 0.18 % | 2.86 % | 14.74 % | -3.88 % | 1.86 |
 | Buy The Dip corpus v0 · deep value + special situations | MIDAS 2026 · Buy The Dip corpus v0 · deep value + special situations | demo_con_diario | 10 posiciones abiertas | 2026-10-01 | 2026-11-06 | -1.50 % | 9.10 % | 24.15 % | -5.76 % | 3.62 |
 | TimesFM 2.5 · zero-shot semanal · EUR | MIDAS 2026 · TimesFM 2.5 5 sesiones · S&P 500 503 símbolos · EUR | demo_con_diario | Sin compras · en efectivo | 2026-10-16 | 2026-11-06 | -0.85 % | 3.12 % | 20.42 % | -2.78 % | 2.62 |
