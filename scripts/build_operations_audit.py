@@ -422,7 +422,16 @@ def analysis_trace(book, source, parent, key):
                  [name for name in checks if row.get(name + "_pass") is True]]
                 for row in signal.get("diagnostics", []) if clean_ticker(row.get("ticker"))]
         if rows:
-            return {"date": date(signal.get("asof")), "method": "ahp", "rows": rows,
+            ratios = {}
+            for record in signal.get("diagnostics", []):
+                ticker = clean_ticker(record.get("ticker"))
+                if not ticker:
+                    continue
+                ratios[ticker] = {
+                    name: value for name in checks
+                    if type(value := record.get(name + "_ratio")) in (int, float) and 0 <= value <= 1
+                }
+            return {"date": date(signal.get("asof")), "method": "ahp", "rows": rows, "ratios": ratios,
                     "excluded": len(signal.get("market_failures", []))}
     if source in {"capital_cycle_state/ledger.json", "buy_the_dip_state/ledger.json"}:
         signals = book.get("signals") or []
