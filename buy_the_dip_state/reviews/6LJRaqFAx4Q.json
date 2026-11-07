@@ -1,0 +1,298 @@
+{
+  "schema_version": 1,
+  "status": "machine_first_pass",
+  "reviewed_at_utc": "2026-11-07T03:43:21.038207+00:00",
+  "source_identity": "Buy The Dip YouTube channel",
+  "transport": {
+    "kind": "official_podcast_mirror",
+    "provider": "iVoox",
+    "guid": "https://www.ivoox.com/119603498",
+    "published_date": "2023-11-16",
+    "youtube_video_id": "6LJRaqFAx4Q",
+    "match_score": 1.0,
+    "audio_bytes_processed_transiently": 23054672
+  },
+  "models": {
+    "asr": {
+      "language": "es",
+      "language_probability": 1.0,
+      "duration_seconds": 2881.7763125,
+      "word_count": 7934,
+      "segment_count": 440,
+      "model": "small"
+    },
+    "semantic": {
+      "repo": "Qwen/Qwen3-4B-GGUF",
+      "file": "Qwen3-4B-Q4_K_M.gguf"
+    }
+  },
+  "metadata": {
+    "video_id": "6LJRaqFAx4Q",
+    "youtube_url": "https://www.youtube.com/watch?v=6LJRaqFAx4Q",
+    "title": "INVERTIR en pistas de esquí, resorts y trenes suizos | BUY THE DIP PODCAST",
+    "category": "company_or_theme",
+    "guest_likely": false,
+    "podcast_guid": "https://www.ivoox.com/119603498",
+    "published_date": "2023-11-16",
+    "source": "official_podcast_mirror",
+    "match_score": 1.0
+  },
+  "analysis": {
+    "episode_summary": "El episodio analiza el sector de inversiones en pistas de esquí, resorts y trenes suizos, destacando la importancia de la localización, las barreras de entrada altas, la cuota de mercado de Vali Resorts, y la dependencia de la temporada de invierno. Se enfatiza la ventaja de Vali en calidad de servicios y la estrategia de devolución de capital a los accionistas, así como la vulnerabilidad del sector a condiciones climáticas adversas. Además, se menciona la posibilidad de adquisiciones estratégicas, la eficiencia de la inversión en activos de esquí, y la dependencia de factores macroeconómicos y climáticos en la rentabilidad del sector. Se destacan también desafíos en la gestión de riesgos, la volatilidad climática, y la necesidad de optimización en la publicidad y el marketing para atraer visitantes.",
+    "process": {
+      "idea_generation": [],
+      "quality": [],
+      "balance_sheet": [],
+      "valuation": [
+        "Vali Resorts opera 41 resorts de esquí en Norteamérica con una cuota de mercado del 20% en visitas, lo que sugiere activos de alto valor y estabilidad.",
+        "La empresa tiene un valor de mercado de 140 millones de euros y un enterprise value de 155 millones, lo que sugiere un potencial de crecimiento significativo si se optimizan sus operaciones."
+      ],
+      "cycle_macro": [
+        "El invierno es un factor clave para el sector, con demanda elevada en temporadas de nieve y un impacto significativo en las visitas y el rendimiento de los resorts.",
+        "La tendencia de cierre de pistas de esquí en regiones como California y Colorado refleja un ciclo macro de reducción de activos en el sector."
+      ],
+      "entry": [
+        "El análisis de la calidad de la nieve y la ubicación geográfica influyen en la decisión de inversión en pistas de esquí.",
+        "Se sugiere que la empresa podría mejorar su estrategia de marketing y publicidad para atraer más visitantes, especialmente en comparación con su competidor Titlis."
+      ],
+      "sizing": [
+        "La cuota de mercado de Vali Resorts en visitas es del 20%, mientras que su cuota en resorts es del 5%, lo que refleja una ventaja en calidad de servicios y experiencia del cliente."
+      ],
+      "add_hold": [],
+      "exit": [],
+      "risk": [
+        "El sector tiene altas barreras de entrada debido a la dificultad de localización y la infraestructura necesaria, lo que limita la competencia y reduce el riesgo de entrada.",
+        "La volatilidad de la nieve y las condiciones climáticas son factores de riesgo que afectan la rentabilidad de las pistas de esquí.",
+        "La empresa enfrenta desafíos en la organización y la publicidad, lo que limita su capacidad para atraer visitantes y mejorar sus márgenes de beneficio."
+      ],
+      "technical": [
+        "El análisis de los flujos de efectivo libre y la eficiencia de la recompra de acciones reflejan la solidez financiera de la empresa."
+      ],
+      "management": [
+        "Vali Resorts ha enfocado su estrategia en devolver capital a los accionistas y optimizar la gestión de activos, lo que sugiere una visión a largo plazo y una eficiencia en la administración.",
+        "El management de Bail Resource se destaca por su enfoque antifragil y su capacidad para generar valor a través de adquisiciones estratégicas y optimización de activos."
+      ],
+      "mistakes": [
+        "El programa menciona que la nieve es un factor crítico para el éxito de los resorts, y que la falta de nieve puede llevar a la bancarrota, lo que resalta la vulnerabilidad del sector a condiciones climáticas."
+      ]
+    },
+    "candidate_rules": [
+      {
+        "rule": "paráfrasis compacta",
+        "scope": "hosts|uncertain_or_guest",
+        "confidence": 0.0,
+        "evidence_timestamps": [],
+        "automation_proxy": "variable/cálculo posible o null",
+        "cross_video_confirmation_required": true
+      }
+    ],
+    "contradictions_or_uncertainties": [],
+    "named_examples": [],
+    "automation_readiness": "medium"
+  },
+  "chunk_evidence": [
+    {
+      "chunk": 1,
+      "evidence": [
+        {
+          "stage": "entry",
+          "paraphrase": "El programa introduce un sector de inversiones relacionado con pistas de esquí y parques temáticos, destacando la importancia de la localización y las barreras de entrada altas.",
+          "timestamp": "00:04:43",
+          "scope": "hosts",
+          "confidence": 0.9,
+          "automation_hint": "proxy observable"
+        },
+        {
+          "stage": "valuation",
+          "paraphrase": "Vali Resorts opera 41 resorts de esquí en Norteamérica y tiene una cuota de mercado del 20% en visitas, lo que sugiere activos de alto valor y estabilidad.",
+          "timestamp": "00:07:06",
+          "scope": "hosts",
+          "confidence": 0.8,
+          "automation_hint": "proxy observable"
+        },
+        {
+          "stage": "risk",
+          "paraphrase": "El sector tiene altas barreras de entrada debido a la dificultad de localización y la infraestructura necesaria, lo que limita la competencia y reduce el riesgo de entrada.",
+          "timestamp": "00:07:47",
+          "scope": "hosts",
+          "confidence": 0.7,
+          "automation_hint": "proxy observable"
+        },
+        {
+          "stage": "cycle_macro",
+          "paraphrase": "El invierno es un factor clave para el sector, con demanda elevada en temporadas de nieve y un impacto significativo en las visitas y el rendimiento de los resorts.",
+          "timestamp": "00:07:18",
+          "scope": "hosts",
+          "confidence": 0.6,
+          "automation_hint": "proxy observable"
+        },
+        {
+          "stage": "sizing",
+          "paraphrase": "La cuota de mercado de Vali Resorts en visitas es del 20%, mientras que su cuota en resorts es del 5%, lo que refleja una ventaja en calidad de servicios y experiencia del cliente.",
+          "timestamp": "00:07:12",
+          "scope": "hosts",
+          "confidence": 0.7,
+          "automation_hint": "proxy observable"
+        },
+        {
+          "stage": "management",
+          "paraphrase": "Vali Resorts ha enfocado su estrategia en devolver capital a los accionistas y optimizar la gestión de activos, lo que sugiere una visión a largo plazo y una eficiencia en la administración.",
+          "timestamp": "00:09:39",
+          "scope": "hosts",
+          "confidence": 0.6,
+          "automation_hint": "proxy observable"
+        },
+        {
+          "stage": "mistake",
+          "paraphrase": "El programa menciona que la nieve es un factor crítico para el éxito de los resorts, y que la falta de nieve puede llevar a la bancarrota, lo que resalta la vulnerabilidad del sector a condiciones climáticas.",
+          "timestamp": "00:10:18",
+          "scope": "hosts",
+          "confidence": 0.5,
+          "automation_hint": "proxy observable"
+        }
+      ],
+      "named_examples": [],
+      "chunk_summary": "El programa analiza el sector de inversiones en pistas de esquí y parques temáticos, destacando la importancia de la localización, las barreras de entrada altas, la cuota de mercado de Vali Resorts, y la dependencia de la temporada de invierno. Se enfatiza la ventaja de Vali en calidad de servicios y la estrategia de devolución de capital a los accionistas, así como la vulnerabilidad del sector a condiciones climáticas adversas."
+    },
+    {
+      "chunk": 2,
+      "evidence": [
+        {
+          "stage": "entry",
+          "paraphrase": "El análisis de la calidad de la nieve y la ubicación geográfica influyen en la decisión de inversión en pistas de esquí.",
+          "timestamp": "00:11:22",
+          "scope": "hosts",
+          "confidence": 0.8
+        },
+        {
+          "stage": "valuation",
+          "paraphrase": "Bail Resource invierte en activos de alta calidad y utiliza un capital allocation eficiente para generar valor a largo plazo.",
+          "timestamp": "00:15:21",
+          "scope": "hosts",
+          "confidence": 0.7
+        },
+        {
+          "stage": "risk",
+          "paraphrase": "La volatilidad de la nieve y las condiciones climáticas son factores de riesgo que afectan la rentabilidad de las pistas de esquí.",
+          "timestamp": "00:11:35",
+          "scope": "hosts",
+          "confidence": 0.6
+        },
+        {
+          "stage": "cycle_macro",
+          "paraphrase": "La tendencia de cierre de pistas de esquí en regiones como California y Colorado refleja un ciclo macro de reducción de activos en el sector.",
+          "timestamp": "00:14:52",
+          "scope": "hosts",
+          "confidence": 0.7
+        },
+        {
+          "stage": "management",
+          "paraphrase": "El management de Bail Resource se destaca por su enfoque antifragil y su capacidad para generar valor a través de adquisiciones estratégicas y optimización de activos.",
+          "timestamp": "00:14:30",
+          "scope": "hosts",
+          "confidence": 0.8
+        },
+        {
+          "stage": "technical",
+          "paraphrase": "El análisis de los flujos de efectivo libre y la eficiencia de la recompra de acciones reflejan la solidez financiera de la empresa.",
+          "timestamp": "00:22:01",
+          "scope": "hosts",
+          "confidence": 0.7
+        }
+      ],
+      "named_examples": [],
+      "chunk_summary": "El análisis de la calidad de la nieve, la ubicación geográfica y la eficiencia de la inversión en activos de esquí son factores clave en la estrategia de inversión en el sector. La empresa Bail Resource destaca por su capacidad de generar valor a través de un capital allocation eficiente, un enfoque antifragil y una gestión de riesgos sólida, aunque existen desafíos relacionados con la volatilidad climática y la reducción de activos en el sector."
+    },
+    {
+      "chunk": 3,
+      "evidence": [
+        {
+          "stage": "valuation",
+          "paraphrase": "El análisis de valoración menciona que la empresa tiene un múltiplo de 13 veces antes de la pandemia, actualmente está más caro, pero se espera una recuperación del tráfico.",
+          "timestamp": "00:33:52",
+          "scope": "uncertain_or_guest",
+          "confidence": 0.7
+        },
+        {
+          "stage": "risk",
+          "paraphrase": "Se menciona que la empresa tiene una buena posición de equity y que el desarrollo de activos no desarrollados es difícil por problemas de financiación y costos elevados.",
+          "timestamp": "00:30:29",
+          "scope": "hosts",
+          "confidence": 0.8
+        },
+        {
+          "stage": "entry",
+          "paraphrase": "Se sugiere que la empresa podría ser interesante para incluir en la watchlist por su potencial de crecimiento si hay un aumento en el precio (hostio).",
+          "timestamp": "00:31:50",
+          "scope": "hosts",
+          "confidence": 0.6
+        }
+      ],
+      "named_examples": [],
+      "chunk_summary": "El análisis de valoración de la empresa menciona su múltiplo actual y su potencial de recuperación, señala riesgos de desarrollo de activos no desarrollados y sugiere su inclusión en la watchlist por su potencial de crecimiento."
+    },
+    {
+      "chunk": 4,
+      "evidence": [
+        {
+          "stage": "entry",
+          "paraphrase": "El análisis sugiere que la empresa podría mejorar su estrategia de marketing y publicidad para atraer más visitantes, especialmente en comparación con su competidor Titlis.",
+          "timestamp": "00:39:55",
+          "scope": "hosts",
+          "confidence": 0.8,
+          "automation_hint": "proxy observable"
+        },
+        {
+          "stage": "valuation",
+          "paraphrase": "La empresa tiene un valor de mercado de 140 millones de euros y un enterprise value de 155 millones, lo que sugiere un potencial de crecimiento significativo si se optimizan sus operaciones.",
+          "timestamp": "00:39:47",
+          "scope": "hosts",
+          "confidence": 0.7,
+          "automation_hint": "proxy observable"
+        },
+        {
+          "stage": "risk",
+          "paraphrase": "La empresa enfrenta desafíos en la organización y la publicidad, lo que limita su capacidad para atraer visitantes y mejorar sus márgenes de beneficio.",
+          "timestamp": "00:41:22",
+          "scope": "hosts",
+          "confidence": 0.6,
+          "automation_hint": "proxy observable"
+        }
+      ],
+      "named_examples": [],
+      "chunk_summary": "El análisis identifica oportunidades para mejorar la estrategia de marketing y publicidad de la empresa, sugiere un potencial de crecimiento significativo en su valor de mercado y destaca desafíos en la organización y la publicidad que limitan su capacidad para atraer visitantes y mejorar sus márgenes de beneficio."
+    },
+    {
+      "chunk": 5,
+      "evidence": [
+        {
+          "stage": "entry",
+          "paraphrase": "El participante menciona que si tuviera más capital (100 millones) podría realizar una operación de adquisición (opa) y mejorar significativamente el rendimiento de los accionistas.",
+          "timestamp": "00:45:43",
+          "scope": "hosts",
+          "confidence": 0.8,
+          "automation_hint": "proxy observable"
+        },
+        {
+          "stage": "valuation",
+          "paraphrase": "El participante sugiere que la empresa tiene un valor actual bajo (múltiples bajos) y podría aumentar con el tiempo, lo que implica una posible oportunidad de inversión en el futuro.",
+          "timestamp": "00:46:22",
+          "scope": "hosts",
+          "confidence": 0.7,
+          "automation_hint": "proxy observable"
+        },
+        {
+          "stage": "risk",
+          "paraphrase": "El participante reconoce que la empresa es estable y que la recuperación de las tendencias post-pandemia podría afectar positivamente su valor, pero también señala que la situación económica actual (ser pobres) limita las oportunidades de inversión.",
+          "timestamp": "00:46:03",
+          "scope": "hosts",
+          "confidence": 0.6,
+          "automation_hint": "proxy observable"
+        }
+      ],
+      "named_examples": [],
+      "chunk_summary": "El participante discute la posibilidad de adquirir una empresa con un capital adicional, sugiere que su valor actual es bajo pero con potencial de crecimiento, y reconoce que factores macroeconómicos y la estabilidad de la empresa influyen en la oportunidad de inversión."
+    }
+  ],
+  "copyright_note": "No audio or verbatim transcript is persisted; only derived paraphrases."
+}
