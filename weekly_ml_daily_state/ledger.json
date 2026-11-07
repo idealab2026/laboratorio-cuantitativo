@@ -813,16 +813,20 @@
           ],
           "reason": "missing_ohlc",
           "type": "weekly_book_paused"
+        },
+        {
+          "date": "2026-11-06",
+          "missing_tickers": [],
+          "reason": "unreconciled_session",
+          "type": "weekly_book_paused"
         }
       ],
       "last_signal_session": "2026-10-30",
       "nav": 90892.27011219709,
       "paused_missing_quotes": {
         "date": "2026-11-06",
-        "missing_tickers": [
-          "FTNT"
-        ],
-        "reason": "missing_ohlc"
+        "missing_tickers": [],
+        "reason": "unreconciled_session"
       },
       "pending": [],
       "positions": {
@@ -6541,7 +6545,7 @@
       ]
     },
     "lstm_return": {
-      "cash": 4825.757057434108,
+      "cash": 92171.23728834496,
       "equity": [
         {
           "date": "2026-10-09",
@@ -6663,6 +6667,28 @@
             "snapshot_sha256": "7a4eabfe31d00d5e07981eb35f7f43228eaeaeab538dc1641e11d305996ca702"
           },
           "recorded_at_utc": "2026-11-05T00:25:34+00:00"
+        },
+        {
+          "date": "2026-11-05",
+          "decision_recorded": false,
+          "late_mark_only": true,
+          "nav": 94184.86680064649,
+          "quote_identity": {
+            "effective_sha256": "fe8bd95584b0b4b62e2b538a4697a18e5685f516ad0d172f4e5dffe190e05886",
+            "snapshot_sha256": "26bab09fa7bb46ba02e0f82c8d6d190dc7bf8e7a38a4345a2cdec199f03df947"
+          },
+          "recorded_at_utc": "2026-11-07T02:00:42+00:00"
+        },
+        {
+          "date": "2026-11-06",
+          "decision_recorded": false,
+          "late_recorded_verified_date": true,
+          "nav": 92171.23728834496,
+          "quote_identity": {
+            "effective_sha256": "83bc3bf223004e864717fc44fec924b8df479d9b6dd9c2fad1cef9d5343eca6b",
+            "snapshot_sha256": "a631487625b0226266b3b64885e9d4e28f2a678cf4e5d3082a7aa8de688747c3"
+          },
+          "recorded_at_utc": "2026-11-07T02:00:42+00:00"
         }
       ],
       "events": [
@@ -7335,90 +7361,168 @@
           ],
           "reason": "missing_ohlc",
           "type": "weekly_book_paused"
+        },
+        {
+          "date": "2026-11-06",
+          "execution": "simulated_week_close",
+          "fee": 8.09193935322627,
+          "price": 39.42027862739563,
+          "shares": 205.27352,
+          "ticker": "APTV",
+          "type": "sell"
+        },
+        {
+          "date": "2026-11-06",
+          "execution": "simulated_week_close",
+          "fee": 6.584239762235501,
+          "price": 312.8435,
+          "shares": 21.046433,
+          "ticker": "AXON",
+          "type": "sell"
+        },
+        {
+          "date": "2026-11-06",
+          "execution": "simulated_week_close",
+          "fee": 8.113986284733636,
+          "price": 558.3506898803711,
+          "shares": 14.532061,
+          "ticker": "CAT",
+          "type": "sell"
+        },
+        {
+          "date": "2026-11-06",
+          "execution": "simulated_week_close",
+          "fee": 9.157197152711495,
+          "price": 125.26733683013917,
+          "shares": 73.101236,
+          "ticker": "CHRW",
+          "type": "sell"
+        },
+        {
+          "date": "2026-11-06",
+          "execution": "simulated_week_close",
+          "fee": 9.63193232501169,
+          "price": 118.0109646949768,
+          "shares": 81.618961,
+          "ticker": "CHTR",
+          "type": "sell"
+        },
+        {
+          "date": "2026-11-06",
+          "execution": "simulated_week_close",
+          "fee": 9.081310357201126,
+          "price": 341.79901622009277,
+          "shares": 26.569153,
+          "ticker": "LII",
+          "type": "sell"
+        },
+        {
+          "date": "2026-11-06",
+          "execution": "simulated_week_close",
+          "fee": 9.789318314060576,
+          "price": 32.3238301525116,
+          "shares": 302.851434,
+          "ticker": "MGM",
+          "type": "sell"
+        },
+        {
+          "date": "2026-11-06",
+          "execution": "simulated_week_close",
+          "fee": 8.415711919740438,
+          "price": 88.24585591506958,
+          "shares": 95.366653,
+          "ticker": "NRG",
+          "type": "sell"
+        },
+        {
+          "date": "2026-11-06",
+          "execution": "simulated_week_close",
+          "fee": 8.659668198587,
+          "price": 164.83753816986084,
+          "shares": 52.534564,
+          "ticker": "ODFL",
+          "type": "sell"
+        },
+        {
+          "date": "2026-11-06",
+          "execution": "simulated_week_close",
+          "fee": 9.907609476547183,
+          "price": 83.0684456100464,
+          "shares": 119.270433,
+          "ticker": "WYNN",
+          "type": "sell"
+        },
+        {
+          "count": 10,
+          "date": "2026-11-06",
+          "type": "signal_frozen"
         }
       ],
-      "last_signal_session": "2026-10-30",
-      "nav": 97490.51580897775,
-      "paused_missing_quotes": {
-        "date": "2026-11-06",
-        "missing_tickers": [
-          "AXON"
-        ],
-        "reason": "missing_ohlc"
-      },
-      "pending": [],
-      "positions": {
-        "APTV": {
-          "entry_date": "2026-11-02",
-          "entry_fee": 9.159776278116853,
-          "entry_price": 44.62229847335815,
-          "shares": 205.27352,
-          "signal_date": "2026-10-30"
+      "last_signal_session": "2026-11-06",
+      "nav": 92171.23728834496,
+      "pending": [
+        {
+          "predicted_return": 0.013656480237841606,
+          "score": 0.013656480237841606,
+          "signal_date": "2026-11-06",
+          "ticker": "WDC"
         },
-        "AXON": {
-          "entry_date": "2026-11-02",
-          "entry_fee": 9.1597759541775,
-          "entry_price": 435.2175,
-          "shares": 21.046433,
-          "signal_date": "2026-10-30"
+        {
+          "predicted_return": 0.013359221629798412,
+          "score": 0.013359221629798412,
+          "signal_date": "2026-11-06",
+          "ticker": "INTC"
         },
-        "CAT": {
-          "entry_date": "2026-11-02",
-          "entry_fee": 9.159776029215,
-          "entry_price": 630.3149999999999,
-          "shares": 14.532061,
-          "signal_date": "2026-10-30"
+        {
+          "predicted_return": 0.01311297994107008,
+          "score": 0.01311297994107008,
+          "signal_date": "2026-11-06",
+          "ticker": "CAT"
         },
-        "CHRW": {
-          "entry_date": "2026-11-02",
-          "entry_fee": 9.159776239799152,
-          "entry_price": 125.30261786270141,
-          "shares": 73.101236,
-          "signal_date": "2026-10-30"
+        {
+          "predicted_return": 0.012791717424988747,
+          "score": 0.012791717424988747,
+          "signal_date": "2026-11-06",
+          "ticker": "SMCI"
         },
-        "CHTR": {
-          "entry_date": "2026-11-02",
-          "entry_fee": 9.15977630527418,
-          "entry_price": 112.22608316802977,
-          "shares": 81.618961,
-          "signal_date": "2026-10-30"
+        {
+          "predicted_return": 0.012726174667477608,
+          "score": 0.012726174667477608,
+          "signal_date": "2026-11-06",
+          "ticker": "AXON"
         },
-        "LII": {
-          "entry_date": "2026-11-02",
-          "entry_fee": 9.159775983168458,
-          "entry_price": 344.7522765655517,
-          "shares": 26.569153,
-          "signal_date": "2026-10-30"
+        {
+          "predicted_return": 0.01250225305557251,
+          "score": 0.01250225305557251,
+          "signal_date": "2026-11-06",
+          "ticker": "TER"
         },
-        "MGM": {
-          "entry_date": "2026-11-02",
-          "entry_fee": 9.15977631054121,
-          "entry_price": 30.245114542007446,
-          "shares": 302.851434,
-          "signal_date": "2026-10-30"
+        {
+          "predicted_return": 0.012359066866338253,
+          "score": 0.012359066866338253,
+          "signal_date": "2026-11-06",
+          "ticker": "NRG"
         },
-        "NRG": {
-          "entry_date": "2026-11-02",
-          "entry_fee": 9.159776287344,
-          "entry_price": 96.048,
-          "shares": 95.366653,
-          "signal_date": "2026-10-30"
+        {
+          "predicted_return": 0.012291211634874344,
+          "score": 0.012291211634874344,
+          "signal_date": "2026-11-06",
+          "ticker": "STX"
         },
-        "ODFL": {
-          "entry_date": "2026-11-02",
-          "entry_fee": 9.15977629207824,
-          "entry_price": 174.35713927459716,
-          "shares": 52.534564,
-          "signal_date": "2026-10-30"
+        {
+          "predicted_return": 0.0122124208137393,
+          "score": 0.0122124208137393,
+          "signal_date": "2026-11-06",
+          "ticker": "KLAC"
         },
-        "WYNN": {
-          "entry_date": "2026-11-02",
-          "entry_fee": 9.159776291215067,
-          "entry_price": 76.79838213729857,
-          "shares": 119.270433,
-          "signal_date": "2026-10-30"
+        {
+          "predicted_return": 0.01174113154411316,
+          "score": 0.01174113154411316,
+          "signal_date": "2026-11-06",
+          "ticker": "LRCX"
         }
-      },
+      ],
+      "positions": {},
       "trades": [
         {
           "buy_commission": 9.490509443008868,
@@ -7778,6 +7882,126 @@
           "sell_price": 74.62267366027832,
           "shares": 120.44424,
           "signal_date": "2026-10-23",
+          "ticker": "WYNN"
+        },
+        {
+          "buy_commission": 9.159776278116853,
+          "buy_price": 44.62229847335815,
+          "entry_date": "2026-11-02",
+          "exit_date": "2026-11-06",
+          "net_pnl": -1085.0886405219264,
+          "sell_commission": 8.09193935322627,
+          "sell_price": 39.42027862739563,
+          "shares": 205.27352,
+          "signal_date": "2026-10-30",
+          "ticker": "APTV"
+        },
+        {
+          "buy_commission": 9.1597759541775,
+          "buy_price": 435.2175,
+          "entry_date": "2026-11-02",
+          "exit_date": "2026-11-06",
+          "net_pnl": -2591.280207658412,
+          "sell_commission": 6.584239762235501,
+          "sell_price": 312.8435,
+          "shares": 21.046433,
+          "signal_date": "2026-10-30",
+          "ticker": "AXON"
+        },
+        {
+          "buy_commission": 9.159776029215,
+          "buy_price": 630.3149999999999,
+          "entry_date": "2026-11-02",
+          "exit_date": "2026-11-06",
+          "net_pnl": -1063.0635067953133,
+          "sell_commission": 8.113986284733636,
+          "sell_price": 558.3506898803711,
+          "shares": 14.532061,
+          "signal_date": "2026-10-30",
+          "ticker": "CAT"
+        },
+        {
+          "buy_commission": 9.159776239799152,
+          "buy_price": 125.30261786270141,
+          "entry_date": "2026-11-02",
+          "exit_date": "2026-11-06",
+          "net_pnl": -20.89606048016821,
+          "sell_commission": 9.157197152711495,
+          "sell_price": 125.26733683013917,
+          "shares": 73.101236,
+          "signal_date": "2026-10-30",
+          "ticker": "CHRW"
+        },
+        {
+          "buy_commission": 9.15977630527418,
+          "buy_price": 112.22608316802977,
+          "entry_date": "2026-11-02",
+          "exit_date": "2026-11-06",
+          "net_pnl": 453.3643111072233,
+          "sell_commission": 9.63193232501169,
+          "sell_price": 118.0109646949768,
+          "shares": 81.618961,
+          "signal_date": "2026-10-30",
+          "ticker": "CHTR"
+        },
+        {
+          "buy_commission": 9.159775983168458,
+          "buy_price": 344.7522765655517,
+          "entry_date": "2026-11-02",
+          "exit_date": "2026-11-06",
+          "net_pnl": -96.70671230770228,
+          "sell_commission": 9.081310357201126,
+          "sell_price": 341.79901622009277,
+          "shares": 26.569153,
+          "signal_date": "2026-10-30",
+          "ticker": "LII"
+        },
+        {
+          "buy_commission": 9.15977631054121,
+          "buy_price": 30.245114542007446,
+          "entry_date": "2026-11-02",
+          "exit_date": "2026-11-06",
+          "net_pnl": 610.5929088947657,
+          "sell_commission": 9.789318314060576,
+          "sell_price": 32.3238301525116,
+          "shares": 302.851434,
+          "signal_date": "2026-10-30",
+          "ticker": "MGM"
+        },
+        {
+          "buy_commission": 9.159776287344,
+          "buy_price": 96.048,
+          "entry_date": "2026-11-02",
+          "exit_date": "2026-11-06",
+          "net_pnl": -761.6398558106463,
+          "sell_commission": 8.415711919740438,
+          "sell_price": 88.24585591506958,
+          "shares": 95.366653,
+          "signal_date": "2026-10-30",
+          "ticker": "NRG"
+        },
+        {
+          "buy_commission": 9.15977629207824,
+          "buy_price": 174.35713927459716,
+          "entry_date": "2026-11-02",
+          "exit_date": "2026-11-06",
+          "net_pnl": -517.9275379819055,
+          "sell_commission": 8.659668198587,
+          "sell_price": 164.83753816986084,
+          "shares": 52.534564,
+          "signal_date": "2026-10-30",
+          "ticker": "ODFL"
+        },
+        {
+          "buy_commission": 9.159776291215067,
+          "buy_price": 76.79838213729857,
+          "entry_date": "2026-11-02",
+          "exit_date": "2026-11-06",
+          "net_pnl": 728.7657995643532,
+          "sell_commission": 9.907609476547183,
+          "sell_price": 83.0684456100464,
+          "shares": 119.270433,
+          "signal_date": "2026-10-30",
           "ticker": "WYNN"
         }
       ]
