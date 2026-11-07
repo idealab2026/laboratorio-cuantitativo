@@ -400,7 +400,43 @@ def pending_signals(book):
     return output
 
 
-def live_book(original, book, source, parent):
+def analysis_trace(book, source, parent, key):
+    """Publish a small projection of recorded evaluations, without raw diagnostics."""
+    if source == "classic_sp500_state/ledger.json":
+        traces = (item for item in reversed(parent.get("coverage", []))
+                  if key in item.get("rule_trace", {}).get("hits", {}))
+        item = next(traces, None)
+        if item:
+            evidence = item["rule_trace"]
+            hits = evidence["hits"][key]
+            rows = [[ticker, hits.get(ticker, "no_trigger"), []]
+                    for ticker in evidence["evaluated"] if clean_ticker(ticker)]
+            return {"date": date(item.get("date")), "method": "classic", "rows": rows,
+                    "excluded": len(item.get("missing", {}))}
+    if source == "tfg_state/ledger.json":
+        signal = book.get("pending_signal") or {}
+        selected = {row.get("ticker") for row in signal.get("selections", [])}
+        checks = ("rsi", "macd", "bollinger", "stochastic")
+        rows = [[row["ticker"], "selected" if row["ticker"] in selected else
+                 "passed" if row.get("technical_pass") is True else "filtered",
+                 [name for name in checks if row.get(name + "_pass") is True]]
+                for row in signal.get("diagnostics", []) if clean_ticker(row.get("ticker"))]
+        if rows:
+            return {"date": date(signal.get("asof")), "method": "ahp", "rows": rows,
+                    "excluded": len(signal.get("market_failures", []))}
+    if source in {"capital_cycle_state/ledger.json", "buy_the_dip_state/ledger.json"}:
+        signals = book.get("signals") or []
+        if signals:
+            signal = signals[-1]
+            rows = [[row["ticker"], "selected", []] for row in signal.get("selected", [])
+                    if clean_ticker(row.get("ticker"))]
+            if rows:
+                return {"date": date(signal.get("date")), "method": "monthly", "rows": rows,
+                        "excluded": None}
+    return None
+
+
+def live_book(original, book, source, parent, key=None):
     latest = date(original.get("last_session"))
     base = {"label": original["label"], "currency": original.get("currency"),
             "session": latest, "decision_session": None,
@@ -423,7 +459,8 @@ def live_book(original, book, source, parent):
                    "decision_session": item["signal_date"]} for item in actions]
     return {**base, "session": latest, "decision_session": decision, "signals": signals,
             "status": "paused" if book.get("paused_missing_quotes") else "recorded",
-            "executions": executions}
+            "executions": executions,
+            "analysis": analysis_trace(book, source, parent, key)}
 
 
 def build(signal_tracks=None):
@@ -440,7 +477,7 @@ def build(signal_tracks=None):
         doc,digest=read(filename) if filename else (None,None)
         book=source_book(doc,filename,key) if filename else None
         if signal_tracks is not None and 10 <= int(slot[3:]) <= 44:
-            signal_tracks[slot] = live_book(original, *signal_book(source_id, book, filename, doc))
+            signal_tracks[slot] = live_book(original, *signal_book(source_id, book, filename, doc), key=key)
         journal_days=[x["date"] for x in original.get("equity_history",[]) if date(x.get("date"))]
         if not isinstance(book,dict):
             tracks[slot]={"source_id":source_id,"status":"no_executed_actions_documented",

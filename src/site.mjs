@@ -321,6 +321,13 @@ function verifyLiveSignals(doc){
       !(signal.target_weight===null||Number.isFinite(signal.target_weight)&&signal.target_weight>=0&&signal.target_weight<=1))
     throw Error("Señal no verificable");
   }
+  const trace=track.analysis;
+  if(trace!=null&&(!signalDate(trace.date)||!["classic","ahp","monthly"].includes(trace.method)||
+    !(trace.excluded===null||Number.isSafeInteger(trace.excluded)&&trace.excluded>=0)||
+    !Array.isArray(trace.rows)||trace.rows.length>600||trace.rows.some(row=>!Array.isArray(row)||row.length!==3||
+      !validSignalTicker(row[0])||!Object.hasOwn(terminalLabels,row[1])||!Array.isArray(row[2])||
+      row[2].some(check=>!Object.hasOwn(terminalRules,check)))))
+   throw Error("Registro de análisis no verificable");
   for(const fill of track.executions){
    if(!/^[A-Z0-9.-]{1,14}$/.test(fill.ticker)||!["buy","sell"].includes(fill.action)||
       !validPrice(fill.price)||!validDate(fill.decision_session))throw Error("Operación no verificable");
@@ -572,13 +579,140 @@ function tradingResults(model){
    "Los diarios publicados para esta fecha no muestran operaciones con estos filtros.":
    "La copia actual del diario no contiene ejecuciones para esta fecha y selección.")+'</p>')+'</details>';
 }
+const terminalState={mode:"signals",useLatest:false,count:0,timer:null,activity:new Map(),pending:new Set()};
+const terminalLabels={
+ buy:"Regla de compra activada",sell:"Regla de venta activada",no_trigger:"Sin activación de regla",
+ selected:"Seleccionada",passed:"Superó el filtro técnico",filtered:"Descartada en el filtro técnico"
+};
+const terminalRunLabels={running:"En curso",queued:"En cola",success:"Completado",failure:"Con incidencias",unknown:"Sin confirmar"};
+const terminalRules={rsi:"RSI",macd:"MACD",bollinger:"Bollinger",stochastic:"Estocástico"};
+
+function terminalRows(){
+ const track=signalFeed?.tracks[tradingFilter.slot];
+ const trace=track?.analysis;
+ const day=tradingDay();
+ const search=tradingFilter.ticker.trim().toUpperCase();
+ if(trace&&(trace.date===day||terminalState.useLatest))return {trace,rows:trace.rows.filter(([ticker])=>ticker.includes(search))};
+ const orders=signalFeed?.opening_plans?.[day]?.tracks[tradingFilter.slot]?.orders||[];
+ const rows=orders.filter(order=>order.ticker.includes(search)).map(order=>
+  [order.ticker,signalNames[order.action],["Señal del "+shortPaperDate(order.decision_session)]]);
+ return {trace:null,rows};
+}
+function terminalActivityHTML(){
+ const day=tradingDay();
+ const activity=terminalState.activity.get(day);
+ const lanes=state.executionHistory?.live_plan?.days?.[day]?.lanes||[];
+ const workflows=new Set(lanes.filter(lane=>lane.slots.includes(tradingFilter.slot)).map(lane=>lane.workflow));
+ const matches=(activity?.attempts||[]).filter(attempt=>workflows.has(attempt.workflow));
+ const status=activity?.error?"No se pudo comprobar el estado de los motores.":
+  terminalState.pending.has(day)?"Consultando el estado del motor…":
+  !workflows.size?"El calendario no acredita una ejecución programada para esta selección.":
+  "No se ha observado una ejecución programada para esta sesión.";
+ return '<div class="terminal-activity"><h4>Actividad del motor · '+esc(shortPaperDate(day))+'</h4>'+
+  (matches.length?'<ul>'+matches.slice(-3).reverse().map(attempt=>'<li><time datetime="'+
+   esc(new Date(attempt.time).toISOString())+'">'+esc(madridDateTime.format(attempt.time))+
+   ' Madrid</time><span class="terminal-run-state" data-status="'+esc(attempt.status)+'">'+
+   esc(terminalRunLabels[attempt.status])+'</span><a href="'+esc(attempt.url)+
+   '" target="_blank" rel="noopener noreferrer">Abrir ejecución</a></li>').join("")+'</ul>':
+   '<p>'+esc(status)+'</p>')+'</div>';
+}
+function paintTerminalActivity(){
+ const node=$("terminal-activity");
+ if(node&&terminalState.mode==="terminal"){
+  const content=terminalActivityHTML();
+  if(node.dataset.content!==content){node.innerHTML=content;node.dataset.content=content;}
+ }
+}
+async function refreshTerminalActivity(force=false){
+ if(!tradingRoomActive()||terminalState.mode!=="terminal"||document.hidden||!tradingFilter.slot)return;
+ const day=tradingDay(), plan=state.executionHistory?.live_plan;
+ if(!day||!plan?.days?.[day]||terminalState.pending.has(day))return;
+ const session=sessionToday(plan,Date.parse(day+"T17:00:00Z"));
+ if(!session.lanes||Date.now()<session.close)return;
+ const prior=terminalState.activity.get(day);
+ if(prior&&Date.now()-prior.checked<(force?30_000:LIVE_REFRESH_MS))return;
+ terminalState.pending.add(day);
+ paintTerminalActivity();
+ try{
+  const result=await readLiveAttempts(session,fetch,liveJobCache);
+  terminalState.activity.set(day,{...result,checked:Date.now()});
+ }catch{
+  terminalState.activity.set(day,{...prior,error:true,checked:Date.now()});
+ }finally{
+  terminalState.pending.delete(day);
+  paintTerminalActivity();
+ }
+}
+function terminalHTML(){
+ const track=signalFeed?.tracks[tradingFilter.slot];
+ if(!track)return '<p class="trading-empty">Selecciona un algoritmo para ver su actividad y recorrer las empresas registradas.</p>';
+ const {trace,rows}=terminalRows();
+ const notes={
+  classic:"Resultados de la regla por empresa, antes de aplicar los límites de la cartera.",
+  ahp:"Filtros técnicos superados y selección final del método multicriterio.",
+  monthly:"El diario conserva las empresas seleccionadas en este rebalanceo."
+ };
+ const otherDate=!trace&&track.analysis?.date;
+ const description=trace?notes[trace.method]:
+  "Señales previstas para la apertura. El diario de esta fecha no incluye el análisis empresa por empresa.";
+ const more=terminalState.useLatest&&trace?.date!==tradingDay()?
+  button("Volver al registro de la sesión","terminal-latest","selected","outline-btn"):
+  otherDate?button("Ver análisis del "+shortPaperDate(otherDate),"terminal-latest","latest","outline-btn"):"";
+ return '<div class="terminal-shell"><div id="terminal-activity"></div>'+
+  '<div class="terminal-heading"><div><h4>Reproducción del registro · '+esc(shortPaperDate(trace?.date||tradingDay()))+
+  '</h4><p>'+esc(description)+'</p>'+more+
+  '<p><a href="./index.html?view=algorithm&amp;algorithm='+esc(tradingFilter.slot)+'">Consultar reglas del algoritmo</a></p></div>'+
+  '<div class="terminal-buttons">'+(rows.length?
+   '<button type="button" data-action="terminal-play">Reproducir</button>'+
+   '<button type="button" data-action="terminal-all">Ver todo</button>':"")+'</div></div>'+
+  (trace?.excluded?'<p class="terminal-note">'+esc(trace.excluded)+' incidencias de datos registradas.</p>':"")+
+  (rows.length?'<div class="terminal-screen"><div class="terminal-progress">'+
+   '<progress aria-label="Empresas mostradas" max="'+rows.length+'" value="0"></progress><span id="terminal-count"></span></div>'+
+   '<ol id="terminal-rows" aria-label="Resultados registrados por empresa"></ol></div>':
+   '<p class="terminal-note">No hay resultados publicados para esta fecha y filtro.</p>')+
+  '<p class="terminal-note">La reproducción recorre datos ya publicados. El estado del motor se consulta cada tres minutos.</p></div>';
+}
+function paintTerminalRows(){
+ const list=$("terminal-rows");
+ if(!list)return;
+ const {rows}=terminalRows();
+ const visible=Math.min(terminalState.count,rows.length);
+ const progress=list.parentElement.querySelector("progress");
+ progress.value=visible;
+ $("terminal-count").textContent=visible+" / "+rows.length;
+ list.innerHTML=rows.slice(0,visible).map(([ticker,result,checks])=>
+  '<li><strong>'+esc(ticker)+'</strong><span>'+esc(Object.hasOwn(terminalLabels,result)?terminalLabels[result]:result)+
+  '</span><small>'+esc(checks.map(check=>Object.hasOwn(terminalRules,check)?terminalRules[check]:check).join(" · "))+'</small></li>').join("");
+}
+function stopTerminal(){
+ clearInterval(terminalState.timer);
+ terminalState.timer=null;
+}
+function runTerminalPlayback(all=false){
+ const {rows}=terminalRows();
+ stopTerminal();
+ terminalState.count=all||matchMedia("(prefers-reduced-motion: reduce)").matches?rows.length:0;
+ paintTerminalRows();
+ if(terminalState.count>=rows.length)return;
+ terminalState.timer=setInterval(()=>{
+  if(!tradingRoomActive()||terminalState.mode!=="terminal"){stopTerminal();return;}
+  terminalState.count=Math.min(rows.length,terminalState.count+Math.max(1,Math.ceil(rows.length/40)));
+  paintTerminalRows();
+  const list=$("terminal-rows");
+  if(list)list.scrollTop=list.scrollHeight;
+  if(terminalState.count===rows.length)stopTerminal();
+ },190);
+}
+
 function tradingRoom(){
  return '<section class="trading-room" aria-labelledby="trading-title">'+
   '<header class="trading-mast"><div><h2 id="trading-title">Sala de trading</h2>'+
   '<p>Señales de los algoritmos para tu operativa manual.</p></div>'+
   '<div class="trading-feed"><span id="trading-published" role="status">'+esc(tradingStatus())+'</span>'+
   '<button type="button" data-action="live-signals-refresh">Actualizar</button></div></header>'+
-  '<div class="trading-workspace"><p class="trading-cadence">La sala consulta el diario cada 30 segundos. Las señales aparecen cuando cada motor las publica. Los motores actuales trabajan con datos de sesión.</p>'+
+  '<div class="trading-workspace"><div class="terminal-mode" role="group" aria-label="Vista de la sala">'+
+  button("Señales","trading-mode","signals","outline-btn")+button("Terminal de análisis","trading-mode","terminal","outline-btn")+
+  '</div><p class="trading-cadence">La sala consulta el diario cada 30 segundos. Las señales aparecen cuando cada motor las publica. Los motores actuales trabajan con datos de sesión.</p>'+
   '<div class="trading-controls"><div><label for="trading-date">Sesión</label><select id="trading-date"'+
    (tradingDay()?"":" disabled")+'>'+tradingDates()+'</select></div>'+
   '<div><label for="trading-algorithm">Algoritmo</label><select id="trading-algorithm"'+
@@ -606,6 +740,23 @@ function paintTradingRoom(){
   chip.setAttribute("aria-pressed",String(chip.dataset.value===tradingFilter.side));
   chip.querySelector("span").textContent=model.plan?model.counts[chip.dataset.value]:"—";
  }
+ const terminal=terminalState.mode==="terminal";
+ for(const tab of document.querySelectorAll("[data-action='trading-mode']")){
+  tab.setAttribute("aria-pressed",String(tab.dataset.value===terminalState.mode));
+ }
+ document.querySelector(".trading-filters").hidden=terminal;
+ if(terminal){
+  const content=terminalHTML();
+  if(results.dataset.terminal!==content){
+   results.innerHTML=content;
+   results.dataset.terminal=content;
+  }
+  paintTerminalRows();
+  paintTerminalActivity();
+  void refreshTerminalActivity();
+  return;
+ }
+ delete results.dataset.terminal;
  const fillsOpen=results.querySelector(".trading-fills")?.open;
  results.innerHTML=tradingResults(model);
  if(fillsOpen&&results.querySelector(".trading-fills"))results.querySelector(".trading-fills").open=true;
@@ -658,9 +809,11 @@ function refreshActiveMonitoring(){
 }
 document.addEventListener("visibilitychange",()=>{
  refreshActiveMonitoring();
+ void refreshTerminalActivity();
  void refreshLiveSignals();
 });
 setInterval(refreshActiveMonitoring,LIVE_REFRESH_MS);
+setInterval(()=>{void refreshTerminalActivity();},LIVE_REFRESH_MS);
 setInterval(()=>{void refreshLiveSignals();},TRADING_REFRESH_MS);
 
 function verifyExecutionHistory(doc){
@@ -1293,7 +1446,8 @@ function methodology(){
  ["Comparaciones","Comparar sólo campañas con fechas, universo, referencia y reglas compatibles. No mezclar distintos grupos de comparación históricos ni presentar una simulación como rentabilidad con dinero real."],
  ["Tesis","Valoraciones bajo hipótesis, crecimiento, múltiplos y rentabilidad requerida, con criterios de refutación."],
  ["Estado de los modelos","El código migrado incluye motores clásicos, aprendizaje semanal, series temporales y evolución paramétrica. Cada estrategia conserva su estado; los modelos o datos ausentes no se sustituyen por resultados inventados."],
- ["Auditoría pública","Datos licenciados, fuentes temporales, validación fuera de muestra, trazabilidad y monitorización antes de atribuir capacidad predictiva."]
+ ["Auditoría pública","Datos licenciados, fuentes temporales, validación fuera de muestra, trazabilidad y monitorización antes de atribuir capacidad predictiva."],
+ ["Robustez del backtest","El protocolo combina ventanas sucesivas fuera de muestra, Monte Carlo por bloques de retornos y cambios pequeños en cada parámetro congelado. Las pruebas usan costes y una referencia comparable. Un resultado alto por sí solo no acredita la estrategia."]
  ].map(([a,b])=>card('<h3>'+esc(a)+'</h3><p>'+esc(b)+'</p>')).join("")+'</div>'+
  disclaimer("Todos los activos del sitio se publican mediante una lista blanca. Que los archivos nuevos carezcan de referencias personales no demuestra anonimato absoluto si existe material anterior correlacionable.");
 }
@@ -1441,7 +1595,21 @@ $("app").addEventListener("click",e=>{
   }
  }
  else if(action==="live-session-refresh"){void refreshLiveSession(true);}
- else if(action==="live-signals-refresh"){void refreshLiveSignals(true);}
+ else if(action==="live-signals-refresh"){void refreshLiveSignals(true);void refreshTerminalActivity(true);}
+ else if(action==="trading-mode"&&["signals","terminal"].includes(value)){
+  stopTerminal();
+  terminalState.mode=value;
+  const url=new URL(location.href);
+  if(value==="terminal")url.searchParams.set("panel","terminal");
+  else url.searchParams.delete("panel");
+  history.replaceState(history.state,"",url);
+  terminalState.count=0;
+  paintTradingRoom();
+ }
+ else if(action==="terminal-latest"){
+  stopTerminal();terminalState.count=0;terminalState.useLatest=value==="latest";paintTradingRoom();
+ }
+ else if(action==="terminal-play"||action==="terminal-all"){runTerminalPlayback(action==="terminal-all");}
  else if(action==="trading-side"&&Object.hasOwn(tradingSides,value)){
   tradingFilter.side=value;paintTradingRoom();
  }
@@ -1536,10 +1704,10 @@ $("app").addEventListener("change",e=>{
  if(el.id==="journal-select"){state.strategy=el.value;render();}
  if(el.id==="audit-ticker"){state.auditTicker=el.value;render();}
  if(el.id==="trading-date"&&signalFeed?.opening_plans?.[el.value]){
-  tradingFilter.date=el.value;paintTradingRoom();
+  stopTerminal();terminalState.count=0;terminalState.useLatest=false;tradingFilter.date=el.value;paintTradingRoom();
  }
  if(el.id==="trading-algorithm"){
-  tradingFilter.slot=el.value;
+  stopTerminal();terminalState.count=0;terminalState.useLatest=false;tradingFilter.slot=el.value;
   const url=new URL(location.href);
   if(el.value)url.searchParams.set("algorithm",el.value);
   else url.searchParams.delete("algorithm");
@@ -1564,7 +1732,11 @@ $("app").addEventListener("change",e=>{
  }
 });
 $("app").addEventListener("input",e=>{
- if(e.target.id==="trading-ticker"){tradingFilter.ticker=e.target.value;paintTradingRoom();}
+ if(e.target.id==="trading-ticker"){
+  stopTerminal();terminalState.count=Number.MAX_SAFE_INTEGER;
+  tradingFilter.ticker=e.target.value;paintTradingRoom();
+  if(terminalState.mode==="terminal")paintTerminalRows();
+ }
  if(e.target.id==="glossary-query"){
   const query=e.target.value;
   const results=$("glossary-results");if(results)results.innerHTML=glossaryRows(query);
@@ -1597,6 +1769,8 @@ function readViewFromURL(){
  state.algorithmId=new URLSearchParams(location.search).get("algorithm");
  if(tradingRoomActive()){
   const id=state.algorithmId||"";
+  terminalState.mode=new URLSearchParams(location.search).get("panel")==="terminal"?"terminal":"signals";
+  terminalState.count=0;terminalState.useLatest=false;
   const slot=Number(id.slice(3));
   tradingFilter.slot=/^IL-\d{3}$/.test(id)&&slot>=10&&slot<=44?id:"";
  }
@@ -1613,7 +1787,7 @@ async function init(){
   state.financialSankeys=verifyFinancialSankeys(await financial.json(),new Set(publication.records.map(x=>x.ticker)));
   state.publicTheses=new Map(publication.records.map(x=>[x.ticker,x]));
   state.publicThesesMetadata={...stats,published_as_of:publication.published_as_of};
-  state.data=data;state.universe=universe;readViewFromURL();render();void loadPublicCloses();void loadOfficialFx();void loadForecastLedger();void loadSecFilings();void loadOfficialYield();void loadOriginalPaper();void loadHistoricalPaper();void loadFullRoster();void loadStrategyCandidates();void loadInstitutionalPaperFeed();void loadOperationsAudit();void loadExecutionHistory();
+  state.data=data;state.universe=universe;readViewFromURL();render();void loadPublicCloses();void loadOfficialFx();void loadForecastLedger();void loadSecFilings();void loadOfficialYield();void loadOriginalPaper();void loadHistoricalPaper();void loadFullRoster();void loadStrategyCandidates();void loadInstitutionalPaperFeed();void loadOperationsAudit();void loadExecutionHistory().then(()=>{if(tradingRoomActive()&&terminalState.mode==="terminal")paintTradingRoom();});
  }catch(e){$("app").textContent="No se ha podido cargar el catálogo de emisores o el laboratorio sintético; no se muestran datos no verificados.";}
 }
 /* The public snapshot is refreshed in-browser; it never queries a market vendor.
