@@ -752,7 +752,7 @@ function paintTerminalVisual(rows,trace){
 }
 function paintTerminalRows(){
  const list=$("terminal-rows");
- if(!list)return;
+ if(!list){paintTerminalMapFrame();return;}
  const {rows,trace}=terminalRows();
  const visible=Math.min(terminalState.count,rows.length);
  const progress=list.closest(".terminal-screen").querySelector("progress");
@@ -767,6 +767,7 @@ function paintTerminalRows(){
  if(list.dataset.rows!==html){list.innerHTML=html;list.dataset.rows=html;}
  if(ledger.open&&terminalState.timer)list.scrollTop=list.scrollHeight;
  paintTerminalVisual(rows,trace);
+ paintTerminalMapFrame(rows,trace);
 }
 function stopTerminal(){
  clearInterval(terminalState.timer);
@@ -809,6 +810,95 @@ function runTerminalPlayback(action){
  paintTerminalRows();
 }
 
+const terminalFamilies=[
+ {id:"classic",label:"Clásicos S&P 500",note:"Indicadores técnicos",first:10,last:18},
+ {id:"weekly",label:"Machine learning",note:"Selección semanal y archivo",first:19,last:36},
+ {id:"ahp",label:"Multicriterio",note:"Filtros técnicos y selección",first:37,last:37},
+ {id:"fundamental",label:"Fundamental",note:"Capital Cycle y Buy The Dip",first:38,last:39},
+ {id:"timesfm",label:"TimesFM",note:"Modelos de series temporales",first:40,last:43},
+ {id:"genetic",label:"Genético",note:"Estrategia de referencia",first:44,last:44}
+];
+const mapFamily=slot=>terminalFamilies.find(family=>Number(slot.slice(3))>=family.first&&Number(slot.slice(3))<=family.last);
+let expandedFamily=null;
+
+function terminalMapHTML(){
+ if(!signalFeed)return "";
+ const day=tradingDay();
+ const plan=signalFeed.opening_plans?.[day];
+ const entries=Object.entries(signalFeed.tracks);
+ const active=mapFamily(tradingFilter.slot)?.id;
+ const selected=expandedFamily||active;
+ const count=plan?Object.values(plan.tracks).reduce((total,track)=>total+track.orders.length,0):null;
+ const branches=terminalFamilies.map((family,index)=>{
+  const destination=18+32*Math.floor(index/2)+(index%2?4:-4);
+  const d="M0 50 C35 50 40 "+destination+" 80 "+destination;
+  return '<g data-family="'+family.id+'"><path d="'+d+'"></path><path class="terminal-map-packet" pathLength="100" d="'+d+'"></path></g>';
+ }).join("");
+ const groups=terminalFamilies.map(family=>{
+  const members=entries.filter(([slot])=>mapFamily(slot)===family);
+  const orders=plan?members.reduce((total,[slot])=>total+(plan.tracks[slot]?.orders.length||0),0):null;
+  return '<button type="button" class="terminal-map-family" data-action="terminal-family" data-value="'+family.id+
+   '" data-family="'+family.id+'" aria-expanded="'+(selected===family.id)+'" aria-controls="terminal-map-algorithms">'+
+   '<span class="terminal-map-dot" aria-hidden="true"></span><span><strong>'+esc(family.label)+'</strong><small>'+
+   esc(family.note)+'</small></span><span class="terminal-map-order-count">'+(orders??"—")+'<small>órdenes</small></span></button>';
+ }).join("");
+ const family=terminalFamilies.find(item=>item.id===selected);
+ const algorithms=family?entries.filter(([slot])=>mapFamily(slot)===family).map(([slot,track])=>{
+  const entry=plan?.tracks[slot];
+  const archived=entry?.status==="archived"?" · Archivo":"";
+  return '<button type="button" data-action="terminal-map-algorithm" data-value="'+esc(slot)+
+   '" aria-pressed="'+(tradingFilter.slot===slot)+'"><small>'+esc(slot+archived)+'</small>'+esc(track.label)+'</button>';
+ }).join(""):"";
+ const totals=[[terminalFamilies.length,"Familias"],[entries.length,"Carteras con diario"],[count??"—","Órdenes previstas"]];
+ const canPlay=terminalRows().rows.length>0;
+ return '<div class="terminal-map-head"><div><h3 id="terminal-map-title">Mapa de motores</h3>'+
+  '<p>Sesión '+esc(shortPaperDate(day))+' · Elige una familia y un algoritmo.</p></div>'+
+  '<dl class="terminal-map-totals">'+totals.map(([value,label])=>'<div><dt>'+esc(label)+'</dt><dd>'+esc(value)+'</dd></div>').join("")+
+  '</dl></div><div class="terminal-map-diagram">'+
+  '<div class="terminal-map-origin"><div class="terminal-map-hub"><span>MIDAS</span><small id="terminal-map-progress">Selección de motor</small></div></div>'+
+  '<svg class="terminal-map-links" viewBox="0 0 80 100" preserveAspectRatio="none" aria-hidden="true" focusable="false">'+branches+'</svg>'+
+  '<div class="terminal-map-families">'+groups+'</div></div>'+
+  '<div id="terminal-map-algorithms"'+(algorithms?"":' hidden')+'>'+
+  (algorithms?'<h4>'+esc(family.label)+'</h4><div class="terminal-map-choices">'+algorithms+'</div>':"")+'</div>'+
+  '<div class="terminal-map-log"><div><h4>Registro de reproducción</h4>'+
+  (canPlay?'<button type="button" class="outline-btn" id="terminal-map-play" data-action="terminal-play">Reproducir</button>':"")+
+  '</div><div id="terminal-map-events"></div></div>';
+}
+function paintTerminalMap(){
+ const map=$("terminal-map");
+ if(!map)return;
+ const html=terminalMapHTML();
+ if(map.dataset.content!==html){
+  const focused=map.contains(document.activeElement)?document.activeElement:null;
+  map.innerHTML=html;
+  map.dataset.content=html;
+  if(focused?.id)$(focused.id)?.focus({preventScroll:true});
+  else if(focused?.dataset.action){
+   [...map.querySelectorAll("button")].find(button=>button.dataset.action===focused.dataset.action&&
+    button.dataset.value===focused.dataset.value)?.focus({preventScroll:true});
+  }
+ }
+}
+function paintTerminalMapFrame(rows=[],trace=null){
+ const map=$("terminal-map"),events=$("terminal-map-events");
+ if(!map||!events)return;
+ const active=mapFamily(tradingFilter.slot)?.id;
+ for(const branch of map.querySelectorAll("[data-family]"))
+  branch.classList.toggle("is-active",branch.dataset.family===active);
+ map.dataset.playing=String(Boolean(terminalState.timer));
+ const visible=Math.min(terminalState.count,rows.length);
+ const play=$("terminal-map-play");
+ if(play)play.textContent=$("terminal-play")?.textContent||"Reproducir";
+ const progress=$("terminal-map-progress");
+ progress.textContent=rows.length?visible+" / "+rows.length+" empresas":"Selección de motor";
+ const html=visible?'<ul>'+rows.slice(Math.max(0,visible-3),visible).map(([ticker,result])=>{
+  const [label,,tone]=terminalOutcome(ticker,result,trace);
+  return '<li data-tone="'+esc(tone)+'"><strong>'+esc(ticker)+'</strong><span>'+esc(label)+'</span></li>';
+ }).join("")+'</ul>':
+  '<p>'+(rows.length?"Pulsa Reproducir para recorrer el registro.":"Selecciona un algoritmo con resultados para esta sesión.")+'</p>';
+ if(events.dataset.content!==html){events.innerHTML=html;events.dataset.content=html;}
+}
+
 function tradingRoom(){
  return '<section class="trading-room" aria-labelledby="trading-title">'+
   '<header class="trading-mast"><div><h2 id="trading-title">Sala de trading</h2>'+
@@ -826,6 +916,7 @@ function tradingRoom(){
   '<div class="trading-filters" role="group" aria-label="Tipo de señal">'+
   Object.entries(tradingSides).map(([key,label])=>'<button type="button" data-action="trading-side" data-value="'+key+
    '" aria-pressed="'+(tradingFilter.side===key)+'">'+label+' <span>—</span></button>').join("")+'</div>'+
+  '<section id="terminal-map" class="terminal-map" aria-labelledby="terminal-map-title" hidden></section>'+
   '<div id="trading-results"></div></div></section>';
 }
 function paintTradingRoom(){
@@ -850,7 +941,9 @@ function paintTradingRoom(){
   tab.setAttribute("aria-pressed",String(tab.dataset.value===terminalState.mode));
  }
  document.querySelector(".trading-filters").hidden=terminal;
+ $("terminal-map").hidden=!terminal||!signalFeed;
  if(terminal){
+  paintTerminalMap();
   const content=terminalHTML();
   if(results.dataset.terminal!==content){
    results.innerHTML=content;
@@ -1710,6 +1803,17 @@ $("app").addEventListener("click",e=>{
   history.replaceState(history.state,"",url);
   paintTradingRoom();
  }
+ else if(action==="terminal-family"&&terminalFamilies.some(family=>family.id===value)){
+  expandedFamily=value;
+  paintTerminalMap();
+  const {rows,trace}=terminalRows();
+  paintTerminalMapFrame(rows,trace);
+ }
+ else if(action==="terminal-map-algorithm"&&signalFeed?.tracks[value]){
+  const picker=$("trading-algorithm");
+  picker.value=value;
+  picker.dispatchEvent(new Event("change",{bubbles:true}));
+ }
  else if(action==="terminal-latest"){
   resetTerminal();terminalState.useLatest=value==="latest";paintTradingRoom();
  }
@@ -1812,6 +1916,7 @@ $("app").addEventListener("change",e=>{
  }
  if(el.id==="trading-algorithm"){
   resetTerminal();terminalState.useLatest=false;tradingFilter.slot=el.value;
+  expandedFamily=mapFamily(el.value)?.id||null;
   const url=new URL(location.href);
   if(el.value)url.searchParams.set("algorithm",el.value);
   else url.searchParams.delete("algorithm");
@@ -1874,7 +1979,7 @@ function readViewFromURL(){
  if(tradingRoomActive()){
   const id=state.algorithmId||"";
   terminalState.mode=new URLSearchParams(location.search).get("panel")==="terminal"?"terminal":"signals";
-  resetTerminal();terminalState.useLatest=false;
+  resetTerminal();terminalState.useLatest=false;expandedFamily=null;
   const slot=Number(id.slice(3));
   tradingFilter.slot=/^IL-\d{3}$/.test(id)&&slot>=10&&slot<=44?id:"";
  }
