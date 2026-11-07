@@ -1,6 +1,6 @@
 """Offline regression for the audited operations evidence exporter."""
 import unittest
-from build_operations_audit import build, normalize_ledger, rule_reason, price_history, pending_signals
+from build_operations_audit import build, normalize_ledger, rule_reason, price_history, pending_signals, live_book
 
 class OperationsAuditTests(unittest.TestCase):
     @classmethod
@@ -23,6 +23,16 @@ class OperationsAuditTests(unittest.TestCase):
         self.assertEqual(signals["AAPL"]["limit_price"], 221.25)
         self.assertEqual(signals["KEEP"]["action"], "hold")
         self.assertIsNone(signals["KEEP"]["decision_session"])
+
+    def test_paused_book_keeps_its_signal_date_when_peers_advance(self):
+        book = {"equity": [{"date": "2026-11-04"}], "last_signal_session": "2026-10-30",
+                "paused_missing_quotes": {"date": "2026-11-06", "reason": "unreconciled_session"}}
+        track = live_book({"label": "ARIMA"}, book, "weekly_ml_daily_state/ledger.json",
+                          {"last_signal_session": "2026-11-06"})
+        self.assertEqual(track["decision_session"], "2026-10-30")
+        self.assertEqual(track["session"], "2026-11-04")
+        self.assertEqual(track["pause_date"], "2026-11-06")
+        self.assertEqual(track["pause_reason"], "unreconciled_session")
 
     def test_live_feed_covers_active_tracks_and_uses_dated_fills(self):
         signal_tracks = {}

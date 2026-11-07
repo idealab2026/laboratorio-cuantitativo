@@ -455,9 +455,11 @@ def live_book(original, book, source, parent, key=None):
     history = book.get("equity") or []
     latest = (date(history[-1].get("date")) if history else date(book.get("last_session"))) or latest
     signals = pending_signals(book)
-    decision = max([d for d in [date(book.get("last_signal_session")),
-                    date((parent or {}).get("last_signal_session")),
-                    *(item["decision_session"] for item in signals)] if d], default=None)
+    last_signal = book.get("last_signal_session", (parent or {}).get("last_signal_session"))
+    decision = max([d for d in [date(last_signal), *(item["decision_session"] for item in signals)] if d],
+                   default=None)
+    pause = book.get("paused_missing_quotes") or {}
+    pause_reason = pause.get("reason") if isinstance(pause, dict) else None
     actions = normalize_ledger(book, source).get(latest, [])
     if source == "AGENTE/genetic_invest_agent/registro_historico/diario_portfolio_forward_2026-10-12.json":
         actions = [{"ticker": trade["ticker"], "side": trade["side"].lower(),
@@ -467,7 +469,10 @@ def live_book(original, book, source, parent, key=None):
     executions = [{"ticker": item["ticker"], "action": item["side"], "price": item["price"],
                    "decision_session": item["signal_date"]} for item in actions]
     return {**base, "session": latest, "decision_session": decision, "signals": signals,
-            "status": "paused" if book.get("paused_missing_quotes") else "recorded",
+            "status": "paused" if pause else "recorded",
+            "pause_date": date(pause.get("date")) if isinstance(pause, dict) else None,
+            "pause_reason": pause_reason if pause_reason in
+            ("missing_ohlc", "unreconciled_session", "expired_open") else None,
             "executions": executions,
             "analysis": analysis_trace(book, source, parent, key)}
 
