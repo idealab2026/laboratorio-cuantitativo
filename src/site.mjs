@@ -328,6 +328,12 @@ function verifyLiveSignals(doc){
       !validSignalTicker(row[0])||!Object.hasOwn(terminalLabels,row[1])||!Array.isArray(row[2])||
       row[2].some(check=>!Object.hasOwn(terminalRules,check)))))
    throw Error("Registro de análisis no verificable");
+  if(trace?.ratios!==undefined&&(!trace.ratios||typeof trace.ratios!=="object"||
+     Array.isArray(trace.ratios)||Object.entries(trace.ratios).some(([ticker,values])=>
+      !validSignalTicker(ticker)||!values||typeof values!=="object"||Array.isArray(values)||
+      Object.entries(values).some(([key,value])=>!Object.hasOwn(terminalRules,key)||
+       !Number.isFinite(value)||value<0||value>1))))
+   throw Error("Indicadores del análisis no verificables");
   for(const fill of track.executions){
    if(!/^[A-Z0-9.-]{1,14}$/.test(fill.ticker)||!["buy","sell"].includes(fill.action)||
       !validPrice(fill.price)||!validDate(fill.decision_session))throw Error("Operación no verificable");
@@ -579,7 +585,7 @@ function tradingResults(model){
    "Los diarios publicados para esta fecha no muestran operaciones con estos filtros.":
    "La copia actual del diario no contiene ejecuciones para esta fecha y selección.")+'</p>')+'</details>';
 }
-const terminalState={mode:"signals",useLatest:false,count:0,timer:null,activity:new Map(),pending:new Set()};
+const terminalState={mode:"signals",useLatest:false,count:0,stage:0,timer:null,activity:new Map(),pending:new Set()};
 const terminalLabels={
  buy:"Regla de compra activada",sell:"Regla de venta activada",no_trigger:"Sin activación de regla",
  selected:"Seleccionada",passed:"Superó el filtro técnico",filtered:"Descartada en el filtro técnico"
@@ -593,9 +599,13 @@ function terminalRows(){
  const day=tradingDay();
  const search=tradingFilter.ticker.trim().toUpperCase();
  if(trace&&(trace.date===day||terminalState.useLatest))return {trace,rows:trace.rows.filter(([ticker])=>ticker.includes(search))};
- const orders=signalFeed?.opening_plans?.[day]?.tracks[tradingFilter.slot]?.orders||[];
- const rows=orders.filter(order=>order.ticker.includes(search)).map(order=>
+ const plan=signalFeed?.opening_plans?.[day]?.tracks[tradingFilter.slot];
+ const rows=(plan?.orders||[]).filter(order=>order.ticker.includes(search)).map(order=>
   [order.ticker,signalNames[order.action],["Señal del "+shortPaperDate(order.decision_session)]]);
+ if(plan?.status==="recorded"){
+  for(const ticker of plan.holdings.filter(ticker=>ticker.includes(search)))
+   rows.push([ticker,"Mantener",["Posición abierta sin orden prevista"]]);
+ }
  return {trace:null,rows};
 }
 function terminalActivityHTML(){
@@ -654,7 +664,7 @@ function terminalHTML(){
  };
  const otherDate=!trace&&track.analysis?.date;
  const description=trace?notes[trace.method]:
-  "Señales previstas para la apertura. El diario de esta fecha no incluye el análisis empresa por empresa.";
+  "Órdenes previstas para la apertura y posiciones abiertas. El diario de esta fecha no incluye el análisis empresa por empresa.";
  const more=terminalState.useLatest&&trace?.date!==tradingDay()?
   button("Volver al registro de la sesión","terminal-latest","selected","outline-btn"):
   otherDate?button("Ver análisis del "+shortPaperDate(otherDate),"terminal-latest","latest","outline-btn"):"";
@@ -663,45 +673,140 @@ function terminalHTML(){
   '</h4><p>'+esc(description)+'</p>'+more+
   '<p><a href="./index.html?view=algorithm&amp;algorithm='+esc(tradingFilter.slot)+'">Consultar reglas del algoritmo</a></p></div>'+
   '<div class="terminal-buttons">'+(rows.length?
-   '<button type="button" data-action="terminal-play">Reproducir</button>'+
+   '<button type="button" id="terminal-play" data-action="terminal-play">Reproducir</button>'+
+   '<button type="button" data-action="terminal-next">Siguiente empresa</button>'+
    '<button type="button" data-action="terminal-all">Ver todo</button>':"")+'</div></div>'+
   (trace?.excluded?'<p class="terminal-note">'+esc(trace.excluded)+' incidencias de datos registradas.</p>':"")+
   (rows.length?'<div class="terminal-screen"><div class="terminal-progress">'+
    '<progress aria-label="Empresas mostradas" max="'+rows.length+'" value="0"></progress><span id="terminal-count"></span></div>'+
-   '<ol id="terminal-rows" aria-label="Resultados registrados por empresa"></ol></div>':
+   '<div id="terminal-visual" class="terminal-visual"></div>'+
+   '<details class="terminal-ledger"><summary>Registro de empresas</summary>'+
+   '<ol id="terminal-rows" aria-label="Resultados registrados por empresa"></ol></details></div>':
    '<p class="terminal-note">No hay resultados publicados para esta fecha y filtro.</p>')+
   '<p class="terminal-note">La reproducción recorre datos ya publicados. El estado del motor se consulta cada tres minutos.</p></div>';
+}
+const terminalPercent=new Intl.NumberFormat("es-ES",{style:"percent",maximumFractionDigits:1});
+
+function terminalOutcome(ticker,result,trace){
+ if(["buy","sell"].includes(result))return [signalNames[result],"Regla activada antes de aplicar los límites de cartera",result];
+ if(result==="no_trigger"){
+  const date=trace?.date;
+  const day=Object.keys(signalFeed?.opening_plans||{}).find(day=>signalFeed.opening_plans[day].previous_session===date);
+  const plan=signalFeed?.opening_plans?.[day]?.tracks[tradingFilter.slot];
+  if(plan?.status==="recorded"&&plan.holdings.includes(ticker))
+   return ["Mantener","Posición abierta sin orden prevista para la siguiente apertura","hold"];
+  return ["Sin señal","La regla no activó una orden","neutral"];
+ }
+ if(result==="Mantener")return [result,"Posición abierta sin orden prevista para la apertura","hold"];
+ if(result==="selected")return ["Seleccionada","El algoritmo incluyó la empresa en su selección","buy"];
+ if(result==="passed")return ["Pasa el filtro","Superó el filtro técnico y quedó fuera de la selección final","neutral"];
+ if(result==="filtered")return ["Descartada","Quedó fuera en el filtro técnico","sell"];
+ return [result,"Señal prevista para la apertura",result==="Comprar"?"buy":result==="Vender"?"sell":"neutral"];
+}
+function terminalCriteria(ticker,checks,trace){
+ if(trace?.method==="ahp"){
+  const ratios=trace.ratios?.[ticker]||{};
+  return '<small class="terminal-metrics-label">% de sesiones con la condición</small>'+
+   '<ul class="terminal-metrics">'+Object.entries(terminalRules).map(([key,label])=>{
+    const value=ratios[key];
+    const passed=checks.includes(key);
+    return '<li data-pass="'+passed+'"><span>'+esc(label)+'</span>'+
+     (value===undefined?'<span>Sin valor</span>':
+      '<div class="terminal-meter" aria-hidden="true"><i style="--level:'+100*value+'%"></i></div>'+
+      '<strong>'+esc(terminalPercent.format(value))+'</strong>')+
+     '<small>'+(passed?"Cumple":"No cumple")+'</small></li>';
+   }).join("")+'</ul>';
+ }
+ const text=trace?.method==="classic"?"Regla técnica evaluada":
+  trace?.method==="monthly"?"Selección del rebalanceo":checks.join(" · ");
+ return '<p class="terminal-evidence">'+esc(text)+'</p>';
+}
+function terminalConnector(direction,branched){
+ const outgoing=["M0 50 C25 50 37 14 64 14","M0 50 C26 50 38 38 64 38",
+  "M0 50 C26 50 38 62 64 62","M0 50 C25 50 37 86 64 86"];
+ const incoming=["M0 14 C27 14 39 50 64 50","M0 38 C26 38 38 50 64 50",
+  "M0 62 C26 62 38 50 64 50","M0 86 C27 86 39 50 64 50"];
+ const paths=branched?(direction==="out"?outgoing:incoming):["M0 50 H64"];
+ return '<div class="terminal-wire" data-wire="'+direction+'" aria-hidden="true">'+
+  '<svg viewBox="0 0 64 100" preserveAspectRatio="none" focusable="false">'+paths.map(path=>
+   '<path d="'+path+'"></path><path class="terminal-packet" pathLength="100" d="'+path+'"></path>').join("")+'</svg></div>';
+}
+function paintTerminalVisual(rows,trace){
+ const node=$("terminal-visual");
+ if(!node||!rows.length)return;
+ const {stage,count}=terminalState;
+ const index=Math.max(0,Math.min(rows.length-1,stage===2?count-1:count));
+ const [ticker,result,checks]=rows[index];
+ const [outcome,detail,tone]=terminalOutcome(ticker,result,trace);
+ const steps=["Empresa","Evidencia","Resultado"];
+ const html='<ol class="terminal-steps" aria-label="Pasos de la reproducción">'+steps.map((label,step)=>
+  '<li'+(step===stage?' aria-current="step"':"")+'><span>0'+(step+1)+'</span>'+label+'</li>').join("")+'</ol>'+
+  '<div class="terminal-board" data-stage="'+stage+'">'+
+  '<div class="terminal-company"><span>EMPRESA '+(index+1)+' / '+rows.length+'</span><strong>'+esc(ticker)+'</strong></div>'+terminalConnector("out",trace?.method==="ahp")+
+  '<div class="terminal-evaluation">'+(stage>=1?terminalCriteria(ticker,checks,trace):
+   '<p class="terminal-evidence">'+(terminalState.timer?"Abriendo el registro…":"Lista para reproducir")+'</p>')+'</div>'+terminalConnector("in",trace?.method==="ahp")+
+  '<div class="terminal-outcome" data-tone="'+(stage===2?tone:"neutral")+'"><span>Resultado registrado</span>'+
+  (stage===2?'<strong>'+esc(outcome)+'</strong><small>'+esc(detail)+'</small>':
+   '<strong class="terminal-awaiting">—</strong>')+'</div></div>';
+ if(node.dataset.frame!==html){node.innerHTML=html;node.dataset.frame=html;}
 }
 function paintTerminalRows(){
  const list=$("terminal-rows");
  if(!list)return;
- const {rows}=terminalRows();
+ const {rows,trace}=terminalRows();
  const visible=Math.min(terminalState.count,rows.length);
- const progress=list.parentElement.querySelector("progress");
+ const progress=list.closest(".terminal-screen").querySelector("progress");
  progress.value=visible;
  $("terminal-count").textContent=visible+" / "+rows.length;
- list.innerHTML=rows.slice(0,visible).map(([ticker,result,checks])=>
+ const play=$("terminal-play");
+ play.textContent=terminalState.timer?"Pausar":visible&&visible<rows.length?"Continuar":"Reproducir";
+ const ledger=list.closest("details");
+ const html=rows.slice(0,visible).map(([ticker,result,checks])=>
   '<li><strong>'+esc(ticker)+'</strong><span>'+esc(Object.hasOwn(terminalLabels,result)?terminalLabels[result]:result)+
   '</span><small>'+esc(checks.map(check=>Object.hasOwn(terminalRules,check)?terminalRules[check]:check).join(" · "))+'</small></li>').join("");
+ if(list.dataset.rows!==html){list.innerHTML=html;list.dataset.rows=html;}
+ if(ledger.open&&terminalState.timer)list.scrollTop=list.scrollHeight;
+ paintTerminalVisual(rows,trace);
 }
 function stopTerminal(){
  clearInterval(terminalState.timer);
  terminalState.timer=null;
 }
-function runTerminalPlayback(all=false){
- const {rows}=terminalRows();
+function resetTerminal(){
  stopTerminal();
- terminalState.count=all||matchMedia("(prefers-reduced-motion: reduce)").matches?rows.length:0;
- paintTerminalRows();
- if(terminalState.count>=rows.length)return;
+ terminalState.count=0;
+ terminalState.stage=0;
+}
+function runTerminalPlayback(action){
+ const {rows}=terminalRows();
+ if(!rows.length)return;
+ const reduced=matchMedia("(prefers-reduced-motion: reduce)").matches;
+ if(action==="terminal-play"&&terminalState.timer){stopTerminal();paintTerminalRows();return;}
+ const single=action==="terminal-next";
+ stopTerminal();
+ if(action==="terminal-all"||reduced){
+  terminalState.count=action==="terminal-all"||!single?rows.length:Math.min(terminalState.count+1,rows.length);
+  terminalState.stage=2;
+  if(action==="terminal-all")$("terminal-rows").closest("details").open=true;
+  paintTerminalRows();
+  return;
+ }
+ if(terminalState.count>=rows.length)resetTerminal();
+ if(terminalState.stage===2)terminalState.stage=0;
  terminalState.timer=setInterval(()=>{
   if(!tradingRoomActive()||terminalState.mode!=="terminal"){stopTerminal();return;}
-  terminalState.count=Math.min(rows.length,terminalState.count+Math.max(1,Math.ceil(rows.length/40)));
+  const total=terminalRows().rows.length;
+  if(terminalState.stage===2)terminalState.stage=0;
+  else{
+   terminalState.stage++;
+   if(terminalState.stage===2){
+    terminalState.count=Math.min(total,terminalState.count+1);
+    if(single||terminalState.count>=total)stopTerminal();
+   }
+  }
   paintTerminalRows();
-  const list=$("terminal-rows");
-  if(list)list.scrollTop=list.scrollHeight;
-  if(terminalState.count===rows.length)stopTerminal();
- },190);
+ },430);
+ paintTerminalRows();
 }
 
 function tradingRoom(){
@@ -1597,19 +1702,18 @@ $("app").addEventListener("click",e=>{
  else if(action==="live-session-refresh"){void refreshLiveSession(true);}
  else if(action==="live-signals-refresh"){void refreshLiveSignals(true);void refreshTerminalActivity(true);}
  else if(action==="trading-mode"&&["signals","terminal"].includes(value)){
-  stopTerminal();
+  resetTerminal();
   terminalState.mode=value;
   const url=new URL(location.href);
   if(value==="terminal")url.searchParams.set("panel","terminal");
   else url.searchParams.delete("panel");
   history.replaceState(history.state,"",url);
-  terminalState.count=0;
   paintTradingRoom();
  }
  else if(action==="terminal-latest"){
-  stopTerminal();terminalState.count=0;terminalState.useLatest=value==="latest";paintTradingRoom();
+  resetTerminal();terminalState.useLatest=value==="latest";paintTradingRoom();
  }
- else if(action==="terminal-play"||action==="terminal-all"){runTerminalPlayback(action==="terminal-all");}
+ else if(["terminal-play","terminal-all","terminal-next"].includes(action)){runTerminalPlayback(action);}
  else if(action==="trading-side"&&Object.hasOwn(tradingSides,value)){
   tradingFilter.side=value;paintTradingRoom();
  }
@@ -1704,10 +1808,10 @@ $("app").addEventListener("change",e=>{
  if(el.id==="journal-select"){state.strategy=el.value;render();}
  if(el.id==="audit-ticker"){state.auditTicker=el.value;render();}
  if(el.id==="trading-date"&&signalFeed?.opening_plans?.[el.value]){
-  stopTerminal();terminalState.count=0;terminalState.useLatest=false;tradingFilter.date=el.value;paintTradingRoom();
+  resetTerminal();terminalState.useLatest=false;tradingFilter.date=el.value;paintTradingRoom();
  }
  if(el.id==="trading-algorithm"){
-  stopTerminal();terminalState.count=0;terminalState.useLatest=false;tradingFilter.slot=el.value;
+  resetTerminal();terminalState.useLatest=false;tradingFilter.slot=el.value;
   const url=new URL(location.href);
   if(el.value)url.searchParams.set("algorithm",el.value);
   else url.searchParams.delete("algorithm");
@@ -1733,7 +1837,7 @@ $("app").addEventListener("change",e=>{
 });
 $("app").addEventListener("input",e=>{
  if(e.target.id==="trading-ticker"){
-  stopTerminal();terminalState.count=Number.MAX_SAFE_INTEGER;
+  stopTerminal();terminalState.count=Number.MAX_SAFE_INTEGER;terminalState.stage=2;
   tradingFilter.ticker=e.target.value;paintTradingRoom();
   if(terminalState.mode==="terminal")paintTerminalRows();
  }
@@ -1770,7 +1874,7 @@ function readViewFromURL(){
  if(tradingRoomActive()){
   const id=state.algorithmId||"";
   terminalState.mode=new URLSearchParams(location.search).get("panel")==="terminal"?"terminal":"signals";
-  terminalState.count=0;terminalState.useLatest=false;
+  resetTerminal();terminalState.useLatest=false;
   const slot=Number(id.slice(3));
   tradingFilter.slot=/^IL-\d{3}$/.test(id)&&slot>=10&&slot<=44?id:"";
  }

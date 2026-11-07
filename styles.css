@@ -984,3 +984,65 @@ p{line-height:1.6;text-align:justify;text-align-last:left;hyphens:auto}p.lead{co
  #terminal-rows small{grid-column:2}
  #terminal-rows small:empty{display:none}
 }
+
+/* Playback presents the journal as a three-stage analysis desk. */
+.terminal-visual{padding:clamp(12px,2vw,22px)}
+.terminal-steps{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));list-style:none;margin:0 0 14px;padding:0;gap:6px}
+.terminal-steps li{display:flex;align-items:center;gap:7px;padding:8px 4px;border-bottom:2px solid #365269;color:#b8cdde;font-size:.76rem}
+.terminal-steps li span{font:700 .72rem ui-monospace,monospace}
+.terminal-steps li[aria-current="step"]{border-color:#74e0ba;color:#e6fff5}
+.terminal-board{
+ display:grid;grid-template-columns:minmax(125px,.8fr) clamp(24px,5vw,64px) minmax(0,1.8fr) clamp(24px,5vw,64px) minmax(150px,1fr);
+ gap:0;min-height:168px;align-items:stretch
+}
+.terminal-wire{min-width:0;display:flex;align-items:center}
+.terminal-wire svg{display:block;width:100%;height:100%;min-height:96px;overflow:visible}
+.terminal-wire path{fill:none;stroke:#567994;stroke-width:1.15;vector-effect:non-scaling-stroke}
+.terminal-wire .terminal-packet{opacity:0;stroke:#9df9d4;stroke-width:2.6;stroke-dasharray:17 100;stroke-dashoffset:17;stroke-linecap:round}
+.terminal-board[data-stage="1"] [data-wire="out"] .terminal-packet,
+.terminal-board[data-stage="2"] [data-wire="in"] .terminal-packet{animation:terminal-packet .40s ease-out both}
+@keyframes terminal-packet{0%{opacity:0;stroke-dashoffset:17}20%,80%{opacity:1}100%{opacity:0;stroke-dashoffset:-100}}
+.terminal-company,.terminal-evaluation,.terminal-outcome{
+ position:relative;min-width:0;border:1px solid #38536d;border-radius:8px;background:#122a43;padding:13px
+}
+.terminal-company,.terminal-outcome{display:flex;flex-direction:column;justify-content:center;gap:6px;overflow:hidden}
+.terminal-company>span,.terminal-outcome>span,.terminal-metrics-label{color:#b4cbdf;font-size:.73rem}
+.terminal-company strong{color:#e7fff7;font:800 clamp(1.5rem,4vw,3.05rem)/1.1 ui-monospace,monospace;overflow-wrap:anywhere}
+.terminal-board[data-stage="0"] .terminal-company strong{animation:terminal-reveal .26s ease-out both}
+.terminal-board[data-stage="0"] .terminal-company::after{
+ content:"";position:absolute;inset:0 0 auto;height:2px;background:#74e0ba;
+ box-shadow:0 0 14px #74e0ba;animation:terminal-scan .42s ease-out both;pointer-events:none
+}
+.terminal-evaluation{display:flex;flex-direction:column;justify-content:center}
+.terminal-evidence{margin:0;color:#b4cbdf;font-size:.86rem}
+.terminal-metrics{list-style:none;margin:6px 0 0;padding:0;display:grid;gap:6px}
+.terminal-metrics li{display:grid;grid-template-columns:minmax(72px,auto) minmax(0,1fr) auto auto;align-items:center;gap:7px;font-size:.72rem}
+.terminal-metrics li strong{font-variant-numeric:tabular-nums;color:#e5f3ff}
+.terminal-metrics li small{color:#b8cdde;text-align:right;min-width:53px}
+.terminal-metrics li[data-pass="true"] small{color:#91edca}
+.terminal-meter{height:4px;border-radius:4px;background:#37516a;overflow:hidden}
+.terminal-meter i{display:block;width:var(--level);height:100%;border-radius:inherit;background:#8eb1d6;transform-origin:left}
+.terminal-board[data-stage="1"] .terminal-meter i{animation:terminal-meter .35s ease-out both}
+.terminal-metrics li[data-pass="true"] .terminal-meter i{background:#74e0ba}
+.terminal-outcome strong{font-size:clamp(1.05rem,2vw,1.65rem);line-height:1.18;overflow-wrap:anywhere}
+.terminal-outcome small{color:#c9dcec;font-size:.75rem}
+.terminal-outcome[data-tone="buy"]{border-color:#63c49f;color:#a6f7d8}
+.terminal-outcome[data-tone="sell"]{border-color:#e29397;color:#ffd0d3}
+.terminal-outcome[data-tone="hold"]{border-color:#e9c78a;color:#ffe1a4}
+.terminal-board[data-stage="2"] .terminal-outcome strong{animation:terminal-reveal .25s ease-out both}
+.terminal-awaiting{color:#a7bfd4}
+.terminal-ledger summary{padding:10px 16px;border-top:1px solid #3a5269;cursor:pointer;font-size:.79rem}
+.terminal-ledger summary:focus-visible{outline:2px solid #74e0ba;outline-offset:-3px}
+@keyframes terminal-scan{from{transform:translateY(0);opacity:1}to{transform:translateY(105px);opacity:0}}
+@keyframes terminal-meter{from{transform:scaleX(0)}to{transform:scaleX(1)}}
+@keyframes terminal-reveal{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:translateY(0)}}
+@media(max-width:810px){
+ .terminal-board{grid-template-columns:1fr;min-height:0}
+ .terminal-wire{height:20px;justify-content:center;overflow:hidden}
+ .terminal-wire svg{width:24px;height:24px;min-height:0;transform:rotate(90deg)}
+ .terminal-company,.terminal-outcome{min-height:80px}
+ .terminal-evaluation{min-height:120px}
+}
+@media(prefers-reduced-motion:reduce){
+ .terminal-board *,.terminal-board *::after{animation:none!important}
+}
