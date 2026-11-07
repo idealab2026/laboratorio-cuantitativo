@@ -1,7 +1,7 @@
 {
-  "age_seconds": 468,
+  "age_seconds": 8663,
   "captured_at_utc": "2026-11-06T23:38:42+00:00",
-  "checked_at_utc": "2026-11-06T23:46:30.021492+00:00",
+  "checked_at_utc": "2026-11-07T02:03:05.962561+00:00",
   "consumers": {
     "buy_the_dip_strategy": {
       "ledger_status": "observed",
@@ -70,11 +70,10 @@
       "paused_book_ids": [
         "arima_return",
         "lgbm_ranker",
-        "lstm_return",
         "mlp_return"
       ],
-      "paused_books": 4,
-      "updated_books": 5,
+      "paused_books": 3,
+      "updated_books": 6,
       "valuation_sessions": {
         "arima_return": "2026-11-04",
         "benchmark_rsp": "2026-11-06",
@@ -83,42 +82,37 @@
         "lgbm_direction": "2026-11-06",
         "lgbm_ranker": "2026-11-04",
         "lgbm_return": "2026-11-06",
-        "lstm_return": "2026-11-04",
+        "lstm_return": "2026-11-06",
         "mlp_return": "2026-11-04"
       },
       "workflow_outcome": "success"
     }
   },
   "coverage": {
-    "frozen_constituents_observed": 484,
-    "missing": 19,
-    "observed": 485,
+    "frozen_constituents_observed": 489,
+    "missing": 14,
+    "observed": 490,
     "requested": 504
   },
-  "effective_sha256": "bfea1f97ae96184a1d2d4667cbdf608611e54d97eef9f63f872496b80f2fd9e9",
+  "effective_sha256": "83bc3bf223004e864717fc44fec924b8df479d9b6dd9c2fad1cef9d5343eca6b",
   "engine_health": "not_assessed",
   "expected_session": "2026-11-06",
   "market": "XNYS",
   "missing_symbols": [
-    "ADP",
     "AVB",
-    "AXON",
     "BK",
     "CTRA",
     "DAY",
     "EA",
     "EQR",
     "FI",
-    "FTNT",
     "HOLX",
     "IPG",
     "K",
     "KVUE",
     "MMC",
-    "VTRS",
     "WBA",
-    "WBD",
-    "XEL"
+    "WBD"
   ],
   "policy": "common_raw_daily_primary",
   "recovered_bar_methods": {
@@ -140,9 +134,10 @@
     "ZBH": "yahoo_regular_range_daily_ocv_v1"
   },
   "revision_hashes": [
-    "bfea1f97ae96184a1d2d4667cbdf608611e54d97eef9f63f872496b80f2fd9e9"
+    "bfea1f97ae96184a1d2d4667cbdf608611e54d97eef9f63f872496b80f2fd9e9",
+    "83bc3bf223004e864717fc44fec924b8df479d9b6dd9c2fad1cef9d5343eca6b"
   ],
-  "run_id": "42313051115",
+  "run_id": "42326835075",
   "schema": "midas.xnys_source_health.v1",
   "sha256": "a631487625b0226266b3b64885e9d4e28f2a678cf4e5d3082a7aa8de688747c3",
   "status": "snapshot_verified",
