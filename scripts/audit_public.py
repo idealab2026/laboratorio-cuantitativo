@@ -23,6 +23,13 @@ if engine_manifest.exists():
     REPOSITORY |= set(engine_paths) | {"data/engine-files.json"}
     for directory in ["market_data/snapshots/XNYS","weekly_ml_state/forecasts","weekly_ml_daily_state/forecasts"]:
         REPOSITORY |= {str(p.relative_to(ROOT)) for p in (ROOT/directory).rglob("*.json") if p.is_file()}
+# Admit the two dated engine journals to the source audit only. Pages never copies them.
+for directory in ("tfg_state/signals", "weekly_ml_state/evaluations"):
+    REPOSITORY |= {
+        str(path.relative_to(ROOT))
+        for path in (ROOT/directory).glob("*.json")
+        if path.is_file() and re.fullmatch(r"\d{4}-\d{2}-\d{2}\.json", path.name)
+    }
 # Buy The Dip semantic reviews are internal machine outputs keyed by exactly
 # eleven-character YouTube video IDs. They are never added to RELEASE or dist.
 REPOSITORY |= {
