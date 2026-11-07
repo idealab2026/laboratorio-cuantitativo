@@ -1,0 +1,28 @@
+{
+  "bars": {
+    "KMB": {
+      "close": 110.45999908447266,
+      "date": "2026-11-05",
+      "dividend": 0.0,
+      "high": 112.8499984741211,
+      "low": 108.30000305175781,
+      "open": 108.30000305175781,
+      "provider_symbol": "KMB",
+      "split": 0.0,
+      "volume": 8602300.0
+    }
+  },
+  "base_sha256": "26bab09fa7bb46ba02e0f82c8d6d190dc7bf8e7a38a4345a2cdec199f03df947",
+  "captured_at_utc": "2026-11-07T06:30:52+00:00",
+  "parent_sha256": "fe8bd95584b0b4b62e2b538a4697a18e5685f516ad0d172f4e5dffe190e05886",
+  "schema": "midas.xnys_missing_revision.v1",
+  "session": "2026-11-05",
+  "sha256": "e175f0c80241cc7345979db086bcb83d513950cb5a97027aaba92df9783b93e1",
+  "source": {
+    "actions": true,
+    "auto_adjust": false,
+    "client": "yfinance",
+    "interval": "1d",
+    "vendor": "Yahoo Finance"
+  }
+}
