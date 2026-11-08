@@ -1142,7 +1142,7 @@ p{line-height:1.6;text-align:justify;text-align-last:left;hyphens:auto}p.lead{co
 .desk-coverage{margin:0;padding:5px 9px;color:#624818;background:#fff8ec;font:600 .71rem/1.45 system-ui,sans-serif}
 .desk-note{margin:0;padding:5px 9px;color:#425a73;font:600 .71rem/1.45 system-ui,sans-serif}
 .desk-table-scroll{max-height:min(55vh,600px);overflow:auto;overscroll-behavior:contain}
-.desk-table{width:100%;border-collapse:collapse;font:550 .75rem/1.35 system-ui,sans-serif}
+.desk-table{width:100%;min-width:760px;border-collapse:collapse;font:550 .75rem/1.35 system-ui,sans-serif}
 .desk-table th,.desk-table td{padding:5px 7px;text-align:left;border-bottom:1px solid #e1e9f1;vertical-align:top}
 .desk-table thead th{position:sticky;top:0;background:#f5f8fc;color:#3f5770}
 .desk-table th button,.desk-chart-head button{
@@ -1169,4 +1169,27 @@ p{line-height:1.6;text-align:justify;text-align-last:left;hyphens:auto}p.lead{co
  .desk-layout{grid-template-columns:minmax(0,1fr)}
  .desk-table-scroll{max-height:46vh}
  .desk-filter-popover{left:auto;right:0}
+}
+
+
+/* MIDAS trading desk: evidence level stays visible independently of buy/sell color. */
+.desk-interpretation{margin:0;padding:8px 10px;background:#f5f8fc;border-bottom:1px solid #dce6ef;
+ font:570 .74rem/1.5 system-ui,sans-serif;color:#354f69}
+.desk-table td{max-width:360px}
+.desk-action{display:inline-block;margin:0 5px 4px 0;font-weight:760}
+.desk-action[data-side="buy"]{color:#11644b}
+.desk-action[data-side="sell"]{color:#963044}
+.desk-action[data-side="rebalance"]{color:#5951a0}
+.desk-evidence{display:inline-block;padding:2px 6px;border:1px solid #a2c4b4;border-radius:5px;
+ background:#edf7f1;color:#185b43;font-size:.69rem;font-weight:730;white-space:nowrap}
+.desk-evidence[data-evidence="warning"]{background:#fff7e9;border-color:#ebc991;color:#815216}
+.desk-evidence[data-evidence="info"]{background:#eef5fc;border-color:#b5d0e5;color:#285572}
+.desk-algorithm-name{display:block;font-weight:690;color:#203b57;overflow-wrap:anywhere}
+.desk-cell-note{display:block;color:#586f86;font-size:.67rem;line-height:1.45;margin-top:3px;overflow-wrap:anywhere}
+.desk-table td strong:not(.desk-algorithm-name):not(.desk-action){font-weight:740;color:#263f5b}
+.desk-table td:nth-child(4){font-variant-numeric:tabular-nums}
+@media(max-width:710px){
+ .desk-table-scroll{max-height:52vh;overflow-x:auto;overscroll-behavior-x:contain}
+ .desk-table{min-width:760px}
+ .desk-interpretation{font-size:.72rem}
 }
