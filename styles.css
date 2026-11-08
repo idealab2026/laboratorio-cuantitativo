@@ -1134,39 +1134,35 @@ p{line-height:1.6;text-align:justify;text-align-last:left;hyphens:auto}p.lead{co
 }
 .desk-filter-popover label{display:flex;align-items:center;gap:5px;padding:4px;font:620 .77rem system-ui,sans-serif;cursor:pointer}
 .desk-filter-popover input[type=checkbox]{width:16px;min-height:0;margin:0;flex:none}
-.desk-layout{display:grid;grid-template-columns:minmax(0,1.85fr) minmax(220px,1fr);gap:9px;align-items:start}
-.desk-tape,.desk-charts{min-width:0;border:1px solid #cbdbe8;border-radius:7px;background:white}
+.desk-layout{display:block}
+.desk-tape{min-width:0;border:1px solid #cbdbe8;border-radius:7px;background:white}
 .desk-heading{display:flex;align-items:baseline;justify-content:space-between;gap:6px;flex-wrap:wrap;padding:7px 9px;background:#eef4fa;border-bottom:1px solid #d5e1ed;border-radius:7px 7px 0 0}
 .desk-heading h3{margin:0;font-size:.94rem;color:var(--navy)}
 .desk-heading :is(span,small){font:650 .71rem system-ui,sans-serif;color:#4b6077}
 .desk-coverage{margin:0;padding:5px 9px;color:#624818;background:#fff8ec;font:600 .71rem/1.45 system-ui,sans-serif}
 .desk-note{margin:0;padding:5px 9px;color:#425a73;font:600 .71rem/1.45 system-ui,sans-serif}
 .desk-table-scroll{max-height:min(55vh,600px);overflow:auto;overscroll-behavior:contain}
-.desk-table{width:100%;min-width:760px;border-collapse:collapse;font:550 .75rem/1.35 system-ui,sans-serif}
+.desk-table{width:100%;min-width:1020px;border-collapse:collapse;font:550 .75rem/1.35 system-ui,sans-serif}
 .desk-table th,.desk-table td{padding:5px 7px;text-align:left;border-bottom:1px solid #e1e9f1;vertical-align:top}
 .desk-table thead th{position:sticky;top:0;background:#f5f8fc;color:#3f5770}
-.desk-table th button,.desk-chart-head button{
- border:1px solid #b7c9dc;border-radius:4px;background:#f5f8fc;color:#174169;
- padding:4px 6px;font:750 .76rem ui-monospace,monospace;cursor:pointer
-}
-.desk-table th button[aria-pressed="true"]{background:#17395c;color:#fff}
+.desk-ticker{display:inline-block;border:1px solid #b7c9dc;border-radius:4px;background:#f5f8fc;
+ color:#174169;padding:4px 6px;font:750 .76rem ui-monospace,monospace}
 .desk-signal{display:inline-flex;max-width:100%;align-items:baseline;gap:4px;flex-wrap:wrap;margin:0 4px 3px 0;padding:2px 4px;border-radius:4px;background:#eff4f9;color:#243f5c}
 .desk-signal b[data-side="buy"]{color:#136044}
 .desk-signal b[data-side="sell"]{color:#922d43}
 .desk-signal small{color:#4b6077;font:620 .66rem ui-monospace,monospace}
-.desk-chart{padding:6px 9px 7px;border-bottom:1px solid #dbe5ee;color:#415a73}
-.desk-chart:last-child{border-bottom:0}
-.desk-chart-head{display:flex;align-items:center;gap:8px;font:650 .78rem system-ui,sans-serif}
-.desk-chart-head strong{font:780 .86rem ui-monospace,monospace;color:#153858}
-.desk-chart-head button{margin-left:auto}
-.desk-chart .mini-chart{display:block;width:100%;height:65px}
-.desk-chart>small,.desk-chart p{font:620 .68rem system-ui,sans-serif;margin:4px 0 0}
-.desk-tape .trading-empty,.desk-charts .trading-empty{padding:8px 9px}
+.desk-chart-cell{width:185px;min-width:148px;padding-right:12px!important;vertical-align:middle!important}
+.desk-row-chart{width:100%;max-width:185px;min-width:125px;display:flex;flex-direction:column;
+ align-items:flex-start;gap:2px;justify-content:center}
+.desk-row-chart .mini-chart{display:block;width:100%;height:46px;max-height:46px}
+.desk-row-chart-price{display:block;font:750 .75rem ui-monospace,monospace;color:#233f5e}
+.desk-row-chart-period{font:550 .65rem/1.25 system-ui,sans-serif;color:#5c7087;white-space:normal}
+.desk-row-chart-empty{color:#6c7d8e;font:550 .69rem/1.35 system-ui,sans-serif;min-height:50px}
+.desk-tape .trading-empty{padding:8px 9px}
 .terminal-scope strong+strong{margin-left:.5em}
 @media(max-width:710px){
  .midas-trading-mode .trading-controls{grid-template-columns:repeat(2,minmax(0,1fr))}
  .midas-trading-mode .trading-controls>div:nth-child(2){grid-column:auto;grid-row:auto}
- .desk-layout{grid-template-columns:minmax(0,1fr)}
  .desk-table-scroll{max-height:46vh}
  .desk-filter-popover{left:auto;right:0}
 }
@@ -1190,7 +1186,7 @@ p{line-height:1.6;text-align:justify;text-align-last:left;hyphens:auto}p.lead{co
 .desk-table td:nth-child(4){font-variant-numeric:tabular-nums}
 @media(max-width:710px){
  .desk-table-scroll{max-height:52vh;overflow-x:auto;overscroll-behavior-x:contain}
- .desk-table{min-width:760px}
+ .desk-table{min-width:1020px}
  .desk-interpretation{font-size:.72rem}
 }
 

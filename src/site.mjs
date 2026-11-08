@@ -566,7 +566,7 @@ function tradingCoverage(plan,slot="",slots=null){
  const incomplete=entries.filter(track=>track.status!=="recorded"||track.undated).length;
  return incomplete?incomplete+" de "+entries.length+" carteras con diario vigente tienen información incompleta para esta sesión.":"";
 }
-const tradingDesk={slots:new Set(),symbols:null,phase:"opening"};
+const tradingDesk={slots:new Set(),phase:"opening"};
 const deskPhases={signals:"Señales del cierre",opening:"Órdenes previstas",next:"Siguiente apertura",fills:"Ejecuciones simuladas"};
 
 function deskActivity(feed,day,filter,phase,slots){
@@ -632,18 +632,22 @@ function deskChartSeries(symbol,day){
  return [...(deskPrices.get(symbol)||[])].filter(([date,price])=>date<=day&&price!==null)
   .sort(([a],[b])=>a.localeCompare(b)).slice(-18);
 }
-function deskChart(symbol,day){
- const series=deskChartSeries(symbol,day);
- const last=series.at(-1),first=series[0];
- const values=series.map(([,price])=>price);
- return '<article class="desk-chart"><div class="desk-chart-head"><strong>'+esc(symbol)+'</strong>'+
-  (last?'<span>'+esc(fmt(last[1]))+' USD</span>':"")+
-  '<button type="button" data-action="desk-chart-remove" data-value="'+esc(symbol)+
-  '" aria-label="Quitar gráfico de '+esc(symbol)+'">×</button></div>'+
-  (series.length>=2?sparkline(values,"Cierres auditados de "+symbol):
-   '<p>'+(state.operationsAuditStatus==="pending"?"Cargando cierres…":"Histórico auditado insuficiente")+'</p>')+
-  (last?'<small>'+esc(shortPaperDate(first[0]))+(series.length>1?' – '+esc(shortPaperDate(last[0])):"")+
-   ' · '+series.length+' cierres auditados</small>':"")+'</article>';
+function deskRowChart(symbol,cutoff){
+ // Audit-only prices. Never infer missing closes or display market data later
+ // than the decision cut-off for a planned opening.
+ const series=deskChartSeries(symbol,cutoff);
+ if(series.length<2){
+  return '<div class="desk-row-chart desk-row-chart-empty"><span>'+
+   esc(state.operationsAuditStatus==="pending"?"Cargando cierres…":"Sin histórico auditado suficiente")+
+   '</span></div>';
+ }
+ const first=series[0],last=series.at(-1);
+ const label="Cierres auditados de "+symbol+" entre "+
+  shortPaperDate(first[0])+" y "+shortPaperDate(last[0]);
+ return '<div class="desk-row-chart">'+sparkline(series.map(row=>row[1]),label)+
+  '<small class="desk-row-chart-price">'+esc(fmt(last[1]))+' USD</small>'+
+  '<small class="desk-row-chart-period">'+esc(shortPaperDate(first[0]))+
+  ' – '+esc(shortPaperDate(last[0]))+' · '+series.length+' cierres</small></div>';
 }
 function deskAuditedFill(item,day){
  // Execution prices by themselves do NOT disclose quantity or investment size.
@@ -686,14 +690,14 @@ function deskRowReason(item,phase,day,audit){
  }
  return "Motivo individual no publicado";
 }
-function deskSignalTable(orders,phase,symbols,plan,day){
+function deskSignalTable(orders,phase,plan,day,chartCutoff){
  const percentage=new Intl.NumberFormat("es-ES",{style:"percent",maximumFractionDigits:2});
  const monetary=(amount,currency)=>Number.isFinite(amount)&&currency?
   fmt(amount)+" "+currency:null;
  return '<div class="desk-table-scroll" tabindex="0" aria-label="Registro de señales y operaciones simuladas">'+
   '<table class="desk-table"><thead><tr><th scope="col">Empresa</th>'+
   '<th scope="col">Decisión y estado</th><th scope="col">Algoritmo y evidencia</th>'+
-  '<th scope="col">Capital</th><th scope="col">Precio</th></tr></thead><tbody>'+
+  '<th scope="col">Capital</th><th scope="col">Precio</th><th scope="col">Evolución auditada</th></tr></thead><tbody>'+
   orders.map(item=>{
    const stage=deskRowState(item,phase);
    const audited=phase==="fills"?deskAuditedFill(item,day):null;
@@ -709,9 +713,7 @@ function deskSignalTable(orders,phase,symbols,plan,day){
     "Decisión · "+(item.decision_session?shortPaperDate(item.decision_session):"N/D")+
     " · Apertura · "+(item.target_session?shortPaperDate(item.target_session):"sin fecha verificada");
    const reason=deskRowReason(item,phase,day,audited);
-   return '<tr><th scope="row"><button type="button" data-action="desk-chart" data-value="'+esc(item.ticker)+
-    '" aria-pressed="'+symbols.includes(item.ticker)+'" title="Mostrar cierres de '+esc(item.ticker)+'">'+
-    esc(item.ticker)+'</button></th>'+
+   return '<tr><th scope="row"><span class="desk-ticker">'+esc(item.ticker)+'</span></th>'+
     '<td><strong class="desk-action" data-side="'+esc(item.action)+'">'+esc(signalNames[item.action])+'</strong>'+
     '<span class="desk-evidence" data-evidence="'+esc(stage.tone)+'">'+esc(stage.label)+'</span>'+
     '<small class="desk-cell-note">'+esc(stage.detail)+'</small>'+
@@ -726,17 +728,21 @@ function deskSignalTable(orders,phase,symbols,plan,day){
     '<small class="desk-cell-note">Peso objetivo: '+esc(phase==="fills"?"N/D":weight)+'</small></td>'+
     '<td>'+esc(price||"N/D")+
     '<small class="desk-cell-note">'+esc(phase==="fills"?"Precio de ejecución paper":
-      item.limit_price!=null?"Precio límite registrado":"Sin precio límite registrado")+'</small></td></tr>';
+      item.limit_price!=null?"Precio límite registrado":"Sin precio límite registrado")+'</small></td>'+
+    '<td class="desk-chart-cell">'+deskRowChart(item.ticker,chartCutoff)+'</td></tr>';
   }).join("")+'</tbody></table></div>';
 }
 function deskResults(model){
  if(!signalFeed)return '<p class="trading-empty">'+(signalFeedError?"Usa «Actualizar» para consultar el diario.":"Cargando las señales publicadas…")+'</p>';
  const phase=tradingDesk.phase,day=tradingDay();
- const symbols=deskChartSymbols(model.orders);
  const dateLabel=model.target?shortPaperDate(model.target):"Pendiente";
  const open=phase!=="fills"&&model.plan?.opens_at?
   " · "+madridTime.format(new Date(model.plan.opens_at))+" Madrid":"";
  const coverage=model.plan&&phase!=="signals"?tradingCoverage(model.plan,"",tradingDesk.slots):"";
+ // For unexecuted intents use the close strictly before the target opening;
+ // filled trades may include the documented execution session's close.
+ const chartCutoff=phase==="fills"?(model.target||day):
+  (model.plan?.previous_session||model.target||day);
  return '<div class="desk-layout"><section class="desk-tape" aria-labelledby="desk-tape-title">'+
   '<div class="desk-heading"><h3 id="desk-tape-title">'+esc(deskPhases[phase])+' <small>'+esc(dateLabel+open)+'</small></h3>'+
   '<span>'+model.orders.length+' registros</span></div>'+
@@ -748,15 +754,9 @@ function deskResults(model){
    "Órdenes previstas en los diarios anteriores a la apertura, sujetas a datos, reglas y ejecución. No equivalen a compras realizadas.")+'</p>'+
   (phase!=="fills"&&model.orders.some(order=>order.id==="IL-042")?
    '<p class="desk-note">TimesFM diario prevé cerrar al final de la sesión las posiciones que llegue a abrir.</p>':"")+
-  (model.orders.length?deskSignalTable(model.orders,phase,symbols,model.plan,model.target||day):'<p class="trading-empty">'+
+  (model.orders.length?deskSignalTable(model.orders,phase,model.plan,model.target||day,chartCutoff):'<p class="trading-empty">'+
    (phase==="fills"&&!model.journals?"Sin diario de ejecuciones para esta selección.":"Sin registros publicados para esta selección.")+'</p>')+
-  '</section><aside class="desk-charts" aria-labelledby="desk-chart-title"><div class="desk-heading">'+
-  '<h3 id="desk-chart-title">Gráficos de cierre</h3><span>Hasta 3 empresas</span></div>'+
-  (symbols.length?symbols.map(symbol=>deskChart(symbol,day)).join(""):'<p class="trading-empty">Pulsa un ticker para mostrar su gráfico.</p>')+
-  '</aside></div>';
-}
-function deskChartSymbols(orders){
- return tradingDesk.symbols??[...new Set(orders.map(order=>order.ticker))].slice(0,3);
+  '</section></div>';
 }
 
 const terminalState={mode:"signals",useLatest:false,count:0,stage:0,timer:null,activity:new Map(),pending:new Set()};
@@ -2104,13 +2104,6 @@ $("app").addEventListener("click",e=>{
  }
  else if(["terminal-play","terminal-all","terminal-next"].includes(action)){runTerminalPlayback(action);}
  else if(action==="desk-reset"){tradingDesk.slots.clear();paintTradingRoom();}
- else if(["desk-chart","desk-chart-remove"].includes(action)&&validSignalTicker(value)){
-  const model=deskActivity(signalFeed,tradingDay(),tradingFilter,tradingDesk.phase,tradingDesk.slots);
-  const current=deskChartSymbols(model.orders);
-  if(action==="desk-chart-remove")tradingDesk.symbols=current.filter(symbol=>symbol!==value);
-  else tradingDesk.symbols=[value,...current.filter(symbol=>symbol!==value)].slice(0,3);
-  paintTradingRoom();
- }
  else if(action==="trading-side"&&Object.hasOwn(tradingSides,value)){
   tradingFilter.side=value;paintTradingRoom();
  }
