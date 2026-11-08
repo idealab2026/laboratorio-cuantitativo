@@ -35,7 +35,7 @@
       "name": "MIDAS Debate Alpha · Multiagente determinista",
       "group": "Comité de especialistas · cero inferencia externa",
       "subject": "Señal causal por especialistas técnico, fuerza relativa y riesgo; debate alcista/bajista; fundamentos y sentimiento se abstienen",
-      "status": "Código y CI propuestos; paper pendiente de verificación natural y autorización de fuente",
+      "status": "Motor integrado y validado en CI. Primera sesión paper pendiente de fuente autorizada y ejecución verificada.",
       "universe": [
         "S&P-derived 503",
         "SPY (benchmark)"
