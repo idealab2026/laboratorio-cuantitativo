@@ -830,14 +830,15 @@ test("trading desk never fabricates order notional, validates unique audited fil
   terminalLabels:{passed:"Superó el filtro técnico"},
   esc:input=>String(input),fmt:input=>Number(input).toFixed(2),
   shortPaperDate:day=>day,
+  deskChartSeries:()=>[],sparkline:()=>"<svg></svg>",
   Intl
  };
- const block=source.slice(source.indexOf("function deskAuditedFill"),source.indexOf("function deskResults"));
+ const block=source.slice(source.indexOf("function deskRowChart"),source.indexOf("function deskResults"));
  runInNewContext(block+";this.ui={deskSignalTable,deskRowState,deskAuditedFill};",context);
  const planned={id:"IL-011",label:"EMA/RSI",ticker:"AAPL",action:"buy",
   decision_session:"2026-11-06",target_session:"2026-11-09",target_weight:.12,
   limit_price:null,currency:"USD",book_status:"recorded"};
- const pending=context.ui.deskSignalTable([planned],"opening",["AAPL"],null,"2026-11-09");
+ const pending=context.ui.deskSignalTable([planned],"opening",null,"2026-11-09","2026-11-06");
  assert.match(pending,/Orden prevista/);
  assert.match(pending,/No se publica cantidad ni importe de la orden/);
  assert.match(pending,/Peso objetivo:/);
@@ -846,13 +847,13 @@ test("trading desk never fabricates order notional, validates unique audited fil
  assert.equal(context.ui.deskRowState({...planned,book_status:"stale"},"opening").tone,"warning");
  assert.equal(context.ui.deskRowState({...planned,book_status:"paused"},"opening").tone,"warning");
  const fill={...planned,source:"paper_fill",price:100};
- const recorded=context.ui.deskSignalTable([fill],"fills",["AAPL"],null,"2026-11-09");
+ const recorded=context.ui.deskSignalTable([fill],"fills",null,"2026-11-09","2026-11-09");
  assert.match(recorded,/Ejecutada en paper/);
  assert.match(recorded,/Bruto paper: 1000\.00 USD/);
  assert.match(recorded,/Motivo registrado: Registro verificado/);
- const wrongPrice=context.ui.deskSignalTable([{...fill,price:101}],"fills",["AAPL"],null,"2026-11-09");
+ const wrongPrice=context.ui.deskSignalTable([{...fill,price:101}],"fills",null,"2026-11-09","2026-11-09");
  assert.match(wrongPrice,/Bruto paper: N\/D/);
- const otherDay=context.ui.deskSignalTable([fill],"fills",["AAPL"],null,"2026-11-10");
+ const otherDay=context.ui.deskSignalTable([fill],"fills",null,"2026-11-10","2026-11-10");
  assert.match(otherDay,/Bruto paper: N\/D/);
  context.state.operationsAudit.tracks["IL-011"].sessions[0].actions.push(
   {ticker:"AAPL",side:"buy",price:100,quantity:10,reason:"Duplicada",reason_basis:"recorded"});
@@ -870,4 +871,67 @@ test("trading UI explicitly separates decisions, pre-open plans and completed pa
   assert.ok(site.includes(keyword),"Missing plan/fill separation or evidence label: "+keyword);
  assert.ok(css.includes('.desk-evidence[data-evidence="warning"]'));
  assert.ok(css.includes(".desk-interpretation"));
+});
+
+
+test("trading charts are embedded once per record, including repeated tickers, without stale three-chart sidebar",async()=>{
+ const {runInNewContext}=await import("node:vm");
+ const cutoffs=[];
+ const context={
+  state:{operationsAuditStatus:"ready",operationsAudit:null},
+  signalFeed:{tracks:{}},terminalLabels:{},signalNames:{buy:"Comprar",sell:"Vender",rebalance:"Rebalancear"},
+  esc:input=>String(input),fmt:input=>Number(input).toFixed(2),
+  shortPaperDate:day=>day,Intl,
+  deskChartSeries:(ticker,cutoff)=>{
+   cutoffs.push({ticker,cutoff});
+   return [["2026-11-03",10],["2026-11-05",11],["2026-11-06",12]];
+  },
+  sparkline:(values,label)=>'<svg role="img" aria-label="'+label+'"></svg>'
+ };
+ const block=source.slice(source.indexOf("function deskRowChart"),source.indexOf("function deskResults"));
+ runInNewContext(block+";this.rows=deskSignalTable;",context);
+ const record=(id,action)=>({ticker:"EPAM",action,id,label:"Algoritmo "+id,
+  decision_session:"2026-11-05",target_session:"2026-11-06",target_weight:null,
+  limit_price:null,currency:"USD",book_status:"recorded"});
+ const markup=context.rows([record("IL-015","buy"),record("IL-016","buy")],
+  "opening",null,"2026-11-06","2026-11-05");
+ assert.equal((markup.match(/class="desk-chart-cell"/g)||[]).length,2);
+ assert.equal((markup.match(/<svg role="img"/g)||[]).length,2);
+ assert.equal((markup.match(/EPAM/g)||[]).length>=2,true);
+ assert.equal(cutoffs.length,2);
+ assert.ok(cutoffs.every(row=>row.ticker==="EPAM"&&row.cutoff==="2026-11-05"));
+ assert.match(markup,/Evolución auditada/);
+ const site=readFileSync(new URL("../src/site.mjs",import.meta.url),"utf8");
+ const css=readFileSync(new URL("../styles.css",import.meta.url),"utf8");
+ assert.ok(!site.includes("Hasta 3 empresas"));
+ assert.ok(!site.includes("deskChartSymbols("));
+ assert.ok(!site.includes('data-action="desk-chart"'));
+ assert.ok(!css.includes(".desk-charts"));
+ assert.ok(css.includes(".desk-row-chart .mini-chart"));
+});
+
+test("audited mini charts use only closes on or before the causal cutoff",async()=>{
+ const {runInNewContext}=await import("node:vm");
+ const context={state:{
+  operationsAuditStatus:"ready",
+  operationsAudit:{tracks:{
+   "IL-011":{prices:{EPAM:[
+    {date:"2026-11-04",price:8},
+    {date:"2026-11-05",price:9},
+    {date:"2026-11-06",price:13}
+   ]}}
+  }}
+ },esc:v=>String(v),fmt:n=>Number(n).toFixed(2),shortPaperDate:d=>d,
+ sparkline:()=>"<svg role='img'></svg>"};
+ const block=source.slice(source.indexOf("let deskPriceSource=null"),source.indexOf("function deskAuditedFill"));
+ runInNewContext(block+";this.chart=deskRowChart;this.history=deskChartSeries;",context);
+ const history=context.history("EPAM","2026-11-05");
+ assert.equal(history.length,2);
+ assert.equal(history.at(-1)[0],"2026-11-05");
+ const safe=context.chart("EPAM","2026-11-05");
+ assert.match(safe,/9\.00 USD/);
+ assert.doesNotMatch(safe,/13\.00 USD/);
+ const absent=context.chart("MISSING","2026-11-05");
+ assert.match(absent,/Sin histórico auditado suficiente/);
+ assert.ok(!absent.includes("<svg"));
 });
