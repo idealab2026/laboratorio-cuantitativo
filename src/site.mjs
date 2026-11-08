@@ -1887,17 +1887,51 @@ function glossary(){
   '<div id="glossary-results" class="glossary-results">'+glossaryRows()+'</div>';
 }
 function methodology(){
- return head("MÉTODO Y LÍMITES","Evaluación reproducible","Los motores originales y sus diarios paper están publicados. La ejecución automática desde Idea Lab se verifica por separado; disponer de código e históricos no demuestra que todos los modelos estén actualizados.")+
- '<div class="method-grid">'+[
- ["Reloj causal","Cada motor conserva su contrato temporal y sus controles de disponibilidad. Una operación paper debe respetar la fecha de señal y la siguiente apertura; no se reconstruyen decisiones con información posterior."],
- ["Contabilidad paper","El dinero es virtual. Los diarios de mercado registran posiciones, órdenes y valoración; costes, divisa y reglas dependen de cada campaña. La demo didáctica usa precios artificiales y se muestra aparte."],
- ["Comparaciones","Comparar sólo campañas con fechas, universo, referencia y reglas compatibles. No mezclar distintos grupos de comparación históricos ni presentar una simulación como rentabilidad con dinero real."],
- ["Tesis","Valoraciones bajo hipótesis, crecimiento, múltiplos y rentabilidad requerida, con criterios de refutación."],
- ["Estado de los modelos","El código migrado incluye motores clásicos, aprendizaje semanal, series temporales y evolución paramétrica. Cada estrategia conserva su estado; los modelos o datos ausentes no se sustituyen por resultados inventados."],
- ["Auditoría pública","Datos licenciados, fuentes temporales, validación fuera de muestra, trazabilidad y monitorización antes de atribuir capacidad predictiva."],
- ["Robustez del backtest","El protocolo combina ventanas sucesivas fuera de muestra, Monte Carlo por bloques de retornos y cambios pequeños en cada parámetro congelado. Las pruebas usan costes y una referencia comparable. Un resultado alto por sí solo no acredita la estrategia."]
- ].map(([a,b])=>card('<h3>'+esc(a)+'</h3><p>'+esc(b)+'</p>')).join("")+'</div>'+
- disclaimer("Todos los activos del sitio se publican mediante una lista blanca. Que los archivos nuevos carezcan de referencias personales no demuestra anonimato absoluto si existe material anterior correlacionable.");
+ const gates=[
+  ["01","Documental","Recopilar los originales financieros, resultados, llamadas con analistas y presentaciones; contrastar fuentes, fechas y estudios previos.","Condición: corpus suficiente, fuentes trazables y ausencia de documentos materiales sin revisar."],
+  ["02","Cualitativa","Comprender segmentos, motores de crecimiento, ventajas competitivas, sector, dirección, asignación de capital y riesgos.","Condición: hipótesis y motores materiales identificados, con evidencia y argumentos contrarios."],
+  ["03","Cuantitativa","Construir hipótesis verificables, proyecciones a cinco años y tres escenarios; validar la definición de FCF, múltiplos, acciones y deuda.","Condición: inputs documentados, precios objetivo y CAGR reproducibles matemáticamente."],
+  ["04","Red Team y omisiones","Intentar refutar la conclusión: buscar riesgos subestimados, catalizadores omitidos, errores, inconsistencias y contaminación entre empresas.","Condición: ninguna omisión material abierta y controles de coherencia superados."],
+  ["05","Editorial y publicación","Convertir el análisis en un informe ejecutivo legible, reconciliado con sus cálculos y registros, con fecha y límites explícitos.","Condición: versión final coherente, verificable y apta para revisión profesional."]
+ ];
+ const process=[
+  ["Definir el expediente","Identificar empresa, ticker, mercado, moneda, cierre fiscal, precio y fecha de referencia. Recuperar tesis anteriores sin heredar automáticamente sus conclusiones."],
+  ["Constituir el corpus","Priorizar informes oficiales anuales y trimestrales, comunicaciones de resultados, transcripciones y documentación sectorial. Como referencia, revisar hasta cinco ejercicios y los trimestres recientes cuando estén disponibles."],
+  ["Analizar el negocio","Descomponer ingresos por segmentos y geografías, crecimiento orgánico, recurrencia, márgenes, deuda, dilución, ROIC, riesgos y asignación de capital. Contrastar promesas históricas de la dirección con resultados."],
+  ["Modelar los motores económicos","Proyectar ingresos, márgenes, impuestos, reinversión, CapEx de mantenimiento, flujo de caja, caja o deuda neta y acciones diluidas para cada uno de los próximos cinco años."],
+  ["Valorar con escenarios","Construir escenarios pesimista, central y optimista. Para empresas operativas no financieras, la referencia habitual es FCF normalizado y múltiplo de salida EV/FCF, justificado con historia y comparables. Otros múltiplos y DCF sirven de contraste, no de sustitución automática."],
+  ["Traducir valor en rentabilidad","Calcular el precio objetivo a cinco años de cada escenario, su CAGR bursátil implícito y el precio de entrada compatible con una rentabilidad anual exigida. El retorno del precio no incluye dividendos ni impuestos."],
+  ["Auditar, publicar y actualizar","Verificar aritmética, fechas, moneda, número de acciones y supuestos; someter la tesis a revisión crítica. Tras aprobar las cinco puertas, publicar el informe y revisarlo ante resultados o hechos materiales."]
+ ];
+ return head("MÉTODO Y LÍMITES","Metodología de MIDAS","Dos líneas independientes: análisis fundamental de empresas y evaluación de estrategias automatizadas con capital ficticio. Una valoración es una hipótesis documentada, no una certeza sobre la cotización futura.")+
+  '<section class="midas-method-section" aria-labelledby="method-gates-heading">'+
+  '<div class="midas-method-intro"><span class="kicker">CONTROL DE CALIDAD</span><h2 id="method-gates-heading">La metodología de las cinco puertas</h2><p>Una tesis no se considera completa por tener una valoración o un informe extenso. Debe superar cinco controles independientes y secuenciales, cada uno con evidencia y condiciones de aprobación.</p></div>'+
+  '<ol class="midas-gates-list">'+gates.map(([number,title,body,criterion])=>
+   '<li class="midas-gate"><span class="midas-gate-number" aria-hidden="true">'+esc(number)+'</span><div><h3>'+esc(title)+'</h3><p>'+esc(body)+'</p><p class="midas-gate-criterion">'+esc(criterion)+'</p></div></li>'
+  ).join("")+'</ol>'+
+  '<p class="midas-method-status"><strong>Estados de una tesis:</strong> investigada → valorada → completa → actualizada. «Valorada» no implica «completa»: la aprobación de las cinco puertas es imprescindible para publicar una tesis como completa. Las auditorías pueden exigir correcciones o bloquear su aprobación.</p>'+
+  '</section>'+
+  '<section class="midas-method-section" aria-labelledby="method-valuation-heading">'+
+  '<div class="midas-method-intro"><span class="kicker">ANÁLISIS FUNDAMENTAL</span><h2 id="method-valuation-heading">Cómo desarrollamos una tesis de valoración</h2><p>Partimos de documentos verificables y del funcionamiento económico del negocio. No fijamos un precio objetivo y después buscamos supuestos que lo justifiquen: construimos las estimaciones desde sus motores fundamentales.</p></div>'+
+  '<ol class="midas-process-list">'+process.map(([title,body])=>'<li><h3>'+esc(title)+'</h3><p>'+esc(body)+'</p></li>').join("")+'</ol>'+
+  '<div class="midas-formula-grid">'+
+   '<div class="panel"><span class="label">Rentabilidad anualizada implícita</span><strong>CAGR a cinco años</strong><code>(Precio objetivo / Precio de referencia)^(1/5) − 1</code><p>Se calcula por separado para los escenarios pesimista, central y optimista.</p></div>'+
+   '<div class="panel"><span class="label">Disciplina de precio de entrada</span><strong>Precio para aspirar al 15 % anual</strong><code>Precio objetivo central / (1,15)^5</code><p>Umbral matemático condicionado al escenario central: no es una garantía de rentabilidad.</p></div>'+
+  '</div>'+
+  '<p class="midas-method-status"><strong>Control de caja:</strong> contrastamos el FCF normalizado de valoración (que distingue CapEx de mantenimiento y crecimiento) con el FCF de caja observado, calculado como flujo de caja operativo menos CapEx total. La diferencia se explica, nunca se oculta. Bancos, aseguradoras y REIT requieren metodología específica.</p>'+
+  '</section>'+
+  '<section class="midas-method-section" aria-labelledby="method-paper-heading">'+
+  '<div class="midas-method-intro"><span class="kicker">COMPETICIÓN DE ALGORITMOS</span><h2 id="method-paper-heading">Reglas de evaluación cuantitativa</h2><p>Las estrategias paper se someten a controles distintos de los de una tesis fundamental. La ejecución de código no prueba por sí sola la calidad predictiva ni la rentabilidad prospectiva.</p></div>'+
+  '<div class="method-grid">'+[
+   ["Reloj causal","Cada motor conserva su contrato temporal y sus controles de disponibilidad. Una operación paper debe respetar la fecha de señal y la siguiente apertura; no se reconstruyen decisiones con información posterior."],
+   ["Contabilidad paper","El dinero es virtual. Los diarios de mercado registran posiciones, órdenes y valoración; costes, divisa y reglas dependen de cada campaña. La demo didáctica usa precios artificiales y se muestra aparte."],
+   ["Comparaciones","Comparar sólo campañas con fechas, universo, referencia y reglas compatibles. No mezclar distintos grupos de comparación históricos ni presentar una simulación como rentabilidad con dinero real."],
+   ["Estado de los modelos","El código migrado incluye motores clásicos, aprendizaje semanal, series temporales y evolución paramétrica. Cada estrategia conserva su estado; los modelos o datos ausentes no se sustituyen por resultados inventados."],
+   ["Auditoría pública","Datos licenciados, fuentes temporales, validación fuera de muestra, trazabilidad y monitorización antes de atribuir capacidad predictiva."],
+   ["Robustez del backtest","El protocolo combina ventanas sucesivas fuera de muestra, Monte Carlo por bloques de retornos y cambios pequeños en cada parámetro congelado. Las pruebas usan costes y una referencia comparable. Un resultado alto por sí solo no acredita la estrategia."]
+  ].map(([a,b])=>card('<h3>'+esc(a)+'</h3><p>'+esc(b)+'</p>')).join("")+'</div>'+
+  '</section>'+
+  disclaimer("Los expedientes y los cálculos internos no se publican automáticamente. Los activos visibles del sitio se seleccionan mediante una lista blanca; la ausencia de datos personales en archivos nuevos no asegura anonimato absoluto frente a materiales anteriores.");
 }
 function svgEl(name,props={},value){const el=document.createElementNS("http://www.w3.org/2000/svg",name);Object.entries(props).forEach(([k,v])=>el.setAttribute(k,String(v)));if(value!==undefined)el.textContent=String(value);return el;}
 function chart(){
