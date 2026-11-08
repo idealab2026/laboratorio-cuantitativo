@@ -16,8 +16,8 @@ import {verify,simulate,rank,valuation,thesisRank,formatPct,money,finite,verifyI
 const $=id=>document.getElementById(id);
 const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 const fmt=n=>finite(n)?new Intl.NumberFormat("es-ES",{maximumFractionDigits:2}).format(n):"N/D";
-const state={data:null,universe:null,fx:null,fxCheck:null,fxStatus:"pending",forecastLedger:null,forecastSummary:null,forecastStatus:"pending",secStatus:"pending",secRead:null,secCatalog:null,yieldDoc:null,yieldCheck:null,yieldStatus:"pending",view:"competition",strategy:"P-01",group:"",sort:"returnPct",asc:false,detailOpen:false,thesis:"T-01",query:"",thesisSort:"central",issuerMode:"catalog",issuerQuery:"",issuerSort:"base",issuerAsc:false,issuerTicker:"MSFT",paperDetail:"M-10",originalPaper:null,originalPaperStatus:"pending",historicalPaper:null,historicalCurves:null,historicalPaperStatus:"pending",fullRoster:null,fullRosterStatus:"pending",strategyCandidates:null,strategyCandidatesStatus:"pending",fullRosterGroup:"",fullRosterQuery:"",fullRosterSort:"return",fullRosterAsc:false,competitionPhase:"active",algorithmId:null,operationsAudit:null,operationsAuditStatus:"pending",auditTicker:null,auditTab:"sessions",auditSort:"recent",auditDesc:true,monitoringTab:"today",monitoringStrategy:"IL-039",monitoringSort:"recent",monitoringDesc:true,executionHistory:null,executionHistoryStatus:"pending",institutionalFeedStatus:"pending",paperFeed:null,paperFeedRead:null,localCagr:new Map(),localCagrError:"",publicTheses:new Map(),publicThesesMetadata:null,fullReports:new Map(),financialSankeys:new Map(),financialPeriodByTicker:new Map(),publicCloses:new Map(),closeFeedStatus:"not_configured",closeFeedSource:null,closeFeedUpdatedAt:null};
-const viewNames=["competition","trading","algorithm","algorithms","theses","thesis","monitoring","method","glossary","ported","full","synthetic"];
+const state={data:null,universe:null,fx:null,fxCheck:null,fxStatus:"pending",forecastLedger:null,forecastSummary:null,forecastStatus:"pending",secStatus:"pending",secRead:null,secCatalog:null,yieldDoc:null,yieldCheck:null,yieldStatus:"pending",view:"home",strategy:"P-01",group:"",sort:"returnPct",asc:false,detailOpen:false,thesis:"T-01",query:"",thesisSort:"central",issuerMode:"catalog",issuerQuery:"",issuerSort:"base",issuerAsc:false,issuerTicker:"MSFT",paperDetail:"M-10",originalPaper:null,originalPaperStatus:"pending",historicalPaper:null,historicalCurves:null,historicalPaperStatus:"pending",fullRoster:null,fullRosterStatus:"pending",strategyCandidates:null,strategyCandidatesStatus:"pending",fullRosterGroup:"",fullRosterQuery:"",fullRosterSort:"return",fullRosterAsc:false,competitionPhase:"active",algorithmId:null,operationsAudit:null,operationsAuditStatus:"pending",auditTicker:null,auditTab:"sessions",auditSort:"recent",auditDesc:true,monitoringTab:"today",monitoringStrategy:"IL-039",monitoringSort:"recent",monitoringDesc:true,executionHistory:null,executionHistoryStatus:"pending",institutionalFeedStatus:"pending",paperFeed:null,paperFeedRead:null,localCagr:new Map(),localCagrError:"",publicTheses:new Map(),publicThesesMetadata:null,fullReports:new Map(),financialSankeys:new Map(),financialPeriodByTicker:new Map(),publicCloses:new Map(),closeFeedStatus:"not_configured",closeFeedSource:null,closeFeedUpdatedAt:null};
+const viewNames=["home","competition","trading","algorithm","algorithms","theses","thesis","monitoring","method","glossary","ported","full","synthetic"];
 const button=(label,action,value,cls="smallbtn")=>'<button type="button" class="'+cls+'" data-action="'+esc(action)+'" data-value="'+esc(value)+'">'+esc(label)+'</button>';
 const head=(label,title,body)=>'<div class="section-heading"><div><span class="kicker">'+esc(label)+'</span><h2>'+esc(title)+'</h2><p class="section-context">'+esc(body)+'</p></div></div>';
 const card=(html)=>'<article class="panel">'+html+'</article>';
@@ -1818,11 +1818,14 @@ function chart(){
  n.forEach((v,i)=>{if(i%7===0||i===n.length-1)svg.append(svgEl("circle",{cx:x(i),cy:y(v),r:3,fill:"#1b708b"}),svgEl("text",{x:x(i),y:266,"text-anchor":"middle","font-size":11,fill:"#61758b"},state.data.dates[i]));});
 }
 function render(){
- if(!state.data)return;
+ const home=state.view==="home";
+ $("midas-home").hidden=!home;
+ $("app").hidden=home;
  document.body.classList.toggle("midas-thesis-mode",state.view==="thesis");
  document.body.classList.toggle("midas-trading-mode",tradingRoomActive());
  const pages={competition,algorithm:algorithmFiche,synthetic:syntheticCompetition,algorithms,theses,thesis:thesisView,monitoring,ported,full,method:methodology,glossary,trading:tradingRoom};
  document.querySelectorAll(".product-tabs [data-view]").forEach(b=>{const active=b.dataset.view===state.view||(state.view==="algorithm"&&b.dataset.view==="competition")||(state.view==="thesis"&&b.dataset.view==="theses");b.classList.toggle("active",active);b.setAttribute("aria-pressed",String(active));});
+ if(home||!state.data)return;
  $("app").innerHTML=(pages[state.view]||competition)();
  const financialPicker=document.getElementById("financial-sankey-period");
  if(financialPicker)financialPicker.addEventListener("change",()=>{
@@ -1837,13 +1840,13 @@ function render(){
 }
 function resolveMidasView(){
  const requested=new URLSearchParams(location.search).get("view");
- // Preserve old bookmarks without retaining the deleted Inicio page.
+ // Keep legacy competition bookmarks pointing to the competition.
  if(requested==="overview"||requested==="archive"){
   const u=new URL(location.href);u.searchParams.set("view","competition");
   history.replaceState({view:"competition"},"",u);
   return "competition";
  }
- return viewNames.includes(requested)?requested:"competition";
+ return viewNames.includes(requested)?requested:"home";
 }
 function go(view){
  if(!viewNames.includes(view))return;
@@ -2167,7 +2170,7 @@ async function init(){
   state.financialSankeys=verifyFinancialSankeys(await financial.json(),new Set(publication.records.map(x=>x.ticker)));
   state.publicTheses=new Map(publication.records.map(x=>[x.ticker,x]));
   state.publicThesesMetadata={...stats,published_as_of:publication.published_as_of};
-  state.data=data;state.universe=universe;readViewFromURL();render();void loadPublicCloses();void loadOfficialFx();void loadForecastLedger();void loadSecFilings();void loadOfficialYield();void loadOriginalPaper();void loadHistoricalPaper();void loadFullRoster();void loadStrategyCandidates();void loadInstitutionalPaperFeed();void loadOperationsAudit();void loadExecutionHistory().then(()=>{if(tradingRoomActive()&&terminalState.mode==="terminal")paintTradingRoom();});
+  state.data=data;state.universe=universe;render();void loadPublicCloses();void loadOfficialFx();void loadForecastLedger();void loadSecFilings();void loadOfficialYield();void loadOriginalPaper();void loadHistoricalPaper();void loadFullRoster();void loadStrategyCandidates();void loadInstitutionalPaperFeed();void loadOperationsAudit();void loadExecutionHistory().then(()=>{if(tradingRoomActive()&&terminalState.mode==="terminal")paintTradingRoom();});
  }catch(e){$("app").textContent="No se ha podido cargar el catálogo de emisores o el laboratorio sintético; no se muestran datos no verificados.";}
 }
 /* The public snapshot is refreshed in-browser; it never queries a market vendor.
@@ -2335,4 +2338,6 @@ async function loadOperationsAudit(){
  if(tradingRoomActive()&&terminalState.mode!=="terminal")paintTradingRoom();
 }
 
+readViewFromURL();
+render();
 init();
