@@ -1,0 +1,81 @@
+name: MIDAS Debate Alpha deterministic paper (zero external inference cost)
+on:
+  pull_request:
+    paths:
+      - 'multi_agent/**'
+      - '.github/workflows/multi_agent_paper.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'multi_agent/**'
+  schedule:
+    # After common XNYS close capture; next-session opens are settled only after capture.
+    - cron: '31 3 * * 2-6'
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: midas-idea-lab-debate-alpha
+  cancel-in-progress: false
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Unit-test isolated multi-agent baseline
+        run: |
+          python -m unittest discover -s multi_agent/tests -v
+          python multi_agent/run.py --check
+  paper:
+    needs: validate
+    if: >-
+      github.ref == 'refs/heads/main' &&
+      (github.event_name == 'schedule' || github.event_name == 'workflow_dispatch') &&
+      vars.MIDAS_YAHOO_RIGHTS_CONFIRMED == 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 18
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 1
+          persist-credentials: true
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install existing calendar dependencies (no LLM service)
+        run: python -m pip install -r timesfm_strategy/requirements-daily.txt
+      - name: Verify exact closed market session and common snapshot
+        run: python market_data/health.py --eligible
+      - name: Issue after-close decisions and settle only frozen prior-session intents
+        run: python multi_agent/run.py --daily
+      - name: Verify immutable-scoped state after advancing
+        run: python multi_agent/run.py --check
+      - name: Publish only this strategy's independent ledger
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name "Idea Lab"
+          git config user.email "350414243+idealab2026@users.noreply.github.com"
+          git add -- multi_agent_state/ledger.json
+          if git diff --staged --quiet; then
+            echo "No new verified session; no paper commit."
+            exit 0
+          fi
+          git commit -m "Record prospectively settled deterministic debate-alpha paper session"
+          for attempt in 1 2 3 4 5; do
+            git fetch origin main
+            git rebase origin/main
+            if git push origin HEAD:main; then
+              exit 0
+            fi
+            sleep "$attempt"
+          done
+          echo "::error::Failed to publish debate-alpha session; do not claim it ran."
+          exit 1

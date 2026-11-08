@@ -89,11 +89,15 @@ test("Readiness taxonomy counts only code and never declares economic activity",
 
 test("Satellite Alternative Data registers as research-only 65th candidate, not a 65th signed paper slot",()=>{
  const candidate=JSON.parse(readFileSync(new URL("../data/strategy-candidates.json",import.meta.url),"utf8"));
- assert.deepEqual(verifyStrategyCandidates(candidate),{candidates:1,registeredPaperSlots:64});
+ assert.deepEqual(verifyStrategyCandidates(candidate),{candidates:2,registeredPaperSlots:64});
  assert.equal(verifyFullRoster(doc).count,64);
  assert.equal(candidate.candidates[0].ordinal,65);
  assert.equal(candidate.candidates[0].id,"IL-R001");
  assert.equal(candidate.candidates[0].return_pct,null);
+ assert.equal(candidate.candidates[1].ordinal,66);
+ assert.equal(candidate.candidates[1].id,"IL-R002");
+ assert.equal(candidate.candidates[1].return_pct,null);
+ assert.equal(filterStrategyCandidates(candidate,{query:"Debate Alpha"}).length,1);
  assert.equal(filterStrategyCandidates(candidate,{query:"satellite"}).length,1);
  assert.equal(filterStrategyCandidates(candidate,{query:"WMT"}).length,1);
  assert.equal(filterStrategyCandidates(candidate,{query:"cacao"}).length,0);

@@ -1,7 +1,7 @@
 {
   "schema": "idea_lab_research_candidate_register_v1",
   "data_class": "research_proposals_without_market_results",
-  "as_of": "2026-11-05",
+  "as_of": "2026-11-08",
   "candidates": [
     {
       "id": "IL-R001",
@@ -28,6 +28,31 @@
       "source": "https://doi.org/10.1017/S0022109023001448",
       "source_name": "Katona et al. · Journal of Financial and Quantitative Analysis 60(2), 2025",
       "data_reference": "https://catalog.data.gov/dataset/national-agriculture-imagery-program-naip-imagery"
+    },
+    {
+      "id": "IL-R002",
+      "ordinal": 66,
+      "name": "MIDAS Debate Alpha · Multiagente determinista",
+      "group": "Comité de especialistas · cero inferencia externa",
+      "subject": "Señal causal por especialistas técnico, fuerza relativa y riesgo; debate alcista/bajista; fundamentos y sentimiento se abstienen",
+      "status": "Código y CI propuestos; paper pendiente de verificación natural y autorización de fuente",
+      "universe": [
+        "S&P-derived 503",
+        "SPY (benchmark)"
+      ],
+      "first_signal_at": null,
+      "last_session": null,
+      "return_pct": null,
+      "day_return_pct": null,
+      "positions": null,
+      "method": "Reglas congeladas con evidencias RAW fechadas; 6 cierres para 5 intervalos; filtro impulso + relativa versus SPY + veto de volatilidad y mercado; hasta 5 posiciones sin apalancamiento.",
+      "rule": "Debate posterior al cierre del viernes. Carteras y ventas/compras a la siguiente apertura verificada con comisión 0,10% y slippage 0,05% por lado; no órdenes reales.",
+      "research_requirements": "Fuente OHLC diaria íntegra y derechos de uso institucional confirmados. No se permite dependencia de API de inferencia de pago. Fundamental y sentimiento permanecen ABSTAIN sin información point-in-time verificable.",
+      "validation": "Unit tests de no-lookahead, next-open, bloqueo por precios ausentes y libro independiente; después ejecución schedule real, commit prospectivo, benchmark comparable, OOS/ablations y medición neta de costes.",
+      "limitations": "No es el TradingAgents LLM: son agentes deterministas. Sin capital invertido, sin operaciones ni rentabilidad verificada antes de un ledger paper prospectivo real. No añadir a clasificación sintética ni a tabla de 64 como si hubiera resultados.",
+      "source": "https://github.com/TauricResearch/TradingAgents",
+      "source_name": "Xiao et al. · TradingAgents, arquitectura de agentes LLM (solo inspiración conceptual)",
+      "data_reference": "https://github.com/idealab2026/laboratorio-cuantitativo/tree/main/multi_agent"
     }
   ]
 }

@@ -89,19 +89,19 @@ export function technicalCoverage(roster){
 export function verifyStrategyCandidates(doc){
  if(!doc||doc.schema!=="idea_lab_research_candidate_register_v1"||
   doc.data_class!=="research_proposals_without_market_results"||
-  !DAY.test(doc.as_of||"")||!Array.isArray(doc.candidates)||doc.candidates.length!==1)
+  !DAY.test(doc.as_of||"")||!Array.isArray(doc.candidates)||doc.candidates.length!==2)
   throw Error("Unknown research candidate registry");
  const seen=new Set();
  const allowedKeys=["id","ordinal","name","group","subject","status","universe",
   "first_signal_at","last_session","return_pct","day_return_pct","positions",
   "method","rule","research_requirements","validation","limitations","source","source_name","data_reference"];
- for(const c of doc.candidates){
+ for(const [index,c] of doc.candidates.entries()){
   if(!c||Object.keys(c).sort().join("|")!==allowedKeys.sort().join("|")||
    !/^IL-R\d{3}$/.test(c.id||"")||seen.has(c.id)||
-   c.ordinal!==65||typeof c.name!=="string"||c.name.length<3||c.name.length>100||
+   c.ordinal!==65+index||typeof c.name!=="string"||c.name.length<3||c.name.length>100||
    typeof c.group!=="string"||c.group.length<3||c.group.length>100||
    !Array.isArray(c.universe)||c.universe.length<1||c.universe.length>8||
-   !c.universe.every(t=>/^[A-Z]{1,5}$/.test(t))||
+   !c.universe.every(t=>/^[A-Z]{1,5}$/.test(t)||(c.id==="IL-R002"&&["S&P-derived 503","SPY (benchmark)"].includes(t)))||
    c.first_signal_at!==null||c.last_session!==null||
    c.return_pct!==null||c.day_return_pct!==null||c.positions!==null)
    throw Error("Candidate cannot be declared as an executed investment strategy");
@@ -110,8 +110,10 @@ export function verifyStrategyCandidates(doc){
    if(typeof c[key]!=="string"||!c[key]||c[key].length>1200)
     throw Error("Invalid research candidate description");
   }
-  if(c.source!=="https://doi.org/10.1017/S0022109023001448"||
-     c.data_reference!=="https://catalog.data.gov/dataset/national-agriculture-imagery-program-naip-imagery")
+  if(!((c.id==="IL-R001"&&c.source==="https://doi.org/10.1017/S0022109023001448"&&
+      c.data_reference==="https://catalog.data.gov/dataset/national-agriculture-imagery-program-naip-imagery")||
+     (c.id==="IL-R002"&&c.source==="https://github.com/TauricResearch/TradingAgents"&&
+      c.data_reference==="https://github.com/idealab2026/laboratorio-cuantitativo/tree/main/multi_agent")))
    throw Error("Research reference not allowlisted");
  }
  return {candidates:doc.candidates.length,registeredPaperSlots:64};

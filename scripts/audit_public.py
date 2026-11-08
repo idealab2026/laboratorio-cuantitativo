@@ -15,6 +15,17 @@ REPOSITORY = RELEASE | {"tests/live-session.test.mjs", "scripts/private_disclosu
 RELEASE |= {"src/thesis-report.mjs", "src/thesis-report.css", "src/thesis-insights.mjs", "src/thesis-source-structure.mjs", "src/thesis-historical-figures.mjs", "data/thesis-reports.json", "src/financial-sankey.mjs", "src/financial-sankey.css", "data/financial-sankeys.json"}
 REPOSITORY |= RELEASE | {"tests/financial-sankey.test.mjs", "tests/thesis-report.test.mjs", "tests/thesis-historical-figures.test.mjs", "tests/thesis-source-depth.test.mjs", "scripts/build_thesis_pdfs.py", "scripts/test_thesis_pdf_builder.py"}
 REPOSITORY.add("docs/NAUT_RESEARCH_BRIEF_2026-11-05.md")
+# Review-scoped institutional Debate Alpha code. None enters static Pages RELEASE.
+REPOSITORY |= {
+    "multi_agent/run.py",
+    "multi_agent/README.md",
+    "multi_agent/tests/test_run.py",
+    ".github/workflows/multi_agent_paper.yml",
+}
+# The prospective-only journal is initially absent. Admit its exact owned path
+# only once a scheduled source-verified paper run creates it.
+if (ROOT / "multi_agent_state/ledger.json").is_file():
+    REPOSITORY.add("multi_agent_state/ledger.json")
 engine_manifest=ROOT/"data/engine-files.json"
 if engine_manifest.exists():
     engine_paths=json.loads(engine_manifest.read_text(encoding="utf8")).get("paths",[])
