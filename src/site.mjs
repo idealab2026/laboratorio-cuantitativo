@@ -1654,12 +1654,18 @@ function full(){
  const summary=phase==="active"?counts.active+' estrategias con seguimiento vigente':
   phase==="obsolete"?counts.obsolete+' campañas históricas retiradas':
   phases.development.length+' estrategias en desarrollo'+(state.strategyCandidates?' · '+research.length+' propuesta adicional':" · propuestas sin verificar");
+ const candidatesBlock=phase==="active"&&research.length?
+  '<aside class="competition-phase-notice" aria-label="Candidatas de la competición">'+
+  '<strong>Candidatas en desarrollo</strong>'+
+  research.map(candidate=>'<a href="./index.html?view=algorithm&amp;algorithm='+esc(candidate.id)+'">'+
+   esc(candidate.name)+' <small>('+esc(candidate.id)+')</small></a>').join("")+
+  '</aside>':"";
  return '<div class="competition-heading"><h2>Clasificación de algoritmos</h2>'+
   '<span>'+esc(summary)+' · '+meta.count+' fichas catalogadas</span></div>'+
   tabs+'<section id="competition-lifecycle-panel" role="tabpanel" aria-label="'+
    esc(phase==="active"?"Activos":phase==="obsolete"?"Obsoletos":"En desarrollo")+'">'+
   (phase==="active"?leaderBlock:context)+
-  (phase==="active"?context:"")+
+  (phase==="active"?context:"")+candidatesBlock+
   fullMobileSortControls()+
   '<div class="table-scroll table-compact full-competition-table"><table><thead><tr>'+
   fullRosterHeaders()+'</tr></thead><tbody id="full-rows">'+fullRosterRows()+
