@@ -645,9 +645,9 @@ test("Three lifecycle cohorts exhaust the 64 validated slots with no overlap",as
  const parts=partitionCompetitionRows([...all,...candidates.candidates.map(e=>({id:e.id,candidate:e,group:e.group}))]);
  assert.equal(parts.active.length,35);
  assert.equal(parts.obsolete.length,13);
- assert.equal(parts.development.length,17);
- assert.equal(parts.development.filter(r=>r.candidate).length,1);
- assert.equal(parts.active.length+parts.obsolete.length+parts.development.length,65);
+ assert.equal(parts.development.length,18);
+ assert.equal(parts.development.filter(r=>r.candidate).length,2);
+ assert.equal(parts.active.length+parts.obsolete.length+parts.development.length,66);
  assert.equal(parts.active[0].id,"IL-010");
  assert.equal(parts.active.at(-1).id,"IL-044");
  assert.equal(parts.obsolete[0].id,"IL-001");
