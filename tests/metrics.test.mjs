@@ -450,7 +450,7 @@ test("Main competition route serves 64 institutional statuses, not fictitious 23
  assert.ok(src.includes("function competition(){return full();}"));
  assert.ok(src.includes("synthetic:syntheticCompetition"));
  assert.ok(src.includes('go("synthetic")'));
- assert.ok(html.includes('data-view="competition" class="active">Competición de algoritmos'));
+ assert.ok(html.includes('data-view="competition">Competición de algoritmos'));
  assert.ok(!html.includes('data-view="synthetic"'));
  assert.ok(!src.includes("Ejemplos didácticos y herramientas de prueba"));
  assert.ok(!html.includes('data-view="full">Inventario completo'));
@@ -477,12 +477,15 @@ test("Issuer research requires independent source admission instead of accepting
 });
 
 
-test("MIDAS opens the paper competition directly and has no legacy Inicio screen",()=>{
+test("MIDAS opens Inicio and keeps legacy competition bookmarks",()=>{
  const html=readFileSync(new URL("../index.html",import.meta.url),"utf8");
  const js=readFileSync(new URL("../src/site.mjs",import.meta.url),"utf8");
- assert.ok(html.includes('data-view="competition" class="active"'));
+ assert.ok(html.includes('data-view="home">Inicio</button>'));
+ assert.ok(html.includes('id="midas-home" class="hero research-hero" hidden'));
  assert.ok(!html.includes('data-view="overview"'));
- assert.ok(!html.includes('>Inicio</button>'));
+ assert.ok(js.includes('return viewNames.includes(requested)?requested:"home";'));
+ assert.ok(js.includes('$("midas-home").hidden=!home;'));
+ assert.ok(js.includes('$("app").hidden=home;'));
  assert.ok(!html.includes("Laboratorio de algoritmos"));
  assert.ok(!js.includes("function overview(){"));
  assert.ok(!js.includes('view:"overview"'));
