@@ -784,3 +784,90 @@ test("Trading room is a standalone top-level MIDAS section, not a duplicated com
  assert.ok(site.includes('function tradingRoom(){'));
  assert.ok(site.includes('function paintTradingRoom(){'));
 });
+
+
+test("trading desk distinguishes close-day signal, pre-open intent and actual paper fill",async()=>{
+ const {runInNewContext}=await import("node:vm");
+ const context={};
+ const block=source.slice(source.indexOf("function tradingReadModel"),source.indexOf("function tradingStatus"))+
+  source.slice(source.indexOf("function deskActivity"),source.indexOf("function deskAlgorithmFilters"));
+ runInNewContext(block+";this.activity=deskActivity;",context);
+ const feed={
+  opening_plans:{"2026-11-09":{previous_session:"2026-11-06",tracks:{
+   "IL-011":{status:"recorded",session:"2026-11-06",orders:[
+    {ticker:"AAPL",action:"buy",decision_session:"2026-11-06",
+     target_session:"2026-11-09",target_weight:.12,limit_price:null}]}}}},
+  tracks:{"IL-011":{label:"EMA/RSI",currency:"USD",session:"2026-11-09",status:"recorded",
+   signals:[{ticker:"AAPL",action:"buy",decision_session:"2026-11-06",
+    target_session:"2026-11-09",target_weight:.12,limit_price:null}],
+   executions:[{ticker:"AAPL",action:"buy",price:100,decision_session:"2026-11-06"}]}}
+ };
+ const selection={ticker:"",side:"all"};
+ const selected=new Set(["IL-011"]);
+ const signals=context.activity(feed,"2026-11-09",selection,"signals",selected);
+ assert.equal(signals.target,"2026-11-06");
+ assert.equal(signals.orders.length,1);
+ assert.equal(signals.orders[0].source,"decision_signal");
+ const planned=context.activity(feed,"2026-11-09",selection,"opening",selected);
+ assert.equal(planned.orders[0].book_status,"recorded");
+ assert.equal(planned.orders[0].source,"opening_plan");
+ const fills=context.activity(feed,"2026-11-09",selection,"fills",selected);
+ assert.equal(fills.orders.length,1);
+ assert.equal(fills.orders[0].source,"paper_fill");
+ assert.equal(context.activity(feed,"2026-11-06",selection,"fills",selected).orders.length,0,
+  "Prior-day signal must not be shown as an executed purchase");
+});
+
+test("trading desk never fabricates order notional, validates unique audited fills and flags stale books",async()=>{
+ const {runInNewContext}=await import("node:vm");
+ const context={
+  state:{operationsAudit:{tracks:{"IL-011":{sessions:[{date:"2026-11-09",actions:[
+   {ticker:"AAPL",side:"buy",price:100,quantity:10,fee:1,reason:"Registro verificado",
+    reason_basis:"recorded"}]}]}}}},
+  signalFeed:{tracks:{"IL-011":{analysis:{date:"2026-11-06",rows:[
+   ["AAPL","passed",["rsi"]]]}}}},
+  signalNames:{buy:"Comprar",sell:"Vender",rebalance:"Rebalancear"},
+  terminalLabels:{passed:"Superó el filtro técnico"},
+  esc:input=>String(input),fmt:input=>Number(input).toFixed(2),
+  shortPaperDate:day=>day,
+  Intl
+ };
+ const block=source.slice(source.indexOf("function deskAuditedFill"),source.indexOf("function deskResults"));
+ runInNewContext(block+";this.ui={deskSignalTable,deskRowState,deskAuditedFill};",context);
+ const planned={id:"IL-011",label:"EMA/RSI",ticker:"AAPL",action:"buy",
+  decision_session:"2026-11-06",target_session:"2026-11-09",target_weight:.12,
+  limit_price:null,currency:"USD",book_status:"recorded"};
+ const pending=context.ui.deskSignalTable([planned],"opening",["AAPL"],null,"2026-11-09");
+ assert.match(pending,/Orden prevista/);
+ assert.match(pending,/No se publica cantidad ni importe de la orden/);
+ assert.match(pending,/Peso objetivo:/);
+ assert.match(pending,/Evaluación documentada/);
+ assert.doesNotMatch(pending,/1000\.00 USD/,"Do not borrow later fill quantity for an order");
+ assert.equal(context.ui.deskRowState({...planned,book_status:"stale"},"opening").tone,"warning");
+ assert.equal(context.ui.deskRowState({...planned,book_status:"paused"},"opening").tone,"warning");
+ const fill={...planned,source:"paper_fill",price:100};
+ const recorded=context.ui.deskSignalTable([fill],"fills",["AAPL"],null,"2026-11-09");
+ assert.match(recorded,/Ejecutada en paper/);
+ assert.match(recorded,/Bruto paper: 1000\.00 USD/);
+ assert.match(recorded,/Motivo registrado: Registro verificado/);
+ const wrongPrice=context.ui.deskSignalTable([{...fill,price:101}],"fills",["AAPL"],null,"2026-11-09");
+ assert.match(wrongPrice,/Bruto paper: N\/D/);
+ const otherDay=context.ui.deskSignalTable([fill],"fills",["AAPL"],null,"2026-11-10");
+ assert.match(otherDay,/Bruto paper: N\/D/);
+ context.state.operationsAudit.tracks["IL-011"].sessions[0].actions.push(
+  {ticker:"AAPL",side:"buy",price:100,quantity:10,reason:"Duplicada",reason_basis:"recorded"});
+ assert.equal(context.ui.deskAuditedFill(fill,"2026-11-09"),null,
+  "Ambiguous matching rows may not prove capital invested");
+});
+
+test("trading UI explicitly separates decisions, pre-open plans and completed paper orders",()=>{
+ const site=readFileSync(new URL("../src/site.mjs",import.meta.url),"utf8");
+ const css=readFileSync(new URL("../styles.css",import.meta.url),"utf8");
+ for(const keyword of ['signals:"Señales del cierre"','opening:"Órdenes previstas"',
+   'fills:"Ejecuciones simuladas"',"No equivale a una orden de compra",
+   "No se publica cantidad ni importe de la orden","No hay órdenes enviadas a un bróker real",
+   "Motivo individual no publicado","book_status:plan?.tracks[id]?.status"])
+  assert.ok(site.includes(keyword),"Missing plan/fill separation or evidence label: "+keyword);
+ assert.ok(css.includes('.desk-evidence[data-evidence="warning"]'));
+ assert.ok(css.includes(".desk-interpretation"));
+});
