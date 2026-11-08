@@ -1,0 +1,365 @@
+{
+  "schema_version": 1,
+  "status": "machine_first_pass",
+  "reviewed_at_utc": "2026-11-08T03:44:26.771459+00:00",
+  "source_identity": "Buy The Dip YouTube channel",
+  "transport": {
+    "kind": "official_podcast_mirror",
+    "provider": "iVoox",
+    "guid": "https://www.ivoox.com/71694632",
+    "published_date": "2021-06-21",
+    "youtube_video_id": "6PLhB9o2g0E",
+    "match_score": 0.930411,
+    "audio_bytes_processed_transiently": 21110327
+  },
+  "models": {
+    "asr": {
+      "language": "es",
+      "language_probability": 1.0,
+      "duration_seconds": 2638.7853125,
+      "word_count": 7729,
+      "segment_count": 538,
+      "model": "small"
+    },
+    "semantic": {
+      "repo": "Qwen/Qwen3-4B-GGUF",
+      "file": "Qwen3-4B-Q4_K_M.gguf"
+    }
+  },
+  "metadata": {
+    "video_id": "6PLhB9o2g0E",
+    "youtube_url": "https://www.youtube.com/watch?v=6PLhB9o2g0E",
+    "title": "BUY THE DIP PODCAST EPISODIO 53: LOS MEJORES LIBROS PARA EL INVERSOR",
+    "category": "company_or_theme",
+    "guest_likely": false,
+    "podcast_guid": "https://www.ivoox.com/71694632",
+    "published_date": "2021-06-21",
+    "source": "official_podcast_mirror",
+    "match_score": 0.930411
+  },
+  "analysis": {
+    "episode_summary": "El episodio discute libros de inversión, destacando 'El inversor inteligente' de Graham, 'El pequeño libro que genera riqueza' de Pat Dorsey, 'Invertir en calidad' y 'El estevan bay financiero de nuestra era' de Leois. Se enfatiza la importancia de los fosos (ventajas competitivas), el uso del PER en la evaluación de empresas, y la crítica a la sobrevaloración de ciertos libros tradicionales. Se menciona métodos para generar ideas de inversión, la evaluación de valor a través de la narrativa y el precio, y la comprensión de ciclos macroeconómicos y de capital. También se destaca la importancia de la lealtad de los clientes en la rentabilidad, la necesidad de análisis previo ante la volatilidad, y la influencia de la reacción emocional en las decisiones de inversión. Se sugiere que la inversión requiere una estrategia que reduzca la incertidumbre, similar a cómo en la guerra se necesita conocer lo que está detrás de la colina. Además, se menciona la importancia de la reputación en el acceso a información privilegiada y la recomendación de libros que explican conceptos clave como el proceso de inversión, la valoración de empresas y la toma de decisiones basada en el proceso, no solo en el resultado.",
+    "process": {
+      "idea_generation": [],
+      "quality": [],
+      "balance_sheet": [],
+      "valuation": [
+        "Se menciona el uso del PER (precio por acción) en la evaluación de empresas, como en el libro 'Invertir en calidad'."
+      ],
+      "cycle_macro": [
+        "El libro 'The Return of Capital' analiza los ciclos del capital en mercados, mostrando cómo la sobreexpansión en sectores genera excedentes de empresas, lo que eventualmente lleva a un reequilibrio y a la migración del capital hacia sectores más rentables."
+      ],
+      "entry": [
+        "Se recomiendan tres libros para principiantes: 'El inversor inteligente', 'El pequeño libro que genera riqueza' y 'Invertir en calidad'."
+      ],
+      "sizing": [
+        "Se menciona que la comprensión del valor real de una empresa es crucial, y que los inversores suelen tener una visión limitada basada en informes anuales, lo que sugiere la necesidad de un enfoque más profundo y holístico en la evaluación."
+      ],
+      "add_hold": [
+        "Se sugiere que la inversión requiere una estrategia que reduzca la incertidumbre, similar a cómo en la guerra se necesita conocer lo que está detrás de la colina, lo que implica una investigación profunda y una comprensión del entorno."
+      ],
+      "exit": [
+        "Se menciona que la venta de una empresa puede reflejar un valor en el mercado que no siempre corresponde a la situación real de la empresa, lo que sugiere que la decisión de salir de una inversión debe considerar factores más allá del precio de mercado."
+      ],
+      "risk": [
+        "Se critica la sobrevaloración del libro 'El inversor defensivo' de Buffett, sugiriendo que no es aplicable a los mercados modernos.",
+        "Se destaca la incertidumbre en la inversión, comparada con la guerra, donde las circunstancias no controlables afectan los resultados, lo que requiere una estrategia que reduzca esa incertidumbre."
+      ],
+      "technical": [
+        "Se menciona la importancia de analizar detrás de la contabilidad, la directiva, el producto, la clientela y la competencia, lo que refleja la necesidad de una investigación profunda en la inversión."
+      ],
+      "management": [
+        "El libro 'Invertir en Valor' resume las estrategias de inversores famosos, ofreciendo una perspectiva sobre el valor en inversiones."
+      ],
+      "mistakes": [
+        "Se menciona que los errores en la inversión pueden ser causados por una mala comprensión del contexto y las circunstancias, lo que sugiere la importancia de una estrategia que prevenga estas fallas mediante una investigación profunda y una comprensión del entorno."
+      ]
+    },
+    "candidate_rules": [
+      {
+        "rule": "paráfrasis compacta",
+        "scope": "hosts|uncertain_or_guest",
+        "confidence": 0.0,
+        "evidence_timestamps": [],
+        "automation_proxy": "variable/cálculo posible o null",
+        "cross_video_confirmation_required": true
+      }
+    ],
+    "contradictions_or_uncertainties": [],
+    "named_examples": [],
+    "automation_readiness": "medium"
+  },
+  "chunk_evidence": [
+    {
+      "chunk": 1,
+      "evidence": [
+        {
+          "stage": "entry",
+          "paraphrase": "El podcast discute libros de inversión, destacando 'El inversor inteligente' de Graham y otros autores como Pat Dorsey y Martín Alonso.",
+          "timestamp": "00:01:07",
+          "scope": "hosts",
+          "confidence": 0.9,
+          "automation_hint": "proxy observable"
+        },
+        {
+          "stage": "quality",
+          "paraphrase": "Se enfatiza la importancia de los 'fosos' (ventajas competitivas) en la inversión, destacando el libro 'El pequeño libro que genera riqueza' de Pat Dorsey.",
+          "timestamp": "00:04:34",
+          "scope": "hosts",
+          "confidence": 0.8,
+          "automation_hint": "proxy observable"
+        },
+        {
+          "stage": "valuation",
+          "paraphrase": "Se menciona el uso del PER (precio por acción) en la evaluación de empresas, como en el libro 'Invertir en calidad'.",
+          "timestamp": "00:03:43",
+          "scope": "hosts",
+          "confidence": 0.7,
+          "automation_hint": "proxy observable"
+        },
+        {
+          "stage": "entry",
+          "paraphrase": "Se recomiendan tres libros para principiantes: 'El inversor inteligente', 'El pequeño libro que genera riqueza' y 'Invertir en calidad'.",
+          "timestamp": "00:05:15",
+          "scope": "hosts",
+          "confidence": 0.8,
+          "automation_hint": "proxy observable"
+        },
+        {
+          "stage": "risk",
+          "paraphrase": "Se critica la sobrevaloración del libro 'El inversor defensivo' de Buffett, sugiriendo que no es aplicable a los mercados modernos.",
+          "timestamp": "00:06:16",
+          "scope": "hosts",
+          "confidence": 0.6,
+          "automation_hint": "proxy observable"
+        },
+        {
+          "stage": "technical",
+          "paraphrase": "Se destaca el libro 'El estevan bay financiero de nuestra era' de Leois, que explica cómo operan los grandes bancos y los peces gordos.",
+          "timestamp": "00:08:44",
+          "scope": "hosts",
+          "confidence": 0.7,
+          "automation_hint": "proxy observable"
+        }
+      ],
+      "named_examples": [],
+      "chunk_summary": "El podcast presenta una selección de libros de inversión, destacando 'El inversor inteligente' de Graham, 'El pequeño libro que genera riqueza' de Pat Dorsey, 'Invertir en calidad' y 'El estevan bay financiero de nuestra era' de Leois. Se enfatiza la importancia de los fosos (ventajas competitivas), el uso del PER en la evaluación de empresas, y la crítica a la sobrevaloración de ciertos libros tradicionales. Se recomiendan tres libros para principiantes y se discuten aspectos técnicos y de riesgo en la inversión."
+    },
+    {
+      "chunk": 2,
+      "evidence": [
+        {
+          "stage": "idea_generation",
+          "paraphrase": "El libro 'Beating the Street' explica cómo un fondo identifica oportunidades de inversión mediante conexiones, contradicciones y desesperación, enseñando métodos para generar ideas en cualquier área.",
+          "timestamp": "00:10:23",
+          "scope": "hosts",
+          "confidence": 0.9,
+          "automation_hint": "proxy observable"
+        },
+        {
+          "stage": "valuation",
+          "paraphrase": "El libro 'Sing What Others Don't' destaca la importancia de buscar diferencias entre el precio de una acción y su narrativa para identificar valor subjetivo y oportunidades de inversión.",
+          "timestamp": "00:13:53",
+          "scope": "hosts",
+          "confidence": 0.8,
+          "automation_hint": "proxy observable"
+        },
+        {
+          "stage": "cycle_macro",
+          "paraphrase": "El libro 'The Return of Capital' analiza los ciclos del capital en mercados, mostrando cómo la sobreexpansión en sectores genera excedentes de empresas, lo que eventualmente lleva a un reequilibrio y a la migración del capital hacia sectores más rentables.",
+          "timestamp": "00:17:04",
+          "scope": "hosts",
+          "confidence": 0.7,
+          "automation_hint": "proxy observable"
+        },
+        {
+          "stage": "entry",
+          "paraphrase": "El libro 'The Dao of Capital' utiliza analogías biológicas y militares para explicar cómo ciertas empresas generan ventajas a largo plazo, incluso si su contabilidad parece ineficiente, enfatizando la importancia de infraestructura y efectos de red.",
+          "timestamp": "00:19:45",
+          "scope": "hosts",
+          "confidence": 0.6,
+          "automation_hint": "proxy observable"
+        }
+      ],
+      "named_examples": [],
+      "chunk_summary": "El análisis de los libros mencionados destaca métodos para generar ideas de inversión, la evaluación de valor a través de la narrativa y el precio, y la comprensión de ciclos macroeconómicos y de capital. Se enfatiza la importancia de estrategias innovadoras y la importancia de la infraestructura a largo plazo en la inversión."
+    },
+    {
+      "chunk": 3,
+      "evidence": [
+        {
+          "stage": "idea_generation",
+          "paraphrase": "El habla sobre la importancia de la historia militar en la inversión, destacando la conexión entre la guerra y la incertidumbre, la necesidad de entender el contexto y las circunstancias en la inversión.",
+          "timestamp": "00:23:36",
+          "scope": "hosts",
+          "confidence": 0.8,
+          "automation_hint": "proxy observable"
+        },
+        {
+          "stage": "valuation",
+          "paraphrase": "Se menciona que el valor de una empresa no siempre se refleja en el mercado, y que los inversores suelen tener una visión limitada de la empresa, basada en informes anuales y no en la comprensión del valor real.",
+          "timestamp": "00:29:00",
+          "scope": "hosts",
+          "confidence": 0.7,
+          "automation_hint": "proxy observable"
+        },
+        {
+          "stage": "risk",
+          "paraphrase": "Se destaca la incertidumbre en la inversión, comparada con la guerra, donde las circunstancias pequeñas y no controlables afectan los resultados, lo que requiere una estrategia que reduzca esa incertidumbre.",
+          "timestamp": "00:24:00",
+          "scope": "hosts",
+          "confidence": 0.6,
+          "automation_hint": "proxy observable"
+        },
+        {
+          "stage": "technical",
+          "paraphrase": "Se menciona la importancia de analizar detrás de la contabilidad, la directiva, el producto, la clientela y la competencia, lo que refleja la necesidad de una investigación profunda en la inversión.",
+          "timestamp": "00:25:22",
+          "scope": "hosts",
+          "confidence": 0.7,
+          "automation_hint": "proxy observable"
+        },
+        {
+          "stage": "entry",
+          "paraphrase": "Se sugiere que la inversión requiere entender el contexto y las circunstancias, similar a cómo en la guerra se necesita conocer lo que está detrás de la colina, lo que implica una investigación profunda y una comprensión del entorno.",
+          "timestamp": "00:25:18",
+          "scope": "hosts",
+          "confidence": 0.6,
+          "automation_hint": "proxy observable"
+        },
+        {
+          "stage": "exit",
+          "paraphrase": "Se menciona que la venta de una empresa puede reflejar un valor en el mercado que no siempre corresponde a la situación real de la empresa, lo que sugiere que la decisión de salir de una inversión debe considerar factores más allá del precio de mercado.",
+          "timestamp": "00:29:44",
+          "scope": "hosts",
+          "confidence": 0.6,
+          "automation_hint": "proxy observable"
+        },
+        {
+          "stage": "cycle_macro",
+          "paraphrase": "Se destaca la importancia de la incertidumbre en la inversión, comparada con la guerra, donde las circunstancias no controlables afectan los resultados, lo que requiere una estrategia que reduzca esa incertidumbre.",
+          "timestamp": "00:24:00",
+          "scope": "hosts",
+          "confidence": 0.6,
+          "automation_hint": "proxy observable"
+        },
+        {
+          "stage": "sizing",
+          "paraphrase": "Se menciona que la comprensión del valor real de una empresa es crucial, y que los inversores suelen tener una visión limitada basada en informes anuales, lo que sugiere la necesidad de un enfoque más profundo y holístico en la evaluación.",
+          "timestamp": "00:29:00",
+          "scope": "hosts",
+          "confidence": 0.7,
+          "automation_hint": "proxy observable"
+        },
+        {
+          "stage": "add_hold",
+          "paraphrase": "Se sugiere que la inversión requiere una estrategia que reduzca la incertidumbre, similar a cómo en la guerra se necesita conocer lo que está detrás de la colina, lo que implica una investigación profunda y una comprensión del entorno.",
+          "timestamp": "00:25:18",
+          "scope": "hosts",
+          "confidence": 0.6,
+          "automation_hint": "proxy observable"
+        },
+        {
+          "stage": "mistake",
+          "paraphrase": "Se menciona que los errores en la inversión pueden ser causados por una mala comprensión del contexto y las circunstancias, lo que sugiere la importancia de una estrategia que prevenga estas fallas mediante una investigación profunda y una comprensión del entorno.",
+          "timestamp": "00:24:00",
+          "scope": "hosts",
+          "confidence": 0.6,
+          "automation_hint": "proxy observable"
+        }
+      ],
+      "named_examples": [],
+      "chunk_summary": "El fragmento destaca la importancia de la historia militar en la inversión, destacando la conexión entre la guerra y la incertidumbre, la necesidad de entender el contexto y las circunstancias en la inversión, y la importancia de una estrategia que reduzca la incertidumbre. Se menciona que el valor de una empresa no siempre se refleja en el mercado, y que los inversores suelen tener una visión limitada de la empresa, basada en informes anuales y no en la comprensión del valor real. También se sugiere que la inversión requiere una investigación profunda, analizando detrás de la contabilidad, la directiva, el producto, la clientela y la competencia. Se destaca la importancia de la incertidumbre en la inversión, comparada con la guerra, donde las circunstancias no controlables afectan los resultados, lo que requiere una estrategia que reduzca esa incertidumbre. Además, se menciona que la venta de una empresa puede reflejar un valor en el mercado que no siempre corresponde a la situación real de la empresa, lo que sugiere que la decisión de salir de una inversión debe considerar factores más allá del precio de mercado."
+    },
+    {
+      "chunk": 4,
+      "evidence": [
+        {
+          "stage": "entry",
+          "paraphrase": "El poder de la lealtad de los clientes reduce costos y aumenta la fidelidad, lo que mejora la rentabilidad y la percepción del mercado.",
+          "timestamp": "00:30:26",
+          "scope": "hosts",
+          "confidence": 0.9
+        },
+        {
+          "stage": "valuation",
+          "paraphrase": "La incertidumbre en el mercado requiere análisis previo y preparación para volatilidad, afectando decisiones de inversión.",
+          "timestamp": "00:34:12",
+          "scope": "hosts",
+          "confidence": 0.8
+        },
+        {
+          "stage": "risk",
+          "paraphrase": "La reacción emocional ante eventos del mercado es crucial para la toma de decisiones, influyendo en la rentabilidad y el análisis de la empresa.",
+          "timestamp": "00:34:16",
+          "scope": "hosts",
+          "confidence": 0.7
+        },
+        {
+          "stage": "cycle_macro",
+          "paraphrase": "La historia económica y los patrones de comportamiento en el mercado son relevantes para entender tendencias y decisiones de inversión.",
+          "timestamp": "00:32:06",
+          "scope": "hosts",
+          "confidence": 0.6
+        },
+        {
+          "stage": "technical",
+          "paraphrase": "La incertidumbre en el mercado puede llevar a decisiones irreflexivas, como el pánico o la compra compulsiva, afectando la rentabilidad.",
+          "timestamp": "00:34:50",
+          "scope": "hosts",
+          "confidence": 0.5
+        }
+      ],
+      "named_examples": [],
+      "chunk_summary": "El fragmento destaca la importancia de la lealtad de los clientes en la rentabilidad y la percepción del mercado, la necesidad de análisis previo y preparación ante la volatilidad del mercado, la influencia de la reacción emocional en las decisiones de inversión, la relevancia de la historia económica en la comprensión de tendencias y la riesgo de decisiones irreflexivas basadas en incertidumbre."
+    },
+    {
+      "chunk": 5,
+      "evidence": [
+        {
+          "stage": "entry",
+          "paraphrase": "La gente que aplaudía a un inversor exitoso no estaba aplaudiendo a insten, sino a una persona que salvó judíos durante la Holocausto.",
+          "timestamp": "00:41:02",
+          "scope": "hosts",
+          "confidence": 0.9,
+          "automation_hint": "proxy observable"
+        },
+        {
+          "stage": "valuation",
+          "paraphrase": "El libro 'Thinking in Beds' explica que el resultado de una apuesta no define el proceso, enfatizando la importancia del proceso a largo plazo.",
+          "timestamp": "00:41:55",
+          "scope": "hosts",
+          "confidence": 0.8,
+          "automation_hint": "proxy observable"
+        },
+        {
+          "stage": "management",
+          "paraphrase": "El libro 'Invertir en Valor' resume las estrategias de inversores famosos, ofreciendo una perspectiva sobre el valor en inversiones.",
+          "timestamp": "00:42:14",
+          "scope": "hosts",
+          "confidence": 0.7,
+          "automation_hint": "proxy observable"
+        },
+        {
+          "stage": "risk",
+          "paraphrase": "Un inversor exitoso tiene más posibilidades de acceder a información privilegiada de directivas, lo que influye en la toma de decisiones.",
+          "timestamp": "00:41:37",
+          "scope": "hosts",
+          "confidence": 0.6,
+          "automation_hint": "proxy observable"
+        },
+        {
+          "stage": "technical",
+          "paraphrase": "El libro 'Valuation Measuring and Managing the Value of Companies' es considerado la 'biblia' de la valoración, enfatizando la importancia de entender lo que genera valor en empresas.",
+          "timestamp": "00:42:46",
+          "scope": "hosts",
+          "confidence": 0.7,
+          "automation_hint": "proxy observable"
+        }
+      ],
+      "named_examples": [],
+      "chunk_summary": "El episodio aborda estrategias de inversión, destacando la importancia de la reputación en el acceso a información privilegiada, la influencia de la reputación en la aprobación de tesis, y la recomendación de libros que explican conceptos clave como el proceso de inversión, la valoración de empresas y la toma de decisiones basada en el proceso, no solo en el resultado."
+    }
+  ],
+  "copyright_note": "No audio or verbatim transcript is persisted; only derived paraphrases."
+}
