@@ -524,7 +524,9 @@ function tradingReadModel(feed,day,{slot="",ticker="",side="all",slots=null}={})
  const ids=slot?[slot]:Object.keys(feed?.tracks||{}).filter(id=>!slots?.size||slots.has(id));
  const text=ticker.trim().toUpperCase();
  const base=ids.flatMap(id=>(plan?.tracks[id]?.orders||[]).filter(order=>order.ticker.includes(text)).map(order=>({
-  ...order,id,label:feed.tracks[id].label,currency:feed.tracks[id].currency
+  ...order,id,label:feed.tracks[id].label,currency:feed.tracks[id].currency,
+  book_status:plan?.tracks[id]?.status||"unavailable",
+  book_session:plan?.tracks[id]?.session??null,source:"opening_plan"
  })));
  const counts={all:base.length,buy:0,sell:0,rebalance:0};
  for(const order of base)counts[order.action]++;
@@ -532,7 +534,8 @@ function tradingReadModel(feed,day,{slot="",ticker="",side="all",slots=null}={})
   .sort((a,b)=>a.action.localeCompare(b.action)||a.ticker.localeCompare(b.ticker)||a.id.localeCompare(b.id));
  const journals=day?ids.filter(id=>feed?.tracks[id]?.session===day):[];
  const fills=journals.flatMap(id=>feed.tracks[id].executions.filter(fill=>fill.ticker.includes(text)).map(fill=>({
-  ...fill,id,label:feed.tracks[id].label,currency:feed.tracks[id].currency
+  ...fill,id,label:feed.tracks[id].label,currency:feed.tracks[id].currency,
+  book_status:feed.tracks[id].status,book_session:feed.tracks[id].session,source:"paper_fill"
  })));
  return {plan,orders,counts,fills,journals:journals.length};
 }
@@ -564,9 +567,25 @@ function tradingCoverage(plan,slot="",slots=null){
  return incomplete?incomplete+" de "+entries.length+" carteras con diario vigente tienen información incompleta para esta sesión.":"";
 }
 const tradingDesk={slots:new Set(),symbols:null,phase:"opening"};
-const deskPhases={opening:"Apertura prevista",next:"Siguiente apertura",fills:"Ejecuciones simuladas"};
+const deskPhases={signals:"Señales del cierre",opening:"Órdenes previstas",next:"Siguiente apertura",fills:"Ejecuciones simuladas"};
 
 function deskActivity(feed,day,filter,phase,slots){
+ const plan=feed?.opening_plans?.[day];
+ if(phase==="signals"){
+  // A selected opening always refers to the previous verified market close.
+  const decisionDay=plan?.previous_session||day;
+  const ids=Object.keys(feed?.tracks||{}).filter(id=>!slots?.size||slots.has(id));
+  const q=(filter.ticker||"").trim().toUpperCase();
+  const all=ids.flatMap(id=>(feed.tracks[id]?.signals||[]).filter(item=>
+   item.action!=="hold"&&item.decision_session===decisionDay&&item.ticker.includes(q))
+   .map(item=>({...item,id,label:feed.tracks[id].label,currency:feed.tracks[id].currency,
+    book_status:feed.tracks[id].status,book_session:feed.tracks[id].session,source:"decision_signal"})));
+  const counts={all:all.length,buy:0,sell:0,rebalance:0};
+  for(const item of all)counts[item.action]++;
+  return {plan,orders:all.filter(item=>filter.side==="all"||item.action===filter.side)
+   .sort((a,b)=>a.ticker.localeCompare(b.ticker)||a.id.localeCompare(b.id)),
+   counts,fills:[],journals:0,target:decisionDay};
+ }
  const nextDay=Object.keys(feed?.opening_plans||{}).sort().find(key=>feed.opening_plans[key].previous_session===day);
  const target=phase==="next"?nextDay:day;
  const model=tradingReadModel(feed,target,{...filter,slot:"",slots});
@@ -626,27 +645,89 @@ function deskChart(symbol,day){
   (last?'<small>'+esc(shortPaperDate(first[0]))+(series.length>1?' – '+esc(shortPaperDate(last[0])):"")+
    ' · '+series.length+' cierres auditados</small>':"")+'</article>';
 }
-function deskSignalTable(orders,phase,symbols,plan){
- const grouped=new Map();
- for(const order of orders){
-  if(!grouped.has(order.ticker))grouped.set(order.ticker,[]);
-  grouped.get(order.ticker).push(order);
+function deskAuditedFill(item,day){
+ // Execution prices by themselves do NOT disclose quantity or investment size.
+ // Reconcile against exactly one dated audited paper action, never market close.
+ const sessions=state.operationsAudit?.tracks?.[item.id]?.sessions;
+ const record=Array.isArray(sessions)?sessions.find(row=>row.date===day):null;
+ if(!record||!Array.isArray(record.actions)||!Number.isFinite(item.price))return null;
+ const matches=record.actions.filter(action=>action.ticker===item.ticker&&
+  action.side===item.action&&Number.isFinite(action.price)&&
+  Math.abs(action.price-item.price)<=Math.max(1,Math.abs(item.price))*1e-8);
+ return matches.length===1?matches[0]:null;
+}
+function deskRowState(item,phase){
+ if(phase==="fills")return {label:"Ejecutada en paper",tone:"recorded",detail:"No es una operación en un bróker"};
+ if(phase==="signals")return {label:"Señal registrada",tone:"info",
+  detail:item.book_status==="paused"?"Cartera pausada; no confirma orden":
+   "No equivale a una orden de compra"};
+ const statuses={
+  recorded:["Orden prevista","recorded","Plan guardado antes de la apertura; ejecución no confirmada"],
+  stale:["Diario atrasado","warning","No confirma ejecución para la sesión"],
+  paused:["Cartera pausada","warning","No confirma ejecución para la sesión"],
+  archived:["Diario archivado","warning","No hay orden operativa vigente"],
+  unavailable:["Sin verificar","warning","Falta un diario utilizable para esa apertura"]
+ };
+ const [label,tone,detail]=statuses[item.book_status]||statuses.unavailable;
+ return {label,tone,detail};
+}
+function deskRowReason(item,phase,day,audit){
+ if(phase==="fills"){
+  if(audit?.reason_basis==="recorded"&&audit.reason)return "Motivo registrado: "+audit.reason;
+  if(audit?.reason_basis==="engine_rule"&&audit.reason)return "Regla general del motor: "+audit.reason;
+  return "Motivo individual no acreditado";
  }
- return '<div class="desk-table-scroll" tabindex="0" aria-label="Señales agrupadas por empresa"><table class="desk-table">'+
-  '<thead><tr><th scope="col">Empresa</th><th scope="col">Señales por algoritmo</th></tr></thead><tbody>'+
-  [...grouped].sort(([a],[b])=>a.localeCompare(b)).map(([ticker,items])=>
-   '<tr><th scope="row"><button type="button" data-action="desk-chart" data-value="'+esc(ticker)+
-   '" aria-pressed="'+symbols.includes(ticker)+'" title="Mostrar gráfico de '+esc(ticker)+'">'+esc(ticker)+'</button></th><td>'+
-   items.map(item=>{
-    const action=signalNames[item.action];
-    const [caption,value]=phase==="fills"?
-     ["Precio simulado",item.price!=null&&item.currency?fmt(item.price)+" "+item.currency:"Sin precio publicado"]:
-     tradingOrderPrice(item);
-    return '<span class="desk-signal" title="'+esc(caption+" · "+value)+'"><b data-side="'+esc(item.action)+'">'+esc(action)+'</b>'+
-     '<span>'+esc(item.label)+'</span><small>'+esc(item.id+
-     (plan?.tracks[item.id]?.status==="archived"?" · Archivo":"")+
-     (value==="Por determinar"?"":" · "+value))+'</small></span>';
-   }).join("")+'</td></tr>').join("")+'</tbody></table></div>';
+ const trace=signalFeed?.tracks?.[item.id]?.analysis;
+ if(trace?.date===item.decision_session&&Array.isArray(trace.rows)){
+  const evidence=trace.rows.find(row=>row[0]===item.ticker);
+  if(evidence&&Object.hasOwn(terminalLabels,evidence[1]))
+   return "Evaluación documentada: "+terminalLabels[evidence[1]]+
+    (Array.isArray(evidence[2])&&evidence[2].length?" · Indicadores: "+evidence[2].join(", "):"");
+ }
+ return "Motivo individual no publicado";
+}
+function deskSignalTable(orders,phase,symbols,plan,day){
+ const percentage=new Intl.NumberFormat("es-ES",{style:"percent",maximumFractionDigits:2});
+ const monetary=(amount,currency)=>Number.isFinite(amount)&&currency?
+  fmt(amount)+" "+currency:null;
+ return '<div class="desk-table-scroll" tabindex="0" aria-label="Registro de señales y operaciones simuladas">'+
+  '<table class="desk-table"><thead><tr><th scope="col">Empresa</th>'+
+  '<th scope="col">Decisión y estado</th><th scope="col">Algoritmo y evidencia</th>'+
+  '<th scope="col">Capital</th><th scope="col">Precio</th></tr></thead><tbody>'+
+  orders.map(item=>{
+   const stage=deskRowState(item,phase);
+   const audited=phase==="fills"?deskAuditedFill(item,day):null;
+   const gross=audited&&Number.isFinite(audited.quantity)&&audited.quantity>0&&
+    Number.isFinite(audited.price)&&audited.price>0?
+    monetary(audited.quantity*audited.price,item.currency):null;
+   const weight=Number.isFinite(item.target_weight)&&item.target_weight>=0?
+    percentage.format(item.target_weight):"N/D";
+   const amount=gross||"N/D";
+   const price=phase==="fills"?monetary(item.price,item.currency):
+    monetary(item.limit_price,item.currency);
+   const moment=phase==="fills"?"Operación paper · "+(day?shortPaperDate(day):"fecha no disponible"):
+    "Decisión · "+(item.decision_session?shortPaperDate(item.decision_session):"N/D")+
+    " · Apertura · "+(item.target_session?shortPaperDate(item.target_session):"sin fecha verificada");
+   const reason=deskRowReason(item,phase,day,audited);
+   return '<tr><th scope="row"><button type="button" data-action="desk-chart" data-value="'+esc(item.ticker)+
+    '" aria-pressed="'+symbols.includes(item.ticker)+'" title="Mostrar cierres de '+esc(item.ticker)+'">'+
+    esc(item.ticker)+'</button></th>'+
+    '<td><strong class="desk-action" data-side="'+esc(item.action)+'">'+esc(signalNames[item.action])+'</strong>'+
+    '<span class="desk-evidence" data-evidence="'+esc(stage.tone)+'">'+esc(stage.label)+'</span>'+
+    '<small class="desk-cell-note">'+esc(stage.detail)+'</small>'+
+    '<small class="desk-cell-note">'+esc(moment)+'</small></td>'+
+    '<td><strong class="desk-algorithm-name">'+esc(item.label)+'</strong>'+
+    '<small class="desk-cell-note">Identificador: '+esc(item.id)+'</small>'+
+    '<small class="desk-cell-note">'+esc(reason)+'</small></td>'+
+    '<td><strong>'+esc(phase==="fills"?"Bruto paper: ":"Importe orden: ")+esc(amount)+'</strong>'+
+    '<small class="desk-cell-note">'+esc(phase==="fills"?
+      (gross?"Cantidad × precio auditados; antes de comisiones":"No constan precio y cantidad auditados de forma única"):
+      "No se publica cantidad ni importe de la orden")+'</small>'+
+    '<small class="desk-cell-note">Peso objetivo: '+esc(phase==="fills"?"N/D":weight)+'</small></td>'+
+    '<td>'+esc(price||"N/D")+
+    '<small class="desk-cell-note">'+esc(phase==="fills"?"Precio de ejecución paper":
+      item.limit_price!=null?"Precio límite registrado":"Sin precio límite registrado")+'</small></td></tr>';
+  }).join("")+'</tbody></table></div>';
 }
 function deskResults(model){
  if(!signalFeed)return '<p class="trading-empty">'+(signalFeedError?"Usa «Actualizar» para consultar el diario.":"Cargando las señales publicadas…")+'</p>';
@@ -655,14 +736,19 @@ function deskResults(model){
  const dateLabel=model.target?shortPaperDate(model.target):"Pendiente";
  const open=phase!=="fills"&&model.plan?.opens_at?
   " · "+madridTime.format(new Date(model.plan.opens_at))+" Madrid":"";
- const coverage=model.plan?tradingCoverage(model.plan,"",tradingDesk.slots):"";
+ const coverage=model.plan&&phase!=="signals"?tradingCoverage(model.plan,"",tradingDesk.slots):"";
  return '<div class="desk-layout"><section class="desk-tape" aria-labelledby="desk-tape-title">'+
   '<div class="desk-heading"><h3 id="desk-tape-title">'+esc(deskPhases[phase])+' <small>'+esc(dateLabel+open)+'</small></h3>'+
   '<span>'+model.orders.length+' registros</span></div>'+
   (coverage&&phase!=="fills"?'<p class="desk-coverage">'+esc(coverage)+'</p>':"")+
+  '<p class="desk-interpretation">'+esc(phase==="signals"?
+   "Señales del último cierre acreditado para esta apertura: no son órdenes ni operaciones ejecutadas.":
+   phase==="fills"?
+   "Solo compras y ventas registradas en los libros paper. No hay órdenes enviadas a un bróker real.":
+   "Órdenes previstas en los diarios anteriores a la apertura, sujetas a datos, reglas y ejecución. No equivalen a compras realizadas.")+'</p>'+
   (phase!=="fills"&&model.orders.some(order=>order.id==="IL-042")?
    '<p class="desk-note">TimesFM diario prevé cerrar al final de la sesión las posiciones que llegue a abrir.</p>':"")+
-  (model.orders.length?deskSignalTable(model.orders,phase,symbols,model.plan):'<p class="trading-empty">'+
+  (model.orders.length?deskSignalTable(model.orders,phase,symbols,model.plan,model.target||day):'<p class="trading-empty">'+
    (phase==="fills"&&!model.journals?"Sin diario de ejecuciones para esta selección.":"Sin registros publicados para esta selección.")+'</p>')+
   '</section><aside class="desk-charts" aria-labelledby="desk-chart-title"><div class="desk-heading">'+
   '<h3 id="desk-chart-title">Gráficos de cierre</h3><span>Hasta 3 empresas</span></div>'+
@@ -1042,7 +1128,7 @@ function paintTerminalMapFrame(rows=[],trace=null){
 function tradingRoom(){
  return '<section class="trading-room" aria-labelledby="trading-title">'+
   '<header class="trading-mast"><div><h2 id="trading-title">Sala de trading</h2>'+
-  '<p>Señales de los algoritmos para tu operativa manual.</p></div>'+
+  '<p>Señales y órdenes previstas de carteras simuladas. No envía órdenes reales.</p></div>'+
   '<div class="trading-feed"><span id="trading-published" role="status">'+esc(tradingStatus())+'</span>'+
   '<button type="button" data-action="live-signals-refresh">Actualizar</button></div></header>'+
   '<div class="trading-workspace"><div class="terminal-mode" role="group" aria-label="Vista de la sala">'+
