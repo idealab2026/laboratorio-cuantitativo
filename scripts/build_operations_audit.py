@@ -445,6 +445,34 @@ def analysis_trace(book, source, parent, key):
     return None
 
 
+def analysis_coverage(book, source, parent, key, decision):
+    """Report the engine's documented denominator and stage, separately from playback."""
+    if source == "classic_sp500_state/ledger.json" and key != "benchmark_spy":
+        record = ((parent or {}).get("coverage") or [{}])[-1]
+        day, eligible, total = record.get("date"), record.get("eligible"), record.get("total")
+        stage = "eligible"
+    elif source == "weekly_ml_daily_state/ledger.json" and decision and not key.startswith("benchmark_"):
+        forecast, _ = read(f"weekly_ml_state/forecasts/{decision}.json")
+        record = (forecast or {}).get("universe_snapshot", {})
+        day, eligible, total = decision, record.get("live_features"), record.get("configured")
+        stage = "features"
+    elif source == "tfg_state/ledger.json":
+        record = book.get("pending_signal") or {}
+        universe, _ = read("data/universe-xnys.json")
+        day, eligible, total = record.get("asof"), record.get("universe_count"), (universe or {}).get("count")
+        stage = "evaluated"
+    elif source in {"capital_cycle_state/ledger.json", "buy_the_dip_state/ledger.json"}:
+        signal = (book.get("signals") or [{}])[-1]
+        record = signal.get("coverage") or {}
+        day, eligible, total = signal.get("date"), record.get("scored"), record.get("frozen_universe")
+        stage = "scored"
+    else:
+        return None
+    if date(day) and type(eligible) is int and type(total) is int and 0 <= eligible <= total <= 1000:
+        return {"date": day, "eligible": eligible, "total": total, "stage": stage}
+    return None
+
+
 def live_book(original, book, source, parent, key=None):
     latest = date(original.get("last_session"))
     base = {"label": original["label"], "currency": original.get("currency"),
@@ -474,7 +502,8 @@ def live_book(original, book, source, parent, key=None):
             "pause_reason": pause_reason if pause_reason in
             ("missing_ohlc", "unreconciled_session", "expired_open") else None,
             "executions": executions,
-            "analysis": analysis_trace(book, source, parent, key)}
+            "analysis": analysis_trace(book, source, parent, key),
+            "analysis_coverage": analysis_coverage(book, source, parent, key or "", decision)}
 
 
 def build(signal_tracks=None):
