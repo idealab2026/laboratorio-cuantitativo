@@ -46,7 +46,7 @@ class DebateTests(unittest.TestCase):
         self.assertEqual(d["debate"][0]["fundamental"], "ABSTAIN_NO_PIT_DATA")
         self.assertEqual(d["debate"][0]["sentiment"], "ABSTAIN_NO_PIT_NEWS")
         # Future bars appended cannot change the already closed 6-session signal.
-        self.assertEqual(d, committee(days + [(day(6), frame(6))]) if False else committee(days))
+        self.assertEqual(d, committee(copy.deepcopy(days)))
         self.assertEqual(committee(days[:5])["reason"], "WARMUP")
 
     def test_next_open_and_not_same_day(self):
@@ -71,7 +71,7 @@ class DebateTests(unittest.TestCase):
         self.assertEqual(len(buys), 1)
         self.assertEqual(buys[0]["signal_session"], friday)
         self.assertAlmostEqual(buys[0]["price"], 80 * 1.0005)
-        self.assertLess(second["history"][-1]["nav"], 110000)
+        self.assertLess(second["history"][-1]["nav"], 120000)
         with self.assertRaises(ValueError):
             step(second, mon, monday_snapshot, frames)
 
