@@ -324,6 +324,11 @@ function verifyLiveSignals(doc){
   if((track.pause_date!==undefined&&!validDate(track.pause_date))||
      (track.pause_reason!==undefined&&![null,"missing_ohlc","unreconciled_session","expired_open"].includes(track.pause_reason)))
    throw Error("Pausa de la cartera no verificable");
+  const coverage=track.analysis_coverage;
+  if(coverage!=null&&(!signalDate(coverage.date)||!["eligible","features","evaluated","scored"].includes(coverage.stage)||
+     !Number.isInteger(coverage.eligible)||!Number.isInteger(coverage.total)||coverage.eligible<0||
+     coverage.eligible>coverage.total||coverage.total>1000))
+   throw Error("Cobertura de análisis no verificable");
   const trace=track.analysis;
   if(trace!=null&&(!signalDate(trace.date)||!["classic","ahp","monthly"].includes(trace.method)||
     !(trace.excluded===null||Number.isSafeInteger(trace.excluded)&&trace.excluded>=0)||
@@ -514,9 +519,9 @@ function tradingAlgorithms(){
  return tradingOptions([["","Todos los algoritmos"],...Object.entries(signalFeed?.tracks||{}).map(([slot,track])=>
   [slot,slot+" · "+track.label])],tradingFilter.slot);
 }
-function tradingReadModel(feed,day,{slot="",ticker="",side="all"}={}){
+function tradingReadModel(feed,day,{slot="",ticker="",side="all",slots=null}={}){
  const plan=feed?.opening_plans?.[day];
- const ids=slot?[slot]:Object.keys(feed?.tracks||{});
+ const ids=slot?[slot]:Object.keys(feed?.tracks||{}).filter(id=>!slots?.size||slots.has(id));
  const text=ticker.trim().toUpperCase();
  const base=ids.flatMap(id=>(plan?.tracks[id]?.orders||[]).filter(order=>order.ticker.includes(text)).map(order=>({
   ...order,id,label:feed.tracks[id].label,currency:feed.tracks[id].currency
@@ -543,20 +548,9 @@ function tradingOrderPrice(order){
   return ["Peso objetivo",new Intl.NumberFormat("es-ES",{style:"percent",maximumFractionDigits:2}).format(order.target_weight)];
  return ["Precio","Por determinar"];
 }
-function tradingOrderList(orders,filled=false){
- return '<ul class="trading-tape">'+orders.map(order=>{
-  const [caption,price]=filled?["Precio simulado",order.price===null||!order.currency?"Sin precio publicado":fmt(order.price)+" "+order.currency]:tradingOrderPrice(order);
-  return '<li class="trading-order"><div class="trading-side" data-side="'+esc(order.action)+'">'+
-   esc(filled?(order.action==="buy"?"Compra":"Venta"):signalNames[order.action])+
-   '</div><strong class="trading-symbol">'+esc(order.ticker)+'</strong><div class="trading-origin">'+
-   '<span>'+esc(order.label)+'</span><small>'+esc(order.id)+
-   (order.decision_session?" · Señal del "+esc(shortPaperDate(order.decision_session)):"")+
-   '</small></div><div class="trading-price"><small>'+esc(caption)+'</small><strong>'+esc(price)+'</strong></div></li>';
- }).join("")+'</ul>';
-}
-function tradingCoverage(plan){
- const entry=plan.tracks[tradingFilter.slot];
- if(tradingFilter.slot){
+function tradingCoverage(plan,slot="",slots=null){
+ const entry=plan.tracks[slot];
+ if(slot){
   if(!entry||entry.status==="unavailable")return "Esta cartera no tiene un diario verificable para la sesión.";
   if(entry.status==="archived")return "Este diario está archivado.";
   const notes=[];
@@ -565,29 +559,120 @@ function tradingCoverage(plan){
   if(entry.undated)notes.push("Hay órdenes pendientes sin fecha de ejecución verificable.");
   return notes.join(" ");
  }
- const entries=Object.values(plan.tracks).filter(track=>track.status!=="archived");
+ const entries=Object.entries(plan.tracks).filter(([id,track])=>(!slots?.size||slots.has(id))&&track.status!=="archived").map(([,track])=>track);
  const incomplete=entries.filter(track=>track.status!=="recorded"||track.undated).length;
  return incomplete?incomplete+" de "+entries.length+" carteras con diario vigente tienen información incompleta para esta sesión.":"";
 }
-function tradingResults(model){
- if(!signalFeed)return '<p class="trading-empty">'+(signalFeedError?"Usa «Actualizar» para volver a consultar el diario.":"Cargando las señales publicadas…")+'</p>';
- const {plan,orders,counts,fills,journals}=model;
- if(!plan)return '<p class="trading-empty">El diario todavía no ofrece un plan de apertura fechado.</p>';
- const day=tradingDay();
- const coverage=tradingCoverage(plan);
- const empty=counts.all?"No hay señales de ese tipo con los filtros actuales.":tradingFilter.ticker?
-  "No hay señales publicadas para ese ticker.":coverage?"No hay señales verificables para esta selección.":"Sin órdenes previstas para esta apertura.";
- return '<div class="trading-session-line"><h3>Plan de apertura del '+esc(shortPaperDate(day))+'</h3>'+
-  '<time datetime="'+esc(plan.opens_at)+'">'+esc(madridTime.format(new Date(plan.opens_at)))+' Madrid</time></div>'+
-  (coverage?'<p class="trading-coverage">'+esc(coverage)+'</p>':"")+
-  (orders.length?tradingOrderList(orders):'<p class="trading-empty">'+esc(empty)+'</p>')+
-  (orders.some(order=>order.id==="IL-042")?'<p class="trading-rule">TimesFM diario prevé cerrar al final de la sesión las posiciones que llegue a abrir.</p>':"")+
-  '<details class="trading-fills"><summary>Ejecuciones simuladas del '+esc(shortPaperDate(day))+
-  (fills.length?" · "+fills.length:"")+'</summary>'+
-  (fills.length?tradingOrderList(fills,true):'<p class="trading-empty">'+(journals?
-   "Los diarios publicados para esta fecha no muestran operaciones con estos filtros.":
-   "La copia actual del diario no contiene ejecuciones para esta fecha y selección.")+'</p>')+'</details>';
+const tradingDesk={slots:new Set(),symbols:null,phase:"opening"};
+const deskPhases={opening:"Apertura prevista",next:"Siguiente apertura",fills:"Ejecuciones simuladas"};
+
+function deskActivity(feed,day,filter,phase,slots){
+ const nextDay=Object.keys(feed?.opening_plans||{}).sort().find(key=>feed.opening_plans[key].previous_session===day);
+ const target=phase==="next"?nextDay:day;
+ const model=tradingReadModel(feed,target,{...filter,slot:"",slots});
+ if(phase==="fills"){
+  const fills=tradingReadModel(feed,day,{...filter,slot:"",slots}).fills;
+  model.orders=fills.filter(order=>filter.side==="all"||filter.side===order.action);
+  model.counts={all:fills.length,buy:0,sell:0,rebalance:0};
+  for(const fill of fills)model.counts[fill.action]++;
+  model.plan=feed?.opening_plans?.[day];
+ }else if(phase==="next"){
+  const relevant=tradingReadModel(feed,target,{...filter,slot:"",slots,side:"all"}).orders.filter(order=>order.decision_session===day);
+  model.orders=relevant.filter(order=>filter.side==="all"||filter.side===order.action);
+  model.counts={all:relevant.length,buy:0,sell:0,rebalance:0};
+  for(const order of relevant)model.counts[order.action]++;
+ }
+ return {...model,target};
 }
+function deskAlgorithmFilters(){
+ const entries=Object.entries(signalFeed?.tracks||{});
+ return '<details class="desk-algorithms" id="desk-algorithms"><summary>'+
+  esc(tradingDesk.slots.size?tradingDesk.slots.size+" seleccionados":"Todos los algoritmos")+'</summary>'+
+  '<div class="desk-filter-popover"><button type="button" class="outline-btn" data-action="desk-reset">Ver todos</button>'+
+  entries.map(([slot,track])=>'<label><input type="checkbox" data-desk-algorithm="'+esc(slot)+'"'+
+   (tradingDesk.slots.has(slot)?' checked':"")+'><span>'+esc(slot+" · "+track.label)+'</span></label>').join("")+'</div></details>';
+}
+let deskPriceSource=null,deskPrices=new Map();
+function deskChartSeries(symbol,day){
+ const audit=state.operationsAudit;
+ if(audit!==deskPriceSource){
+  deskPriceSource=audit;
+  deskPrices=new Map();
+  for(const track of Object.values(audit?.tracks||{})){
+   for(const [ticker,series] of Object.entries(track.prices||{})){
+    if(!deskPrices.has(ticker))deskPrices.set(ticker,new Map());
+    const byDay=deskPrices.get(ticker);
+    for(const row of series){
+     if(!Number.isFinite(row.price)||row.price<=0)continue;
+     if(!byDay.has(row.date))byDay.set(row.date,row.price);
+     else if(byDay.get(row.date)!==row.price)byDay.set(row.date,null);
+    }
+   }
+  }
+ }
+ return [...(deskPrices.get(symbol)||[])].filter(([date,price])=>date<=day&&price!==null)
+  .sort(([a],[b])=>a.localeCompare(b)).slice(-18);
+}
+function deskChart(symbol,day){
+ const series=deskChartSeries(symbol,day);
+ const last=series.at(-1),first=series[0];
+ const values=series.map(([,price])=>price);
+ return '<article class="desk-chart"><div class="desk-chart-head"><strong>'+esc(symbol)+'</strong>'+
+  (last?'<span>'+esc(fmt(last[1]))+' USD</span>':"")+
+  '<button type="button" data-action="desk-chart-remove" data-value="'+esc(symbol)+
+  '" aria-label="Quitar gráfico de '+esc(symbol)+'">×</button></div>'+
+  (series.length>=2?sparkline(values,"Cierres auditados de "+symbol):
+   '<p>'+(state.operationsAuditStatus==="pending"?"Cargando cierres…":"Histórico auditado insuficiente")+'</p>')+
+  (last?'<small>'+esc(shortPaperDate(first[0]))+(series.length>1?' – '+esc(shortPaperDate(last[0])):"")+
+   ' · '+series.length+' cierres auditados</small>':"")+'</article>';
+}
+function deskSignalTable(orders,phase,symbols,plan){
+ const grouped=new Map();
+ for(const order of orders){
+  if(!grouped.has(order.ticker))grouped.set(order.ticker,[]);
+  grouped.get(order.ticker).push(order);
+ }
+ return '<div class="desk-table-scroll" tabindex="0" aria-label="Señales agrupadas por empresa"><table class="desk-table">'+
+  '<thead><tr><th scope="col">Empresa</th><th scope="col">Señales por algoritmo</th></tr></thead><tbody>'+
+  [...grouped].sort(([a],[b])=>a.localeCompare(b)).map(([ticker,items])=>
+   '<tr><th scope="row"><button type="button" data-action="desk-chart" data-value="'+esc(ticker)+
+   '" aria-pressed="'+symbols.includes(ticker)+'" title="Mostrar gráfico de '+esc(ticker)+'">'+esc(ticker)+'</button></th><td>'+
+   items.map(item=>{
+    const action=signalNames[item.action];
+    const [caption,value]=phase==="fills"?
+     ["Precio simulado",item.price!=null&&item.currency?fmt(item.price)+" "+item.currency:"Sin precio publicado"]:
+     tradingOrderPrice(item);
+    return '<span class="desk-signal" title="'+esc(caption+" · "+value)+'"><b data-side="'+esc(item.action)+'">'+esc(action)+'</b>'+
+     '<span>'+esc(item.label)+'</span><small>'+esc(item.id+
+     (plan?.tracks[item.id]?.status==="archived"?" · Archivo":"")+
+     (value==="Por determinar"?"":" · "+value))+'</small></span>';
+   }).join("")+'</td></tr>').join("")+'</tbody></table></div>';
+}
+function deskResults(model){
+ if(!signalFeed)return '<p class="trading-empty">'+(signalFeedError?"Usa «Actualizar» para consultar el diario.":"Cargando las señales publicadas…")+'</p>';
+ const phase=tradingDesk.phase,day=tradingDay();
+ const symbols=deskChartSymbols(model.orders);
+ const dateLabel=model.target?shortPaperDate(model.target):"Pendiente";
+ const open=phase!=="fills"&&model.plan?.opens_at?
+  " · "+madridTime.format(new Date(model.plan.opens_at))+" Madrid":"";
+ const coverage=model.plan?tradingCoverage(model.plan,"",tradingDesk.slots):"";
+ return '<div class="desk-layout"><section class="desk-tape" aria-labelledby="desk-tape-title">'+
+  '<div class="desk-heading"><h3 id="desk-tape-title">'+esc(deskPhases[phase])+' <small>'+esc(dateLabel+open)+'</small></h3>'+
+  '<span>'+model.orders.length+' registros</span></div>'+
+  (coverage&&phase!=="fills"?'<p class="desk-coverage">'+esc(coverage)+'</p>':"")+
+  (phase!=="fills"&&model.orders.some(order=>order.id==="IL-042")?
+   '<p class="desk-note">TimesFM diario prevé cerrar al final de la sesión las posiciones que llegue a abrir.</p>':"")+
+  (model.orders.length?deskSignalTable(model.orders,phase,symbols,model.plan):'<p class="trading-empty">'+
+   (phase==="fills"&&!model.journals?"Sin diario de ejecuciones para esta selección.":"Sin registros publicados para esta selección.")+'</p>')+
+  '</section><aside class="desk-charts" aria-labelledby="desk-chart-title"><div class="desk-heading">'+
+  '<h3 id="desk-chart-title">Gráficos de cierre</h3><span>Hasta 3 empresas</span></div>'+
+  (symbols.length?symbols.map(symbol=>deskChart(symbol,day)).join(""):'<p class="trading-empty">Pulsa un ticker para mostrar su gráfico.</p>')+
+  '</aside></div>';
+}
+function deskChartSymbols(orders){
+ return tradingDesk.symbols??[...new Set(orders.map(order=>order.ticker))].slice(0,3);
+}
+
 const terminalState={mode:"signals",useLatest:false,count:0,stage:0,timer:null,activity:new Map(),pending:new Set()};
 const terminalLabels={
  buy:"Regla de compra activada",sell:"Regla de venta activada",no_trigger:"Sin activación de regla",
@@ -702,6 +787,10 @@ function terminalHTML(){
  const description=trace?notes[trace.method]:
   "Plan de apertura, ejecuciones simuladas de la sesión y órdenes que quedaron previstas para la siguiente apertura.";
  const bookNote=terminalBookNote(terminalSessionEvidence(signalFeed,tradingDay(),tradingFilter.slot));
+ const coverage=track.analysis_coverage;
+ const stages={eligible:"elegibles",features:"con variables disponibles",evaluated:"evaluados",scored:"con puntuación"};
+ const scope=coverage?coverage.eligible+" / "+coverage.total+" valores "+stages[coverage.stage]+
+  " · "+shortPaperDate(coverage.date):"Cobertura del motor no publicada para esta cartera.";
  const more=terminalState.useLatest&&trace?.date!==tradingDay()?
   button("Volver al registro de la sesión","terminal-latest","selected","outline-btn"):
   otherDate?button("Ver análisis del "+shortPaperDate(otherDate),"terminal-latest","latest","outline-btn"):"";
@@ -713,10 +802,12 @@ function terminalHTML(){
    '<button type="button" id="terminal-play" data-action="terminal-play">Reproducir</button>'+
    '<button type="button" data-action="terminal-next">Siguiente empresa</button>'+
    '<button type="button" data-action="terminal-all">Ver todo</button>':"")+'</div></div>'+
+  '<p class="terminal-note terminal-scope"><strong>Cobertura del motor:</strong> '+esc(scope)+
+  ' <strong>Reproducción:</strong> '+rows.length+' registros con este filtro.</p>'+
   (bookNote?'<p class="trading-coverage terminal-note">'+esc(bookNote)+'</p>':"")+
   (trace?.excluded?'<p class="terminal-note">'+esc(trace.excluded)+' incidencias de datos registradas.</p>':"")+
   (rows.length?'<div class="terminal-screen"><div class="terminal-progress">'+
-   '<progress aria-label="Empresas mostradas" max="'+rows.length+'" value="0"></progress><span id="terminal-count"></span></div>'+
+   '<progress aria-label="Registros mostrados" max="'+rows.length+'" value="0"></progress><span id="terminal-count"></span></div>'+
    '<div id="terminal-visual" class="terminal-visual"></div>'+
    '<details class="terminal-ledger"><summary>Registro de empresas</summary>'+
    '<ol id="terminal-rows" aria-label="Resultados registrados por empresa"></ol></details></div>':
@@ -785,7 +876,7 @@ function paintTerminalVisual(rows,trace){
  const html='<ol class="terminal-steps" aria-label="Pasos de la reproducción">'+steps.map((label,step)=>
   '<li'+(step===stage?' aria-current="step"':"")+'><span>0'+(step+1)+'</span>'+label+'</li>').join("")+'</ol>'+
   '<div class="terminal-board" data-stage="'+stage+'">'+
-  '<div class="terminal-company"><span>EMPRESA '+(index+1)+' / '+rows.length+'</span><strong>'+esc(ticker)+'</strong></div>'+terminalConnector("out",trace?.method==="ahp")+
+  '<div class="terminal-company"><span>REGISTRO '+(index+1)+' / '+rows.length+'</span><strong>'+esc(ticker)+'</strong></div>'+terminalConnector("out",trace?.method==="ahp")+
   '<div class="terminal-evaluation">'+(stage>=1?terminalCriteria(ticker,checks,trace):
    '<p class="terminal-evidence">'+(terminalState.timer?"Abriendo el registro…":"Lista para reproducir")+'</p>')+'</div>'+terminalConnector("in",trace?.method==="ahp")+
   '<div class="terminal-outcome" data-tone="'+(stage===2?tone:"neutral")+'"><span>Resultado registrado</span>'+
@@ -928,7 +1019,7 @@ function paintTerminalMap(){
 function paintTerminalMapFrame(rows=[],trace=null){
  const map=$("terminal-map"),events=$("terminal-map-events");
  if(!map||!events)return;
- const active=mapFamily(tradingFilter.slot)?.id;
+ const active=expandedFamily||mapFamily(tradingFilter.slot)?.id;
  for(const branch of map.querySelectorAll("[data-family]"))
   branch.classList.toggle("is-active",branch.dataset.family===active);
  map.dataset.playing=String(Boolean(terminalState.timer));
@@ -936,7 +1027,7 @@ function paintTerminalMapFrame(rows=[],trace=null){
  const play=$("terminal-map-play");
  if(play)play.textContent=$("terminal-play")?.textContent||"Reproducir";
  const progress=$("terminal-map-progress");
- progress.textContent=rows.length?visible+" / "+rows.length+" empresas":"Selección de motor";
+ progress.textContent=rows.length?visible+" / "+rows.length+" registros":"Selección de motor";
  const note=terminalBookNote(terminalSessionEvidence(signalFeed,tradingDay(),tradingFilter.slot));
  const empty=rows.length?"Pulsa Reproducir para recorrer el registro.":note||
   (tradingFilter.slot?"Sin registros para esta sesión y filtro.":"Selecciona un algoritmo.");
@@ -955,12 +1046,15 @@ function tradingRoom(){
   '<div class="trading-feed"><span id="trading-published" role="status">'+esc(tradingStatus())+'</span>'+
   '<button type="button" data-action="live-signals-refresh">Actualizar</button></div></header>'+
   '<div class="trading-workspace"><div class="terminal-mode" role="group" aria-label="Vista de la sala">'+
-  button("Señales","trading-mode","signals","outline-btn")+button("Terminal de análisis","trading-mode","terminal","outline-btn")+
-  '</div><p class="trading-cadence">La sala consulta el diario cada 30 segundos. Las señales aparecen cuando cada motor las publica. Los motores actuales trabajan con datos de sesión.</p>'+
+  button("Panel","trading-mode","signals","outline-btn")+button("Terminal de análisis","trading-mode","terminal","outline-btn")+
+  '</div><p class="trading-cadence">El diario se consulta cada 30 segundos. Los gráficos muestran cierres auditados.</p>'+
   '<div class="trading-controls"><div><label for="trading-date">Sesión</label><select id="trading-date"'+
    (tradingDay()?"":" disabled")+'>'+tradingDates()+'</select></div>'+
-  '<div><label for="trading-algorithm">Algoritmo</label><select id="trading-algorithm"'+
+  '<div id="desk-algorithm-picker"><span class="desk-control-label">Algoritmos</span><div id="desk-algorithm-filters"></div></div>'+
+  '<div id="terminal-algorithm-picker" hidden><label for="trading-algorithm">Algoritmo</label><select id="trading-algorithm"'+
    (signalFeed?"":" disabled")+'>'+tradingAlgorithms()+'</select></div>'+
+  '<div id="desk-phase-picker"><label for="desk-phase">Vista de señales</label><select id="desk-phase">'+
+   tradingOptions(Object.entries(deskPhases),tradingDesk.phase)+'</select></div>'+
   '<div><label for="trading-ticker">Ticker</label><input id="trading-ticker" type="search" maxlength="14" placeholder="Ej. AAPL" value="'+esc(tradingFilter.ticker)+'"></div></div>'+
   '<div class="trading-filters" role="group" aria-label="Tipo de señal">'+
   Object.entries(tradingSides).map(([key,label])=>'<button type="button" data-action="trading-side" data-value="'+key+
@@ -972,20 +1066,33 @@ function paintTradingRoom(){
  if(!tradingRoomActive())return;
  const results=$("trading-results");
  if(!results)return;
- const model=tradingReadModel(signalFeed,tradingDay(),tradingFilter);
+ const model=deskActivity(signalFeed,tradingDay(),tradingFilter,tradingDesk.phase,tradingDesk.slots);
  const date=$("trading-date"),algorithm=$("trading-algorithm");
  const dates=tradingDates(),algorithms=tradingAlgorithms();
  if(date.dataset.options!==dates){date.innerHTML=dates;date.dataset.options=dates;}
  if(algorithm.dataset.options!==algorithms){algorithm.innerHTML=algorithms;algorithm.dataset.options=algorithms;}
  date.disabled=!tradingDay();
  algorithm.disabled=!signalFeed;
+ const terminal=terminalState.mode==="terminal";
+ $("terminal-algorithm-picker").hidden=!terminal;
+ $("desk-algorithm-picker").hidden=terminal;
+ $("desk-phase-picker").hidden=terminal;
+ const filters=$("desk-algorithm-filters"),filterHTML=deskAlgorithmFilters();
+ if(filters.dataset.content!==filterHTML){
+  const open=$("desk-algorithms")?.open;
+  const active=document.activeElement;
+  const slot=filters.contains(active)?active.dataset.deskAlgorithm:null;
+  filters.innerHTML=filterHTML;
+  filters.dataset.content=filterHTML;
+  if(open)$("desk-algorithms").open=true;
+  if(slot)filters.querySelector('[data-desk-algorithm="'+slot+'"]')?.focus({preventScroll:true});
+ }
  const published=$("trading-published"),status=tradingStatus();
  if(published.textContent!==status)published.textContent=status;
  for(const chip of document.querySelectorAll("[data-action='trading-side']")){
   chip.setAttribute("aria-pressed",String(chip.dataset.value===tradingFilter.side));
   chip.querySelector("span").textContent=model.plan?model.counts[chip.dataset.value]:"—";
  }
- const terminal=terminalState.mode==="terminal";
  for(const tab of document.querySelectorAll("[data-action='trading-mode']")){
   tab.setAttribute("aria-pressed",String(tab.dataset.value===terminalState.mode));
  }
@@ -1004,9 +1111,11 @@ function paintTradingRoom(){
   return;
  }
  delete results.dataset.terminal;
- const fillsOpen=results.querySelector(".trading-fills")?.open;
- results.innerHTML=tradingResults(model);
- if(fillsOpen&&results.querySelector(".trading-fills"))results.querySelector(".trading-fills").open=true;
+ const focus=results.contains(document.activeElement)?document.activeElement:null;
+ results.innerHTML=deskResults(model);
+ if(focus?.dataset.action)
+  [...results.querySelectorAll("button")].find(button=>button.dataset.action===focus.dataset.action&&
+   button.dataset.value===focus.dataset.value)?.focus({preventScroll:true});
 }
 
 function liveSessionHTML(){
@@ -1853,20 +1962,26 @@ $("app").addEventListener("click",e=>{
   paintTradingRoom();
  }
  else if(action==="terminal-family"&&terminalFamilies.some(family=>family.id===value)){
+  if(mapFamily(tradingFilter.slot)?.id!==value)selectTerminalAlgorithm("");
   expandedFamily=value;
-  paintTerminalMap();
-  const {rows,trace}=terminalRows();
-  paintTerminalMapFrame(rows,trace);
+  paintTradingRoom();
  }
  else if(action==="terminal-map-algorithm"&&signalFeed?.tracks[value]){
-  const picker=$("trading-algorithm");
-  picker.value=value;
-  picker.dispatchEvent(new Event("change",{bubbles:true}));
+  selectTerminalAlgorithm(value);
+  paintTradingRoom();
  }
  else if(action==="terminal-latest"){
   resetTerminal();terminalState.useLatest=value==="latest";paintTradingRoom();
  }
  else if(["terminal-play","terminal-all","terminal-next"].includes(action)){runTerminalPlayback(action);}
+ else if(action==="desk-reset"){tradingDesk.slots.clear();paintTradingRoom();}
+ else if(["desk-chart","desk-chart-remove"].includes(action)&&validSignalTicker(value)){
+  const model=deskActivity(signalFeed,tradingDay(),tradingFilter,tradingDesk.phase,tradingDesk.slots);
+  const current=deskChartSymbols(model.orders);
+  if(action==="desk-chart-remove")tradingDesk.symbols=current.filter(symbol=>symbol!==value);
+  else tradingDesk.symbols=[value,...current.filter(symbol=>symbol!==value)].slice(0,3);
+  paintTradingRoom();
+ }
  else if(action==="trading-side"&&Object.hasOwn(tradingSides,value)){
   tradingFilter.side=value;paintTradingRoom();
  }
@@ -1963,13 +2078,11 @@ $("app").addEventListener("change",e=>{
  if(el.id==="trading-date"&&signalFeed?.opening_plans?.[el.value]){
   resetTerminal();terminalState.useLatest=false;tradingFilter.date=el.value;paintTradingRoom();
  }
- if(el.id==="trading-algorithm"){
-  resetTerminal();terminalState.useLatest=false;tradingFilter.slot=el.value;
-  expandedFamily=mapFamily(el.value)?.id||null;
-  const url=new URL(location.href);
-  if(el.value)url.searchParams.set("algorithm",el.value);
-  else url.searchParams.delete("algorithm");
-  history.replaceState(history.state,"",url);
+ if(el.id==="trading-algorithm"){selectTerminalAlgorithm(el.value);paintTradingRoom();}
+ if(el.id==="desk-phase"&&Object.hasOwn(deskPhases,el.value)){tradingDesk.phase=el.value;paintTradingRoom();}
+ if(el.dataset.deskAlgorithm&&signalFeed?.tracks[el.dataset.deskAlgorithm]){
+  if(el.checked)tradingDesk.slots.add(el.dataset.deskAlgorithm);
+  else tradingDesk.slots.delete(el.dataset.deskAlgorithm);
   paintTradingRoom();
  }
  if(el.id==="midas-opening-date"&&signalFeed?.opening_plans?.[el.value]){
@@ -2022,6 +2135,14 @@ $("app").addEventListener("submit",e=>{
  state.strategy=id;state.group="";state.sort="returnPct";state.detailOpen=true;go("competition");
 });
 document.querySelectorAll(".product-tabs [data-view]").forEach(b=>b.addEventListener("click",()=>{state.detailOpen=false;go(b.dataset.view);}));
+function selectTerminalAlgorithm(slot){
+ resetTerminal();terminalState.useLatest=false;tradingFilter.slot=slot;
+ expandedFamily=mapFamily(slot)?.id||null;
+ const url=new URL(location.href);
+ if(slot)url.searchParams.set("algorithm",slot);
+ else url.searchParams.delete("algorithm");
+ history.replaceState(history.state,"",url);
+}
 function readViewFromURL(){
  state.view=resolveMidasView();
  state.algorithmId=new URLSearchParams(location.search).get("algorithm");
@@ -2031,6 +2152,7 @@ function readViewFromURL(){
   resetTerminal();terminalState.useLatest=false;expandedFamily=null;
   const slot=Number(id.slice(3));
   tradingFilter.slot=/^IL-\d{3}$/.test(id)&&slot>=10&&slot<=44?id:"";
+  tradingDesk.slots=new Set(tradingFilter.slot&&terminalState.mode!=="terminal"?[tradingFilter.slot]:[]);
  }
 }
 window.addEventListener("popstate",()=>{readViewFromURL();state.detailOpen=false;render();});
@@ -2210,6 +2332,7 @@ async function loadOperationsAudit(){
   state.operationsAuditStatus="unavailable";
  }
  if(["algorithm","monitoring"].includes(state.view)&&state.data)render();
+ if(tradingRoomActive()&&terminalState.mode!=="terminal")paintTradingRoom();
 }
 
 init();
