@@ -282,6 +282,11 @@ def main():
     session = eligible[0]
     prior = (json.loads(STATE_PATH.read_text(encoding="utf-8"))
              if STATE_PATH.exists() else blank())
+    # A delayed Action must never fill Monday intentions at Tuesday's open.
+    # Existing XNYS calendar independently supplies the immediately previous
+    # trading session, including exchange holidays. No retroactive catch-up.
+    if prior["status"] == "prospective_paper" and prior["last_session"] != eligible[1]:
+        raise ValueError("Missed XNYS session: halt; do not backfill paper fills")
     frames = load_history(session)
     state = step(prior, session, frames[-1][1], frames)
     STATE_PATH.parent.mkdir(parents=True, exist_ok=True)
