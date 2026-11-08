@@ -52,7 +52,7 @@
       "limitations": "No es el TradingAgents LLM: son agentes deterministas. Sin capital invertido, sin operaciones ni rentabilidad verificada antes de un ledger paper prospectivo real. No añadir a clasificación sintética ni a tabla de 64 como si hubiera resultados.",
       "source": "https://github.com/TauricResearch/TradingAgents",
       "source_name": "Xiao et al. · TradingAgents, arquitectura de agentes LLM (solo inspiración conceptual)",
-      "data_reference": "https://github.com/idealab2026/laboratorio-cuantitativo/tree/feature/midas-debate-alpha-free-20261108/multi_agent"
+      "data_reference": "https://github.com/idealab2026/laboratorio-cuantitativo/tree/main/multi_agent"
     }
   ]
 }
