@@ -1193,3 +1193,31 @@ p{line-height:1.6;text-align:justify;text-align-last:left;hyphens:auto}p.lead{co
  .desk-table{min-width:760px}
  .desk-interpretation{font-size:.72rem}
 }
+
+
+/* MIDAS methodology: five quality gates and fundamental valuation workflow. */
+.midas-method-section{border-top:1px solid var(--line);padding:clamp(20px,3vw,36px) 0}
+.midas-method-section:first-of-type{border-top:0;padding-top:8px}
+.midas-method-intro{max-width:1050px;margin-bottom:18px}
+.midas-method-intro h2{font:760 clamp(1.35rem,2vw,1.8rem)/1.2 system-ui,sans-serif;letter-spacing:-.025em;margin:6px 0 8px;color:var(--navy)}
+.midas-method-intro p{font:400 .91rem/1.65 system-ui,sans-serif;color:#526980;margin:0}
+.midas-gates-list{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:11px;list-style:none;margin:0;padding:0}
+.midas-gate{display:flex;flex-direction:column;gap:10px;padding:17px 15px;border:1px solid #dce5ec;border-radius:11px;background:#f9fbfd;min-width:0}
+.midas-gate-number{display:grid;place-items:center;width:33px;height:33px;border:1px solid #bdcfde;border-radius:50%;background:#eaf1f7;color:#153e66;font:760 .84rem system-ui,sans-serif;flex:none}
+.midas-gate h3,.midas-process-list h3{font:760 .97rem/1.3 system-ui,sans-serif;color:#143354;margin:1px 0 8px}
+.midas-gate p,.midas-process-list p{font:400 .81rem/1.58 system-ui,sans-serif;color:#566b80;margin:0 0 9px;text-align:left}
+.midas-gate .midas-gate-criterion{margin:12px 0 0;padding-top:10px;border-top:1px solid #e1e9ef;font-size:.76rem;color:#37546d}
+.midas-method-status{border-left:3px solid #b7c9d8;background:#f6f9fb;border-radius:0 8px 8px 0;padding:12px 15px;margin:18px 0 0;font:400 .83rem/1.64 system-ui,sans-serif;color:#455b70}
+.midas-method-status strong{color:#193e60}
+.midas-process-list{counter-reset:midas-step;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;list-style:none;margin:0 0 16px;padding:0}
+.midas-process-list li{counter-increment:midas-step;border:1px solid #e0e7ee;border-radius:10px;padding:14px 16px 13px 51px;position:relative;min-width:0;background:#fff}
+.midas-process-list li::before{content:counter(midas-step);position:absolute;left:14px;top:14px;width:25px;height:25px;border-radius:7px;background:#eef3f7;color:#214866;display:grid;place-items:center;font:780 .75rem system-ui,sans-serif}
+.midas-process-list p{margin:0}
+.midas-formula-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:11px}
+.midas-formula-grid .panel{background:#f8fafc;padding:15px 17px}
+.midas-formula-grid strong{display:block;margin:8px 0;color:#153655;font:760 .95rem/1.4 system-ui,sans-serif}
+.midas-formula-grid code{display:block;white-space:normal;overflow-wrap:anywhere;color:#274962;font:600 .83rem/1.55 ui-monospace,SFMono-Regular,Consolas,monospace;background:#edf3f7;border:1px solid #dce7ef;border-radius:6px;padding:11px}
+.midas-formula-grid .panel p{margin:10px 0 0;font:400 .78rem/1.5 system-ui,sans-serif}
+@media(max-width:1250px){.midas-gates-list{grid-template-columns:repeat(3,minmax(0,1fr))}}
+@media(max-width:800px){.midas-gates-list,.midas-process-list{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:630px){.midas-gates-list,.midas-process-list,.midas-formula-grid{grid-template-columns:1fr}.midas-gate{padding:14px;flex-direction:row}.midas-gate-number{width:29px;height:29px;font-size:.73rem}.midas-method-section{padding:22px 0}.midas-process-list li{padding:12px 12px 12px 46px}.midas-process-list li::before{left:12px;top:13px}}
