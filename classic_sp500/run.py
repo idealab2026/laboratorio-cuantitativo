@@ -211,9 +211,14 @@ def execute_frozen_open(config, name, book, day, today, *, provenance=None):
     for ticker in sells:
         if ticker not in book["positions"]:
             raise ValueError("Orphan sell signal")
+        shares = book["positions"][ticker]["shares"]
         _close_position(book, ticker, today[ticker]["open"], day, config, "signal_next_open")
         if provenance is not None:
-            book["events"][-1].update({"execution": "forward_observed_paper", **provenance[ticker]})
+            price = today[ticker]["open"] * (1 - p["slippage"])
+            fee = shares * price * p["commission"]
+            book["events"][-1].update({"execution": "forward_observed_paper",
+                                      "shares": shares, "price": price,
+                                      "fee": fee, **provenance[ticker]})
             book["trades"][-1].update({"execution": "forward_observed_paper", **provenance[ticker]})
     buy_list = sorted(t for t, order in book["pending"].items() if order["side"] == "buy")
     nav_at_open = portfolio_nav(book, today, "open")
