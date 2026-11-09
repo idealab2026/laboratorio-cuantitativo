@@ -1119,3 +1119,81 @@ test("Buy The Dip displays the original monthly funnel and a compact sortable co
  assert.ok(site.includes('el.id==="btd-status"'));
  assert.ok(site.includes('action==="btd-more"'));
 });
+
+
+test("Buy The Dip column headers expose hover and keyboard-focus descriptions",async()=>{
+ const {runInNewContext}=await import("node:vm");
+ const ctx={esc:v=>String(v),Intl};
+ const sourceStart=source.indexOf("const btdColumnHelp=");
+ const sourceEnd=source.indexOf("function btdUniverseHTML(){",sourceStart);
+ assert.ok(sourceStart>=0&&sourceEnd>sourceStart,"Help and trace helpers must be present");
+ runInNewContext(source.slice(sourceStart,sourceEnd)+
+  ";this.header=btdColumnHeader;this.trace=btdDecisionTrace;",ctx);
+ const names=["ticker","name","status","score","valuation","quality",
+  "allocation","dislocation","catalysts","weight","reason","trace"];
+ for(const key of names){
+  const header=ctx.header(key,key);
+  assert.match(header,/tabindex="0"/);
+  assert.match(header,/role="tooltip"/);
+  assert.match(header,/aria-label="/);
+  assert.match(header,/title="/);
+ }
+ assert.match(ctx.header("score","Total"),/30 %/);
+ assert.match(ctx.header("weight","Peso"),/No es una orden nueva/);
+ assert.match(ctx.header("catalysts","Catal."),/cinco noticias/);
+});
+
+test("Buy The Dip interactive five-stage trace separates documented selections from missing evidence",async()=>{
+ const {runInNewContext}=await import("node:vm");
+ const ctx={esc:v=>String(v),Intl,shortPaperDate:d=>d};
+ const sourceStart=source.indexOf("const btdStatuses=");
+ const sourceEnd=source.indexOf("function btdUniverseHTML(){",sourceStart);
+ runInNewContext(source.slice(sourceStart,sourceEnd)+";this.trace=btdDecisionTrace;",ctx);
+ const selection={ticker:"AOS",name:"A. O. Smith",status:"selected",score:79.88,
+  valuation:84.76,quality:70.59,allocation:79.81,dislocation:81.83,
+  catalysts:4,weight:.13567,eligible:null,reasons:[]};
+ const partial={mode:"historical_partial",decision_session:"2026-10-30"};
+ const graph=ctx.trace(selection,partial);
+ assert.equal((graph.match(/class="btd-trace-step"/g)||[]).length,5);
+ assert.match(graph,/Seleccionada; peso objetivo/);
+ assert.match(graph,/13,6/);
+ assert.match(graph,/El cumplimiento específico de cada umbral no está archivado/);
+ assert.match(graph,/79,9\/100/);
+ assert.match(graph,/No se guardaron|no está archivado/);
+ const missing={ticker:"AAPL",name:"Apple",status:"historical_detail_missing",
+  score:null,valuation:null,quality:null,allocation:null,dislocation:null,
+  catalysts:null,weight:null,eligible:null,reasons:[]};
+ const unknown=ctx.trace(missing,partial);
+ assert.equal((unknown.match(/data-tone="unknown"/g)||[]).length,4);
+ assert.match(unknown,/No se conservaron sus puntuaciones individuales/);
+ assert.match(unknown,/no es una ejecución intradía/);
+ assert.doesNotMatch(unknown,/Puntuación global archivada:/);
+ const rejected={...selection,ticker:"XYZ",status:"rules_rejected",eligible:false,
+  weight:null,reasons:["quality","valuation"]};
+ const rejection=ctx.trace(rejected,{mode:"complete",decision_session:"2026-11-30"});
+ assert.match(rejection,/Calidad mínima, Valoración mínima/);
+ assert.match(rejection,/No seleccionada para la cartera/);
+});
+
+test("Buy The Dip daily status describes last completed month and daily marks, not live monthly scanning",async()=>{
+ const {runInNewContext}=await import("node:vm");
+ const ctx={esc:x=>String(x),Intl,shortPaperDate:d=>d,
+  signalFeed:{tracks:{"IL-039":{monitor:{
+   held_tickers:["AOS","ALGN"],pending_count:0,asof:"2026-11-06",nav:109098.01
+  }}}}};
+ const start=source.indexOf("function btdTodaySummary(review){");
+ const end=source.indexOf("function btdUniverseHTML(){",start);
+ runInNewContext(source.slice(start,end)+";this.today=btdTodaySummary;",ctx);
+ const html=ctx.today({decision_session:"2026-10-30",coverage:{scored:348,selected:10}});
+ for(const value of ["Qué hace el algoritmo","348 puntuadas","10 elegidas",
+  "2 posiciones","2026-11-06","valora diariamente","historial de GitHub Actions"])
+  assert.ok(html.includes(value),value);
+ assert.ok(!html.includes("analizando ahora 503"));
+ const css=readFileSync(new URL("../styles.css",import.meta.url),"utf8");
+ assert.ok(css.includes(".btd-trace-steps"));
+ assert.ok(css.includes(".btd-header-help:is(:hover,:focus-visible)"));
+ const sourceText=readFileSync(new URL("../src/site.mjs",import.meta.url),"utf8");
+ assert.ok(sourceText.includes('data-action="btd-inspect"'));
+ assert.ok(sourceText.includes('aria-expanded="'));
+ assert.ok(sourceText.includes('btdTableView.selectedTicker=btdTableView.selectedTicker===value?null:value'));
+});
