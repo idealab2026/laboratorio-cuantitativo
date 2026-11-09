@@ -1,6 +1,6 @@
 import test from "node:test";
 import assert from "node:assert/strict";
-import {readFileSync} from "node:fs";
+import {readFileSync,existsSync} from "node:fs";
 import {algorithmTheory,paperLeaderboard} from "../src/algorithm-detail.mjs";
 import {verifyOriginalPaper} from "../src/original-paper.mjs";
 import {sortFullCompetitionRows} from "../src/competition-roster.mjs";
