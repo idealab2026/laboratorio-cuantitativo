@@ -79,10 +79,9 @@ def settle_classic(lock, now, market, quotes, *, reader=read, frozen=_source_at)
             # Corporate action claims cannot be silently repriced as ordinary orders.
             evidence[slot] = {"status": "corporate_action_review_required", "fills": 0}
             continue
-        markers = book.setdefault("forward_executions", {})
+        markers = book.get("forward_executions", {}).copy()
         if not markers and not _source_unchanged(original, book):
             evidence[slot] = {"status": "source_changed", "fills": 0}
-            book.pop("forward_executions", None)
             continue
         if markers and not all(m.get("lock_sha256") == lock["lock_sha256"]
                                for k, m in markers.items() if
@@ -212,6 +211,8 @@ def settle_classic(lock, now, market, quotes, *, reader=read, frozen=_source_at)
             any_changes = True
             evidence[slot] = {"status": "settled_native_paper", "fills": len(operations),
                               "marker": marker, "operations": operations}
+        if markers_written:
+            book["forward_executions"] = markers
         if not lane["orders"] and not operations:
             evidence[slot] = {"status": "active_no_orders", "fills": 0}
     return ({LEDGER: updated} if any_changes else {}), evidence
