@@ -1106,6 +1106,7 @@ test("Buy The Dip displays the original monthly funnel and a compact sortable co
  assert.deepEqual(Array.from(ctx.rows(ctx.signalFeed.tracks["IL-039"].universe_review,"","all","score"),
   r=>r.ticker),["AOS","ABBV","ABT"],
   "Scored selection must be above historical null-score names in descending sort");
+ ctx.btdTableView.limit=50;
  assert.ok(ctx.view().indexOf("A. O. Smith")<ctx.view().indexOf("AbbVie"),
   "The first rendered row must be a company with a verifiable score");
  assert.match(ctx.view(),/2 de 503 empresas no tienen puntuación individual conservada/);
