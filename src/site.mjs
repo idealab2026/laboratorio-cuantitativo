@@ -1028,7 +1028,9 @@ function btdUniverseRows(review,query="",status="all",sort="score"){
   if(sort==="ticker")return a.ticker.localeCompare(b.ticker);
   if(sort==="sector")return a.sector.localeCompare(b.sector)||a.ticker.localeCompare(b.ticker);
   const x=a.score,y=b.score;
-  return (y===null)-(x===null)||((y??0)-(x??0))||a.ticker.localeCompare(b.ticker);
+  // Verified scores first, missing historical scores last.
+  // A null value is not a score of zero and must never lead a descending list.
+  return Number(x===null)-Number(y===null)||((y??0)-(x??0))||a.ticker.localeCompare(b.ticker);
  });
 }
 function btdUniverseHTML(){
@@ -1049,7 +1051,7 @@ function btdUniverseHTML(){
   .map(([key,label])=>'<option value="'+key+'"'+(key===btdTableView.sort?' selected':'')+'>'+esc(label)+'</option>').join("");
  const body=shown.map(row=>{
   const note=row.status==="historical_detail_missing"?
-   "No consta el resultado individual de esta empresa en el análisis histórico":
+   "—":
    row.status==="eligible_not_selected"?
    "Superó filtros; no entró tras ranking y restricciones de cartera":
    row.status==="selected"?"Asignación documentada en el rebalanceo":
@@ -1079,7 +1081,8 @@ function btdUniverseHTML(){
   '<span><strong>'+count.eligible+'</strong> elegibles</span>'+
   '<span><strong>'+count.selected+'</strong> en cartera</span></div>'+
   (review.mode==="historical_partial"?
-   '<p class="btd-warning">Archivo histórico incompleto: solo se conservaron puntuaciones individuales de las seleccionadas. '+
+   '<p class="btd-warning">Archivo histórico incompleto: '+review.rows.filter(row=>row.score===null).length+
+   ' de '+count.universe+' empresas no tienen puntuación individual conservada. '+
    'El detalle de las otras empresas no puede reconstruirse sin introducir información posterior. '+
    'Los próximos análisis mensuales registrarán cada empresa, sus filtros y sus puntuaciones.</p>':
    '<p class="btd-note">Desglose de decisión grabado en la evaluación original, con valores derivados y motivos de exclusión.</p>')+

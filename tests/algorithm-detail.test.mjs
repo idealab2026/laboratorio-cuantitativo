@@ -1103,6 +1103,16 @@ test("Buy The Dip displays the original monthly funnel and a compact sortable co
  ctx.btdTableView.limit=1;
  assert.match(ctx.view(),/Mostrar 50 más/);
  assert.equal(ctx.rows(ctx.signalFeed.tracks["IL-039"].universe_review,"","all","ticker")[0].ticker,"ABBV");
+ assert.deepEqual(Array.from(ctx.rows(ctx.signalFeed.tracks["IL-039"].universe_review,"","all","score"),
+  r=>r.ticker),["AOS","ABBV","ABT"],
+  "Scored selection must be above historical null-score names in descending sort");
+ ctx.btdTableView.limit=50;
+ assert.ok(ctx.view().indexOf("A. O. Smith")<ctx.view().indexOf("AbbVie"),
+  "The first rendered row must be a company with a verifiable score");
+ assert.match(ctx.view(),/2 de 503 empresas no tienen puntuación individual conservada/);
+ assert.ok(!ctx.view().includes("No consta el resultado individual de esta empresa en el análisis histórico"),
+  "Missing evidence is already explained globally, not repeated in every row");
+
  const site=readFileSync(new URL("../src/site.mjs",import.meta.url),"utf8");
  assert.ok(site.includes('if(tradingFilter.slot==="IL-039")return buyDipHealthHTML()+btdUniverseHTML()'));
  assert.ok(site.includes('tradingFilter.slot==="IL-039";'));
