@@ -18,7 +18,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 sys.path.insert(0, str(ROOT / "tfg_ahp"))
-from paper import _fractional_quantity, _validate_signal, digest
+from tfg_ahp.paper import _fractional_quantity, _validate_signal, digest
 
 FIRST_SIGNAL = "2026-11-13"
 ENGINE = "tfg_ahp_forward_observed_v1"
