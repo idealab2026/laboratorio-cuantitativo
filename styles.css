@@ -1225,3 +1225,19 @@ p{line-height:1.6;text-align:justify;text-align-last:left;hyphens:auto}p.lead{co
 @media(max-width:1250px){.midas-gates-list{grid-template-columns:repeat(3,minmax(0,1fr))}}
 @media(max-width:800px){.midas-gates-list,.midas-process-list{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media(max-width:630px){.midas-gates-list,.midas-process-list,.midas-formula-grid{grid-template-columns:1fr}.midas-gate{padding:14px;flex-direction:row}.midas-gate-number{width:29px;height:29px;font-size:.73rem}.midas-method-section{padding:22px 0}.midas-process-list li{padding:12px 12px 12px 46px}.midas-process-list li::before{left:12px;top:13px}}
+
+/* Source-backed Buy The Dip monitoring, shared by the panel and terminal. */
+.btd-health{margin:0 0 12px;padding:14px 16px;border:1px solid #c4d8e8;border-radius:9px;background:#f5f9fd;
+ font:550 .8rem/1.55 system-ui,sans-serif;color:#2c4661}
+.btd-health h3{margin:0 0 8px;font-size:1.01rem;font-weight:760;color:#183b5d}
+.btd-health p{margin:7px 0}
+.btd-health-summary{color:#46617b}
+.btd-kpis{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;margin:10px 0}
+.btd-kpis>div{padding:9px 10px;border:1px solid #cbdbe7;border-radius:6px;background:#fff;min-width:0}
+.btd-kpis small{display:block;color:#58718a;font-size:.71rem}
+.btd-kpis strong{display:block;color:#143a5e;font-size:1.08rem;font-variant-numeric:tabular-nums}
+.btd-holdings{margin:7px 0;display:flex;align-items:center;flex-wrap:wrap;gap:4px 7px}
+.btd-symbol{font:700 .72rem ui-monospace,monospace;color:#214260;border:1px solid #b6cbdc;
+ border-radius:4px;padding:3px 6px;background:#fff}
+.btd-health a{color:#145c8b;text-decoration:underline}
+@media(max-width:700px){.btd-kpis{grid-template-columns:repeat(2,minmax(0,1fr))}}

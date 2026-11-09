@@ -473,6 +473,55 @@ def analysis_coverage(book, source, parent, key, decision):
     return None
 
 
+def buy_the_dip_monitor(book, *, read_runtime=read):
+    """Compact, source-backed status for the public IL-039 paper campaign.
+
+    Never infer a trading order from a held position, a success from missing
+    runtime evidence, or a live quote from a historical NAV.
+    """
+    if not isinstance(book, dict) or not isinstance(book.get("equity"), list) or not book["equity"]:
+        return None
+    last = book["equity"][-1]
+    asof = date(book.get("last_session"))
+    if asof is None or last.get("date") != asof:
+        return None
+    positions = book.get("positions")
+    if not isinstance(positions, dict) or len(positions) > 10 or any(not clean_ticker(t) for t in positions):
+        return None
+    nav = number(last.get("nav"))
+    cash = last.get("cash")
+    if nav is None or type(cash) not in (int, float) or not 0 <= cash <= nav:
+        return None
+    signal = date(book.get("last_signal_session"))
+    events = book.get("events") or []
+    if not isinstance(events, list):
+        return None
+    fills = [date(e.get("date")) for e in events if isinstance(e, dict)
+             and e.get("type") == "fill" and date(e.get("date"))]
+    last_fill = max(fills, default=None)
+    pending = book.get("pending")
+    if pending is not None and (not isinstance(pending, dict)
+        or not isinstance(pending.get("target_weights"), dict)):
+        return None
+    pending_count = len(pending["target_weights"]) if pending else 0
+    if pending_count > 10:
+        return None
+    runtime, _ = read_runtime("strategy_runtime/buy_the_dip_strategy.json")
+    last_run = None
+    if isinstance(runtime, dict) and runtime.get("workflow_key") == "buy_the_dip_strategy":
+        run_id = runtime.get("run_id")
+        if (type(run_id) is int and run_id > 0 and runtime.get("event") == "schedule"
+                and runtime.get("outcome") in ("success", "failure", "skipped")
+                and isinstance(runtime.get("recorded_at_utc"), str)):
+            last_run = {"run_id": run_id, "outcome": runtime["outcome"],
+                        "recorded_at_utc": runtime["recorded_at_utc"]}
+    return {"mode": "monthly_signal_daily_mark", "source": "buy_the_dip_state/ledger.json",
+            "asof": asof, "nav": round(nav, 2), "cash": round(cash, 2),
+            "held_tickers": sorted(positions), "last_signal_session": signal,
+            "last_fill_session": last_fill, "pending_count": pending_count,
+            "last_run": last_run}
+
+
 def live_book(original, book, source, parent, key=None):
     latest = date(original.get("last_session"))
     base = {"label": original["label"], "currency": original.get("currency"),
@@ -497,6 +546,8 @@ def live_book(original, book, source, parent, key=None):
     executions = [{"ticker": item["ticker"], "action": item["side"], "price": item["price"],
                    "decision_session": item["signal_date"]} for item in actions]
     return {**base, "session": latest, "decision_session": decision, "signals": signals,
+            **({"monitor": buy_the_dip_monitor(book)}
+               if source == "buy_the_dip_state/ledger.json" else {}),
             "status": "paused" if pause else "recorded",
             "pause_date": date(pause.get("date")) if isinstance(pause, dict) else None,
             "pause_reason": pause_reason if pause_reason in

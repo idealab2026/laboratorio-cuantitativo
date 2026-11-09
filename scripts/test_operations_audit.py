@@ -1,11 +1,38 @@
 """Offline regression for the audited operations evidence exporter."""
 import unittest
-from build_operations_audit import build, normalize_ledger, rule_reason, price_history, pending_signals, live_book
+from build_operations_audit import build, normalize_ledger, rule_reason, price_history, pending_signals, live_book, buy_the_dip_monitor
 
 class OperationsAuditTests(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         cls.doc=build()
+
+    def test_buy_the_dip_monitor_shows_verified_evidence_without_fake_orders(self):
+        book = {
+            "last_session": "2026-11-06", "last_signal_session": "2026-10-30",
+            "equity": [{"date": "2026-11-06", "nav": 109098.005961, "cash": 5284.264212}],
+            "positions": {"ALGN": {"quantity": 64}, "EPAM": {"quantity": 72}},
+            "pending": None,
+            "events": [{"date": "2026-11-02", "type": "fill", "side": "buy", "ticker": "ALGN"}],
+        }
+        run = {"workflow_key": "buy_the_dip_strategy", "event": "schedule",
+               "outcome": "success", "run_id": 42341099381,
+               "recorded_at_utc": "2026-11-07T05:04:35+00:00"}
+        status = buy_the_dip_monitor(book, read_runtime=lambda _: (run, "a"*64))
+        self.assertEqual(status["mode"], "monthly_signal_daily_mark")
+        self.assertEqual(status["asof"], "2026-11-06")
+        self.assertEqual(status["held_tickers"], ["ALGN", "EPAM"])
+        self.assertEqual(status["last_signal_session"], "2026-10-30")
+        self.assertEqual(status["last_fill_session"], "2026-11-02")
+        self.assertEqual(status["pending_count"], 0)
+        self.assertEqual(status["nav"], 109098.01)
+        self.assertEqual(status["last_run"]["run_id"], 42341099381)
+        self.assertNotIn("orders", status)
+        self.assertNotIn("current_price", status)
+        bad = {**book, "last_session": "2026-11-09"}
+        self.assertIsNone(buy_the_dip_monitor(bad, read_runtime=lambda _: (run, None)))
+        no_run = buy_the_dip_monitor(book, read_runtime=lambda _: ({"outcome": "success"}, None))
+        self.assertIsNone(no_run["last_run"])
 
     def test_live_signals_distinguish_target_weights_from_orders_and_fills(self):
         current = {"positions": {"KEEP": {}, "EXIT": {}}, "pending": {
