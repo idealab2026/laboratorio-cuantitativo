@@ -19,7 +19,7 @@ if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 from market_data.consume import canonical
 
-from paper import BENCHMARKS, _fractional_quantity, _select, digest, strategy_ids
+from weekly_ml.paper import BENCHMARKS, _fractional_quantity, _select, digest, strategy_ids
 
 FIRST_DAILY_SIGNAL = "2026-10-09"
 ENGINE_VERSION = "weekly_ml_daily_next_open_v1"
