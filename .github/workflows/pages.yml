@@ -20,7 +20,7 @@ on:
       - MIDAS TimesFM 2.5 EUR weekly signal
       - MIDAS capital cycle paper
       - MIDAS Buy The Dip paper
-      - MIDAS IL039 forward opening observer
+      - MIDAS shared market execution clock
       - MIDAS weekly ML paper
       - MIDAS TFG corrected paper
       - MIDAS original SP500 genetic agent
@@ -118,7 +118,7 @@ jobs:
           cp src/original-paper.mjs src/site.mjs src/live-session.mjs src/glossary.mjs src/algorithm-detail.mjs src/operations-audit.mjs src/operation-lots.mjs src/metrics.mjs src/learning.mjs src/learning-view.mjs src/paper-methods.mjs src/paper-ledger.mjs src/competition-roster.mjs src/paper-feed.mjs src/private-paper.mjs src/private-paper-view.mjs src/private-theses.mjs src/private-theses-view.mjs src/public-theses.mjs src/thesis-report.mjs src/thesis-report.css src/thesis-insights.mjs src/thesis-source-structure.mjs src/thesis-historical-figures.mjs src/financial-sankey.mjs src/financial-sankey.css dist/src/
           cp data/original-track-map.json data/historical-paper-results.csv data/historical-paper-curves.csv dist/data/
           cp data/demo.json data/public-theses.json data/thesis-reports.json data/financial-sankeys.json data/public-closes.json data/fx-forecast-ledger.json data/sec-filings.json data/competition-roster.json data/strategy-candidates.json data/institutional-paper-feed.json dist/data/
-          cp data/forward-open-il039.json dist/data/
+          cp data/operational-clock.json dist/data/
           python3 scripts/refresh_sec.py --validate dist/data/sec-filings.json
           python3 scripts/paper_feed.py --validate dist/data/institutional-paper-feed.json
           python3 scripts/build_operations_audit.py --output dist/data/operations-audit.json --signals-output dist/data/execution-signals.json --opening-plans
