@@ -591,7 +591,7 @@ async function refreshOperationalClock(force=false){
      Object.entries(doc.slots).some(([slot,lane])=>
       !/^IL-\d{3}$/.test(slot)||!lane||
       !["before_open","source_stale_or_unavailable","active_no_orders",
-        "partial_data","prices_observed_not_settled"].includes(lane.status)||
+        "partial_data","prices_observed_not_settled","native_forward_settled"].includes(lane.status)||
       !Number.isInteger(lane.planned)||lane.planned<0||
       !Number.isInteger(lane.observed)||lane.observed<0||
       !Array.isArray(lane.orders)||lane.orders.length>800))
@@ -614,7 +614,8 @@ function operationalClockHTML(){
  const stale=!doc.session||doc.session!==nyToday;
  const labels={before_open:"Apertura pendiente",source_stale_or_unavailable:"Sin libro vigente",
   active_no_orders:"Operativo · sin operaciones previstas",partial_data:"Esperando cotizaciones",
-  prices_observed_not_settled:"Señales con precios observados (sin liquidar)"};
+  prices_observed_not_settled:"Señales con precios observados (sin liquidar)",
+  native_forward_settled:"Compra/venta paper liquidada en cartera oficial"};
  const clock=doc.checked_at_utc&&Number.isFinite(Date.parse(doc.checked_at_utc))?
   madridDateTime.format(new Date(doc.checked_at_utc))+" Madrid":"Sin ejecución acreditada";
  const entries=Object.entries(doc.slots).sort(([a],[b])=>a.localeCompare(b));
@@ -623,6 +624,19 @@ function operationalClockHTML(){
  const fresh=entries.filter(([,x])=>x.status!=="source_stale_or_unavailable").length;
  const tables=entries.map(([slot,lane])=>{
   const label=signalFeed?.tracks?.[slot]?.label||slot;
+  const verifiedFills=Array.isArray(lane.fills)?lane.fills:[];
+  const completed=lane.status==="native_forward_settled";
+  const fillDetails=completed?'<div class="midas-native-fills"><strong>Liquidaciones reales de la cartera paper ('+
+   (lane.fills_count??verifiedFills.length)+')</strong>'+
+   (verifiedFills.length?'<table><thead><tr><th>Ticker</th><th>Operación</th><th>Acciones</th>'+
+     '<th>Precio paper</th><th>Comisión</th><th>Observada a las</th></tr></thead><tbody>'+
+     verifiedFills.map(fill=>'<tr><td>'+esc(fill.ticker)+'</td><td>'+esc(fill.side)+
+     '</td><td>'+esc(fmt(fill.quantity))+'</td><td>'+esc(fmt(fill.price))+
+     ' USD</td><td>'+esc(fmt(fill.fee))+' USD</td><td>'+
+     esc(fill.observed_at_utc&&Number.isFinite(Date.parse(fill.observed_at_utc))?
+       madridDateTime.format(new Date(fill.observed_at_utc))+" Madrid":"Sin marca verificable")+
+     '</td></tr>').join("")+'</tbody></table>':'<p>Liquidación acreditada en el libro; no hay operaciones nuevas para este plan.</p>')+
+    '</div>':"";
   const orderRows=(lane.orders||[]).map(o=>'<tr><td>'+esc(o.ticker)+'</td><td>'+
    esc(o.action==="buy"?"Compra":o.action==="sell"?"Venta":"Rebalanceo")+
    '</td><td>'+esc(o.signal_session||"N/D")+'</td><td>'+
@@ -643,7 +657,7 @@ function operationalClockHTML(){
     '<th>Decisión</th><th>Momento objetivo</th><th>Precio observado</th><th>Hora de observación</th><th>Estado</th>'+
     '</tr></thead><tbody>'+orderRows+'</tbody></table></div>':
     '<p>Sin órdenes ejecutables registradas para esta apertura. '+esc(lane.source_session||
-    "Libro de origen no acreditado")+'.</p>')+'</details>';
+    "Libro de origen no acreditado")+'.</p>')+fillDetails+'</details>';
  }).join("");
  return '<section class="midas-clock" aria-label="Reloj operativo para todos los algoritmos">'+
   '<div class="midas-clock-title"><h3>Reloj operativo de MIDAS · '+esc(doc.session||"sin sesión")+'</h3>'+
