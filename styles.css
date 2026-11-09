@@ -1346,3 +1346,30 @@ p{line-height:1.6;text-align:justify;text-align-last:left;hyphens:auto}p.lead{co
 .btd-forward-caveat{color:#566e80;font-size:.71rem}
 .btd-forward-fills{display:flex;gap:5px;flex-wrap:wrap}
 .btd-forward-fills span{border:1px solid #b5d8d2;padding:3px 6px;border-radius:4px;background:#fff}
+
+/* One audited operator clock, shared across all active strategy slots. */
+.midas-clock{background:#eff5fa;border:1px solid #c8d8e6;border-radius:10px;
+ padding:12px 16px;margin:12px 0;font:500 .82rem/1.45 system-ui,sans-serif;color:#203f5b}
+.midas-clock-title{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap}
+.midas-clock-title h3{margin:0;font-size:1.05rem;color:#153958}
+.midas-clock-title span{font-size:.76rem;color:#576f88}
+.midas-clock>p{margin:7px 0;color:#506d86}
+.midas-clock-lane{border:1px solid #cbd9e6;border-radius:6px;background:#fff;margin:5px 0;overflow:hidden}
+.midas-clock-lane summary{cursor:pointer;display:grid;
+ grid-template-columns:minmax(180px,2fr) minmax(125px,2fr) minmax(120px,1fr);gap:8px;
+ padding:7px 10px;align-items:center}
+.midas-clock-lane summary strong{font-weight:750}
+.midas-clock-lane summary span{color:#285d73}
+.midas-clock-lane summary small{text-align:right;color:#6d8498}
+.midas-clock-lane>p{margin:0;padding:9px 11px;color:#657d92}
+.midas-clock-tablewrap{overflow:auto;max-height:320px}
+.midas-clock-tablewrap table{width:100%;border-collapse:collapse;font-size:.76rem}
+.midas-clock-tablewrap th,.midas-clock-tablewrap td{padding:6px 8px;
+ border-top:1px solid #e0e8f0;text-align:left;white-space:nowrap}
+.midas-clock-tablewrap th{background:#eff6fa}
+.midas-clock-note{font-size:.72rem}
+@media(max-width:800px){
+ .midas-clock-lane summary{grid-template-columns:minmax(125px,1fr) minmax(105px,1fr)}
+ .midas-clock-lane summary small{grid-column:1/-1;text-align:left}
+ .midas-clock{padding:9px}
+}

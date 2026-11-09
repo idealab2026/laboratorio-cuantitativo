@@ -1,6 +1,6 @@
 import test from "node:test";
 import assert from "node:assert/strict";
-import {readFileSync} from "node:fs";
+import {readFileSync,existsSync} from "node:fs";
 import {algorithmTheory,paperLeaderboard} from "../src/algorithm-detail.mjs";
 import {verifyOriginalPaper} from "../src/original-paper.mjs";
 import {sortFullCompetitionRows} from "../src/competition-roster.mjs";
@@ -953,7 +953,7 @@ test("manual trading refresh gives a visible outcome even if the published snaps
   verifyLiveSignals:doc=>doc,
   paintTradingRoom:()=>paints.push("room"),
   paintTradingRefresh:()=>paints.push("refresh"),
-  refreshForwardOpening:async()=>{},
+  refreshOperationalClock:async()=>{},
   tradingDay:()=>null,
   $:()=>null
  };
@@ -1201,19 +1201,31 @@ test("Buy The Dip daily status describes last completed month and daily marks, n
 });
 
 
-test("forward opening preview is separately sourced and labeled non-broker, with strict statuses",()=>{
+test("one shared market-clock display covers every active slot and never calls prices fills",()=>{
  const site=readFileSync(new URL("../src/site.mjs",import.meta.url),"utf8");
- const workflow=readFileSync(new URL("../.github/workflows/forward-open-il039.yml",import.meta.url),"utf8");
- const source=readFileSync(new URL("../scripts/forward_open_il039.py",import.meta.url),"utf8");
- assert.ok(site.includes('fetch("./data/forward-open-il039.json",{cache:"no-store"})'));
- assert.ok(site.includes('doc.campaign!=="IL-039_FORWARD_TRIAL"'));
- assert.ok(site.includes('status:"not_started"')===false);
- assert.ok(site.includes("no se retrotraen operaciones a la apertura"));
- assert.ok(site.includes("GitHub Actions tampoco garantiza inicio al minuto exacto"));
- assert.ok(site.includes("return buyDipForwardHTML()"));
+ const workflow=readFileSync(new URL("../.github/workflows/operational-clock.yml",import.meta.url),"utf8");
+ const script=readFileSync(new URL("../scripts/operational_clock.py",import.meta.url),"utf8");
+ const pages=readFileSync(new URL("../.github/workflows/pages.yml",import.meta.url),"utf8");
+ const audit=readFileSync(new URL("../scripts/audit_public.py",import.meta.url),"utf8");
+ assert.ok(site.includes('fetch("./data/operational-clock.json",{cache:"no-store"})'));
+ assert.ok(site.includes('doc.mode!=="single_midas_operator_monitor_no_broker"'));
+ assert.ok(site.includes("Reloj operativo de MIDAS"));
+ assert.ok(site.includes("26")===false || site.includes("IL-039"));
+ assert.ok(site.includes("Un precio observado no es una compra contabilizada"));
+ assert.ok(site.includes('<div id="trading-operational-clock">'));
+ assert.ok(!site.includes("buyDipForwardHTML()"));
+ assert.ok(!site.includes("refreshForwardOpening(force)"));
  assert.match(workflow,/timezone: 'America\/New_York'/);
  assert.match(workflow,/20 9 \* \* 1-5/);
- assert.match(workflow,/31,36,41,46 9 \* \* 1-5/);
- assert.ok(source.includes("verify_plan(plan, now, market)"));
- assert.ok(!source.includes("place_order("));
+ assert.match(workflow,/31,36,41,46,51,56 9 \* \* 1-5/);
+ assert.ok(!workflow.includes("Record Buy The Dip paper state"));
+ assert.ok(script.includes("verify_lock(lock, market, now)"));
+ assert.ok(script.includes("No verified opening plan"));
+ assert.ok(script.includes("native_engine_batch_until_migrated"));
+ assert.ok(!script.includes("place_order("));
+ assert.ok(pages.includes("cp data/operational-clock.json dist/data/"));
+ assert.ok(pages.includes("MIDAS shared market execution clock"));
+ assert.ok(audit.includes("data/operational-clock.json"));
+ assert.ok(!existsSync(new URL("../.github/workflows/forward-open-il039.yml",import.meta.url)),
+   "Separate IL039-only schedule must no longer exist");
 });

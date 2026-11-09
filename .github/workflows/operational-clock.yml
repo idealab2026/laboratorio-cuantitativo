@@ -1,38 +1,40 @@
-name: MIDAS IL039 forward opening observer
+name: MIDAS shared market execution clock
 
 on:
   pull_request:
     paths:
-      - 'scripts/forward_open_il039.py'
-      - 'scripts/test_forward_open_il039.py'
-      - '.github/workflows/forward-open-il039.yml'
+      - 'scripts/operational_clock.py'
+      - 'scripts/test_operational_clock.py'
+      - '.github/workflows/operational-clock.yml'
   workflow_dispatch:
     inputs:
       stage:
-        description: 'Prepare before US market opens, observe after open'
-        required: true
         type: choice
         options:
           - prepare
           - observe
+        required: true
   schedule:
-    # Clock follows New York, including DST. Actions starts are best effort.
+    # 09:20 ET: lock tomorrow's actual source-ledger orders before the market opens.
     - cron: '20 9 * * 1-5'
       timezone: 'America/New_York'
-    - cron: '31,36,41,46 9 * * 1-5'
+    # Exchange-local 09:30 opening observations are best effort, never made up.
+    - cron: '31,36,41,46,51,56 9 * * 1-5'
+      timezone: 'America/New_York'
+    - cron: '1,16,31,46 10-15 * * 1-5'
       timezone: 'America/New_York'
 
 permissions:
   contents: write
 
 concurrency:
-  group: midas-forward-il039
+  group: midas-shared-operational-clock
   cancel-in-progress: false
 
 jobs:
-  forward-opening:
+  market-clock:
     runs-on: ubuntu-latest
-    timeout-minutes: 35
+    timeout-minutes: 90
     steps:
       - uses: actions/checkout@v4
         with:
@@ -43,13 +45,14 @@ jobs:
           python-version: '3.12'
           cache: pip
           cache-dependency-path: buy_the_dip_strategy/requirements-live.txt
-      - name: Install free open-session observation dependencies
+      - name: Install calendar and free minute quote adapter
         run: python -m pip install --disable-pip-version-check -r buy_the_dip_strategy/requirements-live.txt
-      - name: Verify forward chronology, no-lookahead and idempotency
+      - name: Verify no-lookahead and shared engine clock
         run: |
-          python -m py_compile scripts/forward_open_il039.py
+          python -m py_compile scripts/operational_clock.py scripts/forward_open_il039.py
+          python -m unittest scripts.test_operational_clock -v
           python -m unittest scripts.test_forward_open_il039 -v
-      - name: Observe eligible US session, but never invent auction fills
+      - name: Prepare frozen signal plan or check market observations
         if: github.event_name != 'pull_request'
         run: |
           set -euo pipefail
@@ -59,11 +62,11 @@ jobs:
             CRON="$(jq -r '.schedule // empty' "$GITHUB_EVENT_PATH")"
             if [ "$CRON" = '20 9 * * 1-5' ]; then STAGE=prepare; else STAGE=observe; fi
           fi
-          PYTHONPATH=. python scripts/forward_open_il039.py --stage "$STAGE"
-      - name: Publish only independently labeled forward trial observations
+          PYTHONPATH=scripts:. python scripts/operational_clock.py --stage "$STAGE"
+      - name: Save single operator clock without modifying algorithm ledgers
         if: github.event_name != 'pull_request'
         run: |
           python strategy_comparison/publish_state.py \
-            --message "Record IL-039 forward opening observation (not broker execution)" \
-            --path data/forward-open-il039.json \
-            --path forward_open_state/il039-lock.json
+            --message "Update MIDAS shared operational clock observations" \
+            --path data/operational-clock.json \
+            --path forward_open_state/global-lock.json
