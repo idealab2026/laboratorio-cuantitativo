@@ -1186,7 +1186,7 @@ test("Buy The Dip daily status describes last completed month and daily marks, n
  runInNewContext(source.slice(start,end)+";this.today=btdTodaySummary;",ctx);
  const html=ctx.today({decision_session:"2026-10-30",coverage:{scored:348,selected:10}});
  for(const value of ["Qué hace el algoritmo","348 puntuadas","10 elegidas",
-  "2 posiciones","2026-11-06","valora diariamente","historial de GitHub Actions"])
+  "2 posiciones","2026-11-06","valoración de las posiciones mantenidas","historial de GitHub Actions"])
   assert.ok(html.includes(value),value);
  assert.ok(!html.includes("analizando ahora 503"));
  const css=readFileSync(new URL("../styles.css",import.meta.url),"utf8");
