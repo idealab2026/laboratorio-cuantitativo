@@ -1400,6 +1400,8 @@ function paintTradingRoom(){
  date.disabled=!tradingDay();
  algorithm.disabled=!signalFeed;
  const terminal=terminalState.mode==="terminal";
+ const searchLabel=document.querySelector('label[for="trading-ticker"]');
+ if(searchLabel)searchLabel.textContent=terminal&&tradingFilter.slot==="IL-039"?"Ticker o empresa":"Ticker";
  $("terminal-algorithm-picker").hidden=!terminal;
  $("desk-algorithm-picker").hidden=terminal;
  $("desk-phase-picker").hidden=terminal;
@@ -1429,8 +1431,13 @@ function paintTradingRoom(){
   if(tradingFilter.slot!=="IL-039")paintTerminalMap();
   const content=terminalHTML();
   if(results.dataset.terminal!==content){
+   const priorScroll=results.querySelector(".btd-table-wrap")?.scrollTop??0;
    results.innerHTML=content;
    results.dataset.terminal=content;
+   if(tradingFilter.slot==="IL-039"){
+    const view=results.querySelector(".btd-table-wrap");
+    if(view)view.scrollTop=priorScroll;
+   }
   }
   paintTerminalRows();
   paintTerminalActivity();
