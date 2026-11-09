@@ -612,11 +612,27 @@ function buyDipForwardHTML(){
    waiting_quotes:"En espera de cotizaciones recientes",
    monitoring_no_orders:"Mercado observado · sin órdenes nuevas",
    indicative_fill:"Operaciones paper indicativas registradas con cotizaciones observadas"};
- const status=stale?"Registro de una sesión anterior":labels[forwardOpen.status];
+ const fills=Array.isArray(forwardOpen.indicative_fills)?forwardOpen.indicative_fills:[];
+ const status=stale?"Registro de una sesión anterior":
+  forwardOpen.status==="indicative_fill"&&!fills.length?"Observadas cotizaciones sin nuevas operaciones":
+  labels[forwardOpen.status];
  const moment=forwardOpen.checked_at_utc||forwardOpen.prepared_at_utc;
  const at=moment&&Number.isFinite(Date.parse(moment))?
    madridDateTime.format(new Date(moment))+" Madrid":"Sin observación aún";
- const fills=Array.isArray(forwardOpen.indicative_fills)?forwardOpen.indicative_fills:[];
+ const preparedTargets=forwardOpen.planned_targets&&
+  typeof forwardOpen.planned_targets==="object"&&!Array.isArray(forwardOpen.planned_targets)?
+  Object.entries(forwardOpen.planned_targets).filter(([ticker,weight])=>
+   /^[A-Z0-9.]{1,8}$/.test(ticker)&&typeof weight==="number"&&
+   Number.isFinite(weight)&&weight>=0&&weight<=1).slice(0,10):[];
+ const intents=preparedTargets.length?
+  '<div class="btd-forward-fills"><strong>Objetivos fijados antes de abrir:</strong> '+
+  preparedTargets.map(([ticker,weight])=>'<span>'+esc(ticker)+' · '+
+  esc(new Intl.NumberFormat("es-ES",{style:"percent",maximumFractionDigits:2}).format(weight))+
+  '</span>').join("")+'</div>':"";
+ const mark=Number.isFinite(forwardOpen.indicative_nav)?
+  '<p><strong>Valoración forward indicativa:</strong> '+
+  esc(new Intl.NumberFormat("es-ES",{maximumFractionDigits:2}).format(forwardOpen.indicative_nav))+
+  ' USD · observación, no cierre auditado</p>':"";
  const trades=fills.length?'<div class="btd-forward-fills">'+fills.slice(0,20).map(f=>
   '<span>'+esc(f.side==="buy"?"Compra":"Venta")+' '+esc(f.ticker)+' · '+
   esc(fmt(f.quantity))+' títulos · '+esc(fmt(f.price))+' USD</span>').join("")+'</div>':"";
@@ -628,10 +644,12 @@ function buyDipForwardHTML(){
   '<p><strong>Plan previo:</strong> '+(forwardOpen.pending_targets??"—")+
   ' objetivos pendientes · <strong>Posiciones:</strong> '+(forwardOpen.positions_count??"—")+
   ' · <strong>Cotizaciones recientes:</strong> '+(forwardOpen.quotes_count??"—")+'</p>'+
-  trades+
-  '<p class="btd-forward-caveat">Datos gratuitos con retrasos posibles; no se retrotraen operaciones a las 15:30. '+
+  intents+mark+trades+
+  '<p class="btd-forward-caveat">Datos gratuitos con retrasos posibles; no se retrotraen operaciones a la apertura. '+
   'Los precios son indicativos, no confirmaciones de ejecución ni órdenes reales. '+
-  'GitHub Actions tampoco garantiza inicio al minuto exacto.</p></section>';
+  'GitHub Actions tampoco garantiza inicio al minuto exacto. '+
+  '<a href="https://github.com/idealab2026/laboratorio-cuantitativo/actions/workflows/forward-open-il039.yml"'+
+  ' target="_blank" rel="noopener noreferrer">Ver ejecuciones del observador</a>.</p></section>';
 }
 
 const tradingRoomActive=()=>state.view==="trading";
