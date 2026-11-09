@@ -9,6 +9,9 @@ on:
       - 'scripts/test_native_forward_settlement.py'
       - 'scripts/forward_weekly_ml_settlement.py'
       - 'scripts/test_forward_weekly_ml_settlement.py'
+      - 'scripts/classic_forward_settlement.py'
+      - 'scripts/test_classic_forward_settlement.py'
+      - 'classic_sp500/run.py'
       - 'weekly_ml/daily.py'
       - 'capital_cycle/engine.py'
       - 'buy_the_dip_strategy/engine.py'
@@ -56,11 +59,12 @@ jobs:
         run: python -m pip install --disable-pip-version-check -r buy_the_dip_strategy/requirements-live.txt
       - name: Verify no-lookahead and shared engine clock
         run: |
-          python -m py_compile scripts/operational_clock.py scripts/forward_open_il039.py scripts/native_forward_settlement.py scripts/forward_weekly_ml_settlement.py weekly_ml/daily.py
+          python -m py_compile scripts/operational_clock.py scripts/forward_open_il039.py scripts/native_forward_settlement.py scripts/forward_weekly_ml_settlement.py scripts/classic_forward_settlement.py weekly_ml/daily.py classic_sp500/run.py
           python -m unittest scripts.test_operational_clock -v
           python -m unittest scripts.test_forward_open_il039 -v
           python -m unittest scripts.test_native_forward_settlement -v
           python -m unittest scripts.test_forward_weekly_ml_settlement -v
+          python -m unittest scripts.test_classic_forward_settlement -v
       - name: Prepare frozen signal plan or check market observations
         if: github.event_name != 'pull_request'
         run: |
@@ -84,10 +88,12 @@ jobs:
             --path forward_open_state/global-lock.json \
             --path capital_cycle_state/ledger.json \
             --path buy_the_dip_state/ledger.json \
-            --path weekly_ml_daily_state/ledger.json
+            --path weekly_ml_daily_state/ledger.json \
+            --path classic_sp500_state/ledger.json
       - name: Verify native fills survived publication
         if: github.event_name != 'pull_request'
         run: |
           git fetch origin main
           PYTHONPATH=scripts:. python scripts/native_forward_settlement.py --verify-published
           PYTHONPATH=scripts:. python -c 'from forward_weekly_ml_settlement import verify_published; print({"verified_weekly_ml_slots": verify_published()})'
+          PYTHONPATH=scripts:. python -c 'from classic_forward_settlement import verify_published; print({"verified_classic_slots": verify_published()})'
