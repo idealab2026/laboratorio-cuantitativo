@@ -140,6 +140,7 @@ def observe(plan, now, market, quotes, config, prior=None):
               "prepared_at_utc": plan["prepared_at_utc"],
               "checked_at_utc": timestamp(now), "source_session": plan["source_session"],
               "pending_targets": len(targets), "positions_count": len(plan["positions"]),
+              "planned_targets": targets,
               "quotes_count": len(valid), "missing_quotes": missing,
               "quotes": {t: valid[t] for t in sorted(valid)},
               "indicative_fills": [], "indicative_nav": None,
@@ -184,6 +185,7 @@ def main(argv=None):
                   "open_at_utc": plan["open_at_utc"],
                   "prepared_at_utc": plan["prepared_at_utc"],
                   "pending_targets": len((plan["pending"] or {}).get("target_weights", {})),
+                  "planned_targets": (plan["pending"] or {}).get("target_weights", {}),
                   "positions_count": len(plan["positions"]), "mode": "observed_paper_not_broker"}
     else:
         if not plan_path.is_file():
