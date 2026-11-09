@@ -196,36 +196,25 @@ def _close_position(book, ticker, value, day, config, reason):
     book["events"].append({"date": day, "ticker": ticker, "type": "sell", "reason": reason})
 
 
-def _settle_book(config, name, book, day, today):
-    """Existing next-open, fees and conservative stop/target policy, in place."""
+# Forward-only conversion: the EXACT legacy sizing and fee routine can now be
+# invoked by the shared pre-open clock instead of waiting for nightly OHLC.
+# Existing pre-cutover historical books still follow their original path.
+FORWARD_CUTOVER_SESSION = "2026-11-10"
+
+
+def execute_frozen_open(config, name, book, day, today, *, provenance=None):
+    """Native entry/exit settlement; all currently held positions need open quotes."""
     p = config["execution"]
-    stamp = datetime.now(timezone.utc).isoformat(timespec="seconds")
-    reviews = market.read(ROOT / "market_data/corporate_action_reviews.json") if (
-        book.get("receivables") or book.get("outage_control")) else {}
-    settle_reviewed_claims(book, day, reviews, recorded_at=stamp)
-    if day < book.get("outage_control", {}).get("first_trading_session", ""):
-        inactive_mark(book, day, today, recorded_at=stamp, reviews=reviews)
-        return
-    for ticker, pos in list(book["positions"].items()):
-        bar = today[ticker]
-        split = float(bar.get("split", 0))
-        if split:
-            pos["shares"] *= market._positive(split, "split")
-            if pos["stop"] is not None:
-                pos["stop"] /= split
-            if pos["target"] is not None:
-                pos["target"] /= split
-            book["events"].append({"date": day, "ticker": ticker, "type": "split", "ratio": split})
-        dividend = float(bar.get("dividend", 0))
-        if dividend:
-            amount = pos["shares"] * dividend
-            book["cash"] += amount
-            pos["dividends"] += amount
+    if provenance is not None and not set(book["positions"]) | set(book["pending"]) <= set(today):
+        raise ValueError("Missing contemporary opening observations")
     sells = sorted(t for t, order in book["pending"].items() if order["side"] == "sell")
     for ticker in sells:
         if ticker not in book["positions"]:
             raise ValueError("Orphan sell signal")
         _close_position(book, ticker, today[ticker]["open"], day, config, "signal_next_open")
+        if provenance is not None:
+            book["events"][-1].update({"execution": "forward_observed_paper", **provenance[ticker]})
+            book["trades"][-1].update({"execution": "forward_observed_paper", **provenance[ticker]})
     buy_list = sorted(t for t, order in book["pending"].items() if order["side"] == "buy")
     nav_at_open = portfolio_nav(book, today, "open")
     if buy_list:
@@ -261,17 +250,63 @@ def _settle_book(config, name, book, day, today):
                 "stop": price * (1 - spec["stop_loss"]) if spec.get("stop_loss") else None,
                 "target": price * (1 + spec["take_profit"]) if spec.get("take_profit") else None}
             book["cash"] -= cost
-            book["events"].append({"date": day, "ticker": ticker, "type": "buy", "shares": shares})
+            event = {"date": day, "ticker": ticker, "type": "buy", "shares": shares}
+            if provenance is not None:
+                event.update({"execution": "forward_observed_paper", "price": price,
+                              "fee": cost - shares * price, **provenance[ticker]})
+            book["events"].append(event)
     book["pending"] = {}
-    # Conservative candle execution: if stop and target both occur, stop wins.
+
+
+def _settle_book(config, name, book, day, today):
+    """Existing next-open, fees and conservative stop/target policy, in place."""
+    p = config["execution"]
+    stamp = datetime.now(timezone.utc).isoformat(timespec="seconds")
+    reviews = market.read(ROOT / "market_data/corporate_action_reviews.json") if (
+        book.get("receivables") or book.get("outage_control")) else {}
+    settle_reviewed_claims(book, day, reviews, recorded_at=stamp)
+    if day < book.get("outage_control", {}).get("first_trading_session", ""):
+        inactive_mark(book, day, today, recorded_at=stamp, reviews=reviews)
+        return
     for ticker, pos in list(book["positions"].items()):
         bar = today[ticker]
-        if pos["stop"] is not None and bar["low"] <= pos["stop"]:
-            price = min(bar["open"], pos["stop"])
-            _close_position(book, ticker, price, day, config, "stop")
-        elif pos["target"] is not None and bar["high"] >= pos["target"]:
-            price = max(bar["open"], pos["target"])
-            _close_position(book, ticker, price, day, config, "target")
+        split = float(bar.get("split", 0))
+        if split:
+            pos["shares"] *= market._positive(split, "split")
+            if pos["stop"] is not None:
+                pos["stop"] /= split
+            if pos["target"] is not None:
+                pos["target"] /= split
+            book["events"].append({"date": day, "ticker": ticker, "type": "split", "ratio": split})
+        dividend = float(bar.get("dividend", 0))
+        if dividend:
+            amount = pos["shares"] * dividend
+            book["cash"] += amount
+            pos["dividends"] += amount
+    if day >= FORWARD_CUTOVER_SESSION:
+        # No reconstructed 09:30 trade once the real-time clock owns entries.
+        # The portfolio still receives its official nightly mark and dividends.
+        if book["pending"]:
+            book["events"].append({
+                "date": day, "type": "missed_forward_open",
+                "reason": "no_verified_opening_execution",
+                "tickers": sorted(book["pending"]),
+            })
+            book["pending"] = {}
+    else:
+        execute_frozen_open(config, name, book, day, today)
+    # For forward sessions a day-long OHLC high/low is NOT an observed order.
+    # Stops/targets must be triggered by contemporary clock quotes, never hindsight.
+    if day < FORWARD_CUTOVER_SESSION:
+        # Conservative candle execution: if stop and target both occur, stop wins.
+        for ticker, pos in list(book["positions"].items()):
+            bar = today[ticker]
+            if pos["stop"] is not None and bar["low"] <= pos["stop"]:
+                price = min(bar["open"], pos["stop"])
+                _close_position(book, ticker, price, day, config, "stop")
+            elif pos["target"] is not None and bar["high"] >= pos["target"]:
+                price = max(bar["open"], pos["target"])
+                _close_position(book, ticker, price, day, config, "target")
     book["nav"] = portfolio_nav(book, today)
     if not math.isfinite(book["nav"]) or book["nav"] < 0:
         raise ValueError("Invalid classic USD NAV")
