@@ -124,36 +124,57 @@ def _book_symbols(book):
     return set(book["positions"]) | {order["ticker"] for order in book["pending"]}
 
 
-def _advance_book(name, book, day, prices, policy, *, week_end):
+# The nightly engine and the pre-opening clock share exactly one cost/quantity
+# calculation. The clock supplies contemporary prices and dated evidence.
+FORWARD_CUTOVER_SESSION = "2026-11-10"
+
+
+def fill_pending_at_observed_open(name, book, day, prices, policy, *,
+                                  execution="simulated_next_open", quote_metadata=None):
+    """Apply frozen buy orders to the ORIGINAL ML book; caller owns causality checks."""
     pending = book["pending"]
-    if pending:
-        previous_nav = float(book["nav"])
-        budget = previous_nav * float(policy["invest_fraction"])
-        if name not in BENCHMARKS:
-            budget = min(previous_nav * float(policy["max_entry_weight"]),
-                         budget / len(pending))
-        for order in pending:
-            ticker = order["ticker"]
-            entry = _price(prices, ticker, "open") * (1 + float(policy["slippage"]))
-            shares = _fractional_quantity(budget, entry, policy)
-            if shares <= 0:
-                book["events"].append({"date": day, "type": "unfilled",
-                                       "ticker": ticker, "reason": "below_min_notional"})
-                continue
-            fee = entry * shares * float(policy["commission"])
-            if entry * shares + fee > book["cash"] + 1e-7:
-                raise ValueError("Caja insuficiente para la compra paper")
-            if ticker in book["positions"]:
-                raise ValueError("Posición duplicada")
-            book["positions"][ticker] = {
-                "shares": shares, "entry_price": entry, "entry_fee": fee,
-                "signal_date": order["signal_date"], "entry_date": day
-            }
-            book["cash"] -= entry * shares + fee
-            book["events"].append({"date": day, "type": "buy",
-                "ticker": ticker, "shares": shares, "price": entry, "fee": fee,
-                "execution": "simulated_next_open"})
-        book["pending"] = []
+    if not pending:
+        return []
+    previous_nav = float(book["nav"])
+    budget = previous_nav * float(policy["invest_fraction"])
+    if name not in BENCHMARKS:
+        budget = min(previous_nav * float(policy["max_entry_weight"]),
+                     budget / len(pending))
+    operations = []
+    for order in pending:
+        ticker = order["ticker"]
+        entry = _price(prices, ticker, "open") * (1 + float(policy["slippage"]))
+        shares = _fractional_quantity(budget, entry, policy)
+        if shares <= 0:
+            book["events"].append({"date": day, "type": "unfilled",
+                                   "ticker": ticker, "reason": "below_min_notional"})
+            continue
+        fee = entry * shares * float(policy["commission"])
+        if entry * shares + fee > book["cash"] + 1e-7:
+            raise ValueError("Caja insuficiente para la compra paper")
+        if ticker in book["positions"]:
+            raise ValueError("Posición duplicada")
+        book["positions"][ticker] = {
+            "shares": shares, "entry_price": entry, "entry_fee": fee,
+            "signal_date": order["signal_date"], "entry_date": day
+        }
+        book["cash"] -= entry * shares + fee
+        event = {"date": day, "type": "buy",
+                 "ticker": ticker, "shares": shares, "price": entry, "fee": fee,
+                 "execution": execution}
+        if quote_metadata is not None:
+            if ticker not in quote_metadata:
+                raise ValueError("Missing quote provenance for paper fill")
+            event.update(quote_metadata[ticker])
+        book["events"].append(event)
+        operations.append(event)
+    book["pending"] = []
+    return operations
+
+
+def _advance_book(name, book, day, prices, policy, *, week_end):
+    if book["pending"]:
+        fill_pending_at_observed_open(name, book, day, prices, policy)
     # Mark with observed prices for the exact session.
     marks = {ticker: _price(prices, ticker, "close")
              for ticker in book["positions"]}
@@ -227,7 +248,7 @@ def process_day(config, state, day, prices, *, previous_session, week_end,
             continue
         book = result["strategies"][name]
         signal_day = book.get("last_signal_session", state["last_signal_session"])
-        required = set(book["positions"]) if inactive else _book_symbols(book)
+        required = set(book["positions"]) if inactive or day >= FORWARD_CUTOVER_SESSION else _book_symbols(book)
         missing = required - prices.keys()
         if missing:
             _pause_book(book, day, missing, "missing_ohlc")
@@ -245,6 +266,16 @@ def process_day(config, state, day, prices, *, previous_session, week_end,
                 any(order["signal_date"] != previous_session for order in book["pending"])):
             _pause_book(book, day, (), "expired_open")
             continue
+        if not inactive and day >= FORWARD_CUTOVER_SESSION and book["pending"]:
+            # From cutover onwards a missing contemporary opening is a missed
+            # paper order, NEVER a simulated 09:30 fill reconstructed at night.
+            book["events"].append({
+                "date": day, "type": "missed_forward_open",
+                "reason": "no_verified_opening_execution",
+                "signal_date": signal_day,
+                "tickers": sorted(order["ticker"] for order in book["pending"]),
+            })
+            book["pending"] = []
         if inactive:
             from strategy_comparison.inactive_recovery import weekly_mark
             weekly_mark(book, day, prices, stamp=stamp, identity=quote_identity)
