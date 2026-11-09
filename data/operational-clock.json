@@ -1,0 +1,8 @@
+{
+  "schema": "midas.operational_clock.v1",
+  "mode": "single_midas_operator_monitor_no_broker",
+  "settlement": "native_engine_batch_until_migrated",
+  "session": null,
+  "slots": {},
+  "note": "Sin sesión forward validada todavía. No se han registrado operaciones a la apertura."
+}
