@@ -71,7 +71,19 @@ function catRisks(lines,i,ticker){
  labels.map((label,k)=>'<article><h5>'+esc(label)+'</h5><p>'+esc(val(body.slice(positions[k]+label.length,positions[k+1])))+'</p></article>').join("")+
  '</div><small>Transcripción de la tabla del documento original, con celdas partidas entre líneas.</small></section>'};
 }
-export const semanticBlock=(lines,i,ticker)=>matrix(lines,i,ticker)||pltrConclusion(lines,i,ticker)||metaRisks(lines,i,ticker)||catRisks(lines,i,ticker);
+function adobeAuditedSeries(lines,i,ticker){
+ if(ticker!=="ADBE"||!val(lines[i]).startsWith("FY2021 · EV "))return null;
+ const pattern=/^(FY202[1-5]) · EV ([\d.]+,\d+) MUSD · FCF IDC ([\d.]+,\d+) MUSD · EV\/FCF IDC (\d+,\d+×)\.$/u;
+ const rows=[];
+ for(const year of ["FY2021","FY2022","FY2023","FY2024","FY2025"]){
+  const match=val(lines[i+rows.length]).match(pattern);
+  if(match?.[1]!==year)return null;
+  rows.push(match.slice(1));
+ }
+ return {next:i+rows.length,kind:"matrix",rows:rows.length,html:table(
+  "Serie FY2021–FY2025 auditada · QA-09",["Ejercicio","EV (MUSD)","FCF IDC (MUSD)","EV/FCF IDC"],rows)};
+}
+export const semanticBlock=(lines,i,ticker)=>matrix(lines,i,ticker)||adobeAuditedSeries(lines,i,ticker)||pltrConclusion(lines,i,ticker)||metaRisks(lines,i,ticker)||catRisks(lines,i,ticker);
 const exact={
  META:["Publicidad como motor de caja","Opcionalidad, no flujo asegurado","Reality Labs y capacidad de reinversión","IDC: referencia histórica, no target automático","Por qué el valor terminal domina","Fuentes y trazabilidad principal"],
  PLTR:["U.S. Commercial","U.S. Government","Escenarios FY2031","Umbrales de precio desde el Target Base"],

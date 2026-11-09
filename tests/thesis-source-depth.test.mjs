@@ -25,6 +25,18 @@ test("ADBE late historical archive and approved target matrices remain distinct 
  assert.match(output,/7A\. ARCHIVO DE LA REVISIÓN IA v1\.2/);
  assert.match(output,/7B\. ESCENARIOS FY2031 v1\.3\.4/);
  assert.match(output,/7C\. SERIE FY2021–FY2025 REEXPRESADA/);
+ const series=output.match(/<caption>Serie FY2021–FY2025 auditada · QA-09<\/caption>[\s\S]*?<\/table>/)?.[0];
+ assert.ok(series,"the audited series should render as a table");
+ const rows=[...series.matchAll(/<tr><th scope="row">(FY202[1-5])<\/th><td>([^<]+)<\/td><td>([^<]+)<\/td><td>([^<]+)<\/td><\/tr>/g)]
+  .map(([,year,ev,fcf,multiple])=>[year,ev,fcf,multiple]);
+ assert.deepEqual(rows,[
+  ["FY2021","291.176,75","5.031,68","57,868694×"],
+  ["FY2022","155.819,86","5.383,66","28,943109×"],
+  ["FY2023","274.465,85","5.945,68","46,162230×"],
+  ["FY2024","225.267,13","6.790,14","33,175624×"],
+  ["FY2025","131.828,69","7.373,46","17,878810×"]
+ ]);
+ assert.doesNotMatch(output,/<p[^>]*>FY202[1-5] · EV /);
  assert.match(output,/Archivo v1\.2 · LEGACY, no valoración vigente/);
  assert.match(output,/Escenarios canónicos FY2031 · v1\.3\.4/);
  assert.match(output,/<td>386,86 USD<\/td>/);
