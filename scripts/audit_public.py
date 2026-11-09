@@ -17,6 +17,7 @@ REPOSITORY |= RELEASE | {"tests/financial-sankey.test.mjs", "tests/thesis-report
 REPOSITORY.add("docs/NAUT_RESEARCH_BRIEF_2026-11-05.md")
 # Retain the inactive seed from the superseded single-strategy pilot, but do not publish it.
 REPOSITORY |= {"scripts/forward_weekly_ml_settlement.py", "scripts/test_forward_weekly_ml_settlement.py"}
+REPOSITORY |= {"scripts/classic_forward_settlement.py", "scripts/test_classic_forward_settlement.py"}
 REPOSITORY.add("data/forward-open-il039.json")
 if (ROOT / "forward_open_state/il039-lock.json").is_file():
     REPOSITORY.add("forward_open_state/il039-lock.json")
