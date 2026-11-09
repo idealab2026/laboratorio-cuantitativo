@@ -137,3 +137,40 @@ def settle_native(lock, now, market, quotes, *,
                          "marker": marker, "operations": fills}
         output[ledger_path] = updated
     return output, results
+
+
+def verify_published(public_path=ROOT / "data/operational-clock.json"):
+    """Post-push reconciliation; fail if a writer's rebase dropped canonical fills."""
+    report = json.loads(Path(public_path).read_text(encoding="utf8"))
+    if report.get("schema") != "midas.operational_clock.v1":
+        raise ValueError("Missing public operator report")
+    validated = []
+    for slot, (path, _, _) in NATIVE.items():
+        lane = report.get("slots", {}).get(slot) or {}
+        if lane.get("status") != "native_forward_settled":
+            continue
+        marker = lane.get("native_marker")
+        if not isinstance(marker, dict):
+            raise ValueError(f"{slot}: native fill lacks a published idempotency marker")
+        remote = _source_at("origin/main", path)
+        source = _event_key(slot, marker["session"], marker["signal_date"])
+        persisted = remote.get("forward_executions", {}).get(source)
+        if persisted != marker or remote.get("pending") is not None:
+            raise ValueError(f"{slot}: published fills are not in the canonical ledger")
+        validated.append(slot)
+    return validated
+
+
+def main(argv=None):
+    import argparse
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--verify-published", action="store_true")
+    args = parser.parse_args(argv)
+    if args.verify_published:
+        print(json.dumps({"verified_native_slots": verify_published()}))
+        return 0
+    parser.error("Use --verify-published")
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())
