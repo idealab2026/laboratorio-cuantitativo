@@ -88,6 +88,11 @@ def clock_plan(now, market, tracks, commit):
             "orders": sorted(orders, key=lambda row: row["ticker"]) if eligible else [],
             "orders_count": len(orders) if eligible else 0,
             "holdings_count": len(record.get("holdings", [])) if isinstance(record, dict) else 0,
+            # Only tactical classic portfolios monitor real observed stops.
+            # Passive 503-position buy-and-hold is excluded from free quote reads.
+            "monitor_tickers": (sorted(set(record.get("holdings", [])))
+                                if eligible and slot in {f"IL-{n:03d}" for n in range(11, 18)}
+                                and isinstance(record, dict) else []),
         }
     lock = {"schema": SCHEMA, "session": market["session"],
             "previous_session": market["previous"], "source_commit": commit,
@@ -258,7 +263,10 @@ def main(argv=None):
         already = {r["ticker"] for entry in (prior or {}).get("slots", {}).values()
                    for r in entry.get("orders", []) if r.get("status") == "price_observed"}
         needed = {o["ticker"] for p in lock["slots"].values() for o in p["orders"]}
-        quotes = quote_batch(needed - already, now, market)
+        monitored = {t for p in lock["slots"].values() for t in p.get("monitor_tickers", [])}
+        # A new quote is mandatory on each stop check, not the previous
+        # order observation.
+        quotes = quote_batch((needed - already) | monitored, now, market)
         now = datetime.now(UTC)  # actual observation completion, not nominal scheduler time
         if now > market["close"]:
             print('{"status":"observation_too_late"}')
@@ -269,12 +277,15 @@ def main(argv=None):
         from forward_weekly_ml_settlement import settle_weekly
         updated, evidence = settle_native(lock, now, market, quotes)
         ml_updated, ml_evidence = settle_weekly(lock, now, market, quotes)
-        if set(updated) & set(ml_updated):
+        from classic_forward_settlement import settle_classic
+        classic_updated, classic_evidence = settle_classic(lock, now, market, quotes)
+        if (set(updated) & set(ml_updated) or set(updated) & set(classic_updated)
+                or set(ml_updated) & set(classic_updated)):
             raise ValueError("Two native settlers attempted to own the same canonical book")
-        for ledger_path, book in {**updated, **ml_updated}.items():
+        for ledger_path, book in {**updated, **ml_updated, **classic_updated}.items():
             _write(ROOT / ledger_path, book)
-        report["settlement"] = "native_forward_038_039_019_through_027_other_engines_batch"
-        for slot, result in {**evidence, **ml_evidence}.items():
+        report["settlement"] = "native_forward_010_through_027_038_039_other_engines_batch"
+        for slot, result in {**evidence, **ml_evidence, **classic_evidence}.items():
             lane = report["slots"][slot]
             lane["native_settlement"] = result["status"]
             if result["status"] == "settled_native_paper":
