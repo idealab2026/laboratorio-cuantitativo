@@ -1208,7 +1208,7 @@ test("forward opening preview is separately sourced and labeled non-broker, with
  assert.ok(site.includes('fetch("./data/forward-open-il039.json",{cache:"no-store"})'));
  assert.ok(site.includes('doc.campaign!=="IL-039_FORWARD_TRIAL"'));
  assert.ok(site.includes('status:"not_started"')===false);
- assert.ok(site.includes("no se retrotraen operaciones a las 15:30"));
+ assert.ok(site.includes("no se retrotraen operaciones a la apertura"));
  assert.ok(site.includes("GitHub Actions tampoco garantiza inicio al minuto exacto"));
  assert.ok(site.includes("return buyDipForwardHTML()"));
  assert.match(workflow,/timezone: 'America\/New_York'/);
