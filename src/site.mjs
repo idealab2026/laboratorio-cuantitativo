@@ -1081,7 +1081,8 @@ function btdUniverseHTML(){
   '<span><strong>'+count.eligible+'</strong> elegibles</span>'+
   '<span><strong>'+count.selected+'</strong> en cartera</span></div>'+
   (review.mode==="historical_partial"?
-   '<p class="btd-warning">Archivo histórico incompleto: 493 de 503 empresas no tienen puntuación individual conservada. '+
+   '<p class="btd-warning">Archivo histórico incompleto: '+review.rows.filter(row=>row.score===null).length+
+   ' de '+count.universe+' empresas no tienen puntuación individual conservada. '+
    'El detalle de las otras empresas no puede reconstruirse sin introducir información posterior. '+
    'Los próximos análisis mensuales registrarán cada empresa, sus filtros y sus puntuaciones.</p>':
    '<p class="btd-note">Desglose de decisión grabado en la evaluación original, con valores derivados y motivos de exclusión.</p>')+
