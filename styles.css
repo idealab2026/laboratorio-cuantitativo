@@ -1335,3 +1335,14 @@ p{line-height:1.6;text-align:justify;text-align-last:left;hyphens:auto}p.lead{co
  .btd-trace-factors{grid-template-columns:1fr}
 }
 @media(max-width:700px){.btd-today-steps{grid-template-columns:1fr}.btd-header-tooltip{max-width:220px}}
+
+/* Separate observed forward trial from the established nightly paper campaign. */
+.btd-forward{border:1px solid #a7c7d8;border-radius:8px;padding:11px 14px;
+ margin:0 0 12px;background:#ecf6fa;color:#224860;font:550 .78rem/1.5 system-ui,sans-serif}
+.btd-forward-title{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}
+.btd-forward-title>strong{color:#133b53;font-size:.93rem}
+.btd-forward-title>span{color:#41677d;font-size:.72rem}
+.btd-forward p{margin:6px 0}
+.btd-forward-caveat{color:#566e80;font-size:.71rem}
+.btd-forward-fills{display:flex;gap:5px;flex-wrap:wrap}
+.btd-forward-fills span{border:1px solid #b5d8d2;padding:3px 6px;border-radius:4px;background:#fff}

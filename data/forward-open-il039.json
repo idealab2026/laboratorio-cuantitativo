@@ -1,0 +1,9 @@
+{
+  "schema": "midas.il039.forward_open.v1",
+  "campaign": "IL-039_FORWARD_TRIAL",
+  "mode": "observed_paper_not_broker",
+  "status": "not_started",
+  "session": null,
+  "pending_targets": 0,
+  "positions_count": 0
+}

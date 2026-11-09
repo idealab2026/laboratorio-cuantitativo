@@ -953,6 +953,7 @@ test("manual trading refresh gives a visible outcome even if the published snaps
   verifyLiveSignals:doc=>doc,
   paintTradingRoom:()=>paints.push("room"),
   paintTradingRefresh:()=>paints.push("refresh"),
+  refreshForwardOpening:async()=>{},
   tradingDay:()=>null,
   $:()=>null
  };
@@ -1022,6 +1023,7 @@ test("Buy The Dip monitoring shows dated real paper accounting, holdings and las
   ]}}}}},
   tradingDay:()=>"2026-11-09",shortPaperDate:d=>d,
   madridDateTime:{format:date=>new Date(date).toISOString()},
+  buyDipForwardHTML:()=>"",
   esc:v=>String(v),Intl,Date,Number};
  const a=source.indexOf("function buyDipHealthHTML(){");
  const b=source.indexOf("function deskResults(model){",a);
@@ -1196,4 +1198,22 @@ test("Buy The Dip daily status describes last completed month and daily marks, n
  assert.ok(sourceText.includes('data-action="btd-inspect"'));
  assert.ok(sourceText.includes('aria-expanded="'));
  assert.ok(sourceText.includes('btdTableView.selectedTicker=btdTableView.selectedTicker===value?null:value'));
+});
+
+
+test("forward opening preview is separately sourced and labeled non-broker, with strict statuses",()=>{
+ const site=readFileSync(new URL("../src/site.mjs",import.meta.url),"utf8");
+ const workflow=readFileSync(new URL("../.github/workflows/forward-open-il039.yml",import.meta.url),"utf8");
+ const source=readFileSync(new URL("../scripts/forward_open_il039.py",import.meta.url),"utf8");
+ assert.ok(site.includes('fetch("./data/forward-open-il039.json",{cache:"no-store"})'));
+ assert.ok(site.includes('doc.campaign!=="IL-039_FORWARD_TRIAL"'));
+ assert.ok(site.includes('status:"not_started"')===false);
+ assert.ok(site.includes("no se retrotraen operaciones a la apertura"));
+ assert.ok(site.includes("GitHub Actions tampoco garantiza inicio al minuto exacto"));
+ assert.ok(site.includes("return buyDipForwardHTML()"));
+ assert.match(workflow,/timezone: 'America\/New_York'/);
+ assert.match(workflow,/20 9 \* \* 1-5/);
+ assert.match(workflow,/31,36,41,46 9 \* \* 1-5/);
+ assert.ok(source.includes("verify_plan(plan, now, market)"));
+ assert.ok(!source.includes("place_order("));
 });
