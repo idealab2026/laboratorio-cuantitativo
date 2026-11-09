@@ -59,6 +59,7 @@ class OperatorClockTest(unittest.TestCase):
         self.assertEqual(set(self.ready["slots"]), set(ACTIVE))
         self.assertTrue(self.ready["slots"]["IL-015"]["execution_ready"])
         self.assertEqual(len(self.ready["slots"]["IL-015"]["orders"]), 2)
+        self.assertEqual(self.ready["slots"]["IL-015"]["orders"][0]["scheduled_at_utc"], "2026-11-10T14:30:00Z")
         self.assertEqual(self.ready["slots"]["IL-039"]["orders"], [])
         self.assertFalse(self.ready["slots"]["IL-042"]["execution_ready"])
         self.assertEqual(self.ready["slots"]["IL-042"]["orders"], [])
