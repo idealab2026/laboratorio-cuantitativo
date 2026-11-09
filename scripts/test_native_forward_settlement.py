@@ -138,6 +138,26 @@ class NativeForwardSettlementTests(unittest.TestCase):
         self.assertEqual(again, {})
         self.assertTrue(all(info2[slot]["status"] != "settled_native_paper" for slot in NATIVE))
 
+    def test_failed_open_is_marked_as_missed_and_never_backfilled_at_night(self):
+        import importlib
+        for slot, (path, config_path, module) in NATIVE.items():
+            state = copy.deepcopy(self.books[path])
+            policy = self.configs[config_path]
+            engine = importlib.import_module(module + ".engine")
+            required = set(state["positions"]) | set(state["pending"]["target_weights"])
+            bars = {ticker: {"open": 100, "high": 102, "low": 99,
+                             "close": 101, "split": 0, "dividend": 0}
+                    for ticker in required}
+            before = sum(e.get("type") == "fill" for e in state["events"])
+            updated, changed = engine.advance(policy, bars, "2026-11-10",
+                                              100, state=state)
+            self.assertTrue(changed)
+            self.assertIsNone(updated["pending"])
+            self.assertEqual(sum(e.get("type") == "fill" for e in updated["events"]), before)
+            self.assertEqual(updated["events"][-1]["type"], "missed_forward_open")
+            self.assertEqual(updated["equity"][-1]["date"], "2026-11-10")
+            self.assertEqual(updated["last_session"], "2026-11-10")
+
     def test_no_wrong_session_or_late_backfill(self):
         bad = copy.deepcopy(self.lock)
         bad["slots"]["IL-039"]["orders"][0]["signal_session"] = "2026-11-10"
