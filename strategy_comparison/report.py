@@ -553,8 +553,11 @@ def build(registry, paper_config, paper_state=None, legacy_state=None, now=None,
                     if marks:
                         mark = marks[-1]
                         paper_nav = _equity(mark["nav"], item["id"] + " forward NAV")
+                        forward_history = history + marks
                         row.update(last_equity=paper_nav, last_session=mark["date"],
-                                   return_pct=round(100 * (paper_nav / capital_tfg - 1), 6))
+                                   return_pct=round(100 * (paper_nav / capital_tfg - 1), 6),
+                                   day_return_pct=_daily_return(forward_history, item["id"]),
+                                   equity_history=_equity_history(forward_history, item["id"]))
                     else:
                         row["last_session"] = tfg_state.get("last_signal_session")
                     row.update(_activity(forward.get("positions"), None,
@@ -565,8 +568,13 @@ def build(registry, paper_config, paper_state=None, legacy_state=None, now=None,
                 elif forward.get("status") == "closed" and forward.get("closed_trade"):
                     trade = forward["closed_trade"]
                     paper_nav = _equity(trade["nav_after"], item["id"] + " forward closed NAV")
+                    forward_history = history + (forward.get("equity_marks") or [])
+                    if forward_history[-1]["date"] < trade["exit_date"]:
+                        forward_history.append({"date": trade["exit_date"], "nav": paper_nav})
                     row.update(last_equity=paper_nav, last_session=trade["exit_date"],
-                               return_pct=round(100 * (paper_nav / capital_tfg - 1), 6))
+                               return_pct=round(100 * (paper_nav / capital_tfg - 1), 6),
+                               day_return_pct=_daily_return(forward_history, item["id"]),
+                               equity_history=_equity_history(forward_history, item["id"]))
                     row.update(_activity(None, None, empty_label="Semana liquidada · sin posiciones"))
                     row["note"] = ("TFG/AHP USD: semana cerrada con operaciones paper observadas "
                                    "y conciliación pendiente de la siguiente señal semanal.")
