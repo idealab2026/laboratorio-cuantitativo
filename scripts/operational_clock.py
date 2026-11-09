@@ -91,7 +91,8 @@ def clock_plan(now, market, tracks, commit):
             # Only tactical classic portfolios monitor real observed stops.
             # Passive 503-position buy-and-hold is excluded from free quote reads.
             "monitor_tickers": (sorted(set(record.get("holdings", [])))
-                                if eligible and slot in {f"IL-{n:03d}" for n in range(11, 18)}
+                                if eligible and (slot in {f"IL-{n:03d}" for n in range(11, 18)}
+                                                 or slot == "IL-037")
                                 and isinstance(record, dict) else []),
         }
     lock = {"schema": SCHEMA, "session": market["session"],
@@ -201,7 +202,7 @@ def status_report(lock, now, market, quotes, prior=None, *, run_id=None):
     }
 
 
-def budgeted_quote_targets(lock, prior=None, *, limit=LIMIT):
+def budgeted_quote_targets(lock, prior=None, *, limit=LIMIT, now=None, market=None):
     """Reserve whole algorithm-specific requests without silently truncating.
 
     Priority is given to scarce next-open cash flows (monthly and ML), then
@@ -228,7 +229,15 @@ def budgeted_quote_targets(lock, prior=None, *, limit=LIMIT):
         # A settled lane only needs its monitoring stops, not replayed orders.
         remaining = (set() if settled.get(slot, {}).get("status") == "native_forward_settled"
                      else {r["ticker"] for r in lane["orders"]})
-        remaining |= set(lane.get("monitor_tickers", []))
+        monitored = set(lane.get("monitor_tickers", []))
+        if slot == "IL-037":
+            # TFG stops activate at the following open via frozen orders.
+            # Monitor remaining holdings only for the last minutes of the
+            # final XNYS session of the week, not every intraday tick.
+            if (now is None or market is None or
+                    now < market["close"] - timedelta(minutes=6)):
+                monitored = set()
+        remaining |= monitored
         if not remaining or not lane.get("execution_ready"):
             continue
         if len(requested | remaining) > limit:
@@ -301,7 +310,7 @@ def main(argv=None):
         lock = _read(args.lock)
         verify_lock(lock, market, now)
         prior = _read(args.public) if args.public.is_file() else None
-        requested, quota_omissions = budgeted_quote_targets(lock, prior)
+        requested, quota_omissions = budgeted_quote_targets(lock, prior, now=now, market=market)
         quotes = quote_batch(requested, now, market)
         now = datetime.now(UTC)  # actual observation completion, not nominal scheduler time
         if now > market["close"]:
@@ -324,13 +333,15 @@ def main(argv=None):
         ml_updated, ml_evidence = settle_weekly(lock, now, market, quotes)
         from classic_forward_settlement import settle_classic
         classic_updated, classic_evidence = settle_classic(lock, now, market, quotes)
-        if (set(updated) & set(ml_updated) or set(updated) & set(classic_updated)
-                or set(ml_updated) & set(classic_updated)):
+        from forward_ahp_settlement import settle_ahp
+        ahp_updated, ahp_evidence = settle_ahp(lock, now, market, quotes)
+        paths = [updated, ml_updated, classic_updated, ahp_updated]
+        if sum(len(z) for z in paths) != len(set().union(*(set(z) for z in paths))):
             raise ValueError("Two native settlers attempted to own the same canonical book")
-        for ledger_path, book in {**updated, **ml_updated, **classic_updated}.items():
+        for ledger_path, book in {**updated, **ml_updated, **classic_updated, **ahp_updated}.items():
             _write(ROOT / ledger_path, book)
-        report["settlement"] = "native_forward_010_through_027_038_039_other_engines_batch"
-        for slot, result in {**evidence, **ml_evidence, **classic_evidence}.items():
+        report["settlement"] = "native_forward_010_through_027_037_038_039_other_engines_batch"
+        for slot, result in {**evidence, **ml_evidence, **classic_evidence, **ahp_evidence}.items():
             lane = report["slots"][slot]
             lane["native_settlement"] = result["status"]
             if result["status"] == "settled_native_paper":
