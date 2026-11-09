@@ -1373,3 +1373,11 @@ p{line-height:1.6;text-align:justify;text-align-last:left;hyphens:auto}p.lead{co
  .midas-clock-lane summary small{grid-column:1/-1;text-align:left}
  .midas-clock{padding:9px}
 }
+
+/* Verified native monthly paper settlement is not just an indicative quote. */
+.midas-clock-lane:has(.midas-native-fills){border-color:#97c7b1}
+.midas-native-fills{padding:10px 12px;border-top:1px solid #c1dacd;background:#edf8f2}
+.midas-native-fills>strong{display:block;margin-bottom:5px;color:#195d42;font-size:.8rem}
+.midas-native-fills table{width:100%;border-collapse:collapse;font-size:.75rem}
+.midas-native-fills th,.midas-native-fills td{padding:5px 8px;text-align:left;border-bottom:1px solid #cce1d5}
+.midas-native-fills p{margin:4px 0;color:#4b7264}
