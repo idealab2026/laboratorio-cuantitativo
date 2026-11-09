@@ -893,6 +893,14 @@ p{line-height:1.6;text-align:justify;text-align-last:left;hyphens:auto}p.lead{co
 .trading-mast h2{margin:0;color:#fff;font-size:clamp(1.85rem,4vw,3.1rem)}
 .trading-mast p{margin:4px 0 0;color:#d6e6f5;font:500 .94rem/1.45 system-ui,sans-serif}
 .trading-feed{display:flex;flex-wrap:wrap;align-items:center;gap:10px 14px;font:650 .79rem/1.35 system-ui,sans-serif}
+.trading-feed-status{display:flex;flex-direction:column;align-items:flex-end;gap:4px;max-width:100%;min-width:0}
+.trading-feed-status>span{font-weight:700}
+.trading-feed-status>small{font:550 .72rem/1.4 system-ui,sans-serif;color:#d7e8f9}
+.trading-feed-status>small[data-refresh-state="error"]{color:#ffdaab}
+.trading-feed-status>small[data-refresh-state="updated"]{color:#b5f4cc}
+.trading-feed button:disabled{opacity:.75;cursor:progress}
+@media(max-width:650px){.trading-feed-status{align-items:flex-start}.trading-feed{width:100%;justify-content:space-between}}
+
 .trading-feed button{
  border:1px solid #91afcd;border-radius:6px;background:#193957;color:#fff;cursor:pointer;
  min-height:42px;padding:7px 12px;
