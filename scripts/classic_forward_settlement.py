@@ -142,10 +142,9 @@ def settle_classic(lock, now, market, quotes, *, reader=read, frozen=_source_at)
                             price = row["price"]
                             fee = row["fee"]
                         else:
-                            trade = book["trades"][-1] if book["trades"] else {}
-                            quantity = (trade.get("entry_cost") or 0) / max(prices[t]["open"], 1e-9)
-                            price = prices[t]["open"] * (1 - config["execution"]["slippage"])
-                            fee = price * quantity * config["execution"]["commission"]
+                            quantity = row["shares"]
+                            price = row["price"]
+                            fee = row["fee"]
                         operations.append({"ticker": t, "side": side,
                                            "quantity": quantity, "price": price,
                                            "fee": fee, "observed_at_utc": valid[t]["observed_at_utc"]})
