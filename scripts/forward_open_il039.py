@@ -90,6 +90,7 @@ def quotes_yahoo(tickers, now, market):
             ticker = yf.Ticker(provider_symbol(symbol, market["session"]))
             frame = ticker.history(period="1d", interval="1m",
                                    auto_adjust=False, prepost=False, actions=False)
+            observed = datetime.now(UTC)  # receipt time, not the scheduler's nominal time
             if frame is None or frame.empty or frame.index.tz is None:
                 continue
             candidates = []
@@ -98,14 +99,14 @@ def quotes_yahoo(tickers, now, market):
                 end = start + timedelta(minutes=1)
                 price = float(row["Close"])
                 if (market["open"] <= start < market["close"] and
-                    end <= now and timedelta(0) <= now - end <= MAX_AGE and
+                    end <= observed and timedelta(0) <= observed - end <= MAX_AGE and
                         math.isfinite(price) and price > 0):
                     candidates.append((end, price))
             if candidates:
                 end, price = max(candidates)
                 quotes[symbol] = {"price": price, "quote_at_utc": timestamp(end),
-                                  "observed_at_utc": timestamp(now),
-                                  "age_seconds": int((now - end).total_seconds())}
+                                  "observed_at_utc": timestamp(observed),
+                                  "age_seconds": int((observed - end).total_seconds())}
         except (KeyError, ValueError, TypeError, IndexError):
             continue
     return quotes
@@ -191,6 +192,7 @@ def main(argv=None):
         verify_plan(plan, now, market)
         tickers = set(plan["positions"]) | set((plan.get("pending") or {}).get("target_weights", {}))
         quotes = quotes_yahoo(tickers, now, market)
+        now = datetime.now(UTC)
         previous = json.loads(public_path.read_text()) if public_path.is_file() else None
         config = json.loads((ROOT / "buy_the_dip_strategy/config.json").read_text())
         public = observe(plan, now, market, quotes, config, previous)
