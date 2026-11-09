@@ -303,6 +303,9 @@ const currentSession=()=>sessionToday(state.executionHistory?.live_plan);
 const SIGNAL_REFRESH_MS=60_000;
 const signalNames={buy:"Comprar",sell:"Vender",hold:"Mantener",rebalance:"Rebalancear"};
 let signalFeed=null,signalFeedError=false,signalRequest=null,signalChecked=0,signalSlot="IL-038",signalPlanDate=null;
+// A fetch check is not a market-data publication. Keep separate source and check clocks.
+const signalRefresh={state:"idle",at:null};
+
 
 const signalDate=d=>typeof d==="string"&&/^\d{4}-\d{2}-\d{2}$/.test(d);
 function verifyLiveSignals(doc){
@@ -461,21 +464,33 @@ function liveSignalsPanel(){
 async function refreshLiveSignals(force=false){
  const room=tradingRoomActive();
  const interval=room?TRADING_REFRESH_MS:SIGNAL_REFRESH_MS;
- if((!liveSessionActive()&&!room)||document.hidden||signalRequest||(!force&&Date.now()-signalChecked<interval))return;
+ if((!liveSessionActive()&&!room)||document.hidden||(!force&&Date.now()-signalChecked<interval))return;
+ if(signalRequest){
+  // A manual click during automatic polling still receives visible feedback;
+  // the in-flight request will complete and report the result.
+  if(force&&room){signalRefresh.state="checking";paintTradingRefresh();}
+  return;
+ }
  signalChecked=Date.now();
  const previous=signalFeed,failed=signalFeedError;
- signalRequest=fetch("./data/execution-signals.json",{cache:"no-store"});
+ if(force&&room){signalRefresh.state="checking";paintTradingRefresh();}
  try{
+  signalRequest=fetch("./data/execution-signals.json",{cache:"no-store"});
   const response=await signalRequest;
   if(!response.ok)throw Error("Registro no publicado");
   const next=verifyLiveSignals(await response.json());
-  if(!previous||Date.parse(next.published_at_utc)>Date.parse(previous.published_at_utc))signalFeed=next;
+  const newer=!previous||Date.parse(next.published_at_utc)>Date.parse(previous.published_at_utc);
+  if(newer)signalFeed=next;
   signalFeedError=false;
+  signalRefresh.state=!previous?"loaded":newer?"updated":"unchanged";
  }catch{
   signalFeedError=true;
+  signalRefresh.state="error";
  }finally{
   signalRequest=null;
+  signalRefresh.at=Date.now();
   if(previous!==signalFeed||failed!==signalFeedError||$("trading-date")?.value!==tradingDay())paintTradingRoom();
+  paintTradingRefresh();
   const picker=$("live-signal-algorithm"),content=$("midas-signal-content");
   if(picker&&signalFeed&&(!previous||picker.disabled)){
    picker.innerHTML=liveSignalOptions();
@@ -494,7 +509,6 @@ async function refreshLiveSignals(force=false){
   }
  }
 }
-
 const TRADING_REFRESH_MS=30_000;
 const tradingRoomActive=()=>state.view==="trading";
 const tradingSides={all:"Todas",buy:"Compras",sell:"Ventas",rebalance:"Rebalanceos"};
@@ -543,6 +557,24 @@ function tradingStatus(){
  if(!signalFeed)return signalFeedError?"Diario no disponible":"Conectando con el diario";
  const published=madridDateTime.format(new Date(signalFeed.published_at_utc));
  return (signalFeedError?"Copia guardada del ":"Última publicación · ")+published+" (Madrid)";
+}
+// This feedback describes the last *check*, never changes the publisher timestamp.
+function tradingRefreshFeedback(){
+ if(signalRefresh.state==="checking")return "Comprobando el diario…";
+ if(!signalRefresh.at)return "Aún no se ha comprobado en esta visita";
+ const at=madridTime.format(new Date(signalRefresh.at));
+ if(signalRefresh.state==="error")return "Error de consulta · "+at+" · se conserva el último diario";
+ if(signalRefresh.state==="updated")return "Comprobado a las "+at+" · nueva publicación disponible";
+ if(signalRefresh.state==="loaded")return "Comprobado a las "+at+" · diario recibido";
+ return "Comprobado a las "+at+" · sin nuevas publicaciones";
+}
+function paintTradingRefresh(){
+ const message=$("trading-refresh-result"),button=$("trading-refresh-button");
+ if(message){message.textContent=tradingRefreshFeedback();message.dataset.refreshState=signalRefresh.state;}
+ if(button){
+  button.disabled=!!signalRequest;
+  button.textContent=signalRequest?"Comprobando…":"Actualizar";
+ }
 }
 function tradingOrderPrice(order){
  if(order.limit_price!==null&&order.currency)
@@ -1129,8 +1161,11 @@ function tradingRoom(){
  return '<section class="trading-room" aria-labelledby="trading-title">'+
   '<header class="trading-mast"><div><h2 id="trading-title">Sala de trading</h2>'+
   '<p>Señales y órdenes previstas de carteras simuladas. No envía órdenes reales.</p></div>'+
-  '<div class="trading-feed"><span id="trading-published" role="status">'+esc(tradingStatus())+'</span>'+
-  '<button type="button" data-action="live-signals-refresh">Actualizar</button></div></header>'+
+  '<div class="trading-feed"><div class="trading-feed-status"><span id="trading-published">'+esc(tradingStatus())+'</span>'+
+  '<small id="trading-refresh-result" role="status" aria-live="polite" data-refresh-state="'+esc(signalRefresh.state)+'">'+
+  esc(tradingRefreshFeedback())+'</small></div>'+
+  '<button id="trading-refresh-button" type="button" data-action="live-signals-refresh"'+
+  (signalRequest?' disabled':'')+'>'+(signalRequest?'Comprobando…':'Actualizar')+'</button></div></header>'+
   '<div class="trading-workspace"><div class="terminal-mode" role="group" aria-label="Vista de la sala">'+
   button("Panel","trading-mode","signals","outline-btn")+button("Terminal de análisis","trading-mode","terminal","outline-btn")+
   '</div><p class="trading-cadence">El diario se consulta cada 30 segundos. Los gráficos muestran cierres auditados.</p>'+
@@ -1175,6 +1210,7 @@ function paintTradingRoom(){
  }
  const published=$("trading-published"),status=tradingStatus();
  if(published.textContent!==status)published.textContent=status;
+ paintTradingRefresh();
  for(const chip of document.querySelectorAll("[data-action='trading-side']")){
   chip.setAttribute("aria-pressed",String(chip.dataset.value===tradingFilter.side));
   chip.querySelector("span").textContent=model.plan?model.counts[chip.dataset.value]:"—";
