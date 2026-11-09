@@ -32,7 +32,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          ref: ${{ github.event.pull_request.head.sha || 'main' END${{
+          ref: ${{ github.event.pull_request.head.sha || 'main' }}
           fetch-depth: 0
       - uses: actions/setup-python@v5
         with:
@@ -47,13 +47,13 @@ jobs:
           python -m unittest scripts.test_forward_ahp_settlement -v
           python -m unittest discover -s tfg_ahp/tests -v
       - name: Verify dated canonical XNYS data exists
-        if: ${{ github.event_name != 'pull_request' && !inputs.preflight_only END${{
+        if: ${{ github.event_name != 'pull_request' && !inputs.preflight_only }}
         run: python market_data/health.py --eligible
       - name: Mark only the next exact finished trading session
-        if: ${{ github.event_name != 'pull_request' && !inputs.preflight_only END${{
+        if: ${{ github.event_name != 'pull_request' && !inputs.preflight_only }}
         run: python tfg_ahp/forward.py --mark-close
       - name: Publish AHP native ledger after immutable mark
-        if: ${{ github.event_name != 'pull_request' && !inputs.preflight_only END${{
+        if: ${{ github.event_name != 'pull_request' && !inputs.preflight_only }}
         run: |
           python strategy_comparison/publish_state.py \
             --message "Mark causal AHP paper portfolio from canonical XNYS close" \
