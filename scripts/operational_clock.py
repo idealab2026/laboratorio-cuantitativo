@@ -201,11 +201,52 @@ def status_report(lock, now, market, quotes, prior=None, *, run_id=None):
     }
 
 
+def budgeted_quote_targets(lock, prior=None, *, limit=LIMIT):
+    """Reserve whole algorithm-specific requests without silently truncating.
+
+    Priority is given to scarce next-open cash flows (monthly and ML), then
+    tactical classic stop orders; passive 503-constituent books are last.
+    No dropped order can be misreported as executable or partial success.
+    """
+    if type(limit) is not int or limit < 1:
+        raise ValueError("Positive hard quote budget required")
+    settled = (prior or {}).get("slots", {})
+    requested, omitted = set(), {}
+    slots = lock["slots"]
+    priority = (
+        ["IL-038", "IL-039"] +
+        [f"IL-{i:03d}" for i in range(19, 28)] +
+        [f"IL-{i:03d}" for i in range(11, 18)] +
+        ["IL-037", "IL-040", "IL-041", "IL-042", "IL-043", "IL-044"] +
+        ["IL-010", "IL-018"]
+    )
+    priority += sorted(set(slots) - set(priority))
+    for slot in priority:
+        if slot not in slots:
+            continue
+        lane = slots[slot]
+        # A settled lane only needs its monitoring stops, not replayed orders.
+        remaining = (set() if settled.get(slot, {}).get("status") == "native_forward_settled"
+                     else {r["ticker"] for r in lane["orders"]})
+        remaining |= set(lane.get("monitor_tickers", []))
+        if not remaining or not lane.get("execution_ready"):
+            continue
+        if len(requested | remaining) > limit:
+            omitted[slot] = {
+                "reason": "quota_cap_fail_closed",
+                "required": len(remaining),
+                "additional": len(remaining - requested),
+            }
+            continue
+        requested |= remaining
+    return requested, omitted
+
+
 def quote_batch(tickers, now, market):
     """Best-effort free quotes; no fabricated values for unavailable symbols."""
     symbols = sorted(set(tickers))
     if len(symbols) > LIMIT:
-        symbols = symbols[:LIMIT]
+        raise ValueError("Quote budget exceeded: never silently truncate a paper lane")
     if not symbols:
         return {}
     result = {}
@@ -260,19 +301,23 @@ def main(argv=None):
         lock = _read(args.lock)
         verify_lock(lock, market, now)
         prior = _read(args.public) if args.public.is_file() else None
-        needed = {o["ticker"] for slot, p in lock["slots"].items()
-                  if (prior or {}).get("slots", {}).get(slot, {}).get("status") != "native_forward_settled"
-                  for o in p["orders"]}
-        monitored = {t for p in lock["slots"].values() for t in p.get("monitor_tickers", [])}
-        # A new quote is mandatory on each stop check, not the previous
-        # order observation.
-        quotes = quote_batch(needed | monitored, now, market)
+        requested, quota_omissions = budgeted_quote_targets(lock, prior)
+        quotes = quote_batch(requested, now, market)
         now = datetime.now(UTC)  # actual observation completion, not nominal scheduler time
         if now > market["close"]:
             print('{"status":"observation_too_late"}')
             return 2
         report = status_report(lock, now, market, quotes, prior,
                                run_id=os.environ.get("GITHUB_RUN_ID"))
+        report["quote_budget"] = {
+            "hard_symbol_limit": LIMIT,
+            "requested_symbols": len(requested),
+            "observed_symbols": len(quotes),
+            "omitted_algorithm_lanes": quota_omissions,
+        }
+        for slot in quota_omissions:
+            if report["slots"][slot]["status"] not in ("native_forward_settled",):
+                report["slots"][slot]["quote_capacity_blocked"] = True
         from native_forward_settlement import settle_native
         from forward_weekly_ml_settlement import settle_weekly
         updated, evidence = settle_native(lock, now, market, quotes)
