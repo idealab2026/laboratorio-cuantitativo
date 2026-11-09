@@ -218,7 +218,21 @@ def advance(config, bars, asof, benchmark_close, decision=None, state=None):
         raise ValueError("Faltan barras para posiciones/órdenes: " + ",".join(missing))
 
     _apply_corporate_actions(result, bars, asof)
-    _settle_pending(result, bars, asof, policy)
+    # From 2026-11-10 the native operator clock owns opening fills. If
+    # no qualifying forward quote was available at the opening, the order
+    # is visibly missed, not retroactively booked with the full-day OHLC.
+    # Pre-cutover historical campaigns are never revised.
+    if result.get("pending") and asof >= "2026-11-10":
+        missed = result["pending"]
+        if missed.get("expected_fill_session") != asof:
+            raise ValueError("Previous forward opening not reconciled")
+        _event(result, "missed_forward_open", asof, reason="no_verified_opening_execution",
+               signal_date=missed.get("signal_date"),
+               expected_fill_session=missed.get("expected_fill_session"),
+               targets=len(missed.get("target_weights", {})))
+        result["pending"] = None
+    else:
+        _settle_pending(result, bars, asof, policy)
     _mark(result, bars, asof, benchmark_close)
 
     if decision is not None:
