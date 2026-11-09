@@ -85,11 +85,3 @@ jobs:
         run: |
           git fetch origin main
           PYTHONPATH=scripts:. python scripts/native_forward_settlement.py --verify-published
-      - name: Old publishing step (disabled after native settlement)
-        if: false
-        if: github.event_name != 'pull_request'
-        run: |
-          python strategy_comparison/publish_state.py \
-            --message "Update MIDAS shared operational clock observations" \
-            --path data/operational-clock.json \
-            --path forward_open_state/global-lock.json
