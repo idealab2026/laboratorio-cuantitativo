@@ -16,6 +16,7 @@ from datetime import datetime, timedelta, timezone
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
+sys.path.insert(0, str(ROOT))
 sys.path.insert(0, str(ROOT / "tfg_ahp"))
 from paper import _fractional_quantity, _validate_signal, digest
 
@@ -65,13 +66,15 @@ def open_week(state, config, day, prices, provenance, *, expected_signal):
     policy = config["portfolio"]
     capital = float(state["nav"])
     cash = capital
-    positions, operations = {}, []
+    positions, operations, unfilled = {}, [], []
     for item in selected:
         ticker = item["ticker"]
         raw = _positive(prices[ticker], "opening quote")
         price = raw * (1 + float(policy["slippage"]))
         quantity = _fractional_quantity(capital * float(item["weight"]), price, policy)
         if quantity <= 0:
+            unfilled.append({"ticker": ticker, "reason": "below_min_notional",
+                             "signal_date": signal["asof"], "session": day})
             continue
         fee = quantity * price * float(policy["commission"])
         cost = quantity * price + fee
@@ -98,7 +101,8 @@ def open_week(state, config, day, prices, provenance, *, expected_signal):
         "entry_date": day, "last_mark_session": expected_signal,
         "nav_before": capital, "cash": cash, "positions": positions,
         "stop_due": False, "stop_observed_date": None,
-        "equity_marks": [], "operations": operations, "closed_trade": None,
+        "equity_marks": [], "operations": operations, "unfilled": unfilled,
+        "closed_trade": None,
     }
     # The last *official* weekly NAV remains dated to the frozen signal.
     # Only the forward_book records the intraday cash/positions until close.
@@ -137,8 +141,8 @@ def close_week(state, config, day, prices, provenance, reason):
             "exit_date": day, "exit_mode": "open" if reason == "portfolio_stop_next_open"
                                                else "observed_preclose",
             "raw_exit": raw, "sell_price": price, "sell_fee": fee,
-            "net_pnl": proceeds - position["cost_basis"],
-            "net_return_pct": 100 * (proceeds / position["cost_basis"] - 1),
+            "net_pnl": proceeds + position["dividends"] - position["cost_basis"],
+            "net_return_pct": 100 * ((proceeds + position["dividends"]) / position["cost_basis"] - 1),
         })
         positions.append(position)
         operations.append(_event(result["pending_signal"], ticker, "sell",
@@ -186,7 +190,6 @@ def mark_close(state, config, day, previous_session, bars, *, week_end=False,
         # The next-open stop has not executed. Marking further history would
         # silently move the stop to a later price; the book must stay blocked.
         raise ValueError("AHP unexecuted prior-close portfolio stop")
-    nav = float(book["cash"])
     for ticker, position in book["positions"].items():
         bar = bars[ticker]
         close = _positive(bar["close"], "verified close")
@@ -209,7 +212,6 @@ def mark_close(state, config, day, previous_session, bars, *, week_end=False,
             # A purchase at today's open is not entitled to an ex-dividend
             # or a pre-opening split. Require a separately reviewed quote.
             raise ValueError("AHP corporate action on entry session needs review")
-        nav += position["quantity"] * close
     nav = float(book["cash"]) + sum(
         p["quantity"] * _positive(bars[t]["close"], "close")
         for t, p in book["positions"].items())
