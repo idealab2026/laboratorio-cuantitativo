@@ -1022,6 +1022,7 @@ test("Buy The Dip monitoring shows dated real paper accounting, holdings and las
   ]}}}}},
   tradingDay:()=>"2026-11-09",shortPaperDate:d=>d,
   madridDateTime:{format:date=>new Date(date).toISOString()},
+  buyDipForwardHTML:()=>"",
   esc:v=>String(v),Intl,Date,Number};
  const a=source.indexOf("function buyDipHealthHTML(){");
  const b=source.indexOf("function deskResults(model){",a);
