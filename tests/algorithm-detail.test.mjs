@@ -1158,7 +1158,7 @@ test("Buy The Dip interactive five-stage trace separates documented selections f
  assert.match(graph,/Seleccionada; peso objetivo/);
  assert.match(graph,/13,6/);
  assert.match(graph,/El cumplimiento específico de cada umbral no está archivado/);
- assert.match(graph,/79,9\/100/);
+ assert.match(graph,/Puntuación global archivada: 79,9 de 100/);
  assert.match(graph,/No se guardaron|no está archivado/);
  const missing={ticker:"AAPL",name:"Apple",status:"historical_detail_missing",
   score:null,valuation:null,quality:null,allocation:null,dislocation:null,
