@@ -134,7 +134,7 @@ def _universe_review(asof, sectors, panel, fundamentals, scored, target_weights,
             "reasons": reasons,
         })
     if (len(output) != len(sectors)
-            or sum(row["score"] is not None for row in output) != len(scored)
+            or sum(row["status"] in ("selected", "eligible_not_selected", "rules_rejected") for row in output) != len(scored)
             or sum(row["eligible"] is True for row in output) != sum(bool(x["entry_eligible"]) for x in scored)
             or sum(row["status"] == "selected" for row in output) != len(target_weights)):
         raise ValueError("Buy The Dip universe audit does not reconcile")
