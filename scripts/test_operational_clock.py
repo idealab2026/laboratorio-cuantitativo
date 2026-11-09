@@ -8,7 +8,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "scripts"))
-from operational_clock import ACTIVE, clock_plan, status_report, verify_lock
+from operational_clock import ACTIVE, clock_plan, status_report, verify_lock, budgeted_quote_targets, quote_batch, LIMIT
 
 UTC = timezone.utc
 
@@ -118,6 +118,39 @@ class OperatorClockTest(unittest.TestCase):
         self.assertEqual([row["ticker"] for row in lock["slots"]["IL-015"]["orders"]],
                          ["AAPL", "MSFT"])
 
+
+
+class BudgetedQuotesTest(unittest.TestCase):
+    def synthetic(self):
+        slots = {
+            "IL-038": {"orders": [{"ticker": "AAPL"}], "execution_ready": True},
+            "IL-019": {"orders": [{"ticker": "MSFT"}], "execution_ready": True},
+            "IL-011": {"orders": [{"ticker": "GOOG"}], "monitor_tickers": ["META"],
+                       "execution_ready": True},
+            "IL-010": {"orders": [{"ticker": f"SY{i:03d}"} for i in range(503)],
+                       "execution_ready": True},
+        }
+        return {"slots": slots}
+
+    def test_one_503_book_cannot_starve_other_algorithms(self):
+        chosen, omitted = budgeted_quote_targets(self.synthetic(), limit=4)
+        self.assertEqual(chosen, {"AAPL", "MSFT", "GOOG", "META"})
+        self.assertEqual(list(omitted), ["IL-010"])
+        self.assertEqual(omitted["IL-010"]["reason"], "quota_cap_fail_closed")
+        self.assertEqual(omitted["IL-010"]["required"], 503)
+
+    def test_settled_lanes_do_not_reread_orders_but_stops_remain_fresh(self):
+        lock = self.synthetic()
+        prior = {"slots": {"IL-038": {"status": "native_forward_settled"},
+                           "IL-011": {"status": "native_forward_settled"}}}
+        chosen, omitted = budgeted_quote_targets(lock, prior, limit=2)
+        self.assertEqual(chosen, {"MSFT", "META"})
+        self.assertEqual(set(omitted), {"IL-010"})
+
+    def test_oversized_vendor_batch_is_rejected_before_network_call(self):
+        when = datetime(2026, 11, 10, 14, 31, tzinfo=UTC)
+        with self.assertRaisesRegex(ValueError, "budget exceeded"):
+            quote_batch([f"SY{i:03d}" for i in range(LIMIT+1)], when, {})
 
 if __name__ == "__main__":
     unittest.main()
