@@ -626,6 +626,9 @@ function operationalClockHTML(){
   const orderRows=(lane.orders||[]).map(o=>'<tr><td>'+esc(o.ticker)+'</td><td>'+
    esc(o.action==="buy"?"Compra":o.action==="sell"?"Venta":"Rebalanceo")+
    '</td><td>'+esc(o.signal_session||"N/D")+'</td><td>'+
+   (o.scheduled_at_utc&&Number.isFinite(Date.parse(o.scheduled_at_utc))?
+    esc(madridDateTime.format(new Date(o.scheduled_at_utc))+" Madrid"):"Sin horario acreditado")+
+   '</td><td>'+
    (o.observed_price==null?"Sin cotización reciente":esc(fmt(o.observed_price))+" USD")+
    '</td><td>'+esc(o.observed_at_utc&&Number.isFinite(Date.parse(o.observed_at_utc))?
    madridDateTime.format(new Date(o.observed_at_utc))+" Madrid":"No observada")+
@@ -637,7 +640,7 @@ function operationalClockHTML(){
    '<summary><strong>'+esc(slot)+' · '+esc(label)+'</strong><span>'+esc(labels[lane.status]||lane.status)+
    '</span><small>'+lane.observed+'/'+lane.planned+' señales con precio</small></summary>'+
    (orderRows?'<div class="midas-clock-tablewrap"><table><thead><tr><th>Ticker</th><th>Acción</th>'+
-    '<th>Decisión</th><th>Precio observado</th><th>Hora de observación</th><th>Estado</th>'+
+    '<th>Decisión</th><th>Momento objetivo</th><th>Precio observado</th><th>Hora de observación</th><th>Estado</th>'+
     '</tr></thead><tbody>'+orderRows+'</tbody></table></div>':
     '<p>Sin órdenes ejecutables registradas para esta apertura. '+esc(lane.source_session||
     "Libro de origen no acreditado")+'.</p>')+'</details>';
