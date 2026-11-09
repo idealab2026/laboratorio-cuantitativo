@@ -935,3 +935,76 @@ test("audited mini charts use only closes on or before the causal cutoff",async(
  assert.match(absent,/Sin histórico auditado suficiente/);
  assert.ok(!absent.includes("<svg"));
 });
+
+
+test("manual trading refresh gives a visible outcome even if the published snapshot is unchanged",async()=>{
+ const {runInNewContext}=await import("node:vm");
+ const published="2026-11-09T12:05:00Z";
+ const same={schema:"midas_execution_signals_v1",published_at_utc:published,tracks:{}};
+ const before={schema:"midas_execution_signals_v1",published_at_utc:published,tracks:{}};
+ const paints=[];
+ const context={
+  signalFeed:before,signalFeedError:false,signalRequest:null,signalChecked:0,
+  signalRefresh:{state:"idle",at:null},document:{hidden:false},
+  Date,TRADING_REFRESH_MS:30000,SIGNAL_REFRESH_MS:60000,
+  tradingRoomActive:()=>true,liveSessionActive:()=>true,
+  fetch:async(path,opts)=>{assert.equal(path,"./data/execution-signals.json");assert.equal(opts.cache,"no-store");
+   return {ok:true,json:async()=>same};},
+  verifyLiveSignals:doc=>doc,
+  paintTradingRoom:()=>paints.push("room"),
+  paintTradingRefresh:()=>paints.push("refresh"),
+  tradingDay:()=>null,
+  $:()=>null
+ };
+ const a=source.indexOf("async function refreshLiveSignals(force=false){");
+ const b=source.indexOf("\nconst TRADING_REFRESH_MS=30_000;",a);
+ assert.ok(a>=0&&b>a);
+ runInNewContext(source.slice(a,b)+";this.refresh=refreshLiveSignals;",context);
+ await context.refresh(true);
+ assert.equal(context.signalRefresh.state,"unchanged");
+ assert.ok(Number.isFinite(context.signalRefresh.at));
+ assert.equal(context.signalFeed.published_at_utc,published,
+  "Checking a file must not forge a new publication time");
+ assert.ok(paints.length>=1);
+ context.fetch=async()=>({ok:true,json:async()=>({
+  ...same,published_at_utc:"2026-11-09T18:05:00Z"})});
+ await context.refresh(true);
+ assert.equal(context.signalRefresh.state,"updated");
+ assert.equal(context.signalFeed.published_at_utc,"2026-11-09T18:05:00Z");
+ context.fetch=async()=>{throw Error("network unavailable")};
+ await context.refresh(true);
+ assert.equal(context.signalRefresh.state,"error");
+ assert.equal(context.signalFeedError,true);
+ assert.equal(context.signalFeed.published_at_utc,"2026-11-09T18:05:00Z",
+  "A network error must preserve the last valid snapshot");
+});
+
+test("trading refresh shows separate publication and check clocks with a loading state",async()=>{
+ const {runInNewContext}=await import("node:vm");
+ const mock={signalRefresh:{state:"idle",at:null},signalRequest:null,
+  madridTime:{format:()=> "19:17"},$:(id)=>mock.nodes[id],
+  nodes:{
+   "trading-refresh-result":{textContent:"",dataset:{}},
+   "trading-refresh-button":{disabled:false,textContent:""}
+  }};
+ const a=source.indexOf("function tradingRefreshFeedback(){");
+ const b=source.indexOf("function tradingOrderPrice(",a);
+ assert.ok(a>=0&&b>a);
+ runInNewContext(source.slice(a,b)+";this.feedback=tradingRefreshFeedback;this.paint=paintTradingRefresh;",mock);
+ assert.match(mock.feedback(),/Aún no se ha comprobado/);
+ mock.signalRefresh.state="checking";mock.signalRequest=Promise.resolve({});
+ mock.paint();
+ assert.match(mock.nodes["trading-refresh-result"].textContent,/Comprobando/);
+ assert.equal(mock.nodes["trading-refresh-button"].disabled,true);
+ mock.signalRequest=null;mock.signalRefresh.state="unchanged";mock.signalRefresh.at=Date.now();
+ mock.paint();
+ assert.match(mock.nodes["trading-refresh-result"].textContent,/sin nuevas publicaciones/);
+ assert.equal(mock.nodes["trading-refresh-button"].disabled,false);
+ mock.signalRefresh.state="error";mock.paint();
+ assert.match(mock.nodes["trading-refresh-result"].textContent,/Error de consulta/);
+ const src=readFileSync(new URL("../src/site.mjs",import.meta.url),"utf8");
+ assert.ok(src.includes('id="trading-refresh-result"'));
+ assert.ok(src.includes('id="trading-refresh-button"'));
+ const css=readFileSync(new URL("../styles.css",import.meta.url),"utf8");
+ assert.ok(css.includes(".trading-feed-status"));
+});
