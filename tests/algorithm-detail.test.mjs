@@ -1008,3 +1008,61 @@ test("trading refresh shows separate publication and check clocks with a loading
  const css=readFileSync(new URL("../styles.css",import.meta.url),"utf8");
  assert.ok(css.includes(".trading-feed-status"));
 });
+
+
+test("Buy The Dip monitoring shows dated real paper accounting, holdings and last run",async()=>{
+ const {runInNewContext}=await import("node:vm");
+ const m={mode:"monthly_signal_daily_mark",asof:"2026-11-06",
+  nav:109098.01,cash:5284.26,held_tickers:["ALGN","EPAM"],
+  last_signal_session:"2026-10-30",last_fill_session:"2026-11-02",pending_count:0,
+  last_run:{run_id:42341099381,outcome:"success",recorded_at_utc:"2026-11-07T05:04:35Z"}};
+ const c={signalFeed:{tracks:{"IL-039":{monitor:m}}},
+  state:{executionHistory:{live_plan:{days:{"2026-11-09":{lanes:[
+   {workflow:"buy_the_dip_strategy.yml",slots:["IL-039"],due:["2099-11-09T23:27:00Z"]}
+  ]}}}}},
+  tradingDay:()=>"2026-11-09",shortPaperDate:d=>d,
+  madridDateTime:{format:date=>new Date(date).toISOString()},
+  esc:v=>String(v),Intl,Date,Number};
+ const a=source.indexOf("function buyDipHealthHTML(){");
+ const b=source.indexOf("function deskResults(model){",a);
+ assert.ok(a>=0&&b>a,"Missing status panel");
+ runInNewContext(source.slice(a,b)+";this.view=buyDipHealthHTML;",c);
+ const html=c.view();
+ for(const value of ["Buy The Dip · estado de la cartera simulada","109.098,01 USD",
+  "5.284,26 USD","ALGN","EPAM","2026-11-06","2026-10-30","2026-11-02",
+  "42341099381","Valoración auditada","Próxima revisión programada"])
+  assert.ok(html.includes(value),"Missing dated status fact: "+value);
+ assert.ok(!html.includes("Comprar ALGN"),"A holding is not a new purchase");
+ assert.ok(html.includes("No son precios en tiempo real"));
+ assert.ok(html.includes("github.com/idealab2026/laboratorio-cuantitativo/actions/workflows/buy_the_dip_strategy.yml"));
+ c.signalFeed.tracks["IL-039"].monitor=null;
+ assert.match(c.view(),/Sin resumen validado de cartera/);
+});
+
+test("scheduled trading engine status says pending before due, never missing as a fact",async()=>{
+ const {runInNewContext}=await import("node:vm");
+ const c={state:{executionHistory:{live_plan:{days:{"2026-11-09":{lanes:[
+  {workflow:"buy_the_dip_strategy.yml",slots:["IL-039"],due:["2099-11-09T23:27:00Z"]}
+ ]}}}}},
+ tradingDay:()=>"2026-11-09",tradingFilter:{slot:"IL-039"},
+ terminalState:{activity:new Map(),pending:new Set()},Date,Number,Intl,
+ shortPaperDate:d=>d,madridDateTime:{format:date=>new Date(date).toISOString()},
+ terminalRunLabels:{success:"Completado"},esc:v=>String(v)};
+ const a=source.indexOf("function terminalActivityHTML(){");
+ const b=source.indexOf("function paintTerminalActivity(){",a);
+ assert.ok(a>=0&&b>a,"Missing runtime status function");
+ runInNewContext(source.slice(a,b)+";this.view=terminalActivityHTML;",c);
+ assert.match(c.view(),/Ejecución pendiente según calendario/);
+ assert.doesNotMatch(c.view(),/No se ha observado una ejecución programada para esta sesión\./);
+});
+
+test("Buy The Dip paper status is treated as optional but strictly validated evidence",()=>{
+ const src=readFileSync(new URL("../src/site.mjs",import.meta.url),"utf8");
+ const exporter=readFileSync(new URL("../scripts/build_operations_audit.py",import.meta.url),"utf8");
+ assert.ok(src.includes('if(id!=="IL-039"||monitor.mode!=="monthly_signal_daily_mark"'));
+ assert.ok(src.includes('monitor.asof!==track.session'));
+ assert.ok(src.includes('terminalState.mode==="terminal"'));
+ assert.ok(exporter.includes('"monitor": buy_the_dip_monitor(book)'));
+ assert.ok(exporter.includes('last_fill_session'));
+ assert.ok(exporter.includes('strategy_runtime/buy_the_dip_strategy.json'));
+});
