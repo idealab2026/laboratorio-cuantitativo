@@ -146,8 +146,8 @@ def status_report(lock, now, market, quotes, prior=None, *, run_id=None):
                 # Limit orders never fill merely because the last traded price crossed:
                 # only a fresh indicative observation is recorded.
                 limited = proposal["limit_price"] is not None
-                crossed = (price <= proposal["limit_price"] if proposal["action"] == "buy"
-                           else price >= proposal["limit_price"] if proposal["action"] == "sell"
+                crossed = (price <= proposal["limit_price"] if limited and proposal["action"] == "buy"
+                           else price >= proposal["limit_price"] if limited and proposal["action"] == "sell"
                            else False)
                 stage = "limit_observed" if limited and crossed else (
                     "limit_not_met" if limited else "price_observed")
