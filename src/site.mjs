@@ -552,7 +552,7 @@ async function refreshLiveSignals(force=false){
  }finally{
   signalRequest=null;
   signalRefresh.at=Date.now();
-  void refreshForwardOpening(force);
+  void refreshOperationalClock(force);
   if(previous!==signalFeed||failed!==signalFeedError||$("trading-date")?.value!==tradingDay())paintTradingRoom();
   paintTradingRefresh();
   const picker=$("live-signal-algorithm"),content=$("midas-signal-content");
@@ -574,84 +574,88 @@ async function refreshLiveSignals(force=false){
  }
 }
 const TRADING_REFRESH_MS=30_000;
-let forwardOpen=null,forwardOpenChecked=0,forwardOpenError=false,forwardOpenRequest=null;
-async function refreshForwardOpening(force=false){
- if(!tradingRoomActive()||document.hidden||forwardOpenRequest||
-    !force&&Date.now()-forwardOpenChecked<TRADING_REFRESH_MS)return;
- forwardOpenChecked=Date.now();
+let operationClock=null,operationClockChecked=0,operationClockError=false,operationClockRequest=null;
+async function refreshOperationalClock(force=false){
+ if(!tradingRoomActive()||document.hidden||operationClockRequest||
+    !force&&Date.now()-operationClockChecked<TRADING_REFRESH_MS)return;
+ operationClockChecked=Date.now();
  try{
-  forwardOpenRequest=fetch("./data/forward-open-il039.json",{cache:"no-store"});
-  const response=await forwardOpenRequest;
-  if(!response.ok)throw Error("Forward status not published");
+  operationClockRequest=fetch("./data/operational-clock.json",{cache:"no-store"});
+  const response=await operationClockRequest;
+  if(!response.ok)throw Error("Operational clock not published");
   const doc=await response.json();
-  const allowed=["not_started","ready_for_open","ready_monitoring_no_orders","waiting_quotes",
-    "monitoring_no_orders","indicative_fill"];
-  if(doc?.schema!=="midas.il039.forward_open.v1"||
-     doc.campaign!=="IL-039_FORWARD_TRIAL"||
-     doc.mode!=="observed_paper_not_broker"||
-     !allowed.includes(doc.status)||
+  if(doc?.schema!=="midas.operational_clock.v1"||
+     doc.mode!=="single_midas_operator_monitor_no_broker"||
+     !doc.slots||typeof doc.slots!=="object"||Array.isArray(doc.slots)||
      !(doc.session===null||/^\d{4}-\d{2}-\d{2}$/.test(doc.session))||
-     !(doc.pending_targets===undefined||Number.isInteger(doc.pending_targets)&&doc.pending_targets>=0&&doc.pending_targets<=10)||
-     !(doc.positions_count===undefined||Number.isInteger(doc.positions_count)&&doc.positions_count>=0&&doc.positions_count<=10))
-   throw Error("Invalid forward journal");
-  forwardOpen=doc;forwardOpenError=false;
- }catch{forwardOpenError=true;}
+     Object.entries(doc.slots).some(([slot,lane])=>
+      !/^IL-\d{3}$/.test(slot)||!lane||
+      !["before_open","source_stale_or_unavailable","active_no_orders",
+        "partial_data","prices_observed_not_settled"].includes(lane.status)||
+      !Number.isInteger(lane.planned)||lane.planned<0||
+      !Number.isInteger(lane.observed)||lane.observed<0||
+      !Array.isArray(lane.orders)||lane.orders.length>800))
+   throw Error("Invalid operator journal");
+  operationClock=doc;operationClockError=false;
+ }catch{operationClockError=true;}
  finally{
-  forwardOpenRequest=null;
-  if(tradingFilter.slot==="IL-039"&&tradingRoomActive())paintTradingRoom();
+  operationClockRequest=null;
+  const node=$("trading-operational-clock");
+  if(node)node.innerHTML=operationalClockHTML();
  }
 }
-function buyDipForwardHTML(){
- if(!forwardOpen)return '<section class="btd-forward"><strong>Prueba forward de apertura</strong>'+
-   '<p>'+(forwardOpenError?"Observador no disponible.":"Consultando estado experimental…")+'</p></section>';
- const marketToday=new Intl.DateTimeFormat("sv-SE",{timeZone:"America/New_York",
-   year:"numeric",month:"2-digit",day:"2-digit"}).format(new Date());
- const stale=!!forwardOpen.session&&forwardOpen.session!==marketToday;
- const labels={not_started:"Aún no iniciada",ready_for_open:"Órdenes congeladas antes de la apertura",
-   ready_monitoring_no_orders:"Preparado para apertura · sin órdenes nuevas",
-   waiting_quotes:"En espera de cotizaciones recientes",
-   monitoring_no_orders:"Mercado observado · sin órdenes nuevas",
-   indicative_fill:"Operaciones paper indicativas registradas con cotizaciones observadas"};
- const fills=Array.isArray(forwardOpen.indicative_fills)?forwardOpen.indicative_fills:[];
- const status=stale?"Registro de una sesión anterior":
-  forwardOpen.status==="indicative_fill"&&!fills.length?"Observadas cotizaciones sin nuevas operaciones":
-  labels[forwardOpen.status];
- const moment=forwardOpen.checked_at_utc||forwardOpen.prepared_at_utc;
- const at=moment&&Number.isFinite(Date.parse(moment))?
-   madridDateTime.format(new Date(moment))+" Madrid":"Sin observación aún";
- const preparedTargets=forwardOpen.planned_targets&&
-  typeof forwardOpen.planned_targets==="object"&&!Array.isArray(forwardOpen.planned_targets)?
-  Object.entries(forwardOpen.planned_targets).filter(([ticker,weight])=>
-   /^[A-Z0-9.]{1,8}$/.test(ticker)&&typeof weight==="number"&&
-   Number.isFinite(weight)&&weight>=0&&weight<=1).slice(0,10):[];
- const intents=preparedTargets.length?
-  '<div class="btd-forward-fills"><strong>Objetivos fijados antes de abrir:</strong> '+
-  preparedTargets.map(([ticker,weight])=>'<span>'+esc(ticker)+' · '+
-  esc(new Intl.NumberFormat("es-ES",{style:"percent",maximumFractionDigits:2}).format(weight))+
-  '</span>').join("")+'</div>':"";
- const mark=Number.isFinite(forwardOpen.indicative_nav)?
-  '<p><strong>Valoración forward indicativa:</strong> '+
-  esc(new Intl.NumberFormat("es-ES",{maximumFractionDigits:2}).format(forwardOpen.indicative_nav))+
-  ' USD · observación, no cierre auditado</p>':"";
- const trades=fills.length?'<div class="btd-forward-fills">'+fills.slice(0,20).map(f=>
-  '<span>'+esc(f.side==="buy"?"Compra":"Venta")+' '+esc(f.ticker)+' · '+
-  esc(fmt(f.quantity))+' títulos · '+esc(fmt(f.price))+' USD</span>').join("")+'</div>':"";
- return '<section class="btd-forward" aria-label="Prueba forward de apertura">'+
-  '<div class="btd-forward-title"><strong>Observador de apertura · prueba forward</strong>'+
-  '<span>'+(stale?'Histórico':'Solo paper · sin bróker')+'</span></div>'+
-  '<p><strong>Estado:</strong> '+esc(status)+
-  ' · <strong>Última comprobación:</strong> '+esc(at)+'</p>'+
-  '<p><strong>Plan previo:</strong> '+(forwardOpen.pending_targets??"—")+
-  ' objetivos pendientes · <strong>Posiciones:</strong> '+(forwardOpen.positions_count??"—")+
-  ' · <strong>Cotizaciones recientes:</strong> '+(forwardOpen.quotes_count??"—")+'</p>'+
-  intents+mark+trades+
-  '<p class="btd-forward-caveat">Datos gratuitos con retrasos posibles; no se retrotraen operaciones a la apertura. '+
-  'Los precios son indicativos, no confirmaciones de ejecución ni órdenes reales. '+
-  'GitHub Actions tampoco garantiza inicio al minuto exacto. '+
-  '<a href="https://github.com/idealab2026/laboratorio-cuantitativo/actions/workflows/forward-open-il039.yml"'+
-  ' target="_blank" rel="noopener noreferrer">Ver ejecuciones del observador</a>.</p></section>';
+function operationalClockHTML(){
+ const doc=operationClock;
+ if(!doc)return '<section class="midas-clock"><h3>Reloj operativo de MIDAS</h3><p>'+
+  (operationClockError?"Sin acceso a la actividad forward verificada.":"Consultando actividad de los motores…")+
+  '</p></section>';
+ const nyToday=new Intl.DateTimeFormat("sv-SE",{timeZone:"America/New_York",year:"numeric",
+  month:"2-digit",day:"2-digit"}).format(new Date());
+ const stale=!doc.session||doc.session!==nyToday;
+ const labels={before_open:"Apertura pendiente",source_stale_or_unavailable:"Sin libro vigente",
+  active_no_orders:"Operativo · sin operaciones previstas",partial_data:"Esperando cotizaciones",
+  prices_observed_not_settled:"Señales con precios observados (sin liquidar)"};
+ const clock=doc.checked_at_utc&&Number.isFinite(Date.parse(doc.checked_at_utc))?
+  madridDateTime.format(new Date(doc.checked_at_utc))+" Madrid":"Sin ejecución acreditada";
+ const entries=Object.entries(doc.slots).sort(([a],[b])=>a.localeCompare(b));
+ const observations=entries.reduce((total,[,x])=>total+(x.observed||0),0);
+ const planned=entries.reduce((total,[,x])=>total+(x.planned||0),0);
+ const fresh=entries.filter(([,x])=>x.status!=="source_stale_or_unavailable").length;
+ const tables=entries.map(([slot,lane])=>{
+  const label=signalFeed?.tracks?.[slot]?.label||slot;
+  const orderRows=(lane.orders||[]).map(o=>'<tr><td>'+esc(o.ticker)+'</td><td>'+
+   esc(o.action==="buy"?"Compra":o.action==="sell"?"Venta":"Rebalanceo")+
+   '</td><td>'+esc(o.signal_session||"N/D")+'</td><td>'+
+   (o.observed_price==null?"Sin cotización reciente":esc(fmt(o.observed_price))+" USD")+
+   '</td><td>'+esc(o.observed_at_utc&&Number.isFinite(Date.parse(o.observed_at_utc))?
+   madridDateTime.format(new Date(o.observed_at_utc))+" Madrid":"No observada")+
+   '</td><td>'+esc(o.status==="price_observed"?"Cotización observada, no ejecutada":
+      o.status==="limit_observed"?"Precio límite observado, no ejecutado":
+      o.status==="limit_not_met"?"Límite sin cumplir":"Pendiente de precio")+
+   '</td></tr>').join("");
+  return '<details class="midas-clock-lane"'+(tradingFilter.slot===slot?' open':'')+'>'+
+   '<summary><strong>'+esc(slot)+' · '+esc(label)+'</strong><span>'+esc(labels[lane.status]||lane.status)+
+   '</span><small>'+lane.observed+'/'+lane.planned+' señales con precio</small></summary>'+
+   (orderRows?'<div class="midas-clock-tablewrap"><table><thead><tr><th>Ticker</th><th>Acción</th>'+
+    '<th>Decisión</th><th>Precio observado</th><th>Hora de observación</th><th>Estado</th>'+
+    '</tr></thead><tbody>'+orderRows+'</tbody></table></div>':
+    '<p>Sin órdenes ejecutables registradas para esta apertura. '+esc(lane.source_session||
+    "Libro de origen no acreditado")+'.</p>')+'</details>';
+ }).join("");
+ return '<section class="midas-clock" aria-label="Reloj operativo para todos los algoritmos">'+
+  '<div class="midas-clock-title"><h3>Reloj operativo de MIDAS · '+esc(doc.session||"sin sesión")+'</h3>'+
+  '<span>'+esc(stale?"Sin actividad acreditada hoy":"Sesión observada")+'</span></div>'+
+  '<p>Última comprobación: '+esc(clock)+' · <strong>'+fresh+'</strong> motores con libro válido · '+
+  '<strong>'+observations+'/'+planned+'</strong> señales con cotización observada.</p>'+
+  '<p>Las decisiones se congelan antes de abrir. Cada algoritmo actúa solo cuando sus reglas generan órdenes. '+
+  'Un precio observado no es una compra contabilizada: la liquidación sigue siendo responsabilidad del motor '+
+  'y solo las operaciones verificadas entran en rentabilidad.</p>'+
+  (tables||'<p>No se ha registrado todavía una sesión con ejecución forward verificada.</p>')+
+  '<p class="midas-clock-note">Las cotizaciones gratuitas pueden ser tardías y GitHub Actions no garantiza '+
+  'activación puntual. No hay bróker real ni ejecución retroactiva válida para el modo forward. '+
+  '<a href="https://github.com/idealab2026/laboratorio-cuantitativo/actions/workflows/operational-clock.yml"'+
+  ' target="_blank" rel="noopener noreferrer">Auditar ejecuciones del reloj</a>.</p></section>';
 }
-
 const tradingRoomActive=()=>state.view==="trading";
 const tradingSides={all:"Todas",buy:"Compras",sell:"Ventas",rebalance:"Rebalanceos"};
 const tradingFilter={date:null,slot:"",ticker:"",side:"all"};
@@ -933,7 +937,7 @@ function buyDipHealthHTML(){
  const holding=monitor.held_tickers.length?
   monitor.held_tickers.map(t=>'<span class="btd-symbol">'+esc(t)+'</span>').join(" "):
   "Ninguna posición en el cierre registrado";
- return buyDipForwardHTML()+'<section class="btd-health" aria-label="Estado operativo de Buy The Dip">'+
+ return '<section class="btd-health" aria-label="Estado operativo de Buy The Dip">'+
   '<h3>Buy The Dip · estado de la cartera simulada</h3>'+
   '<p class="btd-health-summary">Valoración auditada al <strong>'+esc(shortPaperDate(monitor.asof))+
   '</strong>. No son precios en tiempo real ni órdenes de bróker.</p>'+
@@ -1569,6 +1573,7 @@ function tradingRoom(){
   '<div class="trading-filters" role="group" aria-label="Tipo de señal">'+
   Object.entries(tradingSides).map(([key,label])=>'<button type="button" data-action="trading-side" data-value="'+key+
    '" aria-pressed="'+(tradingFilter.side===key)+'">'+label+' <span>—</span></button>').join("")+'</div>'+
+  '<div id="trading-operational-clock">'+operationalClockHTML()+'</div>'+
   '<section id="terminal-map" class="terminal-map" aria-labelledby="terminal-map-title" hidden></section>'+
   '<div id="trading-results"></div></div></section>';
 }
