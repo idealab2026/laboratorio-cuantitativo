@@ -18,8 +18,8 @@ from native_forward_settlement import _source_at
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "tfg_ahp"))
-from forward import FIRST_SIGNAL, open_week, close_week
-from data import is_week_end_session
+from tfg_ahp.forward import FIRST_SIGNAL, open_week, close_week
+from tfg_ahp.data import is_week_end_session
 
 SLOT = "IL-037"
 LEDGER = "tfg_state/ledger.json"
