@@ -332,6 +332,25 @@ function verifyLiveSignals(doc){
      !Number.isInteger(coverage.eligible)||!Number.isInteger(coverage.total)||coverage.eligible<0||
      coverage.eligible>coverage.total||coverage.total>1000))
    throw Error("Cobertura de análisis no verificable");
+  const monitor=track.monitor;
+  if(monitor!==undefined&&monitor!==null){
+   if(id!=="IL-039"||monitor.mode!=="monthly_signal_daily_mark"||
+      monitor.source!=="buy_the_dip_state/ledger.json"||
+      !signalDate(monitor.asof)||monitor.asof!==track.session||
+      !Number.isFinite(monitor.nav)||monitor.nav<=0||
+      !Number.isFinite(monitor.cash)||monitor.cash<0||monitor.cash>monitor.nav||
+      !Array.isArray(monitor.held_tickers)||monitor.held_tickers.length>10||
+      monitor.held_tickers.some(t=>!validSignalTicker(t))||
+      monitor.held_tickers.join("|")!==[...new Set(monitor.held_tickers)].sort().join("|")||
+      !validDate(monitor.last_signal_session)||!validDate(monitor.last_fill_session)||
+      !Number.isInteger(monitor.pending_count)||monitor.pending_count<0||monitor.pending_count>10)
+    throw Error("Estado paper de Buy The Dip no verificable");
+   const run=monitor.last_run;
+   if(run!==null&&(typeof run!=="object"||!Number.isSafeInteger(run.run_id)||run.run_id<=0||
+      !["success","failure","skipped"].includes(run.outcome)||
+      !Number.isFinite(Date.parse(run.recorded_at_utc))))
+    throw Error("Ejecución de Buy The Dip no verificable");
+  }
   const trace=track.analysis;
   if(trace!=null&&(!signalDate(trace.date)||!["classic","ahp","monthly"].includes(trace.method)||
     !(trace.excluded===null||Number.isSafeInteger(trace.excluded)&&trace.excluded>=0)||
@@ -765,6 +784,49 @@ function deskSignalTable(orders,phase,plan,day,chartCutoff){
     '<td class="desk-chart-cell">'+deskRowChart(item.ticker,chartCutoff)+'</td></tr>';
   }).join("")+'</tbody></table></div>';
 }
+function buyDipHealthHTML(){
+ // The journal and last attested workflow are independently dated evidence.
+ const track=signalFeed?.tracks?.["IL-039"];
+ const monitor=track?.monitor;
+ const runUrl="https://github.com/idealab2026/laboratorio-cuantitativo/actions/workflows/buy_the_dip_strategy.yml";
+ if(!monitor)return '<section class="btd-health" aria-label="Estado de Buy The Dip">'+
+  '<h3>Buy The Dip · control operativo</h3><p>Sin resumen validado de cartera. '+
+  '<a href="'+runUrl+'" target="_blank" rel="noopener noreferrer">Consultar ejecuciones en GitHub Actions</a>.</p></section>';
+ const nf=new Intl.NumberFormat("es-ES",{minimumFractionDigits:2,maximumFractionDigits:2});
+ const run=monitor.last_run;
+ const runStatus=run?.outcome==="success"?"Completado correctamente":
+  run?.outcome==="failure"?"Falló":run?"Sin ejecución paper acreditada":"Sin evidencia de ejecución programada";
+ const recorded=run?.recorded_at_utc?madridDateTime.format(new Date(run.recorded_at_utc))+" Madrid":"Sin fecha acreditada";
+ const lastRun=run?'<a href="https://github.com/idealab2026/laboratorio-cuantitativo/actions/runs/'+run.run_id+
+  '" target="_blank" rel="noopener noreferrer">Ver ejecución #'+run.run_id+'</a>':'';
+ const lanes=state.executionHistory?.live_plan?.days?.[tradingDay()]?.lanes||[];
+ const due=lanes.filter(lane=>lane.slots.includes("IL-039")&&lane.workflow==="buy_the_dip_strategy.yml")
+  .flatMap(lane=>lane.due||[]).map(date=>Date.parse(date))
+  .filter(Number.isFinite).sort((a,b)=>a-b);
+ const next=due.find(time=>time>Date.now());
+ const schedule=next?"Próxima revisión programada: "+madridDateTime.format(new Date(next))+" Madrid":
+  due.length?"Horario programado del día: "+due.map(t=>madridDateTime.format(new Date(t))).join(" / ")+" Madrid":
+  "No hay horario de ejecución verificable para esta fecha";
+ const holding=monitor.held_tickers.length?
+  monitor.held_tickers.map(t=>'<span class="btd-symbol">'+esc(t)+'</span>').join(" "):
+  "Ninguna posición en el cierre registrado";
+ return '<section class="btd-health" aria-label="Estado operativo de Buy The Dip">'+
+  '<h3>Buy The Dip · estado de la cartera simulada</h3>'+
+  '<p class="btd-health-summary">Valoración auditada al <strong>'+esc(shortPaperDate(monitor.asof))+
+  '</strong>. No son precios en tiempo real ni órdenes de bróker.</p>'+
+  '<div class="btd-kpis"><div><small>Patrimonio paper</small><strong>'+nf.format(monitor.nav)+' USD</strong></div>'+
+  '<div><small>Efectivo</small><strong>'+nf.format(monitor.cash)+' USD</strong></div>'+
+  '<div><small>Posiciones abiertas</small><strong>'+monitor.held_tickers.length+'</strong></div>'+
+  '<div><small>Órdenes pendientes en el libro</small><strong>'+monitor.pending_count+'</strong></div></div>'+
+  '<p><strong>Última decisión mensual:</strong> '+esc(monitor.last_signal_session?shortPaperDate(monitor.last_signal_session):"No consta")+
+  ' · <strong>Último movimiento paper:</strong> '+esc(monitor.last_fill_session?shortPaperDate(monitor.last_fill_session):"No consta")+'</p>'+
+  '<div class="btd-holdings" aria-label="Posiciones paper mantenidas"><strong>Posiciones mantenidas:</strong> '+holding+'</div>'+
+  '<p class="btd-health-summary"><strong>Última ejecución programada acreditada:</strong> '+esc(runStatus)+
+  ' · '+esc(recorded)+' '+lastRun+'</p>'+
+  '<p class="btd-health-summary"><strong>Calendario:</strong> '+esc(schedule)+'. El motor actualiza la valoración diaria tras cerrar Wall Street y rebalancea según sus reglas mensuales.</p>'+
+  '<p><a href="'+runUrl+'" target="_blank" rel="noopener noreferrer">Ver historial y ejecución de GitHub Actions</a></p>'+
+  '</section>';
+}
 function deskResults(model){
  if(!signalFeed)return '<p class="trading-empty">'+(signalFeedError?"Usa «Actualizar» para consultar el diario.":"Cargando las señales publicadas…")+'</p>';
  const phase=tradingDesk.phase,day=tradingDay();
@@ -776,7 +838,8 @@ function deskResults(model){
  // filled trades may include the documented execution session's close.
  const chartCutoff=phase==="fills"?(model.target||day):
   (model.plan?.previous_session||model.target||day);
- return '<div class="desk-layout"><section class="desk-tape" aria-labelledby="desk-tape-title">'+
+ return (tradingDesk.slots.size===1&&tradingDesk.slots.has("IL-039")?buyDipHealthHTML():"")+
+  '<div class="desk-layout"><section class="desk-tape" aria-labelledby="desk-tape-title">'+
   '<div class="desk-heading"><h3 id="desk-tape-title">'+esc(deskPhases[phase])+' <small>'+esc(dateLabel+open)+'</small></h3>'+
   '<span>'+model.orders.length+' registros</span></div>'+
   (coverage&&phase!=="fills"?'<p class="desk-coverage">'+esc(coverage)+'</p>':"")+
@@ -854,10 +917,16 @@ function terminalActivityHTML(){
  const lanes=state.executionHistory?.live_plan?.days?.[day]?.lanes||[];
  const workflows=new Set(lanes.filter(lane=>lane.slots.includes(tradingFilter.slot)).map(lane=>lane.workflow));
  const matches=(activity?.attempts||[]).filter(attempt=>workflows.has(attempt.workflow));
+ const due=lanes.filter(lane=>workflows.has(lane.workflow)).flatMap(lane=>lane.due||[])
+  .map(time=>Date.parse(time)).filter(Number.isFinite).sort((a,b)=>a-b);
+ const next=due.find(time=>time>Date.now());
  const status=activity?.error?"No se pudo comprobar el estado de los motores.":
   terminalState.pending.has(day)?"Consultando el estado del motor…":
   !workflows.size?"El calendario no acredita una ejecución programada para esta selección.":
-  "No se ha observado una ejecución programada para esta sesión.";
+  next?"Ejecución pendiente según calendario. Próximo intento: "+
+   madridDateTime.format(new Date(next))+" (Madrid).":
+  due.length?"No se ha observado una ejecución programada para esta sesión después del horario previsto.":
+  "No hay horario publicado para esta sesión.";
  return '<div class="terminal-activity"><h4>Actividad del motor · '+esc(shortPaperDate(day))+'</h4>'+
   (matches.length?'<ul>'+matches.slice(-3).reverse().map(attempt=>'<li><time datetime="'+
    esc(new Date(attempt.time).toISOString())+'">'+esc(madridDateTime.format(attempt.time))+
@@ -913,7 +982,8 @@ function terminalHTML(){
  const more=terminalState.useLatest&&trace?.date!==tradingDay()?
   button("Volver al registro de la sesión","terminal-latest","selected","outline-btn"):
   otherDate?button("Ver análisis del "+shortPaperDate(otherDate),"terminal-latest","latest","outline-btn"):"";
- return '<div class="terminal-shell"><div id="terminal-activity"></div>'+
+ return (tradingFilter.slot==="IL-039"?buyDipHealthHTML():"")+
+  '<div class="terminal-shell"><div id="terminal-activity"></div>'+
   '<div class="terminal-heading"><div><h4>Reproducción del registro · '+esc(shortPaperDate(trace?.date||tradingDay()))+
   '</h4><p>'+esc(description)+'</p>'+more+
   '<p><a href="./index.html?view=algorithm&amp;algorithm='+esc(tradingFilter.slot)+'">Consultar reglas del algoritmo</a></p></div>'+
