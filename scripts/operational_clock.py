@@ -260,13 +260,13 @@ def main(argv=None):
         lock = _read(args.lock)
         verify_lock(lock, market, now)
         prior = _read(args.public) if args.public.is_file() else None
-        already = {r["ticker"] for entry in (prior or {}).get("slots", {}).values()
-                   for r in entry.get("orders", []) if r.get("status") == "price_observed"}
-        needed = {o["ticker"] for p in lock["slots"].values() for o in p["orders"]}
+        needed = {o["ticker"] for slot, p in lock["slots"].items()
+                  if (prior or {}).get("slots", {}).get(slot, {}).get("status") != "native_forward_settled"
+                  for o in p["orders"]}
         monitored = {t for p in lock["slots"].values() for t in p.get("monitor_tickers", [])}
         # A new quote is mandatory on each stop check, not the previous
         # order observation.
-        quotes = quote_batch((needed - already) | monitored, now, market)
+        quotes = quote_batch(needed | monitored, now, market)
         now = datetime.now(UTC)  # actual observation completion, not nominal scheduler time
         if now > market["close"]:
             print('{"status":"observation_too_late"}')
