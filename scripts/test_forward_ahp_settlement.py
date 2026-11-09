@@ -11,8 +11,8 @@ sys.path.insert(0, str(ROOT))
 sys.path.insert(0, str(ROOT / "scripts"))
 sys.path.insert(0, str(ROOT / "tfg_ahp"))
 
-from paper import advance, digest
-from forward import open_week, close_week, mark_close, FIRST_SIGNAL
+from tfg_ahp.paper import advance, digest
+from tfg_ahp.forward import open_week, close_week, mark_close, FIRST_SIGNAL
 from operational_clock import clock_plan
 from build_opening_plan import plan_track
 from forward_ahp_settlement import settle_ahp, LEDGER, CONFIG
