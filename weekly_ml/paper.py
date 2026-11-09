@@ -5,7 +5,7 @@ import hashlib
 import json
 import math
 
-from data import execution_window
+from weekly_ml.data import execution_window
 
 
 BENCHMARKS = {"benchmark_spy": "SPY", "benchmark_rsp": "RSP"}

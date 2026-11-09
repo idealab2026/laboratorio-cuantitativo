@@ -23,6 +23,36 @@ def plan_track(slot, book, target, previous):
     history = book.get("equity") or []
     last = date(history[-1].get("date")) if history else date(book.get("last_session"))
     code = int(slot[3:])
+    if code == 37:
+        # AHP closes its signal on Friday and enters the following XNYS
+        # opening. During the week, its official incremental book supplies
+        # the verified prior close for next-open portfolio stop orders.
+        forward = book.get("forward_book")
+        if isinstance(forward, dict):
+            if forward.get("status") != "open":
+                return {"status": "recorded" if forward.get("status") == "closed" else "paused",
+                        "session": previous, "orders": [], "holdings": [], "undated": 0}
+            holdings = sorted(forward.get("positions", {}))
+            latest = forward.get("last_mark_session")
+            eligible = latest == previous and not forward.get("unresolved_exit")
+            orders = ([{"ticker": t, "action": "sell", "decision_session": previous,
+                        "target_session": target, "target_weight": 0,
+                        "limit_price": None}
+                       for t in holdings] if eligible and forward.get("stop_due") else [])
+            return {"status": "recorded" if eligible else "stale",
+                    "session": latest, "orders": orders, "holdings": holdings,
+                    "undated": 0}
+        signal = book.get("pending_signal")
+        decision = signal.get("asof") if isinstance(signal, dict) else None
+        eligible = (decision == previous and decision >= "2026-11-13"
+                    and book.get("last_signal_session") == decision)
+        selections = signal.get("selections", []) if isinstance(signal, dict) else []
+        orders = ([{"ticker": x["ticker"], "action": "buy",
+                    "decision_session": decision, "target_session": target,
+                    "target_weight": float(x["weight"]), "limit_price": None}
+                   for x in selections] if eligible else [])
+        return {"status": "recorded" if eligible else "stale",
+                "session": decision, "orders": orders, "holdings": [], "undated": 0}
     rows = pending_signals(book)
     orders, holdings, undated = [], [], 0
     for row in rows:

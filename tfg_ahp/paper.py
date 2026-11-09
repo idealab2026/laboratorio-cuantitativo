@@ -4,10 +4,13 @@ import copy
 import hashlib
 import json
 import math
+import sys
+from pathlib import Path
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
 import pandas as pd
 
-from data import target_week
+from tfg_ahp.data import target_week
 
 
 def digest(value):
@@ -239,10 +242,59 @@ def advance(config, panel, signal, state=None):
 
     result = copy.deepcopy(state)
     pending = result.get("pending_signal")
+    first_forward_signal = "2026-11-13"
     if pending is not None:
-        trade = _settle_week(config, panel, pending, float(result["nav"]))
-        result["nav"] = float(trade["nav_after"])
-        result["trades"].append(trade)
+        if asof >= first_forward_signal:
+            # Never reprice a Monday opening retrospectively at the
+            # following Friday's scheduled forecast run.
+            forward = result.get("forward_book")
+            if pending["asof"] < first_forward_signal:
+                if forward:
+                    raise ValueError("AHP legacy cutover has incompatible open book")
+                trade = {
+                    "signal_date": pending["asof"], "status": "unexecuted",
+                    "entry_date": None, "exit_date": None,
+                    "exit_reason": "cutover_no_forward_open_evidence",
+                    "nav_before": float(result["nav"]),
+                    "nav_after": float(result["nav"]), "return_pct": 0.0,
+                    "positions": [],
+                }
+            elif forward is None:
+                if pending.get("selections"):
+                    trade = {
+                        "signal_date": pending["asof"], "status": "unexecuted",
+                        "entry_date": None, "exit_date": None,
+                        "exit_reason": "missed_forward_open",
+                        "nav_before": float(result["nav"]),
+                        "nav_after": float(result["nav"]), "return_pct": 0.0,
+                        "positions": [],
+                    }
+                else:
+                    trade = {
+                        "signal_date": pending["asof"], "status": "cash_week",
+                        "entry_date": None, "exit_date": None,
+                        "exit_reason": "no_signal",
+                        "nav_before": float(result["nav"]),
+                        "nav_after": float(result["nav"]), "return_pct": 0.0,
+                        "positions": [],
+                    }
+            else:
+                if forward.get("status") != "closed" or forward.get("closed_trade") is None:
+                    raise ValueError("AHP forward positions not reconciled: refuse historical weekly exit")
+                trade = copy.deepcopy(forward["closed_trade"])
+                if (forward.get("signal_date") != pending["asof"] or
+                        forward.get("signal_hash") != digest(pending) or
+                        trade.get("signal_date") != pending["asof"] or
+                        abs(float(trade["nav_before"]) - float(result["nav"])) > 0.01 or
+                        trade["exit_date"] > asof):
+                    raise ValueError("AHP forward closed trade does not match weekly signal")
+                result["forward_book"] = None
+            result["nav"] = float(trade["nav_after"])
+            result["trades"].append(trade)
+        else:
+            trade = _settle_week(config, panel, pending, float(result["nav"]))
+            result["nav"] = float(trade["nav_after"])
+            result["trades"].append(trade)
 
     result["last_signal_session"] = asof
     result["signal_hash"] = signal_hash

@@ -1,0 +1,60 @@
+name: MIDAS TFG/AHP verified daily forward marks
+
+on:
+  pull_request:
+    paths:
+      - 'tfg_ahp/**'
+      - 'scripts/forward_ahp_settlement.py'
+      - 'scripts/test_forward_ahp_settlement.py'
+      - 'scripts/build_opening_plan.py'
+      - '.github/workflows/tfg_ahp_forward_daily.yml'
+  schedule:
+    - cron: '47 0 * * 2-6'
+    - cron: '17 3 * * 2-6'
+  workflow_dispatch:
+    inputs:
+      preflight_only:
+        description: 'Run tests and validation without creating a market mark'
+        type: boolean
+        default: false
+
+permissions:
+  contents: write
+
+concurrency:
+  group: midas-tfg-corrected
+  cancel-in-progress: false
+
+jobs:
+  ahp-forward:
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha || 'main' }}
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: pip
+          cache-dependency-path: tfg_ahp/requirements-live.txt
+      - name: Install lightweight TFG runtime
+        run: python -m pip install --disable-pip-version-check -r tfg_ahp/requirements-live.txt
+      - name: Verify live-causal book and historical invariants
+        run: |
+          python -m py_compile tfg_ahp/forward.py tfg_ahp/paper.py scripts/forward_ahp_settlement.py
+          python -m unittest scripts.test_forward_ahp_settlement -v
+          python -m unittest discover -s tfg_ahp/tests -v
+      - name: Verify dated canonical XNYS data exists
+        if: ${{ github.event_name != 'pull_request' && !inputs.preflight_only }}
+        run: python market_data/health.py --eligible
+      - name: Mark only the next exact finished trading session
+        if: ${{ github.event_name != 'pull_request' && !inputs.preflight_only }}
+        run: python tfg_ahp/forward.py --mark-close
+      - name: Publish AHP native ledger after immutable mark
+        if: ${{ github.event_name != 'pull_request' && !inputs.preflight_only }}
+        run: |
+          python strategy_comparison/publish_state.py \
+            --message "Mark causal AHP paper portfolio from canonical XNYS close" \
+            --path tfg_state/ledger.json
