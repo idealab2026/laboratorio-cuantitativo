@@ -50,6 +50,16 @@ def settle_native(lock, now, market, quotes, *,
             results[slot] = {"status": "not_ready", "fills": 0}
             continue
         existing = read(ledger_path)
+        # A successful prior tick of this same market session is immutable.
+        first_signal = lane["orders"][0]["signal_session"]
+        candidate_key = _event_key(slot, market["session"], first_signal)
+        prior_marker = existing.get("forward_executions", {}).get(candidate_key)
+        if isinstance(prior_marker, dict):
+            if prior_marker.get("lock_sha256") != lock["lock_sha256"]:
+                raise ValueError(f"{slot}: conflicting forward execution marker")
+            results[slot] = {"status": "already_settled", "fills": prior_marker.get("fills_count", 0),
+                             "marker": prior_marker}
+            continue
         frozen = original(lock["source_commit"], ledger_path)
         if not all(existing.get(k) == frozen.get(k) for k in
                    ("last_session", "pending", "cash", "positions", "events", "config_hash")):
