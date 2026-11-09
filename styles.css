@@ -1281,3 +1281,57 @@ p{line-height:1.6;text-align:justify;text-align-last:left;hyphens:auto}p.lead{co
  .btd-toolbar>span{margin-left:0}
  .btd-table-wrap{max-height:65vh}
 }
+
+/* Help and drilldown for individual Buy The Dip decision evidence. */
+.btd-header-help{position:relative;display:inline-flex;align-items:center;gap:4px;cursor:help;
+ outline-offset:2px;white-space:nowrap}
+.btd-info-mark{font-size:.68rem;color:#628099}
+.btd-header-tooltip{display:none;position:absolute;top:calc(100% + 7px);left:0;
+ width:clamp(205px,24vw,310px);max-width:calc(100vw - 44px);
+ z-index:30;white-space:normal;padding:10px 12px;background:#102943;color:#fff;
+ border-radius:7px;box-shadow:0 7px 24px #132b4050;font:550 .75rem/1.5 system-ui,sans-serif;
+ pointer-events:none;text-align:left}
+.btd-header-help:is(:hover,:focus-visible) .btd-header-tooltip{display:block}
+.btd-header-help:focus-visible{outline:2px solid #bd9b57;border-radius:3px}
+.btd-table thead th:nth-last-child(-n+4) .btd-header-tooltip{left:auto;right:0}
+.btd-inspect{border:1px solid #adcadf;background:#fff;color:#16496b;white-space:nowrap;
+ padding:5px 8px;border-radius:5px;font:700 .70rem/1.2 system-ui,sans-serif;cursor:pointer}
+.btd-inspect:hover,.btd-inspect[aria-expanded="true"]{background:#e4f0fa}
+.btd-detail-row td{padding:11px!important;background:#f2f8fd!important;border-bottom:2px solid #bad4e8}
+.btd-trace{font:500 .77rem/1.45 system-ui,sans-serif;color:#213e5c}
+.btd-trace-intro{display:flex;align-items:center;gap:16px;flex-wrap:wrap;margin-bottom:10px}
+.btd-trace-intro strong{font-size:.94rem}
+.btd-trace-intro span{color:#57738c}
+.btd-trace-steps{display:flex;gap:5px;align-items:stretch;width:100%}
+.btd-trace-step{flex:1;min-width:0;padding:9px 8px;border:1px solid #cad8e6;
+ border-top:3px solid #8496a9;border-radius:6px;background:#fff}
+.btd-trace-step[data-tone="documented"]{border-top-color:#188463}
+.btd-trace-step[data-tone="rejected"]{border-top-color:#ba8736}
+.btd-trace-step[data-tone="unknown"]{border-top-color:#9baabc}
+.btd-trace-step strong{display:block;margin:3px 0 4px;font-size:.76rem}
+.btd-trace-step p{margin:0;color:#516a83;font-size:.69rem;line-height:1.35}
+.btd-trace-num{color:#718ba3;font:700 .67rem ui-monospace,monospace}
+.btd-trace-arrow{align-self:center;font-size:1.2rem;color:#8ea6b9}
+.btd-trace-factors{margin-top:12px;background:#fff;border:1px solid #d6e2ec;
+ border-radius:6px;padding:10px 12px;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px 15px}
+.btd-trace-factors>strong{grid-column:1/-1;color:#163a5c}
+.btd-factor{display:grid;grid-template-columns:minmax(100px,1fr) minmax(60px,2fr) 65px;align-items:center;gap:7px;font-size:.71rem}
+.btd-factor small,.btd-factor-empty{color:#7289a0}
+.btd-factor-rail{height:9px;border-radius:20px;background:#e8eef4;overflow:hidden}
+.btd-factor-rail>span{display:block;height:100%;background:#247b91;border-radius:inherit}
+.btd-factor>strong{text-align:right;font-variant-numeric:tabular-nums}
+.btd-trace-disclaimer{font-size:.70rem;margin:10px 0 0;color:#62788f}
+.btd-today{padding:10px 13px;margin:4px 12px 10px;border:1px solid #c8d8e7;
+ border-radius:7px;background:#f3f8fc}
+.btd-today>div>strong{display:block;font-size:.86rem;color:#173b5e}
+.btd-today p{margin:3px 0 8px;color:#54708a;font-size:.72rem}
+.btd-today-steps{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.btd-today-steps>div{background:#fff;border:1px solid #d4e2ee;border-radius:6px;padding:7px 10px}
+.btd-today-steps small,.btd-today-steps span{display:block;color:#617b94;font-size:.68rem}
+.btd-today-steps strong{display:block;color:#1a435e;font-size:.84rem;margin:2px 0}
+@media(max-width:900px){
+ .btd-trace-steps{overflow-x:auto;align-items:stretch}
+ .btd-trace-step{min-width:150px}
+ .btd-trace-factors{grid-template-columns:1fr}
+}
+@media(max-width:700px){.btd-today-steps{grid-template-columns:1fr}.btd-header-tooltip{max-width:220px}}

@@ -900,7 +900,7 @@ function deskResults(model){
 }
 
 const terminalState={mode:"signals",useLatest:false,count:0,stage:0,timer:null,activity:new Map(),pending:new Set()};
-const btdTableView={status:"all",sort:"score",limit:50};
+const btdTableView={status:"all",sort:"score",limit:50,selectedTicker:null};
 const terminalLabels={
  buy:"Regla de compra activada",sell:"Regla de venta activada",no_trigger:"Sin activación de regla",
  selected:"Seleccionada",passed:"Superó el filtro técnico",filtered:"Descartada en el filtro técnico",
@@ -1033,6 +1033,99 @@ function btdUniverseRows(review,query="",status="all",sort="score"){
   return Number(x===null)-Number(y===null)||((y??0)-(x??0))||a.ticker.localeCompare(b.ticker);
  });
 }
+
+const btdColumnHelp={
+ ticker:"Símbolo bursátil de la empresa en el universo congelado de 503 valores.",
+ name:"Razón social de la empresa, procedente del universo original del modelo.",
+ status:"Resultado de las reglas de selección, o falta de evidencia histórica individual.",
+ score:"Puntuación global de 0 a 100: valoración 30 %, calidad 20 %, asignación de capital 15 %, dislocación 20 % y catalizadores 15 %. Los componentes disponibles se ponderan según la configuración congelada.",
+ valuation:"Valoración relativa de 0 a 100 dentro de su sector: FCF o beneficios, caja neta y valor contable según disponibilidad.",
+ quality:"Calidad de 0 a 100: rentabilidad, generación de caja y resiliencia financiera. Para bancos y aseguradoras se aplican métricas sectoriales.",
+ allocation:"Asignación de capital de 0 a 100: recompras frente a emisiones y posición de caja.",
+ dislocation:"Dislocación de 0 a 100: comportamiento relativo y caída desde máximos. Mayor valor implica mayor posible oportunidad contraria.",
+ catalysts:"Número de señales positivas de 0 a 5 (tres de precio y dos fundamentales). No significa que existan cinco noticias empresariales.",
+ weight:"Porcentaje objetivo de la cartera paper en la selección mensual. No es una orden nueva ni el peso de mercado de hoy.",
+ reason:"Razón documentada para seleccionar, excluir o mantener; cuando falta la traza histórica no se infiere.",
+ trace:"Abre el recorrido de decisión registrado para esta empresa. Las fases sin evidencia aparecen como no documentadas.",
+};
+function btdColumnHeader(key,label){
+ const help=btdColumnHelp[key];
+ return '<th scope="col"><span class="btd-header-help" tabindex="0" title="'+esc(help)+
+  '" aria-label="'+esc(label+': '+help)+'">'+esc(label)+
+  '<span class="btd-info-mark" aria-hidden="true">ⓘ</span>'+
+  '<span class="btd-header-tooltip" role="tooltip">'+esc(help)+'</span></span></th>';
+}
+function btdDecisionTrace(row,review){
+ const fmt=n=>typeof n==="number"?new Intl.NumberFormat("es-ES",{maximumFractionDigits:1}).format(n):"No archivado";
+ const incomplete=review.mode==="historical_partial"&&row.status==="historical_detail_missing";
+ const selection=row.status==="selected";
+ const dataKnown=["selected","eligible_not_selected","rules_rejected"].includes(row.status);
+ const eligible=row.eligible===true;
+ const rejection=row.status==="rules_rejected"?row.reasons.map(x=>btdReasons[x]||x).join(", "):"";
+ const stages=[
+  ["01","Universo","documented","Incluida entre las 503 empresas del universo congelado."],
+  ["02","Datos",incomplete?"unknown":dataKnown?"documented":"rejected",
+   incomplete?"No consta el estado individual de precios y fundamentales de esa fecha.":
+   dataKnown?"Disponibilidad suficiente para entrar en la puntuación.":
+   btdStatuses[row.status]||"Datos insuficientes"],
+  ["03","Puntuación",row.score===null?"unknown":"documented",
+   row.score===null?"No se conservaron sus puntuaciones individuales para esta decisión.":
+   "Puntuación global archivada: "+fmt(row.score)+" de 100."],
+  ["04","Filtros",row.eligible===null?"unknown":eligible?"documented":"rejected",
+   row.eligible===null?"El cumplimiento específico de cada umbral no está archivado.":
+   eligible?"Superó los filtros de entrada en la fecha de decisión.":
+   rejection||"No superó al menos un requisito de entrada."],
+  ["05","Cartera",selection?"documented":incomplete?"unknown":"rejected",
+   selection?"Seleccionada; peso objetivo "+new Intl.NumberFormat("es-ES",{style:"percent",maximumFractionDigits:1}).format(row.weight)+".":
+   incomplete?"No consta la decisión individual original; no figuró entre las diez seleccionadas.":
+   row.status==="eligible_not_selected"?"Elegible, pero fuera de las posiciones finales por ranking y límites.":
+   "No seleccionada para la cartera."],
+ ];
+ const bars=[
+  ["Valoración",row.valuation,"30 %"],
+  ["Calidad",row.quality,"20 %"],
+  ["Asignación de capital",row.allocation,"15 %"],
+  ["Dislocación",row.dislocation,"20 %"],
+  ["Catalizadores",row.catalysts===null?null:20*row.catalysts,"15 %"],
+ ].map(([label,value,weight])=>'<div class="btd-factor"><span>'+esc(label)+
+  ' <small>('+weight+')</small></span>'+
+  (value===null?'<span class="btd-factor-empty">Sin registro</span>':
+   '<span class="btd-factor-rail"><span style="width:'+Math.max(0,Math.min(100,value))+'%"></span></span>'+
+   '<strong>'+fmt(value)+'/100</strong>')+'</div>').join("");
+ const graph=stages.map(([number,title,tone,detail])=>'<div class="btd-trace-step" data-tone="'+tone+'">'+
+  '<span class="btd-trace-num">'+number+'</span><strong>'+esc(title)+'</strong>'+
+  '<p>'+esc(detail)+'</p></div>').join('<span class="btd-trace-arrow" aria-hidden="true">→</span>');
+ return '<div class="btd-trace" aria-label="Recorrido de '+esc(row.ticker)+' en la decisión del '+
+  esc(shortPaperDate(review.decision_session))+'">'+
+  '<div class="btd-trace-intro"><strong>'+esc(row.ticker)+' · '+esc(row.name)+'</strong>'+
+  '<span>Análisis mensual: '+esc(shortPaperDate(review.decision_session))+'</span></div>'+
+  '<div class="btd-trace-steps">'+graph+'</div>'+
+  '<div class="btd-trace-factors"><strong>Factores documentados en la decisión</strong>'+
+  bars+'</div>'+
+  '<p class="btd-trace-disclaimer">Leyenda: verde = evidencia registrada; ámbar = filtro o exclusión; '+
+  'gris = detalle histórico no conservado. La visualización explica decisiones ya archivadas; '+
+  'no es una ejecución intradía ni una simulación de pasos que no se guardaron.</p></div>';
+}
+function btdTodaySummary(review){
+ const monitor=signalFeed?.tracks?.["IL-039"]?.monitor;
+ if(!monitor)return "";
+ const series=[
+  ["Última evaluación mensual",shortPaperDate(review.decision_session),
+   review.coverage.scored+" puntuadas · "+review.coverage.selected+" elegidas"],
+  ["Cartera paper después del rebalanceo",monitor.held_tickers.length+" posiciones",
+   monitor.pending_count+" órdenes pendientes en el libro"],
+  ["Última valoración registrada",shortPaperDate(monitor.asof),
+   "NAV "+new Intl.NumberFormat("es-ES",{maximumFractionDigits:2}).format(monitor.nav)+" USD"],
+ ];
+ return '<div class="btd-today"><div><strong>Qué hace el algoritmo en la sesión consultada</strong>'+
+  '<p>Buy The Dip no recorre 503 empresas cada día. Evalúa el universo cuando corresponde el rebalanceo mensual; '+
+  'el resto de sesiones registra la valoración de las posiciones mantenidas, si la ejecución programada se completa.</p></div>'+
+  '<div class="btd-today-steps">'+series.map(([title,value,detail])=>
+   '<div><small>'+esc(title)+'</small><strong>'+esc(String(value))+'</strong><span>'+esc(detail)+'</span></div>').join("")+'</div>'+
+  '<p>Para comprobar el intento de hoy, consulta «Actividad del motor» y el historial de GitHub Actions. '+
+  'La reproducción no equivale a una ejecución en directo.</p></div>';
+}
+
 function btdUniverseHTML(){
  const review=signalFeed?.tracks?.["IL-039"]?.universe_review;
  if(!review)return '<section class="btd-universe"><div id="terminal-activity"></div>'+
@@ -1058,6 +1151,7 @@ function btdUniverseHTML(){
    row.status==="rules_rejected"?
    (row.reasons.length?row.reasons.map(x=>btdReasons[x]).join(" · "):"Descartada por filtros"):
    btdStatuses[row.status];
+  const opened=btdTableView.selectedTicker===row.ticker;
   return '<tr data-stage="'+esc(row.status)+'">'+
    '<th scope="row">'+esc(row.ticker)+'</th><td>'+esc(row.name)+'</td>'+
    '<td><span class="btd-row-state">'+esc(btdStatuses[row.status])+'</span></td>'+
@@ -1068,13 +1162,17 @@ function btdUniverseHTML(){
    '<td class="btd-number">'+fmt(row.dislocation)+'</td>'+
    '<td class="btd-number">'+(row.catalysts===null?"—":row.catalysts+"/5")+'</td>'+
    '<td class="btd-number">'+(row.weight===null?"—":pct.format(row.weight))+'</td>'+
-   '<td class="btd-reason">'+esc(note)+'</td></tr>';
+   '<td class="btd-reason">'+esc(note)+'</td>'+
+   '<td><button type="button" class="btd-inspect" data-action="btd-inspect" data-value="'+
+   esc(row.ticker)+'" aria-expanded="'+opened+'">'+(opened?'Cerrar':'Ver recorrido')+'</button></td></tr>'+
+   (opened?'<tr class="btd-detail-row"><td colspan="12">'+btdDecisionTrace(row,review)+'</td></tr>':'');
  }).join("");
  return '<section class="btd-universe" aria-label="Evaluación de las 503 empresas">'+
   '<div id="terminal-activity"></div>'+
   '<div class="btd-universe-top"><div><h3>Evaluación del universo · '+esc(shortPaperDate(review.decision_session))+
   '</h3><p>Recorrido de las empresas del universo congelado. Se analiza la cartera al cierre mensual; entre rebalanceos solo se valora diariamente.</p></div>'+
   '<a href="./index.html?view=algorithm&amp;algorithm=IL-039">Reglas del modelo</a></div>'+
+  btdTodaySummary(review)+
   '<div class="btd-funnel"><span><strong>'+count.universe+'</strong> empresas</span>'+
   '<span><strong>'+count.price_usable+'</strong> con precios</span>'+
   '<span><strong>'+count.scored+'</strong> puntuadas</span>'+
@@ -1090,8 +1188,12 @@ function btdUniverseHTML(){
   '<label>Ordenar<select id="btd-sort">'+sorts+'</select></label>'+
   '<span>'+rows.length+' empresas · '+shown.length+' visibles</span></div>'+
   '<div class="btd-table-wrap"><table class="btd-table"><thead><tr>'+
-  '<th>Ticker</th><th>Empresa</th><th>Resultado</th><th>Total</th><th>Valor.</th>'+
-  '<th>Calidad</th><th>Asign.</th><th>Disloc.</th><th>Catal.</th><th>Peso</th><th>Justificación</th>'+
+  btdColumnHeader("ticker","Ticker")+btdColumnHeader("name","Empresa")+
+  btdColumnHeader("status","Resultado")+btdColumnHeader("score","Total")+
+  btdColumnHeader("valuation","Valor.")+btdColumnHeader("quality","Calidad")+
+  btdColumnHeader("allocation","Asign.")+btdColumnHeader("dislocation","Disloc.")+
+  btdColumnHeader("catalysts","Catal.")+btdColumnHeader("weight","Peso")+
+  btdColumnHeader("reason","Justificación")+btdColumnHeader("trace","Análisis")+
   '</tr></thead><tbody>'+body+'</tbody></table></div>'+
   (shown.length<rows.length?'<button type="button" class="btd-more outline-btn" data-action="btd-more">'+
    'Mostrar 50 más ('+(rows.length-shown.length)+' restantes)</button>':'')+
@@ -2354,6 +2456,13 @@ $("app").addEventListener("click",e=>{
   resetTerminal();terminalState.useLatest=value==="latest";paintTradingRoom();
  }
  else if(["terminal-play","terminal-all","terminal-next"].includes(action)){runTerminalPlayback(action);}
+ else if(action==="btd-inspect"&&validSignalTicker(value)){
+  const review=signalFeed?.tracks?.["IL-039"]?.universe_review;
+  if(!review?.rows?.some(row=>row.ticker===value))return;
+  btdTableView.selectedTicker=btdTableView.selectedTicker===value?null:value;
+  paintTradingRoom();
+  document.querySelector('[data-action="btd-inspect"][data-value="'+value+'"]')?.focus({preventScroll:true});
+ }
  else if(action==="btd-more"){btdTableView.limit+=50;paintTradingRoom();}
  else if(action==="desk-reset"){tradingDesk.slots.clear();paintTradingRoom();}
  else if(action==="trading-side"&&Object.hasOwn(tradingSides,value)){
@@ -2516,7 +2625,7 @@ $("app").addEventListener("submit",e=>{
 });
 document.querySelectorAll(".product-tabs [data-view]").forEach(b=>b.addEventListener("click",()=>{state.detailOpen=false;go(b.dataset.view);}));
 function selectTerminalAlgorithm(slot){
- resetTerminal();btdTableView.limit=50;btdTableView.status="all";terminalState.useLatest=false;tradingFilter.slot=slot;
+ resetTerminal();btdTableView.limit=50;btdTableView.status="all";btdTableView.selectedTicker=null;terminalState.useLatest=false;tradingFilter.slot=slot;
  expandedFamily=mapFamily(slot)?.id||null;
  const url=new URL(location.href);
  if(slot)url.searchParams.set("algorithm",slot);
