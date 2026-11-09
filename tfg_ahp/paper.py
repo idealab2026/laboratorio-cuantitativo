@@ -4,10 +4,13 @@ import copy
 import hashlib
 import json
 import math
+import sys
+from pathlib import Path
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
 import pandas as pd
 
-from data import target_week
+from tfg_ahp.data import target_week
 
 
 def digest(value):
