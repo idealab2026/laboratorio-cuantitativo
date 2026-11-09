@@ -543,6 +543,33 @@ def build(registry, paper_config, paper_state=None, legacy_state=None, now=None,
             row.update(_activity(None, selections,
                                  pending_label="compras para próxima apertura",
                                  empty_label="Sin compras · esperando señal"))
+            forward = tfg_state.get("forward_book")
+            if isinstance(forward, dict):
+                if forward.get("status") == "open":
+                    # No synthetic NAV from an opening quote. After each
+                    # verified daily close, the incremental forward book
+                    # becomes the current observed paper value.
+                    marks = forward.get("equity_marks") or []
+                    if marks:
+                        mark = marks[-1]
+                        paper_nav = _equity(mark["nav"], item["id"] + " forward NAV")
+                        row.update(last_equity=paper_nav, last_session=mark["date"],
+                                   return_pct=round(100 * (paper_nav / capital_tfg - 1), 6))
+                    else:
+                        row["last_session"] = tfg_state.get("last_signal_session")
+                    row.update(_activity(forward.get("positions"), None,
+                                         empty_label="Sin posiciones activas"))
+                    row["note"] = ("TFG/AHP USD: posiciones paper observadas a la apertura; "
+                                   "NAV solo desde cierres exactos verificados; "
+                                   "stop semanal ejecutable en próxima apertura.")
+                elif forward.get("status") == "closed" and forward.get("closed_trade"):
+                    trade = forward["closed_trade"]
+                    paper_nav = _equity(trade["nav_after"], item["id"] + " forward closed NAV")
+                    row.update(last_equity=paper_nav, last_session=trade["exit_date"],
+                               return_pct=round(100 * (paper_nav / capital_tfg - 1), 6))
+                    row.update(_activity(None, None, empty_label="Semana liquidada · sin posiciones"))
+                    row["note"] = ("TFG/AHP USD: semana cerrada con operaciones paper observadas "
+                                   "y conciliación pendiente de la siguiente señal semanal.")
         rows.append(row)
     for strategy_key, item in capital_tracks.items():
         capital_cc = None if capital_config is None else _equity(
