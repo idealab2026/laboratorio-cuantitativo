@@ -5,6 +5,10 @@ on:
     paths:
       - 'scripts/operational_clock.py'
       - 'scripts/test_operational_clock.py'
+      - 'scripts/native_forward_settlement.py'
+      - 'scripts/test_native_forward_settlement.py'
+      - 'capital_cycle/engine.py'
+      - 'buy_the_dip_strategy/engine.py'
       - '.github/workflows/operational-clock.yml'
   workflow_dispatch:
     inputs:
@@ -49,9 +53,10 @@ jobs:
         run: python -m pip install --disable-pip-version-check -r buy_the_dip_strategy/requirements-live.txt
       - name: Verify no-lookahead and shared engine clock
         run: |
-          python -m py_compile scripts/operational_clock.py scripts/forward_open_il039.py
+          python -m py_compile scripts/operational_clock.py scripts/forward_open_il039.py scripts/native_forward_settlement.py
           python -m unittest scripts.test_operational_clock -v
           python -m unittest scripts.test_forward_open_il039 -v
+          python -m unittest scripts.test_native_forward_settlement -v
       - name: Prepare frozen signal plan or check market observations
         if: github.event_name != 'pull_request'
         run: |
@@ -63,10 +68,20 @@ jobs:
             if [ "$CRON" = '20 9 * * 1-5' ]; then STAGE=prepare; else STAGE=observe; fi
           fi
           PYTHONPATH=scripts:. python scripts/operational_clock.py --stage "$STAGE"
-      - name: Save single operator clock without modifying algorithm ledgers
+      - name: Publish operator observations and canonical native paper fills
+        # The same transaction owns journal and BOTH official campaign ledgers.
+        # Keep the historical night valuation jobs; they see pending=None after
+        # a forward fill and therefore cannot buy a second time.
         if: github.event_name != 'pull_request'
         run: |
           python strategy_comparison/publish_state.py \
-            --message "Update MIDAS shared operational clock observations" \
+            --message "Record MIDAS timely native fills and operator observations" \
             --path data/operational-clock.json \
-            --path forward_open_state/global-lock.json
+            --path forward_open_state/global-lock.json \
+            --path capital_cycle_state/ledger.json \
+            --path buy_the_dip_state/ledger.json
+      - name: Verify native fills survived publication
+        if: github.event_name != 'pull_request'
+        run: |
+          git fetch origin main
+          PYTHONPATH=scripts:. python scripts/native_forward_settlement.py --verify-published
