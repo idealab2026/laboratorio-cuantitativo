@@ -1241,3 +1241,43 @@ p{line-height:1.6;text-align:justify;text-align-last:left;hyphens:auto}p.lead{co
  border-radius:4px;padding:3px 6px;background:#fff}
 .btd-health a{color:#145c8b;text-decoration:underline}
 @media(max-width:700px){.btd-kpis{grid-template-columns:repeat(2,minmax(0,1fr))}}
+
+/* Dense, source-audited 503-name decision ledger for IL-039. */
+.btd-universe{border:1px solid #c8d8e6;border-radius:9px;background:#fff;margin:0 0 12px;overflow:hidden;
+ color:#233f5d;font:500 .77rem/1.4 system-ui,sans-serif}
+.btd-universe-top{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:11px 14px 8px}
+.btd-universe-top h3{font-size:1.02rem;margin:0 0 3px;color:#123453}
+.btd-universe-top p{margin:0;color:#54718a;font-size:.74rem}
+.btd-universe-top>a{white-space:nowrap}
+.btd-funnel{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:7px;margin:3px 12px 8px}
+.btd-funnel span{background:#f2f6fa;border:1px solid #d5e0ea;border-radius:6px;padding:5px 9px;font-size:.73rem}
+.btd-funnel strong{font-size:1rem;color:#103554;margin-right:4px;font-variant-numeric:tabular-nums}
+.btd-warning,.btd-note{font-size:.74rem;margin:6px 12px 10px;padding:8px 10px;border-radius:5px;line-height:1.42}
+.btd-warning{background:#fff7e8;color:#6f4b13;border:1px solid #e7cc93}
+.btd-note{background:#eef8f4;color:#215d4a}
+.btd-toolbar{display:flex;flex-wrap:wrap;align-items:end;gap:7px 14px;padding:0 12px 9px;font-size:.73rem}
+.btd-toolbar label{display:flex;flex-direction:column;gap:3px;font-weight:650}
+.btd-toolbar select{min-width:145px;min-height:34px;font:550 .76rem system-ui,sans-serif;padding:4px 8px;
+ border-radius:5px;border:1px solid #bacdde;color:#1b3f60;background:#fff}
+.btd-toolbar>span{margin-left:auto;color:#56718b;font-variant-numeric:tabular-nums}
+.btd-table-wrap{overflow:auto;max-height:570px;border-top:1px solid #d8e2ea}
+.btd-table{border-collapse:collapse;width:100%;min-width:1050px;font:500 .73rem/1.28 system-ui,sans-serif}
+.btd-table th,.btd-table td{border-bottom:1px solid #e4ebf2;padding:5px 7px;text-align:left;vertical-align:middle}
+.btd-table thead th{position:sticky;top:0;background:#eaf1f8;color:#1d4265;z-index:1;font-weight:750}
+.btd-table tbody tr:nth-child(2n){background:#f9fbfd}
+.btd-table tbody tr[data-stage="selected"]{background:#ebf8f0}
+.btd-table tbody th{font-family:ui-monospace,monospace;font-weight:750;color:#1a4569;white-space:nowrap}
+.btd-table td:nth-child(2){max-width:170px;min-width:115px}
+.btd-table td:nth-child(3){min-width:115px}
+.btd-table .btd-number{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
+.btd-table .btd-reason{min-width:200px;max-width:320px;color:#526981}
+.btd-row-state{font-weight:650}
+.btd-table tr[data-stage="selected"] .btd-row-state{color:#16704c}
+.btd-table tr[data-stage="historical_detail_missing"] .btd-row-state{color:#728093;font-weight:450}
+.btd-more{margin:10px 12px}
+@media(max-width:700px){
+ .btd-funnel{grid-template-columns:repeat(3,minmax(0,1fr))}
+ .btd-universe-top{flex-wrap:wrap}
+ .btd-toolbar>span{margin-left:0}
+ .btd-table-wrap{max-height:65vh}
+}
