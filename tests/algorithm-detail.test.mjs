@@ -1066,3 +1066,46 @@ test("Buy The Dip paper status is treated as optional but strictly validated evi
  assert.ok(exporter.includes('last_fill_session'));
  assert.ok(exporter.includes('strategy_runtime/buy_the_dip_strategy.json'));
 });
+
+
+test("Buy The Dip displays the original monthly funnel and a compact sortable company table, not playback",async()=>{
+ const {runInNewContext}=await import("node:vm");
+ const results=[
+  {ticker:"AOS",name:"A. O. Smith",sector:"Industrials",status:"selected",score:79.8822,
+   valuation:84.7596,quality:70.5889,allocation:79.8077,dislocation:81.8269,
+   catalysts:4,weight:.13567211,reasons:[],eligible:null},
+  {ticker:"ABT",name:"Abbott Laboratories",sector:"Health Care",
+   status:"historical_detail_missing",score:null,valuation:null,quality:null,
+   allocation:null,dislocation:null,catalysts:null,weight:null,reasons:[],eligible:null},
+  {ticker:"ABBV",name:"AbbVie",sector:"Health Care",
+   status:"historical_detail_missing",score:null,valuation:null,quality:null,
+   allocation:null,dislocation:null,catalysts:null,weight:null,reasons:[],eligible:null}
+ ];
+ const ctx={signalFeed:{tracks:{"IL-039":{universe_review:{
+  mode:"historical_partial",decision_session:"2026-10-30",
+  coverage:{universe:503,price_usable:486,scored:348,eligible:42,selected:10},
+  rows:results
+ }}}},tradingFilter:{ticker:""},
+ btdTableView:{status:"all",sort:"score",limit:50},shortPaperDate:s=>s,
+ esc:s=>String(s),Intl};
+ const a=source.indexOf("const btdStatuses=");
+ const b=source.indexOf("function terminalHTML(){",a);
+ assert.ok(a>=0&&b>a,"missing compact review");
+ runInNewContext(source.slice(a,b)+";this.view=btdUniverseHTML;this.rows=btdUniverseRows;",ctx);
+ const html=ctx.view();
+ for(const label of ["503","486","348","42","10","A. O. Smith","Abbott Laboratories",
+  "Sin desglose individual conservado","Archivo histórico incompleto","btd-table"])
+  assert.ok(html.includes(label),label);
+ assert.ok(!html.includes("Reproducir"),"The review must be a readable table, not animation");
+ assert.equal(ctx.rows(ctx.signalFeed.tracks["IL-039"].universe_review,"","selected").length,1);
+ assert.equal(ctx.rows(ctx.signalFeed.tracks["IL-039"].universe_review,"Abb","all").length,2);
+ assert.equal(ctx.rows(ctx.signalFeed.tracks["IL-039"].universe_review,"","unscored").length,2);
+ ctx.btdTableView.limit=1;
+ assert.match(ctx.view(),/Mostrar 50 más/);
+ assert.equal(ctx.rows(ctx.signalFeed.tracks["IL-039"].universe_review,"","all","ticker")[0].ticker,"ABBV");
+ const site=readFileSync(new URL("../src/site.mjs",import.meta.url),"utf8");
+ assert.ok(site.includes('if(tradingFilter.slot==="IL-039")return buyDipHealthHTML()+btdUniverseHTML()'));
+ assert.ok(site.includes('tradingFilter.slot==="IL-039";'));
+ assert.ok(site.includes('el.id==="btd-status"'));
+ assert.ok(site.includes('action==="btd-more"'));
+});

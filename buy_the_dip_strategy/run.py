@@ -74,6 +74,81 @@ def _decision_due(state, asof, is_month_end):
     return _month_index(asof) - _month_index(state["last_signal_session"]) >= 2
 
 
+def _universe_review(asof, sectors, panel, fundamentals, scored, target_weights, config):
+    """Persist derived point-in-time ranking outcomes for all frozen symbols.
+
+    No provider raw financials, OHLC bars or post-decision features are emitted.
+    This is a diagnostic of the existing decision, not a second decision engine.
+    """
+    import math
+    if len(sectors) != 503 or len(set(sectors)) != len(sectors):
+        raise ValueError("Review needs the exact frozen 503-symbol universe")
+    scored_map = {row["ticker"]: row for row in scored}
+    model = config["model"]
+
+    def score(value):
+        return round(float(value), 4) if (
+            isinstance(value, (int, float)) and not isinstance(value, bool)
+            and math.isfinite(value) and 0 <= value <= 100) else None
+
+    output = []
+    for ticker, sector in sorted(sectors.items()):
+        row = scored_map.get(ticker)
+        reasons = []
+        if row is None:
+            status = ("missing_price" if ticker not in panel else
+                      "missing_fundamentals" if ticker not in fundamentals else "missing_features")
+        elif ticker in target_weights:
+            status = "selected"
+        elif row.get("entry_eligible"):
+            status = "eligible_not_selected"
+        else:
+            status = "rules_rejected"
+            if not row.get("survival_gate"):
+                reasons.append("survival")
+            if score(row.get("valuation_score")) is None or row["valuation_score"] < model["minimum_valuation_score"]:
+                reasons.append("valuation")
+            if score(row.get("quality_score")) is None or row["quality_score"] < model["minimum_quality_score"]:
+                reasons.append("quality")
+            if row.get("catalyst_votes", 0) < model["minimum_catalyst_votes"]:
+                reasons.append("catalysts")
+            if not ((score(row.get("dislocation_score")) is not None and
+                     row["dislocation_score"] >= model["minimum_dislocation_score"]) or
+                    (score(row.get("valuation_score")) is not None and row["valuation_score"] >= 70.0)):
+                reasons.append("opportunity")
+            if score(row.get("composite_score")) is None or row["composite_score"] < model["entry_score"]:
+                reasons.append("composite")
+            if not reasons:
+                reasons.append("other_entry_rule")
+
+        output.append({
+            "ticker": ticker, "sector": sector, "status": status,
+            "score": score(row.get("composite_score")) if row else None,
+            "valuation": score(row.get("valuation_score")) if row else None,
+            "quality": score(row.get("quality_score")) if row else None,
+            "allocation": score(row.get("capital_allocation_score")) if row else None,
+            "dislocation": score(row.get("dislocation_score")) if row else None,
+            "catalysts": int(row["catalyst_votes"]) if row else None,
+            "eligible": bool(row["entry_eligible"]) if row else None,
+            "weight": round(float(target_weights[ticker]), 8) if ticker in target_weights else None,
+            "reasons": reasons,
+        })
+    if (len(output) != len(sectors)
+            or sum(row["status"] in ("selected", "eligible_not_selected", "rules_rejected") for row in output) != len(scored)
+            or sum(row["eligible"] is True for row in output) != sum(bool(x["entry_eligible"]) for x in scored)
+            or sum(row["status"] == "selected" for row in output) != len(target_weights)):
+        raise ValueError("Buy The Dip universe audit does not reconcile")
+    return {
+        "schema_version": 1, "decision_session": asof,
+        "universe_count": len(sectors),
+        "scored_count": len(scored),
+        "eligible_count": sum(bool(row["entry_eligible"]) for row in scored),
+        "selected_count": len(target_weights),
+        "rows": output,
+        "note": "Only derived frozen-decision scores; no raw market or fundamental feed.",
+    }
+
+
 def _build_decision(config, state, asof, context, panel, sectors, fundamentals,
                     price_failures, fundamental_failures):
     benchmark = config["benchmark_ticker"]
@@ -118,7 +193,7 @@ def _build_decision(config, state, asof, context, panel, sectors, fundamentals,
         })
     selected.sort(key=lambda x: (-x["composite_score"], x["ticker"]))
 
-    return {
+    decision = {
         "signal_date": asof,
         "expected_fill_session": context["next_session"],
         "target_weights": target_weights,
@@ -138,6 +213,8 @@ def _build_decision(config, state, asof, context, panel, sectors, fundamentals,
             "fundamental_failures": len(fundamental_failures),
         },
     }
+    review = _universe_review(asof, sectors, panel, fundamentals, scored, target_weights, config)
+    return decision, review
 
 
 def run(config_path, output_dir, now=None):
@@ -193,16 +270,19 @@ def run(config_path, output_dir, now=None):
             [ticker for ticker in symbols if ticker in panel], sectors,
             asof=asof, workers=int(config.get("fundamental_workers", 8)),
         )
-        decision = _build_decision(
+        decision, universe_review = _build_decision(
             config, state, asof, context, panel, sectors, fundamentals,
             price_failures, fundamental_failures,
         )
+        universe_review["universe_hash"] = universe_hash
+        universe_review["config_hash"] = _file_hash(config_path)
     else:
         requested = (symbols + ([benchmark] if benchmark not in symbols else [])
                      if replay_signal else sorted(active | {benchmark}))
         # Daily passive marks need no independent RAW provider download.
         panel, price_failures = {}, {}
         decision = None
+        universe_review = None
         fundamental_failures = {}
 
     if due or replay_signal:
@@ -221,6 +301,8 @@ def run(config_path, output_dir, now=None):
         _atomic_json(state_path, updated)
         if decision is not None:
             _atomic_json(output / "signals" / f"{asof}.json", decision)
+            # Diagnostic attached to this original signal, not recomputed later.
+            _atomic_json(output / "universe_reviews" / f"{asof}.json", universe_review)
 
     return {
         "status": "ok",

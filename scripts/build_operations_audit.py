@@ -7,6 +7,7 @@ Inferred holds are visibly identified and are NOT original trading decisions.
 """
 from __future__ import annotations
 import argparse
+import csv
 from datetime import datetime, timezone
 import hashlib
 import json
@@ -522,6 +523,99 @@ def buy_the_dip_monitor(book, *, read_runtime=read):
             "last_run": last_run}
 
 
+def buy_dip_universe(book, *, read_review=read):
+    """Read only saved monthly evidence. Older runs have incomplete per-name detail."""
+    if not isinstance(book, dict):
+        return None
+    signal = next((record for record in reversed(book.get("signals") or [])
+                   if date(record.get("date"))), None)
+    if not signal:
+        return None
+    asof = date(signal["date"])
+    coverage = signal.get("coverage") or {}
+    if (coverage.get("frozen_universe") != 503 or
+            type(coverage.get("scored")) is not int or
+            type(coverage.get("entry_eligible")) is not int):
+        return None
+    if not 0 <= coverage["entry_eligible"] <= coverage["scored"] <= 503:
+        return None
+    universe_path = ROOT / "weekly_ml/universe_sp500_2026-09-29.csv"
+    if not universe_path.is_file():
+        return None
+    raw = universe_path.read_bytes()
+    if hashlib.sha256(raw).hexdigest() != book.get("universe_hash"):
+        raise ValueError("Buy The Dip universe changed relative to frozen ledger")
+    with universe_path.open(encoding="utf-8", newline="") as stream:
+        records = list(csv.DictReader(stream))
+    entities = {item.get("symbol"): item for item in records if clean_ticker(item.get("symbol"))}
+    if len(entities) != 503 or len(records) != len(entities):
+        raise ValueError("Buy The Dip frozen universe must contain 503 unique symbols")
+    selected = {r["ticker"]: r for r in signal.get("selected", [])
+                if isinstance(r, dict) and clean_ticker(r.get("ticker"))}
+    if len(selected) > 10 or not set(selected) <= set(entities):
+        raise ValueError("Selected symbols mismatch the frozen universe")
+
+    path = f"buy_the_dip_state/universe_reviews/{asof}.json"
+    review, digest = read_review(path)
+    if review is not None:
+        if (review.get("schema_version") != 1 or review.get("decision_session") != asof
+                or review.get("universe_hash") != book.get("universe_hash")
+                or review.get("universe_count") != len(entities)
+                or review.get("scored_count") != coverage["scored"]
+                or review.get("eligible_count") != coverage["entry_eligible"]
+                or review.get("selected_count") != len(selected)
+                or not isinstance(review.get("rows"), list)
+                or len(review["rows"]) != len(entities)):
+            raise ValueError("Buy The Dip monthly universe review does not reconcile")
+        rows = []
+        for item in review["rows"]:
+            if not isinstance(item, dict) or item.get("ticker") not in entities:
+                raise ValueError("Invalid Buy The Dip review ticker")
+            original = entities[item["ticker"]]
+            if original["sector"] != item.get("sector"):
+                raise ValueError("Changed sector in Buy The Dip review")
+            rows.append({**item, "name": original["security"]})
+        if len({row["ticker"] for row in rows}) != 503:
+            raise ValueError("Duplicate ticker in Buy The Dip review")
+        complete = True
+    else:
+        if (ROOT / path).exists():
+            raise ValueError("Present Buy The Dip review is unreadable")
+        # Scores of the 338 other scored firms were never stored; do not
+        # reconstruct them from today's fundamentals and pretend point-in-time.
+        def historical_row(ticker, item):
+            return {
+                "ticker": ticker, "name": item["security"], "sector": item["sector"],
+                "status": "selected" if ticker in selected else "historical_detail_missing",
+                "score": number(selected[ticker].get("composite_score")) if ticker in selected else None,
+                "valuation": number(selected[ticker].get("valuation_score")) if ticker in selected else None,
+                "quality": number(selected[ticker].get("quality_score")) if ticker in selected else None,
+                "allocation": number(selected[ticker].get("capital_allocation_score")) if ticker in selected else None,
+                "dislocation": number(selected[ticker].get("dislocation_score")) if ticker in selected else None,
+                "catalysts": selected[ticker].get("catalyst_votes") if ticker in selected else None,
+                "weight": selected[ticker].get("weight") if ticker in selected else None,
+                "eligible": None,
+                "reasons": [],
+            }
+        rows = [historical_row(t, item) for t, item in sorted(entities.items())]
+        complete = False
+
+    return {
+        "schema": "btd_monthly_universe_v1",
+        "mode": "complete" if complete else "historical_partial",
+        "decision_session": asof,
+        "coverage": {
+            "universe": 503,
+            "price_usable": coverage.get("price_usable"),
+            "scored": coverage["scored"],
+            "eligible": coverage["entry_eligible"],
+            "selected": len(selected),
+        },
+        "rows": rows,
+        "source": "contemporaneous_review" if complete else "archived_selected_only",
+    }
+
+
 def live_book(original, book, source, parent, key=None):
     latest = date(original.get("last_session"))
     base = {"label": original["label"], "currency": original.get("currency"),
@@ -546,7 +640,8 @@ def live_book(original, book, source, parent, key=None):
     executions = [{"ticker": item["ticker"], "action": item["side"], "price": item["price"],
                    "decision_session": item["signal_date"]} for item in actions]
     return {**base, "session": latest, "decision_session": decision, "signals": signals,
-            **({"monitor": buy_the_dip_monitor(book)}
+            **({"monitor": buy_the_dip_monitor(book),
+                "universe_review": buy_dip_universe(book)}
                if source == "buy_the_dip_state/ledger.json" else {}),
             "status": "paused" if pause else "recorded",
             "pause_date": date(pause.get("date")) if isinstance(pause, dict) else None,

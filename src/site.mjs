@@ -351,6 +351,50 @@ function verifyLiveSignals(doc){
       !Number.isFinite(Date.parse(run.recorded_at_utc))))
     throw Error("Ejecución de Buy The Dip no verificable");
   }
+
+  const universe=track.universe_review;
+  if(universe!==undefined&&universe!==null){
+   if(id!=="IL-039"||universe.schema!=="btd_monthly_universe_v1"||
+      !["complete","historical_partial"].includes(universe.mode)||
+      !signalDate(universe.decision_session)||universe.decision_session!==track.analysis?.date||
+      !["contemporaneous_review","archived_selected_only"].includes(universe.source)||
+      !universe.coverage||universe.coverage.universe!==503||
+      ![universe.coverage.price_usable,universe.coverage.scored,
+        universe.coverage.eligible,universe.coverage.selected].every(x=>Number.isInteger(x)&&x>=0&&x<=503)||
+      universe.coverage.eligible>universe.coverage.scored||
+      universe.coverage.scored>universe.coverage.price_usable||
+      !Array.isArray(universe.rows)||universe.rows.length!==503)throw Error("Universo mensual de Buy The Dip no verificable");
+   const tickers=new Set();
+   const allowed=new Set(["selected","eligible_not_selected","rules_rejected",
+      "missing_price","missing_fundamentals","missing_features","historical_detail_missing"]);
+   const validScore=x=>x===null||typeof x==="number"&&Number.isFinite(x)&&x>=0&&x<=100;
+   const validWeight=x=>x===null||typeof x==="number"&&Number.isFinite(x)&&x>=0&&x<=1;
+   const validReason=new Set(["survival","valuation","quality","catalysts",
+      "opportunity","composite","other_entry_rule"]);
+   let selected=0,known=0,eligible=0;
+   for(const row of universe.rows){
+    if(!validSignalTicker(row.ticker)||tickers.has(row.ticker)||
+       typeof row.name!=="string"||row.name.length>130||
+       typeof row.sector!=="string"||row.sector.length>90||
+       !allowed.has(row.status)||!["selected","historical_detail_missing"].includes(row.status)&&universe.mode==="historical_partial"||
+       ![row.score,row.valuation,row.quality,row.allocation,row.dislocation].every(validScore)||
+       !validWeight(row.weight)||!(row.catalysts===null||Number.isInteger(row.catalysts)&&row.catalysts>=0&&row.catalysts<=5)||
+       !(row.eligible===null||typeof row.eligible==="boolean")||
+       !Array.isArray(row.reasons)||row.reasons.length>8||
+       row.reasons.some(code=>!validReason.has(code))||
+       row.status==="selected"&&row.weight===null||
+       row.status!=="selected"&&row.weight!==null)throw Error("Fila del universo Buy The Dip no verificable");
+    tickers.add(row.ticker);
+    if(row.status==="selected")selected++;
+    if(["selected","eligible_not_selected","rules_rejected"].includes(row.status))known++;
+    if(row.eligible===true)eligible++;
+   }
+   if(selected!==universe.coverage.selected||(
+      universe.mode==="complete"&&(known!==universe.coverage.scored||eligible!==universe.coverage.eligible))||
+      (universe.mode==="historical_partial"&&
+        (known!==selected||universe.source!=="archived_selected_only")))throw Error("Cobertura individual incoherente con el libro mensual");
+  }
+
   const trace=track.analysis;
   if(trace!=null&&(!signalDate(trace.date)||!["classic","ahp","monthly"].includes(trace.method)||
     !(trace.excluded===null||Number.isSafeInteger(trace.excluded)&&trace.excluded>=0)||
@@ -856,6 +900,7 @@ function deskResults(model){
 }
 
 const terminalState={mode:"signals",useLatest:false,count:0,stage:0,timer:null,activity:new Map(),pending:new Set()};
+const btdTableView={status:"all",sort:"score",limit:50};
 const terminalLabels={
  buy:"Regla de compra activada",sell:"Regla de venta activada",no_trigger:"Sin activación de regla",
  selected:"Seleccionada",passed:"Superó el filtro técnico",filtered:"Descartada en el filtro técnico",
@@ -962,9 +1007,98 @@ async function refreshTerminalActivity(force=false){
   paintTerminalActivity();
  }
 }
+const btdStatuses={
+ selected:"Seleccionada",eligible_not_selected:"Elegible · fuera de cartera",
+ rules_rejected:"No superó los filtros",missing_price:"Sin histórico de precios",
+ missing_fundamentals:"Sin fundamentales válidos",missing_features:"Sin variables suficientes",
+ historical_detail_missing:"Sin desglose individual conservado",
+};
+const btdReasons={
+ survival:"Viabilidad/solvencia",valuation:"Valoración mínima",quality:"Calidad mínima",
+ catalysts:"Catalizadores insuficientes",opportunity:"Sin dislocación u oportunidad",
+ composite:"Puntuación global insuficiente",other_entry_rule:"Otro criterio de entrada",
+};
+function btdUniverseRows(review,query="",status="all",sort="score"){
+ const q=query.trim().toLocaleUpperCase("es-ES");
+ const rows=(review?.rows||[]).filter(row=>
+  (status==="all"||status==="unscored"&&["missing_price","missing_fundamentals","missing_features",
+  "historical_detail_missing"].includes(row.status)||row.status===status)&&
+  (!q||row.ticker.includes(q)||row.name.toLocaleUpperCase("es-ES").includes(q)));
+ return rows.sort((a,b)=>{
+  if(sort==="ticker")return a.ticker.localeCompare(b.ticker);
+  if(sort==="sector")return a.sector.localeCompare(b.sector)||a.ticker.localeCompare(b.ticker);
+  const x=a.score,y=b.score;
+  return (y===null)-(x===null)||((y??0)-(x??0))||a.ticker.localeCompare(b.ticker);
+ });
+}
+function btdUniverseHTML(){
+ const review=signalFeed?.tracks?.["IL-039"]?.universe_review;
+ if(!review)return '<section class="btd-universe"><div id="terminal-activity"></div>'+
+  '<p>No existe un registro verificable del universo mensual.</p></section>';
+ const count=review.coverage;
+ const rows=btdUniverseRows(review,tradingFilter.ticker,btdTableView.status,btdTableView.sort);
+ const shown=rows.slice(0,btdTableView.limit);
+ const number=new Intl.NumberFormat("es-ES",{maximumFractionDigits:1});
+ const pct=new Intl.NumberFormat("es-ES",{style:"percent",maximumFractionDigits:1});
+ const fmt=n=>n===null?"—":number.format(n);
+ const options=Object.entries({all:"Todas las empresas",selected:"Seleccionadas",
+   eligible_not_selected:"Elegibles no seleccionadas",rules_rejected:"No superaron filtros",
+   unscored:"Sin puntuación o detalle histórico"}).map(([key,label])=>'<option value="'+key+'"'+
+   (key===btdTableView.status?' selected':'')+'>'+esc(label)+'</option>').join("");
+ const sorts=Object.entries({score:"Puntuación descendente",ticker:"Ticker A–Z",sector:"Por sector"})
+  .map(([key,label])=>'<option value="'+key+'"'+(key===btdTableView.sort?' selected':'')+'>'+esc(label)+'</option>').join("");
+ const body=shown.map(row=>{
+  const note=row.status==="historical_detail_missing"?
+   "No consta el resultado individual de esta empresa en el análisis histórico":
+   row.status==="eligible_not_selected"?
+   "Superó filtros; no entró tras ranking y restricciones de cartera":
+   row.status==="selected"?"Asignación documentada en el rebalanceo":
+   row.status==="rules_rejected"?
+   (row.reasons.length?row.reasons.map(x=>btdReasons[x]).join(" · "):"Descartada por filtros"):
+   btdStatuses[row.status];
+  return '<tr data-stage="'+esc(row.status)+'">'+
+   '<th scope="row">'+esc(row.ticker)+'</th><td>'+esc(row.name)+'</td>'+
+   '<td><span class="btd-row-state">'+esc(btdStatuses[row.status])+'</span></td>'+
+   '<td class="btd-number"><strong>'+fmt(row.score)+'</strong></td>'+
+   '<td class="btd-number">'+fmt(row.valuation)+'</td>'+
+   '<td class="btd-number">'+fmt(row.quality)+'</td>'+
+   '<td class="btd-number">'+fmt(row.allocation)+'</td>'+
+   '<td class="btd-number">'+fmt(row.dislocation)+'</td>'+
+   '<td class="btd-number">'+(row.catalysts===null?"—":row.catalysts+"/5")+'</td>'+
+   '<td class="btd-number">'+(row.weight===null?"—":pct.format(row.weight))+'</td>'+
+   '<td class="btd-reason">'+esc(note)+'</td></tr>';
+ }).join("");
+ return '<section class="btd-universe" aria-label="Evaluación de las 503 empresas">'+
+  '<div id="terminal-activity"></div>'+
+  '<div class="btd-universe-top"><div><h3>Evaluación del universo · '+esc(shortPaperDate(review.decision_session))+
+  '</h3><p>Recorrido de las empresas del universo congelado. Se analiza la cartera al cierre mensual; entre rebalanceos solo se valora diariamente.</p></div>'+
+  '<a href="./index.html?view=algorithm&amp;algorithm=IL-039">Reglas del modelo</a></div>'+
+  '<div class="btd-funnel"><span><strong>'+count.universe+'</strong> empresas</span>'+
+  '<span><strong>'+count.price_usable+'</strong> con precios</span>'+
+  '<span><strong>'+count.scored+'</strong> puntuadas</span>'+
+  '<span><strong>'+count.eligible+'</strong> elegibles</span>'+
+  '<span><strong>'+count.selected+'</strong> en cartera</span></div>'+
+  (review.mode==="historical_partial"?
+   '<p class="btd-warning">Archivo histórico incompleto: solo se conservaron puntuaciones individuales de las seleccionadas. '+
+   'El detalle de las otras empresas no puede reconstruirse sin introducir información posterior. '+
+   'Los próximos análisis mensuales registrarán cada empresa, sus filtros y sus puntuaciones.</p>':
+   '<p class="btd-note">Desglose de decisión grabado en la evaluación original, con valores derivados y motivos de exclusión.</p>')+
+  '<div class="btd-toolbar"><label>Estado<select id="btd-status">'+options+'</select></label>'+
+  '<label>Ordenar<select id="btd-sort">'+sorts+'</select></label>'+
+  '<span>'+rows.length+' empresas · '+shown.length+' visibles</span></div>'+
+  '<div class="btd-table-wrap"><table class="btd-table"><thead><tr>'+
+  '<th>Ticker</th><th>Empresa</th><th>Resultado</th><th>Total</th><th>Valor.</th>'+
+  '<th>Calidad</th><th>Asign.</th><th>Disloc.</th><th>Catal.</th><th>Peso</th><th>Justificación</th>'+
+  '</tr></thead><tbody>'+body+'</tbody></table></div>'+
+  (shown.length<rows.length?'<button type="button" class="btd-more outline-btn" data-action="btd-more">'+
+   'Mostrar 50 más ('+(rows.length-shown.length)+' restantes)</button>':'')+
+  '</section>';
+}
+
 function terminalHTML(){
  const track=signalFeed?.tracks[tradingFilter.slot];
  if(!track)return '<p class="trading-empty">Selecciona un algoritmo para ver su actividad y recorrer las empresas registradas.</p>';
+ if(tradingFilter.slot==="IL-039")return buyDipHealthHTML()+btdUniverseHTML();
  const {trace,rows}=terminalRows();
  const notes={
   classic:"Resultados de la regla por empresa, antes de aplicar los límites de la cartera.",
@@ -1266,6 +1400,8 @@ function paintTradingRoom(){
  date.disabled=!tradingDay();
  algorithm.disabled=!signalFeed;
  const terminal=terminalState.mode==="terminal";
+ const searchLabel=document.querySelector('label[for="trading-ticker"]');
+ if(searchLabel)searchLabel.textContent=terminal&&tradingFilter.slot==="IL-039"?"Ticker o empresa":"Ticker";
  $("terminal-algorithm-picker").hidden=!terminal;
  $("desk-algorithm-picker").hidden=terminal;
  $("desk-phase-picker").hidden=terminal;
@@ -1290,13 +1426,18 @@ function paintTradingRoom(){
   tab.setAttribute("aria-pressed",String(tab.dataset.value===terminalState.mode));
  }
  document.querySelector(".trading-filters").hidden=terminal;
- $("terminal-map").hidden=!terminal||!signalFeed;
+ $("terminal-map").hidden=!terminal||!signalFeed||tradingFilter.slot==="IL-039";
  if(terminal){
-  paintTerminalMap();
+  if(tradingFilter.slot!=="IL-039")paintTerminalMap();
   const content=terminalHTML();
   if(results.dataset.terminal!==content){
+   const priorScroll=results.querySelector(".btd-table-wrap")?.scrollTop??0;
    results.innerHTML=content;
    results.dataset.terminal=content;
+   if(tradingFilter.slot==="IL-039"){
+    const view=results.querySelector(".btd-table-wrap");
+    if(view)view.scrollTop=priorScroll;
+   }
   }
   paintTerminalRows();
   paintTerminalActivity();
@@ -2210,6 +2351,7 @@ $("app").addEventListener("click",e=>{
   resetTerminal();terminalState.useLatest=value==="latest";paintTradingRoom();
  }
  else if(["terminal-play","terminal-all","terminal-next"].includes(action)){runTerminalPlayback(action);}
+ else if(action==="btd-more"){btdTableView.limit+=50;paintTradingRoom();}
  else if(action==="desk-reset"){tradingDesk.slots.clear();paintTradingRoom();}
  else if(action==="trading-side"&&Object.hasOwn(tradingSides,value)){
   tradingFilter.side=value;paintTradingRoom();
@@ -2308,6 +2450,12 @@ $("app").addEventListener("change",e=>{
   resetTerminal();terminalState.useLatest=false;tradingFilter.date=el.value;paintTradingRoom();
  }
  if(el.id==="trading-algorithm"){selectTerminalAlgorithm(el.value);paintTradingRoom();}
+ if(el.id==="btd-status"&&["all","selected","eligible_not_selected","rules_rejected","unscored"].includes(el.value)){
+  btdTableView.status=el.value;btdTableView.limit=50;paintTradingRoom();
+ }
+ if(el.id==="btd-sort"&&["score","ticker","sector"].includes(el.value)){
+  btdTableView.sort=el.value;btdTableView.limit=50;paintTradingRoom();
+ }
  if(el.id==="desk-phase"&&Object.hasOwn(deskPhases,el.value)){tradingDesk.phase=el.value;paintTradingRoom();}
  if(el.dataset.deskAlgorithm&&signalFeed?.tracks[el.dataset.deskAlgorithm]){
   if(el.checked)tradingDesk.slots.add(el.dataset.deskAlgorithm);
@@ -2365,7 +2513,7 @@ $("app").addEventListener("submit",e=>{
 });
 document.querySelectorAll(".product-tabs [data-view]").forEach(b=>b.addEventListener("click",()=>{state.detailOpen=false;go(b.dataset.view);}));
 function selectTerminalAlgorithm(slot){
- resetTerminal();terminalState.useLatest=false;tradingFilter.slot=slot;
+ resetTerminal();btdTableView.limit=50;btdTableView.status="all";terminalState.useLatest=false;tradingFilter.slot=slot;
  expandedFamily=mapFamily(slot)?.id||null;
  const url=new URL(location.href);
  if(slot)url.searchParams.set("algorithm",slot);

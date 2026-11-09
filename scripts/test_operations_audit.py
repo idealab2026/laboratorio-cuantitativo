@@ -1,6 +1,6 @@
 """Offline regression for the audited operations evidence exporter."""
 import unittest
-from build_operations_audit import build, normalize_ledger, rule_reason, price_history, pending_signals, live_book, buy_the_dip_monitor
+from build_operations_audit import build, normalize_ledger, rule_reason, price_history, pending_signals, live_book, buy_the_dip_monitor, buy_dip_universe, read
 
 class OperationsAuditTests(unittest.TestCase):
     @classmethod
@@ -33,6 +33,61 @@ class OperationsAuditTests(unittest.TestCase):
         self.assertIsNone(buy_the_dip_monitor(bad, read_runtime=lambda _: (run, None)))
         no_run = buy_the_dip_monitor(book, read_runtime=lambda _: ({"outcome": "success"}, None))
         self.assertIsNone(no_run["last_run"])
+
+    def test_503_universe_is_honest_about_missing_historical_detail(self):
+        ledger, _ = read("buy_the_dip_state/ledger.json")
+        review = buy_dip_universe(ledger)
+        self.assertEqual(review["mode"], "historical_partial")
+        self.assertEqual(review["decision_session"], "2026-10-30")
+        self.assertEqual(review["coverage"]["universe"], 503)
+        self.assertEqual(review["coverage"]["scored"], 348)
+        self.assertEqual(review["coverage"]["eligible"], 42)
+        self.assertEqual(review["coverage"]["selected"], 10)
+        self.assertEqual(len(review["rows"]), 503)
+        self.assertEqual(len({r["ticker"] for r in review["rows"]}), 503)
+        self.assertEqual(sum(r["status"] == "selected" for r in review["rows"]), 10)
+        self.assertEqual(sum(r["status"] == "historical_detail_missing" for r in review["rows"]), 493)
+        self.assertTrue(all(r["score"] is None for r in review["rows"]
+                            if r["status"] == "historical_detail_missing"))
+        self.assertTrue(all("name" in r and "sector" in r for r in review["rows"]))
+
+    def test_503_universe_complete_future_review_must_reconcile(self):
+        ledger, _ = read("buy_the_dip_state/ledger.json")
+        archive = buy_dip_universe(ledger)
+        rows = [dict(x) for x in archive["rows"]]
+        selected = {row["ticker"] for row in rows if row["status"] == "selected"}
+        # A synthetic complete document must still be consistent with the
+        # saved signal counts and distinct historical names.
+        scored_added = 348 - len(selected)
+        eligible_added = 42
+        others = [row for row in rows if row["ticker"] not in selected]
+        for idx, row in enumerate(others):
+            if idx < scored_added:
+                row.update(status="eligible_not_selected" if idx < eligible_added else "rules_rejected",
+                           score=70.0, valuation=60.0, quality=70.0, allocation=60.0,
+                           dislocation=70.0, catalysts=3,
+                           eligible=idx < eligible_added,
+                           reasons=[] if idx < eligible_added else ["other_entry_rule"])
+            else:
+                row.update(status="missing_fundamentals")
+        doc = {
+            "schema_version": 1, "decision_session": "2026-10-30",
+            "universe_hash": ledger["universe_hash"], "universe_count": 503,
+            "scored_count": 348, "eligible_count": 42, "selected_count": 10,
+            "rows": [{k: v for k, v in row.items() if k != "name"} for row in rows]
+        }
+        for row in doc["rows"]:
+            if row["status"] == "selected":
+                # Historical eligibility wasn't retained; a future review
+                # records it explicitly, and its count must reconcile.
+                row["eligible"] = False
+        verified = buy_dip_universe(ledger, read_review=lambda path: (doc, "sha"))
+        self.assertEqual(verified["mode"], "complete")
+        self.assertEqual(verified["coverage"]["selected"], 10)
+        self.assertEqual(len(verified["rows"]), 503)
+        bad = dict(doc, scored_count=347)
+        with self.assertRaises(ValueError):
+            buy_dip_universe(ledger, read_review=lambda path: (bad, "sha"))
 
     def test_live_signals_distinguish_target_weights_from_orders_and_fills(self):
         current = {"positions": {"KEEP": {}, "EXIT": {}}, "pending": {

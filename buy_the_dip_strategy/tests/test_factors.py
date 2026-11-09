@@ -6,6 +6,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 from factors import choose_portfolio, months_between
+from run import _universe_review
 
 
 class FactorPolicyTests(unittest.TestCase):
@@ -67,6 +68,40 @@ class FactorPolicyTests(unittest.TestCase):
         self.assertNotIn("YOUNG", exits)
         self.assertEqual(invest_fraction, 0.50)
 
+
+    def test_full_frozen_universe_captures_every_outcome_without_market_data(self):
+        sectors = {f"X{n:03d}": "Industrials" for n in range(503)}
+        scored = [{
+            "ticker": "X000", "sector": "Industrials", "entry_eligible": True,
+            "survival_gate": True, "valuation_score": 86.0,
+            "quality_score": 70.0, "capital_allocation_score": 62.0,
+            "dislocation_score": 90.0, "composite_score": 79.0,
+            "catalyst_votes": 4,
+        }, {
+            "ticker": "X001", "sector": "Industrials", "entry_eligible": False,
+            "survival_gate": True, "valuation_score": 30.0,
+            "quality_score": 30.0, "capital_allocation_score": 44.0,
+            "dislocation_score": 8.0, "composite_score": 28.0,
+            "catalyst_votes": 0,
+        }]
+        market = {"X000": object(), "X001": object(), "X002": object()}
+        fundamentals = {"X000": object(), "X001": object()}
+        review = _universe_review("2026-11-30", sectors, market,
+                                  fundamentals, scored, {"X000": 0.10}, self.config)
+        by = {row["ticker"]: row for row in review["rows"]}
+        self.assertEqual(review["universe_count"], 503)
+        self.assertEqual(review["scored_count"], 2)
+        self.assertEqual(review["eligible_count"], 1)
+        self.assertEqual(by["X000"]["status"], "selected")
+        self.assertEqual(by["X000"]["weight"], 0.1)
+        self.assertEqual(by["X001"]["status"], "rules_rejected")
+        self.assertIn("valuation", by["X001"]["reasons"])
+        self.assertIn("quality", by["X001"]["reasons"])
+        self.assertEqual(by["X002"]["status"], "missing_fundamentals")
+        self.assertEqual(by["X003"]["status"], "missing_price")
+        self.assertIsNone(by["X003"]["score"])
+        self.assertNotIn("price", by["X001"])
+        self.assertNotIn("market_cap", by["X000"])
 
     def test_caps_are_respected(self):
         scored = [self.row(f"E{i}", 90-i, "Energy", vol=0.15) for i in range(6)]
