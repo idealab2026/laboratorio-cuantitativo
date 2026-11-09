@@ -79,7 +79,8 @@ def clock_plan(now, market, tracks, commit):
                 continue
             seen.add(ticker)
             orders.append({"ticker": ticker, "action": action, "signal_session": decision,
-                           "target_session": target, "target_weight": weight, "limit_price": limit})
+                           "target_session": target, "scheduled_at_utc": timestamp(market["open"]),
+                           "target_weight": weight, "limit_price": limit})
         slots[slot] = {
             "source_status": status, "source_session": source_session,
             "execution_ready": eligible,
