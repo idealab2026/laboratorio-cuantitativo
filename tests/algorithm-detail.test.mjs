@@ -1029,7 +1029,7 @@ test("Buy The Dip monitoring shows dated real paper accounting, holdings and las
  runInNewContext(source.slice(a,b)+";this.view=buyDipHealthHTML;",c);
  const html=c.view();
  for(const value of ["Buy The Dip · estado de la cartera simulada","109.098,01 USD",
-  "5.284,26 USD","ALGN","EPAM","2026-11-06","2026-10-30","2026-11-02",
+  "5284,26 USD","ALGN","EPAM","2026-11-06","2026-10-30","2026-11-02",
   "42341099381","Valoración auditada","Próxima revisión programada"])
   assert.ok(html.includes(value),"Missing dated status fact: "+value);
  assert.ok(!html.includes("Comprar ALGN"),"A holding is not a new purchase");
