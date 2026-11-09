@@ -953,6 +953,7 @@ test("manual trading refresh gives a visible outcome even if the published snaps
   verifyLiveSignals:doc=>doc,
   paintTradingRoom:()=>paints.push("room"),
   paintTradingRefresh:()=>paints.push("refresh"),
+  refreshForwardOpening:async()=>{},
   tradingDay:()=>null,
   $:()=>null
  };
