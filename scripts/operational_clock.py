@@ -261,6 +261,19 @@ def main(argv=None):
             return 2
         report = status_report(lock, now, market, quotes, prior,
                                run_id=os.environ.get("GITHUB_RUN_ID"))
+        from native_forward_settlement import settle_native
+        updated, evidence = settle_native(lock, now, market, quotes)
+        for ledger_path, book in updated.items():
+            _write(ROOT / ledger_path, book)
+        report["settlement"] = "native_monthly_settlement_038_039_other_engines_batch"
+        for slot, result in evidence.items():
+            lane = report["slots"][slot]
+            lane["native_settlement"] = result["status"]
+            if result["status"] == "settled_native_paper":
+                lane["status"] = "native_forward_settled"
+                lane["fills"] = result["operations"]
+                lane["fills_count"] = result["fills"]
+                lane["native_marker"] = result["marker"]
     _write(args.public, report)
     print(json.dumps({"status": args.stage, "session": report["session"],
                       "slots": len(report["slots"]),
