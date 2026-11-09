@@ -572,8 +572,9 @@ function paintTradingRefresh(){
  const message=$("trading-refresh-result"),button=$("trading-refresh-button");
  if(message){message.textContent=tradingRefreshFeedback();message.dataset.refreshState=signalRefresh.state;}
  if(button){
-  button.disabled=!!signalRequest;
-  button.textContent=signalRequest?"Comprobando…":"Actualizar";
+  const checking=signalRefresh.state==="checking"||!!signalRequest;
+  button.disabled=checking;
+  button.textContent=checking?"Comprobando…":"Actualizar";
  }
 }
 function tradingOrderPrice(order){
