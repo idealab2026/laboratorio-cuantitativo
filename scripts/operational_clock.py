@@ -266,11 +266,15 @@ def main(argv=None):
         report = status_report(lock, now, market, quotes, prior,
                                run_id=os.environ.get("GITHUB_RUN_ID"))
         from native_forward_settlement import settle_native
+        from forward_weekly_ml_settlement import settle_weekly
         updated, evidence = settle_native(lock, now, market, quotes)
-        for ledger_path, book in updated.items():
+        ml_updated, ml_evidence = settle_weekly(lock, now, market, quotes)
+        if set(updated) & set(ml_updated):
+            raise ValueError("Two native settlers attempted to own the same canonical book")
+        for ledger_path, book in {**updated, **ml_updated}.items():
             _write(ROOT / ledger_path, book)
-        report["settlement"] = "native_monthly_settlement_038_039_other_engines_batch"
-        for slot, result in evidence.items():
+        report["settlement"] = "native_forward_038_039_019_through_027_other_engines_batch"
+        for slot, result in {**evidence, **ml_evidence}.items():
             lane = report["slots"][slot]
             lane["native_settlement"] = result["status"]
             if result["status"] == "settled_native_paper":
