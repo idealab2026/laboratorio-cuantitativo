@@ -1,6 +1,6 @@
 # MIDAS: todas las ideas en paralelo
 
-Actualizado: 2026-11-10T02:09:55.982553+00:00. El tablero distingue resultados observados de ideas aún no ejecutadas.
+Actualizado: 2026-11-10T02:22:03.451567+00:00. El tablero distingue resultados observados de ideas aún no ejecutadas.
 
 La comparación principal sigue **rentabilidad acumulada + riesgo realizado**. Las campañas diarias, TFM, Weekly ML, TFG corregido, Capital Cycle, Buy The Dip y el diario genético antiguo **no forman una clasificación común** si sus fechas, divisas o reglas difieren.
 
@@ -49,7 +49,7 @@ La comparación principal sigue **rentabilidad acumulada + riesgo realizado**. L
 | Referencia SPY · EUR · inicio TimesFM | Referencia SPY buy & hold convertida a EUR · mismas fechas | demo_con_diario | 1 posición abierta | 2026-10-16 | 2026-11-09 | 1.85 % | -1.17 % | 19.61 % | -4.77 % | -0.85 |
 | TimesFM 2.5 · diario · S&P 500 · EUR | MIDAS 2026 · TimesFM 2.5 1 sesión · S&P 500 503 símbolos · EUR | demo_con_diario | 8 compras paper para próxima apertura | 2026-10-12 | 2026-11-09 | 1.12 % | -0.21 % | 12.06 % | -2.84 % | -0.16 |
 | Referencia SPY · EUR · inicio TimesFM diario | Referencia SPY en EUR, misma fecha y costes que TimesFM diario | demo_con_diario | 1 posición abierta | 2026-10-12 | 2026-11-09 | 1.29 % | -2.79 % | 17.78 % | -5.10 % | -1.92 |
-| Genético original S&P 500 | Agente genético S&P 500 original · 2026 | diario_heredado_observado | 8 posiciones · 5 órdenes para próxima apertura · Inactividad sin operaciones: 2026-10-29, 2026-10-30, 2026-11-02, 2026-11-03 · Reanudación desde apertura: 2026-11-04 | 2026-10-12 | 2026-11-06 | -1.07 % | 5.93 % | 20.98 % | -1.86 % | 3.75 |
+| Genético original S&P 500 | Agente genético S&P 500 original · 2026 | diario_heredado_observado | 10 posiciones abiertas · Inactividad sin operaciones: 2026-10-29, 2026-10-30, 2026-11-02, 2026-11-03 · Reanudación desde apertura: 2026-11-04 | 2026-10-12 | 2026-11-09 | 1.72 % | 7.75 % | 21.02 % | -1.86 % | 4.58 |
 | TFG 2021: filtros técnicos, AHP y rentabilidad/riesgo | TFG 2021 · MIDAS en R | sin_ejecucion_comparable | Actividad actual no enlazada | — | — | — | — | — | — | — |
 | MIDAS R cripto | MIDAS en R · experimento cripto | sin_ejecucion_comparable | Actividad actual no enlazada | — | — | — | — | — | — | — |
 | TFM: LightGBM (versión corregida 2026) | TFM · modelo reimplementado en 2026 | demo_con_diario | 3 compras para próxima apertura | 2026-10-02 | 2026-10-09 | -0.35 % | 0.09 % | — | -0.35 % | — |
