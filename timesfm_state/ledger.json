@@ -66,6 +66,10 @@
         {
           "date": "2026-11-06",
           "nav": 97034.56608462262
+        },
+        {
+          "date": "2026-11-09",
+          "nav": 98829.40908965694
         }
       ],
       "events": [
@@ -78,7 +82,7 @@
           "ticker": "SPY"
         }
       ],
-      "nav": 97034.56608462262,
+      "nav": 98829.40908965694,
       "pending": [],
       "positions": {
         "SPY": {
@@ -94,7 +98,7 @@
       "trades": []
     },
     "timesfm": {
-      "cash": 103117.13597887299,
+      "cash": 20623.42757056249,
       "equity": [
         {
           "date": "2026-10-16",
@@ -159,6 +163,10 @@
         {
           "date": "2026-11-06",
           "nav": 103117.13597887299
+        },
+        {
+          "date": "2026-11-09",
+          "nav": 103672.44559639841
         }
       ],
       "events": [
@@ -498,60 +506,148 @@
           "count": 8,
           "date": "2026-11-06",
           "event": "signal"
-        }
-      ],
-      "nav": 103117.13597887299,
-      "pending": [
+        },
         {
-          "predicted_return": 0.06240677833557129,
-          "score": 0.0202694565807685,
-          "signal_date": "2026-11-06",
+          "date": "2026-11-09",
+          "event": "buy",
+          "fx": 1.1228259801864624,
+          "price_eur": 285.5832120545959,
+          "shares": 36.07149,
           "ticker": "AXON"
         },
         {
-          "predicted_return": 0.04100978374481201,
-          "score": 0.014375372957358436,
-          "signal_date": "2026-11-06",
+          "date": "2026-11-09",
+          "event": "buy",
+          "fx": 1.1228259801864624,
+          "price_eur": 122.81414864400446,
+          "shares": 83.878057,
           "ticker": "JCI"
         },
         {
-          "predicted_return": 0.0548015832901001,
-          "score": 0.01275153916129211,
-          "signal_date": "2026-11-06",
+          "date": "2026-11-09",
+          "event": "buy",
+          "fx": 1.1228259801864624,
+          "price_eur": 25.038653253277676,
+          "shares": 411.420377,
           "ticker": "SMCI"
         },
         {
-          "predicted_return": 0.047130584716796875,
-          "score": 0.011828015992501176,
-          "signal_date": "2026-11-06",
+          "date": "2026-11-09",
+          "event": "buy",
+          "fx": 1.1228259801864624,
+          "price_eur": 48.188270299004756,
+          "shares": 213.774267,
           "ticker": "TRMB"
         },
         {
-          "predicted_return": 0.03765463829040527,
-          "score": 0.010243984170915585,
-          "signal_date": "2026-11-06",
+          "date": "2026-11-09",
+          "event": "buy",
+          "fx": 1.1228259801864624,
+          "price_eur": 26.063366466761092,
+          "shares": 395.244881,
           "ticker": "NWS"
         },
         {
-          "predicted_return": 0.030019164085388184,
-          "score": 0.007511852769127216,
-          "signal_date": "2026-11-06",
+          "date": "2026-11-09",
+          "event": "buy",
+          "fx": 1.1228259801864624,
+          "price_eur": 210.79695028839208,
+          "shares": 48.868886,
           "ticker": "RMD"
         },
         {
-          "predicted_return": 0.017736196517944336,
-          "score": 0.006430281735023503,
-          "signal_date": "2026-11-06",
+          "date": "2026-11-09",
+          "event": "buy",
+          "fx": 1.1228259801864624,
+          "price_eur": 11.681734202772347,
+          "shares": 881.839289,
           "ticker": "PCG"
         },
         {
-          "predicted_return": 0.015639543533325195,
-          "score": 0.006065580641256965,
-          "signal_date": "2026-11-06",
+          "date": "2026-11-09",
+          "event": "buy",
+          "fx": 1.1228259801864624,
+          "price_eur": 53.32965618003795,
+          "shares": 193.164796,
           "ticker": "EIX"
         }
       ],
-      "positions": {},
+      "nav": 103672.44559639841,
+      "pending": [],
+      "positions": {
+        "AXON": {
+          "cost_eur": 10311.71338977303,
+          "dividends_eur": 0.0,
+          "entry_date": "2026-11-09",
+          "entry_fx": 1.1228259801864624,
+          "entry_price_eur": 285.5832120545959,
+          "shares": 36.07149,
+          "signal_date": "2026-11-06"
+        },
+        "EIX": {
+          "cost_eur": 10311.713568923937,
+          "dividends_eur": 0.0,
+          "entry_date": "2026-11-09",
+          "entry_fx": 1.1228259801864624,
+          "entry_price_eur": 53.32965618003795,
+          "shares": 193.164796,
+          "signal_date": "2026-11-06"
+        },
+        "JCI": {
+          "cost_eur": 10311.713572528644,
+          "dividends_eur": 0.0,
+          "entry_date": "2026-11-09",
+          "entry_fx": 1.1228259801864624,
+          "entry_price_eur": 122.81414864400446,
+          "shares": 83.878057,
+          "signal_date": "2026-11-06"
+        },
+        "NWS": {
+          "cost_eur": 10311.713589791992,
+          "dividends_eur": 0.0,
+          "entry_date": "2026-11-09",
+          "entry_fx": 1.1228259801864624,
+          "entry_price_eur": 26.063366466761092,
+          "shares": 395.244881,
+          "signal_date": "2026-11-06"
+        },
+        "PCG": {
+          "cost_eur": 10311.713595843406,
+          "dividends_eur": 0.0,
+          "entry_date": "2026-11-09",
+          "entry_fx": 1.1228259801864624,
+          "entry_price_eur": 11.681734202772347,
+          "shares": 881.839289,
+          "signal_date": "2026-11-06"
+        },
+        "RMD": {
+          "cost_eur": 10311.71354492389,
+          "dividends_eur": 0.0,
+          "entry_date": "2026-11-09",
+          "entry_fx": 1.1228259801864624,
+          "entry_price_eur": 210.79695028839208,
+          "shares": 48.868886,
+          "signal_date": "2026-11-06"
+        },
+        "SMCI": {
+          "cost_eur": 10311.713573196812,
+          "dividends_eur": 0.0,
+          "entry_date": "2026-11-09",
+          "entry_fx": 1.1228259801864624,
+          "entry_price_eur": 25.038653253277676,
+          "shares": 411.420377,
+          "signal_date": "2026-11-06"
+        },
+        "TRMB": {
+          "cost_eur": 10311.71357332878,
+          "dividends_eur": 0.0,
+          "entry_date": "2026-11-09",
+          "entry_fx": 1.1228259801864624,
+          "entry_price_eur": 48.188270299004756,
+          "shares": 213.774267,
+          "signal_date": "2026-11-06"
+        }
+      },
       "trades": [
         {
           "buy_cost_eur": 11428.571404459093,
@@ -876,12 +972,16 @@
     {
       "date": "2026-11-06",
       "nav": 103117.13597887299
+    },
+    {
+      "date": "2026-11-09",
+      "nav": 103672.44559639841
     }
   ],
   "first_session": "2026-10-16",
   "fx_method": "previous_XNYS_session_EURUSD_close_at_open; current_EURUSD_close_at_mark",
   "initial_capital": 100000.0,
-  "last_session": "2026-11-06",
+  "last_session": "2026-11-09",
   "last_signal_session": "2026-11-06",
   "schema_version": 1,
   "signals": [
