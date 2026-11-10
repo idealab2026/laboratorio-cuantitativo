@@ -179,9 +179,30 @@ def settle_observed_close(state, session, bars, buy_signals, sell_signals,
             "reason": "no_verified_native_opening_fill",
             "buys": sorted(pending["buys"]), "sells": sorted(pending["sells"]),
         })
-    if set(result["positions"]) - set(bars):
+    preopen = result.get("preopen_inventory", {}).get(session, {})
+    if not isinstance(preopen, dict):
+        raise ValueError("Invalid genetic preopening inventory")
+    required = set(result["positions"]) | set(preopen)
+    if required - set(bars):
         raise ValueError("Missing verified exact-date genetic closing bar")
     cash = result["cash"]
+    for ticker, shares in preopen.items():
+        if ticker in result["positions"]:
+            continue
+        bar = bars[ticker]
+        split = float(bar.get("Stock Splits", 0))
+        dividend = float(bar.get("Dividends", 0))
+        if split:
+            raise ValueError("Genetic sold ex-date split requires audited reconciliation")
+        if not math.isfinite(dividend) or dividend < 0:
+            raise ValueError("Genetic sold ex-date dividend invalid")
+        if dividend:
+            accrued = float(shares) * dividend
+            cash += accrued
+            result.setdefault("outage_events", []).append({
+                "date": session, "type": "observed_dividend_after_sale",
+                "ticker": ticker, "gross_usd": accrued,
+            })
     for ticker, position in result["positions"].items():
         row = bars[ticker]
         close = _positive(row["Close"], "close")
@@ -435,7 +456,9 @@ def run(path, session, buy_signals, sell_signals, stop_pct=None, target_pct=None
                            "no se salta esa sesión ni se reconstruye retrospectivamente")
     # From cutover, pending entries may be valid signals but NOT executed
     # prices; only held positions need closing bars for a prospective mark.
-    required = (set(state["positions"]) if session >= FORWARD_CUTOVER_SESSION
+    required = ((set(state["positions"]) |
+                 set(state.get("preopen_inventory", {}).get(session, {})))
+                if session >= FORWARD_CUTOVER_SESSION
                 else set(state["positions"]) | set(state["pending"]["buys"])
                      | set(state["pending"]["sells"]))
     bars = fetch_session(session, required, state["last_session"])
