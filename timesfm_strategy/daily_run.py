@@ -11,7 +11,12 @@ import copy
 import json
 import math
 from pathlib import Path
-import run as core
+# Package import from the shared clock must not collide with other engines'
+# top-level modules also named run.py. Preserve standalone script use.
+if __package__:
+    from . import run as core
+else:
+    import run as core
 
 ROOT = Path(__file__).resolve().parents[1]
 ENGINE = "timesfm_2p5_daily_eur_v1"
