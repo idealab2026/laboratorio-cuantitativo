@@ -1,7 +1,7 @@
 {
-  "age_seconds": 479,
+  "age_seconds": 8905,
   "captured_at_utc": "2026-11-09T23:41:29+00:00",
-  "checked_at_utc": "2026-11-09T23:49:28.823000+00:00",
+  "checked_at_utc": "2026-11-10T02:09:54.728264+00:00",
   "consumers": {
     "buy_the_dip_strategy": {
       "ledger_status": "observed",
@@ -45,17 +45,14 @@
     },
     "timesfm_daily": {
       "ledger_status": "observed",
-      "paused_book_ids": [
-        "benchmark_spy",
-        "timesfm"
-      ],
-      "paused_books": 2,
-      "updated_books": 0,
+      "paused_book_ids": [],
+      "paused_books": 0,
+      "updated_books": 2,
       "valuation_sessions": {
-        "benchmark_spy": "2026-11-06",
-        "timesfm": "2026-11-06"
+        "benchmark_spy": "2026-11-09",
+        "timesfm": "2026-11-09"
       },
-      "workflow_outcome": "cancelled"
+      "workflow_outcome": "success"
     },
     "timesfm_one_day": {
       "ledger_status": "observed",
@@ -132,7 +129,7 @@
   "revision_hashes": [
     "44d94c3e556782780c149749005800389d786d1fa221281ad8a9b43b9a741ddb"
   ],
-  "run_id": "42722103925",
+  "run_id": "42740379133",
   "schema": "midas.xnys_source_health.v1",
   "sha256": "cf13928f7aced5545f5eb72ea8582736f2975399aa302a5fa81666c85787884f",
   "status": "snapshot_verified",
