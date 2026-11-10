@@ -450,6 +450,12 @@ def main(argv=None):
             print(json.dumps({"status": "observation_not_yet_due",
                               "session": market["session"]}))
             return 0
+        if now >= market["close"]:
+            # A queued GitHub run after a half-day close cannot create a
+            # price observation or a backdated market event.
+            print(json.dumps({"status": "observation_window_closed",
+                              "session": market["session"]}))
+            return 0
         if not args.lock.exists():
             print('{"status":"no_preopen_lock","fills":0}')
             return 2
