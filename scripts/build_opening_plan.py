@@ -53,6 +53,35 @@ def plan_track(slot, book, target, previous):
                    for x in selections] if eligible else [])
         return {"status": "recorded" if eligible else "stale",
                 "session": decision, "orders": orders, "holdings": [], "undated": 0}
+    if code == 44:
+        # Original genetic diary stores pending buy parameters without dates.
+        # Its last_session is the only valid decision timestamp. No guessing.
+        source_day = book.get("last_session")
+        pending = book.get("pending", {})
+        buys = pending.get("buys", {}) if isinstance(pending, dict) else {}
+        sells = pending.get("sells", []) if isinstance(pending, dict) else []
+        holdings = sorted(book.get("positions", {}))
+        valid = (source_day == previous and isinstance(buys, dict)
+                 and isinstance(sells, list)
+                 and not (set(buys) & set(sells))
+                 and all(t in book.get("positions", {}) for t in sells)
+                 and not book.get("paused_missing_quotes"))
+        orders = []
+        if valid:
+            for ticker, order in sorted(buys.items()):
+                if not isinstance(order, dict) or "weight" not in order:
+                    return {"status":"paused", "session":source_day, "orders":[],
+                            "holdings":holdings, "undated":0}
+                orders.append({"ticker":ticker, "action":"buy",
+                               "decision_session":source_day,"target_session":target,
+                               "target_weight":order["weight"], "limit_price":None})
+            for ticker in sorted(sells):
+                orders.append({"ticker":ticker, "action":"sell",
+                               "decision_session":source_day,"target_session":target,
+                               "target_weight":0.0,"limit_price":None})
+        return {"status":"recorded" if valid else "stale",
+                "session":source_day, "orders":orders,
+                "holdings":holdings, "undated":0}
     rows = pending_signals(book)
     orders, holdings, undated = [], [], 0
     for row in rows:
