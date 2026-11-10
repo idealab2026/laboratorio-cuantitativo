@@ -90,10 +90,12 @@ def clock_plan(now, market, tracks, commit, *, fx_reference=None):
             "holdings_count": len(record.get("holdings", [])) if isinstance(record, dict) else 0,
             # Only tactical classic portfolios monitor real observed stops.
             # Passive 503-position buy-and-hold is excluded from free quote reads.
-            "monitor_tickers": (sorted(set(record.get("holdings", [])))
-                                if eligible and (slot in {f"IL-{n:03d}" for n in range(11, 18)}
-                                                 or slot == "IL-037")
-                                and isinstance(record, dict) else []),
+            "monitor_tickers": (
+                sorted(set(record.get("holdings", []))
+                       | ({o["ticker"] for o in orders} if slot == "IL-042" else set()))
+                if eligible and (slot in {f"IL-{n:03d}" for n in range(11, 18)}
+                                 or slot in ("IL-037", "IL-040", "IL-042"))
+                and isinstance(record, dict) else []),
         }
     lock = {"schema": SCHEMA, "session": market["session"],
             "previous_session": market["previous"], "source_commit": commit,
@@ -274,13 +276,22 @@ def budgeted_quote_targets(lock, prior=None, *, limit=LIMIT, now=None, market=No
         remaining = (set() if settled.get(slot, {}).get("status") == "native_forward_settled"
                      else {r["ticker"] for r in lane["orders"]})
         monitored = set(lane.get("monitor_tickers", []))
-        if slot == "IL-037":
-            # TFG stops activate at the following open via frozen orders.
-            # Monitor remaining holdings only for the last minutes of the
-            # final XNYS session of the week, not every intraday tick.
-            if (now is None or market is None or
-                    now < market["close"] - timedelta(minutes=6)):
+        if slot in ("IL-037", "IL-040", "IL-042"):
+            # Demand a fresh observed USD stock quote and contemporaneous FX
+            # only near the actual closing window. Do not burn the daily
+            # budget chasing weekly strategy holdings all day.
+            is_close = (now is not None and market is not None
+                        and now >= market["close"] - timedelta(minutes=6))
+            if slot == "IL-040" and is_close:
+                from tfg_ahp.data import is_week_end_session
+                is_close = is_week_end_session(market["session"])
+            last_marker = settled.get(slot, {}).get("native_marker") or {}
+            if last_marker.get("mode") == "exit" and last_marker.get("session") == (market or {}).get("session"):
+                is_close = False
+            if not is_close:
                 monitored = set()
+            elif slot in ("IL-040", "IL-042") and monitored:
+                monitored.add("EURUSD=X")
         remaining |= monitored
         if not remaining or not lane.get("execution_ready"):
             continue
@@ -387,13 +398,15 @@ def main(argv=None):
         classic_updated, classic_evidence = settle_classic(lock, now, market, quotes)
         from forward_ahp_settlement import settle_ahp
         ahp_updated, ahp_evidence = settle_ahp(lock, now, market, quotes)
-        paths = [updated, ml_updated, classic_updated, ahp_updated]
+        from forward_timesfm_settlement import settle_timesfm
+        timesfm_updated, timesfm_evidence = settle_timesfm(lock, now, market, quotes)
+        paths = [updated, ml_updated, classic_updated, ahp_updated, timesfm_updated]
         if sum(len(z) for z in paths) != len(set().union(*(set(z) for z in paths))):
             raise ValueError("Two native settlers attempted to own the same canonical book")
-        for ledger_path, book in {**updated, **ml_updated, **classic_updated, **ahp_updated}.items():
+        for ledger_path, book in {**updated, **ml_updated, **classic_updated, **ahp_updated, **timesfm_updated}.items():
             _write(ROOT / ledger_path, book)
-        report["settlement"] = "native_forward_010_through_027_037_038_039_other_engines_batch"
-        for slot, result in {**evidence, **ml_evidence, **classic_evidence, **ahp_evidence}.items():
+        report["settlement"] = "native_forward_010_through_027_037_through_043_except_044"
+        for slot, result in {**evidence, **ml_evidence, **classic_evidence, **ahp_evidence, **timesfm_evidence}.items():
             lane = report["slots"][slot]
             lane["native_settlement"] = result["status"]
             if result["status"] == "settled_native_paper":
