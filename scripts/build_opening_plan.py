@@ -9,7 +9,7 @@ from build_operations_audit import ROOT, date, pending_signals, signal_book, sou
 
 # These engines consume a pending order on the next XNYS session, even
 # when its ledger only stores signal_date. Archived weekly engines are excluded.
-NEXT_OPEN = {*range(10, 28), 42, 43}
+NEXT_OPEN = {*range(10, 28), 40, 41, 42, 43}
 LEGACY = set(range(28, 37))
 
 
