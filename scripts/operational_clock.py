@@ -92,9 +92,9 @@ def clock_plan(now, market, tracks, commit, *, fx_reference=None):
             # Passive 503-position buy-and-hold is excluded from free quote reads.
             "monitor_tickers": (
                 sorted(set(record.get("holdings", []))
-                       | ({o["ticker"] for o in orders} if slot == "IL-042" else set()))
+                       | ({o["ticker"] for o in orders} if slot in ("IL-042", "IL-044") else set()))
                 if eligible and (slot in {f"IL-{n:03d}" for n in range(11, 18)}
-                                 or slot in ("IL-037", "IL-040", "IL-042"))
+                                 or slot in ("IL-037", "IL-040", "IL-042", "IL-044"))
                 and isinstance(record, dict) else []),
         }
     lock = {"schema": SCHEMA, "session": market["session"],
@@ -405,13 +405,15 @@ def main(argv=None):
         ahp_updated, ahp_evidence = settle_ahp(lock, now, market, quotes)
         from forward_timesfm_settlement import settle_timesfm
         timesfm_updated, timesfm_evidence = settle_timesfm(lock, now, market, quotes)
-        paths = [updated, ml_updated, classic_updated, ahp_updated, timesfm_updated]
+        from forward_genetic_settlement import settle_genetic
+        genetic_updated, genetic_evidence = settle_genetic(lock, now, market, quotes)
+        paths = [updated, ml_updated, classic_updated, ahp_updated, timesfm_updated, genetic_updated]
         if sum(len(z) for z in paths) != len(set().union(*(set(z) for z in paths))):
             raise ValueError("Two native settlers attempted to own the same canonical book")
-        for ledger_path, book in {**updated, **ml_updated, **classic_updated, **ahp_updated, **timesfm_updated}.items():
+        for ledger_path, book in {**updated, **ml_updated, **classic_updated, **ahp_updated, **timesfm_updated, **genetic_updated}.items():
             _write(ROOT / ledger_path, book)
-        report["settlement"] = "native_forward_010_through_027_037_through_043_except_044"
-        for slot, result in {**evidence, **ml_evidence, **classic_evidence, **ahp_evidence, **timesfm_evidence}.items():
+        report["settlement"] = "native_forward_010_through_027_037_through_044"
+        for slot, result in {**evidence, **ml_evidence, **classic_evidence, **ahp_evidence, **timesfm_evidence, **genetic_evidence}.items():
             lane = report["slots"][slot]
             lane["native_settlement"] = result["status"]
             if result["status"] == "settled_native_paper":

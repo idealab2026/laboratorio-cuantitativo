@@ -152,12 +152,118 @@ def save(path, state):
             os.unlink(temporary)
 
 
+FORWARD_CUTOVER_SESSION = "2026-11-10"
+
+
+def settle_observed_close(state, session, bars, buy_signals, sell_signals,
+                          stop_pct=None, target_pct=None):
+    """Mark-only state transition after the shared real-time executor cutover.
+
+    Daily candle OHLC is strictly for official valuation/corporate actions.
+    No same-day opening or high/low-derived fill may ever be recorded here.
+    """
+    if not state.get("last_session") or session <= state["last_session"]:
+        raise ValueError("Genetic forward mark is not newer than recorded session")
+    for weight in buy_signals.values():
+        if not 0 < _positive(weight, "weight") <= MAX_WEIGHT:
+            raise ValueError("Invalid genetic weight")
+    if buy_signals and (stop_pct is None or target_pct is None or
+                        not 0 < _positive(stop_pct, "stop") < 1 or
+                        not 0 < _positive(target_pct, "target") < 1):
+        raise ValueError("Future genetic stop or target invalid")
+    result = json.loads(json.dumps(state))
+    pending = result["pending"]
+    if pending["buys"] or pending["sells"]:
+        result.setdefault("outage_events", []).append({
+            "date": session, "type": "missed_forward_open",
+            "reason": "no_verified_native_opening_fill",
+            "buys": sorted(pending["buys"]), "sells": sorted(pending["sells"]),
+        })
+    preopen = result.get("preopen_inventory", {}).get(session, {})
+    if not isinstance(preopen, dict):
+        raise ValueError("Invalid genetic preopening inventory")
+    required = set(result["positions"]) | set(preopen)
+    if required - set(bars):
+        raise ValueError("Missing verified exact-date genetic closing bar")
+    cash = result["cash"]
+    for ticker, shares in preopen.items():
+        if ticker in result["positions"]:
+            continue
+        bar = bars[ticker]
+        split = float(bar.get("Stock Splits", 0))
+        dividend = float(bar.get("Dividends", 0))
+        if split:
+            raise ValueError("Genetic sold ex-date split requires audited reconciliation")
+        if not math.isfinite(dividend) or dividend < 0:
+            raise ValueError("Genetic sold ex-date dividend invalid")
+        if dividend:
+            accrued = float(shares) * dividend
+            cash += accrued
+            result.setdefault("outage_events", []).append({
+                "date": session, "type": "observed_dividend_after_sale",
+                "ticker": ticker, "gross_usd": accrued,
+            })
+    for ticker, position in result["positions"].items():
+        row = bars[ticker]
+        close = _positive(row["Close"], "close")
+        high = _positive(row["High"], "high")
+        low = _positive(row["Low"], "low")
+        opened = _positive(row["Open"], "open")
+        if low > min(opened, close) or high < max(opened, close):
+            raise ValueError("Invalid genetic daily OHLC")
+        split = float(row.get("Stock Splits", 0))
+        dividend = float(row.get("Dividends", 0))
+        if not all(math.isfinite(v) and v >= 0 for v in (split, dividend)):
+            raise ValueError("Invalid genetic corporate action")
+        if position.get("entry_date") == session and (split or dividend):
+            raise ValueError("Genetic entry-date corporate action needs review")
+        if split:
+            # Split is performed exactly once at its ex-date, never by the
+            # live quote clock. Unusual raw prices during the session must
+            # therefore not trigger stops without a reviewed split.
+            position["shares"] *= _positive(split, "split ratio")
+            position["entry"] /= split
+            position["sl"] /= split
+            position["tp"] /= split
+        if dividend:
+            value = position["shares"] * dividend
+            cash += value
+            result.setdefault("outage_events", []).append({
+                "date": session, "type": "observed_dividend",
+                "ticker": ticker, "gross_usd": value,
+            })
+        if low <= position["sl"] or high >= position["tp"]:
+            result.setdefault("outage_events", []).append({
+                "date": session, "type": "unexecuted_intraday_level",
+                "ticker": ticker,
+                "reason": "daily_extreme_not_a_causal_fill",
+            })
+    result["cash"] = cash
+    result["pending"] = {
+        "buys": {ticker: {
+            "weight": float(weight), "stop_pct": float(stop_pct),
+            "target_pct": float(target_pct),
+        } for ticker, weight in buy_signals.items() if ticker not in result["positions"]},
+        "sells": sorted(set(sell_signals) & set(result["positions"])),
+    }
+    equity = cash + sum(pos["shares"] * _positive(bars[t]["Close"], "close")
+                        for t, pos in result["positions"].items())
+    if not math.isfinite(equity) or equity < 0:
+        raise ValueError("Invalid genetic mark NAV")
+    result["equity_history"][session] = equity
+    result["last_session"] = session
+    return result
+
+
 def settle(state, session, bars, buy_signals, sell_signals, stop_pct=None, target_pct=None):
     """Return new state. Pending orders from prior close execute at this open."""
     if state["last_session"] == session:
         return state
     if state["last_session"] and session <= state["last_session"]:
         raise ValueError("Sesión anterior al diario")
+    if session >= FORWARD_CUTOVER_SESSION:
+        return settle_observed_close(state, session, bars, buy_signals,
+                                     sell_signals, stop_pct, target_pct)
     required = set(state["positions"]) | set(state["pending"]["buys"]) | set(state["pending"]["sells"])
     if required - bars.keys():
         raise RuntimeError("Faltan cotizaciones para cartera u órdenes pendientes")
@@ -348,7 +454,13 @@ def run(path, session, buy_signals, sell_signals, stop_pct=None, target_pct=None
     if state["last_session"] is None and session != EPOCH_FIRST_SESSION:
         raise RuntimeError("La campaña nueva exige su primera señal el 2026-10-12; "
                            "no se salta esa sesión ni se reconstruye retrospectivamente")
-    required = set(state["positions"]) | set(state["pending"]["buys"]) | set(state["pending"]["sells"])
+    # From cutover, pending entries may be valid signals but NOT executed
+    # prices; only held positions need closing bars for a prospective mark.
+    required = ((set(state["positions"]) |
+                 set(state.get("preopen_inventory", {}).get(session, {})))
+                if session >= FORWARD_CUTOVER_SESSION
+                else set(state["positions"]) | set(state["pending"]["buys"])
+                     | set(state["pending"]["sells"]))
     bars = fetch_session(session, required, state["last_session"])
     first_trading = state.get("outage_control", {}).get("first_trading_session")
     if first_trading and session < first_trading:
