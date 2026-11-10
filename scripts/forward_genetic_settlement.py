@@ -158,6 +158,14 @@ def settle_genetic(lock, now, market, quotes, *, reader=read, frozen=_source_at)
     day = market["session"]
     updated = copy.deepcopy(current)
     markers = updated.setdefault("forward_executions", {})
+    # Ex-date dividends belong to shares held at yesterday's close, even if
+    # a verified stop/signal sells them during this session. Preserve this
+    # dated inventory so the nightly engine does not lose entitlements.
+    inventory = updated.setdefault("preopen_inventory", {})
+    if market["session"] not in inventory:
+        inventory[market["session"]] = {
+            t: float(position["shares"]) for t,position in source["positions"].items()
+        }
     operations = []
     at_open = now <= market["open"]+OPEN_WINDOW
     opening_key = marker_key(day,"open")
@@ -238,7 +246,11 @@ def settle_genetic(lock, now, market, quotes, *, reader=read, frozen=_source_at)
         return {LEDGER: updated}, {SLOT:{
             "status":"settled_native_paper", "fills":len(operations),
             "marker":latest,"operations":operations}}
-    return {}, {SLOT: {"status":"already_settled",
+    if same_day:
+        # On a repeated poll preserve the most recent stop/target evidence,
+        # never overwrite a later sell marker with the earlier opening buy.
+        marker = max(same_day.values(), key=lambda m: m.get("recorded_at_utc",""))
+    return {}, {SLOT: {"status":"already_settled" if marker else "no_execution_due",
                        "fills":marker.get("fills_count",0) if marker else 0,
                        "marker":marker}}
 
