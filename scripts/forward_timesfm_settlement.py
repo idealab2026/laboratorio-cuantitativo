@@ -127,6 +127,16 @@ def settle_timesfm(lock, now, market, quotes, *, reader=read, frozen=_source_at)
                     before["equity"][-1]["date"] != market["previous"]):
                 evidence[slot] = {"status": "book_stale", "fills": 0}
                 continue
+            # An exit previously observed in this closing window must always
+            # retain precedence over the day's earlier buy marker.
+            exit_done = marker_map.get(event_key(slot, market["session"], "exit"))
+            if is_exit_time and exit_done is not None:
+                if exit_done["lock_sha256"] != lock["lock_sha256"]:
+                    raise ValueError(f"{slot}: conflicting settled exit lock")
+                evidence[slot] = {"status": "already_settled",
+                                  "fills": exit_done["fills_count"],
+                                  "marker": exit_done}
+                continue
             if name == "benchmark_spy":
                 mode = "open" if lane["orders"] else None
             elif is_exit_time and book["positions"] and (
