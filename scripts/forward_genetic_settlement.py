@@ -196,8 +196,14 @@ def settle_genetic(lock, now, market, quotes, *, reader=read, frozen=_source_at)
                market["open"]+OPEN_WINDOW for q in fresh.values()):
             return {}, {SLOT: {"status": "opening_quote_late", "fills": 0}}
         proof = {t:_metadata(lock,q,opening_key+":"+t) for t,q in fresh.items()}
-        operations = open_orders(
-            updated, day, {t:q["price"] for t,q in fresh.items()}, proof)
+        try:
+            operations = open_orders(
+                updated, day, {t:q["price"] for t,q in fresh.items()}, proof)
+        except ValueError as exc:
+            if "corporate-action/discontinuity review required" in str(exc):
+                return {}, {SLOT: {"status":"corporate_action_review_required",
+                                   "fills":0}}
+            raise
         marker = {"session": day, "mode": "open", "source_commit":lock["source_commit"],
                   "lock_sha256":lock["lock_sha256"],
                   "recorded_at_utc":timestamp(now), "quotes_sha256":digest(fresh),
