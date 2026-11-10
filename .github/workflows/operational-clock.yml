@@ -38,14 +38,18 @@ on:
           - observe
         required: true
   schedule:
-    # 09:20 ET: lock tomorrow's actual source-ledger orders before the market opens.
-    - cron: '20 9 * * 1-5'
+    # Redundant actual-time preparations starting >2h before 09:30 ET.
+    # Scheduled jobs may be delayed or dropped; only the FIRST valid lock wins.
+    - cron: '17,47 7-8 * * 1-5'
       timezone: 'America/New_York'
-    # Exchange-local 09:30 opening observations are best effort, never made up.
+    - cron: '7,17 9 * * 1-5'
+      timezone: 'America/New_York'
+    # Exchange-local opening quotes are best effort, never backfilled.
     - cron: '31,36,41,46,51,56 9 * * 1-5'
       timezone: 'America/New_York'
     - cron: '1,16,31,46 10-15 * * 1-5'
-    # First regular and half-session near-close attempts for AHP observed exits.
+      timezone: 'America/New_York'
+    # Both regular 16:00 and 13:00 half-session preclose exits.
     - cron: '56,58,59 12,15 * * 1-5'
       timezone: 'America/New_York'
 
@@ -53,7 +57,8 @@ permissions:
   contents: write
 
 concurrency:
-  group: midas-shared-operational-clock
+  # Never let a test PR queue ahead of the live pre-opening writer.
+  group: midas-clock-${{ github.event_name == 'pull_request' && format('ci-{0}', github.event.pull_request.number) || 'production' }}
   cancel-in-progress: false
 
 jobs:
@@ -90,8 +95,9 @@ jobs:
           if [ "$GITHUB_EVENT_NAME" = "workflow_dispatch" ]; then
             STAGE="$(jq -r '.inputs.stage // empty' "$GITHUB_EVENT_PATH")"
           else
-            CRON="$(jq -r '.schedule // empty' "$GITHUB_EVENT_PATH")"
-            if [ "$CRON" = '20 9 * * 1-5' ]; then STAGE=prepare; else STAGE=observe; fi
+            # The actual NYSE clock, not the nominal cron string, decides.
+            # A delayed prepare cannot create a false post-opening FX snapshot.
+            STAGE=auto
           fi
           PYTHONPATH=scripts:. python scripts/operational_clock.py --stage "$STAGE"
       - name: Publish operator observations and canonical native paper fills
@@ -116,6 +122,7 @@ jobs:
         if: github.event_name != 'pull_request'
         run: |
           git fetch origin main
+          PYTHONPATH=scripts:. python -c 'from operational_clock import verify_published_lock; print(verify_published_lock())'
           PYTHONPATH=scripts:. python scripts/native_forward_settlement.py --verify-published
           PYTHONPATH=scripts:. python -c 'from forward_weekly_ml_settlement import verify_published; print({"verified_weekly_ml_slots": verify_published()})'
           PYTHONPATH=scripts:. python -c 'from classic_forward_settlement import verify_published; print({"verified_classic_slots": verify_published()})'

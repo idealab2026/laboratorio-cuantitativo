@@ -1,6 +1,10 @@
 """MIDAS operator clock: opening locked before the market and observed quotes only."""
 import copy
+import io
 import json
+import tempfile
+from contextlib import redirect_stdout
+from unittest.mock import patch
 import sys
 import unittest
 from datetime import datetime, timedelta, timezone
@@ -8,7 +12,9 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "scripts"))
-from operational_clock import ACTIVE, clock_plan, status_report, verify_lock, budgeted_quote_targets, quote_batch, LIMIT
+from operational_clock import (ACTIVE, clock_plan, status_report, verify_lock,
+                               verify_prepared_lock, stage_for_actual_time,
+                               main, budgeted_quote_targets, quote_batch, LIMIT)
 
 UTC = timezone.utc
 
@@ -151,6 +157,121 @@ class BudgetedQuotesTest(unittest.TestCase):
         when = datetime(2026, 11, 10, 14, 31, tzinfo=UTC)
         with self.assertRaisesRegex(ValueError, "budget exceeded"):
             quote_batch([f"SY{i:03d}" for i in range(LIMIT+1)], when, {})
+
+
+class ClockPreopenRecoveryTest(unittest.TestCase):
+    """Regression: GitHub cron fired after 09:30 ET on 2026-11-10."""
+
+    def setUp(self):
+        self.open = datetime(2026, 11, 10, 14, 30, tzinfo=UTC)
+        self.market = {
+            "session": "2026-11-10", "previous": "2026-11-09",
+            "open": self.open, "close": self.open + timedelta(hours=6, minutes=30),
+        }
+        self.track = {
+            "IL-015": {
+                "status": "recorded", "session": "2026-11-09",
+                "holdings": [], "orders": [{
+                    "ticker": "AAPL", "action": "buy",
+                    "decision_session": "2026-11-09",
+                    "target_session": "2026-11-10",
+                    "target_weight": 0.12, "limit_price": None,
+                }],
+            },
+        }
+        self.temp = tempfile.TemporaryDirectory()
+        self.addCleanup(self.temp.cleanup)
+        self.lock = Path(self.temp.name) / "global-lock.json"
+        self.public = Path(self.temp.name) / "operational-clock.json"
+
+    def _invoke(self, when, stage="auto"):
+        class FixedDateTime(datetime):
+            @classmethod
+            def now(cls, tz=None):
+                return when.astimezone(tz) if tz is not None else when.replace(tzinfo=None)
+
+        stream = io.StringIO()
+        with patch("operational_clock.datetime", FixedDateTime), \
+             patch("operational_clock.market_window", return_value=self.market), \
+             patch("operational_clock._repo_commit", return_value="c" * 40), \
+             patch("build_opening_plan.plan_at", return_value=self.track) as planner, \
+             patch("operational_clock.freeze_timesfm_entry_fx",
+                   side_effect=AssertionError("No TimesFM FX signal expected")), \
+             redirect_stdout(stream):
+            code = main(["--stage", stage, "--lock", str(self.lock),
+                         "--public", str(self.public)])
+        return code, stream.getvalue(), planner.call_count
+
+    def test_early_actual_run_freezes_and_duplicate_does_not_rewrite(self):
+        early = self.open - timedelta(hours=2, minutes=10)
+        code, output, called = self._invoke(early)
+        self.assertEqual(code, 0)
+        self.assertEqual(called, 1)
+        frozen = self.lock.read_bytes()
+        self.assertTrue(verify_prepared_lock(json.loads(frozen), self.market))
+        self.assertEqual(json.loads(self.public.read_text())["session"], "2026-11-10")
+        # Another cron retry may see a different source commit, but frozen
+        # decisions must never be recomputed or rewritten.
+        code2, output2, planned = self._invoke(early + timedelta(minutes=50))
+        self.assertEqual(code2, 0)
+        self.assertEqual(planned, 0)
+        self.assertIn("preopen_lock_already_frozen", output2)
+        self.assertEqual(frozen, self.lock.read_bytes())
+        verify_lock(json.loads(frozen), self.market, self.open+timedelta(minutes=1))
+
+    def test_integrity_failure_blocks_replacing_same_day_lock(self):
+        self._invoke(self.open-timedelta(hours=2))
+        frozen = json.loads(self.lock.read_text())
+        frozen["slots"]["IL-015"]["orders"][0]["ticker"] = "TSLA"
+        self.lock.write_text(json.dumps(frozen))
+        with self.assertRaisesRegex(ValueError, "hash mismatch"):
+            self._invoke(self.open-timedelta(minutes=30))
+
+    def test_delayed_cron_becomes_observe_and_cannot_backdate_fx(self):
+        late = self.open+timedelta(minutes=40)
+        self.assertEqual(stage_for_actual_time("auto", late, self.market), "observe")
+        self.assertEqual(stage_for_actual_time("auto", self.open-timedelta(hours=2),
+                                               self.market), "prepare")
+        code, output, planned = self._invoke(late)
+        self.assertEqual((code, planned), (2, 0))
+        self.assertIn("no_preopen_lock", output)
+        self.assertFalse(self.lock.exists())
+        code, output, planned = self._invoke(late, stage="prepare")
+        self.assertEqual((code, planned), (2, 0))
+        self.assertIn("late_prepare_refused", output)
+
+    def test_half_session_late_observer_never_retroactively_executes(self):
+        # 13:00 New York is an early close. A delayed 15:xx cron is a no-op.
+        market = dict(self.market)
+        market["close"] = market["open"]+timedelta(hours=3, minutes=30)
+        late = market["close"]+timedelta(minutes=35)
+        class Late(datetime):
+            @classmethod
+            def now(cls, tz=None):
+                return late.astimezone(tz) if tz else late
+        stream = io.StringIO()
+        with patch("operational_clock.datetime", Late), \
+             patch("operational_clock.market_window", return_value=market), \
+             redirect_stdout(stream):
+            code = main(["--stage", "auto", "--lock", str(self.lock),
+                         "--public", str(self.public)])
+        self.assertEqual(code, 0)
+        self.assertIn("observation_window_closed", stream.getvalue())
+        self.assertFalse(self.lock.exists())
+
+    def test_workflow_runs_by_actual_nyse_clock_and_uses_iana_timezone(self):
+        path = ROOT / ".github/workflows/operational-clock.yml"
+        lines = path.read_text().splitlines()
+        entries = [i for i,row in enumerate(lines) if row.strip().startswith("- cron:")]
+        self.assertGreaterEqual(len(entries), 5)
+        for i in entries:
+            self.assertIn("timezone: 'America/New_York'", lines[i+1])
+        raw = "\n".join(lines)
+        self.assertIn("17,47 7-8 * * 1-5", raw)
+        self.assertIn("7,17 9 * * 1-5", raw)
+        self.assertIn("STAGE=auto", raw)
+        self.assertIn("verify_published_lock", raw)
+        self.assertIn("ci-{0}", raw)
 
 if __name__ == "__main__":
     unittest.main()

@@ -24,6 +24,7 @@ UTC = timezone.utc
 ACTIVE = tuple(f"IL-{n:03d}" for n in (*range(10, 28), *range(37, 45)))
 MAX_SECONDS = 180
 LIMIT = 250
+PREOPEN_HORIZON = timedelta(hours=4)  # early redundant scheduler attempts, never post-open
 
 
 def _repo_commit():
@@ -44,7 +45,7 @@ def _write(path, doc):
 
 def clock_plan(now, market, tracks, commit, *, fx_reference=None):
     if now.tzinfo is None or not market or not (
-            market["open"] - timedelta(minutes=90) <= now < market["open"]):
+            market["open"] - PREOPEN_HORIZON <= now < market["open"]):
         raise ValueError("A new opening may only be locked before that opening")
     if not len(commit) == 40 or not all(c in "0123456789abcdef" for c in commit):
         raise ValueError("Source Git commit SHA required")
@@ -130,6 +131,64 @@ def verify_lock(lock, market, now):
         raise ValueError("Opening plan belongs to another time or session")
     if not isinstance(lock["slots"], dict) or set(lock["slots"]) != set(ACTIVE):
         raise ValueError("Missing algorithm-specific operating lanes")
+
+
+def verify_prepared_lock(lock, market):
+    """Authenticate a pre-open lock without pretending the market has opened.
+
+    Used on retry: an already-published valid plan is immutable until the
+    session finishes, regardless of later ledger commits or cron delays.
+    """
+    if not isinstance(lock, dict) or not market or lock.get("schema") != SCHEMA:
+        raise ValueError("Missing or invalid frozen pre-open lock")
+    if digest({k: v for k, v in lock.items() if k != "lock_sha256"}) != lock.get("lock_sha256"):
+        raise ValueError("Pre-open lock hash mismatch: refusing overwrite")
+    prepared = datetime.fromisoformat(lock["prepared_at_utc"].replace("Z", "+00:00"))
+    if not (lock.get("session") == market["session"] and
+            lock.get("previous_session") == market["previous"] and
+            lock.get("open_at_utc") == timestamp(market["open"]) and
+            market["open"] - PREOPEN_HORIZON <= prepared < market["open"] and
+            set(lock.get("slots", {})) == set(ACTIVE)):
+        raise ValueError("Frozen pre-open lock does not match session or eligibility")
+    fx = lock.get("fx_reference")
+    if fx is not None:
+        try:
+            captured = datetime.fromisoformat(fx["captured_at_utc"].replace("Z", "+00:00"))
+            if (fx.get("source_session") != market["previous"] or
+                    fx.get("pair") != "EURUSD=X" or captured > prepared or
+                    captured >= market["open"] or
+                    not math.isfinite(float(fx["rate_usd_per_eur"])) or
+                    float(fx["rate_usd_per_eur"]) <= 0):
+                raise ValueError("Invalid frozen FX reference")
+        except (TypeError, KeyError, OverflowError) as exc:
+            raise ValueError("Malformed frozen FX reference") from exc
+    return True
+
+
+def stage_for_actual_time(requested, now, market):
+    """A delayed scheduled *prepare* event becomes observe, NEVER late FX freeze."""
+    if requested not in ("auto", "prepare", "observe"):
+        raise ValueError("Unrecognized clock stage")
+    if requested == "auto":
+        return "prepare" if now < market["open"] else "observe"
+    return requested
+
+
+def verify_published_lock(path=ROOT / "forward_open_state/global-lock.json"):
+    """Verify the commit actually published the original hash-locked plan."""
+    path = Path(path)
+    if not path.is_file():
+        return {"status": "no_local_lock"}
+    local = json.loads(path.read_text(encoding="utf8"))
+    remote = subprocess.run(["git", "show", "origin/main:" + str(path.relative_to(ROOT))],
+                            cwd=ROOT, capture_output=True, text=True)
+    if remote.returncode != 0:
+        raise ValueError("Pre-open lock absent from origin/main after publish")
+    saved = json.loads(remote.stdout)
+    if local != saved or digest({k: v for k, v in local.items() if k != "lock_sha256"}) != local.get("lock_sha256"):
+        raise ValueError("Pre-open lock on origin/main differs from frozen local plan")
+    return {"status": "published_and_hash_verified", "session": local["session"],
+            "sha256": local["lock_sha256"]}
 
 
 def _quote_valid(quote, now, market):
@@ -329,7 +388,7 @@ def quote_batch(tickers, now, market):
 
 def main(argv=None):
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--stage", choices=("prepare", "observe"), required=True)
+    parser.add_argument("--stage", choices=("auto", "prepare", "observe"), required=True)
     parser.add_argument("--lock", type=Path, default=ROOT / "forward_open_state/global-lock.json")
     parser.add_argument("--public", type=Path, default=ROOT / "data/operational-clock.json")
     args = parser.parse_args(argv)
@@ -338,7 +397,22 @@ def main(argv=None):
     if not market:
         print('{"status":"exchange_closed"}')
         return 0
-    if args.stage == "prepare":
+    stage = stage_for_actual_time(args.stage, now, market)
+    if stage == "prepare":
+        if now >= market["open"]:
+            print(json.dumps({"status": "late_prepare_refused", "session": market["session"]}))
+            return 2
+        if now < market["open"] - PREOPEN_HORIZON:
+            print(json.dumps({"status": "too_early_to_freeze", "session": market["session"]}))
+            return 0
+        if args.lock.exists():
+            existing = _read(args.lock)
+            if existing.get("session") == market["session"]:
+                verify_prepared_lock(existing, market)
+                print(json.dumps({"status": "preopen_lock_already_frozen",
+                                  "session": market["session"],
+                                  "lock_sha256": existing["lock_sha256"]}))
+                return 0
         from build_opening_plan import plan_at
         sha = _repo_commit()
         sources = plan_at(sha, market["session"], market["previous"])
@@ -372,10 +446,21 @@ def main(argv=None):
                       for slot, p in lock["slots"].items()},
                   "note": "Pre-opening decisions only. Not a broker or a confirmed forward fill."}
     else:
+        if now < market["open"]:
+            print(json.dumps({"status": "observation_not_yet_due",
+                              "session": market["session"]}))
+            return 0
+        if now >= market["close"]:
+            # A queued GitHub run after a half-day close cannot create a
+            # price observation or a backdated market event.
+            print(json.dumps({"status": "observation_window_closed",
+                              "session": market["session"]}))
+            return 0
         if not args.lock.exists():
             print('{"status":"no_preopen_lock","fills":0}')
             return 2
         lock = _read(args.lock)
+        verify_prepared_lock(lock, market)
         verify_lock(lock, market, now)
         prior = _read(args.public) if args.public.is_file() else None
         requested, quota_omissions = budgeted_quote_targets(lock, prior, now=now, market=market)
@@ -430,7 +515,7 @@ def main(argv=None):
                 lane["native_marker"] = result["marker"]
                 lane["fills"] = []
     _write(args.public, report)
-    print(json.dumps({"status": args.stage, "session": report["session"],
+    print(json.dumps({"status": stage, "session": report["session"],
                       "slots": len(report["slots"]),
                       "plans": sum(r["planned"] for r in report["slots"].values()),
                       "observed": sum(r["observed"] for r in report["slots"].values())}))

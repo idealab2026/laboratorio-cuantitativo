@@ -1216,8 +1216,14 @@ test("one shared market-clock display covers every active slot and never calls p
  assert.ok(!site.includes("buyDipForwardHTML()"));
  assert.ok(!site.includes("refreshForwardOpening(force)"));
  assert.match(workflow,/timezone: 'America\/New_York'/);
- assert.match(workflow,/20 9 \* \* 1-5/);
+ assert.match(workflow,/17,47 7-8 \* \* 1-5/);
+ assert.match(workflow,/7,17 9 \* \* 1-5/);
  assert.match(workflow,/31,36,41,46,51,56 9 \* \* 1-5/);
+ assert.match(workflow,/STAGE=auto/);
+ assert.match(workflow,/verify_published_lock/);
+ assert.equal((workflow.match(/- cron:/g)||[]).length,
+              (workflow.match(/timezone: 'America\/New_York'/g)||[]).length,
+              "Every market schedule must use the exchange's IANA timezone");
  assert.ok(!workflow.includes("Record Buy The Dip paper state"));
  assert.ok(script.includes("verify_lock(lock, market, now)"));
  assert.ok(script.includes("No verified opening plan"));
