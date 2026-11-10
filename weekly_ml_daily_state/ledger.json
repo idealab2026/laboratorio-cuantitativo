@@ -9,7 +9,7 @@
     "2026-11-04"
   ],
   "initial_capital": 100000.0,
-  "last_session": "2026-11-09",
+  "last_session": "2026-11-10",
   "last_signal_session": "2026-11-06",
   "outage_control": {
     "first_trading_session": "2026-11-05",
@@ -825,12 +825,18 @@
           "missing_tickers": [],
           "reason": "unreconciled_session",
           "type": "weekly_book_paused"
+        },
+        {
+          "date": "2026-11-10",
+          "missing_tickers": [],
+          "reason": "unreconciled_session",
+          "type": "weekly_book_paused"
         }
       ],
       "last_signal_session": "2026-10-30",
       "nav": 90892.27011219709,
       "paused_missing_quotes": {
-        "date": "2026-11-09",
+        "date": "2026-11-10",
         "missing_tickers": [],
         "reason": "unreconciled_session"
       },
@@ -1414,6 +1420,11 @@
           "date": "2026-11-09",
           "decision_recorded": false,
           "nav": 100222.92890400894
+        },
+        {
+          "date": "2026-11-10",
+          "decision_recorded": false,
+          "nav": 100192.75288152916
         }
       ],
       "events": [
@@ -1537,7 +1548,7 @@
         }
       ],
       "last_signal_session": "2026-11-06",
-      "nav": 100222.92890400894,
+      "nav": 100192.75288152916,
       "pending": [],
       "positions": {
         "RSP": {
@@ -1743,6 +1754,11 @@
           "date": "2026-11-09",
           "decision_recorded": false,
           "nav": 93596.93987317919
+        },
+        {
+          "date": "2026-11-10",
+          "decision_recorded": false,
+          "nav": 93269.50136564892
         }
       ],
       "events": [
@@ -1866,7 +1882,7 @@
         }
       ],
       "last_signal_session": "2026-11-06",
-      "nav": 93596.93987317919,
+      "nav": 93269.50136564892,
       "pending": [],
       "positions": {
         "SPY": {
@@ -2072,6 +2088,11 @@
           "date": "2026-11-09",
           "decision_recorded": false,
           "nav": 85065.40056348458
+        },
+        {
+          "date": "2026-11-10",
+          "decision_recorded": false,
+          "nav": 83984.96897736102
         }
       ],
       "events": [
@@ -2924,7 +2945,7 @@
         }
       ],
       "last_signal_session": "2026-11-06",
-      "nav": 85065.40056348458,
+      "nav": 83984.96897736102,
       "pending": [],
       "positions": {
         "AMD": {
@@ -3625,6 +3646,11 @@
           "date": "2026-11-09",
           "decision_recorded": false,
           "nav": 102765.74984493006
+        },
+        {
+          "date": "2026-11-10",
+          "decision_recorded": false,
+          "nav": 102594.33674821124
         }
       ],
       "events": [
@@ -4297,7 +4323,7 @@
         }
       ],
       "last_signal_session": "2026-11-06",
-      "nav": 102765.74984493006,
+      "nav": 102594.33674821124,
       "pending": [],
       "positions": {
         "ANET": {
@@ -5533,12 +5559,18 @@
           "missing_tickers": [],
           "reason": "unreconciled_session",
           "type": "weekly_book_paused"
+        },
+        {
+          "date": "2026-11-10",
+          "missing_tickers": [],
+          "reason": "unreconciled_session",
+          "type": "weekly_book_paused"
         }
       ],
       "last_signal_session": "2026-10-30",
       "nav": 89316.2837861811,
       "paused_missing_quotes": {
-        "date": "2026-11-09",
+        "date": "2026-11-10",
         "missing_tickers": [],
         "reason": "unreconciled_session"
       },
@@ -6122,6 +6154,11 @@
           "date": "2026-11-09",
           "decision_recorded": false,
           "nav": 83392.40280963879
+        },
+        {
+          "date": "2026-11-10",
+          "decision_recorded": false,
+          "nav": 83740.36287505417
         }
       ],
       "events": [
@@ -6542,7 +6579,7 @@
         }
       ],
       "last_signal_session": "2026-11-06",
-      "nav": 83392.40280963879,
+      "nav": 83740.36287505417,
       "pending": [],
       "positions": {
         "CVS": {
@@ -6953,6 +6990,11 @@
           "date": "2026-11-09",
           "decision_recorded": false,
           "nav": 96218.92340595959
+        },
+        {
+          "date": "2026-11-10",
+          "decision_recorded": false,
+          "nav": 95532.18384307972
         }
       ],
       "events": [
@@ -7813,7 +7855,7 @@
         }
       ],
       "last_signal_session": "2026-11-06",
-      "nav": 96218.92340595959,
+      "nav": 95532.18384307972,
       "pending": [],
       "positions": {
         "AXON": {
@@ -9169,12 +9211,18 @@
           "missing_tickers": [],
           "reason": "unreconciled_session",
           "type": "weekly_book_paused"
+        },
+        {
+          "date": "2026-11-10",
+          "missing_tickers": [],
+          "reason": "unreconciled_session",
+          "type": "weekly_book_paused"
         }
       ],
       "last_signal_session": "2026-10-30",
       "nav": 88272.98907336431,
       "paused_missing_quotes": {
-        "date": "2026-11-09",
+        "date": "2026-11-10",
         "missing_tickers": [],
         "reason": "unreconciled_session"
       },
