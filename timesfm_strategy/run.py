@@ -256,6 +256,19 @@ def process_day(state, config, date, previous, bars, *, fx_entry, fx_mark, week_
         pending = list(book["pending"])
         if pending and not first_after_signal:
             raise ValueError("Paper buy signal missed next opening")
+        if date >= "2026-11-10" and pending:
+            # Only contemporaneous shared-clock fills can buy after cutover.
+            # A missing opening is an unexecuted instruction, not OHLC paper P&L.
+            book["events"].append({
+                "date": date, "event": "missed_forward_open",
+                "signal_dates": sorted({o["signal_date"] for o in pending}),
+                "tickers": sorted(o["ticker"] for o in pending),
+            })
+            book["pending"] = []
+            pending = []
+        if (date >= "2026-11-10" and week_end and name == "timesfm"
+                and book["positions"]):
+            raise ValueError("TimesFM weekly exit not observed before market close")
         # Apply corporate actions only to previously held shares; new buyers do not
         # receive a dividend on the entry date's ex-dividend event.
         for ticker, position in book["positions"].items():
@@ -303,7 +316,7 @@ def process_day(state, config, date, previous, bars, *, fx_entry, fx_mark, week_
             book["pending"] = []
         marks = {ticker: _positive(bars[ticker]["close"], ticker + " close") / fx_mark
                  for ticker in book["positions"]}
-        if week_end and name == "timesfm":
+        if week_end and name == "timesfm" and date < "2026-11-10":
             for ticker, position in list(book["positions"].items()):
                 exit_price = marks[ticker] * (1 - policy["slippage"])
                 proceeds = exit_price * position["shares"] * (1 - policy["commission"])
