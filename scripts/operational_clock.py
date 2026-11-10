@@ -105,7 +105,9 @@ def clock_plan(now, market, tracks, commit, *, fx_reference=None):
         if (not isinstance(fx_reference, dict) or
                 fx_reference.get("source_session") != market["previous"] or
                 fx_reference.get("pair") != "EURUSD=X" or
-                fx_reference.get("captured_at_utc") != timestamp(now) or
+                not (datetime.fromisoformat(
+                    fx_reference["captured_at_utc"].replace("Z","+00:00"))
+                    <= now < market["open"]) or
                 type(fx_reference.get("rate_usd_per_eur")) not in (int, float) or
                 not math.isfinite(fx_reference["rate_usd_per_eur"]) or
                 fx_reference["rate_usd_per_eur"] <= 0):
@@ -236,12 +238,13 @@ def freeze_timesfm_entry_fx(now, market):
         if len(matches) != 1:
             return None
         value = float(matches.iloc[0]["Close"])
-        if not math.isfinite(value) or value <= 0:
+        received = datetime.now(UTC)
+        if not math.isfinite(value) or value <= 0 or received >= market["open"]:
             return None
         return {
             "pair": "EURUSD=X", "source": "yfinance_unadjusted_daily_close",
             "source_session": prev, "rate_usd_per_eur": value,
-            "captured_at_utc": timestamp(now),
+            "captured_at_utc": timestamp(received),
             "purpose": "paper_previous_XNYS_session_FX_proxy",
         }
     except (ValueError, TypeError, KeyError, OSError, IndexError):
@@ -347,6 +350,8 @@ def main(argv=None):
         # Freeze FX before opening, never fetch yesterday's FX after opening
         # for a trade that ought to have executed earlier.
         fx = freeze_timesfm_entry_fx(now, market) if fx_required else None
+        # Never backdate FX capture to the scheduler's intended 09:20 call.
+        now = datetime.now(UTC)
         lock = clock_plan(now, market, sources, sha, fx_reference=fx)
         _write(args.lock, lock)
         report = {"schema": SCHEMA, "session": lock["session"],
