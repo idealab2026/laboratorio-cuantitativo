@@ -119,8 +119,13 @@ class ForwardTimesFMTwoBooksTests(unittest.TestCase):
         stale_quotes = self._quotes(self.market, {"AAPL": 100, "SPY": 400})
         stale_quotes["AAPL"]["quote_at_utc"] = (
             self.market["open"]-timedelta(minutes=1)).isoformat()
-        out, _ = self.settle(quotes=stale_quotes)
-        self.assertEqual(out, {})
+        out, evidence = self.settle(quotes=stale_quotes)
+        # Independent SPY benchmarks may execute with their own fresh quote.
+        # Neither TimesFM model may borrow its stale AAPL observation.
+        self.assertEqual(evidence["IL-040"]["status"], "awaiting_fresh_open_quotes")
+        self.assertEqual(evidence["IL-042"]["status"], "awaiting_fresh_open_quotes")
+        for path,name in ((WEEKLY_PATH,"timesfm"),(DAILY_PATH,"timesfm_daily")):
+            self.assertEqual(out[path]["books"][name], after[path]["books"][name])
         self.assertEqual(self.data, after)
 
     def test_daily_exit_requires_nearclose_fx_and_never_sells_passive_spy(self):
@@ -150,7 +155,7 @@ class ForwardTimesFMTwoBooksTests(unittest.TestCase):
             trade["shares"]*110/1.1*(1-.0005)*(1-.001), places=3)
         self.assertIn("SPY", out[DAILY_PATH]["books"]["benchmark_spy"]["positions"])
         self.assertFalse(out[DAILY_PATH]["books"]["benchmark_spy"]["trades"])
-        self.data = copy.deepcopy(out)
+        self.data.update(copy.deepcopy(out))
         again,_=self.settle(quotes=good)
         self.assertEqual(again, {})
 
