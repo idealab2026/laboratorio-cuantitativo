@@ -42,7 +42,7 @@ def _write(path, doc):
     os.replace(tmp, path)
 
 
-def clock_plan(now, market, tracks, commit):
+def clock_plan(now, market, tracks, commit, *, fx_reference=None):
     if now.tzinfo is None or not market or not (
             market["open"] - timedelta(minutes=90) <= now < market["open"]):
         raise ValueError("A new opening may only be locked before that opening")
@@ -90,15 +90,29 @@ def clock_plan(now, market, tracks, commit):
             "holdings_count": len(record.get("holdings", [])) if isinstance(record, dict) else 0,
             # Only tactical classic portfolios monitor real observed stops.
             # Passive 503-position buy-and-hold is excluded from free quote reads.
-            "monitor_tickers": (sorted(set(record.get("holdings", [])))
-                                if eligible and (slot in {f"IL-{n:03d}" for n in range(11, 18)}
-                                                 or slot == "IL-037")
-                                and isinstance(record, dict) else []),
+            "monitor_tickers": (
+                sorted(set(record.get("holdings", []))
+                       | ({o["ticker"] for o in orders} if slot == "IL-042" else set()))
+                if eligible and (slot in {f"IL-{n:03d}" for n in range(11, 18)}
+                                 or slot in ("IL-037", "IL-040", "IL-042"))
+                and isinstance(record, dict) else []),
         }
     lock = {"schema": SCHEMA, "session": market["session"],
             "previous_session": market["previous"], "source_commit": commit,
             "open_at_utc": timestamp(market["open"]),
             "prepared_at_utc": timestamp(now), "slots": slots}
+    if fx_reference is not None:
+        if (not isinstance(fx_reference, dict) or
+                fx_reference.get("source_session") != market["previous"] or
+                fx_reference.get("pair") != "EURUSD=X" or
+                not (datetime.fromisoformat(
+                    fx_reference["captured_at_utc"].replace("Z","+00:00"))
+                    <= now < market["open"]) or
+                type(fx_reference.get("rate_usd_per_eur")) not in (int, float) or
+                not math.isfinite(fx_reference["rate_usd_per_eur"]) or
+                fx_reference["rate_usd_per_eur"] <= 0):
+            raise ValueError("Invalid or mismatched pre-opening FX evidence")
+        lock["fx_reference"] = copy.deepcopy(fx_reference)
     lock["lock_sha256"] = digest(lock)
     return lock
 
@@ -202,6 +216,41 @@ def status_report(lock, now, market, quotes, prior=None, *, run_id=None):
     }
 
 
+def freeze_timesfm_entry_fx(now, market):
+    """Capture the previous XNYS session's EURUSD daily close BEFORE opening.
+
+    This is explicitly a pre-observed paper FX proxy, not an executable
+    broker quote. Missing/ambiguous/late data disables TimesFM entry fills.
+    """
+    if now.tzinfo is None or now >= market["open"]:
+        raise ValueError("FX may only be frozen before the opening")
+    import yfinance as yf
+    prev = market["previous"]
+    start = prev
+    end = market["session"]
+    try:
+        frame = yf.Ticker("EURUSD=X").history(
+            start=start, end=end, interval="1d",
+            auto_adjust=False, actions=False)
+        if frame is None or frame.empty:
+            return None
+        matches = frame.loc[frame.index.strftime("%Y-%m-%d") == prev]
+        if len(matches) != 1:
+            return None
+        value = float(matches.iloc[0]["Close"])
+        received = datetime.now(UTC)
+        if not math.isfinite(value) or value <= 0 or received >= market["open"]:
+            return None
+        return {
+            "pair": "EURUSD=X", "source": "yfinance_unadjusted_daily_close",
+            "source_session": prev, "rate_usd_per_eur": value,
+            "captured_at_utc": timestamp(received),
+            "purpose": "paper_previous_XNYS_session_FX_proxy",
+        }
+    except (ValueError, TypeError, KeyError, OSError, IndexError):
+        return None
+
+
 def budgeted_quote_targets(lock, prior=None, *, limit=LIMIT, now=None, market=None):
     """Reserve whole algorithm-specific requests without silently truncating.
 
@@ -230,13 +279,22 @@ def budgeted_quote_targets(lock, prior=None, *, limit=LIMIT, now=None, market=No
         remaining = (set() if settled.get(slot, {}).get("status") == "native_forward_settled"
                      else {r["ticker"] for r in lane["orders"]})
         monitored = set(lane.get("monitor_tickers", []))
-        if slot == "IL-037":
-            # TFG stops activate at the following open via frozen orders.
-            # Monitor remaining holdings only for the last minutes of the
-            # final XNYS session of the week, not every intraday tick.
-            if (now is None or market is None or
-                    now < market["close"] - timedelta(minutes=6)):
+        if slot in ("IL-037", "IL-040", "IL-042"):
+            # Demand a fresh observed USD stock quote and contemporaneous FX
+            # only near the actual closing window. Do not burn the daily
+            # budget chasing weekly strategy holdings all day.
+            is_close = (now is not None and market is not None
+                        and now >= market["close"] - timedelta(minutes=6))
+            if slot == "IL-040" and is_close:
+                from tfg_ahp.data import is_week_end_session
+                is_close = is_week_end_session(market["session"])
+            last_marker = settled.get(slot, {}).get("native_marker") or {}
+            if last_marker.get("mode") == "exit" and last_marker.get("session") == (market or {}).get("session"):
+                is_close = False
+            if not is_close:
                 monitored = set()
+            elif slot in ("IL-040", "IL-042") and monitored:
+                monitored.add("EURUSD=X")
         remaining |= monitored
         if not remaining or not lane.get("execution_ready"):
             continue
@@ -284,7 +342,17 @@ def main(argv=None):
         from build_opening_plan import plan_at
         sha = _repo_commit()
         sources = plan_at(sha, market["session"], market["previous"])
-        lock = clock_plan(now, market, sources, sha)
+        fx_required = any(
+            sources.get(slot, {}).get("status") == "recorded"
+            and sources[slot].get("orders")
+            for slot in ("IL-040", "IL-041", "IL-042", "IL-043")
+        )
+        # Freeze FX before opening, never fetch yesterday's FX after opening
+        # for a trade that ought to have executed earlier.
+        fx = freeze_timesfm_entry_fx(now, market) if fx_required else None
+        # Never backdate FX capture to the scheduler's intended 09:20 call.
+        now = datetime.now(UTC)
+        lock = clock_plan(now, market, sources, sha, fx_reference=fx)
         _write(args.lock, lock)
         report = {"schema": SCHEMA, "session": lock["session"],
                   "previous_session": lock["previous_session"],
@@ -335,13 +403,15 @@ def main(argv=None):
         classic_updated, classic_evidence = settle_classic(lock, now, market, quotes)
         from forward_ahp_settlement import settle_ahp
         ahp_updated, ahp_evidence = settle_ahp(lock, now, market, quotes)
-        paths = [updated, ml_updated, classic_updated, ahp_updated]
+        from forward_timesfm_settlement import settle_timesfm
+        timesfm_updated, timesfm_evidence = settle_timesfm(lock, now, market, quotes)
+        paths = [updated, ml_updated, classic_updated, ahp_updated, timesfm_updated]
         if sum(len(z) for z in paths) != len(set().union(*(set(z) for z in paths))):
             raise ValueError("Two native settlers attempted to own the same canonical book")
-        for ledger_path, book in {**updated, **ml_updated, **classic_updated, **ahp_updated}.items():
+        for ledger_path, book in {**updated, **ml_updated, **classic_updated, **ahp_updated, **timesfm_updated}.items():
             _write(ROOT / ledger_path, book)
-        report["settlement"] = "native_forward_010_through_027_037_038_039_other_engines_batch"
-        for slot, result in {**evidence, **ml_evidence, **classic_evidence, **ahp_evidence}.items():
+        report["settlement"] = "native_forward_010_through_027_037_through_043_except_044"
+        for slot, result in {**evidence, **ml_evidence, **classic_evidence, **ahp_evidence, **timesfm_evidence}.items():
             lane = report["slots"][slot]
             lane["native_settlement"] = result["status"]
             if result["status"] == "settled_native_paper":

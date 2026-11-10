@@ -11,7 +11,12 @@ import copy
 import json
 import math
 from pathlib import Path
-import run as core
+# Package import from the shared clock must not collide with other engines'
+# top-level modules also named run.py. Preserve standalone script use.
+if __package__:
+    from . import run as core
+else:
+    import run as core
 
 ROOT = Path(__file__).resolve().parents[1]
 ENGINE = "timesfm_2p5_daily_eur_v1"
@@ -100,6 +105,18 @@ def process_session(state, config, date, previous, bars, *, fx_entry, fx_mark):
                 pos["dividends_eur"] += gross
                 book["events"].append({"date": date, "type": "dividend", "ticker": ticker, "eur": gross})
         pending = book["pending"]
+        if date >= "2026-11-10" and pending:
+            if any(o["signal_date"] != previous for o in pending):
+                raise ValueError("TimesFM daily next-open instruction stale")
+            book["events"].append({
+                "date": date, "type": "missed_forward_open",
+                "signal_date": previous,
+                "tickers": sorted(x["ticker"] for x in pending),
+            })
+            book["pending"] = []
+            pending = []
+        if date >= "2026-11-10" and book_name == "timesfm_daily" and book["positions"]:
+            raise ValueError("TimesFM daily closing exit missing observed execution")
         if pending:
             if not all(x["signal_date"] == previous for x in pending):
                 raise ValueError("Pending orders are not next-open orders")

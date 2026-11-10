@@ -24,6 +24,9 @@ REPOSITORY |= {
     "scripts/forward_ahp_settlement.py",
     "scripts/test_forward_ahp_settlement.py",
     ".github/workflows/tfg_ahp_forward_daily.yml",
+    "timesfm_strategy/forward_execution.py",
+    "scripts/forward_timesfm_settlement.py",
+    "scripts/test_forward_timesfm_settlement.py",
 }
 REPOSITORY |= {"scripts/classic_forward_settlement.py", "scripts/test_classic_forward_settlement.py"}
 REPOSITORY.add("data/forward-open-il039.json")
