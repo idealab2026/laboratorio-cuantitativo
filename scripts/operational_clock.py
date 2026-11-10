@@ -42,7 +42,7 @@ def _write(path, doc):
     os.replace(tmp, path)
 
 
-def clock_plan(now, market, tracks, commit):
+def clock_plan(now, market, tracks, commit, *, fx_reference=None):
     if now.tzinfo is None or not market or not (
             market["open"] - timedelta(minutes=90) <= now < market["open"]):
         raise ValueError("A new opening may only be locked before that opening")
@@ -99,6 +99,16 @@ def clock_plan(now, market, tracks, commit):
             "previous_session": market["previous"], "source_commit": commit,
             "open_at_utc": timestamp(market["open"]),
             "prepared_at_utc": timestamp(now), "slots": slots}
+    if fx_reference is not None:
+        if (not isinstance(fx_reference, dict) or
+                fx_reference.get("source_session") != market["previous"] or
+                fx_reference.get("pair") != "EURUSD=X" or
+                fx_reference.get("captured_at_utc") != timestamp(now) or
+                type(fx_reference.get("rate_usd_per_eur")) not in (int, float) or
+                not math.isfinite(fx_reference["rate_usd_per_eur"]) or
+                fx_reference["rate_usd_per_eur"] <= 0):
+            raise ValueError("Invalid or mismatched pre-opening FX evidence")
+        lock["fx_reference"] = copy.deepcopy(fx_reference)
     lock["lock_sha256"] = digest(lock)
     return lock
 
@@ -202,6 +212,40 @@ def status_report(lock, now, market, quotes, prior=None, *, run_id=None):
     }
 
 
+def freeze_timesfm_entry_fx(now, market):
+    """Capture the previous XNYS session's EURUSD daily close BEFORE opening.
+
+    This is explicitly a pre-observed paper FX proxy, not an executable
+    broker quote. Missing/ambiguous/late data disables TimesFM entry fills.
+    """
+    if now.tzinfo is None or now >= market["open"]:
+        raise ValueError("FX may only be frozen before the opening")
+    import yfinance as yf
+    prev = market["previous"]
+    start = prev
+    end = market["session"]
+    try:
+        frame = yf.Ticker("EURUSD=X").history(
+            start=start, end=end, interval="1d",
+            auto_adjust=False, actions=False)
+        if frame is None or frame.empty:
+            return None
+        matches = frame.loc[frame.index.strftime("%Y-%m-%d") == prev]
+        if len(matches) != 1:
+            return None
+        value = float(matches.iloc[0]["Close"])
+        if not math.isfinite(value) or value <= 0:
+            return None
+        return {
+            "pair": "EURUSD=X", "source": "yfinance_unadjusted_daily_close",
+            "source_session": prev, "rate_usd_per_eur": value,
+            "captured_at_utc": timestamp(now),
+            "purpose": "paper_previous_XNYS_session_FX_proxy",
+        }
+    except (ValueError, TypeError, KeyError, OSError, IndexError):
+        return None
+
+
 def budgeted_quote_targets(lock, prior=None, *, limit=LIMIT, now=None, market=None):
     """Reserve whole algorithm-specific requests without silently truncating.
 
@@ -284,7 +328,15 @@ def main(argv=None):
         from build_opening_plan import plan_at
         sha = _repo_commit()
         sources = plan_at(sha, market["session"], market["previous"])
-        lock = clock_plan(now, market, sources, sha)
+        fx_required = any(
+            sources.get(slot, {}).get("status") == "recorded"
+            and sources[slot].get("orders")
+            for slot in ("IL-040", "IL-041", "IL-042", "IL-043")
+        )
+        # Freeze FX before opening, never fetch yesterday's FX after opening
+        # for a trade that ought to have executed earlier.
+        fx = freeze_timesfm_entry_fx(now, market) if fx_required else None
+        lock = clock_plan(now, market, sources, sha, fx_reference=fx)
         _write(args.lock, lock)
         report = {"schema": SCHEMA, "session": lock["session"],
                   "previous_session": lock["previous_session"],
