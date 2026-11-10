@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "generated_at_utc": "2026-11-10T23:40:53.889209+00:00",
+  "generated_at_utc": "2026-11-10T23:43:19.055877+00:00",
   "principle": "Comparar rentabilidad acumulada y riesgo observado; no ordenar carteras con distintas fechas de inicio o supuestos de ejecución.",
   "counts": {
     "paper_with_diary": 18,
@@ -4564,11 +4564,11 @@
       "group": "timesfm_daily_demo",
       "status": "demo_con_diario",
       "first_session": "2026-10-12",
-      "last_session": "2026-11-09",
+      "last_session": "2026-11-10",
       "initial_capital": 100000.0,
       "last_equity": 99791.456301083,
       "return_pct": -0.208544,
-      "day_return_pct": 1.123933,
+      "day_return_pct": 0.0,
       "currency": "EUR",
       "equity_history": [
         {
@@ -4654,38 +4654,33 @@
         {
           "date": "2026-11-09",
           "nav": 99791.456301083
+        },
+        {
+          "date": "2026-11-10",
+          "nav": 99791.456301083
         }
       ],
       "period_returns_pct": {
-        "5_sessions": -1.333098,
-        "21_sessions": null,
+        "5_sessions": -1.253085,
+        "21_sessions": -0.208544,
         "63_sessions": null
       },
       "note": "TimesFM 2.5: predicción de una sesión sobre el S&P 500 canónico; cartera intradía ficticia, EUR 100k, fills next-open, cierre del mismo día; referencia SPY EUR de misma cohorte.",
       "comparison_currency": "EUR",
       "comparison_reference": "timesfm_daily_spy_eur",
-      "activity_state": "pending",
-      "activity_label": "8 compras paper para próxima apertura",
-      "activity_tickers": [
-        "STX",
-        "NWS",
-        "LRCX",
-        "WDC",
-        "EXPD",
-        "MU",
-        "KEYS",
-        "NWSA"
-      ],
+      "activity_state": "cash",
+      "activity_label": "Sin compras · en efectivo",
+      "activity_tickers": [],
       "open_positions_count": 0,
-      "pending_orders_count": 8,
+      "pending_orders_count": 0,
       "comparison_eligible": true,
       "comparison_universe_id": "SP500_2026-09-29_503",
       "comparison_universe_symbols": 503,
       "comparison_exclusion_reason": null,
-      "risk_observations": 21,
-      "annualized_volatility_pct": 12.060821,
+      "risk_observations": 22,
+      "annualized_volatility_pct": 11.755464,
       "max_drawdown_pct": -2.841353,
-      "sharpe_0rf": -0.160049
+      "sharpe_0rf": -0.156387
     },
     {
       "id": "timesfm_daily_spy_eur",
@@ -4694,11 +4689,11 @@
       "group": "timesfm_daily_demo",
       "status": "demo_con_diario",
       "first_session": "2026-10-12",
-      "last_session": "2026-11-09",
+      "last_session": "2026-11-10",
       "initial_capital": 100000.0,
-      "last_equity": 97210.15372640053,
-      "return_pct": -2.789846,
-      "day_return_pct": 1.286347,
+      "last_equity": 97288.66029282595,
+      "return_pct": -2.71134,
+      "day_return_pct": 0.08076,
       "currency": "EUR",
       "equity_history": [
         {
@@ -4784,11 +4779,15 @@
         {
           "date": "2026-11-09",
           "nav": 97210.15372640053
+        },
+        {
+          "date": "2026-11-10",
+          "nav": 97288.66029282595
         }
       ],
       "period_returns_pct": {
-        "5_sessions": -0.177937,
-        "21_sessions": null,
+        "5_sessions": -0.272136,
+        "21_sessions": -2.71134,
         "63_sessions": null
       },
       "note": "TimesFM 2.5: predicción de una sesión sobre el S&P 500 canónico; cartera intradía ficticia, EUR 100k, fills next-open, cierre del mismo día; referencia SPY EUR de misma cohorte.",
@@ -4805,10 +4804,10 @@
       "comparison_universe_id": "SP500_2026-09-29_503",
       "comparison_universe_symbols": 503,
       "comparison_exclusion_reason": null,
-      "risk_observations": 21,
-      "annualized_volatility_pct": 17.779598,
+      "risk_observations": 22,
+      "annualized_volatility_pct": 17.345571,
       "max_drawdown_pct": -5.097625,
-      "sharpe_0rf": -1.918349
+      "sharpe_0rf": -1.816844
     },
     {
       "id": "genetic_sp500_legacy",
