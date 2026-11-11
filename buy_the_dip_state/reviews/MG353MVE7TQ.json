@@ -1,0 +1,374 @@
+{
+  "schema_version": 1,
+  "status": "machine_first_pass",
+  "reviewed_at_utc": "2026-11-11T16:09:05.306246+00:00",
+  "source_identity": "Buy The Dip YouTube channel",
+  "transport": {
+    "kind": "official_podcast_mirror",
+    "provider": "iVoox",
+    "guid": "https://www.ivoox.com/121688724",
+    "published_date": "2023-12-26",
+    "youtube_video_id": "MG353MVE7TQ",
+    "match_score": 1.0,
+    "audio_bytes_processed_transiently": 27687123
+  },
+  "models": {
+    "asr": {
+      "language": "es",
+      "language_probability": 1.0,
+      "duration_seconds": 3460.8326875,
+      "word_count": 9792,
+      "segment_count": 1400,
+      "model": "small"
+    },
+    "semantic": {
+      "repo": "Qwen/Qwen3-4B-GGUF",
+      "file": "Qwen3-4B-Q4_K_M.gguf"
+    }
+  },
+  "metadata": {
+    "video_id": "MG353MVE7TQ",
+    "youtube_url": "https://www.youtube.com/watch?v=MG353MVE7TQ",
+    "title": "¿Qué ha pasado este 2023? RESUMEN DEL AÑO | BUY THE DIP PODCAST",
+    "category": "company_or_theme",
+    "guest_likely": false,
+    "podcast_guid": "https://www.ivoox.com/121688724",
+    "published_date": "2023-12-26",
+    "source": "official_podcast_mirror",
+    "match_score": 1.0
+  },
+  "analysis": {
+    "episode_summary": "El episodio analiza la estrategia de inversión 'Buy The Dip' en el contexto del año 2023, destacando la volatilidad del mercado, la gestión de riesgos, y la selección de activos basada en ciclos macroeconómicos. Se mencionan decisiones de entrada y salida en sectores como petróleo, carbón, y uranio, con énfasis en la importancia de la diversificación y la reevaluación de posiciones. Se destacan errores de inversión, como la venta prematura de posiciones en empresas como Meta, y la necesidad de ajustes en la estrategia de inversión. También se analizan oportunidades en mineras de litio y oro, y se menciona la importancia de la liquidez y la estabilidad en la toma de decisiones. El episodio cierra con una discusión sobre la incertidumbre en la situación actual y la decisión de finalizar el programa.",
+    "process": {
+      "idea_generation": [],
+      "quality": [],
+      "balance_sheet": [],
+      "valuation": [
+        "La cartera conjunta de Martí y Albert ha tenido un rendimiento positivo, superando al índice de mercado, lo que sugiere una buena selección de activos y una gestión diversificada."
+      ],
+      "cycle_macro": [
+        "El año 2023 fue un año de volatilidad en el mercado, con un aumento de tipos de interés y una subida del precio del petróleo que luego se volvió a caer, afectando el sentimiento de los inversores."
+      ],
+      "entry": [
+        "Se aprovechó una subida del mercado para reducir posiciones en sectores como el petróleo y el carbón."
+      ],
+      "sizing": [
+        "Se analizó la exposición al petróleo y al carbón, con decisiones de reducir posiciones en empresas como Ipco y Vitex Energy debido a un exceso de peso en la cartera."
+      ],
+      "add_hold": [],
+      "exit": [
+        "Se decidieron vender posiciones en empresas como Vitex Energy debido a errores de inversión y una reevaluación de la exposición al petróleo."
+      ],
+      "risk": [
+        "Los inversores han mostrado una actitud prudente, manteniendo una parte de liquidez y evitando decisiones impulsivas, lo que refleja una percepción de riesgo elevada en 2024."
+      ],
+      "technical": [],
+      "management": [],
+      "mistakes": [
+        "Se comenta un error en la asignación de capital al vender una posición (Meta) demasiado pronto, lo que resultó en una pérdida en otras inversiones."
+      ]
+    },
+    "candidate_rules": [
+      {
+        "rule": "paráfrasis compacta",
+        "scope": "hosts|uncertain_or_guest",
+        "confidence": 0.0,
+        "evidence_timestamps": [],
+        "automation_proxy": "variable/cálculo posible o null",
+        "cross_video_confirmation_required": true
+      }
+    ],
+    "contradictions_or_uncertainties": [],
+    "named_examples": [
+      "Franco Nevada"
+    ],
+    "automation_readiness": "medium"
+  },
+  "chunk_evidence": [
+    {
+      "chunk": 1,
+      "evidence": [
+        {
+          "stage": "cycle_macro",
+          "paraphrase": "El año 2023 fue un año de volatilidad en el mercado, con un aumento de tipos de interés y una subida del precio del petróleo que luego se volvió a caer, afectando el sentimiento de los inversores.",
+          "timestamp": "00:03:50",
+          "scope": "hosts",
+          "confidence": 0.8,
+          "automation_hint": "proxy observable"
+        },
+        {
+          "stage": "valuation",
+          "paraphrase": "La cartera conjunta de Martí y Albert ha tenido un rendimiento positivo, superando al índice de mercado, lo que sugiere una buena selección de activos y una gestión diversificada.",
+          "timestamp": "00:04:20",
+          "scope": "hosts",
+          "confidence": 0.7,
+          "automation_hint": "proxy observable"
+        },
+        {
+          "stage": "risk",
+          "paraphrase": "Los inversores han mostrado una actitud prudente, manteniendo una parte de liquidez y evitando decisiones impulsivas, lo que refleja una percepción de riesgo elevada en 2024.",
+          "timestamp": "00:05:46",
+          "scope": "hosts",
+          "confidence": 0.6,
+          "automation_hint": "proxy observable"
+        },
+        {
+          "stage": "entry",
+          "paraphrase": "La estrategia de inversión se basa en aprovechar la macroeconomía, posicionándose en activos que se espera que beneficien de la evolución de los tipos de interés y la inflación.",
+          "timestamp": "00:06:00",
+          "scope": "hosts",
+          "confidence": 0.7,
+          "automation_hint": "proxy observable"
+        },
+        {
+          "stage": "exit",
+          "paraphrase": "La cartera ha experimentado fluctuaciones significativas, con un descenso del precio del petróleo que ha impactado negativamente en el rendimiento, lo que sugiere la necesidad de un ajuste en la estrategia de inversión.",
+          "timestamp": "00:10:42",
+          "scope": "hosts",
+          "confidence": 0.6,
+          "automation_hint": "proxy observable"
+        }
+      ],
+      "named_examples": [],
+      "chunk_summary": "El programa discute la volatilidad del mercado en 2023, destacando el rendimiento de la cartera conjunta, la gestión del riesgo por parte de los inversores, y la estrategia de inversión basada en la macroeconomía. Se menciona la caída del precio del petróleo y su impacto en el rendimiento, sugiriendo la necesidad de ajustes en la estrategia de inversión para 2024."
+    },
+    {
+      "chunk": 2,
+      "evidence": [
+        {
+          "stage": "entry",
+          "paraphrase": "Se aprovechó una subida del mercado para reducir posiciones en sectores como el petróleo y el carbón.",
+          "timestamp": "00:11:16",
+          "scope": "hosts",
+          "confidence": 0.9,
+          "automation_hint": "proxy observable"
+        },
+        {
+          "stage": "exit",
+          "paraphrase": "Se decidieron vender posiciones en empresas como Vitex Energy debido a errores de inversión y una reevaluación de la exposición al petróleo.",
+          "timestamp": "00:11:46",
+          "scope": "hosts",
+          "confidence": 0.8,
+          "automation_hint": "proxy observable"
+        },
+        {
+          "stage": "valuation",
+          "paraphrase": "Se observó una estabilización de precios de energía y un crecimiento del sector del carbón, con empresas como Ipco generando valor a largo plazo.",
+          "timestamp": "00:15:00",
+          "scope": "hosts",
+          "confidence": 0.7,
+          "automation_hint": "proxy observable"
+        },
+        {
+          "stage": "cycle_macro",
+          "paraphrase": "Se identificó un ciclo de estabilización en el precio del petróleo y un crecimiento moderado en el carbón, con posibles futuras subidas en el uranio.",
+          "timestamp": "00:16:55",
+          "scope": "hosts",
+          "confidence": 0.6,
+          "automation_hint": "proxy observable"
+        },
+        {
+          "stage": "sizing",
+          "paraphrase": "Se analizó la exposición al petróleo y al carbón, con decisiones de reducir posiciones en empresas como Ipco y Vitex Energy debido a un exceso de peso en la cartera.",
+          "timestamp": "00:11:54",
+          "scope": "hosts",
+          "confidence": 0.5,
+          "automation_hint": "proxy observable"
+        },
+        {
+          "stage": "risk",
+          "paraphrase": "Se reconoció el riesgo de exposición excesiva al petróleo y la volatilidad del mercado, con decisiones de reducir posiciones para mitigar impactos negativos.",
+          "timestamp": "00:12:46",
+          "scope": "hosts",
+          "confidence": 0.4,
+          "automation_hint": "proxy observable"
+        }
+      ],
+      "named_examples": [],
+      "chunk_summary": "El análisis de la estrategia de inversión se basa en la reducción de posiciones en sectores como petróleo y carbón tras una subida del mercado, decisiones de venta en empresas como Vitex Energy debido a errores de inversión, y una reevaluación de la exposición a largo plazo en sectores como el uranio. Se observa una estabilización de precios de energía y un crecimiento moderado en el carbón, con posibles futuras subidas en el uranio. La estrategia se enfoca en reducir riesgos y ajustar la exposición basándose en ciclos macroeconómicos y reevaluaciones de valor a largo plazo."
+    },
+    {
+      "chunk": 3,
+      "evidence": [
+        {
+          "stage": "entry",
+          "paraphrase": "El analista evita invertir en mineras de uranio debido a su tamaño y calidad, optando por empresas más pequeñas y de menor riesgo.",
+          "timestamp": "00:20:18",
+          "scope": "hosts",
+          "confidence": 0.9
+        },
+        {
+          "stage": "exit",
+          "paraphrase": "El analista reconoce que ciertas mineras de oro no están valorizadas adecuadamente, lo que sugiere oportunidades de compra en mineras de litio y otros sectores.",
+          "timestamp": "00:22:00",
+          "scope": "uncertain_or_guest",
+          "confidence": 0.7
+        },
+        {
+          "stage": "risk",
+          "paraphrase": "El analista destaca la volatilidad en el sector de las mineras y la importancia de no invertir en empresas de mala calidad, como las mineras de uranio.",
+          "timestamp": "00:20:28",
+          "scope": "hosts",
+          "confidence": 0.8
+        }
+      ],
+      "named_examples": [
+        {
+          "example": "Franco Nevada"
+        }
+      ],
+      "chunk_summary": "El analista comparte su estrategia de inversión en mineras, evitando las grandes y optando por empresas más pequeñas y de menor riesgo. Destaca la importancia de evaluar la calidad y el riesgo en cada inversión, y menciona oportunidades en mineras de litio y oro. También destaca errores en la toma de decisiones, como la falta de acción rápida y la dificultad para vender posiciones."
+    },
+    {
+      "chunk": 4,
+      "evidence": [
+        {
+          "stage": "entry",
+          "paraphrase": "El análisis de entrada se basa en la flexibilidad para comprar y vender activos, priorizando la rentabilidad a largo plazo sobre la posibilidad de revalorización inmediata.",
+          "timestamp": "00:34:00",
+          "scope": "uncertain_or_guest",
+          "confidence": 0.0,
+          "automation_hint": "proxy observable"
+        },
+        {
+          "stage": "exit",
+          "paraphrase": "La decisión de salir de una posición se justifica por la falta de catalizadores que puedan desbloquear el valor, lo que sugiere una estrategia de rotación basada en la evaluación de riesgos y oportunidades en diferentes sectores.",
+          "timestamp": "00:35:00",
+          "scope": "uncertain_or_guest",
+          "confidence": 0.0,
+          "automation_hint": "proxy observable"
+        },
+        {
+          "stage": "risk",
+          "paraphrase": "La gestión del riesgo implica una evaluación cuidadosa de la liquidez y la estabilidad de los activos, evitando posiciones con altos niveles de exposición a eventos adversos sin una estrategia clara de mitigación.",
+          "timestamp": "00:36:10",
+          "scope": "uncertain_or_guest",
+          "confidence": 0.0,
+          "automation_hint": "proxy observable"
+        }
+      ],
+      "named_examples": [],
+      "chunk_summary": "El fragmento destaca la importancia de la flexibilidad en la estrategia de inversión, la necesidad de evaluar riesgos y oportunidades a largo plazo, y la toma de decisiones de entrada y salida basada en la valoración de activos y la liquidez. Se enfatiza la importancia de una estrategia equilibrada que combine paciencia, análisis macroeconómico y adaptación a cambios en el mercado."
+    },
+    {
+      "chunk": 5,
+      "evidence": [
+        {
+          "stage": "entry",
+          "paraphrase": "Se menciona que una empresa tiene un 50% de acciones en manos de otros accionistas, pero el caso no es el mismo, ya que se espera un aumento del dividendo.",
+          "timestamp": "00:38:10",
+          "scope": "hosts",
+          "confidence": 0.0
+        },
+        {
+          "stage": "exit",
+          "paraphrase": "Se describe un error de corte de posición en una empresa (Meta) que se vendió demasiado pronto, lo que resultó en una pérdida de valor en otras inversiones.",
+          "timestamp": "00:42:00",
+          "scope": "uncertain_or_guest",
+          "confidence": 0.0
+        },
+        {
+          "stage": "risk",
+          "paraphrase": "Se destaca la importancia de cortar pérdidas o tomar beneficios rápidamente en empresas con ciclos de vida no estables, como las mineras.",
+          "timestamp": "00:40:10",
+          "scope": "hosts",
+          "confidence": 0.0
+        },
+        {
+          "stage": "valuation",
+          "paraphrase": "Se menciona que una empresa (Ipco) está muy barata con un dividend yield del 15%, pero se considera que su peso en la cartera es demasiado alto en comparación con Petrogras.",
+          "timestamp": "00:43:25",
+          "scope": "hosts",
+          "confidence": 0.0
+        },
+        {
+          "stage": "mistake",
+          "paraphrase": "Se comenta un error en la asignación de capital al vender una posición (Meta) demasiado pronto, lo que resultó en una pérdida en otras inversiones.",
+          "timestamp": "00:42:00",
+          "scope": "uncertain_or_guest",
+          "confidence": 0.0
+        },
+        {
+          "stage": "cycle_macro",
+          "paraphrase": "Se menciona que la estrategia de inversión debe considerar el ciclo económico, especialmente en sectores como el petróleo, donde a corto plazo no se ven bien los precios del crudo, pero a largo plazo sí.",
+          "timestamp": "00:45:59",
+          "scope": "hosts",
+          "confidence": 0.0
+        }
+      ],
+      "named_examples": [],
+      "chunk_summary": "El fragmento describe errores de inversión, como el corte prematuro de posiciones y la mala asignación de capital, así como la importancia de evaluar el valor y el riesgo en empresas con ciclos no estables. Se mencionan ejemplos concretos de empresas como Meta, Ipco, y Pulseiken, donde se analizan decisiones de entrada, salida y gestión de riesgos, destacando la necesidad de una estrategia equilibrada entre conservadorismo y toma de beneficios."
+    },
+    {
+      "chunk": 6,
+      "evidence": [
+        {
+          "stage": "entry",
+          "paraphrase": "La empresa ha comprado y ampliado su posición en Alfamin, que ha estado perdiendo dinero este año, pero sigue siendo barata y se espera una revalorización si el precio del estaño recupera.",
+          "timestamp": "00:47:35",
+          "scope": "hosts",
+          "confidence": 0.9,
+          "automation_hint": "proxy observable"
+        },
+        {
+          "stage": "valuation",
+          "paraphrase": "Alfamin sigue siendo un activo clave con un proyecto importante, aunque ha tenido retrasos en la producción y envío de estaño debido a problemas logísticos, pero se espera una mejora en el futuro.",
+          "timestamp": "00:47:45",
+          "scope": "hosts",
+          "confidence": 0.8,
+          "automation_hint": "proxy observable"
+        },
+        {
+          "stage": "risk",
+          "paraphrase": "La empresa enfrenta riesgos de corto plazo debido a retrasos en la producción y logística, pero confía en que el proyecto se recuperará y generará beneficios en el futuro.",
+          "timestamp": "00:47:55",
+          "scope": "hosts",
+          "confidence": 0.7,
+          "automation_hint": "proxy observable"
+        },
+        {
+          "stage": "exit",
+          "paraphrase": "La estrategia de inversión se basa en la revalorización de Alfamin si el precio del estaño recupera, aunque se reconoce que el timing de la decisión de mantener o rebalancear la cartera es complejo y con riesgos.",
+          "timestamp": "00:53:45",
+          "scope": "hosts",
+          "confidence": 0.6,
+          "automation_hint": "proxy observable"
+        }
+      ],
+      "named_examples": [],
+      "chunk_summary": "El análisis de inversión se centra en la adquisición y ampliación de una posición en Alfamin, una empresa que ha tenido dificultades financieras este año, pero que sigue siendo un activo clave debido a su proyecto de producción de estaño. Se espera una revalorización si el precio del metal recupera, aunque se reconoce que el timing de la decisión de mantener o rebalancear la cartera es complejo y con riesgos. La estrategia se basa en la confianza en el futuro del proyecto, aunque se mencionan errores en la toma de decisiones y la necesidad de rebalancear la cartera con más rapidez para mejorar las rentabilidades a largo plazo."
+    },
+    {
+      "chunk": 7,
+      "evidence": [
+        {
+          "stage": "risk",
+          "paraphrase": "El speaker expresa preocupación por la incertidumbre en la situación actual y menciona que no tiene una solución clara.",
+          "timestamp": "00:56:55",
+          "scope": "uncertain_or_guest",
+          "confidence": 0.0,
+          "automation_hint": "proxy observable"
+        },
+        {
+          "stage": "exit",
+          "paraphrase": "El speaker indica que está considerando salir del programa y dejar la discusión en paz.",
+          "timestamp": "00:57:06",
+          "scope": "hosts",
+          "confidence": 0.8,
+          "automation_hint": "proxy observable"
+        },
+        {
+          "stage": "entry",
+          "paraphrase": "El speaker menciona que hay una oportunidad de entrada al 30% y que el activo está barato.",
+          "timestamp": "00:56:35",
+          "scope": "hosts",
+          "confidence": 0.7,
+          "automation_hint": "proxy observable"
+        }
+      ],
+      "named_examples": [],
+      "chunk_summary": "El programa de inversión discute la posibilidad de entrada en un activo a 30% con un precio bajo, pero el speaker expresa dudas sobre la claridad de la situación y la incertidumbre. Finalmente, decide salir del programa, indicando que no tiene una solución definitiva y pidiendo ayuda. El programa cierra con un anuncio de cierre y recordatorio de ofertas."
+    }
+  ],
+  "copyright_note": "No audio or verbatim transcript is persisted; only derived paraphrases."
+}
