@@ -1,328 +1,5 @@
 {
-  "schema_version": 1,
-  "model": "next_open_raw_ohlc_v1",
-  "initial_capital": 100000.0,
-  "cash": 1463.899956150417,
-  "positions": {
-    "NDAQ": {
-      "shares": 157.093581,
-      "entry": 94.28711786270141,
-      "sl": 88.76102678911757,
-      "tp": 111.55546269906839
-    },
-    "PRU": {
-      "shares": 127.763735,
-      "entry": 115.70782652664184,
-      "sl": 110.89365886999616,
-      "tp": 135.60780985750134
-    },
-    "EW": {
-      "shares": 165.113291,
-      "entry": 90.23509744262695,
-      "sl": 85.38907727498116,
-      "tp": 107.30013669117292
-    },
-    "INTU": {
-      "shares": 44.320143,
-      "entry": 336.168,
-      "sl": 318.1143052195079,
-      "tp": 399.7432636910789
-    },
-    "MAS": {
-      "shares": 198.105208,
-      "entry": 75.20758316802979,
-      "sl": 71.16860637162416,
-      "tp": 89.4306559515078
-    },
-    "MCO": {
-      "shares": 15.11458,
-      "entry": 490.76524900817867,
-      "sl": 464.40900446834786,
-      "tp": 583.5775634346348
-    },
-    "NSC": {
-      "shares": 1.109748,
-      "entry": 334.2070285491943,
-      "sl": 316.2586465291259,
-      "tp": 397.4114381522111
-    },
-    "SHW": {
-      "shares": 0.058721,
-      "entry": 315.8078188934326,
-      "sl": 298.847555062268,
-      "tp": 375.5326153102672
-    },
-    "CPRT": {
-      "shares": 498.226136,
-      "entry": 32.09103826332092,
-      "sl": 31.700815434626026,
-      "tp": 38.5092459159851
-    },
-    "NEM": {
-      "shares": 0.589188,
-      "entry": 125.61277805328369,
-      "sl": 124.0853430987032,
-      "tp": 150.73533366394042
-    }
-  },
-  "pending": {
-    "buys": {},
-    "sells": []
-  },
-  "trades": [
-    {
-      "session": "2026-10-13",
-      "ticker": "AMZN",
-      "side": "BUY",
-      "reason": "SIGNAL",
-      "shares": 57.730211,
-      "fill": 259.5697224426269,
-      "fee": 14.985014845824288
-    },
-    {
-      "session": "2026-10-13",
-      "ticker": "JNJ",
-      "side": "BUY",
-      "reason": "SIGNAL",
-      "shares": 58.83692,
-      "fill": 254.68727755737302,
-      "fee": 14.985014974660952
-    },
-    {
-      "session": "2026-10-13",
-      "ticker": "JNJ",
-      "side": "SELL",
-      "reason": "STOP",
-      "shares": 58.83692,
-      "fill": 252.0143345794084,
-      "fee": 14.827747242501886
-    },
-    {
-      "session": "2026-10-14",
-      "ticker": "ABT",
-      "side": "BUY",
-      "reason": "SIGNAL",
-      "shares": 143.511205,
-      "fill": 104.11202755737304,
-      "fee": 14.941242529751811
-    },
-    {
-      "session": "2026-10-14",
-      "ticker": "VST",
-      "side": "BUY",
-      "reason": "SIGNAL",
-      "shares": 93.611081,
-      "fill": 159.60976377868653,
-      "fee": 14.94124252547749
-    },
-    {
-      "session": "2026-10-14",
-      "ticker": "AMZN",
-      "side": "SELL",
-      "reason": "STOP",
-      "shares": 57.730211,
-      "fill": 256.8455382055916,
-      "fee": 14.827747115017365
-    },
-    {
-      "session": "2026-10-14",
-      "ticker": "VST",
-      "side": "SELL",
-      "reason": "STOP",
-      "shares": 93.611081,
-      "fill": 150.88952237800058,
-      "fee": 14.124931301378325
-    },
-    {
-      "session": "2026-10-15",
-      "ticker": "TT",
-      "side": "BUY",
-      "reason": "SIGNAL",
-      "shares": 31.74234,
-      "fill": 467.28351278686523,
-      "fee": 14.832672139275022
-    },
-    {
-      "session": "2026-10-15",
-      "ticker": "TT",
-      "side": "SELL",
-      "reason": "STOP",
-      "shares": 31.74234,
-      "fill": 460.9061237783029,
-      "fee": 14.630238889052976
-    },
-    {
-      "session": "2026-10-16",
-      "ticker": "MSI",
-      "side": "BUY",
-      "reason": "SIGNAL",
-      "shares": 32.203996,
-      "fill": 459.93984645080565,
-      "fee": 14.811900975342358
-    },
-    {
-      "session": "2026-10-16",
-      "ticker": "NDAQ",
-      "side": "BUY",
-      "reason": "SIGNAL",
-      "shares": 157.093581,
-      "fill": 94.28711786270141,
-      "fee": 14.811900987220831
-    },
-    {
-      "session": "2026-10-19",
-      "ticker": "JKHY",
-      "side": "BUY",
-      "reason": "SIGNAL",
-      "shares": 97.195316,
-      "fill": 151.99595816802977,
-      "fee": 14.773295184864436
-    },
-    {
-      "session": "2026-10-19",
-      "ticker": "JKHY",
-      "side": "SELL",
-      "reason": "STOP",
-      "shares": 97.195316,
-      "fill": 150.4007605870563,
-      "fee": 14.618249451899285
-    },
-    {
-      "session": "2026-10-20",
-      "ticker": "XYZ",
-      "side": "BUY",
-      "reason": "SIGNAL",
-      "shares": 191.174214,
-      "fill": 77.288625,
-      "fee": 14.77559213551575
-    },
-    {
-      "session": "2026-10-21",
-      "ticker": "PRU",
-      "side": "BUY",
-      "reason": "SIGNAL",
-      "shares": 127.763735,
-      "fill": 115.70782652664184,
-      "fee": 14.783264085775839
-    },
-    {
-      "session": "2026-10-21",
-      "ticker": "ABT",
-      "side": "SELL",
-      "reason": "STOP",
-      "shares": 143.511205,
-      "fill": 98.4238917471226,
-      "fee": 14.12493130541912
-    },
-    {
-      "session": "2026-10-26",
-      "ticker": "XYZ",
-      "side": "SELL",
-      "reason": "STOP",
-      "shares": 191.174214,
-      "fill": 74.30158020671966,
-      "fee": 14.20454619497759
-    },
-    {
-      "session": "2026-10-27",
-      "ticker": "EW",
-      "side": "BUY",
-      "reason": "SIGNAL",
-      "shares": 165.113291,
-      "fill": 90.23509744262695,
-      "fee": 14.89901390245782
-    },
-    {
-      "session": "2026-10-27",
-      "ticker": "INTU",
-      "side": "BUY",
-      "reason": "SIGNAL",
-      "shares": 44.320143,
-      "fill": 336.168,
-      "fee": 14.899013832024
-    },
-    {
-      "session": "2026-10-27",
-      "ticker": "MAS",
-      "side": "BUY",
-      "reason": "SIGNAL",
-      "shares": 198.105208,
-      "fill": 75.20758316802979,
-      "fee": 14.89901390667984
-    },
-    {
-      "session": "2026-10-27",
-      "ticker": "MCO",
-      "side": "BUY",
-      "reason": "SIGNAL",
-      "shares": 15.11458,
-      "fill": 490.76524900817867,
-      "fee": 7.417710617354037
-    },
-    {
-      "session": "2026-10-27",
-      "ticker": "NSC",
-      "side": "BUY",
-      "reason": "SIGNAL",
-      "shares": 1.109748,
-      "fill": 334.2070285491943,
-      "fee": 0.37088558151841133
-    },
-    {
-      "session": "2026-10-27",
-      "ticker": "SHW",
-      "side": "BUY",
-      "reason": "SIGNAL",
-      "shares": 0.058721,
-      "fill": 315.8078188934326,
-      "fee": 0.01854455093324126
-    },
-    {
-      "session": "2026-11-05",
-      "ticker": "MSI",
-      "side": "SELL",
-      "reason": "TARGET",
-      "shares": 32.203996,
-      "fill": 543.9040787951868,
-      "fee": 17.51588477790388
-    },
-    {
-      "session": "2026-11-09",
-      "ticker": "CPRT",
-      "side": "BUY",
-      "reason": "SIGNAL",
-      "shares": 498.226136,
-      "fill": 32.09103826332092,
-      "fee": 15.988593994162532
-    },
-    {
-      "session": "2026-11-09",
-      "ticker": "ES",
-      "side": "BUY",
-      "reason": "SIGNAL",
-      "shares": 20.997055,
-      "fill": 70.4952290840149,
-      "fee": 1.4801922023146603
-    },
-    {
-      "session": "2026-11-09",
-      "ticker": "NEM",
-      "side": "BUY",
-      "reason": "SIGNAL",
-      "shares": 0.589188,
-      "fill": 125.61277805328369,
-      "fee": 0.07400954147565811
-    },
-    {
-      "session": "2026-11-09",
-      "ticker": "ES",
-      "side": "SELL",
-      "reason": "STOP",
-      "shares": 20.997055,
-      "fill": 69.60319730894813,
-      "fee": 1.4614621620718358
-    }
-  ],
+  "cash": 1533.9376101700957,
   "equity_history": {
     "2026-10-12": 100000.0,
     "2026-10-13": 99740.79683014771,
@@ -347,59 +24,13 @@
     "2026-11-09": 107751.26857076026,
     "2026-11-10": 107829.04511025254
   },
-  "last_session": "2026-11-10",
-  "execution": {
-    "fractional_shares": true,
-    "share_precision": 6,
-    "min_order": 10.0
-  },
-  "outage_events": [
-    {
-      "date": "2026-11-02",
-      "type": "outage_valuations_reconciled_no_trades",
-      "sessions": [
-        "2026-10-29",
-        "2026-10-30",
-        "2026-11-02"
-      ],
-      "expired_unfilled_orders": {
-        "buys": {
-          "QCOM": {
-            "weight": 0.15,
-            "stop_pct": 0.076284006060928,
-            "target_pct": 0.19061640317598155
-          }
-        },
-        "sells": []
-      },
-      "recorded_at_utc": "2026-11-03T14:30:59+00:00"
-    },
-    {
-      "date": "2026-11-03",
-      "type": "outage_valuations_reconciled_no_trades",
-      "sessions": [
-        "2026-11-03"
-      ],
-      "expired_unfilled_orders": {
-        "buys": {},
-        "sells": []
-      },
-      "recorded_at_utc": "2026-11-04T02:15:49+00:00"
-    },
-    {
-      "date": "2026-11-10",
-      "type": "unexecuted_intraday_level",
-      "ticker": "NEM",
-      "reason": "daily_extreme_not_a_causal_fill"
-    }
-  ],
   "equity_provenance": {
     "2026-10-29": {
       "kind": "inactive_holding_mark_only",
       "quote_identity": {
+        "effective_sha256": "0b919436da053b8e3aee7e09682ec7a821847a1e129551b14b4236b0790c41bc",
         "session": "2026-10-29",
-        "snapshot_sha256": "12678209e28b68bcda787bafe8805dcfedb5a7fcceea755ec0c6f6d601bb91f1",
-        "effective_sha256": "0b919436da053b8e3aee7e09682ec7a821847a1e129551b14b4236b0790c41bc"
+        "snapshot_sha256": "12678209e28b68bcda787bafe8805dcfedb5a7fcceea755ec0c6f6d601bb91f1"
       },
       "recorded_at_utc": "2026-11-03T14:30:59+00:00",
       "trades_executed": 0
@@ -407,9 +38,9 @@
     "2026-10-30": {
       "kind": "inactive_holding_mark_only",
       "quote_identity": {
+        "effective_sha256": "0f09c6ae175f1ea60bb6ced05f5a3620483aad3f4cdedc044edd8a1a8f2c2680",
         "session": "2026-10-30",
-        "snapshot_sha256": "01ee1c4d0d5f28fc76abd4a80bc6228477bbf1b6c1e244aed29ce64fe5f3a987",
-        "effective_sha256": "0f09c6ae175f1ea60bb6ced05f5a3620483aad3f4cdedc044edd8a1a8f2c2680"
+        "snapshot_sha256": "01ee1c4d0d5f28fc76abd4a80bc6228477bbf1b6c1e244aed29ce64fe5f3a987"
       },
       "recorded_at_utc": "2026-11-03T14:30:59+00:00",
       "trades_executed": 0
@@ -417,9 +48,9 @@
     "2026-11-02": {
       "kind": "inactive_holding_mark_only",
       "quote_identity": {
+        "effective_sha256": "eebe356462aa1a2bcce72d1f62aaa7be676fccba2279c555ec24c38658564910",
         "session": "2026-11-02",
-        "snapshot_sha256": "4ba926a4fbd9f925dd95d344d80856877216ff6b4fce3f53a9e18c3f2a07da1b",
-        "effective_sha256": "eebe356462aa1a2bcce72d1f62aaa7be676fccba2279c555ec24c38658564910"
+        "snapshot_sha256": "4ba926a4fbd9f925dd95d344d80856877216ff6b4fce3f53a9e18c3f2a07da1b"
       },
       "recorded_at_utc": "2026-11-03T14:30:59+00:00",
       "trades_executed": 0
@@ -427,12 +58,32 @@
     "2026-11-03": {
       "kind": "inactive_holding_mark_only",
       "quote_identity": {
+        "effective_sha256": "050cbb868646b3035dfe9b37c23da92b3c75ebba2ff2972ef5ffdcce671aa4ae",
         "session": "2026-11-03",
-        "snapshot_sha256": "050cbb868646b3035dfe9b37c23da92b3c75ebba2ff2972ef5ffdcce671aa4ae",
-        "effective_sha256": "050cbb868646b3035dfe9b37c23da92b3c75ebba2ff2972ef5ffdcce671aa4ae"
+        "snapshot_sha256": "050cbb868646b3035dfe9b37c23da92b3c75ebba2ff2972ef5ffdcce671aa4ae"
       },
       "recorded_at_utc": "2026-11-04T02:15:49+00:00",
       "trades_executed": 0
+    }
+  },
+  "execution": {
+    "fractional_shares": true,
+    "min_order": 10.0,
+    "share_precision": 6
+  },
+  "forward_executions": {
+    "IL-044:2026-11-11:STOP_OBSERVED:NEM:genetic_forward_v1": {
+      "fill_tickers": [
+        "NEM"
+      ],
+      "fills_count": 1,
+      "lock_sha256": "77e759eb3e034f7414f5c7ac2fa61d0cd5cf762cdf49013d986dd8a8d81d3e85",
+      "mode": "STOP_OBSERVED",
+      "quotes_sha256": "c0f7a3e973e3a462cd914d5b0d7828665ed98c3a3bb11e26d8b90b1f2f3409f4",
+      "recorded_at_utc": "2026-11-11T14:36:51.153794Z",
+      "session": "2026-11-11",
+      "source_commit": "6e0f894b5597a44859ee2feec57cfb73e2a72b47",
+      "ticker": "NEM"
     }
   },
   "inactive_sessions": [
@@ -441,10 +92,397 @@
     "2026-11-02",
     "2026-11-03"
   ],
+  "initial_capital": 100000.0,
+  "last_session": "2026-11-10",
+  "model": "next_open_raw_ohlc_v1",
   "outage_control": {
-    "previous_last_session": "2026-10-28",
-    "registered_at_utc": "2026-11-03T14:30:59+00:00",
     "first_trading_session": "2026-11-04",
-    "policy": "retain_holdings_no_outage_fills_resume_at_future_open"
-  }
+    "policy": "retain_holdings_no_outage_fills_resume_at_future_open",
+    "previous_last_session": "2026-10-28",
+    "registered_at_utc": "2026-11-03T14:30:59+00:00"
+  },
+  "outage_events": [
+    {
+      "date": "2026-11-02",
+      "expired_unfilled_orders": {
+        "buys": {
+          "QCOM": {
+            "stop_pct": 0.076284006060928,
+            "target_pct": 0.19061640317598155,
+            "weight": 0.15
+          }
+        },
+        "sells": []
+      },
+      "recorded_at_utc": "2026-11-03T14:30:59+00:00",
+      "sessions": [
+        "2026-10-29",
+        "2026-10-30",
+        "2026-11-02"
+      ],
+      "type": "outage_valuations_reconciled_no_trades"
+    },
+    {
+      "date": "2026-11-03",
+      "expired_unfilled_orders": {
+        "buys": {},
+        "sells": []
+      },
+      "recorded_at_utc": "2026-11-04T02:15:49+00:00",
+      "sessions": [
+        "2026-11-03"
+      ],
+      "type": "outage_valuations_reconciled_no_trades"
+    },
+    {
+      "date": "2026-11-10",
+      "reason": "daily_extreme_not_a_causal_fill",
+      "ticker": "NEM",
+      "type": "unexecuted_intraday_level"
+    }
+  ],
+  "pending": {
+    "buys": {},
+    "sells": []
+  },
+  "positions": {
+    "CPRT": {
+      "entry": 32.09103826332092,
+      "shares": 498.226136,
+      "sl": 31.700815434626026,
+      "tp": 38.5092459159851
+    },
+    "EW": {
+      "entry": 90.23509744262695,
+      "shares": 165.113291,
+      "sl": 85.38907727498116,
+      "tp": 107.30013669117292
+    },
+    "INTU": {
+      "entry": 336.168,
+      "shares": 44.320143,
+      "sl": 318.1143052195079,
+      "tp": 399.7432636910789
+    },
+    "MAS": {
+      "entry": 75.20758316802979,
+      "shares": 198.105208,
+      "sl": 71.16860637162416,
+      "tp": 89.4306559515078
+    },
+    "MCO": {
+      "entry": 490.76524900817867,
+      "shares": 15.11458,
+      "sl": 464.40900446834786,
+      "tp": 583.5775634346348
+    },
+    "NDAQ": {
+      "entry": 94.28711786270141,
+      "shares": 157.093581,
+      "sl": 88.76102678911757,
+      "tp": 111.55546269906839
+    },
+    "NSC": {
+      "entry": 334.2070285491943,
+      "shares": 1.109748,
+      "sl": 316.2586465291259,
+      "tp": 397.4114381522111
+    },
+    "PRU": {
+      "entry": 115.70782652664184,
+      "shares": 127.763735,
+      "sl": 110.89365886999616,
+      "tp": 135.60780985750134
+    },
+    "SHW": {
+      "entry": 315.8078188934326,
+      "shares": 0.058721,
+      "sl": 298.847555062268,
+      "tp": 375.5326153102672
+    }
+  },
+  "preopen_inventory": {
+    "2026-11-11": {
+      "CPRT": 498.226136,
+      "EW": 165.113291,
+      "INTU": 44.320143,
+      "MAS": 198.105208,
+      "MCO": 15.11458,
+      "NDAQ": 157.093581,
+      "NEM": 0.589188,
+      "NSC": 1.109748,
+      "PRU": 127.763735,
+      "SHW": 0.058721
+    }
+  },
+  "schema_version": 1,
+  "trades": [
+    {
+      "fee": 14.985014845824288,
+      "fill": 259.5697224426269,
+      "reason": "SIGNAL",
+      "session": "2026-10-13",
+      "shares": 57.730211,
+      "side": "BUY",
+      "ticker": "AMZN"
+    },
+    {
+      "fee": 14.985014974660952,
+      "fill": 254.68727755737302,
+      "reason": "SIGNAL",
+      "session": "2026-10-13",
+      "shares": 58.83692,
+      "side": "BUY",
+      "ticker": "JNJ"
+    },
+    {
+      "fee": 14.827747242501886,
+      "fill": 252.0143345794084,
+      "reason": "STOP",
+      "session": "2026-10-13",
+      "shares": 58.83692,
+      "side": "SELL",
+      "ticker": "JNJ"
+    },
+    {
+      "fee": 14.941242529751811,
+      "fill": 104.11202755737304,
+      "reason": "SIGNAL",
+      "session": "2026-10-14",
+      "shares": 143.511205,
+      "side": "BUY",
+      "ticker": "ABT"
+    },
+    {
+      "fee": 14.94124252547749,
+      "fill": 159.60976377868653,
+      "reason": "SIGNAL",
+      "session": "2026-10-14",
+      "shares": 93.611081,
+      "side": "BUY",
+      "ticker": "VST"
+    },
+    {
+      "fee": 14.827747115017365,
+      "fill": 256.8455382055916,
+      "reason": "STOP",
+      "session": "2026-10-14",
+      "shares": 57.730211,
+      "side": "SELL",
+      "ticker": "AMZN"
+    },
+    {
+      "fee": 14.124931301378325,
+      "fill": 150.88952237800058,
+      "reason": "STOP",
+      "session": "2026-10-14",
+      "shares": 93.611081,
+      "side": "SELL",
+      "ticker": "VST"
+    },
+    {
+      "fee": 14.832672139275022,
+      "fill": 467.28351278686523,
+      "reason": "SIGNAL",
+      "session": "2026-10-15",
+      "shares": 31.74234,
+      "side": "BUY",
+      "ticker": "TT"
+    },
+    {
+      "fee": 14.630238889052976,
+      "fill": 460.9061237783029,
+      "reason": "STOP",
+      "session": "2026-10-15",
+      "shares": 31.74234,
+      "side": "SELL",
+      "ticker": "TT"
+    },
+    {
+      "fee": 14.811900975342358,
+      "fill": 459.93984645080565,
+      "reason": "SIGNAL",
+      "session": "2026-10-16",
+      "shares": 32.203996,
+      "side": "BUY",
+      "ticker": "MSI"
+    },
+    {
+      "fee": 14.811900987220831,
+      "fill": 94.28711786270141,
+      "reason": "SIGNAL",
+      "session": "2026-10-16",
+      "shares": 157.093581,
+      "side": "BUY",
+      "ticker": "NDAQ"
+    },
+    {
+      "fee": 14.773295184864436,
+      "fill": 151.99595816802977,
+      "reason": "SIGNAL",
+      "session": "2026-10-19",
+      "shares": 97.195316,
+      "side": "BUY",
+      "ticker": "JKHY"
+    },
+    {
+      "fee": 14.618249451899285,
+      "fill": 150.4007605870563,
+      "reason": "STOP",
+      "session": "2026-10-19",
+      "shares": 97.195316,
+      "side": "SELL",
+      "ticker": "JKHY"
+    },
+    {
+      "fee": 14.77559213551575,
+      "fill": 77.288625,
+      "reason": "SIGNAL",
+      "session": "2026-10-20",
+      "shares": 191.174214,
+      "side": "BUY",
+      "ticker": "XYZ"
+    },
+    {
+      "fee": 14.783264085775839,
+      "fill": 115.70782652664184,
+      "reason": "SIGNAL",
+      "session": "2026-10-21",
+      "shares": 127.763735,
+      "side": "BUY",
+      "ticker": "PRU"
+    },
+    {
+      "fee": 14.12493130541912,
+      "fill": 98.4238917471226,
+      "reason": "STOP",
+      "session": "2026-10-21",
+      "shares": 143.511205,
+      "side": "SELL",
+      "ticker": "ABT"
+    },
+    {
+      "fee": 14.20454619497759,
+      "fill": 74.30158020671966,
+      "reason": "STOP",
+      "session": "2026-10-26",
+      "shares": 191.174214,
+      "side": "SELL",
+      "ticker": "XYZ"
+    },
+    {
+      "fee": 14.89901390245782,
+      "fill": 90.23509744262695,
+      "reason": "SIGNAL",
+      "session": "2026-10-27",
+      "shares": 165.113291,
+      "side": "BUY",
+      "ticker": "EW"
+    },
+    {
+      "fee": 14.899013832024,
+      "fill": 336.168,
+      "reason": "SIGNAL",
+      "session": "2026-10-27",
+      "shares": 44.320143,
+      "side": "BUY",
+      "ticker": "INTU"
+    },
+    {
+      "fee": 14.89901390667984,
+      "fill": 75.20758316802979,
+      "reason": "SIGNAL",
+      "session": "2026-10-27",
+      "shares": 198.105208,
+      "side": "BUY",
+      "ticker": "MAS"
+    },
+    {
+      "fee": 7.417710617354037,
+      "fill": 490.76524900817867,
+      "reason": "SIGNAL",
+      "session": "2026-10-27",
+      "shares": 15.11458,
+      "side": "BUY",
+      "ticker": "MCO"
+    },
+    {
+      "fee": 0.37088558151841133,
+      "fill": 334.2070285491943,
+      "reason": "SIGNAL",
+      "session": "2026-10-27",
+      "shares": 1.109748,
+      "side": "BUY",
+      "ticker": "NSC"
+    },
+    {
+      "fee": 0.01854455093324126,
+      "fill": 315.8078188934326,
+      "reason": "SIGNAL",
+      "session": "2026-10-27",
+      "shares": 0.058721,
+      "side": "BUY",
+      "ticker": "SHW"
+    },
+    {
+      "fee": 17.51588477790388,
+      "fill": 543.9040787951868,
+      "reason": "TARGET",
+      "session": "2026-11-05",
+      "shares": 32.203996,
+      "side": "SELL",
+      "ticker": "MSI"
+    },
+    {
+      "fee": 15.988593994162532,
+      "fill": 32.09103826332092,
+      "reason": "SIGNAL",
+      "session": "2026-11-09",
+      "shares": 498.226136,
+      "side": "BUY",
+      "ticker": "CPRT"
+    },
+    {
+      "fee": 1.4801922023146603,
+      "fill": 70.4952290840149,
+      "reason": "SIGNAL",
+      "session": "2026-11-09",
+      "shares": 20.997055,
+      "side": "BUY",
+      "ticker": "ES"
+    },
+    {
+      "fee": 0.07400954147565811,
+      "fill": 125.61277805328369,
+      "reason": "SIGNAL",
+      "session": "2026-11-09",
+      "shares": 0.589188,
+      "side": "BUY",
+      "ticker": "NEM"
+    },
+    {
+      "fee": 1.4614621620718358,
+      "fill": 69.60319730894813,
+      "reason": "STOP",
+      "session": "2026-11-09",
+      "shares": 20.997055,
+      "side": "SELL",
+      "ticker": "ES"
+    },
+    {
+      "execution": "forward_observed_paper",
+      "fee": 0.07010776178146007,
+      "fill": 118.99047805023194,
+      "idempotency_key": "IL-044:2026-11-11:STOP_OBSERVED:NEM:genetic_forward_v1",
+      "lock_sha256": "77e759eb3e034f7414f5c7ac2fa61d0cd5cf762cdf49013d986dd8a8d81d3e85",
+      "observed_at_utc": "2026-11-11T14:36:50.800153Z",
+      "quote_at_utc": "2026-11-11T14:36:00Z",
+      "reason": "STOP_OBSERVED",
+      "session": "2026-11-11",
+      "shares": 0.589188,
+      "side": "SELL",
+      "source_commit": "6e0f894b5597a44859ee2feec57cfb73e2a72b47",
+      "ticker": "NEM"
+    }
+  ]
 }
