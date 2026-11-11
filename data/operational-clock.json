@@ -1,5 +1,5 @@
 {
-  "checked_at_utc": "2026-11-11T15:39:48.530112Z",
+  "checked_at_utc": "2026-11-11T16:36:19.658930Z",
   "lock_sha256": "77e759eb3e034f7414f5c7ac2fa61d0cd5cf762cdf49013d986dd8a8d81d3e85",
   "mode": "single_midas_operator_monitor_no_broker",
   "note": "Observed quotes are not fills. A native engine must settle quantity/cash before a trade counts in P&L.",
@@ -8,11 +8,11 @@
   "previous_session": "2026-11-10",
   "quote_budget": {
     "hard_symbol_limit": 250,
-    "observed_symbols": 44,
+    "observed_symbols": 42,
     "omitted_algorithm_lanes": {},
     "requested_symbols": 44
   },
-  "run_id": 43050394065,
+  "run_id": 43059435657,
   "schema": "midas.operational_clock.v1",
   "session": "2026-11-11",
   "settlement": "native_forward_010_through_027_037_through_044",
@@ -527,7 +527,7 @@
         "source_commit": "6e0f894b5597a44859ee2feec57cfb73e2a72b47",
         "ticker": "CPRT"
       },
-      "native_settlement": "settled_native_paper",
+      "native_settlement": "no_execution_due",
       "observed": 0,
       "orders": [],
       "planned": 0,
