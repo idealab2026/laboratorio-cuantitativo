@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "generated_at_utc": "2026-11-11T23:55:20.930168+00:00",
+  "generated_at_utc": "2026-11-11T23:56:00.386315+00:00",
   "principle": "Comparar rentabilidad acumulada y riesgo observado; no ordenar carteras con distintas fechas de inicio o supuestos de ejecución.",
   "counts": {
     "paper_with_diary": 18,
@@ -6517,9 +6517,9 @@
     }
   ],
   "market_data": {
-    "age_seconds": 9047,
-    "captured_at_utc": "2026-11-10T23:37:07+00:00",
-    "checked_at_utc": "2026-11-11T02:07:54.070014+00:00",
+    "age_seconds": 416,
+    "captured_at_utc": "2026-11-11T23:49:03+00:00",
+    "checked_at_utc": "2026-11-11T23:55:59.137943+00:00",
     "consumers": {
       "buy_the_dip_strategy": {
         "ledger_status": "observed",
@@ -6527,7 +6527,7 @@
         "paused_books": 0,
         "updated_books": 1,
         "valuation_sessions": {
-          "buy_the_dip_strategy": "2026-11-10"
+          "buy_the_dip_strategy": "2026-11-11"
         },
         "workflow_outcome": "success"
       },
@@ -6537,7 +6537,7 @@
         "paused_books": 0,
         "updated_books": 1,
         "valuation_sessions": {
-          "capital_cycle": "2026-11-10"
+          "capital_cycle": "2026-11-11"
         },
         "workflow_outcome": "success"
       },
@@ -6549,15 +6549,15 @@
         "paused_books": 1,
         "updated_books": 8,
         "valuation_sessions": {
-          "benchmark_spy": "2026-11-10",
-          "bollinger_breakout_20": "2026-11-10",
-          "buy_hold_equal_weight": "2026-11-10",
-          "ema_rsi_fixed": "2026-11-10",
+          "benchmark_spy": "2026-11-11",
+          "bollinger_breakout_20": "2026-11-11",
+          "buy_hold_equal_weight": "2026-11-11",
+          "ema_rsi_fixed": "2026-11-11",
           "genetic_frozen": "2026-11-04",
-          "macd_12_26_9": "2026-11-10",
-          "rsi_reversion_14": "2026-11-10",
-          "turtle_20_10_long": "2026-11-10",
-          "turtle_55_20_long": "2026-11-10"
+          "macd_12_26_9": "2026-11-11",
+          "rsi_reversion_14": "2026-11-11",
+          "turtle_20_10_long": "2026-11-11",
+          "turtle_55_20_long": "2026-11-11"
         },
         "workflow_outcome": "success"
       },
@@ -6567,8 +6567,8 @@
         "paused_books": 0,
         "updated_books": 2,
         "valuation_sessions": {
-          "benchmark_spy": "2026-11-10",
-          "timesfm": "2026-11-10"
+          "benchmark_spy": "2026-11-11",
+          "timesfm": "2026-11-11"
         },
         "workflow_outcome": "success"
       },
@@ -6578,8 +6578,8 @@
         "paused_books": 0,
         "updated_books": 2,
         "valuation_sessions": {
-          "benchmark_spy": "2026-11-10",
-          "timesfm_daily": "2026-11-10"
+          "benchmark_spy": "2026-11-11",
+          "timesfm_daily": "2026-11-11"
         },
         "workflow_outcome": "success"
       },
@@ -6594,13 +6594,13 @@
         "updated_books": 6,
         "valuation_sessions": {
           "arima_return": "2026-11-04",
-          "benchmark_rsp": "2026-11-10",
-          "benchmark_spy": "2026-11-10",
-          "ensemble_consensus": "2026-11-10",
-          "lgbm_direction": "2026-11-10",
+          "benchmark_rsp": "2026-11-11",
+          "benchmark_spy": "2026-11-11",
+          "ensemble_consensus": "2026-11-11",
+          "lgbm_direction": "2026-11-11",
           "lgbm_ranker": "2026-11-04",
-          "lgbm_return": "2026-11-10",
-          "lstm_return": "2026-11-10",
+          "lgbm_return": "2026-11-11",
+          "lstm_return": "2026-11-11",
           "mlp_return": "2026-11-04"
         },
         "workflow_outcome": "success"
@@ -6612,9 +6612,9 @@
       "observed": 490,
       "requested": 504
     },
-    "effective_sha256": "74529b48d939f3588c79de31304855abc82bb0c8e847eb2f89d69239e954397c",
+    "effective_sha256": "ebcbb988afbec7a1abd694e2153976218ecdcd1215067ef190dd59584e47955e",
     "engine_health": "not_assessed",
-    "expected_session": "2026-11-10",
+    "expected_session": "2026-11-11",
     "market": "XNYS",
     "missing_symbols": [
       "AVB",
@@ -6634,26 +6634,29 @@
     ],
     "policy": "common_raw_daily_primary",
     "recovered_bar_methods": {
-      "A": "yahoo_regular_range_daily_ocv_v1",
-      "ALL": "yahoo_regular_range_daily_ocv_v1",
+      "AJG": "yahoo_regular_range_daily_ocv_v1",
       "AME": "yahoo_regular_range_daily_ocv_v1",
-      "BXP": "yahoo_regular_range_daily_ocv_v1",
-      "DHI": "yahoo_regular_range_daily_ocv_v1",
-      "GIS": "yahoo_regular_range_daily_ocv_v1",
-      "HCA": "yahoo_regular_range_daily_ocv_v1",
-      "HII": "yahoo_regular_range_daily_ocv_v1",
-      "MKC": "yahoo_regular_range_daily_ocv_v1",
-      "MSI": "yahoo_regular_range_daily_ocv_v1",
-      "NRG": "yahoo_regular_range_daily_ocv_v1",
-      "PSKY": "yahoo_regular_range_daily_ocv_v1"
+      "AON": "yahoo_regular_range_daily_ocv_v1",
+      "APD": "yahoo_regular_range_daily_ocv_v1",
+      "APH": "yahoo_regular_range_daily_ocv_v1",
+      "CMS": "yahoo_regular_range_daily_ocv_v1",
+      "DVA": "yahoo_regular_range_daily_ocv_v1",
+      "FDS": "yahoo_regular_range_daily_ocv_v1",
+      "HPQ": "yahoo_regular_range_daily_ocv_v1",
+      "IFF": "yahoo_regular_range_daily_ocv_v1",
+      "KR": "yahoo_regular_range_daily_ocv_v1",
+      "MAA": "yahoo_regular_range_daily_ocv_v1",
+      "NOC": "yahoo_regular_range_daily_ocv_v1",
+      "PHM": "yahoo_regular_range_daily_ocv_v1",
+      "TPR": "yahoo_regular_range_daily_ocv_v1",
+      "V": "yahoo_regular_range_daily_ocv_v1"
     },
     "revision_hashes": [
-      "62793345e600aca2228187d32ff1c277e13ff007c4bbc00a92e9d247658436b9",
-      "74529b48d939f3588c79de31304855abc82bb0c8e847eb2f89d69239e954397c"
+      "ebcbb988afbec7a1abd694e2153976218ecdcd1215067ef190dd59584e47955e"
     ],
-    "run_id": "42943353555",
+    "run_id": "43122385980",
     "schema": "midas.xnys_source_health.v1",
-    "sha256": "a4ebb3efac79d8ee8e90fc4c88c4ee8ed8ae9d546d99eb482fc7ebf4b6549ccb",
+    "sha256": "5c22f7caa57b256714ec56694254fee3cb893dc4325d67e726e42e68162a5441",
     "status": "snapshot_verified",
     "trigger_event": "schedule"
   }
