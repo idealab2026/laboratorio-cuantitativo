@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "generated_at_utc": "2026-11-11T02:05:39.018251+00:00",
+  "generated_at_utc": "2026-11-11T02:07:55.048845+00:00",
   "principle": "Comparar rentabilidad acumulada y riesgo observado; no ordenar carteras con distintas fechas de inicio o supuestos de ejecución.",
   "counts": {
     "paper_with_diary": 18,
@@ -6429,9 +6429,9 @@
     }
   ],
   "market_data": {
-    "age_seconds": 416,
+    "age_seconds": 9047,
     "captured_at_utc": "2026-11-10T23:37:07+00:00",
-    "checked_at_utc": "2026-11-10T23:44:03.629981+00:00",
+    "checked_at_utc": "2026-11-11T02:07:54.070014+00:00",
     "consumers": {
       "buy_the_dip_strategy": {
         "ledger_status": "observed",
@@ -6519,12 +6519,12 @@
       }
     },
     "coverage": {
-      "frozen_constituents_observed": 487,
-      "missing": 16,
-      "observed": 488,
+      "frozen_constituents_observed": 489,
+      "missing": 14,
+      "observed": 490,
       "requested": 504
     },
-    "effective_sha256": "62793345e600aca2228187d32ff1c277e13ff007c4bbc00a92e9d247658436b9",
+    "effective_sha256": "74529b48d939f3588c79de31304855abc82bb0c8e847eb2f89d69239e954397c",
     "engine_health": "not_assessed",
     "expected_session": "2026-11-10",
     "market": "XNYS",
@@ -6541,8 +6541,6 @@
       "K",
       "KVUE",
       "MMC",
-      "MTB",
-      "UHS",
       "WBA",
       "WBD"
     ],
@@ -6562,9 +6560,10 @@
       "PSKY": "yahoo_regular_range_daily_ocv_v1"
     },
     "revision_hashes": [
-      "62793345e600aca2228187d32ff1c277e13ff007c4bbc00a92e9d247658436b9"
+      "62793345e600aca2228187d32ff1c277e13ff007c4bbc00a92e9d247658436b9",
+      "74529b48d939f3588c79de31304855abc82bb0c8e847eb2f89d69239e954397c"
     ],
-    "run_id": "42924519171",
+    "run_id": "42943353555",
     "schema": "midas.xnys_source_health.v1",
     "sha256": "a4ebb3efac79d8ee8e90fc4c88c4ee8ed8ae9d546d99eb482fc7ebf4b6549ccb",
     "status": "snapshot_verified",
