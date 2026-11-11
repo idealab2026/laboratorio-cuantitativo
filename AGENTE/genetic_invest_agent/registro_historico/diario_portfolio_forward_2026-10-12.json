@@ -1,5 +1,5 @@
 {
-  "cash": 1533.9376101700957,
+  "cash": 17301.53581843945,
   "equity_history": {
     "2026-10-12": 100000.0,
     "2026-10-13": 99740.79683014771,
@@ -72,6 +72,19 @@
     "share_precision": 6
   },
   "forward_executions": {
+    "IL-044:2026-11-11:STOP_OBSERVED:CPRT:genetic_forward_v1": {
+      "fill_tickers": [
+        "CPRT"
+      ],
+      "fills_count": 1,
+      "lock_sha256": "77e759eb3e034f7414f5c7ac2fa61d0cd5cf762cdf49013d986dd8a8d81d3e85",
+      "mode": "STOP_OBSERVED",
+      "quotes_sha256": "59adae7e54f3c0080e6eec90f3714d342a12c97ef6b83a878dd69bead065bfcb",
+      "recorded_at_utc": "2026-11-11T15:39:48.530112Z",
+      "session": "2026-11-11",
+      "source_commit": "6e0f894b5597a44859ee2feec57cfb73e2a72b47",
+      "ticker": "CPRT"
+    },
     "IL-044:2026-11-11:STOP_OBSERVED:NEM:genetic_forward_v1": {
       "fill_tickers": [
         "NEM"
@@ -146,12 +159,6 @@
     "sells": []
   },
   "positions": {
-    "CPRT": {
-      "entry": 32.09103826332092,
-      "shares": 498.226136,
-      "sl": 31.700815434626026,
-      "tp": 38.5092459159851
-    },
     "EW": {
       "entry": 90.23509744262695,
       "shares": 165.113291,
@@ -483,6 +490,21 @@
       "side": "SELL",
       "source_commit": "6e0f894b5597a44859ee2feec57cfb73e2a72b47",
       "ticker": "NEM"
+    },
+    {
+      "execution": "forward_observed_paper",
+      "fee": 15.783381589859212,
+      "fill": 31.67915219497681,
+      "idempotency_key": "IL-044:2026-11-11:STOP_OBSERVED:CPRT:genetic_forward_v1",
+      "lock_sha256": "77e759eb3e034f7414f5c7ac2fa61d0cd5cf762cdf49013d986dd8a8d81d3e85",
+      "observed_at_utc": "2026-11-11T15:39:47.289423Z",
+      "quote_at_utc": "2026-11-11T15:39:00Z",
+      "reason": "STOP_OBSERVED",
+      "session": "2026-11-11",
+      "shares": 498.226136,
+      "side": "SELL",
+      "source_commit": "6e0f894b5597a44859ee2feec57cfb73e2a72b47",
+      "ticker": "CPRT"
     }
   ]
 }

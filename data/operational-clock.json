@@ -1,5 +1,5 @@
 {
-  "checked_at_utc": "2026-11-11T15:17:53.369840Z",
+  "checked_at_utc": "2026-11-11T15:39:48.530112Z",
   "lock_sha256": "77e759eb3e034f7414f5c7ac2fa61d0cd5cf762cdf49013d986dd8a8d81d3e85",
   "mode": "single_midas_operator_monitor_no_broker",
   "note": "Observed quotes are not fills. A native engine must settle quantity/cash before a trade counts in P&L.",
@@ -8,11 +8,11 @@
   "previous_session": "2026-11-10",
   "quote_budget": {
     "hard_symbol_limit": 250,
-    "observed_symbols": 43,
+    "observed_symbols": 44,
     "omitted_algorithm_lanes": {},
     "requested_symbols": 44
   },
-  "run_id": 43046422560,
+  "run_id": 43050394065,
   "schema": "midas.operational_clock.v1",
   "session": "2026-11-11",
   "settlement": "native_forward_010_through_027_037_through_044",
@@ -504,30 +504,30 @@
     "IL-044": {
       "fills": [
         {
-          "fee": 0.07010776178146007,
-          "observed_at_utc": "2026-11-11T14:36:50.800153Z",
-          "price": 118.99047805023194,
-          "quantity": 0.589188,
+          "fee": 15.783381589859212,
+          "observed_at_utc": "2026-11-11T15:39:47.289423Z",
+          "price": 31.67915219497681,
+          "quantity": 498.226136,
           "side": "sell",
-          "ticker": "NEM"
+          "ticker": "CPRT"
         }
       ],
       "fills_count": 1,
       "holdings_count": 10,
       "native_marker": {
         "fill_tickers": [
-          "NEM"
+          "CPRT"
         ],
         "fills_count": 1,
         "lock_sha256": "77e759eb3e034f7414f5c7ac2fa61d0cd5cf762cdf49013d986dd8a8d81d3e85",
         "mode": "STOP_OBSERVED",
-        "quotes_sha256": "c0f7a3e973e3a462cd914d5b0d7828665ed98c3a3bb11e26d8b90b1f2f3409f4",
-        "recorded_at_utc": "2026-11-11T14:36:51.153794Z",
+        "quotes_sha256": "59adae7e54f3c0080e6eec90f3714d342a12c97ef6b83a878dd69bead065bfcb",
+        "recorded_at_utc": "2026-11-11T15:39:48.530112Z",
         "session": "2026-11-11",
         "source_commit": "6e0f894b5597a44859ee2feec57cfb73e2a72b47",
-        "ticker": "NEM"
+        "ticker": "CPRT"
       },
-      "native_settlement": "no_execution_due",
+      "native_settlement": "settled_native_paper",
       "observed": 0,
       "orders": [],
       "planned": 0,

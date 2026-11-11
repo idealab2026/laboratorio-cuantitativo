@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "generated_at_utc": "2026-11-11T15:17:54.033810+00:00",
+  "generated_at_utc": "2026-11-11T15:39:49.317362+00:00",
   "principle": "Comparar rentabilidad acumulada y riesgo observado; no ordenar carteras con distintas fechas de inicio o supuestos de ejecución.",
   "counts": {
     "paper_with_diary": 18,
@@ -4908,9 +4908,8 @@
       ],
       "note": "Diario y ejecución propios; observar por separado hasta reconciliar horarios y contabilidad.",
       "activity_state": "active",
-      "activity_label": "9 posiciones abiertas · Inactividad sin operaciones: 2026-10-29, 2026-10-30, 2026-11-02, 2026-11-03 · Reanudación desde apertura: 2026-11-04",
+      "activity_label": "8 posiciones abiertas · Inactividad sin operaciones: 2026-10-29, 2026-10-30, 2026-11-02, 2026-11-03 · Reanudación desde apertura: 2026-11-04",
       "activity_tickers": [
-        "CPRT",
         "EW",
         "INTU",
         "MAS",
@@ -4920,7 +4919,7 @@
         "PRU",
         "SHW"
       ],
-      "open_positions_count": 9,
+      "open_positions_count": 8,
       "pending_orders_count": 0,
       "inactive_sessions": [
         "2026-10-29",
@@ -6332,7 +6331,7 @@
       "label": "Prospectivo activo",
       "active": true,
       "source_path": "AGENTE/genetic_invest_agent/registro_historico/diario_portfolio_forward_2026-10-12.json",
-      "source_sha256": "f67addce15505c9fa649aa94c930953401469e53ad04d94d7af7ad1ad7ebbdc2",
+      "source_sha256": "50fd535fd414a64ac63444d017796c34e3562b3d024efcb3a041bb52d8e3679e",
       "first_session": "2026-10-12",
       "last_session": "2026-11-10",
       "initial_capital": 100000.0,
