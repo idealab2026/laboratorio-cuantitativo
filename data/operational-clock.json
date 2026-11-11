@@ -1,8 +1,410 @@
 {
-  "schema": "midas.operational_clock.v1",
+  "checked_at_utc": "2026-11-11T13:05:30.589736Z",
+  "lock_sha256": "77e759eb3e034f7414f5c7ac2fa61d0cd5cf762cdf49013d986dd8a8d81d3e85",
   "mode": "single_midas_operator_monitor_no_broker",
+  "note": "Pre-opening decisions only. Not a broker or a confirmed forward fill.",
+  "open_at_utc": "2026-11-11T14:30:00Z",
+  "prepared_at_utc": "2026-11-11T13:05:30.589736Z",
+  "previous_session": "2026-11-10",
+  "run_id": null,
+  "schema": "midas.operational_clock.v1",
+  "session": "2026-11-11",
   "settlement": "native_engine_batch_until_migrated",
-  "session": null,
-  "slots": {},
-  "note": "Sin sesión forward validada todavía. No se han registrado operaciones a la apertura."
+  "slots": {
+    "IL-010": {
+      "holdings_count": 489,
+      "observed": 0,
+      "orders": [],
+      "planned": 0,
+      "source_session": "2026-11-10",
+      "status": "before_open",
+      "waiting": 0
+    },
+    "IL-011": {
+      "holdings_count": 7,
+      "observed": 0,
+      "orders": [
+        {
+          "action": "buy",
+          "limit_price": null,
+          "observed_at_utc": null,
+          "observed_price": null,
+          "quote_at_utc": null,
+          "scheduled_at_utc": "2026-11-11T14:30:00Z",
+          "signal_session": "2026-11-10",
+          "source": null,
+          "status": "pending_open",
+          "target_session": "2026-11-11",
+          "target_weight": null,
+          "ticker": "MGM"
+        }
+      ],
+      "planned": 1,
+      "source_session": "2026-11-10",
+      "status": "before_open",
+      "waiting": 1
+    },
+    "IL-012": {
+      "holdings_count": 8,
+      "observed": 0,
+      "orders": [],
+      "planned": 0,
+      "source_session": "2026-11-04",
+      "status": "source_stale_or_unavailable",
+      "waiting": 0
+    },
+    "IL-013": {
+      "holdings_count": 4,
+      "observed": 0,
+      "orders": [
+        {
+          "action": "buy",
+          "limit_price": null,
+          "observed_at_utc": null,
+          "observed_price": null,
+          "quote_at_utc": null,
+          "scheduled_at_utc": "2026-11-11T14:30:00Z",
+          "signal_session": "2026-11-10",
+          "source": null,
+          "status": "pending_open",
+          "target_session": "2026-11-11",
+          "target_weight": null,
+          "ticker": "CDW"
+        },
+        {
+          "action": "sell",
+          "limit_price": null,
+          "observed_at_utc": null,
+          "observed_price": null,
+          "quote_at_utc": null,
+          "scheduled_at_utc": "2026-11-11T14:30:00Z",
+          "signal_session": "2026-11-10",
+          "source": null,
+          "status": "pending_open",
+          "target_session": "2026-11-11",
+          "target_weight": null,
+          "ticker": "GDDY"
+        },
+        {
+          "action": "buy",
+          "limit_price": null,
+          "observed_at_utc": null,
+          "observed_price": null,
+          "quote_at_utc": null,
+          "scheduled_at_utc": "2026-11-11T14:30:00Z",
+          "signal_session": "2026-11-10",
+          "source": null,
+          "status": "pending_open",
+          "target_session": "2026-11-11",
+          "target_weight": null,
+          "ticker": "IQV"
+        },
+        {
+          "action": "sell",
+          "limit_price": null,
+          "observed_at_utc": null,
+          "observed_price": null,
+          "quote_at_utc": null,
+          "scheduled_at_utc": "2026-11-11T14:30:00Z",
+          "signal_session": "2026-11-10",
+          "source": null,
+          "status": "pending_open",
+          "target_session": "2026-11-11",
+          "target_weight": null,
+          "ticker": "ISRG"
+        },
+        {
+          "action": "buy",
+          "limit_price": null,
+          "observed_at_utc": null,
+          "observed_price": null,
+          "quote_at_utc": null,
+          "scheduled_at_utc": "2026-11-11T14:30:00Z",
+          "signal_session": "2026-11-10",
+          "source": null,
+          "status": "pending_open",
+          "target_session": "2026-11-11",
+          "target_weight": null,
+          "ticker": "RTX"
+        },
+        {
+          "action": "buy",
+          "limit_price": null,
+          "observed_at_utc": null,
+          "observed_price": null,
+          "quote_at_utc": null,
+          "scheduled_at_utc": "2026-11-11T14:30:00Z",
+          "signal_session": "2026-11-10",
+          "source": null,
+          "status": "pending_open",
+          "target_session": "2026-11-11",
+          "target_weight": null,
+          "ticker": "WAT"
+        }
+      ],
+      "planned": 6,
+      "source_session": "2026-11-10",
+      "status": "before_open",
+      "waiting": 6
+    },
+    "IL-014": {
+      "holdings_count": 7,
+      "observed": 0,
+      "orders": [
+        {
+          "action": "buy",
+          "limit_price": null,
+          "observed_at_utc": null,
+          "observed_price": null,
+          "quote_at_utc": null,
+          "scheduled_at_utc": "2026-11-11T14:30:00Z",
+          "signal_session": "2026-11-10",
+          "source": null,
+          "status": "pending_open",
+          "target_session": "2026-11-11",
+          "target_weight": null,
+          "ticker": "ZBRA"
+        }
+      ],
+      "planned": 1,
+      "source_session": "2026-11-10",
+      "status": "before_open",
+      "waiting": 1
+    },
+    "IL-015": {
+      "holdings_count": 7,
+      "observed": 0,
+      "orders": [
+        {
+          "action": "buy",
+          "limit_price": null,
+          "observed_at_utc": null,
+          "observed_price": null,
+          "quote_at_utc": null,
+          "scheduled_at_utc": "2026-11-11T14:30:00Z",
+          "signal_session": "2026-11-10",
+          "source": null,
+          "status": "pending_open",
+          "target_session": "2026-11-11",
+          "target_weight": null,
+          "ticker": "CHTR"
+        }
+      ],
+      "planned": 1,
+      "source_session": "2026-11-10",
+      "status": "before_open",
+      "waiting": 1
+    },
+    "IL-016": {
+      "holdings_count": 7,
+      "observed": 0,
+      "orders": [
+        {
+          "action": "buy",
+          "limit_price": null,
+          "observed_at_utc": null,
+          "observed_price": null,
+          "quote_at_utc": null,
+          "scheduled_at_utc": "2026-11-11T14:30:00Z",
+          "signal_session": "2026-11-10",
+          "source": null,
+          "status": "pending_open",
+          "target_session": "2026-11-11",
+          "target_weight": null,
+          "ticker": "CHTR"
+        }
+      ],
+      "planned": 1,
+      "source_session": "2026-11-10",
+      "status": "before_open",
+      "waiting": 1
+    },
+    "IL-017": {
+      "holdings_count": 7,
+      "observed": 0,
+      "orders": [
+        {
+          "action": "buy",
+          "limit_price": null,
+          "observed_at_utc": null,
+          "observed_price": null,
+          "quote_at_utc": null,
+          "scheduled_at_utc": "2026-11-11T14:30:00Z",
+          "signal_session": "2026-11-10",
+          "source": null,
+          "status": "pending_open",
+          "target_session": "2026-11-11",
+          "target_weight": null,
+          "ticker": "TTD"
+        }
+      ],
+      "planned": 1,
+      "source_session": "2026-11-10",
+      "status": "before_open",
+      "waiting": 1
+    },
+    "IL-018": {
+      "holdings_count": 1,
+      "observed": 0,
+      "orders": [],
+      "planned": 0,
+      "source_session": "2026-11-10",
+      "status": "before_open",
+      "waiting": 0
+    },
+    "IL-019": {
+      "holdings_count": 1,
+      "observed": 0,
+      "orders": [],
+      "planned": 0,
+      "source_session": "2026-11-10",
+      "status": "before_open",
+      "waiting": 0
+    },
+    "IL-020": {
+      "holdings_count": 1,
+      "observed": 0,
+      "orders": [],
+      "planned": 0,
+      "source_session": "2026-11-10",
+      "status": "before_open",
+      "waiting": 0
+    },
+    "IL-021": {
+      "holdings_count": 2,
+      "observed": 0,
+      "orders": [],
+      "planned": 0,
+      "source_session": "2026-11-10",
+      "status": "before_open",
+      "waiting": 0
+    },
+    "IL-022": {
+      "holdings_count": 10,
+      "observed": 0,
+      "orders": [],
+      "planned": 0,
+      "source_session": "2026-11-10",
+      "status": "before_open",
+      "waiting": 0
+    },
+    "IL-023": {
+      "holdings_count": 10,
+      "observed": 0,
+      "orders": [],
+      "planned": 0,
+      "source_session": "2026-11-04",
+      "status": "source_stale_or_unavailable",
+      "waiting": 0
+    },
+    "IL-024": {
+      "holdings_count": 10,
+      "observed": 0,
+      "orders": [],
+      "planned": 0,
+      "source_session": "2026-11-04",
+      "status": "source_stale_or_unavailable",
+      "waiting": 0
+    },
+    "IL-025": {
+      "holdings_count": 10,
+      "observed": 0,
+      "orders": [],
+      "planned": 0,
+      "source_session": "2026-11-10",
+      "status": "before_open",
+      "waiting": 0
+    },
+    "IL-026": {
+      "holdings_count": 10,
+      "observed": 0,
+      "orders": [],
+      "planned": 0,
+      "source_session": "2026-11-04",
+      "status": "source_stale_or_unavailable",
+      "waiting": 0
+    },
+    "IL-027": {
+      "holdings_count": 10,
+      "observed": 0,
+      "orders": [],
+      "planned": 0,
+      "source_session": "2026-11-10",
+      "status": "before_open",
+      "waiting": 0
+    },
+    "IL-037": {
+      "holdings_count": 0,
+      "observed": 0,
+      "orders": [],
+      "planned": 0,
+      "source_session": "2026-11-06",
+      "status": "source_stale_or_unavailable",
+      "waiting": 0
+    },
+    "IL-038": {
+      "holdings_count": 12,
+      "observed": 0,
+      "orders": [],
+      "planned": 0,
+      "source_session": "2026-11-10",
+      "status": "before_open",
+      "waiting": 0
+    },
+    "IL-039": {
+      "holdings_count": 10,
+      "observed": 0,
+      "orders": [],
+      "planned": 0,
+      "source_session": "2026-11-10",
+      "status": "before_open",
+      "waiting": 0
+    },
+    "IL-040": {
+      "holdings_count": 8,
+      "observed": 0,
+      "orders": [],
+      "planned": 0,
+      "source_session": "2026-11-10",
+      "status": "before_open",
+      "waiting": 0
+    },
+    "IL-041": {
+      "holdings_count": 1,
+      "observed": 0,
+      "orders": [],
+      "planned": 0,
+      "source_session": "2026-11-10",
+      "status": "before_open",
+      "waiting": 0
+    },
+    "IL-042": {
+      "holdings_count": 0,
+      "observed": 0,
+      "orders": [],
+      "planned": 0,
+      "source_session": "2026-11-10",
+      "status": "before_open",
+      "waiting": 0
+    },
+    "IL-043": {
+      "holdings_count": 1,
+      "observed": 0,
+      "orders": [],
+      "planned": 0,
+      "source_session": "2026-11-10",
+      "status": "before_open",
+      "waiting": 0
+    },
+    "IL-044": {
+      "holdings_count": 10,
+      "observed": 0,
+      "orders": [],
+      "planned": 0,
+      "source_session": "2026-11-10",
+      "status": "before_open",
+      "waiting": 0
+    }
+  },
+  "source_commit": "6e0f894b5597a44859ee2feec57cfb73e2a72b47"
 }

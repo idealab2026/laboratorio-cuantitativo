@@ -1,0 +1,415 @@
+{
+  "lock_sha256": "77e759eb3e034f7414f5c7ac2fa61d0cd5cf762cdf49013d986dd8a8d81d3e85",
+  "open_at_utc": "2026-11-11T14:30:00Z",
+  "prepared_at_utc": "2026-11-11T13:05:30.589736Z",
+  "previous_session": "2026-11-10",
+  "schema": "midas.operational_clock.v1",
+  "session": "2026-11-11",
+  "slots": {
+    "IL-010": {
+      "execution_ready": true,
+      "holdings_count": 489,
+      "monitor_tickers": [],
+      "orders": [],
+      "orders_count": 0,
+      "source_session": "2026-11-10",
+      "source_status": "recorded"
+    },
+    "IL-011": {
+      "execution_ready": true,
+      "holdings_count": 7,
+      "monitor_tickers": [
+        "BF-B",
+        "BLDR",
+        "CNP",
+        "DOC",
+        "FSLR",
+        "RSG",
+        "YUM"
+      ],
+      "orders": [
+        {
+          "action": "buy",
+          "limit_price": null,
+          "scheduled_at_utc": "2026-11-11T14:30:00Z",
+          "signal_session": "2026-11-10",
+          "target_session": "2026-11-11",
+          "target_weight": null,
+          "ticker": "MGM"
+        }
+      ],
+      "orders_count": 1,
+      "source_session": "2026-11-10",
+      "source_status": "recorded"
+    },
+    "IL-012": {
+      "execution_ready": false,
+      "holdings_count": 8,
+      "monitor_tickers": [],
+      "orders": [],
+      "orders_count": 0,
+      "source_session": "2026-11-04",
+      "source_status": "paused"
+    },
+    "IL-013": {
+      "execution_ready": true,
+      "holdings_count": 4,
+      "monitor_tickers": [
+        "BBY",
+        "BF-B",
+        "ESS",
+        "GILD"
+      ],
+      "orders": [
+        {
+          "action": "buy",
+          "limit_price": null,
+          "scheduled_at_utc": "2026-11-11T14:30:00Z",
+          "signal_session": "2026-11-10",
+          "target_session": "2026-11-11",
+          "target_weight": null,
+          "ticker": "CDW"
+        },
+        {
+          "action": "sell",
+          "limit_price": null,
+          "scheduled_at_utc": "2026-11-11T14:30:00Z",
+          "signal_session": "2026-11-10",
+          "target_session": "2026-11-11",
+          "target_weight": null,
+          "ticker": "GDDY"
+        },
+        {
+          "action": "buy",
+          "limit_price": null,
+          "scheduled_at_utc": "2026-11-11T14:30:00Z",
+          "signal_session": "2026-11-10",
+          "target_session": "2026-11-11",
+          "target_weight": null,
+          "ticker": "IQV"
+        },
+        {
+          "action": "sell",
+          "limit_price": null,
+          "scheduled_at_utc": "2026-11-11T14:30:00Z",
+          "signal_session": "2026-11-10",
+          "target_session": "2026-11-11",
+          "target_weight": null,
+          "ticker": "ISRG"
+        },
+        {
+          "action": "buy",
+          "limit_price": null,
+          "scheduled_at_utc": "2026-11-11T14:30:00Z",
+          "signal_session": "2026-11-10",
+          "target_session": "2026-11-11",
+          "target_weight": null,
+          "ticker": "RTX"
+        },
+        {
+          "action": "buy",
+          "limit_price": null,
+          "scheduled_at_utc": "2026-11-11T14:30:00Z",
+          "signal_session": "2026-11-10",
+          "target_session": "2026-11-11",
+          "target_weight": null,
+          "ticker": "WAT"
+        }
+      ],
+      "orders_count": 6,
+      "source_session": "2026-11-10",
+      "source_status": "recorded"
+    },
+    "IL-014": {
+      "execution_ready": true,
+      "holdings_count": 7,
+      "monitor_tickers": [
+        "ADM",
+        "BG",
+        "CMI",
+        "CZR",
+        "GOOG",
+        "IVZ",
+        "STT"
+      ],
+      "orders": [
+        {
+          "action": "buy",
+          "limit_price": null,
+          "scheduled_at_utc": "2026-11-11T14:30:00Z",
+          "signal_session": "2026-11-10",
+          "target_session": "2026-11-11",
+          "target_weight": null,
+          "ticker": "ZBRA"
+        }
+      ],
+      "orders_count": 1,
+      "source_session": "2026-11-10",
+      "source_status": "recorded"
+    },
+    "IL-015": {
+      "execution_ready": true,
+      "holdings_count": 7,
+      "monitor_tickers": [
+        "ABBV",
+        "ABNB",
+        "CAH",
+        "COST",
+        "EPAM",
+        "MTD",
+        "WMT"
+      ],
+      "orders": [
+        {
+          "action": "buy",
+          "limit_price": null,
+          "scheduled_at_utc": "2026-11-11T14:30:00Z",
+          "signal_session": "2026-11-10",
+          "target_session": "2026-11-11",
+          "target_weight": null,
+          "ticker": "CHTR"
+        }
+      ],
+      "orders_count": 1,
+      "source_session": "2026-11-10",
+      "source_status": "recorded"
+    },
+    "IL-016": {
+      "execution_ready": true,
+      "holdings_count": 7,
+      "monitor_tickers": [
+        "ALLE",
+        "COST",
+        "EPAM",
+        "ERIE",
+        "LW",
+        "MTD",
+        "ULTA"
+      ],
+      "orders": [
+        {
+          "action": "buy",
+          "limit_price": null,
+          "scheduled_at_utc": "2026-11-11T14:30:00Z",
+          "signal_session": "2026-11-10",
+          "target_session": "2026-11-11",
+          "target_weight": null,
+          "ticker": "CHTR"
+        }
+      ],
+      "orders_count": 1,
+      "source_session": "2026-11-10",
+      "source_status": "recorded"
+    },
+    "IL-017": {
+      "execution_ready": true,
+      "holdings_count": 7,
+      "monitor_tickers": [
+        "ABBV",
+        "ACN",
+        "HCA",
+        "MCK",
+        "MRNA",
+        "MTD",
+        "ULTA"
+      ],
+      "orders": [
+        {
+          "action": "buy",
+          "limit_price": null,
+          "scheduled_at_utc": "2026-11-11T14:30:00Z",
+          "signal_session": "2026-11-10",
+          "target_session": "2026-11-11",
+          "target_weight": null,
+          "ticker": "TTD"
+        }
+      ],
+      "orders_count": 1,
+      "source_session": "2026-11-10",
+      "source_status": "recorded"
+    },
+    "IL-018": {
+      "execution_ready": true,
+      "holdings_count": 1,
+      "monitor_tickers": [],
+      "orders": [],
+      "orders_count": 0,
+      "source_session": "2026-11-10",
+      "source_status": "recorded"
+    },
+    "IL-019": {
+      "execution_ready": true,
+      "holdings_count": 1,
+      "monitor_tickers": [],
+      "orders": [],
+      "orders_count": 0,
+      "source_session": "2026-11-10",
+      "source_status": "recorded"
+    },
+    "IL-020": {
+      "execution_ready": true,
+      "holdings_count": 1,
+      "monitor_tickers": [],
+      "orders": [],
+      "orders_count": 0,
+      "source_session": "2026-11-10",
+      "source_status": "recorded"
+    },
+    "IL-021": {
+      "execution_ready": true,
+      "holdings_count": 2,
+      "monitor_tickers": [],
+      "orders": [],
+      "orders_count": 0,
+      "source_session": "2026-11-10",
+      "source_status": "recorded"
+    },
+    "IL-022": {
+      "execution_ready": true,
+      "holdings_count": 10,
+      "monitor_tickers": [],
+      "orders": [],
+      "orders_count": 0,
+      "source_session": "2026-11-10",
+      "source_status": "recorded"
+    },
+    "IL-023": {
+      "execution_ready": false,
+      "holdings_count": 10,
+      "monitor_tickers": [],
+      "orders": [],
+      "orders_count": 0,
+      "source_session": "2026-11-04",
+      "source_status": "paused"
+    },
+    "IL-024": {
+      "execution_ready": false,
+      "holdings_count": 10,
+      "monitor_tickers": [],
+      "orders": [],
+      "orders_count": 0,
+      "source_session": "2026-11-04",
+      "source_status": "paused"
+    },
+    "IL-025": {
+      "execution_ready": true,
+      "holdings_count": 10,
+      "monitor_tickers": [],
+      "orders": [],
+      "orders_count": 0,
+      "source_session": "2026-11-10",
+      "source_status": "recorded"
+    },
+    "IL-026": {
+      "execution_ready": false,
+      "holdings_count": 10,
+      "monitor_tickers": [],
+      "orders": [],
+      "orders_count": 0,
+      "source_session": "2026-11-04",
+      "source_status": "paused"
+    },
+    "IL-027": {
+      "execution_ready": true,
+      "holdings_count": 10,
+      "monitor_tickers": [],
+      "orders": [],
+      "orders_count": 0,
+      "source_session": "2026-11-10",
+      "source_status": "recorded"
+    },
+    "IL-037": {
+      "execution_ready": false,
+      "holdings_count": 0,
+      "monitor_tickers": [],
+      "orders": [],
+      "orders_count": 0,
+      "source_session": "2026-11-06",
+      "source_status": "stale"
+    },
+    "IL-038": {
+      "execution_ready": true,
+      "holdings_count": 12,
+      "monitor_tickers": [],
+      "orders": [],
+      "orders_count": 0,
+      "source_session": "2026-11-10",
+      "source_status": "recorded"
+    },
+    "IL-039": {
+      "execution_ready": true,
+      "holdings_count": 10,
+      "monitor_tickers": [],
+      "orders": [],
+      "orders_count": 0,
+      "source_session": "2026-11-10",
+      "source_status": "recorded"
+    },
+    "IL-040": {
+      "execution_ready": true,
+      "holdings_count": 8,
+      "monitor_tickers": [
+        "AXON",
+        "EIX",
+        "JCI",
+        "NWS",
+        "PCG",
+        "RMD",
+        "SMCI",
+        "TRMB"
+      ],
+      "orders": [],
+      "orders_count": 0,
+      "source_session": "2026-11-10",
+      "source_status": "recorded"
+    },
+    "IL-041": {
+      "execution_ready": true,
+      "holdings_count": 1,
+      "monitor_tickers": [],
+      "orders": [],
+      "orders_count": 0,
+      "source_session": "2026-11-10",
+      "source_status": "recorded"
+    },
+    "IL-042": {
+      "execution_ready": true,
+      "holdings_count": 0,
+      "monitor_tickers": [],
+      "orders": [],
+      "orders_count": 0,
+      "source_session": "2026-11-10",
+      "source_status": "recorded"
+    },
+    "IL-043": {
+      "execution_ready": true,
+      "holdings_count": 1,
+      "monitor_tickers": [],
+      "orders": [],
+      "orders_count": 0,
+      "source_session": "2026-11-10",
+      "source_status": "recorded"
+    },
+    "IL-044": {
+      "execution_ready": true,
+      "holdings_count": 10,
+      "monitor_tickers": [
+        "CPRT",
+        "EW",
+        "INTU",
+        "MAS",
+        "MCO",
+        "NDAQ",
+        "NEM",
+        "NSC",
+        "PRU",
+        "SHW"
+      ],
+      "orders": [],
+      "orders_count": 0,
+      "source_session": "2026-11-10",
+      "source_status": "recorded"
+    }
+  },
+  "source_commit": "6e0f894b5597a44859ee2feec57cfb73e2a72b47"
+}
