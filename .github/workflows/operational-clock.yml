@@ -1,6 +1,13 @@
 name: MIDAS shared market execution clock
 
 on:
+  # Emergency bootstrap: a reviewed change to this operator workflow on main
+  # triggers an immediate, clock-guarded run without waiting for GitHub cron.
+  # Safe outside preopen: the Python operator refuses any retroactive lock.
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/operational-clock.yml'
   pull_request:
     paths:
       - 'scripts/operational_clock.py'
