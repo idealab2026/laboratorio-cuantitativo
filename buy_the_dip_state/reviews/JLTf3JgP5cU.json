@@ -1,0 +1,414 @@
+{
+  "schema_version": 1,
+  "status": "machine_first_pass",
+  "reviewed_at_utc": "2026-11-11T03:35:04.570683+00:00",
+  "source_identity": "Buy The Dip YouTube channel",
+  "transport": {
+    "kind": "official_podcast_mirror",
+    "provider": "iVoox",
+    "guid": "https://www.ivoox.com/100999594",
+    "published_date": "2023-01-05",
+    "youtube_video_id": "JLTf3JgP5cU",
+    "match_score": 1.0,
+    "audio_bytes_processed_transiently": 23598647
+  },
+  "models": {
+    "asr": {
+      "language": "es",
+      "language_probability": 1.0,
+      "duration_seconds": 2949.8253125,
+      "word_count": 7636,
+      "segment_count": 746,
+      "model": "small"
+    },
+    "semantic": {
+      "repo": "Qwen/Qwen3-4B-GGUF",
+      "file": "Qwen3-4B-Q4_K_M.gguf"
+    }
+  },
+  "metadata": {
+    "video_id": "JLTf3JgP5cU",
+    "youtube_url": "https://www.youtube.com/watch?v=JLTf3JgP5cU",
+    "title": "2023: La CRISIS que lo cambiara TODO ¿Dónde INVERTIR? | BUY THE DIP PODCAST",
+    "category": "company_or_theme",
+    "guest_likely": false,
+    "podcast_guid": "https://www.ivoox.com/100999594",
+    "published_date": "2023-01-05",
+    "source": "official_podcast_mirror",
+    "match_score": 1.0
+  },
+  "analysis": {
+    "episode_summary": "El episodio analiza la posibilidad de crisis en 2023-2024, enfocándose en la inflación alta, la deuda elevada y la incertidumbre en los mercados. Se discuten caídas históricas en mercados como el RASEL 2000, la relación entre inflación y tipos de interés, y la tendencia del mercado a exagerar movimientos. Se recomienda posicionarse en periodos de incertidumbre aprovechando la volatilidad y la tendencia del mercado a oscilar entre positivo y negativo. Se analiza el modelo de negocio de Franco Nevada, destacando su resistencia a las crisis, su rendimiento superior al oro en bull markets y caída menor en bear markets, así como su adaptación a ciclos macroeconómicos gracias a su estructura basada en royalties. Se mencionan empresas anticíclicas como Brookfield y Constellation Software, con ejemplos de empresas cíclicas que han generado pérdida de valor en crisis. Se advierte sobre riesgos de empresas cíclicas y la importancia de equilibrar calidad y precio en inversiones.",
+    "process": {
+      "idea_generation": [],
+      "quality": [],
+      "balance_sheet": [],
+      "valuation": [
+        "El mercado está a 16 veces el earning forward, lo que sugiere niveles normalizados, pero no extremadamente baratos."
+      ],
+      "cycle_macro": [
+        "El mercado ha experimentado caídas significativas en periodos de crisis, como en 2008, 2020 y 2022, donde las caídas promedio han oscilado entre el 30% y el 58%.",
+        "La empresa se adapta a ciclos macroeconómicos gracias a su modelo de negocio basado en royalties, que no depende directamente del precio del oro, permitiéndole mantener un rendimiento estable incluso en períodos de caída del metal."
+      ],
+      "entry": [
+        "Se sugiere posicionarse en mercados con incertidumbre, aprovechando la volatilidad y la tendencia del mercado a exagerar movimientos en un sentido o el otro.",
+        "El modelo de negocio de Franco Nevada se basa en la compra de royalties y la generación de ingresos estables a largo plazo, con un apalancamiento en el oro que le da ventaja en períodos de caída del metal."
+      ],
+      "sizing": [
+        "Franco Nevada posee un portafolio de activos con vida de producción larga y una pipeline de exploración, lo que le permite generar ingresos estables durante décadas, incluso si no se invierten en nuevos proyectos."
+      ],
+      "add_hold": [
+        "Empresas como Brookfield y Constellation Software destacan por su capacidad de capital allocation eficiente durante crisis."
+      ],
+      "exit": [
+        "Empresas con alta calidad y gestión sólida, aunque baratas, pueden mantenerse fuertes durante crisis y generar valor a largo plazo."
+      ],
+      "risk": [
+        "La inflación actual es muy alta (alrededor del 7,3% en noviembre) y está aumentando rápidamente, lo que genera preocupación por su impacto en la economía y los mercados financieros.",
+        "El riesgo asociado a Royal Tis es elevado debido a la competencia y la saturación del mercado, aunque Franco Nevada mantiene ventajas en capital, reputación y acceso a proyectos grandes, lo que reduce su exposición a riesgos significativos."
+      ],
+      "technical": [
+        "Se analiza el gráfico a largo plazo desde 2007 hasta 2020, mostrando caídas y subidas, con una caída del 55% y una recuperación posterior."
+      ],
+      "management": [
+        "La calidad de la gestión y los márgenes son clave para resistir crisis y aprovechar oportunidades de inversión."
+      ],
+      "mistakes": [
+        "Se menciona que hay confusiones entre la economía y el mercado, y que el mercado no refleja directamente la realidad económica."
+      ]
+    },
+    "candidate_rules": [
+      {
+        "rule": "paráfrasis compacta",
+        "scope": "hosts|uncertain_or_guest",
+        "confidence": 0.0,
+        "evidence_timestamps": [],
+        "automation_proxy": "variable/cálculo posible o null",
+        "cross_video_confirmation_required": true
+      }
+    ],
+    "contradictions_or_uncertainties": [],
+    "named_examples": [
+      {
+        "name": "Acrelia Tovaco",
+        "description": "Tabacalera en Grecia con márgenes bajos y potencial para subir precios durante crisis."
+      },
+      {
+        "name": "Dysors",
+        "description": "Empresa cíclica que emitió warrants o bonos en crisis, causando destrucción de valor."
+      },
+      {
+        "name": "Brookfield",
+        "description": "Empresa con eficiente capital allocation, compra de acciones y activos durante crisis."
+      },
+      {
+        "name": "Constellation Software",
+        "description": "Empresa con buen capital allocation, aunque su director no favorece las recompras."
+      }
+    ],
+    "automation_readiness": "medium"
+  },
+  "chunk_evidence": [
+    {
+      "chunk": 1,
+      "evidence": [
+        {
+          "stage": "cycle_macro",
+          "paraphrase": "El mercado ha experimentado caídas significativas en periodos de crisis, como en 2008, 2020 y 2022, donde las caídas promedio han oscilado entre el 30% y el 58%.",
+          "timestamp": "00:08:39",
+          "scope": "hosts",
+          "confidence": 0.8,
+          "automation_hint": "proxy observable"
+        },
+        {
+          "stage": "risk",
+          "paraphrase": "La inflación actual es muy alta (alrededor del 7,3% en noviembre) y está aumentando rápidamente, lo que genera preocupación por su impacto en la economía y los mercados financieros.",
+          "timestamp": "00:03:59",
+          "scope": "hosts",
+          "confidence": 0.7,
+          "automation_hint": "proxy observable"
+        },
+        {
+          "stage": "valuation",
+          "paraphrase": "Más del 40% de las empresas en el RASEL 2000 no generan beneficios, un nivel similar al de crisis anteriores, lo que sugiere que el mercado está en un período de incertidumbre y posibles caídas.",
+          "timestamp": "00:02:07",
+          "scope": "hosts",
+          "confidence": 0.6,
+          "automation_hint": "proxy observable"
+        },
+        {
+          "stage": "entry",
+          "paraphrase": "Se sugiere posicionarse en mercados con incertidumbre, aprovechando la volatilidad y la tendencia del mercado a exagerar movimientos en un sentido o el otro.",
+          "timestamp": "00:01:16",
+          "scope": "hosts",
+          "confidence": 0.5,
+          "automation_hint": "proxy observable"
+        }
+      ],
+      "named_examples": [],
+      "chunk_summary": "El episodio discute la posibilidad de crisis en 2023-2024, analizando la inflación alta, la deuda elevada y la incertidumbre en los mercados. Se mencionan caídas históricas en mercados como el RASEL 2000, la relación entre inflación y tipos de interés, y la tendencia del mercado a exagerar movimientos. Se recomienda posicionarse en periodos de incertidumbre aprovechando la volatilidad y la tendencia del mercado a oscilar entre positivo y negativo."
+    },
+    {
+      "chunk": 2,
+      "evidence": [
+        {
+          "stage": "cycle_macro",
+          "paraphrase": "Se menciona que el mercado ha experimentado caídas significativas, como un 15%, 19%, 7%, 13%, 20%, 19%, 33% y una caída abrupta en 2020.",
+          "timestamp": "00:13:02",
+          "scope": "hosts",
+          "confidence": 0.8,
+          "automation_hint": "proxy observable"
+        },
+        {
+          "stage": "valuation",
+          "paraphrase": "El mercado está a 16 veces el earning forward, lo que sugiere niveles normalizados, pero no extremadamente baratos.",
+          "timestamp": "00:16:12",
+          "scope": "hosts",
+          "confidence": 0.7,
+          "automation_hint": "proxy observable"
+        },
+        {
+          "stage": "risk",
+          "paraphrase": "Se menciona que las caídas pueden ser significativas, pero no son inmediatas, y que el mercado descontar eventos futuros, lo que puede influir en las expectativas y los fundamentales.",
+          "timestamp": "00:17:02",
+          "scope": "hosts",
+          "confidence": 0.6,
+          "automation_hint": "proxy observable"
+        },
+        {
+          "stage": "technical",
+          "paraphrase": "Se analiza el gráfico a largo plazo desde 2007 hasta 2020, mostrando caídas y subidas, con una caída del 55% y una recuperación posterior.",
+          "timestamp": "00:13:32",
+          "scope": "hosts",
+          "confidence": 0.7,
+          "automation_hint": "proxy observable"
+        },
+        {
+          "stage": "mistake",
+          "paraphrase": "Se menciona que hay confusiones entre la economía y el mercado, y que el mercado no refleja directamente la realidad económica.",
+          "timestamp": "00:17:46",
+          "scope": "hosts",
+          "confidence": 0.5,
+          "automation_hint": "proxy observable"
+        },
+        {
+          "stage": "other",
+          "paraphrase": "Se discuten las proyecciones de recesión y las posibles reacciones del mercado, con cuatro escenarios posibles de cómo podría afectar la economía y los precios.",
+          "timestamp": "00:18:02",
+          "scope": "hosts",
+          "confidence": 0.6,
+          "automation_hint": "proxy observable"
+        }
+      ],
+      "named_examples": [],
+      "chunk_summary": "El fragmento describe caídas del mercado en diferentes años, niveles de valuación, riesgos asociados a caídas futuras, análisis técnico a largo plazo, confusiones entre economía y mercado, y discusiones sobre proyecciones de recesión y su impacto en el mercado."
+    },
+    {
+      "chunk": 3,
+      "evidence": [
+        {
+          "stage": "entry",
+          "paraphrase": "El análisis de la curva de tipos muestra que un inversor puede predecir recesiones mediante la inversión en bonos a corto plazo con mayor rendimiento que los a largo plazo.",
+          "timestamp": "00:25:51",
+          "scope": "hosts",
+          "confidence": 0.8,
+          "automation_hint": "proxy observable"
+        },
+        {
+          "stage": "valuation",
+          "paraphrase": "El oro se comporta positivamente durante crisis económicas, manteniendo su valor y superando a otros activos en períodos de caída del mercado.",
+          "timestamp": "00:30:10",
+          "scope": "hosts",
+          "confidence": 0.9,
+          "automation_hint": "proxy observable"
+        },
+        {
+          "stage": "risk",
+          "paraphrase": "La curva de tipos inversa (inversión en bonos a corto plazo con mayor rendimiento) no es un indicador infalible de recesión, ya que ha habido casos donde no se produjo una recesión a pesar de su ocurrencia.",
+          "timestamp": "00:26:50",
+          "scope": "hosts",
+          "confidence": 0.7,
+          "automation_hint": "proxy observable"
+        }
+      ],
+      "named_examples": [],
+      "chunk_summary": "El fragmento analiza la relación entre la curva de tipos y las recesiones, destacando que la inversión en bonos a corto plazo con mayor rendimiento puede predecir recesiones, aunque no es infalible. También se menciona el comportamiento positivo del oro durante crisis económicas, manteniendo su valor y superando a otros activos en períodos de caída del mercado. Sin embargo, se advierte que la curva de tipos inversa no es un indicador infalible de recesión, ya que ha habido casos donde no se produjo una recesión a pesar de su ocurrencia."
+    },
+    {
+      "chunk": 4,
+      "evidence": [
+        {
+          "stage": "entry",
+          "paraphrase": "El modelo de negocio de Franco Nevada se basa en la compra de royalties y la generación de ingresos estables a largo plazo, con un apalancamiento en el oro que le da ventaja en períodos de caída del metal.",
+          "timestamp": "00:37:39",
+          "scope": "hosts",
+          "confidence": 0.9,
+          "automation_hint": "proxy observable"
+        },
+        {
+          "stage": "valuation",
+          "paraphrase": "Franco Nevada ha demostrado resistencia a las crisis, con un rendimiento superior al oro en bull markets y una caída menor en bear markets, lo que refleja su robustez y su margen de beneficio.",
+          "timestamp": "00:37:57",
+          "scope": "hosts",
+          "confidence": 0.8,
+          "automation_hint": "proxy observable"
+        },
+        {
+          "stage": "risk",
+          "paraphrase": "El riesgo asociado a Royal Tis es elevado debido a la competencia y la saturación del mercado, aunque Franco Nevada mantiene ventajas en capital, reputación y acceso a proyectos grandes, lo que reduce su exposición a riesgos significativos.",
+          "timestamp": "00:37:42",
+          "scope": "hosts",
+          "confidence": 0.7,
+          "automation_hint": "proxy observable"
+        },
+        {
+          "stage": "cycle_macro",
+          "paraphrase": "La empresa se adapta a ciclos macroeconómicos gracias a su modelo de negocio basado en royalties, que no depende directamente del precio del oro, permitiéndole mantener un rendimiento estable incluso en períodos de caída del metal.",
+          "timestamp": "00:37:57",
+          "scope": "hosts",
+          "confidence": 0.6,
+          "automation_hint": "proxy observable"
+        },
+        {
+          "stage": "sizing",
+          "paraphrase": "Franco Nevada posee un portafolio de activos con vida de producción larga y una pipeline de exploración, lo que le permite generar ingresos estables durante décadas, incluso si no se invierten en nuevos proyectos.",
+          "timestamp": "00:37:42",
+          "scope": "hosts",
+          "confidence": 0.6,
+          "automation_hint": "proxy observable"
+        },
+        {
+          "stage": "mistake",
+          "paraphrase": "El modelo de Royal Tis ha generado competencia y empresas menores, lo que limita su capacidad de influencia, pero Franco Nevada mantiene ventajas en capital y reputación, lo que le permite evitar la competencia en sectores clave.",
+          "timestamp": "00:37:42",
+          "scope": "hosts",
+          "confidence": 0.5,
+          "automation_hint": "proxy observable"
+        },
+        {
+          "stage": "entry",
+          "paraphrase": "El modelo de Franco Nevada se basa en la compra de royalties y la generación de ingresos estables a largo plazo, con un apalancamiento en el oro que le da ventaja en períodos de caída del metal.",
+          "timestamp": "00:37:39",
+          "scope": "hosts",
+          "confidence": 0.9,
+          "automation_hint": "proxy observable"
+        },
+        {
+          "stage": "valuation",
+          "paraphrase": "Franco Nevada ha demostrado resistencia a las crisis, con un rendimiento superior al oro en bull markets y una caída menor en bear markets, lo que refleja su robustez y su margen de beneficio.",
+          "timestamp": "00:37:57",
+          "scope": "hosts",
+          "confidence": 0.8,
+          "automation_hint": "proxy observable"
+        },
+        {
+          "stage": "risk",
+          "paraphrase": "El riesgo asociado a Royal Tis es elevado debido a la competencia y la saturación del mercado, aunque Franco Nevada mantiene ventajas en capital, reputación y acceso a proyectos grandes, lo que reduce su exposición a riesgos significativos.",
+          "timestamp": "00:37:42",
+          "scope": "hosts",
+          "confidence": 0.7,
+          "automation_hint": "proxy observable"
+        },
+        {
+          "stage": "cycle_macro",
+          "paraphrase": "La empresa se adapta a ciclos macroeconómicos gracias a su modelo de negocio basado en royalties, que no depende directamente del precio del oro, permitiéndole mantener un rendimiento estable incluso en períodos de caída del metal.",
+          "timestamp": "00:37:57",
+          "scope": "hosts",
+          "confidence": 0.6,
+          "automation_hint": "proxy observable"
+        },
+        {
+          "stage": "sizing",
+          "paraphrase": "Franco Nevada posee un portafolio de activos con vida de producción larga y una pipeline de exploración, lo que le permite generar ingresos estables durante décadas, incluso si no se invierten en nuevos proyectos.",
+          "timestamp": "00:37:42",
+          "scope": "hosts",
+          "confidence": 0.6,
+          "automation_hint": "proxy observable"
+        },
+        {
+          "stage": "mistake",
+          "paraphrase": "El modelo de Royal Tis ha generado competencia y empresas menores, lo que limita su capacidad de influencia, pero Franco Nevada mantiene ventajas en capital y reputación, lo que le permite evitar la competencia en sectores clave.",
+          "timestamp": "00:37:42",
+          "scope": "hosts",
+          "confidence": 0.5,
+          "automation_hint": "proxy observable"
+        }
+      ],
+      "named_examples": [],
+      "chunk_summary": "El análisis destaca el modelo de negocio de Franco Nevada basado en royalties y su resistencia a las crisis, con un rendimiento superior al oro en bull markets y una caída menor en bear markets. La empresa posee un portafolio de activos con vida de producción larga y una pipeline de exploración, lo que le permite generar ingresos estables a largo plazo. A pesar de la competencia en el sector, Franco Nevada mantiene ventajas en capital, reputación y acceso a proyectos grandes, lo que reduce su exposición a riesgos significativos. El modelo se adapta a ciclos macroeconómicos gracias a su estructura de negocio, que no depende directamente del precio del oro, permitiéndole mantener un rendimiento estable incluso en períodos de caída del metal."
+    },
+    {
+      "chunk": 5,
+      "evidence": [
+        {
+          "stage": "entry",
+          "paraphrase": "En crisis, las empresas con alta demanda, como tabacaleras, mantienen ventas estables y permiten subir precios.",
+          "timestamp": "00:44:52",
+          "scope": "hosts",
+          "confidence": 0.9,
+          "automation_hint": "proxy observable"
+        },
+        {
+          "stage": "valuation",
+          "paraphrase": "Empresas con márgenes elevados y buenos retornos pueden aprovechar crisis para recomprar acciones o hacer deals.",
+          "timestamp": "00:45:10",
+          "scope": "hosts",
+          "confidence": 0.8,
+          "automation_hint": "proxy observable"
+        },
+        {
+          "stage": "risk",
+          "paraphrase": "La calidad de la gestión y los márgenes son clave para resistir crisis y aprovechar oportunidades de inversión.",
+          "timestamp": "00:45:52",
+          "scope": "hosts",
+          "confidence": 0.7,
+          "automation_hint": "proxy observable"
+        },
+        {
+          "stage": "add_hold",
+          "paraphrase": "Empresas como Brookfield y Constellation Software destacan por su capacidad de capital allocation eficiente durante crisis.",
+          "timestamp": "00:46:21",
+          "scope": "hosts",
+          "confidence": 0.6,
+          "automation_hint": "proxy observable"
+        },
+        {
+          "stage": "exit",
+          "paraphrase": "Empresas con alta calidad y gestión sólida, aunque baratas, pueden mantenerse fuertes durante crisis y generar valor a largo plazo.",
+          "timestamp": "00:47:00",
+          "scope": "hosts",
+          "confidence": 0.5,
+          "automation_hint": "proxy observable"
+        },
+        {
+          "stage": "cycle_macro",
+          "paraphrase": "Empresas anticíclicas con contratos a largo plazo o modelos resistentes a recesiones son clave para inversiones duraderas.",
+          "timestamp": "00:47:36",
+          "scope": "hosts",
+          "confidence": 0.4,
+          "automation_hint": "proxy observable"
+        }
+      ],
+      "named_examples": [
+        {
+          "name": "Acrelia Tovaco",
+          "description": "Tabacalera en Grecia con márgenes bajos y potencial para subir precios durante crisis."
+        },
+        {
+          "name": "Dysors",
+          "description": "Empresa cíclica que emitió warrants o bonos en crisis, causando destrucción de valor."
+        },
+        {
+          "name": "Brookfield",
+          "description": "Empresa con eficiente capital allocation, compra de acciones y activos durante crisis."
+        },
+        {
+          "name": "Constellation Software",
+          "description": "Empresa con buen capital allocation, aunque su director no favorece las recompras."
+        }
+      ],
+      "chunk_summary": "El programa destaca empresas anticíclicas y con buena gestión que mantienen ventas estables durante crisis, permitiendo subir precios y aprovechar oportunidades de inversión. Se enfatiza la importancia de equilibrar calidad y precio, con ejemplos como Acrelia Tovaco, Brookfield y Constellation Software. Se advierte sobre riesgos de empresas cíclicas que pueden generar pérdida de valor en crisis."
+    }
+  ],
+  "copyright_note": "No audio or verbatim transcript is persisted; only derived paraphrases."
+}
