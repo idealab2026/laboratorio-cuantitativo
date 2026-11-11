@@ -1,0 +1,39 @@
+{
+  "bars": {
+    "MTB": {
+      "close": 220.61000061035156,
+      "date": "2026-11-10",
+      "dividend": 0.0,
+      "high": 223.9600067138672,
+      "low": 220.11000061035156,
+      "open": 223.9600067138672,
+      "provider_symbol": "MTB",
+      "split": 0.0,
+      "volume": 854000.0
+    },
+    "UHS": {
+      "close": 195.41000366210938,
+      "date": "2026-11-10",
+      "dividend": 0.0,
+      "high": 198.52999877929688,
+      "low": 194.14999389648438,
+      "open": 198.52999877929688,
+      "provider_symbol": "UHS",
+      "split": 0.0,
+      "volume": 533500.0
+    }
+  },
+  "base_sha256": "a4ebb3efac79d8ee8e90fc4c88c4ee8ed8ae9d546d99eb482fc7ebf4b6549ccb",
+  "captured_at_utc": "2026-11-11T02:04:42+00:00",
+  "parent_sha256": "62793345e600aca2228187d32ff1c277e13ff007c4bbc00a92e9d247658436b9",
+  "schema": "midas.xnys_missing_revision.v1",
+  "session": "2026-11-10",
+  "sha256": "74529b48d939f3588c79de31304855abc82bb0c8e847eb2f89d69239e954397c",
+  "source": {
+    "actions": true,
+    "auto_adjust": false,
+    "client": "yfinance",
+    "interval": "1d",
+    "vendor": "Yahoo Finance"
+  }
+}
