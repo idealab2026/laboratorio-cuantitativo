@@ -2,6 +2,7 @@
 import copy
 import io
 import json
+import sqlite3
 import tempfile
 from contextlib import redirect_stdout
 from unittest.mock import patch
@@ -157,6 +158,63 @@ class BudgetedQuotesTest(unittest.TestCase):
         when = datetime(2026, 11, 10, 14, 31, tzinfo=UTC)
         with self.assertRaisesRegex(ValueError, "budget exceeded"):
             quote_batch([f"SY{i:03d}" for i in range(LIMIT+1)], when, {})
+
+    def test_sqlite_lock_is_local_to_one_ticker_without_parallel_vendor_calls(self):
+        """Regression: 2026-11-12 simultaneous Ticker.history locked peewee SQLite."""
+        now = datetime(2026, 11, 12, 14, 38, tzinfo=UTC)
+        quotes = []
+        def vendor(symbols, requested, market):
+            self.assertEqual(len(symbols), 1, "never pass parallel vendor tickers")
+            ticker = symbols[0]
+            quotes.append(ticker)
+            if ticker == "CME":
+                raise sqlite3.OperationalError("database is locked")
+            return {ticker: {"price": 100., "quote_at_utc": "2026-11-12T14:37:00Z",
+                             "observed_at_utc": "2026-11-12T14:38:00Z"}}
+
+        with patch("operational_clock.quotes_yahoo", side_effect=vendor), \
+             patch("sys.stderr", new_callable=io.StringIO) as logs:
+            result = quote_batch(["MSFT", "CME", "AAPL", "AAPL"], now,
+                                 {"session": "2026-11-12"})
+        self.assertEqual(quotes, ["AAPL", "CME", "MSFT"])
+        self.assertEqual(sorted(result), ["AAPL", "MSFT"])
+        self.assertIn("midas_yfinance_cache_lock symbol=CME", logs.getvalue())
+        self.assertNotIn("CME", result)
+
+    def test_peewee_cache_lock_is_isolated_without_hiding_other_errors(self):
+        class OperationalError(Exception):
+            pass
+        now = datetime(2026, 11, 12, 14, 38, tzinfo=UTC)
+        def vendor(symbols, requested, market):
+            if symbols[0] == "LOCK":
+                raise OperationalError("database is locked")
+            return {symbols[0]: {"price": 101}}
+        with patch("operational_clock.quotes_yahoo", side_effect=vendor):
+            self.assertEqual(set(quote_batch(["LOCK", "OK"], now, {})), {"OK"})
+        with patch("operational_clock.quotes_yahoo",
+                   side_effect=sqlite3.OperationalError("malformed database")):
+            with self.assertRaisesRegex(sqlite3.OperationalError, "malformed"):
+                quote_batch(["AAPL"], now, {})
+
+    def test_cached_quote_never_bypasses_observation_time_validation(self):
+        now = datetime(2026, 11, 10, 14, 39, tzinfo=UTC)
+        with patch("operational_clock.quotes_yahoo", return_value={
+                "AAPL": {"price": 500, "quote_at_utc": "2026-11-10T14:31:00Z",
+                         "observed_at_utc": "2026-11-10T14:32:00Z"}}):
+            result = quote_batch(["AAPL"], now, self.synthetic())
+        self.assertEqual(result["AAPL"]["quote_at_utc"],
+                         "2026-11-10T14:31:00Z")
+        # The actual freshness filter lives in _quote_valid / status_report.
+        from operational_clock import _quote_valid
+        market = {"open": datetime(2026, 11, 10, 14, 30, tzinfo=UTC),
+                  "close": datetime(2026, 11, 10, 21, 0, tzinfo=UTC)}
+        self.assertFalse(_quote_valid(result["AAPL"], now, market))
+
+    def test_workflow_scopes_yfinance_cache_to_a_single_run(self):
+        workflow = (ROOT / ".github/workflows/operational-clock.yml").read_text()
+        self.assertIn("XDG_CACHE_HOME:", workflow)
+        self.assertIn("midas-yfinance-${{ github.run_id }}-${{ github.run_attempt }}",
+                      workflow)
 
 
 class ClockPreopenRecoveryTest(unittest.TestCase):

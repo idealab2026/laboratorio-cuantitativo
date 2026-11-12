@@ -11,11 +11,11 @@ import copy
 import json
 import math
 import os
+import sqlite3
 import subprocess
+import sys
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
-from concurrent.futures import ThreadPoolExecutor, as_completed
-
 from forward_open_il039 import digest, market_window, quotes_yahoo, timestamp
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -369,20 +369,36 @@ def budgeted_quote_targets(lock, prior=None, *, limit=LIMIT, now=None, market=No
 
 
 def quote_batch(tickers, now, market):
-    """Best-effort free quotes; no fabricated values for unavailable symbols."""
+    """Read minute quotes without concurrent access to yfinance's SQLite cache.
+
+    yfinance's lazy timezone/cookie caches are shared across threads. The
+    previous five-worker ThreadPoolExecutor could produce peewee.OperationalError
+    'database is locked' and abort the entire clock before journal publication.
+    One vendor call at a time is intentionally preferred over throughput:
+    strict freshness checks after receipt still reject delayed quotes.
+    """
     symbols = sorted(set(tickers))
     if len(symbols) > LIMIT:
         raise ValueError("Quote budget exceeded: never silently truncate a paper lane")
-    if not symbols:
-        return {}
     result = {}
-    with ThreadPoolExecutor(max_workers=5) as pool:
-        jobs = [pool.submit(quotes_yahoo, [symbol], now, market) for symbol in symbols]
-        for future in as_completed(jobs):
-            try:
-                result.update(future.result())
-            except (ValueError, OSError, TypeError):
-                pass
+    for symbol in symbols:
+        try:
+            # Independent per-symbol failure isolation; never substitute an
+            # older daily bar or fabricate an observation when a query fails.
+            result.update(quotes_yahoo([symbol], now, market))
+        except (ValueError, OSError, TypeError) as exc:
+            print(f"midas_quote_unavailable symbol={symbol} error={type(exc).__name__}",
+                  file=sys.stderr)
+        except Exception as exc:
+            # A second vendor-side SQLite contention must not erase the
+            # successful quotes gathered for other symbols. This narrow
+            # compatibility guard covers both sqlite3 and Peewee exceptions.
+            if not ("database is locked" in str(exc).lower() and
+                    (isinstance(exc, sqlite3.OperationalError) or
+                     type(exc).__name__ == "OperationalError")):
+                raise
+            print(f"midas_yfinance_cache_lock symbol={symbol} skipped_no_fill",
+                  file=sys.stderr)
     return result
 
 

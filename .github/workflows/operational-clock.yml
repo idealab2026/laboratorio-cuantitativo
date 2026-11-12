@@ -97,6 +97,10 @@ jobs:
           python -m unittest scripts.test_forward_genetic_settlement -v
       - name: Prepare frozen signal plan or check market observations
         if: github.event_name != 'pull_request'
+        env:
+          # Per-run vendor SQLite timezone/cookie cache; never share with
+          # another workflow or a different market session on a self-hosted runner.
+          XDG_CACHE_HOME: ${{ runner.temp }}/midas-yfinance-${{ github.run_id }}-${{ github.run_attempt }}
         run: |
           set -euo pipefail
           if [ "$GITHUB_EVENT_NAME" = "workflow_dispatch" ]; then
