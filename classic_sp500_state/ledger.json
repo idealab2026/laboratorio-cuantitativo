@@ -10893,6 +10893,16 @@
           "date": "2026-11-11",
           "ticker": "WAT",
           "type": "unfilled"
+        },
+        {
+          "date": "2026-11-12",
+          "ticker": "AAPL",
+          "type": "unfilled"
+        },
+        {
+          "date": "2026-11-12",
+          "ticker": "CME",
+          "type": "unfilled"
         }
       ],
       "forward_executions": {
@@ -10910,19 +10920,20 @@
           "recorded_at_utc": "2026-11-11T14:36:51.153794Z",
           "session": "2026-11-11",
           "source_commit": "6e0f894b5597a44859ee2feec57cfb73e2a72b47"
+        },
+        "IL-013:2026-11-12:open:classic_forward_v1": {
+          "fill_tickers": [],
+          "fills_count": 0,
+          "lock_sha256": "509ceaff5c3c3685723682abcc2f6664502082f54fa9f4416651097629eaec96",
+          "mode": "forward_observed_paper",
+          "quotes_sha256": "d8b5f9b7641df63eaf1d389a5f4e96573d6912d322ddf5d2e8da8db1d984dd08",
+          "recorded_at_utc": "2026-11-12T14:38:04.500874Z",
+          "session": "2026-11-12",
+          "source_commit": "372d05ea67a8acc97c47dcffad82348161f91268"
         }
       },
       "nav": 103149.07967238151,
-      "pending": {
-        "AAPL": {
-          "side": "buy",
-          "signal_date": "2026-11-11"
-        },
-        "CME": {
-          "side": "buy",
-          "signal_date": "2026-11-11"
-        }
-      },
+      "pending": {},
       "positions": {
         "BBY": {
           "cost": 16138.895776632568,
@@ -12463,6 +12474,11 @@
           "date": "2026-11-11",
           "ticker": "TTD",
           "type": "unfilled"
+        },
+        {
+          "date": "2026-11-12",
+          "ticker": "TTD",
+          "type": "unfilled"
         }
       ],
       "forward_executions": {
@@ -12475,15 +12491,20 @@
           "recorded_at_utc": "2026-11-11T14:36:51.153794Z",
           "session": "2026-11-11",
           "source_commit": "6e0f894b5597a44859ee2feec57cfb73e2a72b47"
+        },
+        "IL-017:2026-11-12:open:classic_forward_v1": {
+          "fill_tickers": [],
+          "fills_count": 0,
+          "lock_sha256": "509ceaff5c3c3685723682abcc2f6664502082f54fa9f4416651097629eaec96",
+          "mode": "forward_observed_paper",
+          "quotes_sha256": "a946ce01763f72a6e046bc791b03d700746bb84a4ae711b0788b367b148137e1",
+          "recorded_at_utc": "2026-11-12T14:38:04.500874Z",
+          "session": "2026-11-12",
+          "source_commit": "372d05ea67a8acc97c47dcffad82348161f91268"
         }
       },
       "nav": 96777.59761105361,
-      "pending": {
-        "TTD": {
-          "side": "buy",
-          "signal_date": "2026-11-11"
-        }
-      },
+      "pending": {},
       "positions": {
         "ABBV": {
           "cost": 11874.999758862768,

@@ -121,7 +121,7 @@
       "trades": []
     },
     "timesfm_daily": {
-      "cash": 99791.456301083,
+      "cash": 87317.52463113972,
       "equity": [
         {
           "date": "2026-10-12",
@@ -831,18 +831,36 @@
             "WDC"
           ],
           "type": "missed_forward_open"
+        },
+        {
+          "date": "2026-11-12",
+          "entry_eur": 477.78178820766414,
+          "execution": "forward_observed_paper",
+          "fx": 1.1168941259384155,
+          "fx_entry_reference_sha256": "b204b9ca44e9f6fa5542ac68c0295511698eae5e643c49b34082ade4883d84da",
+          "idempotency_key": "IL-042:2026-11-12:open:timesfm_eur_forward_v1:MSI",
+          "lock_sha256": "509ceaff5c3c3685723682abcc2f6664502082f54fa9f4416651097629eaec96",
+          "observed_at_utc": "2026-11-12T14:38:03.933806Z",
+          "quote_at_utc": "2026-11-12T14:38:00Z",
+          "shares": 26.081928,
+          "source_commit": "372d05ea67a8acc97c47dcffad82348161f91268",
+          "ticker": "MSI",
+          "type": "buy"
         }
       ],
       "nav": 99791.456301083,
-      "pending": [
-        {
-          "predicted_return": 0.007193446159362793,
-          "score": 0.0030241429675134223,
-          "signal_date": "2026-11-11",
-          "ticker": "MSI"
+      "pending": [],
+      "positions": {
+        "MSI": {
+          "cost_eur": 12473.931669943287,
+          "dividends_eur": 0.0,
+          "entry_date": "2026-11-12",
+          "entry_price_eur": 477.78178820766414,
+          "fx_at_entry": 1.1168941259384155,
+          "shares": 26.081928,
+          "signal_date": "2026-11-11"
         }
-      ],
-      "positions": {},
+      },
       "trades": [
         {
           "entry_cost_eur": 12499.99987567701,
@@ -1445,6 +1463,23 @@
     }
   ],
   "first_session": "2026-10-12",
+  "forward_executions": {
+    "IL-042:2026-11-12:open:timesfm_eur_forward_v1": {
+      "entry_fx_usd_per_eur": 1.1168941259384155,
+      "family": "daily",
+      "fill_tickers": [
+        "MSI"
+      ],
+      "fills_count": 1,
+      "fx_reference_sha256": "b204b9ca44e9f6fa5542ac68c0295511698eae5e643c49b34082ade4883d84da",
+      "lock_sha256": "509ceaff5c3c3685723682abcc2f6664502082f54fa9f4416651097629eaec96",
+      "mode": "open",
+      "quotes_sha256": "8a525365b29bba66804f15abfcf4afda61474e6add03a2ccd964d86a0b2a531e",
+      "recorded_at_utc": "2026-11-12T14:38:04.500874Z",
+      "session": "2026-11-12",
+      "source_commit": "372d05ea67a8acc97c47dcffad82348161f91268"
+    }
+  },
   "fx_method": "previous_XNYS_session_EURUSD_close_at_open; current_EURUSD_close_at_mark",
   "initial_capital": 100000.0,
   "last_session": "2026-11-11",
