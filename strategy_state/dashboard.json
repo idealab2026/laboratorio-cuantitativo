@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "generated_at_utc": "2026-11-12T01:52:06.804037+00:00",
+  "generated_at_utc": "2026-11-12T02:15:13.482037+00:00",
   "principle": "Comparar rentabilidad acumulada y riesgo observado; no ordenar carteras con distintas fechas de inicio o supuestos de ejecución.",
   "counts": {
     "paper_with_diary": 18,
@@ -4898,11 +4898,11 @@
       "group": "diario_heredado",
       "status": "diario_heredado_observado",
       "first_session": "2026-10-12",
-      "last_session": "2026-11-10",
+      "last_session": "2026-11-11",
       "initial_capital": 100000.0,
-      "last_equity": 107829.04511025254,
-      "return_pct": 7.829045,
-      "day_return_pct": 0.072182,
+      "last_equity": 107899.9279424239,
+      "return_pct": 7.899928,
+      "day_return_pct": 0.065736,
       "currency": "USD",
       "equity_history": [
         {
@@ -4992,6 +4992,10 @@
         {
           "date": "2026-11-10",
           "nav": 107829.04511025254
+        },
+        {
+          "date": "2026-11-11",
+          "nav": 107899.9279424239
         }
       ],
       "note": "Diario y ejecución propios; observar por separado hasta reconciliar horarios y contabilidad.",
@@ -5025,10 +5029,10 @@
       "comparison_universe_id": null,
       "comparison_universe_symbols": null,
       "comparison_exclusion_reason": "Campaña archivada o todavía no normalizada al universo S&P 500",
-      "risk_observations": 22,
-      "annualized_volatility_pct": 20.516246,
+      "risk_observations": 23,
+      "annualized_volatility_pct": 20.047824,
       "max_drawdown_pct": -1.855907,
-      "sharpe_0rf": 4.513082
+      "sharpe_0rf": 4.446157
     },
     {
       "id": "tfg_midas_r_2021",
@@ -6419,9 +6423,9 @@
       "label": "Prospectivo activo",
       "active": true,
       "source_path": "AGENTE/genetic_invest_agent/registro_historico/diario_portfolio_forward_2026-10-12.json",
-      "source_sha256": "50fd535fd414a64ac63444d017796c34e3562b3d024efcb3a041bb52d8e3679e",
+      "source_sha256": "11d3e2aa67c1106632718d4bf61d5b6bc8517956a6b7240343cc4feef746eef9",
       "first_session": "2026-10-12",
-      "last_session": "2026-11-10",
+      "last_session": "2026-11-11",
       "initial_capital": 100000.0,
       "model": "next_open_raw_ohlc_v1",
       "equity_history": [
@@ -6512,6 +6516,10 @@
         {
           "date": "2026-11-10",
           "nav": 107829.04511025254
+        },
+        {
+          "date": "2026-11-11",
+          "nav": 107899.9279424239
         }
       ]
     }
