@@ -1,5 +1,5 @@
 {
-  "checked_at_utc": "2026-11-12T14:38:04.500874Z",
+  "checked_at_utc": "2026-11-12T14:54:35.298188Z",
   "lock_sha256": "509ceaff5c3c3685723682abcc2f6664502082f54fa9f4416651097629eaec96",
   "mode": "single_midas_operator_monitor_no_broker",
   "note": "Observed quotes are not fills. A native engine must settle quantity/cash before a trade counts in P&L.",
@@ -8,11 +8,11 @@
   "previous_session": "2026-11-11",
   "quote_budget": {
     "hard_symbol_limit": 250,
-    "observed_symbols": 46,
+    "observed_symbols": 43,
     "omitted_algorithm_lanes": {},
-    "requested_symbols": 48
+    "requested_symbols": 45
   },
-  "run_id": 43239066364,
+  "run_id": 43241804377,
   "schema": "midas.operational_clock.v1",
   "session": "2026-11-12",
   "settlement": "native_forward_010_through_027_037_through_044",
@@ -76,7 +76,7 @@
         "session": "2026-11-12",
         "source_commit": "372d05ea67a8acc97c47dcffad82348161f91268"
       },
-      "native_settlement": "settled_native_paper",
+      "native_settlement": "already_settled",
       "observed": 2,
       "orders": [
         {
@@ -187,7 +187,7 @@
         "session": "2026-11-12",
         "source_commit": "372d05ea67a8acc97c47dcffad82348161f91268"
       },
-      "native_settlement": "settled_native_paper",
+      "native_settlement": "already_settled",
       "observed": 1,
       "orders": [
         {
@@ -390,7 +390,7 @@
         "session": "2026-11-12",
         "source_commit": "372d05ea67a8acc97c47dcffad82348161f91268"
       },
-      "native_settlement": "settled_native_paper",
+      "native_settlement": "already_settled",
       "observed": 1,
       "orders": [
         {
