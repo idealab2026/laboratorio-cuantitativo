@@ -393,9 +393,9 @@ def quote_batch(tickers, now, market):
             # A second vendor-side SQLite contention must not erase the
             # successful quotes gathered for other symbols. This narrow
             # compatibility guard covers both sqlite3 and Peewee exceptions.
-            if not (isinstance(exc, sqlite3.OperationalError) or
-                    (type(exc).__name__ == "OperationalError" and
-                     "database is locked" in str(exc).lower())):
+            if not ("database is locked" in str(exc).lower() and
+                    (isinstance(exc, sqlite3.OperationalError) or
+                     type(exc).__name__ == "OperationalError")):
                 raise
             print(f"midas_yfinance_cache_lock symbol={symbol} skipped_no_fill",
                   file=sys.stderr)
