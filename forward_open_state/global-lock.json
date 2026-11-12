@@ -1,10 +1,18 @@
 {
-  "lock_sha256": "77e759eb3e034f7414f5c7ac2fa61d0cd5cf762cdf49013d986dd8a8d81d3e85",
-  "open_at_utc": "2026-11-11T14:30:00Z",
-  "prepared_at_utc": "2026-11-11T13:05:30.589736Z",
-  "previous_session": "2026-11-10",
+  "fx_reference": {
+    "captured_at_utc": "2026-11-12T13:26:28.944854Z",
+    "pair": "EURUSD=X",
+    "purpose": "paper_previous_XNYS_session_FX_proxy",
+    "rate_usd_per_eur": 1.1168941259384155,
+    "source": "yfinance_unadjusted_daily_close",
+    "source_session": "2026-11-11"
+  },
+  "lock_sha256": "509ceaff5c3c3685723682abcc2f6664502082f54fa9f4416651097629eaec96",
+  "open_at_utc": "2026-11-12T14:30:00Z",
+  "prepared_at_utc": "2026-11-12T13:26:28.944882Z",
+  "previous_session": "2026-11-11",
   "schema": "midas.operational_clock.v1",
-  "session": "2026-11-11",
+  "session": "2026-11-12",
   "slots": {
     "IL-010": {
       "execution_ready": true,
@@ -12,7 +20,7 @@
       "monitor_tickers": [],
       "orders": [],
       "orders_count": 0,
-      "source_session": "2026-11-10",
+      "source_session": "2026-11-11",
       "source_status": "recorded"
     },
     "IL-011": {
@@ -31,15 +39,15 @@
         {
           "action": "buy",
           "limit_price": null,
-          "scheduled_at_utc": "2026-11-11T14:30:00Z",
-          "signal_session": "2026-11-10",
-          "target_session": "2026-11-11",
+          "scheduled_at_utc": "2026-11-12T14:30:00Z",
+          "signal_session": "2026-11-11",
+          "target_session": "2026-11-12",
           "target_weight": null,
-          "ticker": "MGM"
+          "ticker": "MPWR"
         }
       ],
       "orders_count": 1,
-      "source_session": "2026-11-10",
+      "source_session": "2026-11-11",
       "source_status": "recorded"
     },
     "IL-012": {
@@ -53,71 +61,37 @@
     },
     "IL-013": {
       "execution_ready": true,
-      "holdings_count": 4,
+      "holdings_count": 6,
       "monitor_tickers": [
         "BBY",
         "BF-B",
+        "CDW",
         "ESS",
-        "GILD"
+        "GILD",
+        "IQV"
       ],
       "orders": [
         {
           "action": "buy",
           "limit_price": null,
-          "scheduled_at_utc": "2026-11-11T14:30:00Z",
-          "signal_session": "2026-11-10",
-          "target_session": "2026-11-11",
+          "scheduled_at_utc": "2026-11-12T14:30:00Z",
+          "signal_session": "2026-11-11",
+          "target_session": "2026-11-12",
           "target_weight": null,
-          "ticker": "CDW"
-        },
-        {
-          "action": "sell",
-          "limit_price": null,
-          "scheduled_at_utc": "2026-11-11T14:30:00Z",
-          "signal_session": "2026-11-10",
-          "target_session": "2026-11-11",
-          "target_weight": null,
-          "ticker": "GDDY"
+          "ticker": "AAPL"
         },
         {
           "action": "buy",
           "limit_price": null,
-          "scheduled_at_utc": "2026-11-11T14:30:00Z",
-          "signal_session": "2026-11-10",
-          "target_session": "2026-11-11",
+          "scheduled_at_utc": "2026-11-12T14:30:00Z",
+          "signal_session": "2026-11-11",
+          "target_session": "2026-11-12",
           "target_weight": null,
-          "ticker": "IQV"
-        },
-        {
-          "action": "sell",
-          "limit_price": null,
-          "scheduled_at_utc": "2026-11-11T14:30:00Z",
-          "signal_session": "2026-11-10",
-          "target_session": "2026-11-11",
-          "target_weight": null,
-          "ticker": "ISRG"
-        },
-        {
-          "action": "buy",
-          "limit_price": null,
-          "scheduled_at_utc": "2026-11-11T14:30:00Z",
-          "signal_session": "2026-11-10",
-          "target_session": "2026-11-11",
-          "target_weight": null,
-          "ticker": "RTX"
-        },
-        {
-          "action": "buy",
-          "limit_price": null,
-          "scheduled_at_utc": "2026-11-11T14:30:00Z",
-          "signal_session": "2026-11-10",
-          "target_session": "2026-11-11",
-          "target_weight": null,
-          "ticker": "WAT"
+          "ticker": "CME"
         }
       ],
-      "orders_count": 6,
-      "source_session": "2026-11-10",
+      "orders_count": 2,
+      "source_session": "2026-11-11",
       "source_status": "recorded"
     },
     "IL-014": {
@@ -132,19 +106,9 @@
         "IVZ",
         "STT"
       ],
-      "orders": [
-        {
-          "action": "buy",
-          "limit_price": null,
-          "scheduled_at_utc": "2026-11-11T14:30:00Z",
-          "signal_session": "2026-11-10",
-          "target_session": "2026-11-11",
-          "target_weight": null,
-          "ticker": "ZBRA"
-        }
-      ],
-      "orders_count": 1,
-      "source_session": "2026-11-10",
+      "orders": [],
+      "orders_count": 0,
+      "source_session": "2026-11-11",
       "source_status": "recorded"
     },
     "IL-015": {
@@ -163,15 +127,15 @@
         {
           "action": "buy",
           "limit_price": null,
-          "scheduled_at_utc": "2026-11-11T14:30:00Z",
-          "signal_session": "2026-11-10",
-          "target_session": "2026-11-11",
+          "scheduled_at_utc": "2026-11-12T14:30:00Z",
+          "signal_session": "2026-11-11",
+          "target_session": "2026-11-12",
           "target_weight": null,
-          "ticker": "CHTR"
+          "ticker": "KDP"
         }
       ],
       "orders_count": 1,
-      "source_session": "2026-11-10",
+      "source_session": "2026-11-11",
       "source_status": "recorded"
     },
     "IL-016": {
@@ -190,15 +154,15 @@
         {
           "action": "buy",
           "limit_price": null,
-          "scheduled_at_utc": "2026-11-11T14:30:00Z",
-          "signal_session": "2026-11-10",
-          "target_session": "2026-11-11",
+          "scheduled_at_utc": "2026-11-12T14:30:00Z",
+          "signal_session": "2026-11-11",
+          "target_session": "2026-11-12",
           "target_weight": null,
-          "ticker": "CHTR"
+          "ticker": "TTD"
         }
       ],
       "orders_count": 1,
-      "source_session": "2026-11-10",
+      "source_session": "2026-11-11",
       "source_status": "recorded"
     },
     "IL-017": {
@@ -217,15 +181,15 @@
         {
           "action": "buy",
           "limit_price": null,
-          "scheduled_at_utc": "2026-11-11T14:30:00Z",
-          "signal_session": "2026-11-10",
-          "target_session": "2026-11-11",
+          "scheduled_at_utc": "2026-11-12T14:30:00Z",
+          "signal_session": "2026-11-11",
+          "target_session": "2026-11-12",
           "target_weight": null,
           "ticker": "TTD"
         }
       ],
       "orders_count": 1,
-      "source_session": "2026-11-10",
+      "source_session": "2026-11-11",
       "source_status": "recorded"
     },
     "IL-018": {
@@ -234,7 +198,7 @@
       "monitor_tickers": [],
       "orders": [],
       "orders_count": 0,
-      "source_session": "2026-11-10",
+      "source_session": "2026-11-11",
       "source_status": "recorded"
     },
     "IL-019": {
@@ -243,7 +207,7 @@
       "monitor_tickers": [],
       "orders": [],
       "orders_count": 0,
-      "source_session": "2026-11-10",
+      "source_session": "2026-11-11",
       "source_status": "recorded"
     },
     "IL-020": {
@@ -252,7 +216,7 @@
       "monitor_tickers": [],
       "orders": [],
       "orders_count": 0,
-      "source_session": "2026-11-10",
+      "source_session": "2026-11-11",
       "source_status": "recorded"
     },
     "IL-021": {
@@ -261,7 +225,7 @@
       "monitor_tickers": [],
       "orders": [],
       "orders_count": 0,
-      "source_session": "2026-11-10",
+      "source_session": "2026-11-11",
       "source_status": "recorded"
     },
     "IL-022": {
@@ -270,7 +234,7 @@
       "monitor_tickers": [],
       "orders": [],
       "orders_count": 0,
-      "source_session": "2026-11-10",
+      "source_session": "2026-11-11",
       "source_status": "recorded"
     },
     "IL-023": {
@@ -297,7 +261,7 @@
       "monitor_tickers": [],
       "orders": [],
       "orders_count": 0,
-      "source_session": "2026-11-10",
+      "source_session": "2026-11-11",
       "source_status": "recorded"
     },
     "IL-026": {
@@ -315,7 +279,7 @@
       "monitor_tickers": [],
       "orders": [],
       "orders_count": 0,
-      "source_session": "2026-11-10",
+      "source_session": "2026-11-11",
       "source_status": "recorded"
     },
     "IL-037": {
@@ -333,7 +297,7 @@
       "monitor_tickers": [],
       "orders": [],
       "orders_count": 0,
-      "source_session": "2026-11-10",
+      "source_session": "2026-11-11",
       "source_status": "recorded"
     },
     "IL-039": {
@@ -342,7 +306,7 @@
       "monitor_tickers": [],
       "orders": [],
       "orders_count": 0,
-      "source_session": "2026-11-10",
+      "source_session": "2026-11-11",
       "source_status": "recorded"
     },
     "IL-040": {
@@ -360,7 +324,7 @@
       ],
       "orders": [],
       "orders_count": 0,
-      "source_session": "2026-11-10",
+      "source_session": "2026-11-11",
       "source_status": "recorded"
     },
     "IL-041": {
@@ -369,16 +333,28 @@
       "monitor_tickers": [],
       "orders": [],
       "orders_count": 0,
-      "source_session": "2026-11-10",
+      "source_session": "2026-11-11",
       "source_status": "recorded"
     },
     "IL-042": {
       "execution_ready": true,
       "holdings_count": 0,
-      "monitor_tickers": [],
-      "orders": [],
-      "orders_count": 0,
-      "source_session": "2026-11-10",
+      "monitor_tickers": [
+        "MSI"
+      ],
+      "orders": [
+        {
+          "action": "buy",
+          "limit_price": null,
+          "scheduled_at_utc": "2026-11-12T14:30:00Z",
+          "signal_session": "2026-11-11",
+          "target_session": "2026-11-12",
+          "target_weight": null,
+          "ticker": "MSI"
+        }
+      ],
+      "orders_count": 1,
+      "source_session": "2026-11-11",
       "source_status": "recorded"
     },
     "IL-043": {
@@ -387,29 +363,27 @@
       "monitor_tickers": [],
       "orders": [],
       "orders_count": 0,
-      "source_session": "2026-11-10",
+      "source_session": "2026-11-11",
       "source_status": "recorded"
     },
     "IL-044": {
       "execution_ready": true,
-      "holdings_count": 10,
+      "holdings_count": 8,
       "monitor_tickers": [
-        "CPRT",
         "EW",
         "INTU",
         "MAS",
         "MCO",
         "NDAQ",
-        "NEM",
         "NSC",
         "PRU",
         "SHW"
       ],
       "orders": [],
       "orders_count": 0,
-      "source_session": "2026-11-10",
+      "source_session": "2026-11-11",
       "source_status": "recorded"
     }
   },
-  "source_commit": "6e0f894b5597a44859ee2feec57cfb73e2a72b47"
+  "source_commit": "372d05ea67a8acc97c47dcffad82348161f91268"
 }
