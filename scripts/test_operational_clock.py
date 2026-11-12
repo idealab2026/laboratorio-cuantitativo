@@ -202,15 +202,8 @@ class BudgetedQuotesTest(unittest.TestCase):
                 "AAPL": {"price": 500, "quote_at_utc": "2026-11-10T14:31:00Z",
                          "observed_at_utc": "2026-11-10T14:32:00Z"}}):
             result = quote_batch(["AAPL"], now, self.synthetic())
-        self.assertEqual(status_report(
-            {"schema": "midas.operational_clock.v1",
-             "session": "2026-11-10", "previous_session": "2026-11-09",
-             "open_at_utc": "2026-11-10T14:30:00Z",
-             "prepared_at_utc": "2026-11-10T14:20:00Z",
-             "source_commit": "a" * 40,
-             "slots": {}, "lock_sha256": ""},
-            now, {}, result) if False else result["AAPL"]["quote_at_utc"],
-            "2026-11-10T14:31:00Z")
+        self.assertEqual(result["AAPL"]["quote_at_utc"],
+                         "2026-11-10T14:31:00Z")
         # The actual freshness filter lives in _quote_valid / status_report.
         from operational_clock import _quote_valid
         market = {"open": datetime(2026, 11, 10, 14, 30, tzinfo=UTC),
