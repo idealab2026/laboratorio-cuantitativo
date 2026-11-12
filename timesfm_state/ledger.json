@@ -78,6 +78,10 @@
         {
           "date": "2026-11-11",
           "nav": 99922.80416237125
+        },
+        {
+          "date": "2026-11-12",
+          "nav": 99975.73464699417
         }
       ],
       "events": [
@@ -90,7 +94,7 @@
           "ticker": "SPY"
         }
       ],
-      "nav": 99922.80416237125,
+      "nav": 99975.73464699417,
       "pending": [],
       "positions": {
         "SPY": {
@@ -183,6 +187,10 @@
         {
           "date": "2026-11-11",
           "nav": 105960.44405831028
+        },
+        {
+          "date": "2026-11-12",
+          "nav": 104139.16320541562
         }
       ],
       "events": [
@@ -588,7 +596,7 @@
           "ticker": "EIX"
         }
       ],
-      "nav": 105960.44405831028,
+      "nav": 104139.16320541562,
       "pending": [],
       "positions": {
         "AXON": {
@@ -1000,12 +1008,16 @@
     {
       "date": "2026-11-11",
       "nav": 105960.44405831028
+    },
+    {
+      "date": "2026-11-12",
+      "nav": 104139.16320541562
     }
   ],
   "first_session": "2026-10-16",
   "fx_method": "previous_XNYS_session_EURUSD_close_at_open; current_EURUSD_close_at_mark",
   "initial_capital": 100000.0,
-  "last_session": "2026-11-11",
+  "last_session": "2026-11-12",
   "last_signal_session": "2026-11-06",
   "schema_version": 1,
   "signals": [
