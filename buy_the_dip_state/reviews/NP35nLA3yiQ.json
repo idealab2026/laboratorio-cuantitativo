@@ -1,0 +1,345 @@
+{
+  "schema_version": 1,
+  "status": "machine_first_pass",
+  "reviewed_at_utc": "2026-11-13T15:42:53.316411+00:00",
+  "source_identity": "Buy The Dip YouTube channel",
+  "transport": {
+    "kind": "official_podcast_mirror",
+    "provider": "iVoox",
+    "guid": "https://www.ivoox.com/96692592",
+    "published_date": "2022-11-21",
+    "youtube_video_id": "NP35nLA3yiQ",
+    "match_score": 1.0,
+    "audio_bytes_processed_transiently": 29444224
+  },
+  "models": {
+    "asr": {
+      "language": "es",
+      "language_probability": 1.0,
+      "duration_seconds": 3680.5225,
+      "word_count": 9562,
+      "segment_count": 537,
+      "model": "small"
+    },
+    "semantic": {
+      "repo": "Qwen/Qwen3-4B-GGUF",
+      "file": "Qwen3-4B-Q4_K_M.gguf"
+    }
+  },
+  "metadata": {
+    "video_id": "NP35nLA3yiQ",
+    "youtube_url": "https://www.youtube.com/watch?v=NP35nLA3yiQ",
+    "title": "La CARTERA de MICHAEL BURRY | BUY THE DIP PODCAST",
+    "category": "company_or_theme",
+    "guest_likely": false,
+    "podcast_guid": "https://www.ivoox.com/96692592",
+    "published_date": "2022-11-21",
+    "source": "official_podcast_mirror",
+    "match_score": 1.0
+  },
+  "analysis": {
+    "episode_summary": "El episodio analiza la estrategia de inversión de Michael Barry, quien cambia constantemente su cartera, lo que hace que su cartera real sea muy diferente a la que se muestra en el 3CF. La cartera incluye activos no registrados, lo que sugiere un valor real superior. La estrategia se basa en la revisión de datos históricos y la identificación de oportunidades de inversión a través de la revisión de anteriores análisis. La cartera ha mostrado rendimientos significativamente superiores al mercado en periodos de crisis, como en 2008. La estrategia incluye la gestión de riesgos a través de la diversificación y la revisión constante de la cartera. Sin embargo, existen riesgos significativos debido a la dependencia del gobierno y la posibilidad de cancelaciones de contratos. La empresa tiene problemas de deuda y gasto en marketing ineficiente, pero también un potencial de crecimiento debido a su nicho especializado en propulsión y cohetes. La valoración de la empresa es muy atractiva, con múltiplos de 18 veces y una rentabilidad anualizada del 27% desde 2009. La refinanciación de la deuda ha permitido reducir riesgos financieros, aunque persisten problemas de liquidez. Geo Group y Core Civic tienen una posición importante en la cartera, reflejando su importancia en la estrategia de inversión. Sin embargo, se menciona un rumor sobre actividades inapropiadas que no se confirma.",
+    "process": {
+      "idea_generation": [],
+      "quality": [],
+      "balance_sheet": [],
+      "valuation": [
+        "La cartera de Michael Barry incluye activos no registrados en el 3CF, lo que sugiere un valor real superior.",
+        "La empresa cotiza a una tarifa muy baja, con un precio por acción que se compara con el de 2009, lo que sugiere una valoración muy atractiva.",
+        "La cartera de Barri ha mostrado rendimientos significativamente superiores al mercado en periodos de crisis, como en 2008."
+      ],
+      "cycle_macro": [
+        "La refinanciación de la deuda de Geo Group y Core Civic ha permitido reducir su exposición a riesgos financieros, aunque aún persisten problemas de liquidez y deuda a largo plazo.",
+        "El sector de defensa está en un punto de pésimo máximo, lo que sugiere una posible corrección en el mercado."
+      ],
+      "entry": [
+        "La estrategia de entrada incluye recompras de acciones y aumento de guidance, con expectativas de superación del 300 millones en 2024.",
+        "La estrategia se basa en la revisión de datos históricos y la identificación de oportunidades de inversión a través de la revisión de anteriores análisis."
+      ],
+      "sizing": [
+        "Geo Group y Core Civic tienen una posición significativa en la cartera de Barry, con un peso del 37% y 15% respectivamente, lo que refleja su importancia en la estrategia de inversión.",
+        "La empresa tiene un nicho muy específico y especializado, lo que la hace única en su sector y con potencial de crecimiento."
+      ],
+      "add_hold": [
+        "La empresa tiene un activista que ha adquirido acciones, lo que sugiere un interés en su crecimiento a largo plazo."
+      ],
+      "exit": [],
+      "risk": [
+        "La cartera de Barry tiene un alto riesgo debido a la dependencia del gobierno para mantener sus prisiones, lo que podría llevar a cancelaciones de contratos si la administración cambia su política.",
+        "Hay riesgo político con posibilidad de cancelación de contratos con prisiones federales, aunque no se considera un problema grave.",
+        "La empresa enfrenta riesgos como huracanes y problemas de reestructuración, que han afectado sus resultados, pero se espera que se resuelvan y mejoren su situación."
+      ],
+      "technical": [],
+      "management": [
+        "La empresa tiene problemas de retención y gasto en marketing ineficiente, lo que afecta su capacidad de generar ventas."
+      ],
+      "mistakes": [
+        "Se menciona un rumor sobre actividades inapropiadas en un lugar específico, pero no se confirma."
+      ]
+    },
+    "candidate_rules": [
+      {
+        "rule": "paráfrasis compacta",
+        "scope": "hosts|uncertain_or_guest",
+        "confidence": 0.0,
+        "evidence_timestamps": [],
+        "automation_proxy": "variable/cálculo posible o null",
+        "cross_video_confirmation_required": true
+      }
+    ],
+    "contradictions_or_uncertainties": [],
+    "named_examples": [],
+    "automation_readiness": "medium"
+  },
+  "chunk_evidence": [
+    {
+      "chunk": 1,
+      "evidence": [
+        {
+          "stage": "entry",
+          "paraphrase": "El inversor Michael Barry cambia constantemente su cartera de inversiones, lo que hace que su cartera real sea muy diferente a la que se muestra en el 3CF (documento de presentación a la SEC).",
+          "timestamp": "00:00:51",
+          "scope": "hosts",
+          "confidence": 0.9,
+          "automation_hint": "proxy observable"
+        },
+        {
+          "stage": "valuation",
+          "paraphrase": "La cartera de Michael Barry incluye activos no registrados en el 3CF, como posiciones en el extranjero y derivados, lo que sugiere que su valor real es significativamente superior a lo publicado.",
+          "timestamp": "00:01:54",
+          "scope": "hosts",
+          "confidence": 0.8,
+          "automation_hint": "proxy observable"
+        },
+        {
+          "stage": "risk",
+          "paraphrase": "La cartera de Barry tiene un alto riesgo debido a la dependencia del gobierno para mantener sus prisiones, lo que podría llevar a cancelaciones de contratos si la administración cambia su política.",
+          "timestamp": "00:11:42",
+          "scope": "hosts",
+          "confidence": 0.7,
+          "automation_hint": "proxy observable"
+        },
+        {
+          "stage": "cycle_macro",
+          "paraphrase": "La refinanciación de la deuda de Geo Group y Core Civic ha permitido reducir su exposición a riesgos financieros, aunque aún persisten problemas de liquidez y deuda a largo plazo.",
+          "timestamp": "00:07:01",
+          "scope": "hosts",
+          "confidence": 0.6,
+          "automation_hint": "proxy observable"
+        },
+        {
+          "stage": "sizing",
+          "paraphrase": "Geo Group y Core Civic tienen una posición significativa en la cartera de Barry, con un peso del 37% y 15% respectivamente, lo que refleja su importancia en la estrategia de inversión.",
+          "timestamp": "00:06:00",
+          "scope": "hosts",
+          "confidence": 0.8,
+          "automation_hint": "proxy observable"
+        }
+      ],
+      "named_examples": [],
+      "chunk_summary": "El análisis destaca la estrategia de inversión de Michael Barry, quien cambia constantemente su cartera, lo que hace que su cartera real sea muy diferente a la que se muestra en el 3CF. La cartera incluye activos no registrados, lo que sugiere un valor real superior. Además, hay riesgos significativos debido a la dependencia del gobierno y la posibilidad de cancelaciones de contratos. La refinanciación de la deuda ha permitido reducir riesgos financieros, aunque persisten problemas de liquidez. Geo Group y Core Civic tienen una posición importante en la cartera, reflejando su importancia en la estrategia de inversión."
+    },
+    {
+      "chunk": 2,
+      "evidence": [
+        {
+          "stage": "risk",
+          "paraphrase": "Hay riesgo político con posibilidad de cancelación de contratos con prisiones federales, aunque no se considera un problema grave.",
+          "timestamp": "00:12:35",
+          "scope": "hosts",
+          "confidence": 0.8,
+          "automation_hint": "proxy observable"
+        },
+        {
+          "stage": "valuation",
+          "paraphrase": "Geó está valorado a 20 por acción con potencial de 130% sobre precios actuales, reflejando su bajo precio.",
+          "timestamp": "00:15:20",
+          "scope": "hosts",
+          "confidence": 0.9,
+          "automation_hint": "proxy observable"
+        },
+        {
+          "stage": "entry",
+          "paraphrase": "La estrategia de entrada incluye recompras de acciones y aumento de guidance, con expectativas de superación del 300 millones en 2024.",
+          "timestamp": "00:20:02",
+          "scope": "hosts",
+          "confidence": 0.7,
+          "automation_hint": "proxy observable"
+        }
+      ],
+      "named_examples": [],
+      "chunk_summary": "El análisis destaca riesgos políticos, una valoración baja de Geó y una estrategia de entrada basada en recompras y aumento de guidance, con expectativas de superación de 300 millones en 2024."
+    },
+    {
+      "chunk": 3,
+      "evidence": [
+        {
+          "stage": "risk",
+          "paraphrase": "La empresa tiene problemas de deuda y gasto en marketing ineficiente, lo que afecta su situación financiera.",
+          "timestamp": "00:24:08",
+          "scope": "hosts",
+          "confidence": 0.0
+        },
+        {
+          "stage": "valuation",
+          "paraphrase": "La empresa cotiza a una tarifa muy baja, con un precio por acción que se compara con el de 2009, lo que sugiere una valoración muy atractiva.",
+          "timestamp": "00:25:19",
+          "scope": "hosts",
+          "confidence": 0.0
+        },
+        {
+          "stage": "entry",
+          "paraphrase": "La empresa tiene un potencial de crecimiento debido a su nicho especializado en propulsión y cohetes, con un backlog de 6,7 billones y un activista que ha adquirido acciones.",
+          "timestamp": "00:32:09",
+          "scope": "hosts",
+          "confidence": 0.0
+        },
+        {
+          "stage": "cycle_macro",
+          "paraphrase": "El mercado de defensa está en un punto de pésimo máximo, pero con una valoración muy baja, lo que sugiere una posible corrección.",
+          "timestamp": "00:25:32",
+          "scope": "hosts",
+          "confidence": 0.0
+        },
+        {
+          "stage": "sizing",
+          "paraphrase": "La empresa tiene un nicho muy específico y especializado, lo que la hace única en su sector y con potencial de crecimiento.",
+          "timestamp": "00:31:30",
+          "scope": "hosts",
+          "confidence": 0.0
+        },
+        {
+          "stage": "add_hold",
+          "paraphrase": "La empresa tiene un activista que ha adquirido acciones, lo que sugiere un interés en su crecimiento a largo plazo.",
+          "timestamp": "00:32:42",
+          "scope": "hosts",
+          "confidence": 0.0
+        },
+        {
+          "stage": "management",
+          "paraphrase": "La empresa tiene problemas de retención y gasto en marketing ineficiente, lo que afecta su capacidad de generar ventas.",
+          "timestamp": "00:24:28",
+          "scope": "hosts",
+          "confidence": 0.0
+        },
+        {
+          "stage": "cycle_macro",
+          "paraphrase": "El sector de defensa está en un punto de pésimo máximo, lo que sugiere una posible corrección en el mercado.",
+          "timestamp": "00:25:32",
+          "scope": "hosts",
+          "confidence": 0.0
+        },
+        {
+          "stage": "valuation",
+          "paraphrase": "La empresa cotiza a una tarifa muy baja, con un precio por acción que se compara con el de 2009, lo que sugiere una valoración muy atractiva.",
+          "timestamp": "00:25:19",
+          "scope": "hosts",
+          "confidence": 0.0
+        },
+        {
+          "stage": "entry",
+          "paraphrase": "La empresa tiene un potencial de crecimiento debido a su nicho especializado en propulsión y cohetes, con un backlog de 6,7 billones y un activista que ha adquirido acciones.",
+          "timestamp": "00:32:09",
+          "scope": "hosts",
+          "confidence": 0.0
+        }
+      ],
+      "named_examples": [],
+      "chunk_summary": "El análisis sugiere que la empresa tiene problemas de deuda y gasto en marketing ineficiente, pero también un potencial de crecimiento debido a su nicho especializado en propulsión y cohetes, con una valoración muy baja y un activista que ha adquirido acciones. El sector de defensa está en un punto de pésimo máximo, lo que sugiere una posible corrección en el mercado."
+    },
+    {
+      "chunk": 4,
+      "evidence": [
+        {
+          "stage": "valuation",
+          "paraphrase": "La empresa utiliza estrategias de valoración basadas en el free cash flow por acción, con múltiplos de 18 veces y una rentabilidad anualizada del 27% desde 2009.",
+          "timestamp": "00:39:00",
+          "scope": "hosts",
+          "confidence": 0.9,
+          "automation_hint": "proxy observable"
+        },
+        {
+          "stage": "entry",
+          "paraphrase": "La empresa ha tenido una caída del 50% en su fricas flu debido a un aumento de cápex, pero sigue mostrando un crecimiento estable en free cash flow por acción.",
+          "timestamp": "00:38:03",
+          "scope": "hosts",
+          "confidence": 0.8,
+          "automation_hint": "proxy observable"
+        },
+        {
+          "stage": "risk",
+          "paraphrase": "La empresa enfrenta riesgos como huracanes y problemas de reestructuración, que han afectado sus resultados, pero se espera que se resuelvan y mejoren su situación.",
+          "timestamp": "00:42:03",
+          "scope": "hosts",
+          "confidence": 0.7,
+          "automation_hint": "proxy observable"
+        }
+      ],
+      "named_examples": [],
+      "chunk_summary": "El análisis destaca la valoración de la empresa basada en el free cash flow, su crecimiento estable a pesar de desafíos, y riesgos como huracanes que afectan sus resultados, pero con expectativas de mejora."
+    },
+    {
+      "chunk": 5,
+      "evidence": [
+        {
+          "stage": "entry",
+          "paraphrase": "El análisis de la cartera de inversión de Barri muestra una estrategia basada en la revisión de datos históricos y la identificación de oportunidades de inversión a través de la revisión de anteriores análisis de inversión.",
+          "timestamp": "00:51:14",
+          "scope": "hosts",
+          "confidence": 0.8,
+          "automation_hint": "proxy observable"
+        },
+        {
+          "stage": "valuation",
+          "paraphrase": "La cartera de Barri ha mostrado rendimientos significativamente superiores al mercado en periodos de crisis, como en 2008, donde logró un 696% de rendimiento mientras el mercado obtuvo solo un 5%.",
+          "timestamp": "00:52:13",
+          "scope": "hosts",
+          "confidence": 0.9,
+          "automation_hint": "proxy observable"
+        },
+        {
+          "stage": "risk",
+          "paraphrase": "La estrategia de inversión de Barri incluye la gestión de riesgos a través de la diversificación y la revisión constante de la cartera, como se evidencia en la discusión sobre la actualización de la cartera y la revisión de activos en 2008.",
+          "timestamp": "00:52:30",
+          "scope": "hosts",
+          "confidence": 0.7,
+          "automation_hint": "proxy observable"
+        }
+      ],
+      "named_examples": [],
+      "chunk_summary": "El análisis de la cartera de inversión de Barri muestra una estrategia basada en la revisión de datos históricos y la identificación de oportunidades de inversión a través de la revisión de anteriores análisis de inversión. La cartera ha mostrado rendimientos significativamente superiores al mercado en periodos de crisis, como en 2008, donde logró un 696% de rendimiento mientras el mercado obtuvo solo un 5%. La estrategia de inversión de Barri incluye la gestión de riesgos a través de la diversificación y la revisión constante de la cartera, como se evidencia en la discusión sobre la actualización de la cartera y la revisión de activos en 2008."
+    },
+    {
+      "chunk": 6,
+      "evidence": [
+        {
+          "stage": "mistake",
+          "paraphrase": "Se menciona un rumor sobre actividades inapropiadas en un lugar específico, pero no se confirma.",
+          "timestamp": "00:59:56",
+          "scope": "uncertain_or_guest",
+          "confidence": 0.0,
+          "automation_hint": "proxy observable"
+        },
+        {
+          "stage": "entry",
+          "paraphrase": "Se sugiere que hay una oportunidad de entrada en un proyecto o actividad basada en rumores no confirmados.",
+          "timestamp": "00:59:52",
+          "scope": "hosts",
+          "confidence": 0.0,
+          "automation_hint": "proxy observable"
+        },
+        {
+          "stage": "risk",
+          "paraphrase": "Se alerta sobre posibles riesgos asociados a actividades no confirmadas y potencialmente inapropiadas.",
+          "timestamp": "00:50:07",
+          "scope": "uncertain_or_guest",
+          "confidence": 0.0,
+          "automation_hint": "proxy observable"
+        }
+      ],
+      "named_examples": [],
+      "chunk_summary": "El fragmento menciona rumores no confirmados sobre actividades inapropiadas en un lugar específico, sugiere una oportunidad de entrada basada en esos rumores y alerta sobre riesgos asociados. No se confirman los detalles, lo que indica una falta de certeza en la información proporcionada."
+    }
+  ],
+  "copyright_note": "No audio or verbatim transcript is persisted; only derived paraphrases."
+}
