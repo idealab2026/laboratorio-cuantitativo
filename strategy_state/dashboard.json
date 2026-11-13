@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "generated_at_utc": "2026-11-13T14:35:53.189319+00:00",
+  "generated_at_utc": "2026-11-13T14:52:57.424897+00:00",
   "principle": "Comparar rentabilidad acumulada y riesgo observado; no ordenar carteras con distintas fechas de inicio o supuestos de ejecución.",
   "counts": {
     "paper_with_diary": 18,
@@ -1343,8 +1343,8 @@
       "note": "Nueva campaña S&P500 503 símbolos; las carteras originales de 8 títulos se conservan históricas y no transfieren NAV ni operaciones.",
       "evaluated_universe_symbols": 488,
       "eligible_universe_symbols": 503,
-      "activity_state": "active_pending",
-      "activity_label": "7 posiciones · 1 orden paper para próxima apertura",
+      "activity_state": "active",
+      "activity_label": "7 posiciones abiertas",
       "activity_tickers": [
         "ADM",
         "BG",
@@ -1352,11 +1352,10 @@
         "CZR",
         "GOOG",
         "IVZ",
-        "STT",
-        "ZBRA"
+        "STT"
       ],
       "open_positions_count": 7,
-      "pending_orders_count": 1,
+      "pending_orders_count": 0,
       "comparison_eligible": true,
       "comparison_universe_id": "SP500_2026-09-29_503",
       "comparison_universe_symbols": 503,
@@ -1761,8 +1760,8 @@
       "note": "Nueva campaña S&P500 503 símbolos; las carteras originales de 8 títulos se conservan históricas y no transfieren NAV ni operaciones.",
       "evaluated_universe_symbols": 488,
       "eligible_universe_symbols": 503,
-      "activity_state": "active_pending",
-      "activity_label": "7 posiciones · 1 orden paper para próxima apertura",
+      "activity_state": "active",
+      "activity_label": "7 posiciones abiertas",
       "activity_tickers": [
         "ABBV",
         "ACN",
@@ -1770,11 +1769,10 @@
         "MCK",
         "MRNA",
         "MTD",
-        "ULTA",
-        "BRK-B"
+        "ULTA"
       ],
       "open_positions_count": 7,
-      "pending_orders_count": 1,
+      "pending_orders_count": 0,
       "comparison_eligible": true,
       "comparison_universe_id": "SP500_2026-09-29_503",
       "comparison_universe_symbols": 503,

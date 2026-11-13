@@ -1,5 +1,5 @@
 {
-  "checked_at_utc": "2026-11-13T14:35:52.501618Z",
+  "checked_at_utc": "2026-11-13T14:52:56.724951Z",
   "lock_sha256": "19e57007e34288534b7e1a72d670966cc0398df9a3c0946df2d01d61ca28c088",
   "mode": "single_midas_operator_monitor_no_broker",
   "note": "Observed quotes are not fills. A native engine must settle quantity/cash before a trade counts in P&L.",
@@ -8,11 +8,11 @@
   "previous_session": "2026-11-12",
   "quote_budget": {
     "hard_symbol_limit": 250,
-    "observed_symbols": 36,
+    "observed_symbols": 40,
     "omitted_algorithm_lanes": {},
     "requested_symbols": 41
   },
-  "run_id": 43443992586,
+  "run_id": 43446755745,
   "schema": "midas.operational_clock.v1",
   "session": "2026-11-13",
   "settlement": "native_forward_010_through_027_037_through_044",
@@ -73,8 +73,20 @@
       "waiting": 0
     },
     "IL-014": {
+      "fills": [],
+      "fills_count": 0,
       "holdings_count": 7,
-      "native_settlement": "awaiting_fresh_open_quotes",
+      "native_marker": {
+        "fill_tickers": [],
+        "fills_count": 0,
+        "lock_sha256": "19e57007e34288534b7e1a72d670966cc0398df9a3c0946df2d01d61ca28c088",
+        "mode": "forward_observed_paper",
+        "quotes_sha256": "16c7236894c1ab3e8c6675492b340aecbe4c703454cadd1e9830f367d154b847",
+        "recorded_at_utc": "2026-11-13T14:52:56.724951Z",
+        "session": "2026-11-13",
+        "source_commit": "70cb7587b7c0418737248da30049cf548d727465"
+      },
+      "native_settlement": "settled_native_paper",
       "observed": 1,
       "orders": [
         {
@@ -94,7 +106,7 @@
       ],
       "planned": 1,
       "source_session": "2026-11-12",
-      "status": "prices_observed_not_settled",
+      "status": "native_forward_settled",
       "waiting": 0
     },
     "IL-015": {
@@ -148,8 +160,20 @@
       "waiting": 0
     },
     "IL-017": {
+      "fills": [],
+      "fills_count": 0,
       "holdings_count": 7,
-      "native_settlement": "awaiting_fresh_open_quotes",
+      "native_marker": {
+        "fill_tickers": [],
+        "fills_count": 0,
+        "lock_sha256": "19e57007e34288534b7e1a72d670966cc0398df9a3c0946df2d01d61ca28c088",
+        "mode": "forward_observed_paper",
+        "quotes_sha256": "ba7650e2904fbd623022e94e62f0dd82f9a0096d6cc0b2a71009572705d0b44f",
+        "recorded_at_utc": "2026-11-13T14:52:56.724951Z",
+        "session": "2026-11-13",
+        "source_commit": "70cb7587b7c0418737248da30049cf548d727465"
+      },
+      "native_settlement": "settled_native_paper",
       "observed": 1,
       "orders": [
         {
@@ -169,7 +193,7 @@
       ],
       "planned": 1,
       "source_session": "2026-11-12",
-      "status": "prices_observed_not_settled",
+      "status": "native_forward_settled",
       "waiting": 0
     },
     "IL-018": {

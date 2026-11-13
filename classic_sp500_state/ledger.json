@@ -11612,6 +11612,11 @@
           "date": "2026-11-11",
           "ticker": "ZBRA",
           "type": "unfilled"
+        },
+        {
+          "date": "2026-11-13",
+          "ticker": "ZBRA",
+          "type": "unfilled"
         }
       ],
       "forward_executions": {
@@ -11624,15 +11629,20 @@
           "recorded_at_utc": "2026-11-11T14:36:51.153794Z",
           "session": "2026-11-11",
           "source_commit": "6e0f894b5597a44859ee2feec57cfb73e2a72b47"
+        },
+        "IL-014:2026-11-13:open:classic_forward_v1": {
+          "fill_tickers": [],
+          "fills_count": 0,
+          "lock_sha256": "19e57007e34288534b7e1a72d670966cc0398df9a3c0946df2d01d61ca28c088",
+          "mode": "forward_observed_paper",
+          "quotes_sha256": "16c7236894c1ab3e8c6675492b340aecbe4c703454cadd1e9830f367d154b847",
+          "recorded_at_utc": "2026-11-13T14:52:56.724951Z",
+          "session": "2026-11-13",
+          "source_commit": "70cb7587b7c0418737248da30049cf548d727465"
         }
       },
       "nav": 108859.88393387411,
-      "pending": {
-        "ZBRA": {
-          "side": "buy",
-          "signal_date": "2026-11-12"
-        }
-      },
+      "pending": {},
       "positions": {
         "ADM": {
           "cost": 16050.90425304054,
@@ -12608,6 +12618,11 @@
           "date": "2026-11-12",
           "ticker": "TTD",
           "type": "unfilled"
+        },
+        {
+          "date": "2026-11-13",
+          "ticker": "BRK-B",
+          "type": "unfilled"
         }
       ],
       "forward_executions": {
@@ -12630,15 +12645,20 @@
           "recorded_at_utc": "2026-11-12T14:38:04.500874Z",
           "session": "2026-11-12",
           "source_commit": "372d05ea67a8acc97c47dcffad82348161f91268"
+        },
+        "IL-017:2026-11-13:open:classic_forward_v1": {
+          "fill_tickers": [],
+          "fills_count": 0,
+          "lock_sha256": "19e57007e34288534b7e1a72d670966cc0398df9a3c0946df2d01d61ca28c088",
+          "mode": "forward_observed_paper",
+          "quotes_sha256": "ba7650e2904fbd623022e94e62f0dd82f9a0096d6cc0b2a71009572705d0b44f",
+          "recorded_at_utc": "2026-11-13T14:52:56.724951Z",
+          "session": "2026-11-13",
+          "source_commit": "70cb7587b7c0418737248da30049cf548d727465"
         }
       },
       "nav": 95099.37977899094,
-      "pending": {
-        "BRK-B": {
-          "side": "buy",
-          "signal_date": "2026-11-12"
-        }
-      },
+      "pending": {},
       "positions": {
         "ABBV": {
           "cost": 11874.999758862768,
