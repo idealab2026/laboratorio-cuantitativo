@@ -1,39 +1,47 @@
 {
-  "checked_at_utc": "2026-11-13T13:22:42.512584Z",
+  "checked_at_utc": "2026-11-13T14:35:52.501618Z",
   "lock_sha256": "19e57007e34288534b7e1a72d670966cc0398df9a3c0946df2d01d61ca28c088",
   "mode": "single_midas_operator_monitor_no_broker",
-  "note": "Pre-opening decisions only. Not a broker or a confirmed forward fill.",
+  "note": "Observed quotes are not fills. A native engine must settle quantity/cash before a trade counts in P&L.",
   "open_at_utc": "2026-11-13T14:30:00Z",
   "prepared_at_utc": "2026-11-13T13:22:42.512584Z",
   "previous_session": "2026-11-12",
-  "run_id": null,
+  "quote_budget": {
+    "hard_symbol_limit": 250,
+    "observed_symbols": 36,
+    "omitted_algorithm_lanes": {},
+    "requested_symbols": 41
+  },
+  "run_id": 43443992586,
   "schema": "midas.operational_clock.v1",
   "session": "2026-11-13",
-  "settlement": "native_engine_batch_until_migrated",
+  "settlement": "native_forward_010_through_027_037_through_044",
   "slots": {
     "IL-010": {
       "holdings_count": 489,
+      "native_settlement": "corporate_action_review_required",
       "observed": 0,
       "orders": [],
       "planned": 0,
       "source_session": "2026-11-12",
-      "status": "before_open",
+      "status": "active_no_orders",
       "waiting": 0
     },
     "IL-011": {
       "holdings_count": 7,
-      "observed": 0,
+      "native_settlement": "corporate_action_review_required",
+      "observed": 1,
       "orders": [
         {
           "action": "buy",
           "limit_price": null,
-          "observed_at_utc": null,
-          "observed_price": null,
-          "quote_at_utc": null,
+          "observed_at_utc": "2026-11-13T14:35:51.556855Z",
+          "observed_price": 963.9400024414062,
+          "quote_at_utc": "2026-11-13T14:34:00Z",
           "scheduled_at_utc": "2026-11-13T14:30:00Z",
           "signal_session": "2026-11-12",
-          "source": null,
-          "status": "pending_open",
+          "source": "yfinance_1m",
+          "status": "price_observed",
           "target_session": "2026-11-13",
           "target_weight": null,
           "ticker": "PH"
@@ -41,11 +49,12 @@
       ],
       "planned": 1,
       "source_session": "2026-11-12",
-      "status": "before_open",
-      "waiting": 1
+      "status": "prices_observed_not_settled",
+      "waiting": 0
     },
     "IL-012": {
       "holdings_count": 8,
+      "native_settlement": "not_ready",
       "observed": 0,
       "orders": [],
       "planned": 0,
@@ -55,6 +64,7 @@
     },
     "IL-013": {
       "holdings_count": 6,
+      "native_settlement": "not_ready",
       "observed": 0,
       "orders": [],
       "planned": 0,
@@ -64,18 +74,19 @@
     },
     "IL-014": {
       "holdings_count": 7,
-      "observed": 0,
+      "native_settlement": "awaiting_fresh_open_quotes",
+      "observed": 1,
       "orders": [
         {
           "action": "buy",
           "limit_price": null,
-          "observed_at_utc": null,
-          "observed_price": null,
-          "quote_at_utc": null,
+          "observed_at_utc": "2026-11-13T14:35:52.501317Z",
+          "observed_price": 324.3800048828125,
+          "quote_at_utc": "2026-11-13T14:35:00Z",
           "scheduled_at_utc": "2026-11-13T14:30:00Z",
           "signal_session": "2026-11-12",
-          "source": null,
-          "status": "pending_open",
+          "source": "yfinance_1m",
+          "status": "price_observed",
           "target_session": "2026-11-13",
           "target_weight": null,
           "ticker": "ZBRA"
@@ -83,23 +94,24 @@
       ],
       "planned": 1,
       "source_session": "2026-11-12",
-      "status": "before_open",
-      "waiting": 1
+      "status": "prices_observed_not_settled",
+      "waiting": 0
     },
     "IL-015": {
       "holdings_count": 7,
-      "observed": 0,
+      "native_settlement": "corporate_action_review_required",
+      "observed": 1,
       "orders": [
         {
           "action": "buy",
           "limit_price": null,
-          "observed_at_utc": null,
-          "observed_price": null,
-          "quote_at_utc": null,
+          "observed_at_utc": "2026-11-13T14:35:52.106281Z",
+          "observed_price": 90.54000091552734,
+          "quote_at_utc": "2026-11-13T14:35:00Z",
           "scheduled_at_utc": "2026-11-13T14:30:00Z",
           "signal_session": "2026-11-12",
-          "source": null,
-          "status": "pending_open",
+          "source": "yfinance_1m",
+          "status": "price_observed",
           "target_session": "2026-11-13",
           "target_weight": null,
           "ticker": "SWKS"
@@ -107,23 +119,24 @@
       ],
       "planned": 1,
       "source_session": "2026-11-12",
-      "status": "before_open",
-      "waiting": 1
+      "status": "prices_observed_not_settled",
+      "waiting": 0
     },
     "IL-016": {
       "holdings_count": 7,
-      "observed": 0,
+      "native_settlement": "corporate_action_review_required",
+      "observed": 1,
       "orders": [
         {
           "action": "buy",
           "limit_price": null,
-          "observed_at_utc": null,
-          "observed_price": null,
-          "quote_at_utc": null,
+          "observed_at_utc": "2026-11-13T14:35:49.056332Z",
+          "observed_price": 593.6400146484375,
+          "quote_at_utc": "2026-11-13T14:35:00Z",
           "scheduled_at_utc": "2026-11-13T14:30:00Z",
           "signal_session": "2026-11-12",
-          "source": null,
-          "status": "pending_open",
+          "source": "yfinance_1m",
+          "status": "price_observed",
           "target_session": "2026-11-13",
           "target_weight": null,
           "ticker": "BRK-B"
@@ -131,23 +144,24 @@
       ],
       "planned": 1,
       "source_session": "2026-11-12",
-      "status": "before_open",
-      "waiting": 1
+      "status": "prices_observed_not_settled",
+      "waiting": 0
     },
     "IL-017": {
       "holdings_count": 7,
-      "observed": 0,
+      "native_settlement": "awaiting_fresh_open_quotes",
+      "observed": 1,
       "orders": [
         {
           "action": "buy",
           "limit_price": null,
-          "observed_at_utc": null,
-          "observed_price": null,
-          "quote_at_utc": null,
+          "observed_at_utc": "2026-11-13T14:35:49.056332Z",
+          "observed_price": 593.6400146484375,
+          "quote_at_utc": "2026-11-13T14:35:00Z",
           "scheduled_at_utc": "2026-11-13T14:30:00Z",
           "signal_session": "2026-11-12",
-          "source": null,
-          "status": "pending_open",
+          "source": "yfinance_1m",
+          "status": "price_observed",
           "target_session": "2026-11-13",
           "target_weight": null,
           "ticker": "BRK-B"
@@ -155,56 +169,62 @@
       ],
       "planned": 1,
       "source_session": "2026-11-12",
-      "status": "before_open",
-      "waiting": 1
+      "status": "prices_observed_not_settled",
+      "waiting": 0
     },
     "IL-018": {
       "holdings_count": 1,
+      "native_settlement": "active_no_orders",
       "observed": 0,
       "orders": [],
       "planned": 0,
       "source_session": "2026-11-12",
-      "status": "before_open",
+      "status": "active_no_orders",
       "waiting": 0
     },
     "IL-019": {
       "holdings_count": 1,
+      "native_settlement": "no_orders",
       "observed": 0,
       "orders": [],
       "planned": 0,
       "source_session": "2026-11-12",
-      "status": "before_open",
+      "status": "active_no_orders",
       "waiting": 0
     },
     "IL-020": {
       "holdings_count": 1,
+      "native_settlement": "no_orders",
       "observed": 0,
       "orders": [],
       "planned": 0,
       "source_session": "2026-11-12",
-      "status": "before_open",
+      "status": "active_no_orders",
       "waiting": 0
     },
     "IL-021": {
       "holdings_count": 2,
+      "native_settlement": "no_orders",
       "observed": 0,
       "orders": [],
       "planned": 0,
       "source_session": "2026-11-12",
-      "status": "before_open",
+      "status": "active_no_orders",
       "waiting": 0
     },
     "IL-022": {
       "holdings_count": 10,
+      "native_settlement": "no_orders",
       "observed": 0,
       "orders": [],
       "planned": 0,
       "source_session": "2026-11-12",
-      "status": "before_open",
+      "status": "active_no_orders",
       "waiting": 0
     },
     "IL-023": {
       "holdings_count": 10,
+      "native_settlement": "no_orders",
       "observed": 0,
       "orders": [],
       "planned": 0,
@@ -214,6 +234,7 @@
     },
     "IL-024": {
       "holdings_count": 10,
+      "native_settlement": "no_orders",
       "observed": 0,
       "orders": [],
       "planned": 0,
@@ -223,15 +244,17 @@
     },
     "IL-025": {
       "holdings_count": 10,
+      "native_settlement": "no_orders",
       "observed": 0,
       "orders": [],
       "planned": 0,
       "source_session": "2026-11-12",
-      "status": "before_open",
+      "status": "active_no_orders",
       "waiting": 0
     },
     "IL-026": {
       "holdings_count": 10,
+      "native_settlement": "no_orders",
       "observed": 0,
       "orders": [],
       "planned": 0,
@@ -241,15 +264,17 @@
     },
     "IL-027": {
       "holdings_count": 10,
+      "native_settlement": "no_orders",
       "observed": 0,
       "orders": [],
       "planned": 0,
       "source_session": "2026-11-12",
-      "status": "before_open",
+      "status": "active_no_orders",
       "waiting": 0
     },
     "IL-037": {
       "holdings_count": 0,
+      "native_settlement": "not_ready",
       "observed": 0,
       "orders": [],
       "planned": 0,
@@ -259,42 +284,47 @@
     },
     "IL-038": {
       "holdings_count": 12,
+      "native_settlement": "no_orders",
       "observed": 0,
       "orders": [],
       "planned": 0,
       "source_session": "2026-11-12",
-      "status": "before_open",
+      "status": "active_no_orders",
       "waiting": 0
     },
     "IL-039": {
       "holdings_count": 10,
+      "native_settlement": "no_orders",
       "observed": 0,
       "orders": [],
       "planned": 0,
       "source_session": "2026-11-12",
-      "status": "before_open",
+      "status": "active_no_orders",
       "waiting": 0
     },
     "IL-040": {
       "holdings_count": 8,
+      "native_settlement": "no_execution_due",
       "observed": 0,
       "orders": [],
       "planned": 0,
       "source_session": "2026-11-12",
-      "status": "before_open",
+      "status": "active_no_orders",
       "waiting": 0
     },
     "IL-041": {
       "holdings_count": 1,
+      "native_settlement": "no_execution_due",
       "observed": 0,
       "orders": [],
       "planned": 0,
       "source_session": "2026-11-12",
-      "status": "before_open",
+      "status": "active_no_orders",
       "waiting": 0
     },
     "IL-042": {
       "holdings_count": 1,
+      "native_settlement": "source_session_changed",
       "observed": 0,
       "orders": [],
       "planned": 0,
@@ -304,6 +334,7 @@
     },
     "IL-043": {
       "holdings_count": 1,
+      "native_settlement": "source_session_changed",
       "observed": 0,
       "orders": [],
       "planned": 0,
@@ -313,11 +344,12 @@
     },
     "IL-044": {
       "holdings_count": 8,
+      "native_settlement": "no_execution_due",
       "observed": 0,
       "orders": [],
       "planned": 0,
       "source_session": "2026-11-12",
-      "status": "before_open",
+      "status": "active_no_orders",
       "waiting": 0
     }
   },
