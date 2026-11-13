@@ -1,5 +1,5 @@
 {
-  "checked_at_utc": "2026-11-13T15:13:23.983524Z",
+  "checked_at_utc": "2026-11-13T15:38:29.883786Z",
   "lock_sha256": "19e57007e34288534b7e1a72d670966cc0398df9a3c0946df2d01d61ca28c088",
   "mode": "single_midas_operator_monitor_no_broker",
   "note": "Observed quotes are not fills. A native engine must settle quantity/cash before a trade counts in P&L.",
@@ -12,7 +12,7 @@
     "omitted_algorithm_lanes": {},
     "requested_symbols": 40
   },
-  "run_id": 43450259817,
+  "run_id": 43454394914,
   "schema": "midas.operational_clock.v1",
   "session": "2026-11-13",
   "settlement": "native_forward_010_through_027_037_through_044",
@@ -367,13 +367,37 @@
       "waiting": 0
     },
     "IL-044": {
+      "fills": [
+        {
+          "fee": 17.75400670403741,
+          "observed_at_utc": "2026-11-13T15:38:27.509062Z",
+          "price": 107.52621183013916,
+          "quantity": 165.113291,
+          "side": "sell",
+          "ticker": "EW"
+        }
+      ],
+      "fills_count": 1,
       "holdings_count": 8,
-      "native_settlement": "no_execution_due",
+      "native_marker": {
+        "fill_tickers": [
+          "EW"
+        ],
+        "fills_count": 1,
+        "lock_sha256": "19e57007e34288534b7e1a72d670966cc0398df9a3c0946df2d01d61ca28c088",
+        "mode": "TARGET_OBSERVED",
+        "quotes_sha256": "47eb5f520c294bc53f116b6b382d1841a5f285061ab84f03aca3020f077e71f5",
+        "recorded_at_utc": "2026-11-13T15:38:29.883786Z",
+        "session": "2026-11-13",
+        "source_commit": "70cb7587b7c0418737248da30049cf548d727465",
+        "ticker": "EW"
+      },
+      "native_settlement": "settled_native_paper",
       "observed": 0,
       "orders": [],
       "planned": 0,
       "source_session": "2026-11-12",
-      "status": "active_no_orders",
+      "status": "native_forward_settled",
       "waiting": 0
     }
   },

@@ -1,5 +1,5 @@
 {
-  "cash": 17301.53581843945,
+  "cash": 35037.788515772816,
   "equity_history": {
     "2026-10-12": 100000.0,
     "2026-10-13": 99740.79683014771,
@@ -99,6 +99,19 @@
       "session": "2026-11-11",
       "source_commit": "6e0f894b5597a44859ee2feec57cfb73e2a72b47",
       "ticker": "NEM"
+    },
+    "IL-044:2026-11-13:TARGET_OBSERVED:EW:genetic_forward_v1": {
+      "fill_tickers": [
+        "EW"
+      ],
+      "fills_count": 1,
+      "lock_sha256": "19e57007e34288534b7e1a72d670966cc0398df9a3c0946df2d01d61ca28c088",
+      "mode": "TARGET_OBSERVED",
+      "quotes_sha256": "47eb5f520c294bc53f116b6b382d1841a5f285061ab84f03aca3020f077e71f5",
+      "recorded_at_utc": "2026-11-13T15:38:29.883786Z",
+      "session": "2026-11-13",
+      "source_commit": "70cb7587b7c0418737248da30049cf548d727465",
+      "ticker": "EW"
     }
   },
   "inactive_sessions": [
@@ -161,12 +174,6 @@
     "sells": []
   },
   "positions": {
-    "EW": {
-      "entry": 90.23509744262695,
-      "shares": 165.113291,
-      "sl": 85.38907727498116,
-      "tp": 107.30013669117292
-    },
     "INTU": {
       "entry": 336.168,
       "shares": 44.320143,
@@ -219,6 +226,16 @@
       "MCO": 15.11458,
       "NDAQ": 157.093581,
       "NEM": 0.589188,
+      "NSC": 1.109748,
+      "PRU": 127.763735,
+      "SHW": 0.058721
+    },
+    "2026-11-13": {
+      "EW": 165.113291,
+      "INTU": 44.320143,
+      "MAS": 198.105208,
+      "MCO": 15.11458,
+      "NDAQ": 157.093581,
       "NSC": 1.109748,
       "PRU": 127.763735,
       "SHW": 0.058721
@@ -507,6 +524,21 @@
       "side": "SELL",
       "source_commit": "6e0f894b5597a44859ee2feec57cfb73e2a72b47",
       "ticker": "CPRT"
+    },
+    {
+      "execution": "forward_observed_paper",
+      "fee": 17.75400670403741,
+      "fill": 107.52621183013916,
+      "idempotency_key": "IL-044:2026-11-13:TARGET_OBSERVED:EW:genetic_forward_v1",
+      "lock_sha256": "19e57007e34288534b7e1a72d670966cc0398df9a3c0946df2d01d61ca28c088",
+      "observed_at_utc": "2026-11-13T15:38:27.509062Z",
+      "quote_at_utc": "2026-11-13T15:38:00Z",
+      "reason": "TARGET_OBSERVED",
+      "session": "2026-11-13",
+      "shares": 165.113291,
+      "side": "SELL",
+      "source_commit": "70cb7587b7c0418737248da30049cf548d727465",
+      "ticker": "EW"
     }
   ]
 }
