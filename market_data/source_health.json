@@ -1,7 +1,7 @@
 {
-  "age_seconds": 8827,
-  "captured_at_utc": "2026-11-12T23:44:19+00:00",
-  "checked_at_utc": "2026-11-13T02:11:26.817663+00:00",
+  "age_seconds": 207,
+  "captured_at_utc": "2026-11-13T23:41:35+00:00",
+  "checked_at_utc": "2026-11-13T23:45:02.496198+00:00",
   "consumers": {
     "buy_the_dip_strategy": {
       "ledger_status": "observed",
@@ -9,7 +9,7 @@
       "paused_books": 0,
       "updated_books": 1,
       "valuation_sessions": {
-        "buy_the_dip_strategy": "2026-11-12"
+        "buy_the_dip_strategy": "2026-11-13"
       },
       "workflow_outcome": "success"
     },
@@ -19,7 +19,7 @@
       "paused_books": 0,
       "updated_books": 1,
       "valuation_sessions": {
-        "capital_cycle": "2026-11-12"
+        "capital_cycle": "2026-11-13"
       },
       "workflow_outcome": "success"
     },
@@ -32,28 +32,31 @@
       "paused_books": 2,
       "updated_books": 7,
       "valuation_sessions": {
-        "benchmark_spy": "2026-11-12",
-        "bollinger_breakout_20": "2026-11-12",
-        "buy_hold_equal_weight": "2026-11-12",
-        "ema_rsi_fixed": "2026-11-12",
+        "benchmark_spy": "2026-11-13",
+        "bollinger_breakout_20": "2026-11-13",
+        "buy_hold_equal_weight": "2026-11-13",
+        "ema_rsi_fixed": "2026-11-13",
         "genetic_frozen": "2026-11-04",
         "macd_12_26_9": "2026-11-11",
-        "rsi_reversion_14": "2026-11-12",
-        "turtle_20_10_long": "2026-11-12",
-        "turtle_55_20_long": "2026-11-12"
+        "rsi_reversion_14": "2026-11-13",
+        "turtle_20_10_long": "2026-11-13",
+        "turtle_55_20_long": "2026-11-13"
       },
-      "workflow_outcome": "failure"
+      "workflow_outcome": "success"
     },
     "timesfm_daily": {
       "ledger_status": "observed",
-      "paused_book_ids": [],
-      "paused_books": 0,
-      "updated_books": 2,
+      "paused_book_ids": [
+        "benchmark_spy",
+        "timesfm"
+      ],
+      "paused_books": 2,
+      "updated_books": 0,
       "valuation_sessions": {
         "benchmark_spy": "2026-11-12",
         "timesfm": "2026-11-12"
       },
-      "workflow_outcome": "success"
+      "workflow_outcome": "failure"
     },
     "timesfm_one_day": {
       "ledger_status": "observed",
@@ -74,18 +77,19 @@
       "paused_book_ids": [
         "arima_return",
         "lgbm_ranker",
+        "lstm_return",
         "mlp_return"
       ],
-      "paused_books": 3,
-      "updated_books": 6,
+      "paused_books": 4,
+      "updated_books": 5,
       "valuation_sessions": {
         "arima_return": "2026-11-04",
-        "benchmark_rsp": "2026-11-12",
-        "benchmark_spy": "2026-11-12",
-        "ensemble_consensus": "2026-11-12",
-        "lgbm_direction": "2026-11-12",
+        "benchmark_rsp": "2026-11-13",
+        "benchmark_spy": "2026-11-13",
+        "ensemble_consensus": "2026-11-13",
+        "lgbm_direction": "2026-11-13",
         "lgbm_ranker": "2026-11-04",
-        "lgbm_return": "2026-11-12",
+        "lgbm_return": "2026-11-13",
         "lstm_return": "2026-11-12",
         "mlp_return": "2026-11-04"
       },
@@ -93,62 +97,65 @@
     }
   },
   "coverage": {
-    "frozen_constituents_observed": 486,
-    "missing": 17,
-    "observed": 487,
+    "frozen_constituents_observed": 485,
+    "missing": 18,
+    "observed": 486,
     "requested": 504
   },
-  "effective_sha256": "e6767240da15a78a1a33e8251fae3f19000ce13514d771b5fd03fd01417d4831",
+  "effective_sha256": "d3424620267e49c21147c21bcaecae69d7da5a83d20a2c1b1d915dc2d6d70952",
   "engine_health": "not_assessed",
-  "expected_session": "2026-11-12",
+  "expected_session": "2026-11-13",
   "market": "XNYS",
   "missing_symbols": [
     "AVB",
     "BK",
-    "CHD",
+    "CAT",
     "CTRA",
     "DAY",
+    "DG",
     "EA",
     "EQR",
     "FI",
+    "GL",
     "HOLX",
     "IPG",
-    "IQV",
     "K",
     "KVUE",
     "MMC",
-    "STE",
+    "PKG",
     "WBA",
     "WBD"
   ],
   "policy": "common_raw_daily_primary",
   "recovered_bar_methods": {
-    "AFL": "yahoo_regular_range_daily_ocv_v1",
-    "AIG": "yahoo_regular_range_daily_ocv_v1",
+    "AES": "yahoo_regular_range_daily_ocv_v1",
     "AIZ": "yahoo_regular_range_daily_ocv_v1",
-    "AJG": "yahoo_regular_range_daily_ocv_v1",
-    "CAH": "yahoo_regular_range_daily_ocv_v1",
-    "DELL": "yahoo_regular_range_daily_ocv_v1",
-    "DLR": "yahoo_regular_range_daily_ocv_v1",
-    "ESS": "yahoo_regular_range_daily_ocv_v1",
-    "GNRC": "yahoo_regular_range_daily_ocv_v1",
-    "HUM": "yahoo_regular_range_daily_ocv_v1",
-    "IR": "yahoo_regular_range_daily_ocv_v1",
-    "JBL": "yahoo_regular_range_daily_ocv_v1",
-    "MAA": "yahoo_regular_range_daily_ocv_v1",
-    "MSCI": "yahoo_regular_range_daily_ocv_v1",
-    "PNW": "yahoo_regular_range_daily_ocv_v1",
-    "RSG": "yahoo_regular_range_daily_ocv_v1",
-    "SJM": "yahoo_regular_range_daily_ocv_v1",
-    "TAP": "yahoo_regular_range_daily_ocv_v1",
-    "TKO": "yahoo_regular_range_daily_ocv_v1"
+    "ALL": "yahoo_regular_range_daily_ocv_v1",
+    "APD": "yahoo_regular_range_daily_ocv_v1",
+    "BAX": "yahoo_regular_range_daily_ocv_v1",
+    "CARR": "yahoo_regular_range_daily_ocv_v1",
+    "CI": "yahoo_regular_range_daily_ocv_v1",
+    "D": "yahoo_regular_range_daily_ocv_v1",
+    "EIX": "yahoo_regular_range_daily_ocv_v1",
+    "FTV": "yahoo_regular_range_daily_ocv_v1",
+    "JCI": "yahoo_regular_range_daily_ocv_v1",
+    "KIM": "yahoo_regular_range_daily_ocv_v1",
+    "LDOS": "yahoo_regular_range_daily_ocv_v1",
+    "LH": "yahoo_regular_range_daily_ocv_v1",
+    "LYV": "yahoo_regular_range_daily_ocv_v1",
+    "MLM": "yahoo_regular_range_daily_ocv_v1",
+    "MPC": "yahoo_regular_range_daily_ocv_v1",
+    "PGR": "yahoo_regular_range_daily_ocv_v1",
+    "SRE": "yahoo_regular_range_daily_ocv_v1",
+    "VMC": "yahoo_regular_range_daily_ocv_v1",
+    "ZBH": "yahoo_regular_range_daily_ocv_v1"
   },
   "revision_hashes": [
-    "e6767240da15a78a1a33e8251fae3f19000ce13514d771b5fd03fd01417d4831"
+    "d3424620267e49c21147c21bcaecae69d7da5a83d20a2c1b1d915dc2d6d70952"
   ],
-  "run_id": "43349902621",
+  "run_id": "43528701224",
   "schema": "midas.xnys_source_health.v1",
-  "sha256": "b45ed70051d99b91cd2faafefe1ea49ff5db12d7615299c4250b24acbaad13cd",
+  "sha256": "2d94d527b4391f9eb2d8283a15b5338336cfa55d582e840a79c7cfd338fae813",
   "status": "snapshot_verified",
   "trigger_event": "schedule"
 }
