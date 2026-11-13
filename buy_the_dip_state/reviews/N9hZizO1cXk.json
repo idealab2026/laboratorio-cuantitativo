@@ -1,0 +1,167 @@
+{
+  "schema_version": 1,
+  "status": "machine_first_pass",
+  "reviewed_at_utc": "2026-11-13T03:20:39.493258+00:00",
+  "source_identity": "Buy The Dip YouTube channel",
+  "transport": {
+    "kind": "official_podcast_mirror",
+    "provider": "iVoox",
+    "guid": "https://www.ivoox.com/141338059",
+    "published_date": "2025-03-10",
+    "youtube_video_id": "N9hZizO1cXk",
+    "match_score": 1.0,
+    "audio_bytes_processed_transiently": 11760947
+  },
+  "models": {
+    "asr": {
+      "language": "es",
+      "language_probability": 1.0,
+      "duration_seconds": 1470.0146875,
+      "word_count": 4278,
+      "segment_count": 262,
+      "model": "small"
+    },
+    "semantic": {
+      "repo": "Qwen/Qwen3-4B-GGUF",
+      "file": "Qwen3-4B-Q4_K_M.gguf"
+    }
+  },
+  "metadata": {
+    "video_id": "N9hZizO1cXk",
+    "youtube_url": "https://www.youtube.com/watch?v=N9hZizO1cXk",
+    "title": "¿Busca TRUMP crear una CRISIS ECONÓMICA?",
+    "category": "company_or_theme",
+    "guest_likely": false,
+    "podcast_guid": "https://www.ivoox.com/141338059",
+    "published_date": "2025-03-10",
+    "source": "official_podcast_mirror",
+    "match_score": 1.0
+  },
+  "analysis": {
+    "episode_summary": "El episodio analiza factores económicos como los aranceles comerciales, el déficit fiscal elevado y la caída del índice S&P 500 como indicadores de posibles recesiones en Estados Unidos. Se destacan riesgos asociados a la deuda y los tipos de interés altos, junto con oportunidades de entrada en mercados financieros y sectores como energético y oro. Se mencionan señales de precios críticos para sectores como petróleo y uranio, sugiriendo revisiones de valoración y posibles salidas en el sector de oro. El análisis se basa en datos observables y se sugiere una revisión de estrategias de inversión basada en señales de mercado y políticas económicas.",
+    "process": {
+      "idea_generation": [],
+      "quality": [],
+      "balance_sheet": [],
+      "valuation": [],
+      "cycle_macro": [],
+      "entry": [],
+      "sizing": [],
+      "add_hold": [],
+      "exit": [],
+      "risk": [],
+      "technical": [],
+      "management": [],
+      "mistakes": []
+    },
+    "candidate_rules": [
+      {
+        "rule": "paráfrasis compacta",
+        "scope": "hosts|uncertain_or_guest",
+        "confidence": 0.0,
+        "evidence_timestamps": [],
+        "automation_proxy": "variable/cálculo posible o null",
+        "cross_video_confirmation_required": true
+      }
+    ],
+    "contradictions_or_uncertainties": [],
+    "named_examples": [],
+    "automation_readiness": "low"
+  },
+  "chunk_evidence": [
+    {
+      "chunk": 1,
+      "evidence": [
+        {
+          "stage": "risk",
+          "paraphrase": "El canal de inversión menciona que los aranceles comerciales generan distorsión en el mercado y afectan a los consumidores, lo que podría llevar a una recesión.",
+          "timestamp": "00:02:11",
+          "scope": "hosts",
+          "confidence": 0.8,
+          "automation_hint": "proxy observable"
+        },
+        {
+          "stage": "cycle_macro",
+          "paraphrase": "El déficit fiscal de EE. UU. ha crecido significativamente, especialmente después de 2020, lo que podría contribuir a una recesión al aumentar la deuda y los tipos de interés.",
+          "timestamp": "00:04:37",
+          "scope": "hosts",
+          "confidence": 0.9,
+          "automation_hint": "proxy observable"
+        },
+        {
+          "stage": "valuation",
+          "paraphrase": "El índice S&P 500 ha caído un 3.36% en cinco días, reflejando una volatilidad alta y una posible recesión en el mercado.",
+          "timestamp": "00:01:40",
+          "scope": "hosts",
+          "confidence": 0.7,
+          "automation_hint": "proxy observable"
+        }
+      ],
+      "named_examples": [],
+      "chunk_summary": "El análisis del canal de inversión identifica factores como los aranceles comerciales, el déficit fiscal elevado y la caída del índice S&P 500 como posibles indicadores de una recesión en Estados Unidos, destacando la volatilidad del mercado y la influencia de políticas económicas en la economía."
+    },
+    {
+      "chunk": 2,
+      "evidence": [
+        {
+          "stage": "risk",
+          "paraphrase": "El alto nivel de deuda en Estados Unidos y los tipos de interés elevados crean un riesgo significativo de déficit fiscal y crisis económicas si no se refina adecuadamente.",
+          "timestamp": "00:12:10",
+          "scope": "hosts",
+          "confidence": 0.9,
+          "automation_hint": "proxy observable"
+        },
+        {
+          "stage": "entry",
+          "paraphrase": "La posibilidad de una recesión en 2025 y la necesidad de bajar los tipos de interés para reducir la deuda generan una oportunidad de entrada en mercados financieros.",
+          "timestamp": "00:11:06",
+          "scope": "hosts",
+          "confidence": 0.8,
+          "automation_hint": "proxy observable"
+        },
+        {
+          "stage": "valuation",
+          "paraphrase": "Los precios del petróleo están infravalorados en el momento actual debido a los niveles actuales de inventario, lo que sugiere una oportunidad de valor en el sector energético.",
+          "timestamp": "00:19:44",
+          "scope": "hosts",
+          "confidence": 0.7,
+          "automation_hint": "proxy observable"
+        }
+      ],
+      "named_examples": [],
+      "chunk_summary": "El análisis identifica riesgos asociados a la deuda alta en Estados Unidos, oportunidades de entrada en mercados financieros debido a la posibilidad de una recesión y una oportunidad de valor en el sector energético debido a los precios del petróleo infravalorados."
+    },
+    {
+      "chunk": 3,
+      "evidence": [
+        {
+          "stage": "entry",
+          "paraphrase": "El analista menciona que el petróleo no debe estar por debajo de los 70 dólares para incentivar a las petroleras a invertir, sugiriendo que una caída a 50 dólares sería una señal para entrar fuerte en el sector.",
+          "timestamp": "00:21:23",
+          "scope": "hosts",
+          "confidence": 0.8,
+          "automation_hint": "proxy observable"
+        },
+        {
+          "stage": "exit",
+          "paraphrase": "El analista observa que el oro se ha consolidado en 2.900 dólares, con empresas cerrando el gap entre el precio del oro y las acciones, lo que sugiere una posible salida en el sector de oro.",
+          "timestamp": "00:22:09",
+          "scope": "hosts",
+          "confidence": 0.7,
+          "automation_hint": "proxy observable"
+        },
+        {
+          "stage": "valuation",
+          "paraphrase": "El analista señala que el uranio ha experimentado una caída del 43% en un año, con una narrativa de mercado cambiada, pero sin un cambio estructural real, lo que implica una revisión de la valoración del sector.",
+          "timestamp": "00:23:41",
+          "scope": "hosts",
+          "confidence": 0.6,
+          "automation_hint": "proxy observable"
+        }
+      ],
+      "named_examples": [],
+      "chunk_summary": "El análisis se centra en señales de entrada y salida en sectores como petróleo, oro y uranio, destacando precios críticos, cambios en narrativas de mercado y reacciones en acciones. Se sugieren oportunidades de inversión basadas en señales de precios y cambios en la demanda de producción."
+    }
+  ],
+  "copyright_note": "No audio or verbatim transcript is persisted; only derived paraphrases."
+}
