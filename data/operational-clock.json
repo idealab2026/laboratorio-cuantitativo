@@ -1,5 +1,5 @@
 {
-  "checked_at_utc": "2026-11-13T15:38:29.883786Z",
+  "checked_at_utc": "2026-11-13T16:34:33.762865Z",
   "lock_sha256": "19e57007e34288534b7e1a72d670966cc0398df9a3c0946df2d01d61ca28c088",
   "mode": "single_midas_operator_monitor_no_broker",
   "note": "Observed quotes are not fills. A native engine must settle quantity/cash before a trade counts in P&L.",
@@ -8,11 +8,11 @@
   "previous_session": "2026-11-12",
   "quote_budget": {
     "hard_symbol_limit": 250,
-    "observed_symbols": 39,
+    "observed_symbols": 40,
     "omitted_algorithm_lanes": {},
     "requested_symbols": 40
   },
-  "run_id": 43454394914,
+  "run_id": 43463894483,
   "schema": "midas.operational_clock.v1",
   "session": "2026-11-13",
   "settlement": "native_forward_010_through_027_037_through_044",
@@ -392,7 +392,7 @@
         "source_commit": "70cb7587b7c0418737248da30049cf548d727465",
         "ticker": "EW"
       },
-      "native_settlement": "settled_native_paper",
+      "native_settlement": "no_execution_due",
       "observed": 0,
       "orders": [],
       "planned": 0,
