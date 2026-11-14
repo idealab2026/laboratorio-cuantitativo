@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "generated_at_utc": "2026-11-14T02:04:47.368594+00:00",
+  "generated_at_utc": "2026-11-14T02:05:41.887410+00:00",
   "principle": "Comparar rentabilidad acumulada y riesgo observado; no ordenar carteras con distintas fechas de inicio o supuestos de ejecución.",
   "counts": {
     "paper_with_diary": 18,
@@ -3231,11 +3231,11 @@
       "status": "demo_con_diario",
       "daily_mode": true,
       "first_session": "2026-10-09",
-      "last_session": "2026-11-12",
+      "last_session": "2026-11-13",
       "initial_capital": 100000.0,
-      "last_equity": 99269.66952145171,
-      "return_pct": -0.73033,
-      "day_return_pct": null,
+      "last_equity": 96905.48207189851,
+      "return_pct": -3.094518,
+      "day_return_pct": -2.381581,
       "currency": "USD",
       "equity_history": [
         {
@@ -3337,68 +3337,19 @@
         {
           "date": "2026-11-12",
           "nav": 99269.66952145171
+        },
+        {
+          "date": "2026-11-13",
+          "nav": 96905.48207189851
         }
       ],
-      "note": "Campaña diaria prospectiva desde la señal del 09/10/2026. Fills simulados en la siguiente apertura, NAV al cierre y cierre semanal. No hereda el NAV de la campaña de liquidación diferida ni reconstruye compras pasadas. Última valoración confirmada: 2026-11-12.",
-      "positions": [
-        {
-          "ticker": "AXON",
-          "shares": 27.279714
-        },
-        {
-          "ticker": "CAT",
-          "shares": 15.232231
-        },
-        {
-          "ticker": "INTC",
-          "shares": 153.590664
-        },
-        {
-          "ticker": "KLAC",
-          "shares": 61.493521
-        },
-        {
-          "ticker": "LRCX",
-          "shares": 42.35098
-        },
-        {
-          "ticker": "NRG",
-          "shares": 93.509609
-        },
-        {
-          "ticker": "SMCI",
-          "shares": 311.144068
-        },
-        {
-          "ticker": "STX",
-          "shares": 18.642107
-        },
-        {
-          "ticker": "TER",
-          "shares": 39.149887
-        },
-        {
-          "ticker": "WDC",
-          "shares": 32.24588
-        }
-      ],
-      "activity_state": "active",
-      "activity_label": "VALORACIÓN PAUSADA · CAT; 10 posiciones abiertas · Inactividad sin operaciones: 2026-11-03, 2026-11-04 · Reanudación desde apertura: 2026-11-05",
-      "activity_tickers": [
-        "AXON",
-        "CAT",
-        "INTC",
-        "KLAC",
-        "LRCX",
-        "NRG",
-        "SMCI",
-        "STX",
-        "TER",
-        "WDC"
-      ],
-      "open_positions_count": 10,
+      "note": "Campaña diaria prospectiva desde la señal del 09/10/2026. Fills simulados en la siguiente apertura, NAV al cierre y cierre semanal. No hereda el NAV de la campaña de liquidación diferida ni reconstruye compras pasadas.",
+      "positions": [],
+      "activity_state": "cash",
+      "activity_label": "Sin compras · en efectivo · Inactividad sin operaciones: 2026-11-03, 2026-11-04 · Reanudación desde apertura: 2026-11-05",
+      "activity_tickers": [],
+      "open_positions_count": 0,
       "pending_orders_count": 0,
-      "data_quality_status": "held_quote_unavailable",
       "inactive_sessions": [
         "2026-11-03",
         "2026-11-04"
@@ -3411,10 +3362,10 @@
       "comparison_universe_id": "SP500_2026-09-29_503",
       "comparison_universe_symbols": 503,
       "comparison_exclusion_reason": null,
-      "risk_observations": 25,
-      "annualized_volatility_pct": 38.63701,
+      "risk_observations": 26,
+      "annualized_volatility_pct": 38.570419,
       "max_drawdown_pct": -8.534402,
-      "sharpe_0rf": -0.015429
+      "sharpe_0rf": -0.637241
     },
     {
       "id": "weekly_legacy_weekly_ml_lstm_2026",

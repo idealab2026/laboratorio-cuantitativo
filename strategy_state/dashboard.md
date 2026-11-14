@@ -1,6 +1,6 @@
 # MIDAS: todas las ideas en paralelo
 
-Actualizado: 2026-11-14T02:04:47.368594+00:00. El tablero distingue resultados observados de ideas aún no ejecutadas.
+Actualizado: 2026-11-14T02:05:41.887410+00:00. El tablero distingue resultados observados de ideas aún no ejecutadas.
 
 La comparación principal sigue **rentabilidad acumulada + riesgo realizado**. Las campañas diarias, TFM, Weekly ML, TFG corregido, Capital Cycle, Buy The Dip y el diario genético antiguo **no forman una clasificación común** si sus fechas, divisas o reglas difieren.
 
@@ -36,7 +36,7 @@ La comparación principal sigue **rentabilidad acumulada + riesgo realizado**. L
 | ML semanal · LightGBM ranker · liquidación diferida | MIDAS nuevo 2026 · ranking cross-sectional que sustituye precio absoluto · libro semanal independiente | weekly_settled_demo | 10 señales congeladas · liquidación semanal pendiente | 2026-10-02 | 2026-11-06 | — | -19.34 % | — | -19.34 % | — |
 | ML semanal · MLP | TFM/ML · MLP adaptado al horizonte semanal | demo_con_diario | VALORACIÓN PAUSADA · sesión anterior pendiente de conciliar; 10 posiciones abiertas · Inactividad sin operaciones: 2026-11-03, 2026-11-04 · Reanudación desde apertura: 2026-11-05 | 2026-10-09 | 2026-11-04 | — | -11.73 % | 33.46 % | -12.84 % | -5.04 |
 | ML semanal · MLP · liquidación diferida | TFM/ML · MLP adaptado al horizonte semanal · libro semanal independiente | weekly_settled_demo | 10 señales congeladas · liquidación semanal pendiente | 2026-10-02 | 2026-11-06 | — | -16.48 % | — | -16.48 % | — |
-| ML semanal · LSTM | TFM/ML · LSTM adaptado al horizonte semanal | demo_con_diario | VALORACIÓN PAUSADA · CAT; 10 posiciones abiertas · Inactividad sin operaciones: 2026-11-03, 2026-11-04 · Reanudación desde apertura: 2026-11-05 | 2026-10-09 | 2026-11-12 | — | -0.73 % | 38.64 % | -8.53 % | -0.02 |
+| ML semanal · LSTM | TFM/ML · LSTM adaptado al horizonte semanal | demo_con_diario | Sin compras · en efectivo · Inactividad sin operaciones: 2026-11-03, 2026-11-04 · Reanudación desde apertura: 2026-11-05 | 2026-10-09 | 2026-11-13 | -2.38 % | -3.09 % | 38.57 % | -8.53 % | -0.64 |
 | ML semanal · LSTM · liquidación diferida | TFM/ML · LSTM adaptado al horizonte semanal · libro semanal independiente | weekly_settled_demo | 10 señales congeladas · liquidación semanal pendiente | 2026-10-02 | 2026-11-06 | — | -10.06 % | — | -10.06 % | — |
 | ML semanal · ARIMA | TFM/ML · ARIMA adaptado al horizonte semanal | demo_con_diario | VALORACIÓN PAUSADA · sesión anterior pendiente de conciliar; 10 posiciones abiertas · Inactividad sin operaciones: 2026-11-03, 2026-11-04 · Reanudación desde apertura: 2026-11-05 | 2026-10-09 | 2026-11-04 | — | -9.11 % | 36.46 % | -13.21 % | -3.48 |
 | ML semanal · ARIMA · liquidación diferida | TFM/ML · ARIMA adaptado al horizonte semanal · libro semanal independiente | weekly_settled_demo | 10 señales congeladas · liquidación semanal pendiente | 2026-10-02 | 2026-11-06 | — | -11.65 % | — | -13.45 % | — |
