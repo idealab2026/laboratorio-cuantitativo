@@ -1,0 +1,61 @@
+{
+  "bars": {
+    "CAT": {
+      "close": 600.2000122070312,
+      "date": "2026-11-13",
+      "dividend": 0.0,
+      "high": 611.9299926757812,
+      "low": 590.260009765625,
+      "open": 611.9299926757812,
+      "provider_symbol": "CAT",
+      "split": 0.0,
+      "volume": 2288600.0
+    },
+    "DG": {
+      "close": 134.13999938964844,
+      "date": "2026-11-13",
+      "dividend": 0.0,
+      "high": 135.47999572753906,
+      "low": 133.0,
+      "open": 135.47999572753906,
+      "provider_symbol": "DG",
+      "split": 0.0,
+      "volume": 1993600.0
+    },
+    "GL": {
+      "close": 160.74000549316406,
+      "date": "2026-11-13",
+      "dividend": 0.0,
+      "high": 161.6999969482422,
+      "low": 159.6999969482422,
+      "open": 161.6999969482422,
+      "provider_symbol": "GL",
+      "split": 0.0,
+      "volume": 360600.0
+    },
+    "PKG": {
+      "close": 251.02000427246094,
+      "date": "2026-11-13",
+      "dividend": 0.0,
+      "high": 252.67999267578125,
+      "low": 249.4499969482422,
+      "open": 252.67999267578125,
+      "provider_symbol": "PKG",
+      "split": 0.0,
+      "volume": 379500.0
+    }
+  },
+  "base_sha256": "2d94d527b4391f9eb2d8283a15b5338336cfa55d582e840a79c7cfd338fae813",
+  "captured_at_utc": "2026-11-14T02:04:46+00:00",
+  "parent_sha256": "d3424620267e49c21147c21bcaecae69d7da5a83d20a2c1b1d915dc2d6d70952",
+  "schema": "midas.xnys_missing_revision.v1",
+  "session": "2026-11-13",
+  "sha256": "848489c23800e69ce1edda437a865d7ad5edfb378fde9bb48e7804a143374b15",
+  "source": {
+    "actions": true,
+    "auto_adjust": false,
+    "client": "yfinance",
+    "interval": "1d",
+    "vendor": "Yahoo Finance"
+  }
+}
