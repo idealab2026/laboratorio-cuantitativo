@@ -1,7 +1,7 @@
 {
-  "age_seconds": 207,
+  "age_seconds": 8771,
   "captured_at_utc": "2026-11-13T23:41:35+00:00",
-  "checked_at_utc": "2026-11-13T23:45:02.496198+00:00",
+  "checked_at_utc": "2026-11-14T02:07:46.863930+00:00",
   "consumers": {
     "buy_the_dip_strategy": {
       "ledger_status": "observed",
@@ -77,11 +77,10 @@
       "paused_book_ids": [
         "arima_return",
         "lgbm_ranker",
-        "lstm_return",
         "mlp_return"
       ],
-      "paused_books": 4,
-      "updated_books": 5,
+      "paused_books": 3,
+      "updated_books": 6,
       "valuation_sessions": {
         "arima_return": "2026-11-04",
         "benchmark_rsp": "2026-11-13",
@@ -90,39 +89,35 @@
         "lgbm_direction": "2026-11-13",
         "lgbm_ranker": "2026-11-04",
         "lgbm_return": "2026-11-13",
-        "lstm_return": "2026-11-12",
+        "lstm_return": "2026-11-13",
         "mlp_return": "2026-11-04"
       },
       "workflow_outcome": "success"
     }
   },
   "coverage": {
-    "frozen_constituents_observed": 485,
-    "missing": 18,
-    "observed": 486,
+    "frozen_constituents_observed": 489,
+    "missing": 14,
+    "observed": 490,
     "requested": 504
   },
-  "effective_sha256": "d3424620267e49c21147c21bcaecae69d7da5a83d20a2c1b1d915dc2d6d70952",
+  "effective_sha256": "848489c23800e69ce1edda437a865d7ad5edfb378fde9bb48e7804a143374b15",
   "engine_health": "not_assessed",
   "expected_session": "2026-11-13",
   "market": "XNYS",
   "missing_symbols": [
     "AVB",
     "BK",
-    "CAT",
     "CTRA",
     "DAY",
-    "DG",
     "EA",
     "EQR",
     "FI",
-    "GL",
     "HOLX",
     "IPG",
     "K",
     "KVUE",
     "MMC",
-    "PKG",
     "WBA",
     "WBD"
   ],
@@ -151,9 +146,10 @@
     "ZBH": "yahoo_regular_range_daily_ocv_v1"
   },
   "revision_hashes": [
-    "d3424620267e49c21147c21bcaecae69d7da5a83d20a2c1b1d915dc2d6d70952"
+    "d3424620267e49c21147c21bcaecae69d7da5a83d20a2c1b1d915dc2d6d70952",
+    "848489c23800e69ce1edda437a865d7ad5edfb378fde9bb48e7804a143374b15"
   ],
-  "run_id": "43528701224",
+  "run_id": "43544170306",
   "schema": "midas.xnys_source_health.v1",
   "sha256": "2d94d527b4391f9eb2d8283a15b5338336cfa55d582e840a79c7cfd338fae813",
   "status": "snapshot_verified",
