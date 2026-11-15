@@ -1,0 +1,488 @@
+{
+  "schema_version": 1,
+  "status": "machine_first_pass",
+  "reviewed_at_utc": "2026-11-15T16:08:22.900056+00:00",
+  "source_identity": "Buy The Dip YouTube channel",
+  "transport": {
+    "kind": "official_podcast_mirror",
+    "provider": "iVoox",
+    "guid": "https://www.ivoox.com/54897458",
+    "published_date": "2020-08-06",
+    "youtube_video_id": "PtPtqCmUDhQ",
+    "match_score": 0.943182,
+    "audio_bytes_processed_transiently": 35221047
+  },
+  "models": {
+    "asr": {
+      "language": "es",
+      "language_probability": 1.0,
+      "duration_seconds": 4402.6253125,
+      "word_count": 12218,
+      "segment_count": 2059,
+      "model": "small"
+    },
+    "semantic": {
+      "repo": "Qwen/Qwen3-4B-GGUF",
+      "file": "Qwen3-4B-Q4_K_M.gguf"
+    }
+  },
+  "metadata": {
+    "video_id": "PtPtqCmUDhQ",
+    "youtube_url": "https://www.youtube.com/watch?v=PtPtqCmUDhQ",
+    "title": "BUY THE DIP PODCAST: EPISODIO 11 NUESTROS FONDOS DE INVERSIÓN FAVORITOS Y \"ODIADOS\"",
+    "category": "company_or_theme",
+    "guest_likely": false,
+    "podcast_guid": "https://www.ivoox.com/54897458",
+    "published_date": "2020-08-06",
+    "source": "official_podcast_mirror",
+    "match_score": 0.943182
+  },
+  "analysis": {
+    "episode_summary": "El episodio analiza estrategias de inversión en fondos de inversión, destacando posiciones en fondos como Numantia Patrimonio y Mérito, que han superado al mercado en rentabilidad. Se enfoca en activos como Samstorm Gold y Brookfield, con un enfoque en infraestructuras y minerales con potencial de crecimiento, destacando la importancia de los Royalty en la valoración. También se menciona una posición en Howard Hughes con un 6% de participación, reflejando una estrategia de inversión basada en la diversificación y el control de activos. El análisis incluye una discusión sobre la cartera de Warren Buffett y Charlie Munger, con posiciones concentradas en empresas con múltiplos exigentes, un enfoque en sectores estables como el gas y la energía nuclear, y una capacidad de gestión de riesgos mediante ajustes rápidos en la cartera. Se menciona errores recientes, como la compra de aerolíneas, pero también refleja un enfoque a largo plazo en empresas de calidad, como Coca-Cola y bancos. Además, se analiza la estrategia de inversión en materias primas, destacando la percepción de que el ciclo de precios está en mínimos históricos, la rentabilidad variable de los fondos en materia prima, la confianza en los gestores de CETA, la percepción de riesgos y errores en la gestión, y la influencia de estímulos monetarios en el precio de las materias primas. Se menciona una empresa rusa con minas de oro y riesgos en la producción de café, y una empresa dominante en el mercado de níquel y paladio con una posición monopolística. El episodio también discute errores en la inversión, como la pérdida del 21% en 2018 y la caída del 99,95% en una empresa de infraestructuras.",
+    "process": {
+      "idea_generation": [],
+      "quality": [],
+      "balance_sheet": [],
+      "valuation": [
+        "La empresa tiene activos con flujos de caja a largo plazo, pero con riesgos de deterioro debido a la competencia y la falta de escalabilidad.",
+        "La cartera de Buffett incluye empresas con múltiplos exigentes, como Craft Hains, y posiciones en sectores como el gas, con un enfoque en tecnologías nucleares modulares y transporte de gas en Estados Unidos.",
+        "La empresa Norilsk Nickel controla el 40% del mercado de níquel y el 40% del mercado de paladio, tiene un monopolio mundial en níquel y paladio, y puede influir en los precios de estos metales."
+      ],
+      "cycle_macro": [],
+      "entry": [
+        "El podcast discute fondos de inversión, destacando posiciones en fondos como Numantia Patrimonio y Mérito, que han superado al mercado en rentabilidad.",
+        "La empresa tiene una posición en Howard Hughes con un 6% de participación, lo que refleja una estrategia de inversión basada en la diversificación y el control de activos.",
+        "Los gestores de Warren Buffett y Charlie Munger tienen una cartera concentrada en empresas como bancos, Coca-Cola y Craft Hains, con posiciones significativas que reflejan su enfoque de inversión."
+      ],
+      "sizing": [
+        "La cartera de Mérito incluye posiciones como Brookfield, Royalty's de oro (Samstorm Gold y Abitibi Royalty), y Golden Valley, con un enfoque en infraestructuras y activos mineros con potencial de crecimiento."
+      ],
+      "add_hold": [],
+      "exit": [
+        "La estrategia de Buffett implica mantener posiciones a largo plazo, como en Coca-Cola, y vender activos que no generan valor, lo que refleja un enfoque de inversión conservador y de calidad."
+      ],
+      "risk": [
+        "La competencia en el sector de Royaltyz está creciendo, lo que podría afectar la rentabilidad y la sostenibilidad de la empresa.",
+        "La cartera incluía empresas como BBVA y Inditex, pero se criticó la falta de diversificación y el alto riesgo asociado a inversiones en sectores específicos."
+      ],
+      "technical": [
+        "El analista menciona que Flow Traders está cotizando a 32, con un potencial de ganancia significativo en periodos de volatilidad, aunque su valor está en descenso debido a la competencia."
+      ],
+      "management": [
+        "La cartera de Buffett incluye empresas como Five Point Holdings y Chalswap, que representan una diversificación en sectores como la energía nuclear y los bancos, con un enfoque en tecnologías emergentes y sectores con potencial de crecimiento."
+      ],
+      "mistakes": [
+        "El error de Buffett en la compra de aerolíneas fue rectificado rápidamente, lo que muestra que su estrategia incluye la capacidad de ajustar posiciones en tiempo real para minimizar pérdidas.",
+        "Se mencionó un error en la estrategia de inversión al invertir en acciones más líquidas, lo que limitó la capacidad de negociar a precios deseados."
+      ]
+    },
+    "candidate_rules": [
+      {
+        "rule": "paráfrasis compacta",
+        "scope": "hosts|uncertain_or_guest",
+        "confidence": 0.0,
+        "evidence_timestamps": [],
+        "automation_proxy": "variable/cálculo posible o null",
+        "cross_video_confirmation_required": true
+      }
+    ],
+    "contradictions_or_uncertainties": [],
+    "named_examples": [
+      "La empresa rusa con minas de oro y riesgos en la producción de café",
+      "La empresa dominante en el mercado de níquel y paladio con una posición monopolística"
+    ],
+    "automation_readiness": "medium"
+  },
+  "chunk_evidence": [
+    {
+      "chunk": 1,
+      "evidence": [
+        {
+          "stage": "entry",
+          "paraphrase": "El podcast discute fondos de inversión, destacando posiciones en fondos como Numantia Patrimonio y Mérito, que han superado al mercado en rentabilidad.",
+          "timestamp": "00:02:56",
+          "scope": "hosts",
+          "confidence": 0.9,
+          "automation_hint": "proxy observable"
+        },
+        {
+          "stage": "valuation",
+          "paraphrase": "El análisis de Samstorm Gold se centra en su Royalty en la mina Hot Madden en Turquía, que tiene potencial para doblar la producción de oro, lo que afecta su valoración.",
+          "timestamp": "00:06:49",
+          "scope": "hosts",
+          "confidence": 0.8,
+          "automation_hint": "proxy observable"
+        },
+        {
+          "stage": "sizing",
+          "paraphrase": "La cartera de Mérito incluye posiciones como Brookfield, Royalty's de oro (Samstorm Gold y Abitibi Royalty), y Golden Valley, con un enfoque en infraestructuras y activos mineros con potencial de crecimiento.",
+          "timestamp": "00:06:15",
+          "scope": "hosts",
+          "confidence": 0.7,
+          "automation_hint": "proxy observable"
+        }
+      ],
+      "named_examples": [],
+      "chunk_summary": "El podcast analiza fondos de inversión, destacando posiciones en fondos como Numantia Patrimonio y Mérito, que han superado al mercado en rentabilidad. Se enfoca en activos como Samstorm Gold y Brookfield, con un enfoque en infraestructuras y minerales con potencial de crecimiento, destacando la importancia de los Royalty en la valoración de estos activos."
+    },
+    {
+      "chunk": 2,
+      "evidence": [
+        {
+          "stage": "valuation",
+          "paraphrase": "La empresa tiene activos con flujos de caja a largo plazo, pero con riesgos de deterioro debido a la competencia y la falta de escalabilidad.",
+          "timestamp": "00:10:12",
+          "scope": "uncertain_or_guest",
+          "confidence": 0.0,
+          "automation_hint": "proxy observable"
+        },
+        {
+          "stage": "risk",
+          "paraphrase": "La competencia en el sector de Royaltyz está creciendo, lo que podría afectar la rentabilidad y la sostenibilidad de la empresa.",
+          "timestamp": "00:11:14",
+          "scope": "hosts",
+          "confidence": 0.0,
+          "automation_hint": "proxy observable"
+        },
+        {
+          "stage": "entry",
+          "paraphrase": "La empresa tiene una posición en Howard Hughes con un 6% de participación, lo que refleja una estrategia de inversión basada en la diversificación y el control de activos.",
+          "timestamp": "00:11:28",
+          "scope": "hosts",
+          "confidence": 0.0,
+          "automation_hint": "proxy observable"
+        }
+      ],
+      "named_examples": [],
+      "chunk_summary": "El análisis destaca la valoración de la empresa en términos de activos a largo plazo, pero menciona riesgos de deterioro debido a la competencia y la falta de escalabilidad. También se menciona una posición en Howard Hughes con un 6% de participación, reflejando una estrategia de inversión basada en la diversificación y el control de activos."
+    },
+    {
+      "chunk": 3,
+      "evidence": [
+        {
+          "stage": "entry",
+          "paraphrase": "Los gestores de Warren Buffett y Charlie Munger tienen una cartera concentrada en empresas como bancos, Coca-Cola y Craft Hains, con posiciones significativas que reflejan su enfoque de inversión.",
+          "timestamp": "00:19:02",
+          "scope": "hosts",
+          "confidence": 0.9,
+          "automation_hint": "proxy observable"
+        },
+        {
+          "stage": "valuation",
+          "paraphrase": "La cartera de Buffett incluye empresas con múltiplos exigentes, como Craft Hains, y posiciones en sectores como el gas, con un enfoque en tecnologías nucleares modulares y transporte de gas en Estados Unidos.",
+          "timestamp": "00:21:00",
+          "scope": "hosts",
+          "confidence": 0.8,
+          "automation_hint": "proxy observable"
+        },
+        {
+          "stage": "risk",
+          "paraphrase": "Buffett ha tenido errores como la compra de aerolíneas, pero ha rectificado rápidamente, lo que refleja su capacidad de gestión de riesgos y ajustes en la cartera.",
+          "timestamp": "00:20:34",
+          "scope": "hosts",
+          "confidence": 0.7,
+          "automation_hint": "proxy observable"
+        },
+        {
+          "stage": "exit",
+          "paraphrase": "La estrategia de Buffett implica mantener posiciones a largo plazo, como en Coca-Cola, y vender activos que no generan valor, lo que refleja un enfoque de inversión conservador y de calidad.",
+          "timestamp": "00:20:00",
+          "scope": "hosts",
+          "confidence": 0.6,
+          "automation_hint": "proxy observable"
+        },
+        {
+          "stage": "mistake",
+          "paraphrase": "El error de Buffett en la compra de aerolíneas fue rectificado rápidamente, lo que muestra que su estrategia incluye la capacidad de ajustar posiciones en tiempo real para minimizar pérdidas.",
+          "timestamp": "00:20:34",
+          "scope": "hosts",
+          "confidence": 0.7,
+          "automation_hint": "proxy observable"
+        },
+        {
+          "stage": "other",
+          "paraphrase": "La cartera de Buffett incluye empresas como Five Point Holdings y Chalswap, que representan una diversificación en sectores como la energía nuclear y los bancos, con un enfoque en tecnologías emergentes y sectores estables.",
+          "timestamp": "00:23:50",
+          "scope": "hosts",
+          "confidence": 0.6,
+          "automation_hint": "proxy observable"
+        }
+      ],
+      "named_examples": [],
+      "chunk_summary": "El análisis de la cartera de Warren Buffett y Charlie Munger muestra una estrategia de inversión basada en posiciones concentradas en empresas con múltiplos exigentes, un enfoque en sectores estables como el gas y la energía nuclear, y una capacidad de gestión de riesgos mediante ajustes rápidos en la cartera. La estrategia incluye errores recientes, como la compra de aerolíneas, pero también refleja un enfoque a largo plazo en empresas de calidad, como Coca-Cola y bancos, con un enfoque en tecnologías emergentes y sectores con potencial de crecimiento."
+    },
+    {
+      "chunk": 4,
+      "evidence": [
+        {
+          "stage": "entry",
+          "paraphrase": "El analista menciona que Akman ha cambiado su enfoque de inversión, priorizando acciones preferentes sobre acciones comunes, con un 80% en preferentes y 20% en comunes.",
+          "timestamp": "00:27:50",
+          "scope": "hosts",
+          "confidence": 0.0
+        },
+        {
+          "stage": "valuation",
+          "paraphrase": "El analista analiza el rendimiento del conjunto de fondos Oak Associates Funds, destacando su capacidad para superar al mercado en diferentes periodos, aunque con variaciones según el año.",
+          "timestamp": "00:28:00",
+          "scope": "hosts",
+          "confidence": 0.0
+        },
+        {
+          "stage": "sizing",
+          "paraphrase": "El analista explica que su cartera personal tiene solo 2 posiciones principales, lo que limita la diversificación y dificulta la selección de fondos atractivos.",
+          "timestamp": "00:31:00",
+          "scope": "hosts",
+          "confidence": 0.0
+        },
+        {
+          "stage": "risk",
+          "paraphrase": "El analista destaca la posibilidad de ganancias en tiempos volátiles, como en el caso de Flow Traders, que se beneficia de la volatilidad de los mercados.",
+          "timestamp": "00:33:00",
+          "scope": "hosts",
+          "confidence": 0.0
+        },
+        {
+          "stage": "technical",
+          "paraphrase": "El analista menciona que Flow Traders está cotizando a 32, con un potencial de ganancia significativo en periodos de volatilidad, aunque su valor está en descenso debido a la competencia.",
+          "timestamp": "00:33:20",
+          "scope": "hosts",
+          "confidence": 0.0
+        },
+        {
+          "stage": "management",
+          "paraphrase": "El analista comenta sobre la dificultad de seleccionar fondos atractivos, especialmente en el contexto de una cartera limitada a solo dos posiciones, lo que complica la diversificación.",
+          "timestamp": "00:31:10",
+          "scope": "hosts",
+          "confidence": 0.0
+        },
+        {
+          "stage": "mistake",
+          "paraphrase": "El analista menciona que en el pasado ha tenido dificultades para seleccionar fondos, lo que refleja una posible error en la estrategia de inversión al no diversificar adecuadamente.",
+          "timestamp": "00:28:20",
+          "scope": "hosts",
+          "confidence": 0.0
+        }
+      ],
+      "named_examples": [],
+      "chunk_summary": "El analista discute la estrategia de inversión de Akman, que prioriza acciones preferentes sobre comunes, analiza el rendimiento de fondos como Oak Associates Funds, explica la limitación de su cartera personal a solo dos posiciones, destaca el potencial de ganancias en tiempos volátiles con fondos como Flow Traders, y menciona la dificultad de seleccionar fondos atractivos debido a la limitación de diversificación."
+    },
+    {
+      "chunk": 5,
+      "evidence": [
+        {
+          "stage": "entry",
+          "paraphrase": "El analista menciona una empresa rusa llamada Salmón Mundi que posee la minera más grande del mundo, Barry, con 6 de las principales minas globales y una producción anual de 5 millones de onzas de oro, con expectativas de reducir costos a 800 dólares por onza.",
+          "timestamp": "00:40:00",
+          "scope": "uncertain_or_guest",
+          "confidence": 0.0,
+          "automation_hint": "proxy observable"
+        },
+        {
+          "stage": "valuation",
+          "paraphrase": "El analista destaca la minera Polyus, propiedad de Salmón Mundi, que tiene 21 años de vida de reservas, extrae oro a 594 dólares por onza, y posee el mayor depósito de oro no desarrollado del mundo, con un CEO notorio por su estilo de vida.",
+          "timestamp": "00:42:00",
+          "scope": "uncertain_or_guest",
+          "confidence": 0.0,
+          "automation_hint": "proxy observable"
+        },
+        {
+          "stage": "risk",
+          "paraphrase": "El analista menciona riesgos en la industria del café, donde la producción en Colombia se ha visto afectada por la transición a la cultivo de cocaína, lo que podría impactar negativamente las operaciones agrícolas de Salmón Mundi.",
+          "timestamp": "00:43:00",
+          "scope": "uncertain_or_guest",
+          "confidence": 0.0,
+          "automation_hint": "proxy observable"
+        }
+      ],
+      "named_examples": [],
+      "chunk_summary": "El analista analiza empresas mineras y energéticas, destacando la minera Salmón Mundi con su participación en Barry y Polyus, la minera de oro Polyus con costos eficientes y un depósito de oro grande, y menciona riesgos en la producción de café debido a la transición a la cultivo de cocaína en América Latina."
+    },
+    {
+      "chunk": 6,
+      "evidence": [
+        {
+          "stage": "valuation",
+          "paraphrase": "La empresa Norilsk Nickel controla el 40% del mercado de níquel y el 40% del mercado de paladio, tiene un monopolio mundial en níquel y paladio, y puede influir en los precios de estos metales.",
+          "timestamp": "00:46:20",
+          "scope": "hosts",
+          "confidence": 0.9,
+          "automation_hint": "proxy observable"
+        },
+        {
+          "stage": "entry",
+          "paraphrase": "La empresa tiene una posición dominante en el mercado de níquel y paladio, con cuotas de mercado superiores al 40%, y puede influir en el precio de estos metales como un monopolio.",
+          "timestamp": "00:46:20",
+          "scope": "hosts",
+          "confidence": 0.8,
+          "automation_hint": "proxy observable"
+        },
+        {
+          "stage": "valuation",
+          "paraphrase": "La empresa tiene una posición dominante en el mercado de níquel y paladio, con cuotas de mercado superiores al 40%, y puede influir en el precio de estos metales como un monopolio.",
+          "timestamp": "00:46:20",
+          "scope": "hosts",
+          "confidence": 0.8,
+          "automation_hint": "proxy observable"
+        },
+        {
+          "stage": "valuation",
+          "paraphrase": "La empresa tiene una posición dominante en el mercado de níquel y paladio, con cuotas de mercado superiores al 40%, y puede influir en el precio de estos metales como un monopolio.",
+          "timestamp": "00:46:20",
+          "scope": "hosts",
+          "confidence": 0.8,
+          "automation_hint": "proxy observable"
+        },
+        {
+          "stage": "valuation",
+          "paraphrase": "La empresa tiene una posición dominante en el mercado de níquel y paladio, con cuotas de mercado superiores al 40%, y puede influir en el precio de estos metales como un monopolio.",
+          "timestamp": "00:46:20",
+          "scope": "hosts",
+          "confidence": 0.8,
+          "automation_hint": "proxy observable"
+        },
+        {
+          "stage": "valuation",
+          "paraphrase": "La empresa tiene una posición dominante en el mercado de níquel y paladio, con cuotas de mercado superiores al 40%, y puede influir en el precio de estos metales como un monopolio.",
+          "timestamp": "00:46:20",
+          "scope": "hosts",
+          "confidence": 0.8,
+          "automation_hint": "proxy observable"
+        },
+        {
+          "stage": "valuation",
+          "paraphrase": "La empresa tiene una posición dominante en el mercado de níquel y paladio, con cuotas de mercado superiores al 40%, y puede influir en el precio de estos metales como un monopolio.",
+          "timestamp": "00:46:20",
+          "scope": "hosts",
+          "confidence": 0.8,
+          "automation_hint": "proxy observable"
+        },
+        {
+          "stage": "valuation",
+          "paraphrase": "La empresa tiene una posición dominante en el mercado de níquel y paladio, con cuotas de mercado superiores al 40%, y puede influir en el precio de estos metales como un monopolio.",
+          "timestamp": "00:46:20",
+          "scope": "hosts",
+          "confidence": 0.8,
+          "automation_hint": "proxy observable"
+        },
+        {
+          "stage": "valuation",
+          "paraphrase": "La empresa tiene una posición dominante en el mercado de níquel y paladio, con cuotas de mercado superiores al 40%, y puede influir en el precio de estos metales como un monopolio.",
+          "timestamp": "00:46:20",
+          "scope": "hosts",
+          "confidence": 0.8,
+          "automation_hint": "proxy observable"
+        },
+        {
+          "stage": "valuation",
+          "paraphrase": "La empresa tiene una posición dominante en el mercado de níquel y paladio, con cuotas de mercado superiores al 40%, y puede influir en el precio de estos metales como un monopolio.",
+          "timestamp": "00:46:20",
+          "scope": "hosts",
+          "confidence": 0.8,
+          "automation_hint": "proxy observable"
+        }
+      ],
+      "named_examples": [],
+      "chunk_summary": "El fragmento describe una empresa con una posición dominante en el mercado de níquel y paladio, con cuotas de mercado superiores al 40%, y puede influir en los precios de estos metales como un monopolio. La empresa tiene una gran influencia en el mercado y puede controlar los precios de estos metales, lo que sugiere una alta valoración y una posibilidad de influencia en el mercado. La empresa también se describe como una empresa muy chunga, con una posibilidad de recomendarla a otros inversores."
+    },
+    {
+      "chunk": 7,
+      "evidence": [
+        {
+          "stage": "valuation",
+          "paraphrase": "El analista menciona que las materias primas, especialmente el petróleo, han sufrido muchísimo, y que la rentabilidad de los fondos en materia prima ha variado entre un 20% en 2016 y un -25% en junio de 2023, con un ciclo de precios en mínimos históricos.",
+          "timestamp": "00:55:20",
+          "scope": "hosts",
+          "confidence": 0.9,
+          "automation_hint": "proxy observable"
+        },
+        {
+          "stage": "entry",
+          "paraphrase": "El analista sugiere que la estrategia de inversión en materias primas está basada en la percepción de que el ciclo de precios está en mínimos históricos y que los fondos de CETA están metiendo más allá de lo que se debería, aunque con un rendimiento negativo en algunos años.",
+          "timestamp": "00:55:20",
+          "scope": "hosts",
+          "confidence": 0.7,
+          "automation_hint": "proxy observable"
+        },
+        {
+          "stage": "risk",
+          "paraphrase": "El analista reconoce que los fondos de CETA tienen una rentabilidad mala, pero confía en los gestores de CETA por su experiencia y juicio, aunque reconoce que también hay errores y que no todos los gestores son igual de confiables.",
+          "timestamp": "00:58:00",
+          "scope": "hosts",
+          "confidence": 0.6,
+          "automation_hint": "proxy observable"
+        },
+        {
+          "stage": "technical",
+          "paraphrase": "El analista menciona que el precio de las materias primas está influenciado por estímulos monetarios y que el ciclo de precios en materia prima está en mínimos históricos, lo que podría afectar el futuro del mercado.",
+          "timestamp": "00:57:40",
+          "scope": "hosts",
+          "confidence": 0.8,
+          "automation_hint": "proxy observable"
+        },
+        {
+          "stage": "management",
+          "paraphrase": "El analista compara a los gestores de CETA con otros fondos, destacando que aunque algunos gestores tienen un tono arrogante, confía más en CETA por su juicio y experiencia, aunque reconoce que no todos los gestores son infalibles.",
+          "timestamp": "00:58:40",
+          "scope": "hosts",
+          "confidence": 0.7,
+          "automation_hint": "proxy observable"
+        },
+        {
+          "stage": "mistake",
+          "paraphrase": "El analista menciona que algunos gestores, como los de Cobas, tienen errores significativos en su gestión, como el caso de un fondo que ha tenido una pérdida del 40% en tres años, lo que muestra la volatilidad y los riesgos en la inversión en materias primas.",
+          "timestamp": "00:58:50",
+          "scope": "hosts",
+          "confidence": 0.6,
+          "automation_hint": "proxy observable"
+        },
+        {
+          "stage": "other",
+          "paraphrase": "El analista menciona que la estrategia de inversión en materias primas está basada en la percepción de que el ciclo de precios está en mínimos históricos y que los fondos de CETA están metiendo más allá de lo que se debería, aunque con un rendimiento negativo en algunos años.",
+          "timestamp": "00:55:20",
+          "scope": "hosts",
+          "confidence": 0.7,
+          "automation_hint": "proxy observable"
+        }
+      ],
+      "named_examples": [],
+      "chunk_summary": "El analista analiza la estrategia de inversión en materias primas, destacando la percepción de que el ciclo de precios está en mínimos históricos, la rentabilidad variable de los fondos en materia prima, la confianza en los gestores de CETA, la percepción de riesgos y errores en la gestión, y la influencia de estímulos monetarios en el precio de las materias primas. Se menciona que los fondos de CETA tienen una rentabilidad mala, pero se confía en su juicio y experiencia, aunque se reconoce que no todos los gestores son infalibles."
+    },
+    {
+      "chunk": 8,
+      "evidence": [
+        {
+          "stage": "entry",
+          "paraphrase": "En 2018, se cerró con una pérdida del 21% en la cartera de inversiones.",
+          "timestamp": "01:04:24",
+          "scope": "hosts",
+          "confidence": 0.0
+        },
+        {
+          "stage": "valuation",
+          "paraphrase": "La empresa Avengoa, que se dedicaba a infraestructuras de energía y agua, experimentó una caída del 99,95% en su valoración entre 2011 y 2018.",
+          "timestamp": "01:10:00",
+          "scope": "hosts",
+          "confidence": 0.0
+        },
+        {
+          "stage": "risk",
+          "paraphrase": "La cartera incluía empresas como BBVA y Inditex, pero se criticó la falta de diversificación y el alto riesgo asociado a inversiones en sectores específicos.",
+          "timestamp": "01:07:14",
+          "scope": "hosts",
+          "confidence": 0.0
+        },
+        {
+          "stage": "mistake",
+          "paraphrase": "Se mencionó un error en la estrategia de inversión al invertir en acciones más líquidas, lo que limitó la capacidad de negociar a precios deseados.",
+          "timestamp": "01:05:04",
+          "scope": "hosts",
+          "confidence": 0.0
+        }
+      ],
+      "named_examples": [],
+      "chunk_summary": "El fragmento describe una experiencia de inversión con pérdida significativa en 2018, mención de una empresa que cayó en valoración, críticas a la cartera de inversiones y un error en la estrategia de inversión."
+    }
+  ],
+  "copyright_note": "No audio or verbatim transcript is persisted; only derived paraphrases."
+}
