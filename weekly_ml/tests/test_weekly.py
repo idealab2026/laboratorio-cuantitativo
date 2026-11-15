@@ -120,6 +120,34 @@ class WeeklyPaperTests(unittest.TestCase):
                     {"asof": "2026-09-25", "models": {"lgbm_return": {}}}, state)
         self.assertEqual(state["strategies"]["lgbm_return"]["trades"], [])
 
+    def test_missed_friday_expires_old_paper_orders_without_historical_pnl(self):
+        config = self.config()
+        first = {"asof": "2026-09-18",
+                 "models": {"lgbm_return": {
+                     "AAA": {"score": 0.02, "predicted_return": 0.02}}}}
+        state, _ = advance(config, {}, first)
+        frozen = json.loads(json.dumps(state))
+        fresh = {"asof": "2026-10-02",
+                 "models": {"lgbm_return": {
+                     "BBB": {"score": 0.03, "predicted_return": 0.03}}}}
+        # No open/close bars available for the missed 21–25 September week.
+        # The later Oct 2 forecast may still be frozen prospectively.
+        after, changed = advance(config, {}, fresh, state)
+        self.assertTrue(changed)
+        self.assertEqual(state, frozen)
+        self.assertEqual(after["last_session"], "2026-10-02")
+        self.assertEqual(len(after["missed_signal_weeks"]), 1)
+        self.assertEqual(after["strategies"]["lgbm_return"]["trades"], [])
+        self.assertEqual(after["strategies"]["lgbm_return"]["nav"], 100000)
+        self.assertEqual(after["strategies"]["lgbm_return"]["pending"][0]["ticker"],
+                         "BBB")
+        old = after["strategies"]["lgbm_return"]["unfilled"]
+        self.assertEqual(old[0]["ticker"], "AAA")
+        self.assertEqual(old[0]["reason"], "missed_weekly_execution_no_retro_fill")
+        self.assertTrue(after["strategies"]["lgbm_return"]["equity"][-1][
+            "inactive_intervening_week_no_fills"])
+        self.assertEqual(after["strategies"]["benchmark_spy"]["trades"], [])
+
     def test_next_week_open_close_and_costs(self):
         panel = {ticker: self.frame(price) for ticker, price in {
             "AAA": 100.0, "SPY": 500.0, "RSP": 180.0}.items()}
