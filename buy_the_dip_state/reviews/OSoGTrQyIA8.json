@@ -1,0 +1,199 @@
+{
+  "schema_version": 1,
+  "status": "machine_first_pass",
+  "reviewed_at_utc": "2026-11-15T03:20:47.133244+00:00",
+  "source_identity": "Buy The Dip YouTube channel",
+  "transport": {
+    "kind": "official_podcast_mirror",
+    "provider": "iVoox",
+    "guid": "https://www.ivoox.com/117486131",
+    "published_date": "2023-10-10",
+    "youtube_video_id": "OSoGTrQyIA8",
+    "match_score": 0.877778,
+    "audio_bytes_processed_transiently": 11288703
+  },
+  "models": {
+    "asr": {
+      "language": "es",
+      "language_probability": 1.0,
+      "duration_seconds": 1411.0301875,
+      "word_count": 3928,
+      "segment_count": 230,
+      "model": "small"
+    },
+    "semantic": {
+      "repo": "Qwen/Qwen3-4B-GGUF",
+      "file": "Qwen3-4B-Q4_K_M.gguf"
+    }
+  },
+  "metadata": {
+    "video_id": "OSoGTrQyIA8",
+    "youtube_url": "https://www.youtube.com/watch?v=OSoGTrQyIA8",
+    "title": "ISRAEL vs PALESTINA y los EFECTOS ECONOMÍCOS | BUY THE DIP PODCAST",
+    "category": "company_or_theme",
+    "guest_likely": false,
+    "podcast_guid": "https://www.ivoox.com/117486131",
+    "published_date": "2023-10-10",
+    "source": "official_podcast_mirror",
+    "match_score": 0.877778
+  },
+  "analysis": {
+    "episode_summary": "El episodio analiza cómo los conflictos en Oriente Medio, especialmente entre Israel, Gaza e Irán, pueden afectar el precio del petróleo y la economía global. Se discuten los efectos de estos conflictos en la distribución y el suministro de crudo, así como su relación con la inflación, la deuda federal y los tipos de interés en Estados Unidos. Se mencionan historias pasadas, como las guerras de Suez, los seis días y Yom Kippur, que influyeron en los precios del petróleo y la inflación. Se alerta sobre riesgos económicos si no se controlan adecuadamente estos factores, destacando la importancia del petróleo en la economía global y la necesidad de una estrategia de inversión cuidadosa.",
+    "process": {
+      "idea_generation": [],
+      "quality": [],
+      "balance_sheet": [],
+      "valuation": [],
+      "cycle_macro": [],
+      "entry": [],
+      "sizing": [],
+      "add_hold": [],
+      "exit": [],
+      "risk": [],
+      "technical": [],
+      "management": [],
+      "mistakes": []
+    },
+    "candidate_rules": [
+      {
+        "rule": "paráfrasis compacta",
+        "scope": "hosts|uncertain_or_guest",
+        "confidence": 0.0,
+        "evidence_timestamps": [],
+        "automation_proxy": "variable/cálculo posible o null",
+        "cross_video_confirmation_required": true
+      }
+    ],
+    "contradictions_or_uncertainties": [],
+    "named_examples": [],
+    "automation_readiness": "low"
+  },
+  "chunk_evidence": [
+    {
+      "chunk": 1,
+      "evidence": [
+        {
+          "stage": "risk",
+          "paraphrase": "El conflicto en Oriente Medio, especialmente entre Israel, Gaza y Irán, puede afectar la distribución y el precio del petróleo debido a la interrupción de rutas de transporte y la volatilidad en el mercado.",
+          "timestamp": "00:02:03",
+          "scope": "hosts",
+          "confidence": 0.8,
+          "automation_hint": "proxy observable"
+        },
+        {
+          "stage": "valuation",
+          "paraphrase": "El precio del petróleo ha experimentado una pequeña subida debido a la volatilidad causada por conflictos en Oriente Medio, aunque no hay un impacto directo en la producción de petróleo en la región.",
+          "timestamp": "00:04:02",
+          "scope": "hosts",
+          "confidence": 0.7,
+          "automation_hint": "proxy observable"
+        },
+        {
+          "stage": "cycle_macro",
+          "paraphrase": "Los conflictos en Oriente Medio, como el actual entre Israel, Gaza y Irán, pueden generar una escalada regional que afecte las exportaciones de petróleo de Irán, aumentando su producción y potencialmente impactando el precio global del crudo.",
+          "timestamp": "00:05:59",
+          "scope": "hosts",
+          "confidence": 0.6,
+          "automation_hint": "proxy observable"
+        }
+      ],
+      "named_examples": [],
+      "chunk_summary": "El fragmento discute cómo los conflictos en Oriente Medio, especialmente entre Israel, Gaza y Irán, pueden afectar la distribución y el precio del petróleo. Se menciona que aunque la región no es productora principal, la interrupción de rutas y la volatilidad generan impactos en el mercado. Además, se analiza cómo las sanciones y las relaciones diplomáticas influyen en las exportaciones de petróleo de Irán, lo que puede afectar el precio global del crudo. El análisis también aborda la relación entre estos conflictos y la política energética de Estados Unidos, especialmente en el contexto de elecciones y control de precios."
+    },
+    {
+      "chunk": 2,
+      "evidence": [
+        {
+          "stage": "cycle_macro",
+          "paraphrase": "La guerra de Suez de 1956 causó una crisis en el estrecho de Suez, lo que provocó un aumento temporal en los precios del petróleo debido a la preocupación por interrupciones en el suministro.",
+          "timestamp": "00:11:16",
+          "scope": "hosts",
+          "confidence": 0.8
+        },
+        {
+          "stage": "cycle_macro",
+          "paraphrase": "La guerra de los seis días en 1967 no provocó un aumento significativo en los precios del petróleo, aunque hubo volatilidad durante el conflicto.",
+          "timestamp": "00:11:46",
+          "scope": "hosts",
+          "confidence": 0.7
+        },
+        {
+          "stage": "cycle_macro",
+          "paraphrase": "La guerra de Yom Kippur de 1973 provocó un impacto significativo en los precios del petróleo debido a un embargo saudí y la crisis del petróleo de 1973.",
+          "timestamp": "00:12:03",
+          "scope": "hosts",
+          "confidence": 0.9
+        },
+        {
+          "stage": "cycle_macro",
+          "paraphrase": "La crisis del petróleo de 1973 elevó los precios del petróleo significativamente, relacionada con la inflación y la economía global.",
+          "timestamp": "00:12:19",
+          "scope": "hosts",
+          "confidence": 0.8
+        },
+        {
+          "stage": "cycle_macro",
+          "paraphrase": "La subida de los precios del petróleo en 2006 no fue directamente causada por el conflicto, sino por factores económicos globales y una burbuja económica.",
+          "timestamp": "00:12:38",
+          "scope": "hosts",
+          "confidence": 0.7
+        },
+        {
+          "stage": "cycle_macro",
+          "paraphrase": "La corrección del precio del petróleo en 2006 fue significativa, reflejando una reducción en los precios a pesar de la situación económica global.",
+          "timestamp": "00:14:04",
+          "scope": "hosts",
+          "confidence": 0.6
+        },
+        {
+          "stage": "cycle_macro",
+          "paraphrase": "El precio del petróleo sigue subiendo, lo que podría generar una nueva onda de inflación, relacionada con la economía global y la inflación subyacente.",
+          "timestamp": "00:17:11",
+          "scope": "hosts",
+          "confidence": 0.7
+        },
+        {
+          "stage": "cycle_macro",
+          "paraphrase": "Los tipos de interés en Estados Unidos están en niveles preocupantes, con una deuda federal en aumento y una inflación subyacente que no se está controlando adecuadamente.",
+          "timestamp": "00:18:39",
+          "scope": "hosts",
+          "confidence": 0.6
+        }
+      ],
+      "named_examples": [],
+      "chunk_summary": "El fragmento describe cómo los conflictos geopolíticos, como las guerras de Suez, los seis días y Yom Kippur, han influido en los precios del petróleo y la inflación. También menciona la relación entre los tipos de interés, la deuda federal y la inflación subyacente, destacando la importancia del petróleo en la economía global y los desafíos actuales de controlar la inflación y la deuda."
+    },
+    {
+      "chunk": 3,
+      "evidence": [
+        {
+          "stage": "risk",
+          "paraphrase": "El aumento de la inflación podría llevar a una crisis económica y deflación si no se controlan los tipos de interés y la deuda.",
+          "timestamp": "00:21:33",
+          "scope": "hosts",
+          "confidence": 0.8,
+          "automation_hint": "proxy observable"
+        },
+        {
+          "stage": "risk",
+          "paraphrase": "La deuda no se puede refinanciar a tipos más bajos debido a la inflación, lo que genera un problema fiscal.",
+          "timestamp": "00:21:40",
+          "scope": "hosts",
+          "confidence": 0.7,
+          "automation_hint": "proxy observable"
+        },
+        {
+          "stage": "risk",
+          "paraphrase": "El precio del petróleo y otros factores pueden amplificar problemas económicos y generar una crisis si no se gestionan adecuadamente.",
+          "timestamp": "00:22:19",
+          "scope": "hosts",
+          "confidence": 0.6,
+          "automation_hint": "proxy observable"
+        }
+      ],
+      "named_examples": [],
+      "chunk_summary": "El fragmento aborda riesgos económicos relacionados con la inflación, la deuda y la posible crisis si no se gestionan adecuadamente. Se mencionan problemas fiscales, la dificultad para refinanciar deuda a tipos más bajos, y la posibilidad de deflación o crisis si los tipos de interés suben abruptamente. También se alerta sobre la influencia del precio del petróleo en estos escenarios, destacando la necesidad de considerar estos factores en la estrategia de inversión."
+    }
+  ],
+  "copyright_note": "No audio or verbatim transcript is persisted; only derived paraphrases."
+}
