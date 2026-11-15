@@ -32,7 +32,7 @@ jobs:
     timeout-minutes: 30
     env:
       PYTHONPATH: .
-      XDG_CACHE_HOME: \${{ runner.temp }}/midas-timesfm-recovery-\${{ github.run_id }}
+      XDG_CACHE_HOME: ${{ runner.temp }}/midas-timesfm-recovery-${{ github.run_id }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
