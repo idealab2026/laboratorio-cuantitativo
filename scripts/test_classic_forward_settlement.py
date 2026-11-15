@@ -148,6 +148,40 @@ class NativeClassicClockTests(unittest.TestCase):
         output2, _ = self.run_clock(quotes=quote)
         self.assertEqual(output2, {})
 
+    def test_expired_inactive_recovery_boundary_allows_real_next_open_only(self):
+        slot, name = "IL-011", SLOTS["IL-011"]
+        old = self.book["books"][name]
+        old["outage_control"] = {
+            "first_trading_session": "2026-11-05",
+            "registered_at_utc": "2026-11-04T18:03:08+00:00",
+        }
+        self.original = copy.deepcopy(self.book)
+        changed, result = self.run_clock()
+        self.assertEqual(result[slot]["status"], "settled_native_paper")
+        self.assertEqual(result[slot]["fills"], 1)
+        self.assertEqual(len(changed[LEDGER]["books"][name]["positions"]), 1)
+        self.assertEqual(changed[LEDGER]["books"][name]["outage_control"],
+                         old["outage_control"])
+        self.assertEqual(old["pending"]["AAPL"]["signal_date"], "2026-11-09")
+
+    def test_active_outage_and_unsettled_receivable_still_fail_closed(self):
+        slot, name = "IL-011", SLOTS["IL-011"]
+        old = self.book["books"][name]
+        for boundary in ["2026-11-12", "not-a-date"]:
+            old["outage_control"] = {"first_trading_session": boundary}
+            self.original = copy.deepcopy(self.book)
+            changed, result = self.run_clock()
+            self.assertEqual(result[slot]["status"], "inactive_recovery_not_yet_released")
+            self.assertEqual(result[slot]["fills"], 0)
+            self.assertEqual(changed[LEDGER]["books"][name]["pending"], old["pending"])
+        old["outage_control"] = {"first_trading_session": "2026-11-05"}
+        old["receivables"] = {"CORP_ACTION": {"status": "unsettled"}}
+        self.original = copy.deepcopy(self.book)
+        changed, result = self.run_clock()
+        self.assertEqual(result[slot]["status"], "corporate_action_review_required")
+        self.assertEqual(result[slot]["fills"], 0)
+        self.assertEqual(changed[LEDGER]["books"][name]["pending"], old["pending"])
+
     def test_nightly_marks_only_no_retroactive_entry_or_stop(self):
         marks = {"AAPL": {"open": 100.0, "high": 150.0, "low": 75.0,
                           "close": 101.0, "dividend": 0.0, "split": 0.0}}
