@@ -177,17 +177,32 @@ def advance(config, panel, forecast, state=None):
 
     result = copy.deepcopy(state)
     previous_session = state["last_session"]
+    from datetime import date
+    elapsed = (date.fromisoformat(asof) - date.fromisoformat(previous_session)).days
+    gap = elapsed > 10
     for name, book in result["strategies"].items():
-        _settle(book, panel, asof, book["pending"], policy, benchmark=name in BENCHMARKS)
+        if gap:
+            # These weekly portfolios hold only frozen *instructions* between
+            # completed weeks; no historical position or commission is booked
+            # until _settle. An omitted Friday means the prior open/close was
+            # never observed by this engine. Expire it without P&L and use the
+            # old all-cash NAV for the next genuinely prospective signal.
+            book.setdefault("unfilled", []).extend({
+                **order,
+                "reason": "missed_weekly_execution_no_retro_fill",
+                "expired_at_signal": asof,
+            } for order in book["pending"])
+        else:
+            _settle(book, panel, asof, book["pending"], policy,
+                    benchmark=name in BENCHMARKS)
         predictions = forecast["models"].get(name, {})
         book["pending"] = _select(name, predictions, policy, asof)
         book["equity"].append({"date": asof, "nav": float(book["nav"]),
-                               "decision_recorded": True})
+                               "decision_recorded": True,
+                               "inactive_intervening_week_no_fills": gap})
 
-    # If more than one calendar week elapsed, do not manufacture signals for missing weeks.
-    from datetime import date
-    elapsed = (date.fromisoformat(asof) - date.fromisoformat(previous_session)).days
-    if elapsed > 10:
+    # A missing weekly runtime is never repaired with hindsight OHLC trades.
+    if gap:
         result["missed_signal_weeks"].append({
             "after": previous_session, "before": asof,
             "note": "No se crean señales retroactivas para semanas omitidas.",
