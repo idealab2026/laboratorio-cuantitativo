@@ -75,9 +75,22 @@ def settle_classic(lock, now, market, quotes, *, reader=read, frozen=_source_at)
         if book["equity"][-1]["date"] != market["previous"] or book.get("paused_missing_quotes"):
             evidence[slot] = {"status": "paused_or_stale_book", "fills": 0}
             continue
-        if book.get("receivables") or book.get("outage_control"):
-            # Corporate action claims cannot be silently repriced as ordinary orders.
-            evidence[slot] = {"status": "corporate_action_review_required", "fills": 0}
+        outage = book.get("outage_control")
+        first_future = outage.get("first_trading_session") if isinstance(outage, dict) else None
+        # A completed inactive recovery remains an audit trail, NOT a permanent
+        # trading ban. The published future-session boundary is already an
+        # explicit release rule in classic_sp500.run._settle_book.
+        # Missing/malformed boundaries and actual unsettled claims still block.
+        release_known = (isinstance(first_future, str) and len(first_future) == 10
+                         and first_future[4] == "-" and first_future[7] == "-"
+                         and all(ch.isdigit() for i, ch in enumerate(first_future)
+                                 if i not in (4, 7)))
+        unresolved_outage = bool(outage) and (
+            not release_known or market["session"] < first_future)
+        if book.get("receivables") or unresolved_outage:
+            evidence[slot] = {"status": "corporate_action_review_required"
+                             if book.get("receivables") else "inactive_recovery_not_yet_released",
+                             "fills": 0}
             continue
         markers = book.get("forward_executions", {}).copy()
         if not markers and not _source_unchanged(original, book):
