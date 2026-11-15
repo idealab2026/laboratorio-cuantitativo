@@ -69,6 +69,12 @@ REPOSITORY |= {
     for p in (ROOT/"buy_the_dip_state/reviews").glob("*.json")
     if p.is_file() and re.fullmatch(r"[A-Za-z0-9_-]{11}\.json", p.name)
 }
+# Audited operational code, not web-release assets. Only these exact recovery
+# files may be present; dynamic globs remain prohibited.
+REPOSITORY |= {
+    "timesfm_strategy/inactive_recovery.py",
+    "timesfm_strategy/tests/test_inactive_recovery.py",
+}
 issues = []
 try:
     private_terms = configured_terms()

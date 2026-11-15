@@ -1,6 +1,12 @@
 name: MIDAS TimesFM EUR daily paper
 
 on:
+  # One reviewed change to this workflow triggers exactly one bounded recovery.
+  # Later ledger publication does not touch this path and cannot retrigger.
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/timesfm_daily.yml'
   workflow_call:
     inputs:
       common_capture:
@@ -43,12 +49,19 @@ jobs:
           python -m unittest discover -s timesfm_strategy/tests -v
           python -m unittest discover -s strategy_comparison/tests -v
           python timesfm_strategy/run.py --phase check
+      - name: Recover inactive TimesFM EUR marks on audited one-shot push
+        if: github.event_name == 'push'
+        run: python timesfm_strategy/inactive_recovery.py --phase recover
+      - name: Publish two reconciled campaign ledgers only after complete recovery
+        if: success() && github.event_name == 'push'
+        run: |
+          python strategy_comparison/publish_state.py             --message "TimesFM exact inactive NAV recovery without retro fills"             --path timesfm_state             --path timesfm_daily_state
       - name: Require the published common XNYS source before accounting
-        if: github.event_name != 'pull_request'
+        if: github.event_name != 'pull_request' && github.event_name != 'push'
         run: python market_data/health.py --eligible
       - name: Record latest closed daily XNYS session
         id: execute
-        if: github.event_name != 'pull_request'
+        if: github.event_name != 'pull_request' && github.event_name != 'push'
         run: python timesfm_strategy/run.py --phase daily
       - name: Persist scheduled execution health
         if: always() && github.event_name == 'schedule' && !inputs.common_capture
@@ -62,7 +75,7 @@ jobs:
             --run-number "$GITHUB_RUN_NUMBER" \
             --head-sha "$GITHUB_SHA"
       - name: Publish only TimesFM state
-        if: always() && github.event_name != 'pull_request'
+        if: always() && github.event_name != 'pull_request' && github.event_name != 'push'
         run: |
           python strategy_comparison/publish_state.py \
             --message "Record MIDAS TimesFM EUR daily paper state" \
