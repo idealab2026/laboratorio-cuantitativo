@@ -38,12 +38,13 @@ jobs:
       - name: Verify chronology, accounting and dashboard integration
         run: |
           python -m py_compile weekly_ml/*.py strategy_comparison/report.py
+          PYTHONPATH=. python -c "from weekly_ml.data import execution_window; from weekly_ml.paper import advance; print('weekly_ml package import ready')"
           python -m unittest discover -s weekly_ml/tests -v
           python -m unittest discover -s strategy_comparison/tests -v
       - name: Record weekly ML forecasts and paper portfolios
         id: execute
         if: ${{ !inputs.preflight_only }}
-        run: python weekly_ml/run.py --output weekly_ml_state
+        run: PYTHONPATH=. python weekly_ml/run.py --output weekly_ml_state
       - name: Freeze next Weekly ML signal for daily paper accounting
         if: ${{ steps.execute.outcome == 'success' && !inputs.preflight_only }}
         run: python weekly_ml/daily.py --phase signal
