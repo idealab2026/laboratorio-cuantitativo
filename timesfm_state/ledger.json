@@ -82,6 +82,18 @@
         {
           "date": "2026-11-12",
           "nav": 99975.73464699417
+        },
+        {
+          "date": "2026-11-13",
+          "eurusd_daily_close": 1.1050212383270264,
+          "inactive_no_new_fills": true,
+          "missing_exits_remain_open": true,
+          "nav": 99699.33749887184,
+          "quote_identity": {
+            "effective_sha256": "848489c23800e69ce1edda437a865d7ad5edfb378fde9bb48e7804a143374b15",
+            "snapshot_sha256": "2d94d527b4391f9eb2d8283a15b5338336cfa55d582e840a79c7cfd338fae813"
+          },
+          "recorded_at_utc": "2026-11-15T23:17:22.843526+00:00"
         }
       ],
       "events": [
@@ -92,9 +104,17 @@
           "price_eur": 684.5654541151421,
           "shares": 116.745709,
           "ticker": "SPY"
+        },
+        {
+          "date": "2026-11-13",
+          "held_tickers": [
+            "SPY"
+          ],
+          "recorded_at_utc": "2026-11-15T23:17:22.843526+00:00",
+          "type": "inactive_mark_only_no_execution"
         }
       ],
-      "nav": 99975.73464699417,
+      "nav": 99699.33749887184,
       "pending": [],
       "positions": {
         "SPY": {
@@ -191,6 +211,18 @@
         {
           "date": "2026-11-12",
           "nav": 104139.16320541562
+        },
+        {
+          "date": "2026-11-13",
+          "eurusd_daily_close": 1.1050212383270264,
+          "inactive_no_new_fills": true,
+          "missing_exits_remain_open": true,
+          "nav": 104638.51296959964,
+          "quote_identity": {
+            "effective_sha256": "848489c23800e69ce1edda437a865d7ad5edfb378fde9bb48e7804a143374b15",
+            "snapshot_sha256": "2d94d527b4391f9eb2d8283a15b5338336cfa55d582e840a79c7cfd338fae813"
+          },
+          "recorded_at_utc": "2026-11-15T23:17:22.843526+00:00"
         }
       ],
       "events": [
@@ -594,9 +626,24 @@
           "price_eur": 53.32965618003795,
           "shares": 193.164796,
           "ticker": "EIX"
+        },
+        {
+          "date": "2026-11-13",
+          "held_tickers": [
+            "AXON",
+            "EIX",
+            "JCI",
+            "NWS",
+            "PCG",
+            "RMD",
+            "SMCI",
+            "TRMB"
+          ],
+          "recorded_at_utc": "2026-11-15T23:17:22.843526+00:00",
+          "type": "inactive_mark_only_no_execution"
         }
       ],
-      "nav": 104139.16320541562,
+      "nav": 104638.51296959964,
       "pending": [],
       "positions": {
         "AXON": {
@@ -1012,13 +1059,31 @@
     {
       "date": "2026-11-12",
       "nav": 104139.16320541562
+    },
+    {
+      "date": "2026-11-13",
+      "inactive_no_new_fills": true,
+      "nav": 104638.51296959964
     }
   ],
   "first_session": "2026-10-16",
   "fx_method": "previous_XNYS_session_EURUSD_close_at_open; current_EURUSD_close_at_mark",
   "initial_capital": 100000.0,
-  "last_session": "2026-11-12",
+  "last_session": "2026-11-13",
   "last_signal_session": "2026-11-06",
+  "missed_weekly_signal_sessions": [
+    "2026-11-13"
+  ],
+  "outage_control": {
+    "first_future_trading_session": "2026-11-16",
+    "held_exits_require_future_observed_quote": true,
+    "historical_fills_created": 0,
+    "kind": "missed_forward_session_mark_only",
+    "missing_sessions": [
+      "2026-11-13"
+    ],
+    "recorded_at_utc": "2026-11-15T23:17:22.843526+00:00"
+  },
   "schema_version": 1,
   "signals": [
     {

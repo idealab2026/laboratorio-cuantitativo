@@ -94,6 +94,30 @@
         {
           "date": "2026-11-11",
           "nav": 98824.1083998451
+        },
+        {
+          "date": "2026-11-12",
+          "eurusd_daily_close": 1.1095207929611206,
+          "inactive_no_new_fills": true,
+          "missing_exits_remain_open": true,
+          "nav": 98570.32590845416,
+          "quote_identity": {
+            "effective_sha256": "e6767240da15a78a1a33e8251fae3f19000ce13514d771b5fd03fd01417d4831",
+            "snapshot_sha256": "b45ed70051d99b91cd2faafefe1ea49ff5db12d7615299c4250b24acbaad13cd"
+          },
+          "recorded_at_utc": "2026-11-15T23:17:22.843526+00:00"
+        },
+        {
+          "date": "2026-11-13",
+          "eurusd_daily_close": 1.1050212383270264,
+          "inactive_no_new_fills": true,
+          "missing_exits_remain_open": true,
+          "nav": 98603.71372249738,
+          "quote_identity": {
+            "effective_sha256": "848489c23800e69ce1edda437a865d7ad5edfb378fde9bb48e7804a143374b15",
+            "snapshot_sha256": "2d94d527b4391f9eb2d8283a15b5338336cfa55d582e840a79c7cfd338fae813"
+          },
+          "recorded_at_utc": "2026-11-15T23:17:22.843526+00:00"
         }
       ],
       "events": [
@@ -103,9 +127,25 @@
           "shares": 115.140811,
           "ticker": "SPY",
           "type": "buy"
+        },
+        {
+          "date": "2026-11-12",
+          "held_tickers": [
+            "SPY"
+          ],
+          "recorded_at_utc": "2026-11-15T23:17:22.843526+00:00",
+          "type": "inactive_mark_only_no_execution"
+        },
+        {
+          "date": "2026-11-13",
+          "held_tickers": [
+            "SPY"
+          ],
+          "recorded_at_utc": "2026-11-15T23:17:22.843526+00:00",
+          "type": "inactive_mark_only_no_execution"
         }
       ],
-      "nav": 98824.1083998451,
+      "nav": 98603.71372249738,
       "pending": [],
       "positions": {
         "SPY": {
@@ -214,6 +254,30 @@
         {
           "date": "2026-11-11",
           "nav": 99791.456301083
+        },
+        {
+          "date": "2026-11-12",
+          "eurusd_daily_close": 1.1095207929611206,
+          "inactive_no_new_fills": true,
+          "missing_exits_remain_open": true,
+          "nav": 99785.84008383677,
+          "quote_identity": {
+            "effective_sha256": "e6767240da15a78a1a33e8251fae3f19000ce13514d771b5fd03fd01417d4831",
+            "snapshot_sha256": "b45ed70051d99b91cd2faafefe1ea49ff5db12d7615299c4250b24acbaad13cd"
+          },
+          "recorded_at_utc": "2026-11-15T23:17:22.843526+00:00"
+        },
+        {
+          "date": "2026-11-13",
+          "eurusd_daily_close": 1.1050212383270264,
+          "inactive_no_new_fills": true,
+          "missing_exits_remain_open": true,
+          "nav": 99855.49222075692,
+          "quote_identity": {
+            "effective_sha256": "848489c23800e69ce1edda437a865d7ad5edfb378fde9bb48e7804a143374b15",
+            "snapshot_sha256": "2d94d527b4391f9eb2d8283a15b5338336cfa55d582e840a79c7cfd338fae813"
+          },
+          "recorded_at_utc": "2026-11-15T23:17:22.843526+00:00"
         }
       ],
       "events": [
@@ -846,9 +910,25 @@
           "source_commit": "372d05ea67a8acc97c47dcffad82348161f91268",
           "ticker": "MSI",
           "type": "buy"
+        },
+        {
+          "date": "2026-11-12",
+          "held_tickers": [
+            "MSI"
+          ],
+          "recorded_at_utc": "2026-11-15T23:17:22.843526+00:00",
+          "type": "inactive_mark_only_no_execution"
+        },
+        {
+          "date": "2026-11-13",
+          "held_tickers": [
+            "MSI"
+          ],
+          "recorded_at_utc": "2026-11-15T23:17:22.843526+00:00",
+          "type": "inactive_mark_only_no_execution"
         }
       ],
-      "nav": 99791.456301083,
+      "nav": 99855.49222075692,
       "pending": [],
       "positions": {
         "MSI": {
@@ -1460,6 +1540,16 @@
     {
       "date": "2026-11-11",
       "nav": 99791.456301083
+    },
+    {
+      "date": "2026-11-12",
+      "inactive_no_new_fills": true,
+      "nav": 99785.84008383677
+    },
+    {
+      "date": "2026-11-13",
+      "inactive_no_new_fills": true,
+      "nav": 99855.49222075692
     }
   ],
   "first_session": "2026-10-12",
@@ -1482,9 +1572,23 @@
   },
   "fx_method": "previous_XNYS_session_EURUSD_close_at_open; current_EURUSD_close_at_mark",
   "initial_capital": 100000.0,
-  "last_session": "2026-11-11",
+  "last_session": "2026-11-13",
   "last_signal_session": "2026-11-11",
-  "missing_signals": [],
+  "missing_signals": [
+    "2026-11-12",
+    "2026-11-13"
+  ],
+  "outage_control": {
+    "first_future_trading_session": "2026-11-16",
+    "held_exits_require_future_observed_quote": true,
+    "historical_fills_created": 0,
+    "kind": "missed_forward_session_mark_only",
+    "missing_sessions": [
+      "2026-11-12",
+      "2026-11-13"
+    ],
+    "recorded_at_utc": "2026-11-15T23:17:22.843526+00:00"
+  },
   "schema_version": 1,
   "signal_history": [
     {
