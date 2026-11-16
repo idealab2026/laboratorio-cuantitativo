@@ -247,6 +247,10 @@ def process_day(config, state, day, prices, *, previous_session, week_end,
         if last >= day:
             continue
         book = result["strategies"][name]
+        # An unobserved weekly exit needs a separately verified forward sale.
+        # Never silently release it on the next day's valid closing mark.
+        if book.get("paused_missing_quotes", {}).get("reason") == "unobserved_weekly_exit":
+            continue
         signal_day = book.get("last_signal_session", state["last_signal_session"])
         required = set(book["positions"]) if inactive or day >= FORWARD_CUTOVER_SESSION else _book_symbols(book)
         missing = required - prices.keys()
@@ -280,7 +284,16 @@ def process_day(config, state, day, prices, *, previous_session, week_end,
             from strategy_comparison.inactive_recovery import weekly_mark
             weekly_mark(book, day, prices, stamp=stamp, identity=quote_identity)
         else:
-            _advance_book(name, book, day, prices, policy, week_end=week_end)
+            # After forward cutover a daily closing bar is a valuation, not
+            # evidence that a sale was observed and executed before the close.
+            requires_observed_exit = week_end and day >= FORWARD_CUTOVER_SESSION and bool(book["positions"])
+            _advance_book(name, book, day, prices, policy,
+                          week_end=week_end and day < FORWARD_CUTOVER_SESSION)
+            if requires_observed_exit:
+                _pause_book(book, day, (), "unobserved_weekly_exit")
+                book["events"].append({"date": day, "type": "weekly_exit_unobserved",
+                                       "tickers": sorted(book["positions"])})
+                continue
         pause = book.pop("paused_missing_quotes", None)
         if pause and pause["date"] == day:
             book["equity"][-1].update(late_recorded_verified_date=True, recorded_at_utc=stamp,
