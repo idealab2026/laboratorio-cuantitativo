@@ -13,7 +13,7 @@ sys.path.insert(0, str(ROOT / "AGENTE/genetic_invest_agent"))
 
 from operational_clock import clock_plan, budgeted_quote_targets
 from build_opening_plan import plan_track
-from forward_genetic_settlement import LEDGER, settle_genetic
+from forward_genetic_settlement import LEDGER, settle_genetic, summarize_session_fills
 import forward_portfolio as original
 
 UTC = timezone.utc
@@ -156,6 +156,43 @@ class NativeGeneticProspectiveTests(unittest.TestCase):
         self.assertTrue(any(e["type"]=="missed_forward_open" for e in result["outage_events"]))
         self.assertTrue(any(e["type"]=="unexecuted_intraday_level"
                             for e in result["outage_events"]))
+
+    def test_multiple_intraday_native_markers_reconcile_all_session_fills(self):
+        # First poll: one next-open paper buy. Later independent polls:
+        # two separate stop sells, each with its own idempotency marker.
+        bought, _ = self.settle()
+        self.state = copy.deepcopy(bought[LEDGER])
+        at_stop = self.market["open"] + timedelta(minutes=31)
+        sold, _ = self.settle(quotes=self.quote_rows({"MSFT": 94.}, at_stop),
+                              now=at_stop)
+        self.state = copy.deepcopy(sold[LEDGER])
+        at_later_stop = at_stop + timedelta(minutes=15)
+        sold_again, _ = self.settle(
+            quotes=self.quote_rows({"AAPL": 100.}, at_later_stop), now=at_later_stop)
+        state = sold_again[LEDGER]
+        summary = summarize_session_fills(state, self.day, self.lock["lock_sha256"])
+        self.assertEqual(summary["fills_count"], 3)
+        self.assertEqual(len(summary["native_markers"]), 3)
+        self.assertEqual(
+            [(x["ticker"], x["side"]) for x in summary["fills"]],
+            [("AAPL", "buy"), ("MSFT", "sell"), ("AAPL", "sell")])
+        self.assertEqual(
+            sum(x["fills_count"] for x in summary["native_markers"]), 3)
+        self.assertEqual(state["trades"], sold_again[LEDGER]["trades"])
+
+        # Re-reading the same canonical ledger is idempotent and does not
+        # count the last poll's one fill as the entire trading session.
+        self.assertEqual(summarize_session_fills(
+            state, self.day, self.lock["lock_sha256"]), summary)
+        corrupted = copy.deepcopy(state)
+        last = summary["native_markers"][-1]["key"]
+        corrupted["forward_executions"][last]["fills_count"] = 2
+        with self.assertRaisesRegex(ValueError, "disagree"):
+            summarize_session_fills(corrupted, self.day, self.lock["lock_sha256"])
+        corrupted = copy.deepcopy(state)
+        corrupted["trades"].append(copy.deepcopy(corrupted["trades"][-1]))
+        with self.assertRaisesRegex(ValueError, "duplicate"):
+            summarize_session_fills(corrupted, self.day, self.lock["lock_sha256"])
 
     def test_entry_day_corporate_action_requires_review(self):
         bought,_=self.settle()
