@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "generated_at_utc": "2026-11-16T12:49:22.312575+00:00",
+  "generated_at_utc": "2026-11-16T14:34:04.643059+00:00",
   "principle": "Comparar rentabilidad acumulada y riesgo observado; no ordenar carteras con distintas fechas de inicio o supuestos de ejecución.",
   "counts": {
     "paper_with_diary": 18,
@@ -949,20 +949,18 @@
       "note": "Nueva campaña S&P500 503 símbolos; las carteras originales de 8 títulos se conservan históricas y no transfieren NAV ni operaciones. Reconciliación registrada con retraso sobre órdenes previamente fijadas y OHLC común exacto; no acredita una ejecución puntual.",
       "evaluated_universe_symbols": 488,
       "eligible_universe_symbols": 503,
-      "activity_state": "active_pending",
-      "activity_label": "7 posiciones · 1 orden paper para próxima apertura · Inactividad sin operaciones: 2026-11-03, 2026-11-04 · Reanudación desde apertura: 2026-11-05 · Cálculo tardío: 2026-11-04",
+      "activity_state": "active",
+      "activity_label": "6 posiciones abiertas · Inactividad sin operaciones: 2026-11-03, 2026-11-04 · Reanudación desde apertura: 2026-11-05 · Cálculo tardío: 2026-11-04",
       "activity_tickers": [
         "BF-B",
         "BLDR",
         "CNP",
         "DOC",
-        "FSLR",
         "RSG",
-        "YUM",
-        "ANET"
+        "YUM"
       ],
-      "open_positions_count": 7,
-      "pending_orders_count": 1,
+      "open_positions_count": 6,
+      "pending_orders_count": 0,
       "inactive_sessions": [
         "2026-11-03",
         "2026-11-04"
@@ -1785,8 +1783,8 @@
       "note": "Nueva campaña S&P500 503 símbolos; las carteras originales de 8 títulos se conservan históricas y no transfieren NAV ni operaciones.",
       "evaluated_universe_symbols": 488,
       "eligible_universe_symbols": 503,
-      "activity_state": "active_pending",
-      "activity_label": "7 posiciones · 1 orden paper para próxima apertura",
+      "activity_state": "active",
+      "activity_label": "7 posiciones abiertas",
       "activity_tickers": [
         "ABBV",
         "ACN",
@@ -1794,11 +1792,10 @@
         "MCK",
         "MRNA",
         "MTD",
-        "ULTA",
-        "EW"
+        "ULTA"
       ],
       "open_positions_count": 7,
-      "pending_orders_count": 1,
+      "pending_orders_count": 0,
       "comparison_eligible": true,
       "comparison_universe_id": "SP500_2026-09-29_503",
       "comparison_universe_symbols": 503,
@@ -3921,25 +3918,25 @@
           "nav": 97448.72793057082
         }
       ],
-      "note": "Arquitectura TFG 2021 portada con riesgo/beta sobre retornos y ejecución prospectiva next-open.",
-      "activity_state": "pending",
-      "activity_label": "15 compras para próxima apertura",
+      "note": "TFG/AHP USD: posiciones paper observadas a la apertura; NAV solo desde cierres exactos verificados; stop semanal ejecutable en próxima apertura.",
+      "activity_state": "active",
+      "activity_label": "15 posiciones abiertas",
       "activity_tickers": [
-        "VLTO",
-        "COST",
-        "EVRG",
-        "LIN",
-        "ATO",
         "AEE",
+        "ATO",
+        "CHD",
+        "COST",
+        "DUK",
+        "EVRG",
+        "HLT",
+        "KIM",
+        "LIN",
         "MAR",
         "NI",
-        "CHD",
-        "SPG",
-        "XEL",
-        "KIM"
+        "SPG"
       ],
-      "open_positions_count": 0,
-      "pending_orders_count": 15,
+      "open_positions_count": 15,
+      "pending_orders_count": 0,
       "comparison_eligible": true,
       "comparison_universe_id": "SP500_2026-09-29_503",
       "comparison_universe_symbols": 503,

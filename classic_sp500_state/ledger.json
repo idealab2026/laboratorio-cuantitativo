@@ -9520,7 +9520,7 @@
       "trades": []
     },
     "ema_rsi_fixed": {
-      "cash": 7818.389355151279,
+      "cash": 20905.73078414683,
       "equity": [
         {
           "date": "2026-10-12",
@@ -9886,19 +9886,55 @@
             "PH"
           ],
           "type": "missed_forward_open"
+        },
+        {
+          "date": "2026-11-16",
+          "ticker": "ANET",
+          "type": "unfilled"
+        },
+        {
+          "date": "2026-11-16",
+          "execution": "forward_observed_paper",
+          "idempotency_key": "IL-011:2026-11-16:stop:FSLR:classic_forward_v1:FSLR",
+          "lock_sha256": "b54a4ae73ec9bfa47a06c4395354877b6fca8f7f51e86a400d7edbcb034ef03e",
+          "observed_at_utc": "2026-11-16T14:33:57.884446Z",
+          "quote_at_utc": "2026-11-16T14:33:00Z",
+          "reason": "stop_forward_observed",
+          "source_commit": "e98b1f5207681eab9a2be1b2f935db71b4ad9224",
+          "ticker": "FSLR",
+          "type": "sell"
         }
       ],
+      "forward_executions": {
+        "IL-011:2026-11-16:open:classic_forward_v1": {
+          "fill_tickers": [],
+          "fills_count": 0,
+          "lock_sha256": "b54a4ae73ec9bfa47a06c4395354877b6fca8f7f51e86a400d7edbcb034ef03e",
+          "mode": "forward_observed_paper",
+          "quotes_sha256": "7fc339d954531c837ca03cd579af6ef732577b9545a95100235886efdf58f6b0",
+          "recorded_at_utc": "2026-11-16T14:34:03.758808Z",
+          "session": "2026-11-16",
+          "source_commit": "e98b1f5207681eab9a2be1b2f935db71b4ad9224"
+        },
+        "IL-011:2026-11-16:stop:FSLR:classic_forward_v1": {
+          "fill_tickers": [
+            "FSLR"
+          ],
+          "fills_count": 1,
+          "lock_sha256": "b54a4ae73ec9bfa47a06c4395354877b6fca8f7f51e86a400d7edbcb034ef03e",
+          "mode": "forward_observed_paper",
+          "quotes_sha256": "49ab47c67600f7bf6b0fd5842b561d9778660571faac7610b81a830c5d1c6a97",
+          "recorded_at_utc": "2026-11-16T14:34:03.758808Z",
+          "session": "2026-11-16",
+          "source_commit": "e98b1f5207681eab9a2be1b2f935db71b4ad9224"
+        }
+      },
       "nav": 101787.44286136651,
       "outage_control": {
         "first_trading_session": "2026-11-05",
         "registered_at_utc": "2026-11-04T18:03:08+00:00"
       },
-      "pending": {
-        "ANET": {
-          "side": "buy",
-          "signal_date": "2026-11-13"
-        }
-      },
+      "pending": {},
       "positions": {
         "BF-B": {
           "cost": 11874.999971558756,
@@ -9935,15 +9971,6 @@
           "shares": 777.582645,
           "stop": 18.2803361618042,
           "target": 22.850420202255247
-        },
-        "FSLR": {
-          "cost": 15465.96360021869,
-          "dividends": 0.0,
-          "entry_date": "2026-11-06",
-          "entry_price": 196.14802805328367,
-          "shares": 78.769658,
-          "stop": 180.45618580902098,
-          "target": 225.5702322612762
         },
         "RSG": {
           "cost": 11874.999838286545,
@@ -10099,6 +10126,22 @@
           "proceeds": 13622.150268603924,
           "reason": "target",
           "ticker": "ZTS"
+        },
+        {
+          "dividends": 0.0,
+          "entry_cost": 15465.96360021869,
+          "entry_date": "2026-11-06",
+          "execution": "forward_observed_paper",
+          "exit_date": "2026-11-16",
+          "idempotency_key": "IL-011:2026-11-16:stop:FSLR:classic_forward_v1:FSLR",
+          "lock_sha256": "b54a4ae73ec9bfa47a06c4395354877b6fca8f7f51e86a400d7edbcb034ef03e",
+          "net_pnl": -2378.622171223142,
+          "observed_at_utc": "2026-11-16T14:33:57.884446Z",
+          "proceeds": 13087.341428995549,
+          "quote_at_utc": "2026-11-16T14:33:00Z",
+          "reason": "stop_forward_observed",
+          "source_commit": "e98b1f5207681eab9a2be1b2f935db71b4ad9224",
+          "ticker": "FSLR"
         }
       ]
     },
@@ -12733,6 +12776,11 @@
           "date": "2026-11-13",
           "ticker": "BRK-B",
           "type": "unfilled"
+        },
+        {
+          "date": "2026-11-16",
+          "ticker": "EW",
+          "type": "unfilled"
         }
       ],
       "forward_executions": {
@@ -12765,15 +12813,20 @@
           "recorded_at_utc": "2026-11-13T14:52:56.724951Z",
           "session": "2026-11-13",
           "source_commit": "70cb7587b7c0418737248da30049cf548d727465"
+        },
+        "IL-017:2026-11-16:open:classic_forward_v1": {
+          "fill_tickers": [],
+          "fills_count": 0,
+          "lock_sha256": "b54a4ae73ec9bfa47a06c4395354877b6fca8f7f51e86a400d7edbcb034ef03e",
+          "mode": "forward_observed_paper",
+          "quotes_sha256": "07c43f129eee8fb95339349f603e578ec83b5fe490000ec820f53f45407eb156",
+          "recorded_at_utc": "2026-11-16T14:34:03.758808Z",
+          "session": "2026-11-16",
+          "source_commit": "e98b1f5207681eab9a2be1b2f935db71b4ad9224"
         }
       },
       "nav": 95212.76533186396,
-      "pending": {
-        "EW": {
-          "side": "buy",
-          "signal_date": "2026-11-13"
-        }
-      },
+      "pending": {},
       "positions": {
         "ABBV": {
           "cost": 11874.999758862768,
