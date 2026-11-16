@@ -9,7 +9,7 @@
     "2026-11-04"
   ],
   "initial_capital": 100000.0,
-  "last_session": "2026-11-13",
+  "last_session": "2026-11-16",
   "last_signal_session": "2026-11-06",
   "outage_control": {
     "first_trading_session": "2026-11-05",
@@ -849,12 +849,18 @@
           "missing_tickers": [],
           "reason": "unreconciled_session",
           "type": "weekly_book_paused"
+        },
+        {
+          "date": "2026-11-16",
+          "missing_tickers": [],
+          "reason": "unreconciled_session",
+          "type": "weekly_book_paused"
         }
       ],
       "last_signal_session": "2026-10-30",
       "nav": 90892.27011219709,
       "paused_missing_quotes": {
-        "date": "2026-11-13",
+        "date": "2026-11-16",
         "missing_tickers": [],
         "reason": "unreconciled_session"
       },
@@ -1458,6 +1464,11 @@
           "date": "2026-11-13",
           "decision_recorded": false,
           "nav": 100170.49310778703
+        },
+        {
+          "date": "2026-11-16",
+          "decision_recorded": false,
+          "nav": 100170.49310778703
         }
       ],
       "events": [
@@ -1820,6 +1831,11 @@
           "date": "2026-11-13",
           "decision_recorded": false,
           "nav": 93661.81418879132
+        },
+        {
+          "date": "2026-11-16",
+          "decision_recorded": false,
+          "nav": 93661.81418879132
         }
       ],
       "events": [
@@ -2180,6 +2196,11 @@
         },
         {
           "date": "2026-11-13",
+          "decision_recorded": false,
+          "nav": 85683.78100397768
+        },
+        {
+          "date": "2026-11-16",
           "decision_recorded": false,
           "nav": 85683.78100397768
         }
@@ -3892,6 +3913,11 @@
         },
         {
           "date": "2026-11-13",
+          "decision_recorded": false,
+          "nav": 103643.21151858052
+        },
+        {
+          "date": "2026-11-16",
           "decision_recorded": false,
           "nav": 103643.21151858052
         }
@@ -5965,12 +5991,18 @@
           "missing_tickers": [],
           "reason": "unreconciled_session",
           "type": "weekly_book_paused"
+        },
+        {
+          "date": "2026-11-16",
+          "missing_tickers": [],
+          "reason": "unreconciled_session",
+          "type": "weekly_book_paused"
         }
       ],
       "last_signal_session": "2026-10-30",
       "nav": 89316.2837861811,
       "paused_missing_quotes": {
-        "date": "2026-11-13",
+        "date": "2026-11-16",
         "missing_tickers": [],
         "reason": "unreconciled_session"
       },
@@ -6572,6 +6604,11 @@
         },
         {
           "date": "2026-11-13",
+          "decision_recorded": false,
+          "nav": 84101.75276020692
+        },
+        {
+          "date": "2026-11-16",
           "decision_recorded": false,
           "nav": 84101.75276020692
         }
@@ -7458,6 +7495,11 @@
             "snapshot_sha256": "2d94d527b4391f9eb2d8283a15b5338336cfa55d582e840a79c7cfd338fae813"
           },
           "recorded_at_utc": "2026-11-14T02:05:41+00:00"
+        },
+        {
+          "date": "2026-11-16",
+          "decision_recorded": false,
+          "nav": 96905.48207189851
         }
       ],
       "events": [
@@ -9845,12 +9887,18 @@
           "missing_tickers": [],
           "reason": "unreconciled_session",
           "type": "weekly_book_paused"
+        },
+        {
+          "date": "2026-11-16",
+          "missing_tickers": [],
+          "reason": "unreconciled_session",
+          "type": "weekly_book_paused"
         }
       ],
       "last_signal_session": "2026-10-30",
       "nav": 88272.98907336431,
       "paused_missing_quotes": {
-        "date": "2026-11-13",
+        "date": "2026-11-16",
         "missing_tickers": [],
         "reason": "unreconciled_session"
       },
