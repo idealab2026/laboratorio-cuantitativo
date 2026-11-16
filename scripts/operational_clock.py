@@ -530,6 +530,19 @@ def main(argv=None):
                 lane["fills_count"] = result["fills"]
                 lane["native_marker"] = result["marker"]
                 lane["fills"] = []
+        # IL-044 may have multiple distinct stop/target fills during one
+        # session. The last native marker is not a daily trade count.
+        genetic_lane = report["slots"].get("IL-044")
+        if genetic_lane and genetic_lane.get("status") == "native_forward_settled":
+            from forward_genetic_settlement import LEDGER, summarize_session_fills
+            summary = summarize_session_fills(
+                _read(ROOT / LEDGER), report["session"], lock["lock_sha256"])
+            genetic_lane["fills_count"] = summary["fills_count"]
+            genetic_lane["fills"] = summary["fills"]
+            genetic_lane["native_markers"] = summary["native_markers"]
+            genetic_lane["session_fill_reconciled"] = True
+            if summary["latest_marker"] is not None:
+                genetic_lane["native_marker"] = summary["latest_marker"]
     _write(args.public, report)
     print(json.dumps({"status": stage, "session": report["session"],
                       "slots": len(report["slots"]),
