@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "generated_at_utc": "2026-11-16T17:44:44.881797+00:00",
+  "generated_at_utc": "2026-11-16T18:33:54.850227+00:00",
   "principle": "Comparar rentabilidad acumulada y riesgo observado; no ordenar carteras con distintas fechas de inicio o supuestos de ejecución.",
   "counts": {
     "paper_with_diary": 18,
@@ -950,16 +950,15 @@
       "evaluated_universe_symbols": 488,
       "eligible_universe_symbols": 503,
       "activity_state": "active",
-      "activity_label": "6 posiciones abiertas · Inactividad sin operaciones: 2026-11-03, 2026-11-04 · Reanudación desde apertura: 2026-11-05 · Cálculo tardío: 2026-11-04",
+      "activity_label": "5 posiciones abiertas · Inactividad sin operaciones: 2026-11-03, 2026-11-04 · Reanudación desde apertura: 2026-11-05 · Cálculo tardío: 2026-11-04",
       "activity_tickers": [
         "BF-B",
-        "BLDR",
         "CNP",
         "DOC",
         "RSG",
         "YUM"
       ],
-      "open_positions_count": 6,
+      "open_positions_count": 5,
       "pending_orders_count": 0,
       "inactive_sessions": [
         "2026-11-03",

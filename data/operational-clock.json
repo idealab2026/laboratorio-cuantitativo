@@ -1,5 +1,5 @@
 {
-  "checked_at_utc": "2026-11-16T17:44:44.120477Z",
+  "checked_at_utc": "2026-11-16T18:33:54.214170Z",
   "lock_sha256": "b54a4ae73ec9bfa47a06c4395354877b6fca8f7f51e86a400d7edbcb034ef03e",
   "mode": "single_midas_operator_monitor_no_broker",
   "note": "Observed quotes are not fills. A native engine must settle quantity/cash before a trade counts in P&L.",
@@ -8,11 +8,11 @@
   "previous_session": "2026-11-13",
   "quote_budget": {
     "hard_symbol_limit": 250,
-    "observed_symbols": 38,
+    "observed_symbols": 37,
     "omitted_algorithm_lanes": {},
     "requested_symbols": 38
   },
-  "run_id": 43921482037,
+  "run_id": 43930060721,
   "schema": "midas.operational_clock.v1",
   "session": "2026-11-16",
   "settlement": "native_forward_010_through_027_037_through_044",
@@ -30,29 +30,29 @@
     "IL-011": {
       "fills": [
         {
-          "fee": 13.100441870866417,
-          "observed_at_utc": "2026-11-16T14:33:57.884446Z",
-          "price": 166.31330138397217,
-          "quantity": 78.769658,
+          "fee": 14.152992901899628,
+          "observed_at_utc": "2026-11-16T18:33:49.560457Z",
+          "price": 60.23986545753479,
+          "quantity": 234.943966,
           "side": "sell",
-          "ticker": "FSLR"
+          "ticker": "BLDR"
         }
       ],
       "fills_count": 1,
       "holdings_count": 7,
       "native_marker": {
         "fill_tickers": [
-          "FSLR"
+          "BLDR"
         ],
         "fills_count": 1,
         "lock_sha256": "b54a4ae73ec9bfa47a06c4395354877b6fca8f7f51e86a400d7edbcb034ef03e",
         "mode": "forward_observed_paper",
-        "quotes_sha256": "49ab47c67600f7bf6b0fd5842b561d9778660571faac7610b81a830c5d1c6a97",
-        "recorded_at_utc": "2026-11-16T14:34:03.758808Z",
+        "quotes_sha256": "a9ecdefb4bf4fb08ba52b6900f1aad6cdf45ca65b534e1e270d80a821ebd2370",
+        "recorded_at_utc": "2026-11-16T18:33:54.214170Z",
         "session": "2026-11-16",
         "source_commit": "e98b1f5207681eab9a2be1b2f935db71b4ad9224"
       },
-      "native_settlement": "already_settled",
+      "native_settlement": "settled_native_paper",
       "observed": 1,
       "orders": [
         {
@@ -109,6 +109,25 @@
       "holdings_count": 7,
       "native_settlement": "opening_window_missed",
       "observed": 1,
+      "opening_quote_diagnostic": {
+        "all_required_quotes_available_now": true,
+        "first_missing_at_utc": null,
+        "first_missing_tickers": [],
+        "last_checked_at_utc": "2026-11-16T18:33:54.214170Z",
+        "missing_tickers_at_last_attempt": [],
+        "opening_cutoff_at_utc": "2026-11-16T15:00:00Z",
+        "required_tickers": [
+          "ABBV",
+          "ABNB",
+          "CAH",
+          "COST",
+          "EPAM",
+          "KO",
+          "MTD",
+          "WMT"
+        ],
+        "settlement_status": "opening_window_missed"
+      },
       "orders": [
         {
           "action": "buy",
@@ -132,8 +151,31 @@
     },
     "IL-016": {
       "holdings_count": 7,
-      "native_settlement": "opening_window_missed",
+      "native_settlement": "awaiting_fresh_open_quotes",
       "observed": 1,
+      "opening_quote_diagnostic": {
+        "all_required_quotes_available_now": false,
+        "first_missing_at_utc": "2026-11-16T18:33:54.214170Z",
+        "first_missing_tickers": [
+          "ERIE"
+        ],
+        "last_checked_at_utc": "2026-11-16T18:33:54.214170Z",
+        "missing_tickers_at_last_attempt": [
+          "ERIE"
+        ],
+        "opening_cutoff_at_utc": "2026-11-16T15:00:00Z",
+        "required_tickers": [
+          "ALLE",
+          "COST",
+          "EPAM",
+          "ERIE",
+          "EW",
+          "LW",
+          "MTD",
+          "ULTA"
+        ],
+        "settlement_status": "awaiting_fresh_open_quotes"
+      },
       "orders": [
         {
           "action": "buy",

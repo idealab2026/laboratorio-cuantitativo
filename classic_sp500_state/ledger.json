@@ -9520,7 +9520,7 @@
       "trades": []
     },
     "ema_rsi_fixed": {
-      "cash": 20905.73078414683,
+      "cash": 35044.57069314456,
       "equity": [
         {
           "date": "2026-10-12",
@@ -9903,6 +9903,18 @@
           "source_commit": "e98b1f5207681eab9a2be1b2f935db71b4ad9224",
           "ticker": "FSLR",
           "type": "sell"
+        },
+        {
+          "date": "2026-11-16",
+          "execution": "forward_observed_paper",
+          "idempotency_key": "IL-011:2026-11-16:stop:BLDR:classic_forward_v1:BLDR",
+          "lock_sha256": "b54a4ae73ec9bfa47a06c4395354877b6fca8f7f51e86a400d7edbcb034ef03e",
+          "observed_at_utc": "2026-11-16T18:33:49.560457Z",
+          "quote_at_utc": "2026-11-16T18:33:00Z",
+          "reason": "stop_forward_observed",
+          "source_commit": "e98b1f5207681eab9a2be1b2f935db71b4ad9224",
+          "ticker": "BLDR",
+          "type": "sell"
         }
       ],
       "forward_executions": {
@@ -9913,6 +9925,18 @@
           "mode": "forward_observed_paper",
           "quotes_sha256": "7fc339d954531c837ca03cd579af6ef732577b9545a95100235886efdf58f6b0",
           "recorded_at_utc": "2026-11-16T14:34:03.758808Z",
+          "session": "2026-11-16",
+          "source_commit": "e98b1f5207681eab9a2be1b2f935db71b4ad9224"
+        },
+        "IL-011:2026-11-16:stop:BLDR:classic_forward_v1": {
+          "fill_tickers": [
+            "BLDR"
+          ],
+          "fills_count": 1,
+          "lock_sha256": "b54a4ae73ec9bfa47a06c4395354877b6fca8f7f51e86a400d7edbcb034ef03e",
+          "mode": "forward_observed_paper",
+          "quotes_sha256": "a9ecdefb4bf4fb08ba52b6900f1aad6cdf45ca65b534e1e270d80a821ebd2370",
+          "recorded_at_utc": "2026-11-16T18:33:54.214170Z",
           "session": "2026-11-16",
           "source_commit": "e98b1f5207681eab9a2be1b2f935db71b4ad9224"
         },
@@ -9944,15 +9968,6 @@
           "shares": 414.153286,
           "stop": 26.352769027519226,
           "target": 32.94096128439903
-        },
-        "BLDR": {
-          "cost": 15466.039696815931,
-          "dividends": 0.0,
-          "entry_date": "2026-11-02",
-          "entry_price": 65.76286835861205,
-          "shares": 234.943966,
-          "stop": 60.50183888992309,
-          "target": 75.62729861240385
         },
         "CNP": {
           "cost": 11874.999988208554,
@@ -10142,6 +10157,22 @@
           "reason": "stop_forward_observed",
           "source_commit": "e98b1f5207681eab9a2be1b2f935db71b4ad9224",
           "ticker": "FSLR"
+        },
+        {
+          "dividends": 0.0,
+          "entry_cost": 15466.039696815931,
+          "entry_date": "2026-11-02",
+          "execution": "forward_observed_paper",
+          "exit_date": "2026-11-16",
+          "idempotency_key": "IL-011:2026-11-16:stop:BLDR:classic_forward_v1:BLDR",
+          "lock_sha256": "b54a4ae73ec9bfa47a06c4395354877b6fca8f7f51e86a400d7edbcb034ef03e",
+          "net_pnl": -1327.1997878182028,
+          "observed_at_utc": "2026-11-16T18:33:49.560457Z",
+          "proceeds": 14138.839908997728,
+          "quote_at_utc": "2026-11-16T18:33:00Z",
+          "reason": "stop_forward_observed",
+          "source_commit": "e98b1f5207681eab9a2be1b2f935db71b4ad9224",
+          "ticker": "BLDR"
         }
       ]
     },

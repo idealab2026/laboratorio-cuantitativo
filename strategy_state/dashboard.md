@@ -1,6 +1,6 @@
 # MIDAS: todas las ideas en paralelo
 
-Actualizado: 2026-11-16T17:44:44.881797+00:00. El tablero distingue resultados observados de ideas aún no ejecutadas.
+Actualizado: 2026-11-16T18:33:54.850227+00:00. El tablero distingue resultados observados de ideas aún no ejecutadas.
 
 La comparación principal sigue **rentabilidad acumulada + riesgo realizado**. Las campañas diarias, TFM, Weekly ML, TFG corregido, Capital Cycle, Buy The Dip y el diario genético antiguo **no forman una clasificación común** si sus fechas, divisas o reglas difieren.
 
@@ -16,7 +16,7 @@ La comparación principal sigue **rentabilidad acumulada + riesgo realizado**. L
 | Turtle 20/10 largo, adaptación nueva | Campaña nueva 2026 · señal técnica adaptada | demo_con_diario | 1 posición abierta | 2026-09-28 | 2026-10-09 | 0.48 % | 0.13 % | — | -0.35 % | — |
 | Turtle 55/20 largo, adaptación nueva | Campaña nueva 2026 · señal técnica adaptada | demo_con_diario | Sin compras · en efectivo | 2026-09-28 | 2026-10-09 | 0.00 % | 0.00 % | — | 0.00 % | — |
 | S&P 500 v2 · Equiponderación S&P 500 | MIDAS 2026 · nueva campaña prospectiva S&P 500 completo (503 símbolos); no hereda libro antiguo de ocho acciones | demo_con_diario | 489 posiciones abiertas · Inactividad sin operaciones: 2026-11-02, 2026-11-03 · Reanudación desde apertura: 2026-11-05 · CANJE CON VALORACIÓN PROVISIONAL; cobro separado del efectivo | 2026-10-12 | 2026-11-13 | 0.23 % | 3.74 % | 15.61 % | -3.04 % | 2.66 |
-| S&P 500 v2 · EMA/RSI | MIDAS 2026 · nueva campaña prospectiva S&P 500 completo (503 símbolos); no hereda libro antiguo de ocho acciones | demo_con_diario | 6 posiciones abiertas · Inactividad sin operaciones: 2026-11-03, 2026-11-04 · Reanudación desde apertura: 2026-11-05 · Cálculo tardío: 2026-11-04 | 2026-10-12 | 2026-11-13 | 0.43 % | 1.79 % | 22.32 % | -4.81 % | 0.98 |
+| S&P 500 v2 · EMA/RSI | MIDAS 2026 · nueva campaña prospectiva S&P 500 completo (503 símbolos); no hereda libro antiguo de ocho acciones | demo_con_diario | 5 posiciones abiertas · Inactividad sin operaciones: 2026-11-03, 2026-11-04 · Reanudación desde apertura: 2026-11-05 · Cálculo tardío: 2026-11-04 | 2026-10-12 | 2026-11-13 | 0.43 % | 1.79 % | 22.32 % | -4.81 % | 0.98 |
 | S&P 500 v2 · Genético congelado (reglas) | MIDAS 2026 · nueva campaña prospectiva S&P 500 completo (503 símbolos); no hereda libro antiguo de ocho acciones | demo_con_diario | VALORACIÓN PAUSADA · falta cotización; 8 posiciones abiertas · Inactividad sin operaciones: 2026-11-02, 2026-11-03, 2026-11-04 · Reanudación desde apertura: 2026-11-05 · CANJE CON VALORACIÓN PROVISIONAL; cobro separado del efectivo | 2026-10-12 | 2026-11-04 | — | 10.27 % | 24.69 % | -2.03 % | 6.37 |
 | S&P 500 v2 · MACD | MIDAS 2026 · nueva campaña prospectiva S&P 500 completo (503 símbolos); no hereda libro antiguo de ocho acciones | demo_con_diario | VALORACIÓN PAUSADA · falta cotización; 6 posiciones abiertas · Cálculo tardío: 2026-11-02, 2026-11-04 | 2026-10-12 | 2026-11-11 | — | 3.15 % | 22.00 % | -4.60 % | 1.80 |
 | S&P 500 v2 · RSI reversión | MIDAS 2026 · nueva campaña prospectiva S&P 500 completo (503 símbolos); no hereda libro antiguo de ocho acciones | demo_con_diario | 7 posiciones abiertas | 2026-10-12 | 2026-11-13 | 0.57 % | 9.48 % | 16.34 % | -1.85 % | 6.17 |
