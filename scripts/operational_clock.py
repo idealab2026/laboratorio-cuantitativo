@@ -95,6 +95,7 @@ def clock_plan(now, market, tracks, commit, *, fx_reference=None):
                 sorted(set(record.get("holdings", []))
                        | ({o["ticker"] for o in orders} if slot in ("IL-042", "IL-044") else set()))
                 if eligible and (slot in {f"IL-{n:03d}" for n in range(11, 18)}
+                                 or slot in {f"IL-{n:03d}" for n in range(19, 28)}
                                  or slot in ("IL-037", "IL-040", "IL-042", "IL-044"))
                 and isinstance(record, dict) else []),
         }
@@ -338,6 +339,13 @@ def budgeted_quote_targets(lock, prior=None, *, limit=LIMIT, now=None, market=No
         remaining = (set() if settled.get(slot, {}).get("status") == "native_forward_settled"
                      else {r["ticker"] for r in lane["orders"]})
         monitored = set(lane.get("monitor_tickers", []))
+        if slot in {f"IL-{n:03d}" for n in range(19, 28)}:
+            is_close = now is not None and market is not None and now >= market["close"] - timedelta(minutes=6)
+            if is_close:
+                from tfg_ahp.data import is_week_end_session
+                is_close = is_week_end_session(market["session"])
+            if not is_close:
+                monitored = set()
         if slot in ("IL-037", "IL-040", "IL-042"):
             # Demand a fresh observed USD stock quote and contemporaneous FX
             # only near the actual closing window. Do not burn the daily
