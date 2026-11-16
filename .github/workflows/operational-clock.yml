@@ -5,6 +5,7 @@ on:
   # triggers an immediate, clock-guarded run without waiting for GitHub cron.
   # Safe outside preopen: the Python operator refuses any retroactive lock.
   # 2026-11-16 preopen contingency: audited push wake-up if cron is dropped.
+  # 2026-11-16 open observation contingency: GitHub cron was not visible at 09:31 ET.
   push:
     branches: [main]
     paths:
