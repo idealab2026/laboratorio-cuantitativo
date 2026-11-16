@@ -67,6 +67,28 @@ class InactiveRecoveryTests(unittest.TestCase):
                 reconcile_classic(state, loader, now=NOW)
             self.assertEqual(state, before)
 
+    def test_classic_passive_close_can_mark_without_implying_intraday_fill(self):
+        state = {"last_session": "2026-11-03", "books": {"affected": book()}}
+        quote = {"date": "2026-11-03", "close": 105., "dividend": 0., "split": 0.,
+                 "price_scope": "passive_close_only"}
+        identity = {**IDENTITY, "closing_mark_scope": "passive_nav_only",
+                    "closing_mark_hashes": ["c" * 64]}
+        result, _ = reconcile_classic(state, lambda *_: ({"AAA": quote}, identity), now=NOW)
+        got = result["books"]["affected"]
+        self.assertEqual(got["trades"], state["books"]["affected"]["trades"])
+        self.assertEqual(got["positions"], state["books"]["affected"]["positions"])
+        self.assertTrue(any(e["type"] == "intraday_trigger_unknown_during_outage" for e in got["events"]))
+        with self.assertRaisesRegex(ValueError, "provenance"):
+            reconcile_classic(state, lambda *_: ({"AAA": quote}, IDENTITY), now=NOW)
+
+    def test_reviewed_bound_is_explicit_and_never_above_eight(self):
+        now = datetime(2026, 11, 16, 15, 0, tzinfo=timezone.utc)
+        with self.assertRaisesRegex(ValueError, "bounded"):
+            window("2026-11-04", now)
+        self.assertEqual(len(window("2026-11-04", now, max_sessions=8)[2]), 7)
+        with self.assertRaisesRegex(ValueError, "bound"):
+            window("2026-11-04", now, max_sessions=9)
+
     def test_receivable_is_valued_without_becoming_spendable_cash(self):
         held = book()
         held["receivables"] = {"merger": {"status": "unsettled", "symbol": "KMB",
