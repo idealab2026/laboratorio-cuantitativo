@@ -1,5 +1,5 @@
 {
-  "checked_at_utc": "2026-11-16T14:34:03.758808Z",
+  "checked_at_utc": "2026-11-16T15:17:45.662925Z",
   "lock_sha256": "b54a4ae73ec9bfa47a06c4395354877b6fca8f7f51e86a400d7edbcb034ef03e",
   "mode": "single_midas_operator_monitor_no_broker",
   "note": "Observed quotes are not fills. A native engine must settle quantity/cash before a trade counts in P&L.",
@@ -8,11 +8,11 @@
   "previous_session": "2026-11-13",
   "quote_budget": {
     "hard_symbol_limit": 250,
-    "observed_symbols": 53,
+    "observed_symbols": 38,
     "omitted_algorithm_lanes": {},
-    "requested_symbols": 53
+    "requested_symbols": 38
   },
-  "run_id": 43886960123,
+  "run_id": 43894700235,
   "schema": "midas.operational_clock.v1",
   "session": "2026-11-16",
   "settlement": "native_forward_010_through_027_037_through_044",
@@ -52,7 +52,7 @@
         "session": "2026-11-16",
         "source_commit": "e98b1f5207681eab9a2be1b2f935db71b4ad9224"
       },
-      "native_settlement": "settled_native_paper",
+      "native_settlement": "already_settled",
       "observed": 1,
       "orders": [
         {
@@ -107,7 +107,7 @@
     },
     "IL-015": {
       "holdings_count": 7,
-      "native_settlement": "awaiting_fresh_open_quotes",
+      "native_settlement": "opening_window_missed",
       "observed": 1,
       "orders": [
         {
@@ -132,7 +132,7 @@
     },
     "IL-016": {
       "holdings_count": 7,
-      "native_settlement": "awaiting_fresh_open_quotes",
+      "native_settlement": "opening_window_missed",
       "observed": 1,
       "orders": [
         {
@@ -169,7 +169,7 @@
         "session": "2026-11-16",
         "source_commit": "e98b1f5207681eab9a2be1b2f935db71b4ad9224"
       },
-      "native_settlement": "settled_native_paper",
+      "native_settlement": "already_settled",
       "observed": 1,
       "orders": [
         {
@@ -533,7 +533,7 @@
         "session": "2026-11-16",
         "source_commit": "e98b1f5207681eab9a2be1b2f935db71b4ad9224"
       },
-      "native_settlement": "settled_native_paper",
+      "native_settlement": "already_settled",
       "observed": 15,
       "orders": [
         {
