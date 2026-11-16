@@ -34,6 +34,14 @@ jobs:
           python-version: '3.12'
       - name: Install exact research test dependencies
         run: python3 -m pip install --disable-pip-version-check -r scripts/requirements-research.txt
+      # The offline test collection imports calendar, native-quote and PDF
+      # modules from the same contract validated by pages.yml.
+      - name: Install exchange calendar for offline tests
+        run: python3 -m pip install --disable-pip-version-check "pandas-market-calendars>=4.4,<6"
+      - name: Install native quote adapter for offline tests
+        run: python3 -m pip install --disable-pip-version-check "yfinance==1.1.0"
+      - name: Install offline thesis PDF test runtime
+        run: python3 -m pip install --disable-pip-version-check "reportlab>=4.2,<5"
       - name: Verify offline prospective contract
         run: python3 -m unittest discover -s scripts -p 'test_*.py' -v
       - name: Fetch dated official ECB fixing and advance public prediction ledger
