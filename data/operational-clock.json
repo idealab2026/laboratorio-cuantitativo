@@ -1,5 +1,5 @@
 {
-  "checked_at_utc": "2026-11-16T18:33:54.214170Z",
+  "checked_at_utc": "2026-11-16T18:38:56.346945Z",
   "lock_sha256": "b54a4ae73ec9bfa47a06c4395354877b6fca8f7f51e86a400d7edbcb034ef03e",
   "mode": "single_midas_operator_monitor_no_broker",
   "note": "Observed quotes are not fills. A native engine must settle quantity/cash before a trade counts in P&L.",
@@ -8,11 +8,11 @@
   "previous_session": "2026-11-13",
   "quote_budget": {
     "hard_symbol_limit": 250,
-    "observed_symbols": 37,
+    "observed_symbols": 38,
     "omitted_algorithm_lanes": {},
     "requested_symbols": 38
   },
-  "run_id": 43930060721,
+  "run_id": 43930944272,
   "schema": "midas.operational_clock.v1",
   "session": "2026-11-16",
   "settlement": "native_forward_010_through_027_037_through_044",
@@ -52,7 +52,7 @@
         "session": "2026-11-16",
         "source_commit": "e98b1f5207681eab9a2be1b2f935db71b4ad9224"
       },
-      "native_settlement": "settled_native_paper",
+      "native_settlement": "already_settled",
       "observed": 1,
       "orders": [
         {
@@ -113,7 +113,7 @@
         "all_required_quotes_available_now": true,
         "first_missing_at_utc": null,
         "first_missing_tickers": [],
-        "last_checked_at_utc": "2026-11-16T18:33:54.214170Z",
+        "last_checked_at_utc": "2026-11-16T18:38:56.346945Z",
         "missing_tickers_at_last_attempt": [],
         "opening_cutoff_at_utc": "2026-11-16T15:00:00Z",
         "required_tickers": [
@@ -151,18 +151,16 @@
     },
     "IL-016": {
       "holdings_count": 7,
-      "native_settlement": "awaiting_fresh_open_quotes",
+      "native_settlement": "opening_window_missed",
       "observed": 1,
       "opening_quote_diagnostic": {
-        "all_required_quotes_available_now": false,
+        "all_required_quotes_available_now": true,
         "first_missing_at_utc": "2026-11-16T18:33:54.214170Z",
         "first_missing_tickers": [
           "ERIE"
         ],
-        "last_checked_at_utc": "2026-11-16T18:33:54.214170Z",
-        "missing_tickers_at_last_attempt": [
-          "ERIE"
-        ],
+        "last_checked_at_utc": "2026-11-16T18:38:56.346945Z",
+        "missing_tickers_at_last_attempt": [],
         "opening_cutoff_at_utc": "2026-11-16T15:00:00Z",
         "required_tickers": [
           "ALLE",
@@ -174,7 +172,7 @@
           "MTD",
           "ULTA"
         ],
-        "settlement_status": "awaiting_fresh_open_quotes"
+        "settlement_status": "opening_window_missed"
       },
       "orders": [
         {
