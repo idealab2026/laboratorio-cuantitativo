@@ -1,0 +1,206 @@
+{
+  "schema_version": 1,
+  "status": "machine_first_pass",
+  "reviewed_at_utc": "2026-11-16T03:32:56.074708+00:00",
+  "source_identity": "Buy The Dip YouTube channel",
+  "transport": {
+    "kind": "official_podcast_mirror",
+    "provider": "iVoox",
+    "guid": "https://www.ivoox.com/94086761",
+    "published_date": "2022-10-16",
+    "youtube_video_id": "QKp_akxkEwM",
+    "match_score": 1.0,
+    "audio_bytes_processed_transiently": 19140694
+  },
+  "models": {
+    "asr": {
+      "language": "es",
+      "language_probability": 1.0,
+      "duration_seconds": 2392.58125,
+      "word_count": 6089,
+      "segment_count": 922,
+      "model": "small"
+    },
+    "semantic": {
+      "repo": "Qwen/Qwen3-4B-GGUF",
+      "file": "Qwen3-4B-Q4_K_M.gguf"
+    }
+  },
+  "metadata": {
+    "video_id": "QKp_akxkEwM",
+    "youtube_url": "https://www.youtube.com/watch?v=QKp_akxkEwM",
+    "title": "Cómo invertir durante periodos de incertidumbre | BUY THE DIP PODCAST",
+    "category": "company_or_theme",
+    "guest_likely": false,
+    "podcast_guid": "https://www.ivoox.com/94086761",
+    "published_date": "2022-10-16",
+    "source": "official_podcast_mirror",
+    "match_score": 1.0
+  },
+  "analysis": {
+    "episode_summary": "El episodio analiza la estrategia de inversión 'Buy the Dip', enfocada en aprovechar oportunidades en mercados en caída. Se discuten las implicaciones de la inflación actual (8,3% en EE. UU.) en los múltiplos de precios, con una comparación histórica que muestra que los PER en recesiones han sido significativamente más bajos. El inversor prioriza activos descorrelacionados, empresas de defensa, retail y publicidad, considerando su resistencia al ciclo económico. Se menciona la importancia de mantener cash para aprovechar caídas del mercado y diversificar riesgos con activos como oro y empresas antifragiles. La FED enfrenta un dilema entre controlar la inflación y evitar una recesión, lo que impacta en la política monetaria y la composición del mercado. La estrategia se basa en identificar sectores con ventajas competitivas y oportunidades de crecimiento en momentos de incertidumbre.",
+    "process": {
+      "idea_generation": [],
+      "quality": [],
+      "balance_sheet": [],
+      "valuation": [
+        "El inversor prioriza activos descorrelacionados con el mercado y empresas cotizadas a niveles muy bajos, considerando que pueden comportarse mejor en períodos de caída del mercado."
+      ],
+      "cycle_macro": [
+        "La inflación actual (8,3% en EE. UU.) es la más alta desde los años 70, con implicaciones para el mercado de valores, donde las empresas tecnológicas y financieras se benefician de la inflación, mientras que las industriales enfrentan mayor estrés."
+      ],
+      "entry": [
+        "El inversor espera que ciertas empresas, como la que espera una adquisición, se recuperen a precios superiores a su valor actual, lo que lo hace considerar invertir en situaciones especiales con expectativas de crecimiento."
+      ],
+      "sizing": [],
+      "add_hold": [],
+      "exit": [],
+      "risk": [
+        "El inversor reconoce que ciertas empresas, como las de publicidad, pueden verse afectadas en crisis, pero considera que su cartera está diversificada con activos como oro, plata y empresas contra cíclicas, lo que reduce el riesgo de pérdida en escenarios negativos."
+      ],
+      "technical": [],
+      "management": [],
+      "mistakes": []
+    },
+    "candidate_rules": [
+      {
+        "rule": "paráfrasis compacta",
+        "scope": "hosts|uncertain_or_guest",
+        "confidence": 0.0,
+        "evidence_timestamps": [],
+        "automation_proxy": "variable/cálculo posible o null",
+        "cross_video_confirmation_required": true
+      }
+    ],
+    "contradictions_or_uncertainties": [],
+    "named_examples": [],
+    "automation_readiness": "medium"
+  },
+  "chunk_evidence": [
+    {
+      "chunk": 1,
+      "evidence": [
+        {
+          "stage": "valuation",
+          "paraphrase": "El podcast analiza la inflación actual y su impacto en los múltiplos de precios (PER) de los mercados, comparando datos históricos con la situación actual.",
+          "timestamp": "00:02:40",
+          "scope": "hosts",
+          "confidence": 0.9,
+          "automation_hint": "proxy observable"
+        },
+        {
+          "stage": "risk",
+          "paraphrase": "La inflación elevada y la dependencia energética de Europa generan una situación más grave que en Estados Unidos, afectando los márgenes de las empresas industriales y la composición del mercado.",
+          "timestamp": "00:04:41",
+          "scope": "hosts",
+          "confidence": 0.8,
+          "automation_hint": "proxy observable"
+        },
+        {
+          "stage": "cycle_macro",
+          "paraphrase": "La inflación actual (8,3% en EE. UU.) es la más alta desde los años 70, con implicaciones para el mercado de valores, donde las empresas tecnológicas y financieras se benefician de la inflación, mientras que las industriales enfrentan mayor estrés.",
+          "timestamp": "00:05:12",
+          "scope": "hosts",
+          "confidence": 0.7,
+          "automation_hint": "proxy observable"
+        }
+      ],
+      "named_examples": [],
+      "chunk_summary": "El podcast analiza la situación actual de los mercados, destacando la inflación elevada, su impacto en los múltiplos de precios (PER), la composición del mercado de valores y la relación entre la inflación y el rendimiento de las empresas. Se comparan datos históricos con la situación actual, mostrando cómo la inflación afecta diferentes sectores y cómo los múltiplos de precios se ajustan en respuesta a las condiciones económicas."
+    },
+    {
+      "chunk": 2,
+      "evidence": [
+        {
+          "stage": "valuation",
+          "paraphrase": "El múltiplo de precio (PER) en periodos de recesión ha sido significativamente inferior a los niveles actuales, con una caída promedio del 32,6% en crisis históricas.",
+          "timestamp": "00:11:13",
+          "scope": "hosts",
+          "confidence": 0.8,
+          "automation_hint": "proxy observable"
+        },
+        {
+          "stage": "cycle_macro",
+          "paraphrase": "La inflación actual (8,3%) es 1,3 veces superior a la media histórica (4%), con un impacto significativo en la producción de energía y la política monetaria de la FED.",
+          "timestamp": "00:14:53",
+          "scope": "hosts",
+          "confidence": 0.7,
+          "automation_hint": "proxy observable"
+        },
+        {
+          "stage": "risk",
+          "paraphrase": "La FED enfrenta un dilema entre reducir la inflación mediante subidas de tipos, lo que podría provocar una recesión global, y mantener la estabilidad económica, lo que podría permitir una inflación persistente.",
+          "timestamp": "00:17:25",
+          "scope": "hosts",
+          "confidence": 0.6,
+          "automation_hint": "proxy observable"
+        }
+      ],
+      "named_examples": [],
+      "chunk_summary": "El análisis muestra que los múltiplos de precios en periodos de recesión han sido históricamente más bajos que los actuales, con una caída promedio del 32,6% en crisis. La inflación actual (8,3%) es 1,3 veces superior a la media histórica, lo que impacta en la producción de energía y la política monetaria. La FED enfrenta un dilema entre reducir la inflación mediante subidas de tipos, lo que podría provocar una recesión global, y mantener la estabilidad económica, lo que podría permitir una inflación persistente."
+    },
+    {
+      "chunk": 3,
+      "evidence": [
+        {
+          "stage": "risk",
+          "paraphrase": "El inversor menciona la importancia de mantener una posición de cash para poder reaccionar ante situaciones adversas y aprovechar oportunidades cuando el mercado esté en su mejor momento.",
+          "timestamp": "00:24:01",
+          "scope": "uncertain_or_guest",
+          "confidence": 0.0,
+          "automation_hint": "proxy observable"
+        },
+        {
+          "stage": "valuation",
+          "paraphrase": "El inversor prioriza activos descorrelacionados con el mercado y empresas cotizadas a niveles muy bajos, considerando que pueden comportarse mejor en períodos de caída del mercado.",
+          "timestamp": "00:25:31",
+          "scope": "uncertain_or_guest",
+          "confidence": 0.0,
+          "automation_hint": "proxy observable"
+        },
+        {
+          "stage": "entry",
+          "paraphrase": "El inversor espera que ciertas empresas, como la que espera una adquisición, se recuperen a precios superiores a su valor actual, lo que lo hace considerar invertir en situaciones especiales con expectativas de crecimiento.",
+          "timestamp": "00:26:03",
+          "scope": "uncertain_or_guest",
+          "confidence": 0.0,
+          "automation_hint": "proxy observable"
+        }
+      ],
+      "named_examples": [],
+      "chunk_summary": "El inversor explica su estrategia de inversión enfocada en la gestión de riesgo, la selección de activos descorrelacionados con el mercado y la inversión en situaciones especiales. Destaca la importancia de mantener una posición de cash para reaccionar a crisis y aprovechar oportunidades, así como la prioridad de empresas con ventajas competitivas y antifragilidad, especialmente en sectores como el inmueble y las aseguradoras, que benefician de la inflación y la estabilidad económica."
+    },
+    {
+      "chunk": 4,
+      "evidence": [
+        {
+          "stage": "entry",
+          "paraphrase": "El inversor menciona empresas de retail, entretenimiento y publicidad que considera resistentes al ciclo económico, con altos márgenes y ventajas competitivas, y menciona la posibilidad de ampliar posiciones en small caps y sectores defensivos como armas y defensa.",
+          "timestamp": "00:31:01",
+          "scope": "hosts",
+          "confidence": 0.9,
+          "automation_hint": "proxy observable"
+        },
+        {
+          "stage": "valuation",
+          "paraphrase": "El inversor destaca la baja valoración de small caps en comparación con el mercado general, sugiriendo que ahora es un buen momento para comprar en sectores con baja correlación con el ciclo económico, como empresas de defensa y contrataciones relacionadas con la seguridad nacional.",
+          "timestamp": "00:34:11",
+          "scope": "hosts",
+          "confidence": 0.8,
+          "automation_hint": "proxy observable"
+        },
+        {
+          "stage": "risk",
+          "paraphrase": "El inversor reconoce que ciertas empresas, como las de publicidad, pueden verse afectadas en crisis, pero considera que su cartera está diversificada con activos como oro, plata y empresas contra cíclicas, lo que reduce el riesgo de pérdida en escenarios negativos.",
+          "timestamp": "00:32:27",
+          "scope": "hosts",
+          "confidence": 0.7,
+          "automation_hint": "proxy observable"
+        }
+      ],
+      "named_examples": [],
+      "chunk_summary": "El inversor analiza una estrategia de inversión basada en sectores defensivos y empresas resistentes al ciclo económico, con enfoque en small caps y sectores como defensa, publicidad y retail. Destaca la diversificación de activos, la valoración actual de small caps y la posibilidad de ampliar posiciones en empresas con baja correlación con el ciclo, considerando riesgos y oportunidades en diferentes escenarios económicos."
+    }
+  ],
+  "copyright_note": "No audio or verbatim transcript is persisted; only derived paraphrases."
+}
