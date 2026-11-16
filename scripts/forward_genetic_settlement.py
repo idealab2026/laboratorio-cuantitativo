@@ -261,6 +261,67 @@ def settle_genetic(lock, now, market, quotes, *, reader=read, frozen=_source_at)
                        "marker":marker}}
 
 
+
+def summarize_session_fills(book, session, lock_sha256):
+    """Reconstruct an IL-044 session from *canonical* verified ledger events.
+
+    A native_marker only identifies the latest event. Genetic SL/TP orders
+    can settle in separate intraday polls; adding the most recent count alone
+    under-reports earlier executions. Never infer trades from prices.
+    """
+    markers = book.get("forward_executions", {})
+    trades = book.get("trades", [])
+    if not isinstance(markers, dict) or not isinstance(trades, list):
+        raise ValueError("Genetic ledger has malformed execution evidence")
+    selected = {key: val for key, val in markers.items()
+                if isinstance(val, dict) and val.get("session") == session}
+    for key, marker in selected.items():
+        if marker.get("lock_sha256") != lock_sha256:
+            raise ValueError("Genetic session has conflicting preopen locks")
+        if type(marker.get("fills_count")) is not int or marker["fills_count"] < 0:
+            raise ValueError("Genetic session marker has invalid fill count")
+    trades_by_marker = {key: [] for key in selected}
+    seen_keys = set()
+    session_trades = []
+    for trade in trades:
+        if trade.get("session") != session or trade.get("execution") != "forward_observed_paper":
+            continue
+        key = trade.get("idempotency_key")
+        if not isinstance(key, str) or key in seen_keys:
+            raise ValueError("Genetic session contains missing/duplicate trade identity")
+        seen_keys.add(key)
+        owner = key if key in selected else key.rsplit(":", 1)[0]
+        if owner not in selected or trade.get("lock_sha256") != lock_sha256:
+            raise ValueError("Genetic session trade has no matching frozen marker")
+        if trade.get("source_commit") != selected[owner].get("source_commit"):
+            raise ValueError("Genetic session trade provenance does not match marker")
+        trades_by_marker[owner].append(trade)
+        session_trades.append(trade)
+    for key, marker in selected.items():
+        associated = trades_by_marker[key]
+        if (len(associated) != marker["fills_count"] or
+                sorted(x["ticker"] for x in associated) !=
+                sorted(marker.get("fill_tickers", []))):
+            raise ValueError("Genetic marker count/tickers disagree with canonical fills")
+    ordered_markers = sorted(selected.items(),
+                             key=lambda item: (item[1].get("recorded_at_utc", ""), item[0]))
+    ordered_trades = sorted(session_trades,
+                            key=lambda row: (row["observed_at_utc"], row["idempotency_key"]))
+    return {
+        "fills_count": len(ordered_trades),
+        "fills": [{"ticker": row["ticker"], "side": row["side"].lower(),
+                   "quantity": row["shares"], "price": row["fill"],
+                   "fee": row["fee"], "observed_at_utc": row["observed_at_utc"]}
+                  for row in ordered_trades],
+        "native_markers": [{"key": key, "mode": marker["mode"],
+                            "ticker": marker.get("ticker"),
+                            "fills_count": marker["fills_count"],
+                            "recorded_at_utc": marker["recorded_at_utc"]}
+                           for key, marker in ordered_markers],
+        "latest_marker": ordered_markers[-1][1] if ordered_markers else None,
+    }
+
+
 def verify_published(report_path=ROOT/"data/operational-clock.json", *, remote=_source_at):
     doc=json.loads(Path(report_path).read_text(encoding="utf8"))
     lane=doc.get("slots",{}).get(SLOT,{})
@@ -272,4 +333,10 @@ def verify_published(report_path=ROOT/"data/operational-clock.json", *, remote=_
     record=remote("origin/main",LEDGER)
     if marker not in record.get("forward_executions",{}).values():
         raise ValueError("Genetic marker not persisted in native original book")
+    if lane.get("session_fill_reconciled"):
+        summary = summarize_session_fills(record, doc["session"], marker["lock_sha256"])
+        if (lane.get("fills_count") != summary["fills_count"] or
+                lane.get("fills") != summary["fills"] or
+                lane.get("native_markers") != summary["native_markers"]):
+            raise ValueError("Genetic public session totals differ from canonical ledger")
     return [SLOT]
