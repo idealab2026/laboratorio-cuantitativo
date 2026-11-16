@@ -231,6 +231,121 @@ def settle_classic(lock, now, market, quotes, *, reader=read, frozen=_source_at)
     return ({LEDGER: updated} if any_changes else {}), evidence
 
 
+
+def summarize_session_fills(book, frozen, session, lock_sha256, source_commit, commission):
+    """Reconcile every native classic paper fill, not just its latest marker.
+
+    For pre-existing sells, the historic trade records net proceeds but omits
+    price/quantity. Recover those economically from the FROZEN held shares,
+    recorded proceeds and frozen commission rate; never infer a fill from OHLC.
+    """
+    markers = book.get("forward_executions", {})
+    events, trades = book.get("events", []), book.get("trades", [])
+    if not isinstance(markers, dict) or not isinstance(events, list) or not isinstance(trades, list):
+        raise ValueError("Malformed classic canonical evidence")
+    if type(commission) not in (int, float) or not math.isfinite(commission) or not 0 <= commission < 1:
+        raise ValueError("Invalid classic commission")
+    selected = {k: m for k, m in markers.items()
+                if isinstance(m, dict) and m.get("session") == session}
+    grouped = {k: [] for k in selected}
+    for key, marker in selected.items():
+        if marker.get("lock_sha256") != lock_sha256 or marker.get("source_commit") != source_commit:
+            raise ValueError("Classic marker provenance conflicts with frozen lock")
+        if type(marker.get("fills_count")) is not int or marker["fills_count"] < 0:
+            raise ValueError("Invalid classic marker fill count")
+    sales = {}
+    for trade in trades:
+        if trade.get("exit_date") != session or trade.get("execution") != "forward_observed_paper":
+            continue
+        key = trade.get("idempotency_key")
+        if not isinstance(key, str) or key in sales:
+            raise ValueError("Missing/duplicate classic sell trade identity")
+        sales[key] = trade
+    observed = []
+    seen = set()
+    buys = {}
+    for event in events:
+        if event.get("date") != session or event.get("execution") != "forward_observed_paper":
+            continue
+        key = event.get("idempotency_key")
+        side = event.get("type")
+        ticker = event.get("ticker")
+        if (not isinstance(key, str) or key in seen or side not in ("buy", "sell")
+                or not isinstance(ticker, str) or not key.endswith(":" + ticker)):
+            raise ValueError("Invalid/duplicate classic fill evidence")
+        seen.add(key)
+        owner = key.rsplit(":", 1)[0]
+        if owner not in selected:
+            raise ValueError("Classic fill has no matching session marker")
+        if (event.get("lock_sha256") != lock_sha256 or
+                event.get("source_commit") != source_commit):
+            raise ValueError("Classic fill has wrong frozen provenance")
+        grouped[owner].append(ticker)
+        quantity = event.get("shares")
+        price = event.get("price")
+        fee = event.get("fee")
+        if side == "buy":
+            if key in sales:
+                raise ValueError("A classic buy cannot match a closing trade")
+            if not all(type(v) in (int, float) and math.isfinite(v) and v > 0
+                       for v in (quantity, price)) or not (
+                       type(fee) in (int, float) and math.isfinite(fee) and fee >= 0):
+                raise ValueError("Classic buy has no verified trade economics")
+            buys[ticker] = event
+        else:
+            trade = sales.pop(key, None)
+            if trade is None or trade.get("ticker") != ticker or (
+                    trade.get("lock_sha256") != lock_sha256 or
+                    trade.get("source_commit") != source_commit):
+                raise ValueError("Classic sale has no matching canonical trade")
+            position = frozen.get("positions", {}).get(ticker)
+            if position is None:
+                # Support a same-session verified buy followed by a real stop.
+                bought = buys.get(ticker)
+                if bought is None:
+                    raise ValueError("Classic sale lacks frozen or forward bought shares")
+                position = {"shares": bought["shares"], "entry_date": session,
+                            "cost": bought["shares"] * bought["price"] + bought["fee"]}
+            if (trade.get("entry_date") != position.get("entry_date") or
+                    not math.isclose(float(trade["entry_cost"]), float(position["cost"]),
+                                     rel_tol=1e-10, abs_tol=1e-6)):
+                raise ValueError("Classic sale does not match frozen entry cost")
+            quantity = position["shares"]
+            proceeds = trade.get("proceeds")
+            if not all(type(v) in (int, float) and math.isfinite(v) and v > 0
+                       for v in (quantity, proceeds)):
+                raise ValueError("Classic sale has invalid recorded proceeds")
+            price = proceeds / (quantity * (1 - commission))
+            fee = quantity * price * commission
+            if not math.isclose(quantity * price - fee, proceeds,
+                                rel_tol=1e-11, abs_tol=1e-7):
+                raise ValueError("Classic sale economics do not reconcile")
+            if "shares" in event and not math.isclose(event["shares"], quantity, rel_tol=1e-10):
+                raise ValueError("Classic sale quantity disagrees with event")
+            if "price" in event and not math.isclose(event["price"], price, rel_tol=1e-10):
+                raise ValueError("Classic sale price disagrees with event")
+            if "fee" in event and not math.isclose(event["fee"], fee, rel_tol=1e-10):
+                raise ValueError("Classic sale fee disagrees with event")
+        observed.append((event["observed_at_utc"], key, {
+            "ticker": ticker, "side": side, "quantity": quantity,
+            "price": price, "fee": fee, "observed_at_utc": event["observed_at_utc"]}))
+    if sales:
+        raise ValueError("Classic canonical sale has no corresponding event")
+    for key, marker in selected.items():
+        if (len(grouped[key]) != marker["fills_count"] or
+                sorted(grouped[key]) != sorted(marker.get("fill_tickers", []))):
+            raise ValueError("Classic marker count/tickers disagree with canonical fills")
+    ordered_markers = sorted(selected.items(),
+                             key=lambda item: (item[1].get("recorded_at_utc", ""), item[0]))
+    return {"fills_count": len(observed),
+            "fills": [row for _, _, row in sorted(observed)],
+            "native_markers": [{"key": key, "fills_count": marker["fills_count"],
+                                "recorded_at_utc": marker["recorded_at_utc"]}
+                               for key, marker in ordered_markers],
+            "latest_marker": ordered_markers[-1][1] if ordered_markers else None}
+
+
+
 def verify_published(report_path=ROOT / "data/operational-clock.json", *, remote=_source_at):
     report = json.loads(Path(report_path).read_text(encoding="utf8"))
     lanes = report.get("slots", {})
@@ -249,5 +364,16 @@ def verify_published(report_path=ROOT / "data/operational-clock.json", *, remote
                    if m == marker]
         if not matches:
             raise ValueError(f"{slot}: published forward marker missing from canonical book")
+        if lane.get("session_fill_reconciled"):
+            source = remote(report["source_commit"], LEDGER)
+            config = json.loads((ROOT / CONFIG).read_text())
+            summary = summarize_session_fills(
+                book["books"][name], source["books"][name], report["session"],
+                report["lock_sha256"], report["source_commit"],
+                config["execution"]["commission"])
+            if (lane.get("fills_count") != summary["fills_count"] or
+                    lane.get("fills") != summary["fills"] or
+                    lane.get("native_markers") != summary["native_markers"]):
+                raise ValueError(f"{slot}: published classic totals differ from canonical book")
         verified.append(slot)
     return verified

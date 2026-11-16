@@ -11,7 +11,7 @@ ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 sys.path.insert(0, str(ROOT / "scripts"))
 from operational_clock import clock_plan
-from classic_forward_settlement import LEDGER, CONFIG, SLOTS, settle_classic
+from classic_forward_settlement import LEDGER, CONFIG, SLOTS, settle_classic, summarize_session_fills
 from classic_sp500 import run as classic
 
 UTC = timezone.utc
@@ -147,6 +147,65 @@ class NativeClassicClockTests(unittest.TestCase):
         self.book = copy.deepcopy(output[LEDGER])
         output2, _ = self.run_clock(quotes=quote)
         self.assertEqual(output2, {})
+
+    def test_two_independent_stops_count_across_polls_and_retries(self):
+        # One portfolio holds two names. Their stops occur in different polls:
+        # the public view must retain both even though each poll has one marker.
+        slot, name = "IL-011", SLOTS["IL-011"]
+        self.tracks[slot]["orders"] = []
+        self.tracks[slot]["holdings"] = ["AAPL", "MSFT"]
+        book = self.book["books"][name]
+        book["pending"] = {}
+        book["positions"] = {
+            t: {"shares": q, "entry_date": "2026-11-06", "entry_price": 100.,
+                "cost": q * 100.1, "dividends": 0., "stop": 95., "target": 115.}
+            for t, q in (("AAPL", 3.), ("MSFT", 4.))}
+        book["cash"] = 99299.3
+        self.original = copy.deepcopy(self.book)
+        self.lock = clock_plan(
+            self.open - timedelta(minutes=10), self.market, self.tracks, "c"*40)
+        first_quotes = {
+            t: {"price": value,
+                "quote_at_utc": (self.now - timedelta(minutes=1)).isoformat(),
+                "observed_at_utc": self.now.isoformat()}
+            for t, value in (("AAPL", 94.), ("MSFT", 100.))}
+        output1, evidence1 = self.run_clock(quotes=first_quotes)
+        self.assertEqual(evidence1[slot]["fills"], 1)
+        self.book = copy.deepcopy(output1[LEDGER])
+        later = self.now + timedelta(minutes=14)
+        second_quotes = {"MSFT": {"price": 94.,
+            "quote_at_utc": (later - timedelta(minutes=1)).isoformat(),
+            "observed_at_utc": later.isoformat()}}
+        output2, evidence2 = self.run_clock(quotes=second_quotes, now=later)
+        self.assertEqual(evidence2[slot]["fills"], 1)
+        after = output2[LEDGER]["books"][name]
+        frozen = self.original["books"][name]
+        summary = summarize_session_fills(
+            after, frozen, self.market["session"], self.lock["lock_sha256"],
+            self.lock["source_commit"], self.config["execution"]["commission"])
+        self.assertEqual(summary["fills_count"], 2)
+        self.assertEqual([(v["ticker"], v["side"]) for v in summary["fills"]],
+                         [("AAPL", "sell"), ("MSFT", "sell")])
+        self.assertEqual(sum(x["fills_count"] for x in summary["native_markers"]), 2)
+        self.assertEqual(summary["fills"][0]["quantity"], 3.)
+        self.assertEqual(summary["fills"][1]["quantity"], 4.)
+        self.assertEqual(summary, summarize_session_fills(
+            after, frozen, self.market["session"], self.lock["lock_sha256"],
+            self.lock["source_commit"], self.config["execution"]["commission"]))
+        corrupted = copy.deepcopy(after)
+        corrupted["events"].append(copy.deepcopy(corrupted["events"][-1]))
+        with self.assertRaisesRegex(ValueError, "duplicate"):
+            summarize_session_fills(
+                corrupted, frozen, self.market["session"], self.lock["lock_sha256"],
+                self.lock["source_commit"], self.config["execution"]["commission"])
+        corrupted = copy.deepcopy(after)
+        stop_key = next(k for k, v in corrupted["forward_executions"].items()
+                        if "MSFT" in k)
+        corrupted["forward_executions"][stop_key]["fills_count"] = 2
+        with self.assertRaisesRegex(ValueError, "disagree"):
+            summarize_session_fills(
+                corrupted, frozen, self.market["session"], self.lock["lock_sha256"],
+                self.lock["source_commit"], self.config["execution"]["commission"])
 
     def test_expired_inactive_recovery_boundary_allows_real_next_open_only(self):
         slot, name = "IL-011", SLOTS["IL-011"]
