@@ -206,6 +206,39 @@ def _quote_valid(quote, now, market):
         return False
 
 
+def record_opening_quote_diagnostic(lane, previous_lane, frozen_lane, evidence, now, market):
+    """Publish why an opening was not booked; never infer or alter any fill.
+
+    The indicative order quote alone is insufficient: classical portfolios
+    require contemporaneous quotes for every held position plus pending orders.
+    Retain the first missing set through retries to diagnose provider gaps.
+    """
+    if (lane.get("planned", 0) == 0 or
+            evidence.get("status") not in ("awaiting_fresh_open_quotes", "opening_window_missed")):
+        return
+    required = sorted(set(frozen_lane.get("monitor_tickers", [])) |
+                      {r["ticker"] for r in frozen_lane.get("orders", [])})
+    missing = sorted(set(evidence.get("missing", [])))
+    if not set(missing).issubset(required):
+        raise ValueError("Opening quote diagnostic contains an unexpected ticker")
+    previous = previous_lane.get("opening_quote_diagnostic", {})
+    if not isinstance(previous, dict):
+        raise ValueError("Malformed previous opening quote diagnostic")
+    first_missing = previous.get("first_missing_tickers", missing)
+    first_at = previous.get("first_missing_at_utc",
+                            timestamp(now) if missing else None)
+    lane["opening_quote_diagnostic"] = {
+        "settlement_status": evidence["status"],
+        "required_tickers": required,
+        "missing_tickers_at_last_attempt": missing,
+        "first_missing_tickers": first_missing,
+        "first_missing_at_utc": first_at,
+        "last_checked_at_utc": timestamp(now),
+        "opening_cutoff_at_utc": timestamp(market["open"] + timedelta(minutes=30)),
+        "all_required_quotes_available_now": not bool(missing),
+    }
+
+
 def status_report(lock, now, market, quotes, prior=None, *, run_id=None):
     verify_lock(lock, market, now)
     if prior is not None and prior.get("session") != lock["session"]:
@@ -517,6 +550,10 @@ def main(argv=None):
         for slot, result in {**evidence, **ml_evidence, **classic_evidence, **ahp_evidence, **timesfm_evidence, **genetic_evidence}.items():
             lane = report["slots"][slot]
             lane["native_settlement"] = result["status"]
+            if slot in {f"IL-{n:03d}" for n in range(11, 18)}:
+                record_opening_quote_diagnostic(
+                    lane, (prior or {}).get("slots", {}).get(slot, {}),
+                    lock["slots"][slot], result, now, market)
             if result["status"] == "settled_native_paper":
                 lane["status"] = "native_forward_settled"
                 lane["fills"] = result["operations"]
