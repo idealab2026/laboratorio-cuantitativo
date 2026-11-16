@@ -1,5 +1,5 @@
 {
-  "checked_at_utc": "2026-11-16T19:39:28.002003Z",
+  "checked_at_utc": "2026-11-16T20:29:14.036903Z",
   "lock_sha256": "b54a4ae73ec9bfa47a06c4395354877b6fca8f7f51e86a400d7edbcb034ef03e",
   "mode": "single_midas_operator_monitor_no_broker",
   "note": "Observed quotes are not fills. A native engine must settle quantity/cash before a trade counts in P&L.",
@@ -12,7 +12,7 @@
     "omitted_algorithm_lanes": {},
     "requested_symbols": 38
   },
-  "run_id": 43941542137,
+  "run_id": 43950175724,
   "schema": "midas.operational_clock.v1",
   "session": "2026-11-16",
   "settlement": "native_forward_010_through_027_037_through_044",
@@ -30,6 +30,14 @@
     "IL-011": {
       "fills": [
         {
+          "fee": 13.100441870866417,
+          "observed_at_utc": "2026-11-16T14:33:57.884446Z",
+          "price": 166.31330138397217,
+          "quantity": 78.769658,
+          "side": "sell",
+          "ticker": "FSLR"
+        },
+        {
           "fee": 14.152992901899628,
           "observed_at_utc": "2026-11-16T18:33:49.560457Z",
           "price": 60.23986545753479,
@@ -38,7 +46,7 @@
           "ticker": "BLDR"
         }
       ],
-      "fills_count": 1,
+      "fills_count": 2,
       "holdings_count": 7,
       "native_marker": {
         "fill_tickers": [
@@ -52,6 +60,23 @@
         "session": "2026-11-16",
         "source_commit": "e98b1f5207681eab9a2be1b2f935db71b4ad9224"
       },
+      "native_markers": [
+        {
+          "fills_count": 0,
+          "key": "IL-011:2026-11-16:open:classic_forward_v1",
+          "recorded_at_utc": "2026-11-16T14:34:03.758808Z"
+        },
+        {
+          "fills_count": 1,
+          "key": "IL-011:2026-11-16:stop:FSLR:classic_forward_v1",
+          "recorded_at_utc": "2026-11-16T14:34:03.758808Z"
+        },
+        {
+          "fills_count": 1,
+          "key": "IL-011:2026-11-16:stop:BLDR:classic_forward_v1",
+          "recorded_at_utc": "2026-11-16T18:33:54.214170Z"
+        }
+      ],
       "native_settlement": "already_settled",
       "observed": 1,
       "orders": [
@@ -71,6 +96,7 @@
         }
       ],
       "planned": 1,
+      "session_fill_reconciled": true,
       "source_session": "2026-11-13",
       "status": "native_forward_settled",
       "waiting": 0
@@ -113,7 +139,7 @@
         "all_required_quotes_available_now": true,
         "first_missing_at_utc": null,
         "first_missing_tickers": [],
-        "last_checked_at_utc": "2026-11-16T19:39:28.002003Z",
+        "last_checked_at_utc": "2026-11-16T20:29:14.036903Z",
         "missing_tickers_at_last_attempt": [],
         "opening_cutoff_at_utc": "2026-11-16T15:00:00Z",
         "required_tickers": [
@@ -159,7 +185,7 @@
         "first_missing_tickers": [
           "ERIE"
         ],
-        "last_checked_at_utc": "2026-11-16T19:39:28.002003Z",
+        "last_checked_at_utc": "2026-11-16T20:29:14.036903Z",
         "missing_tickers_at_last_attempt": [
           "ERIE"
         ],
@@ -211,6 +237,13 @@
         "session": "2026-11-16",
         "source_commit": "e98b1f5207681eab9a2be1b2f935db71b4ad9224"
       },
+      "native_markers": [
+        {
+          "fills_count": 0,
+          "key": "IL-017:2026-11-16:open:classic_forward_v1",
+          "recorded_at_utc": "2026-11-16T14:34:03.758808Z"
+        }
+      ],
       "native_settlement": "already_settled",
       "observed": 1,
       "orders": [
@@ -230,6 +263,7 @@
         }
       ],
       "planned": 1,
+      "session_fill_reconciled": true,
       "source_session": "2026-11-13",
       "status": "native_forward_settled",
       "waiting": 0
