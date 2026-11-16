@@ -11,7 +11,7 @@ ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 sys.path.insert(0, str(ROOT / "scripts"))
 from operational_clock import clock_plan
-from classic_forward_settlement import LEDGER, CONFIG, SLOTS, settle_classic
+from classic_forward_settlement import LEDGER, CONFIG, SLOTS, settle_classic, _claims_settled
 from classic_sp500 import run as classic
 
 UTC = timezone.utc
@@ -181,6 +181,34 @@ class NativeClassicClockTests(unittest.TestCase):
         self.assertEqual(result[slot]["status"], "corporate_action_review_required")
         self.assertEqual(result[slot]["fills"], 0)
         self.assertEqual(changed[LEDGER]["books"][name]["pending"], old["pending"])
+
+    def test_fully_settled_claim_can_resume_but_source_change_cannot(self):
+        slot, name = "IL-011", SLOTS["IL-011"]
+        old = self.book["books"][name]
+        old["receivables"] = {"KVUE_KMB_2026-11-02": {
+            "action_id": "KVUE_KMB_2026-11-02", "status": "settled", "settled_cash": "15.45", "payment_session": "2026-11-06",
+            "settlement_source_url": "https://www.sec.gov/Archives/test"}}
+        self.original = copy.deepcopy(self.book)
+        changed, result = self.run_clock()
+        self.assertEqual(result[slot]["status"], "settled_native_paper")
+        self.assertEqual(result[slot]["fills"], 1)
+        self.assertEqual(changed[LEDGER]["books"][name]["receivables"], old["receivables"])
+        self.original["books"][name]["receivables"]["KVUE_KMB_2026-11-02"]["status"] = "unsettled"
+        _, result = self.run_clock()
+        self.assertEqual(result[slot]["status"], "source_changed")
+        old["receivables"]["KVUE_KMB_2026-11-02"].pop("settlement_source_url")
+        self.original = copy.deepcopy(self.book)
+        _, result = self.run_clock()
+        self.assertEqual(result[slot]["status"], "corporate_action_review_required")
+
+    def test_malformed_or_future_claim_receipts_do_not_release(self):
+        good = {"action_id": "K", "status": "settled", "settled_cash": "15.45",
+                "payment_session": "2026-11-06", "settlement_source_url": "https://www.sec.gov/Archives/test"}
+        self.assertTrue(_claims_settled({"K": good}, "2026-11-09"))
+        for change in ({"settled_cash": "NaN"}, {"settled_cash": "-1"},
+                       {"payment_session": "2026-11-10"}, {"payment_session": "2026-99-99"},
+                       {"settlement_source_url": "https://example.com/"}, {"action_id": "wrong"}):
+            self.assertFalse(_claims_settled({"K": {**good, **change}}, "2026-11-09"))
 
     def test_nightly_marks_only_no_retroactive_entry_or_stop(self):
         marks = {"AAPL": {"open": 100.0, "high": 150.0, "low": 75.0,
