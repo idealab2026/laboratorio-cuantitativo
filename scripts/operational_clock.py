@@ -567,6 +567,29 @@ def main(argv=None):
                 lane["fills_count"] = result["fills"]
                 lane["native_marker"] = result["marker"]
                 lane["fills"] = []
+        # A classic book can sell more than one frozen position during separate
+        # intraday polls; its latest marker never represents the daily total.
+        from classic_forward_settlement import (
+            LEDGER as CLASSIC_LEDGER, CONFIG as CLASSIC_CONFIG,
+            SLOTS as CLASSIC_SLOTS, summarize_session_fills as summarize_classic)
+        from native_forward_settlement import _source_at as _read_frozen_classic
+        classic_book = _read(ROOT / CLASSIC_LEDGER)
+        frozen_classic = _read_frozen_classic(lock["source_commit"], CLASSIC_LEDGER)
+        classic_policy = _read(ROOT / CLASSIC_CONFIG)["execution"]
+        for slot, name in CLASSIC_SLOTS.items():
+            lane = report["slots"].get(slot)
+            if not lane or lane.get("status") != "native_forward_settled":
+                continue
+            summary = summarize_classic(
+                classic_book["books"][name], frozen_classic["books"][name],
+                report["session"], lock["lock_sha256"],
+                lock["source_commit"], classic_policy["commission"])
+            lane["fills_count"] = summary["fills_count"]
+            lane["fills"] = summary["fills"]
+            lane["native_markers"] = summary["native_markers"]
+            lane["session_fill_reconciled"] = True
+            if summary["latest_marker"] is not None:
+                lane["native_marker"] = summary["latest_marker"]
         # IL-044 may have multiple distinct stop/target fills during one
         # session. The last native marker is not a daily trade count.
         genetic_lane = report["slots"].get("IL-044")
