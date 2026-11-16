@@ -159,9 +159,20 @@ def inactive_mark(book, day, bars, *, recorded_at, identity=None, reviews=None):
         raise ValueError("Missing exact held or receivable bar")
     for ticker, pos in book["positions"].items():
         row = bars[ticker]
-        o, h, l, c = (positive(row[k]) for k in ("open", "high", "low", "close"))
-        if l > min(o, c) or h < max(o, c) or row.get("split", 0):
-            raise ValueError("Invalid bar or unreviewed split during inactive session")
+        close_only = row.get("price_scope") == "passive_close_only"
+        if close_only:
+            if not identity or identity.get("closing_mark_scope") != "passive_nav_only" or not identity.get("closing_mark_hashes"):
+                raise ValueError("Closing mark lacks passive provenance")
+            positive(row["close"])
+            if row.get("date") != day:
+                raise ValueError("Passive mark has wrong session")
+            h = l = None
+        else:
+            o, h, l, c = (positive(row[k]) for k in ("open", "high", "low", "close"))
+            if l > min(o, c) or h < max(o, c):
+                raise ValueError("Invalid bar during inactive session")
+        if row.get("split", 0):
+            raise ValueError("Unreviewed split during inactive session")
         dividend = float(row.get("dividend", 0))
         if not math.isfinite(dividend) or dividend < 0:
             raise ValueError("Invalid dividend")
@@ -174,8 +185,11 @@ def inactive_mark(book, day, bars, *, recorded_at, identity=None, reviews=None):
             pos["dividends"] += amount
             book["events"].append({"date": day, "type": "dividend", "ticker": ticker,
                 "amount": amount, "source_url": action["source_url"], "recorded_at_utc": recorded_at})
-        crossed = "stop" if pos.get("stop") is not None and l <= pos["stop"] else (
-            "target" if pos.get("target") is not None and h >= pos["target"] else None)
+        if close_only and (pos.get("stop") is not None or pos.get("target") is not None):
+            book["events"].append({"date": day, "type": "intraday_trigger_unknown_during_outage",
+                "ticker": ticker, "recorded_at_utc": recorded_at})
+        crossed = None if close_only else ("stop" if pos.get("stop") is not None and l <= pos["stop"] else (
+            "target" if pos.get("target") is not None and h >= pos["target"] else None))
         if crossed:
             book["events"].append({"date": day, "type": "unexecuted_during_outage",
                 "ticker": ticker, "trigger": crossed, "recorded_at_utc": recorded_at})

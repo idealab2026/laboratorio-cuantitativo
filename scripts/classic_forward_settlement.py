@@ -8,7 +8,8 @@ from __future__ import annotations
 import copy
 import json
 import math
-from datetime import datetime, timedelta
+from datetime import date, datetime, timedelta
+from decimal import Decimal, InvalidOperation
 from pathlib import Path
 
 from operational_clock import _quote_valid, digest, timestamp, verify_lock
@@ -41,7 +42,33 @@ def event_key(slot, session, action):
 
 def _source_unchanged(frozen, current):
     return all(frozen.get(k) == current.get(k) for k in
-               ("cash", "positions", "pending", "trades", "events", "equity", "nav"))
+               ("cash", "positions", "pending", "trades", "events", "equity", "nav",
+                "receivables", "outage_control", "paused_missing_quotes"))
+
+
+def _claims_settled(claims, previous):
+    """Accept only a fully recorded issuer-reviewed settlement at the frozen close."""
+    if not isinstance(claims, dict):
+        return False
+    for key, claim in claims.items():
+        if not isinstance(claim, dict) or claim.get("action_id") != key or claim.get("status") != "settled":
+            return False
+        try:
+            payment = claim["payment_session"]
+            if not isinstance(payment, str) or date.fromisoformat(payment).isoformat() != payment or payment > previous:
+                return False
+            raw = claim["settled_cash"]
+            if not isinstance(raw, str):
+                return False
+            cash = Decimal(raw)
+            if not cash.is_finite() or cash <= 0:
+                return False
+            url = claim["settlement_source_url"]
+            if not isinstance(url, str) or not url.startswith(("https://www.sec.gov/Archives/", "https://www.investor.kimberly-clark.com/")):
+                return False
+        except (KeyError, ValueError, InvalidOperation, TypeError):
+            return False
+    return True
 
 
 def _provenance(q, lock, ticker, key):
@@ -87,9 +114,10 @@ def settle_classic(lock, now, market, quotes, *, reader=read, frozen=_source_at)
                                  if i not in (4, 7)))
         unresolved_outage = bool(outage) and (
             not release_known or market["session"] < first_future)
-        if book.get("receivables") or unresolved_outage:
+        unresolved_claims = not _claims_settled(book.get("receivables", {}), market["previous"])
+        if unresolved_claims or unresolved_outage:
             evidence[slot] = {"status": "corporate_action_review_required"
-                             if book.get("receivables") else "inactive_recovery_not_yet_released",
+                             if unresolved_claims else "inactive_recovery_not_yet_released",
                              "fills": 0}
             continue
         markers = book.get("forward_executions", {}).copy()

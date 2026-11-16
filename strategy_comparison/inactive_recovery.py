@@ -18,7 +18,7 @@ sys.path.insert(0, str(ROOT))
 MAX_SESSIONS = 4
 
 
-def window(last, now):
+def window(last, now, *, max_sessions=MAX_SESSIONS):
     import pandas_market_calendars as calendars
     if now.tzinfo is None:
         raise ValueError("Recovery clock must be timezone-aware")
@@ -31,7 +31,9 @@ def window(last, now):
     if not closed or closed[0] != last or not future:
         raise ValueError("Missing closed-session or future-opening boundary")
     days = closed[1:]
-    if len(days) > MAX_SESSIONS:
+    if type(max_sessions) is not int or not MAX_SESSIONS <= max_sessions <= 8:
+        raise ValueError("Invalid reviewed recovery bound")
+    if len(days) > max_sessions:
         raise ValueError("Outage exceeds bounded recovery; explicit review required")
     return closed[-1], future[0], days
 
@@ -43,7 +45,7 @@ def identity_check(identity):
             raise ValueError("Recovery requires immutable common quote identity")
 
 
-def reconcile_classic(state, loader, *, now, reviews=None):
+def reconcile_classic(state, loader, *, now, reviews=None, max_sessions=MAX_SESSIONS):
     from classic_sp500.corporate_actions import inactive_mark, required_claim_quotes
     updated = copy.deepcopy(state)
     names = []
@@ -51,7 +53,7 @@ def reconcile_classic(state, loader, *, now, reviews=None):
         if not original.get("paused_missing_quotes"):
             continue
         last = original["equity"][-1]["date"]
-        latest, first, days = window(last, now)
+        latest, first, days = window(last, now, max_sessions=max_sessions)
         if latest != state["last_session"] or not days:
             raise ValueError("Classic recovery must reach the current global session")
         book = updated["books"][name]
@@ -113,7 +115,7 @@ def reconcile_weekly(state, loader, *, now):
     return result, sorted(result["strategies"])
 
 
-def recover(engine, *, root=ROOT, write=False, now=None):
+def recover(engine, *, root=ROOT, write=False, now=None, max_sessions=MAX_SESSIONS):
     from market_data.revisions import load_effective
     from timesfm_strategy.run import atomic_write
     root, now = Path(root), now or datetime.now(timezone.utc)
@@ -128,6 +130,16 @@ def recover(engine, *, root=ROOT, write=False, now=None):
         bars = copy.deepcopy(effective["bars"])
         identity = {"snapshot_sha256": effective["base"]["sha256"],
                     "effective_sha256": effective["effective_sha256"]}
+        if engine == "classic":
+            from market_data.close_marks import load_marks, directory
+            passive, hashes, _ = load_marks(root / "market_data/snapshots", day)
+            for hash_value in hashes:
+                document = json.loads((directory(root / "market_data/snapshots", day) /
+                                       (hash_value + ".json")).read_text())
+                if datetime.fromisoformat(document["captured_at_utc"]) > now:
+                    raise ValueError("Passive closing mark is from the future")
+            bars = {**passive, **bars}
+            identity.update(closing_mark_hashes=hashes, closing_mark_scope="passive_nav_only")
         independent = set(required) - set(effective["base"]["requested_symbols"])
         if independent:
             if engine != "weekly" or independent != {"RSP"}:
@@ -153,7 +165,8 @@ def recover(engine, *, root=ROOT, write=False, now=None):
         verify_config(config)
         validate_state(original, config)
         updated, names = reconcile_classic(original, loader, now=now,
-            reviews=json.loads((root / "market_data/corporate_action_reviews.json").read_text()))
+            reviews=json.loads((root / "market_data/corporate_action_reviews.json").read_text()),
+            max_sessions=max_sessions)
         validate_state(updated, config)
         books = "books"
     else:
@@ -190,9 +203,11 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--engine", choices=("classic", "weekly"), required=True)
     parser.add_argument("--phase", choices=("check", "recover"), default="check")
+    parser.add_argument("--reviewed-max-sessions", type=int, default=MAX_SESSIONS,
+                        help="Explicit reviewed classic outage bound, at most eight sessions")
     args = parser.parse_args()
     try:
-        print(json.dumps(recover(args.engine, write=args.phase == "recover"), ensure_ascii=False, sort_keys=True))
+        print(json.dumps(recover(args.engine, write=args.phase == "recover", max_sessions=args.reviewed_max_sessions), ensure_ascii=False, sort_keys=True))
         return 0
     except (ValueError, OSError, KeyError, TypeError) as exc:
         print("Inactive recovery error: " + repr(exc))
