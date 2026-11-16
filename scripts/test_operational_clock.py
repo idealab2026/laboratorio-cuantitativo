@@ -15,7 +15,7 @@ ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "scripts"))
 from operational_clock import (ACTIVE, clock_plan, status_report, verify_lock,
                                verify_prepared_lock, stage_for_actual_time,
-                               main, budgeted_quote_targets, quote_batch, LIMIT)
+                               main, budgeted_quote_targets, quote_batch, LIMIT, record_opening_quote_diagnostic)
 
 UTC = timezone.utc
 
@@ -105,6 +105,44 @@ class OperatorClockTest(unittest.TestCase):
         future = self.observed(stamp=now + timedelta(minutes=1))
         self.assertEqual(status_report(self.ready, now, self.market,
                          {"AAPL": future})["slots"]["IL-015"]["observed"], 0)
+
+    def test_classic_opening_missing_quotes_audited_without_invented_fills(self):
+        lane = {"planned": 2, "orders": copy.deepcopy(self.ready["slots"]["IL-015"]["orders"])}
+        before = copy.deepcopy(lane)
+        first = self.open + timedelta(minutes=4)
+        record_opening_quote_diagnostic(
+            lane, {}, self.ready["slots"]["IL-015"],
+            {"status": "awaiting_fresh_open_quotes", "fills": 0, "missing": ["MSFT"]},
+            first, self.market)
+        audit = lane["opening_quote_diagnostic"]
+        self.assertEqual(audit["required_tickers"], ["AAPL", "MSFT"])
+        self.assertEqual(audit["first_missing_tickers"], ["MSFT"])
+        self.assertFalse(audit["all_required_quotes_available_now"])
+        self.assertEqual(lane["orders"], before["orders"])
+        self.assertNotIn("fills", lane)
+
+        # A later poll cannot silently turn old prices into open-window fills.
+        later = self.open + timedelta(minutes=45)
+        previous = copy.deepcopy(lane)
+        late_lane = copy.deepcopy(before)
+        record_opening_quote_diagnostic(
+            late_lane, previous, self.ready["slots"]["IL-015"],
+            {"status": "opening_window_missed", "fills": 0}, later, self.market)
+        late = late_lane["opening_quote_diagnostic"]
+        self.assertEqual(late["settlement_status"], "opening_window_missed")
+        self.assertEqual(late["first_missing_tickers"], ["MSFT"])
+        self.assertEqual(late["first_missing_at_utc"], audit["first_missing_at_utc"])
+        self.assertEqual(late["missing_tickers_at_last_attempt"], [])
+        self.assertTrue(late["all_required_quotes_available_now"])
+        self.assertEqual(late["opening_cutoff_at_utc"],
+                         audit["opening_cutoff_at_utc"])
+        self.assertNotIn("fills", late_lane)
+
+        unchanged = copy.deepcopy(before)
+        record_opening_quote_diagnostic(
+            unchanged, {}, self.ready["slots"]["IL-015"],
+            {"status": "settled_native_paper", "fills": 1}, first, self.market)
+        self.assertEqual(unchanged, before)
 
     def test_once_observed_the_order_remains_idempotent_without_new_historical_fill(self):
         first = status_report(self.ready, self.open + timedelta(minutes=2), self.market,
