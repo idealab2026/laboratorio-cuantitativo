@@ -1,10 +1,10 @@
 {
-  "lock_sha256": "19e57007e34288534b7e1a72d670966cc0398df9a3c0946df2d01d61ca28c088",
-  "open_at_utc": "2026-11-13T14:30:00Z",
-  "prepared_at_utc": "2026-11-13T13:22:42.512584Z",
-  "previous_session": "2026-11-12",
+  "lock_sha256": "b54a4ae73ec9bfa47a06c4395354877b6fca8f7f51e86a400d7edbcb034ef03e",
+  "open_at_utc": "2026-11-16T14:30:00Z",
+  "prepared_at_utc": "2026-11-16T12:49:21.610891Z",
+  "previous_session": "2026-11-13",
   "schema": "midas.operational_clock.v1",
-  "session": "2026-11-13",
+  "session": "2026-11-16",
   "slots": {
     "IL-010": {
       "execution_ready": true,
@@ -12,7 +12,7 @@
       "monitor_tickers": [],
       "orders": [],
       "orders_count": 0,
-      "source_session": "2026-11-12",
+      "source_session": "2026-11-13",
       "source_status": "recorded"
     },
     "IL-011": {
@@ -31,15 +31,15 @@
         {
           "action": "buy",
           "limit_price": null,
-          "scheduled_at_utc": "2026-11-13T14:30:00Z",
-          "signal_session": "2026-11-12",
-          "target_session": "2026-11-13",
+          "scheduled_at_utc": "2026-11-16T14:30:00Z",
+          "signal_session": "2026-11-13",
+          "target_session": "2026-11-16",
           "target_weight": null,
-          "ticker": "PH"
+          "ticker": "ANET"
         }
       ],
       "orders_count": 1,
-      "source_session": "2026-11-12",
+      "source_session": "2026-11-13",
       "source_status": "recorded"
     },
     "IL-012": {
@@ -72,19 +72,9 @@
         "IVZ",
         "STT"
       ],
-      "orders": [
-        {
-          "action": "buy",
-          "limit_price": null,
-          "scheduled_at_utc": "2026-11-13T14:30:00Z",
-          "signal_session": "2026-11-12",
-          "target_session": "2026-11-13",
-          "target_weight": null,
-          "ticker": "ZBRA"
-        }
-      ],
-      "orders_count": 1,
-      "source_session": "2026-11-12",
+      "orders": [],
+      "orders_count": 0,
+      "source_session": "2026-11-13",
       "source_status": "recorded"
     },
     "IL-015": {
@@ -103,15 +93,15 @@
         {
           "action": "buy",
           "limit_price": null,
-          "scheduled_at_utc": "2026-11-13T14:30:00Z",
-          "signal_session": "2026-11-12",
-          "target_session": "2026-11-13",
+          "scheduled_at_utc": "2026-11-16T14:30:00Z",
+          "signal_session": "2026-11-13",
+          "target_session": "2026-11-16",
           "target_weight": null,
-          "ticker": "SWKS"
+          "ticker": "KO"
         }
       ],
       "orders_count": 1,
-      "source_session": "2026-11-12",
+      "source_session": "2026-11-13",
       "source_status": "recorded"
     },
     "IL-016": {
@@ -130,15 +120,15 @@
         {
           "action": "buy",
           "limit_price": null,
-          "scheduled_at_utc": "2026-11-13T14:30:00Z",
-          "signal_session": "2026-11-12",
-          "target_session": "2026-11-13",
+          "scheduled_at_utc": "2026-11-16T14:30:00Z",
+          "signal_session": "2026-11-13",
+          "target_session": "2026-11-16",
           "target_weight": null,
-          "ticker": "BRK-B"
+          "ticker": "EW"
         }
       ],
       "orders_count": 1,
-      "source_session": "2026-11-12",
+      "source_session": "2026-11-13",
       "source_status": "recorded"
     },
     "IL-017": {
@@ -157,15 +147,15 @@
         {
           "action": "buy",
           "limit_price": null,
-          "scheduled_at_utc": "2026-11-13T14:30:00Z",
-          "signal_session": "2026-11-12",
-          "target_session": "2026-11-13",
+          "scheduled_at_utc": "2026-11-16T14:30:00Z",
+          "signal_session": "2026-11-13",
+          "target_session": "2026-11-16",
           "target_weight": null,
-          "ticker": "BRK-B"
+          "ticker": "EW"
         }
       ],
       "orders_count": 1,
-      "source_session": "2026-11-12",
+      "source_session": "2026-11-13",
       "source_status": "recorded"
     },
     "IL-018": {
@@ -174,43 +164,43 @@
       "monitor_tickers": [],
       "orders": [],
       "orders_count": 0,
-      "source_session": "2026-11-12",
+      "source_session": "2026-11-13",
       "source_status": "recorded"
     },
     "IL-019": {
       "execution_ready": true,
-      "holdings_count": 1,
+      "holdings_count": 0,
       "monitor_tickers": [],
       "orders": [],
       "orders_count": 0,
-      "source_session": "2026-11-12",
+      "source_session": "2026-11-13",
       "source_status": "recorded"
     },
     "IL-020": {
       "execution_ready": true,
-      "holdings_count": 1,
+      "holdings_count": 0,
       "monitor_tickers": [],
       "orders": [],
       "orders_count": 0,
-      "source_session": "2026-11-12",
+      "source_session": "2026-11-13",
       "source_status": "recorded"
     },
     "IL-021": {
       "execution_ready": true,
-      "holdings_count": 2,
+      "holdings_count": 0,
       "monitor_tickers": [],
       "orders": [],
       "orders_count": 0,
-      "source_session": "2026-11-12",
+      "source_session": "2026-11-13",
       "source_status": "recorded"
     },
     "IL-022": {
       "execution_ready": true,
-      "holdings_count": 10,
+      "holdings_count": 0,
       "monitor_tickers": [],
       "orders": [],
       "orders_count": 0,
-      "source_session": "2026-11-12",
+      "source_session": "2026-11-13",
       "source_status": "recorded"
     },
     "IL-023": {
@@ -233,11 +223,11 @@
     },
     "IL-025": {
       "execution_ready": true,
-      "holdings_count": 10,
+      "holdings_count": 0,
       "monitor_tickers": [],
       "orders": [],
       "orders_count": 0,
-      "source_session": "2026-11-12",
+      "source_session": "2026-11-13",
       "source_status": "recorded"
     },
     "IL-026": {
@@ -251,21 +241,157 @@
     },
     "IL-027": {
       "execution_ready": true,
-      "holdings_count": 10,
-      "monitor_tickers": [],
-      "orders": [],
-      "orders_count": 0,
-      "source_session": "2026-11-12",
-      "source_status": "recorded"
-    },
-    "IL-037": {
-      "execution_ready": false,
       "holdings_count": 0,
       "monitor_tickers": [],
       "orders": [],
       "orders_count": 0,
-      "source_session": "2026-11-06",
-      "source_status": "stale"
+      "source_session": "2026-11-13",
+      "source_status": "recorded"
+    },
+    "IL-037": {
+      "execution_ready": true,
+      "holdings_count": 0,
+      "monitor_tickers": [],
+      "orders": [
+        {
+          "action": "buy",
+          "limit_price": null,
+          "scheduled_at_utc": "2026-11-16T14:30:00Z",
+          "signal_session": "2026-11-13",
+          "target_session": "2026-11-16",
+          "target_weight": 0.07414999542786953,
+          "ticker": "AEE"
+        },
+        {
+          "action": "buy",
+          "limit_price": null,
+          "scheduled_at_utc": "2026-11-16T14:30:00Z",
+          "signal_session": "2026-11-13",
+          "target_session": "2026-11-16",
+          "target_weight": 0.07703178549221046,
+          "ticker": "ATO"
+        },
+        {
+          "action": "buy",
+          "limit_price": null,
+          "scheduled_at_utc": "2026-11-16T14:30:00Z",
+          "signal_session": "2026-11-13",
+          "target_session": "2026-11-16",
+          "target_weight": 0.0465382631743515,
+          "ticker": "CHD"
+        },
+        {
+          "action": "buy",
+          "limit_price": null,
+          "scheduled_at_utc": "2026-11-16T14:30:00Z",
+          "signal_session": "2026-11-13",
+          "target_session": "2026-11-16",
+          "target_weight": 0.11320804765181816,
+          "ticker": "COST"
+        },
+        {
+          "action": "buy",
+          "limit_price": null,
+          "scheduled_at_utc": "2026-11-16T14:30:00Z",
+          "signal_session": "2026-11-13",
+          "target_session": "2026-11-16",
+          "target_weight": 0.007923673022863736,
+          "ticker": "DUK"
+        },
+        {
+          "action": "buy",
+          "limit_price": null,
+          "scheduled_at_utc": "2026-11-16T14:30:00Z",
+          "signal_session": "2026-11-13",
+          "target_session": "2026-11-16",
+          "target_weight": 0.10754209871170903,
+          "ticker": "EVRG"
+        },
+        {
+          "action": "buy",
+          "limit_price": null,
+          "scheduled_at_utc": "2026-11-16T14:30:00Z",
+          "signal_session": "2026-11-13",
+          "target_session": "2026-11-16",
+          "target_weight": 0.01346048554081406,
+          "ticker": "HLT"
+        },
+        {
+          "action": "buy",
+          "limit_price": null,
+          "scheduled_at_utc": "2026-11-16T14:30:00Z",
+          "signal_session": "2026-11-13",
+          "target_session": "2026-11-16",
+          "target_weight": 0.03401164172546049,
+          "ticker": "KIM"
+        },
+        {
+          "action": "buy",
+          "limit_price": null,
+          "scheduled_at_utc": "2026-11-16T14:30:00Z",
+          "signal_session": "2026-11-13",
+          "target_session": "2026-11-16",
+          "target_weight": 0.09789059257031242,
+          "ticker": "LIN"
+        },
+        {
+          "action": "buy",
+          "limit_price": null,
+          "scheduled_at_utc": "2026-11-16T14:30:00Z",
+          "signal_session": "2026-11-13",
+          "target_session": "2026-11-16",
+          "target_weight": 0.07184406073036673,
+          "ticker": "MAR"
+        },
+        {
+          "action": "buy",
+          "limit_price": null,
+          "scheduled_at_utc": "2026-11-16T14:30:00Z",
+          "signal_session": "2026-11-13",
+          "target_session": "2026-11-16",
+          "target_weight": 0.05916381005187346,
+          "ticker": "NI"
+        },
+        {
+          "action": "buy",
+          "limit_price": null,
+          "scheduled_at_utc": "2026-11-16T14:30:00Z",
+          "signal_session": "2026-11-13",
+          "target_session": "2026-11-16",
+          "target_weight": 0.039016039035298614,
+          "ticker": "SPG"
+        },
+        {
+          "action": "buy",
+          "limit_price": null,
+          "scheduled_at_utc": "2026-11-16T14:30:00Z",
+          "signal_session": "2026-11-13",
+          "target_session": "2026-11-16",
+          "target_weight": 0.15,
+          "ticker": "VLTO"
+        },
+        {
+          "action": "buy",
+          "limit_price": null,
+          "scheduled_at_utc": "2026-11-16T14:30:00Z",
+          "signal_session": "2026-11-13",
+          "target_session": "2026-11-16",
+          "target_weight": 0.02182491507377503,
+          "ticker": "WEC"
+        },
+        {
+          "action": "buy",
+          "limit_price": null,
+          "scheduled_at_utc": "2026-11-16T14:30:00Z",
+          "signal_session": "2026-11-13",
+          "target_session": "2026-11-16",
+          "target_weight": 0.036394591791276756,
+          "ticker": "XEL"
+        }
+      ],
+      "orders_count": 15,
+      "source_session": "2026-11-13",
+      "source_status": "recorded"
     },
     "IL-038": {
       "execution_ready": true,
@@ -273,7 +399,7 @@
       "monitor_tickers": [],
       "orders": [],
       "orders_count": 0,
-      "source_session": "2026-11-12",
+      "source_session": "2026-11-13",
       "source_status": "recorded"
     },
     "IL-039": {
@@ -282,7 +408,7 @@
       "monitor_tickers": [],
       "orders": [],
       "orders_count": 0,
-      "source_session": "2026-11-12",
+      "source_session": "2026-11-13",
       "source_status": "recorded"
     },
     "IL-040": {
@@ -300,7 +426,7 @@
       ],
       "orders": [],
       "orders_count": 0,
-      "source_session": "2026-11-12",
+      "source_session": "2026-11-13",
       "source_status": "recorded"
     },
     "IL-041": {
@@ -309,32 +435,33 @@
       "monitor_tickers": [],
       "orders": [],
       "orders_count": 0,
-      "source_session": "2026-11-12",
+      "source_session": "2026-11-13",
       "source_status": "recorded"
     },
     "IL-042": {
-      "execution_ready": false,
+      "execution_ready": true,
       "holdings_count": 1,
-      "monitor_tickers": [],
+      "monitor_tickers": [
+        "MSI"
+      ],
       "orders": [],
       "orders_count": 0,
-      "source_session": "2026-11-11",
-      "source_status": "stale"
+      "source_session": "2026-11-13",
+      "source_status": "recorded"
     },
     "IL-043": {
-      "execution_ready": false,
+      "execution_ready": true,
       "holdings_count": 1,
       "monitor_tickers": [],
       "orders": [],
       "orders_count": 0,
-      "source_session": "2026-11-11",
-      "source_status": "stale"
+      "source_session": "2026-11-13",
+      "source_status": "recorded"
     },
     "IL-044": {
       "execution_ready": true,
-      "holdings_count": 8,
+      "holdings_count": 7,
       "monitor_tickers": [
-        "EW",
         "INTU",
         "MAS",
         "MCO",
@@ -345,9 +472,9 @@
       ],
       "orders": [],
       "orders_count": 0,
-      "source_session": "2026-11-12",
+      "source_session": "2026-11-13",
       "source_status": "recorded"
     }
   },
-  "source_commit": "70cb7587b7c0418737248da30049cf548d727465"
+  "source_commit": "e98b1f5207681eab9a2be1b2f935db71b4ad9224"
 }
