@@ -313,7 +313,7 @@ class DailyPaperTests(unittest.TestCase):
         before_positions = copy.deepcopy(book["positions"])
         before_trades = copy.deepcopy(book["trades"])
         prices = {"AAA": {"date": "2026-11-17", "open": 104, "high": 111,
-                          "low": 103, "close": 109, "dividend": 0, "split": 0}}
+                          "low": 103, "close": 109, "volume": 1000, "dividend": 0, "split": 0}}
         next_day, changed = process_day(self.config, state, "2026-11-17", prices,
                                         previous_session="2026-11-16", week_end=False)
         self.assertTrue(changed)
