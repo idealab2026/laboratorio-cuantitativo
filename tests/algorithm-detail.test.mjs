@@ -11,6 +11,25 @@ const archive=verifyOriginalPaper(doc,mapping);
 const source=readFileSync(new URL("../src/site.mjs",import.meta.url),"utf8");
 const html=readFileSync(new URL("../index.html",import.meta.url),"utf8");
 
+function withAuditCoverage(doc){
+ // Synthetic rows, like production, must reconcile actions to their counters.
+ for(const track of Object.values(doc.tracks)){
+  const actions=(track.sessions||[]).flatMap(s=>(s.actions||[])
+   .filter(a=>a.side==="buy"||a.side==="sell"));
+  const proxy=actions.filter(a=>a.price_basis==="historical_week_close_proxy").length;
+  track.coverage={
+   executions:actions.length,
+   priced_executions:actions.filter(a=>typeof a.price==="number").length,
+   unpriced_executions:actions.filter(a=>typeof a.price!=="number").length,
+   corporate_conversions:(track.sessions||[]).flatMap(s=>s.actions||[])
+    .filter(a=>a.side==="corporate_action").length,
+   modelled_week_close_sales:proxy,
+   ledger_actions_excluding_week_close_proxy:actions.length-proxy
+  };
+ }
+ return doc;
+}
+
 test("64 algorithm fiches expose noninvented reference theory and mathematics",()=>{
  assert.equal(doc.tracks.length,64);
  for(const track of doc.tracks){
@@ -139,7 +158,7 @@ test("Operation audit documents real fills, inferred holds and dated trade marke
  };
  const doc={schema:"midas_operations_audit_v1",purpose:"read_only_paper_decision_evidence",
             asof:"2026-11-02",tracks};
- assert.deepEqual(verifyOperationsAudit(doc),{count:64,withExecution:1});
+ assert.deepEqual(verifyOperationsAudit(withAuditCoverage(doc)),{count:64,withExecution:1});
  const html=renderOperationsAudit(doc,"IL-038");
  for(const expected of ["Operaciones por sesión","AAPL","COMPRA","VENTA","MANTENER · INFERIDO",
    "Compra vinculada","Mantenimiento inferido","audit-price-chart","audit-buy-dot","audit-sell-dot",
@@ -167,10 +186,11 @@ test("Operation audit documents real fills, inferred holds and dated trade marke
  assert.ok(!html.includes("Cierre 2026-10-05:"));
  const vacant=renderOperationsAudit(doc,"IL-039");
  assert.ok(vacant.includes("Los NAV globales no bastan"));
- assert.throws(()=>verifyOperationsAudit({...doc,tracks:{...tracks,"IL-038":{
+ const invalidHold={...doc,tracks:{...tracks,"IL-038":{
   ...tracks["IL-038"],sessions:[{date:"2026-10-01",actions:[{
    ...tracks["IL-038"].sessions[0].actions[0],side:"hold",price:150
-  }]}]}}}));
+  }]}]}}};
+ assert.throws(()=>verifyOperationsAudit(withAuditCoverage(invalidHold)));
 });
 test("Strategy profiles append source-driven sessions instead of attributing synthetic orders",()=>{
  const site=readFileSync(new URL("../src/site.mjs",import.meta.url),"utf8");
@@ -187,7 +207,7 @@ test("Strategy profiles append source-driven sessions instead of attributing syn
 test("Market closing-price blue dots are explicitly distinguished from executed buy/sell orders",()=>{
  const src=readFileSync(new URL("../src/operations-audit.mjs",import.meta.url),"utf8");
  assert.ok(src.includes("Precio de cierre del mercado (no es una operación)"));
- assert.ok(src.includes("Los puntos azules son cierres observados de mercado, NO compras ni ventas del algoritmo."));
+ assert.ok(src.includes("Los puntos azules son cierres archivados de mercado, NO ejecuciones."));
  assert.ok(src.includes("audit-legend-buy"));
  assert.ok(src.includes("audit-legend-sell"));
  assert.ok(src.includes("audit-close-dot"));
@@ -245,7 +265,7 @@ test("Every execution and retained market close shows its real price over the ma
  assert.ok(html.includes("audit-price-close"));
  assert.ok(html.includes("Compra 104,57"));
  assert.ok(html.includes("104,7"));
- assert.ok(html.includes("Si no hay punto rojo, no consta una venta"));
+ assert.ok(html.includes("Las compras y ventas registradas se distinguen de los círculos discontinuos"));
  assert.ok(!html.includes("audit-sell-dot"));
 });
 
@@ -277,7 +297,7 @@ test("Shares and market close are shown for a held ABT without claiming a new fi
  };
  const doc={schema:"midas_operations_audit_v1",purpose:"read_only_paper_decision_evidence",
             asof:"2026-11-02",tracks};
- assert.deepEqual(verifyOperationsAudit(doc),{count:64,withExecution:1});
+ assert.deepEqual(verifyOperationsAudit(withAuditCoverage(doc)),{count:64,withExecution:1});
  const html=renderOperationsAudit(doc,"IL-012","ABT");
  assert.ok(html.includes("112,925792"),"Real shares displayed for hold");
  assert.ok(html.includes("110,16"),"Actual November close displayed");
@@ -327,7 +347,7 @@ test("KVUE entry survives corporate conversion and displays at price/date on cha
  };
  const doc={schema:"midas_operations_audit_v1",purpose:"read_only_paper_decision_evidence",
             asof:"2026-11-02",tracks};
- assert.equal(verifyOperationsAudit(doc).count,64);
+ assert.equal(verifyOperationsAudit(withAuditCoverage(doc)).count,64);
  const html=renderOperationsAudit(doc,"IL-012","KVUE");
  for(const phrase of ["Compra 18,389","audit-buy-dot","audit-buy-guide",
     "Conversión → KMB","audit-corporate-marker","CONVERSIÓN CORPORATIVA",
@@ -337,7 +357,7 @@ test("KVUE entry survives corporate conversion and displays at price/date on cha
  }
  assert.ok(!html.includes("audit-sell-dot"),"Merger is not a sale");
  const invalid=structuredClone(doc);invalid.tracks["IL-012"].sessions[2].actions[0].price=25;
- assert.throws(()=>verifyOperationsAudit(invalid),"Corporate action must never have sell price");
+ assert.throws(()=>verifyOperationsAudit(withAuditCoverage(invalid)),"Corporate action must never have sell price");
 });
 test("Every recorded order without recoverable fill price is still visible on its execution date",async()=>{
  const {renderOperationsAudit}=await import("../src/operations-audit.mjs");
@@ -420,7 +440,7 @@ test("Historical execution KPIs do not mistake holds, NAV-only or mergers for a 
  assert.equal(summary.latestTrade,"2026-11-03");
  assert.equal(summarizeOperationsAudit(null),null);
  const rows=renderTradeLotsTable(tracks["IL-002"]);
- for(const expected of ["Activo","Acción ejecutada","Precio de compra","Precio de venta",
+ for(const expected of ["Activo","Acción registrada / modelada","Precio de compra","Precio registrado / referencia OHLC",
   "Rentabilidad %","P/L total","Dinero empleado en compra","Nº acciones compradas",
   "COMPRA · ABIERTA"])assert.ok(rows.includes(expected),"Same trade columns: "+expected);
  assert.ok(rows.includes("24,00"),"Unrealized P/L uses stored close and recorded quantity");
@@ -466,7 +486,7 @@ test("Each MIDAS session lists COMPRAS, VENTAS and MANTENER without confusing in
  const s3=markup.slice(closing,markup.indexOf("</summary>",closing));
  assert.ok(s2.includes('class="audit-partial-star"'),"Partial sale marked on the ticker");
  assert.ok(!s3.includes('class="audit-partial-star"'),"Full sale never marked partial");
- assert.ok(markup.includes("documentadas o inferidas"),"Accordion detail remains accessible");
+ assert.ok(markup.includes("registradas, modeladas o inferidas"),"Accordion detail remains accessible");
 });
 test("Partial sale marker refuses uncertainty, supports split-adjusted remaining quantities and excludes mergers",async()=>{
  const {buildSessionActionColumns}=await import("../src/operations-audit.mjs");
