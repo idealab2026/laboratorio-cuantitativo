@@ -271,8 +271,16 @@ def run(config_path, state_path):
             # but do not generate or invent it after its next open occurred.
             state = copy.deepcopy(state)
             state["missing_signals"].append(state["last_session"])
-        bars, fx_entry, fx_mark = core._daily_bars(config, state, day, previous)
-        if day >= "2026-11-10" and state["books"]["timesfm_daily"]["positions"]:
+        stalled_exit = (day >= "2026-11-10" and
+                        bool(state["books"]["timesfm_daily"]["positions"]))
+        # Expired pending orders are not executions and need no price quote.
+        # This read-only projection asks the source for HELD symbols only.
+        quote_book = copy.deepcopy(state) if stalled_exit else state
+        if stalled_exit:
+            for held_book in quote_book["books"].values():
+                held_book["pending"] = []
+        bars, fx_entry, fx_mark = core._daily_bars(config, quote_book, day, previous)
+        if stalled_exit:
             state, changed = mark_unobserved_exit(
                 state, config, day, previous, bars, fx_mark=fx_mark)
         else:
