@@ -310,8 +310,9 @@ class NativeClassicClockTests(unittest.TestCase):
         updated, results = self.run_clock(quotes=quote)
         self.assertEqual(results[slot]["status"], "awaiting_fresh_open_quotes")
         self.assertEqual(results[slot]["missing"], ["ERIE"])
-        self.assertEqual(updated[LEDGER]["books"][name]["trades"], [])
-        self.assertIn("COST", updated[LEDGER]["books"][name]["positions"])
+        self.assertNotIn(LEDGER, updated)
+        self.assertEqual(self.book["books"][name]["trades"], [])
+        self.assertIn("COST", self.book["books"][name]["positions"])
 
 
     def test_expired_inactive_recovery_boundary_allows_real_next_open_only(self):
