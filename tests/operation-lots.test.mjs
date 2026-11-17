@@ -86,6 +86,42 @@ test("unpriced sales are still counted as exits but cannot claim a P/L",()=>{
  assert.equal(lots[0].salePrice,null);
  assert.equal(lots[0].pnl,null);
 });
+test("retrospective weekly close preserves modeled sale without certifying realized P/L",()=>{
+ const modeled={...entry("AAA","sell",104,5,0.8),
+   price_basis:"historical_week_close_proxy"};
+ const observed={...entry("BBB","sell",107,5,0.8),
+   price_basis:"book_fill"};
+ const rows=buildOperationLots(track([
+  {date:"2026-11-10",actions:[entry("AAA","buy",100,5,0.5),
+                              entry("BBB","buy",100,5,0.5)]},
+  {date:"2026-11-13",actions:[modeled,observed]}
+ ],{AAA:[{date:"2026-11-13",price:104}],
+    BBB:[{date:"2026-11-13",price:107}]}));
+ const a=rows.find(x=>x.ticker==="AAA"),b=rows.find(x=>x.ticker==="BBB");
+ assert.equal(a.modelledSale,true);
+ assert.equal(a.action,"cerrada");
+ assert.equal(a.salePrice,104);
+ assert.equal(a.soldShares,5);
+ assert.equal(a.pnl,null,"No certified P/L from retrospective OHLC");
+ assert.equal(a.returnPct,null);
+ assert.equal(b.modelledSale,false);
+ assert.ok(Number.isFinite(b.pnl));
+ assert.ok(Number.isFinite(b.returnPct));
+});
+test("mixed modelled and observed partial sales keep FIFO quantities but no false P/L",()=>{
+ const rows=buildOperationLots(track([
+  {date:"2026-11-09",actions:[entry("AAA","buy",100,10,1)]},
+  {date:"2026-11-12",actions:[entry("AAA","sell",105,4,0.4)]},
+  {date:"2026-11-13",actions:[{...entry("AAA","sell",106,2,0.2),
+      price_basis:"historical_week_close_proxy"}]},
+  {date:"2026-11-16",actions:[]}
+ ],{AAA:[{date:"2026-11-16",price:110}]}));
+ assert.equal(rows[0].remainingShares,4);
+ assert.equal(rows[0].soldShares,6);
+ assert.equal(rows[0].modelledSale,true);
+ assert.equal(rows[0].pnl,null);
+});
+
 test("sorting defaults to open first, then recent, and places unmeasurable last for metric sorts",()=>{
  const t=track([
   {date:"2026-10-01",actions:[entry("AAA","buy",10,1)]},
