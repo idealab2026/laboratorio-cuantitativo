@@ -207,6 +207,113 @@ class NativeClassicClockTests(unittest.TestCase):
                 corrupted, frozen, self.market["session"], self.lock["lock_sha256"],
                 self.lock["source_commit"], self.config["execution"]["commission"])
 
+    def test_il016_protective_stops_continue_when_unrelated_opening_buy_misses_quote(self):
+        slot, name = "IL-016", SLOTS["IL-016"]
+        self.tracks[slot]["holdings"] = ["COST", "ERIE", "MTD"]
+        self.tracks[slot]["orders"] = [{
+            "ticker": "VLTO", "action": "buy", "decision_session": "2026-11-09",
+            "target_session": "2026-11-10",
+        }]
+        book = self.book["books"][name]
+        book["pending"] = {"VLTO": {"side": "buy", "signal_date": "2026-11-09"}}
+        book["positions"] = {
+            ticker: {"shares": shares, "entry_date": "2026-11-06",
+                     "entry_price": 100., "cost": shares * 100.1,
+                     "dividends": 0., "stop": 95., "target": 115.}
+            for ticker, shares in (("COST", 3.), ("ERIE", 4.), ("MTD", 2.))}
+        book["cash"] = 100000 - 9 * 100.1
+        self.original = copy.deepcopy(self.book)
+        self.lock = clock_plan(
+            self.open - timedelta(minutes=10), self.market,
+            self.tracks, "c" * 40)
+
+        def fresh(ticker, price, now):
+            return {ticker: {"price": price,
+                "quote_at_utc": (now - timedelta(minutes=1)).isoformat(),
+                "observed_at_utc": now.isoformat()}}
+
+        # ERIE is unavailable; VLTO has a quote but its BUY cannot fill.
+        # COST was held before the opening and its independent stop is real
+        # observed paper evidence, not a historic high/low reconstruction.
+        first = {**fresh("VLTO", 120., self.now),
+                 **fresh("COST", 94., self.now),
+                 **fresh("MTD", 100., self.now)}
+        updated, results = self.run_clock(quotes=first)
+        first_book = updated[LEDGER]["books"][name]
+        self.assertEqual(results[slot]["status"], "settled_native_paper")
+        self.assertEqual(results[slot]["pending_open_unfilled"], ["VLTO"])
+        self.assertEqual(results[slot]["fills"], 1)
+        self.assertEqual(results[slot]["operations"][0]["ticker"], "COST")
+        self.assertEqual(set(first_book["positions"]), {"ERIE", "MTD"})
+        self.assertEqual(set(first_book["pending"]), {"VLTO"})
+        self.assertFalse(any(event.get("ticker") == "VLTO" and
+                             event.get("type") == "buy" for event in first_book["events"]))
+
+        # A same-day altered cash amount cannot be excused by a valid stop
+        # marker. No subsequent sale or buy is permitted from a changed book.
+        self.book = copy.deepcopy(updated[LEDGER])
+        later = self.now + timedelta(minutes=10)
+        next_quotes = fresh("MTD", 94., later)
+        self.book["books"][name]["cash"] += 1.
+        invalid, rejected = self.run_clock(quotes=next_quotes, now=later)
+        self.assertEqual(rejected[slot]["status"], "source_changed")
+        self.assertNotIn("MTD", invalid[LEDGER]["books"][name]["trades"][-1:])
+        self.book = copy.deepcopy(updated[LEDGER])
+
+        # On the next true minute observation, MTD's stop is independently
+        # booked once, although the frozen VLTO buy remains unexecuted.
+        second, later_result = self.run_clock(quotes=next_quotes, now=later)
+        final_book = second[LEDGER]["books"][name]
+        self.assertEqual(later_result[slot]["fills"], 1)
+        self.assertEqual(later_result[slot]["pending_open_unfilled"], ["VLTO"])
+        self.assertEqual(later_result[slot]["operations"][0]["ticker"], "MTD")
+        self.assertEqual(set(final_book["positions"]), {"ERIE"})
+        self.assertEqual(set(final_book["pending"]), {"VLTO"})
+        self.assertEqual(len([e for e in final_book["events"] if e.get("type") == "sell"]), 2)
+        summary = summarize_session_fills(
+            final_book, self.original["books"][name], "2026-11-10",
+            self.lock["lock_sha256"], self.lock["source_commit"],
+            self.config["execution"]["commission"])
+        self.assertEqual(summary["fills_count"], 2)
+        self.assertEqual({x["ticker"] for x in summary["fills"]}, {"COST", "MTD"})
+
+        self.book = copy.deepcopy(second[LEDGER])
+        third, evidence = self.run_clock(quotes={}, now=later+timedelta(minutes=1))
+        self.assertEqual(third, {})
+        self.assertEqual(evidence[slot]["status"],
+                         "opening_buy_unfilled_after_observed_stop")
+        self.assertEqual(evidence[slot]["pending_open_unfilled"], ["VLTO"])
+
+    def test_unexecuted_sell_never_competes_with_an_independent_stop(self):
+        slot, name = "IL-016", SLOTS["IL-016"]
+        book = self.book["books"][name]
+        book["positions"] = {
+            "COST": {"shares": 3., "entry_date": "2026-11-06",
+                     "entry_price": 100., "cost": 300.3,
+                     "dividends": 0., "stop": 95., "target": 115.},
+            "ERIE": {"shares": 1., "entry_date": "2026-11-06",
+                     "entry_price": 100., "cost": 100.1,
+                     "dividends": 0., "stop": 95., "target": 115.},
+        }
+        book["pending"] = {"COST": {"side": "sell", "signal_date": "2026-11-09"}}
+        self.tracks[slot]["holdings"] = ["COST", "ERIE"]
+        self.tracks[slot]["orders"] = [{
+            "ticker": "COST", "action": "sell", "decision_session": "2026-11-09",
+            "target_session": "2026-11-10",
+        }]
+        self.original = copy.deepcopy(self.book)
+        self.lock = clock_plan(self.open - timedelta(minutes=10),
+                               self.market, self.tracks, "c" * 40)
+        quote = {"COST": {"price": 94.,
+                  "quote_at_utc": (self.now - timedelta(minutes=1)).isoformat(),
+                  "observed_at_utc": self.now.isoformat()}}
+        updated, results = self.run_clock(quotes=quote)
+        self.assertEqual(results[slot]["status"], "awaiting_fresh_open_quotes")
+        self.assertEqual(results[slot]["missing"], ["ERIE"])
+        self.assertEqual(updated[LEDGER]["books"][name]["trades"], [])
+        self.assertIn("COST", updated[LEDGER]["books"][name]["positions"])
+
+
     def test_expired_inactive_recovery_boundary_allows_real_next_open_only(self):
         slot, name = "IL-011", SLOTS["IL-011"]
         old = self.book["books"][name]
