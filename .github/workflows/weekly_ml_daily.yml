@@ -6,6 +6,12 @@ on:
       common_capture:
         type: boolean
         default: false
+  # One-time reviewed NAV-only release on a workflow edit. Ledger commits do
+  # not match this path, so no recursive replay or duplicated valuation.
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/weekly_ml_daily.yml'
   pull_request:
     paths:
       - 'weekly_ml/daily.py'
@@ -61,17 +67,22 @@ jobs:
       - name: Prove three paused ML NAV-only recoveries on actual frozen source
         if: github.event_name == 'pull_request'
         run: python strategy_comparison/inactive_recovery.py --engine weekly --phase check --only-paused-weekly
+      - name: Recover only the three verified paused ML books (NAV only)
+        if: github.event_name == 'push'
+        run: |
+          python strategy_comparison/inactive_recovery.py --engine weekly --phase check --only-paused-weekly
+          python strategy_comparison/inactive_recovery.py --engine weekly --phase recover --only-paused-weekly
       - name: Reconcile missed marks without historical fills
         if: ${{ github.event_name == 'workflow_dispatch' && inputs.recover_inactive && !inputs.preflight_only }}
         run: |
           python strategy_comparison/inactive_recovery.py --engine weekly --phase check
           python strategy_comparison/inactive_recovery.py --engine weekly --phase recover
       - name: Require the published common XNYS source before accounting
-        if: ${{ github.event_name != 'pull_request' && !inputs.preflight_only && !inputs.recover_inactive }}
+        if: ${{ github.event_name != 'pull_request' && github.event_name != 'push' && !inputs.preflight_only && !inputs.recover_inactive }}
         run: python market_data/health.py --eligible
       - name: Value one completed XNYS session
         id: execute
-        if: ${{ github.event_name != 'pull_request' && !inputs.preflight_only && !inputs.recover_inactive }}
+        if: ${{ github.event_name != 'pull_request' && github.event_name != 'push' && !inputs.preflight_only && !inputs.recover_inactive }}
         run: python weekly_ml/daily.py --phase daily
       - name: Record daily runtime health
         if: ${{ always() && github.event_name == 'schedule' && !inputs.preflight_only && !inputs.common_capture }}
@@ -85,7 +96,9 @@ jobs:
             --run-number "$GITHUB_RUN_NUMBER" \
             --head-sha "$GITHUB_SHA"
       - name: Publish daily ledger and refresh canonical comparison
-        if: ${{ always() && github.event_name != 'pull_request' && !inputs.preflight_only }}
+        # A failed one-shot recovery must NEVER publish partial or stale ledgers.
+        # Regular scheduled runs continue to record runtime health if they fail.
+        if: ${{ (github.event_name == 'push' && success()) || (always() && github.event_name != 'pull_request' && github.event_name != 'push' && !inputs.preflight_only) }}
         run: |
           python strategy_comparison/publish_state.py \
             --message "Record MIDAS Weekly ML daily paper state" \
