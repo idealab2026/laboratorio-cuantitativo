@@ -541,19 +541,31 @@
             "KO"
           ],
           "type": "missed_forward_open"
+        },
+        {
+          "date": "2026-11-17",
+          "ticker": "TSN",
+          "type": "unfilled"
         }
       ],
+      "forward_executions": {
+        "IL-015:2026-11-17:open:classic_forward_v1": {
+          "fill_tickers": [],
+          "fills_count": 0,
+          "lock_sha256": "734f92360518eca698a837da8aa9430e835a7e3b048d63620522eba7c9940e3d",
+          "mode": "forward_observed_paper",
+          "quotes_sha256": "aad5b6c66e7c66c25033c6dfa5e68b1cfc5e1830c6c5ab79846358d409b24158",
+          "recorded_at_utc": "2026-11-17T14:39:39.483981Z",
+          "session": "2026-11-17",
+          "source_commit": "37e197537b3a3ceaa2e6e3632c923b2fe16cdca0"
+        }
+      },
       "nav": 106234.78710818184,
       "outage_control": {
         "first_trading_session": "2026-11-05",
         "registered_at_utc": "2026-11-04T18:03:08+00:00"
       },
-      "pending": {
-        "TSN": {
-          "side": "buy",
-          "signal_date": "2026-11-16"
-        }
-      },
+      "pending": {},
       "positions": {
         "ABBV": {
           "cost": 11874.999758862768,
@@ -9584,7 +9596,7 @@
       "trades": []
     },
     "ema_rsi_fixed": {
-      "cash": 35044.57069314456,
+      "cash": 4739.116289223919,
       "equity": [
         {
           "date": "2026-10-12",
@@ -9983,6 +9995,39 @@
           "source_commit": "e98b1f5207681eab9a2be1b2f935db71b4ad9224",
           "ticker": "BLDR",
           "type": "sell"
+        },
+        {
+          "date": "2026-11-17",
+          "execution": "forward_observed_paper",
+          "fee": 15.137589649762958,
+          "idempotency_key": "IL-011:2026-11-17:open:classic_forward_v1:CZR",
+          "lock_sha256": "734f92360518eca698a837da8aa9430e835a7e3b048d63620522eba7c9940e3d",
+          "observed_at_utc": "2026-11-17T14:39:36.412095Z",
+          "price": 29.32465446567535,
+          "quote_at_utc": "2026-11-17T14:39:00Z",
+          "shares": 516.206923,
+          "source_commit": "37e197537b3a3ceaa2e6e3632c923b2fe16cdca0",
+          "ticker": "CZR",
+          "type": "buy"
+        },
+        {
+          "date": "2026-11-17",
+          "execution": "forward_observed_paper",
+          "fee": 15.137589574929734,
+          "idempotency_key": "IL-011:2026-11-17:open:classic_forward_v1:EXPD",
+          "lock_sha256": "734f92360518eca698a837da8aa9430e835a7e3b048d63620522eba7c9940e3d",
+          "observed_at_utc": "2026-11-17T14:39:36.849151Z",
+          "price": 194.54851959228515,
+          "quote_at_utc": "2026-11-17T14:39:00Z",
+          "shares": 77.808814,
+          "source_commit": "37e197537b3a3ceaa2e6e3632c923b2fe16cdca0",
+          "ticker": "EXPD",
+          "type": "buy"
+        },
+        {
+          "date": "2026-11-17",
+          "ticker": "PCG",
+          "type": "unfilled"
         }
       ],
       "forward_executions": {
@@ -10019,6 +10064,19 @@
           "recorded_at_utc": "2026-11-16T14:34:03.758808Z",
           "session": "2026-11-16",
           "source_commit": "e98b1f5207681eab9a2be1b2f935db71b4ad9224"
+        },
+        "IL-011:2026-11-17:open:classic_forward_v1": {
+          "fill_tickers": [
+            "CZR",
+            "EXPD"
+          ],
+          "fills_count": 2,
+          "lock_sha256": "734f92360518eca698a837da8aa9430e835a7e3b048d63620522eba7c9940e3d",
+          "mode": "forward_observed_paper",
+          "quotes_sha256": "94027fcdcc915ae1aeceb3750ac03d6aa081a90e9076cb56720db43e080f984f",
+          "recorded_at_utc": "2026-11-17T14:39:39.483981Z",
+          "session": "2026-11-17",
+          "source_commit": "37e197537b3a3ceaa2e6e3632c923b2fe16cdca0"
         }
       },
       "nav": 101310.359417599,
@@ -10026,20 +10084,7 @@
         "first_trading_session": "2026-11-05",
         "registered_at_utc": "2026-11-04T18:03:08+00:00"
       },
-      "pending": {
-        "CZR": {
-          "side": "buy",
-          "signal_date": "2026-11-16"
-        },
-        "EXPD": {
-          "side": "buy",
-          "signal_date": "2026-11-16"
-        },
-        "PCG": {
-          "side": "buy",
-          "signal_date": "2026-11-16"
-        }
-      },
+      "pending": {},
       "positions": {
         "BF-B": {
           "cost": 11874.999971558756,
@@ -10059,6 +10104,15 @@
           "stop": 37.29703962135315,
           "target": 46.62129952669143
         },
+        "CZR": {
+          "cost": 15152.727239414244,
+          "dividends": 0.0,
+          "entry_date": "2026-11-17",
+          "entry_price": 29.32465446567535,
+          "shares": 516.206923,
+          "stop": 26.978682108421324,
+          "target": 33.72335263552665
+        },
         "DOC": {
           "cost": 15465.96371340113,
           "dividends": 0.0,
@@ -10067,6 +10121,15 @@
           "shares": 777.582645,
           "stop": 18.2803361618042,
           "target": 22.850420202255247
+        },
+        "EXPD": {
+          "cost": 15152.7271645064,
+          "dividends": 0.0,
+          "entry_date": "2026-11-17",
+          "entry_price": 194.54851959228515,
+          "shares": 77.808814,
+          "stop": 178.98463802490235,
+          "target": 223.7307975311279
         },
         "RSG": {
           "cost": 11874.999838286545,
@@ -11866,6 +11929,11 @@
           "date": "2026-11-13",
           "ticker": "ZBRA",
           "type": "unfilled"
+        },
+        {
+          "date": "2026-11-17",
+          "ticker": "APTV",
+          "type": "unfilled"
         }
       ],
       "forward_executions": {
@@ -11888,15 +11956,20 @@
           "recorded_at_utc": "2026-11-13T14:52:56.724951Z",
           "session": "2026-11-13",
           "source_commit": "70cb7587b7c0418737248da30049cf548d727465"
+        },
+        "IL-014:2026-11-17:open:classic_forward_v1": {
+          "fill_tickers": [],
+          "fills_count": 0,
+          "lock_sha256": "734f92360518eca698a837da8aa9430e835a7e3b048d63620522eba7c9940e3d",
+          "mode": "forward_observed_paper",
+          "quotes_sha256": "d88c944fa3910d27bbef1c6c219aa22ff0eac780c1e9f94df081bc424fff9697",
+          "recorded_at_utc": "2026-11-17T14:39:39.483981Z",
+          "session": "2026-11-17",
+          "source_commit": "37e197537b3a3ceaa2e6e3632c923b2fe16cdca0"
         }
       },
       "nav": 106788.96935412315,
-      "pending": {
-        "APTV": {
-          "side": "buy",
-          "signal_date": "2026-11-16"
-        }
-      },
+      "pending": {},
       "positions": {
         "ADM": {
           "cost": 16050.90425304054,
@@ -12930,6 +13003,11 @@
           "date": "2026-11-16",
           "ticker": "EW",
           "type": "unfilled"
+        },
+        {
+          "date": "2026-11-17",
+          "ticker": "VLTO",
+          "type": "unfilled"
         }
       ],
       "forward_executions": {
@@ -12972,15 +13050,20 @@
           "recorded_at_utc": "2026-11-16T14:34:03.758808Z",
           "session": "2026-11-16",
           "source_commit": "e98b1f5207681eab9a2be1b2f935db71b4ad9224"
+        },
+        "IL-017:2026-11-17:open:classic_forward_v1": {
+          "fill_tickers": [],
+          "fills_count": 0,
+          "lock_sha256": "734f92360518eca698a837da8aa9430e835a7e3b048d63620522eba7c9940e3d",
+          "mode": "forward_observed_paper",
+          "quotes_sha256": "0198e0befe28042515ae9e3d35260b312fae7b8ddd8ba726573612fc85c89f44",
+          "recorded_at_utc": "2026-11-17T14:39:39.483981Z",
+          "session": "2026-11-17",
+          "source_commit": "37e197537b3a3ceaa2e6e3632c923b2fe16cdca0"
         }
       },
       "nav": 94668.70262486812,
-      "pending": {
-        "VLTO": {
-          "side": "buy",
-          "signal_date": "2026-11-16"
-        }
-      },
+      "pending": {},
       "positions": {
         "ABBV": {
           "cost": 11874.999758862768,

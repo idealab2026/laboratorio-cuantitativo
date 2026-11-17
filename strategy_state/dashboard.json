@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "generated_at_utc": "2026-11-17T13:23:32.908920+00:00",
+  "generated_at_utc": "2026-11-17T14:39:40.257555+00:00",
   "principle": "Comparar rentabilidad acumulada y riesgo observado; no ordenar carteras con distintas fechas de inicio o supuestos de ejecución.",
   "counts": {
     "paper_with_diary": 18,
@@ -958,20 +958,19 @@
       "note": "Nueva campaña S&P500 503 símbolos; las carteras originales de 8 títulos se conservan históricas y no transfieren NAV ni operaciones. Reconciliación registrada con retraso sobre órdenes previamente fijadas y OHLC común exacto; no acredita una ejecución puntual.",
       "evaluated_universe_symbols": 488,
       "eligible_universe_symbols": 503,
-      "activity_state": "active_pending",
-      "activity_label": "5 posiciones · 3 órdenes paper para próxima apertura · Inactividad sin operaciones: 2026-11-03, 2026-11-04 · Reanudación desde apertura: 2026-11-05 · Cálculo tardío: 2026-11-04",
+      "activity_state": "active",
+      "activity_label": "7 posiciones abiertas · Inactividad sin operaciones: 2026-11-03, 2026-11-04 · Reanudación desde apertura: 2026-11-05 · Cálculo tardío: 2026-11-04",
       "activity_tickers": [
         "BF-B",
         "CNP",
-        "DOC",
-        "RSG",
-        "YUM",
         "CZR",
+        "DOC",
         "EXPD",
-        "PCG"
+        "RSG",
+        "YUM"
       ],
-      "open_positions_count": 5,
-      "pending_orders_count": 3,
+      "open_positions_count": 7,
+      "pending_orders_count": 0,
       "inactive_sessions": [
         "2026-11-03",
         "2026-11-04"
@@ -1369,8 +1368,8 @@
       "note": "Nueva campaña S&P500 503 símbolos; las carteras originales de 8 títulos se conservan históricas y no transfieren NAV ni operaciones.",
       "evaluated_universe_symbols": 488,
       "eligible_universe_symbols": 503,
-      "activity_state": "active_pending",
-      "activity_label": "7 posiciones · 1 orden paper para próxima apertura",
+      "activity_state": "active",
+      "activity_label": "7 posiciones abiertas",
       "activity_tickers": [
         "ADM",
         "BG",
@@ -1378,11 +1377,10 @@
         "CZR",
         "GOOG",
         "IVZ",
-        "STT",
-        "APTV"
+        "STT"
       ],
       "open_positions_count": 7,
-      "pending_orders_count": 1,
+      "pending_orders_count": 0,
       "comparison_eligible": true,
       "comparison_universe_id": "SP500_2026-09-29_503",
       "comparison_universe_symbols": 503,
@@ -1511,8 +1509,8 @@
       "note": "Nueva campaña S&P500 503 símbolos; las carteras originales de 8 títulos se conservan históricas y no transfieren NAV ni operaciones.",
       "evaluated_universe_symbols": 488,
       "eligible_universe_symbols": 503,
-      "activity_state": "active_pending",
-      "activity_label": "7 posiciones · 1 orden paper para próxima apertura · Inactividad sin operaciones: 2026-11-03, 2026-11-04 · Reanudación desde apertura: 2026-11-05",
+      "activity_state": "active",
+      "activity_label": "7 posiciones abiertas · Inactividad sin operaciones: 2026-11-03, 2026-11-04 · Reanudación desde apertura: 2026-11-05",
       "activity_tickers": [
         "ABBV",
         "ABNB",
@@ -1520,11 +1518,10 @@
         "COST",
         "EPAM",
         "MTD",
-        "WMT",
-        "TSN"
+        "WMT"
       ],
       "open_positions_count": 7,
-      "pending_orders_count": 1,
+      "pending_orders_count": 0,
       "inactive_sessions": [
         "2026-11-03",
         "2026-11-04"
@@ -1811,8 +1808,8 @@
       "note": "Nueva campaña S&P500 503 símbolos; las carteras originales de 8 títulos se conservan históricas y no transfieren NAV ni operaciones.",
       "evaluated_universe_symbols": 488,
       "eligible_universe_symbols": 503,
-      "activity_state": "active_pending",
-      "activity_label": "7 posiciones · 1 orden paper para próxima apertura",
+      "activity_state": "active",
+      "activity_label": "7 posiciones abiertas",
       "activity_tickers": [
         "ABBV",
         "ACN",
@@ -1820,11 +1817,10 @@
         "MCK",
         "MRNA",
         "MTD",
-        "ULTA",
-        "VLTO"
+        "ULTA"
       ],
       "open_positions_count": 7,
-      "pending_orders_count": 1,
+      "pending_orders_count": 0,
       "comparison_eligible": true,
       "comparison_universe_id": "SP500_2026-09-29_503",
       "comparison_universe_symbols": 503,
