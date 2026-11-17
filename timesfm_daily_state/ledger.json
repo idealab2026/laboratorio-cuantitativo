@@ -130,6 +130,13 @@
             "snapshot_sha256": "3649456c956229572f45ee2d3a4164de2926400fe77a8a5a8482ac9b5309bdbe"
           },
           "recorded_at_utc": "2026-11-17T16:48:43.925800+00:00"
+        },
+        {
+          "date": "2026-11-17",
+          "eurusd_daily_close": 1.0997470617294312,
+          "inactive_no_new_fills": true,
+          "missing_exits_remain_open": true,
+          "nav": 96684.66583579511
         }
       ],
       "events": [
@@ -163,9 +170,16 @@
           ],
           "recorded_at_utc": "2026-11-17T16:48:43.925800+00:00",
           "type": "inactive_mark_only_no_execution"
+        },
+        {
+          "date": "2026-11-17",
+          "held_tickers": [
+            "SPY"
+          ],
+          "type": "inactive_mark_only_no_execution"
         }
       ],
-      "nav": 97278.39747129272,
+      "nav": 96684.66583579511,
       "pending": [],
       "positions": {
         "SPY": {
@@ -310,6 +324,13 @@
             "snapshot_sha256": "3649456c956229572f45ee2d3a4164de2926400fe77a8a5a8482ac9b5309bdbe"
           },
           "recorded_at_utc": "2026-11-17T16:48:43.925800+00:00"
+        },
+        {
+          "date": "2026-11-17",
+          "eurusd_daily_close": 1.0997470617294312,
+          "inactive_no_new_fills": true,
+          "missing_exits_remain_open": true,
+          "nav": 99795.8549049987
         }
       ],
       "events": [
@@ -966,9 +987,16 @@
           ],
           "recorded_at_utc": "2026-11-17T16:48:43.925800+00:00",
           "type": "inactive_mark_only_no_execution"
+        },
+        {
+          "date": "2026-11-17",
+          "held_tickers": [
+            "MSI"
+          ],
+          "type": "inactive_mark_only_no_execution"
         }
       ],
-      "nav": 99954.57198407104,
+      "nav": 99795.8549049987,
       "pending": [],
       "positions": {
         "MSI": {
@@ -1595,6 +1623,11 @@
       "date": "2026-11-16",
       "inactive_no_new_fills": true,
       "nav": 99954.57198407104
+    },
+    {
+      "date": "2026-11-17",
+      "inactive_no_new_fills": true,
+      "nav": 99795.8549049987
     }
   ],
   "first_session": "2026-10-12",
@@ -1617,12 +1650,13 @@
   },
   "fx_method": "previous_XNYS_session_EURUSD_close_at_open; current_EURUSD_close_at_mark",
   "initial_capital": 100000.0,
-  "last_session": "2026-11-16",
+  "last_session": "2026-11-17",
   "last_signal_session": "2026-11-11",
   "missing_signals": [
     "2026-11-12",
     "2026-11-13",
-    "2026-11-16"
+    "2026-11-16",
+    "2026-11-17"
   ],
   "outage_control": {
     "first_future_trading_session": "2026-11-18",
@@ -1632,6 +1666,7 @@
     "missing_sessions": [
       "2026-11-16"
     ],
+    "pending_exit_as_of": "2026-11-17",
     "recorded_at_utc": "2026-11-17T16:48:43.925800+00:00"
   },
   "schema_version": 1,
