@@ -118,6 +118,18 @@
             "snapshot_sha256": "2d94d527b4391f9eb2d8283a15b5338336cfa55d582e840a79c7cfd338fae813"
           },
           "recorded_at_utc": "2026-11-15T23:17:22.843526+00:00"
+        },
+        {
+          "date": "2026-11-16",
+          "eurusd_daily_close": 1.1024872064590454,
+          "inactive_no_new_fills": true,
+          "missing_exits_remain_open": true,
+          "nav": 97278.39747129272,
+          "quote_identity": {
+            "effective_sha256": "9d8f9a13262b749e8f28bbb4de124015845a20e9955ed87620e16abd6341bd61",
+            "snapshot_sha256": "3649456c956229572f45ee2d3a4164de2926400fe77a8a5a8482ac9b5309bdbe"
+          },
+          "recorded_at_utc": "2026-11-17T16:48:43.925800+00:00"
         }
       ],
       "events": [
@@ -143,9 +155,17 @@
           ],
           "recorded_at_utc": "2026-11-15T23:17:22.843526+00:00",
           "type": "inactive_mark_only_no_execution"
+        },
+        {
+          "date": "2026-11-16",
+          "held_tickers": [
+            "SPY"
+          ],
+          "recorded_at_utc": "2026-11-17T16:48:43.925800+00:00",
+          "type": "inactive_mark_only_no_execution"
         }
       ],
-      "nav": 98603.71372249738,
+      "nav": 97278.39747129272,
       "pending": [],
       "positions": {
         "SPY": {
@@ -278,6 +298,18 @@
             "snapshot_sha256": "2d94d527b4391f9eb2d8283a15b5338336cfa55d582e840a79c7cfd338fae813"
           },
           "recorded_at_utc": "2026-11-15T23:17:22.843526+00:00"
+        },
+        {
+          "date": "2026-11-16",
+          "eurusd_daily_close": 1.1024872064590454,
+          "inactive_no_new_fills": true,
+          "missing_exits_remain_open": true,
+          "nav": 99954.57198407104,
+          "quote_identity": {
+            "effective_sha256": "9d8f9a13262b749e8f28bbb4de124015845a20e9955ed87620e16abd6341bd61",
+            "snapshot_sha256": "3649456c956229572f45ee2d3a4164de2926400fe77a8a5a8482ac9b5309bdbe"
+          },
+          "recorded_at_utc": "2026-11-17T16:48:43.925800+00:00"
         }
       ],
       "events": [
@@ -926,9 +958,17 @@
           ],
           "recorded_at_utc": "2026-11-15T23:17:22.843526+00:00",
           "type": "inactive_mark_only_no_execution"
+        },
+        {
+          "date": "2026-11-16",
+          "held_tickers": [
+            "MSI"
+          ],
+          "recorded_at_utc": "2026-11-17T16:48:43.925800+00:00",
+          "type": "inactive_mark_only_no_execution"
         }
       ],
-      "nav": 99855.49222075692,
+      "nav": 99954.57198407104,
       "pending": [],
       "positions": {
         "MSI": {
@@ -1550,6 +1590,11 @@
       "date": "2026-11-13",
       "inactive_no_new_fills": true,
       "nav": 99855.49222075692
+    },
+    {
+      "date": "2026-11-16",
+      "inactive_no_new_fills": true,
+      "nav": 99954.57198407104
     }
   ],
   "first_session": "2026-10-12",
@@ -1572,22 +1617,22 @@
   },
   "fx_method": "previous_XNYS_session_EURUSD_close_at_open; current_EURUSD_close_at_mark",
   "initial_capital": 100000.0,
-  "last_session": "2026-11-13",
+  "last_session": "2026-11-16",
   "last_signal_session": "2026-11-11",
   "missing_signals": [
     "2026-11-12",
-    "2026-11-13"
+    "2026-11-13",
+    "2026-11-16"
   ],
   "outage_control": {
-    "first_future_trading_session": "2026-11-16",
+    "first_future_trading_session": "2026-11-18",
     "held_exits_require_future_observed_quote": true,
     "historical_fills_created": 0,
     "kind": "missed_forward_session_mark_only",
     "missing_sessions": [
-      "2026-11-12",
-      "2026-11-13"
+      "2026-11-16"
     ],
-    "recorded_at_utc": "2026-11-15T23:17:22.843526+00:00"
+    "recorded_at_utc": "2026-11-17T16:48:43.925800+00:00"
   },
   "schema_version": 1,
   "signal_history": [

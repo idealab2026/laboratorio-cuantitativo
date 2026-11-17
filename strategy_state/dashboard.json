@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "generated_at_utc": "2026-11-17T16:47:23.434375+00:00",
+  "generated_at_utc": "2026-11-17T16:48:45.849423+00:00",
   "principle": "Comparar rentabilidad acumulada y riesgo observado; no ordenar carteras con distintas fechas de inicio o supuestos de ejecución.",
   "counts": {
     "paper_with_diary": 18,
@@ -4671,11 +4671,11 @@
       "group": "timesfm_daily_demo",
       "status": "demo_con_diario",
       "first_session": "2026-10-12",
-      "last_session": "2026-11-13",
+      "last_session": "2026-11-16",
       "initial_capital": 100000.0,
-      "last_equity": 99855.49222075692,
-      "return_pct": -0.144508,
-      "day_return_pct": 0.069802,
+      "last_equity": 99954.57198407104,
+      "return_pct": -0.045428,
+      "day_return_pct": 0.099223,
       "currency": "EUR",
       "equity_history": [
         {
@@ -4777,11 +4777,15 @@
         {
           "date": "2026-11-13",
           "nav": 99855.49222075692
+        },
+        {
+          "date": "2026-11-16",
+          "nav": 99954.57198407104
         }
       ],
       "period_returns_pct": {
-        "5_sessions": 1.188824,
-        "21_sessions": -0.248509,
+        "5_sessions": 0.163457,
+        "21_sessions": 0.090221,
         "63_sessions": null
       },
       "note": "TimesFM 2.5: predicción de una sesión sobre el S&P 500 canónico; cartera intradía ficticia, EUR 100k, fills next-open, cierre del mismo día; referencia SPY EUR de misma cohorte.",
@@ -4798,10 +4802,10 @@
       "comparison_universe_id": "SP500_2026-09-29_503",
       "comparison_universe_symbols": 503,
       "comparison_exclusion_reason": null,
-      "risk_observations": 25,
-      "annualized_volatility_pct": 10.964871,
+      "risk_observations": 26,
+      "annualized_volatility_pct": 10.738979,
       "max_drawdown_pct": -2.841353,
-      "sharpe_0rf": -0.085252
+      "sharpe_0rf": 0.009571
     },
     {
       "id": "timesfm_daily_spy_eur",
@@ -4810,11 +4814,11 @@
       "group": "timesfm_daily_demo",
       "status": "demo_con_diario",
       "first_session": "2026-10-12",
-      "last_session": "2026-11-13",
+      "last_session": "2026-11-16",
       "initial_capital": 100000.0,
-      "last_equity": 98603.71372249738,
-      "return_pct": -1.396286,
-      "day_return_pct": 0.033872,
+      "last_equity": 97278.39747129272,
+      "return_pct": -2.721603,
+      "day_return_pct": -1.344084,
       "currency": "EUR",
       "equity_history": [
         {
@@ -4916,11 +4920,15 @@
         {
           "date": "2026-11-13",
           "nav": 98603.71372249738
+        },
+        {
+          "date": "2026-11-16",
+          "nav": 97278.39747129272
         }
       ],
       "period_returns_pct": {
-        "5_sessions": 2.738341,
-        "21_sessions": -0.779367,
+        "5_sessions": 0.070202,
+        "21_sessions": -0.899702,
         "63_sessions": null
       },
       "note": "TimesFM 2.5: predicción de una sesión sobre el S&P 500 canónico; cartera intradía ficticia, EUR 100k, fills next-open, cierre del mismo día; referencia SPY EUR de misma cohorte.",
@@ -4937,10 +4945,10 @@
       "comparison_universe_id": "SP500_2026-09-29_503",
       "comparison_universe_symbols": 503,
       "comparison_exclusion_reason": null,
-      "risk_observations": 25,
-      "annualized_volatility_pct": 17.102986,
+      "risk_observations": 26,
+      "annualized_volatility_pct": 17.237392,
       "max_drawdown_pct": -5.097625,
-      "sharpe_0rf": -0.780225
+      "sharpe_0rf": -1.529162
     },
     {
       "id": "genetic_sp500_legacy",
