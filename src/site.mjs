@@ -4,7 +4,7 @@ import {verifyFinancialSankeys} from "./financial-sankey.mjs?v=a50f0cb89012";
 import {verifyOriginalPaper} from "./original-paper.mjs?v=b4ab52ea9863";
 import {algorithmTheory,paperLeaderboard} from "./algorithm-detail.mjs";
 import {glossaryGroups,searchGlossary,verifyGlossary} from "./glossary.mjs";
-import {verifyOperationsAudit,renderOperationsAudit,renderTradeLotsTable,summarizeOperationsAudit,buildSessionActionColumns,renderSessionTickerList} from "./operations-audit.mjs?v=7e8b225e6962";
+import {verifyOperationsAudit,renderOperationsAudit,renderTradeLotsTable,summarizeOperationsAudit,buildSessionActionColumns,renderSessionTickerList} from "./operations-audit.mjs?v=2d8f6d728df1";
 import {parseLocalPaperResults,parseLocalPaperCurves,summarizePrivatePaper} from "./private-paper.mjs?v=4baff08a2202";
 import {signalResearchSummary,methodCatalog} from "./paper-methods.mjs";
 import {parseLocalCagr2031} from "./private-theses.mjs";
@@ -1917,9 +1917,13 @@ function monitoring(){
    '<div class="monitoring-coverage-bar" role="img" aria-label="'+
     esc(health!==null&&totalPaper!==null?health+' de '+totalPaper+' estrategias con operaciones paper archivadas':'Sin datos de cobertura verificables')+
     '"><span style="width:'+percent.toFixed(2)+'%"></span></div>'+
-   '<div class="monitoring-coverage-legend"><span>Con compraventas verificables: '+number(health)+'</span>'+
+   '<div class="monitoring-coverage-legend"><span>Con compras o ventas registradas (no únicamente cierres OHLC): '+number(health)+'</span>'+
     '<span>Sin compraventas reconstruibles: '+number(summary?.withoutExecutions)+'</span></div>'+
-   '<p class="monitoring-explanation">Diarios históricos con posiciones simuladas y precios observados del mercado. No implican que los algoritmos estén ejecutándose hoy. '+(summary?'Ejecuciones documentadas: '+number(summary.executions)+'. Conversiones corporativas: '+number(summary.conversions)+'.':'Cargando libro de operaciones.')+'</p></section>'+
+   '<p class="monitoring-explanation">Diarios históricos de estrategias paper; no acreditan ejecución actual. '+
+   (summary?'Acciones de compraventa registradas, excluidos cierres OHLC modelados: '+number(summary.executions)+
+   '. Ventas a cierre OHLC retrospectivo (NO observadas): '+number(summary.modelledSales)+
+   '. Conversiones corporativas: '+number(summary.conversions)+'.':'Cargando libro de operaciones.')+
+   '</p></section>'+
   '<p class="monitoring-caveat">«Productivo» exige un motor institucional con registro independiente verificable. Un algoritmo con resultados paper archivados no se clasifica automáticamente como productivo. Si falla la fuente de verificación, se muestra N/D en lugar de atribuirle actividad.</p>'+
   '</div>';
  const options=roster?.entries?.map(x=>({id:x.slot,name:originalStrategyName(x)}))||
@@ -2276,7 +2280,7 @@ function algorithmFiche(){
    '<td>'+navActionCell(p.date,"sells")+'</td>'+
    '<td>'+navActionCell(p.date,"holds")+'</td></tr>').join("")+
   '</tbody></table></div>'+
-  '<p class="audit-method-note">* Venta parcial acreditada: permanecen acciones del mismo ticker. MANTENER expresa continuidad contable inferida, no una orden. — indica que no consta ninguna acción de esa clase en una sesión auditada; N/D significa que falta el desglose de acciones para esa fecha.</p>'+
+  '<p class="audit-method-note">* Venta parcial registrada: permanecen acciones del mismo ticker. Las ventas modeladas con cierre OHLC retrospectivo no se presentan como ventas ejecutadas en la columna VENTAS; su detalle y limitación están visibles en la auditoría. MANTENER expresa continuidad contable inferida, no una orden. — significa que no hay acción registrada de esa clase; N/D significa que falta desglose para esa fecha.</p>'+
   '</details></section>':
   '<section class="algorithm-section"><h3>Evolución y sesiones</h3><p>Sin diario verificable: no existen rentabilidades ni operaciones acreditadas para esta línea.</p></section>';
  const theory=candidate?
