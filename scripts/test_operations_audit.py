@@ -163,6 +163,28 @@ class OperationsAuditTests(unittest.TestCase):
             self.assertGreater(len(self.doc["tracks"][slot]["prices"]),0)
             self.assertEqual(self.doc["tracks"][slot]["currency"],"USD")
 
+    def test_weekly_ohlc_close_is_a_proxy_not_observed_execution(self):
+        historical = {
+            "events": [
+                {"date": "2026-11-13", "ticker": "AAA", "type": "sell",
+                 "shares": 2.0, "price": 104.5, "fee": .25,
+                 "execution": "simulated_week_close"},
+                {"date": "2026-11-13", "ticker": "BBB", "type": "sell",
+                 "shares": 1.0, "price": 94.0, "fee": .12,
+                 "execution": "forward_observed_paper"},
+            ],
+            "trades": [],
+        }
+        out = normalize_ledger(historical, "weekly_ml_daily_state/ledger.json")
+        a, b = out["2026-11-13"]
+        self.assertEqual((a["ticker"], a["price"], a["quantity"]),
+                         ("AAA", 104.5, 2.0))
+        self.assertEqual(a["price_basis"], "historical_week_close_proxy")
+        self.assertIn("no existe evidencia de una venta paper observada", a["reason"])
+        self.assertEqual(b["price_basis"], "book_fill")
+        original = normalize_ledger(historical, "classic_sp500_state/ledger.json")
+        self.assertEqual(original["2026-11-13"][0]["price_basis"], "book_fill")
+
     def test_no_invention_if_book_has_no_execution_events(self):
         fixture={"events":[{"date":"2026-11-02","type":"signal",
                             "ticker":"AAPL","side":"buy"}]}
@@ -265,7 +287,8 @@ class AllStrategyOperationReconciliationTests(unittest.TestCase):
                     elif a["side"] in {"buy","sell"}:
                         self.assertIn(a["price_basis"],
                            {"book_fill","position_entry","corporate_original_entry",
-                            "trade_entry_cost_derived","trade_net_proceeds_derived","not_recorded"})
+                            "trade_entry_cost_derived","trade_net_proceeds_derived",
+                            "historical_week_close_proxy","not_recorded"})
                         if a["price"] is None:
                             unpriced.append((slot,row["date"],a["ticker"],a["side"]))
         self.assertGreaterEqual(count_with_events,30)
