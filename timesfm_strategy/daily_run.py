@@ -264,6 +264,7 @@ def run(config_path, state_path):
         state = initialize(config, day, selected, diagnostics)
         core.atomic_write(state_path, state)
         return {"status": "first_daily_signal_frozen", "date": day, "selected": len(selected)}
+    changed = False
     if day > state["last_session"]:
         if state["last_signal_session"] != state["last_session"]:
             # A prior forecast was not persisted. Record a missed decision,
@@ -284,7 +285,7 @@ def run(config_path, state_path):
     if state["books"]["timesfm_daily"]["positions"]:
         return {"status": "daily_passive_mark_exit_pending", "date": day,
                 "held": sorted(state["books"]["timesfm_daily"]["positions"]),
-                "changed": bool(day == state["last_session"])}
+                "changed": changed}
     if state["last_signal_session"] == day:
         return {"status": "already_recorded", "date": day}
     # The settlement above is persisted BEFORE heavy model inference.
