@@ -1,6 +1,8 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 import {buildOperationLots,sortOperationLots} from "../src/operation-lots.mjs";
+import {buildSessionActionColumns,renderOperationsAudit,summarizeOperationsAudit,
+ verifyOperationsAudit} from "../src/operations-audit.mjs";
 const entry=(ticker,side,price,quantity,fee=null)=>({ticker,side,price,quantity,fee});
 const track=(sessions,prices={},splits=[])=>({currency:"USD",sessions,prices,splits});
 
@@ -132,4 +134,45 @@ test("sorting defaults to open first, then recent, and places unmeasurable last 
  const rows=buildOperationLots(t);
  assert.deepEqual(sortOperationLots(rows).map(r=>r.ticker),["BBB","AAA"]);
  assert.deepEqual(sortOperationLots(rows,"pnl",true).map(r=>r.ticker),["AAA","BBB"]);
+});
+
+test("public audit never counts simulated Friday OHLC as a verified execution",()=>{
+ const source="weekly_ml_daily_state/ledger.json";
+ const make=(actions)=>({date:"2026-11-13",actions});
+ const buy={ticker:"AAA",side:"buy",price:100,quantity:3,fee:0,
+  reason:"Compra documentada",reason_basis:"recorded",evidence:source,
+  signal_date:null,price_basis:"book_fill"};
+ const sell={ticker:"AAA",side:"sell",price:108,quantity:3,fee:0,
+  reason:"Cierre OHLC no observado",reason_basis:"recorded",evidence:source,
+  signal_date:null,price_basis:"historical_week_close_proxy"};
+ const blank=()=>({status:"no_executed_actions_documented",
+  source_path:null,source_sha256:null,currency:"USD",sessions:[],prices:{},
+  coverage:{executions:0,priced_executions:0,unpriced_executions:0,
+   corporate_conversions:0,modelled_week_close_sales:0,
+   ledger_actions_excluding_week_close_proxy:0}});
+ const tracks=Object.fromEntries(Array.from({length:64},(_,i)=>
+  ["IL-"+String(i+1).padStart(3,"0"),blank()]));
+ tracks["IL-023"]={...blank(),status:"partial_executions_documented",
+  source_path:source,sessions:[make([buy,sell])],
+  coverage:{executions:2,priced_executions:2,unpriced_executions:0,
+   corporate_conversions:0,modelled_week_close_sales:1,
+   ledger_actions_excluding_week_close_proxy:1}};
+ const doc={schema:"midas_operations_audit_v1",
+  purpose:"read_only_paper_decision_evidence",asof:"2026-11-13",tracks};
+ assert.equal(verifyOperationsAudit(doc).count,64);
+ const report=summarizeOperationsAudit(doc);
+ assert.equal(report.executions,1);
+ assert.equal(report.modelledSales,1);
+ assert.equal(report.totalLedgerActions,2);
+ assert.equal(report.latestTrade,"2026-11-13");
+ assert.deepEqual(buildSessionActionColumns(tracks["IL-023"])[0].sells,[]);
+ assert.deepEqual(buildSessionActionColumns(tracks["IL-023"])[0].modelledSells,["AAA"]);
+ const html=renderOperationsAudit(doc,"IL-023");
+ assert.match(html,/VENTA SIMULADA · OHLC/);
+ assert.match(html,/NO observadas/);
+ assert.match(html,/audit-modelled-dot/);
+ assert.match(html,/P\/L no certificable/);
+ assert.doesNotMatch(html,/VENTA · CERRADA/);
+ tracks["IL-023"].coverage.modelled_week_close_sales=0;
+ assert.throws(()=>verifyOperationsAudit(doc),/Conteo de cierres OHLC simulados/);
 });
