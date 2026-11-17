@@ -168,6 +168,64 @@ def process_session(state, config, date, previous, bars, *, fx_entry, fx_mark):
     return result, True
 
 
+def mark_unobserved_exit(state, config, date, previous, bars, *, fx_mark):
+    """Mark genuinely held EUR exposure; never manufacture a missing exit.
+
+    This path is only for an unobserved prior closing sale. It does not
+    simulate a next-open entry, realize P&L or emit a new trading signal.
+    """
+    check(state, config)
+    if (date < "2026-11-10" or date <= state["last_session"]
+            or previous != state["last_session"]
+            or not state["books"]["timesfm_daily"]["positions"]):
+        raise ValueError("Passive TimesFM exit mark requires a continuous open holding")
+    rate = core._positive(fx_mark, "observed EURUSD mark")
+    result = copy.deepcopy(state)
+    for name, book in result["books"].items():
+        for ticker, pos in book["positions"].items():
+            if pos["entry_date"] > date or float(pos["shares"]) <= 0:
+                raise ValueError("Invalid/future-dated passive TimesFM holding: " + ticker)
+            row = bars.get(ticker)
+            if not isinstance(row, dict):
+                raise ValueError("Missing exact passive close for " + ticker)
+            # Corporate entitlements require a separate verified adjustment;
+            # an adjusted OHLC must never silently modify frozen share counts.
+            if float(row.get("split", 0)) or float(row.get("dividend", 0)):
+                raise ValueError("TimesFM passive corporate action needs separate review: " + ticker)
+        if book["pending"]:
+            expired = copy.deepcopy(book["pending"])
+            book["pending"] = []
+            book["events"].append({"date": date, "type": "inactive_expired_open_no_fill",
+                                   "orders": expired})
+        marked = {ticker: core._positive(bars[ticker]["close"], "passive close " + ticker) / rate
+                  for ticker in book["positions"]}
+        book["nav"] = float(book["cash"]) + sum(
+            float(position["shares"]) * marked[ticker]
+            for ticker, position in book["positions"].items())
+        if not math.isfinite(book["nav"]) or book["nav"] < 0:
+            raise ValueError("Invalid passive TimesFM EUR NAV")
+        book["equity"].append({"date": date, "nav": book["nav"],
+                              "inactive_no_new_fills": True,
+                              "missing_exits_remain_open": bool(book["positions"]),
+                              "eurusd_daily_close": rate})
+        book["events"].append({"date": date, "type": "inactive_mark_only_no_execution",
+                               "held_tickers": sorted(book["positions"])})
+    result["last_session"] = date
+    result["equity"].append({"date": date,
+                             "nav": result["books"]["timesfm_daily"]["nav"],
+                             "inactive_no_new_fills": True})
+    result["missing_signals"] = sorted(set(result.get("missing_signals", [])) | {date})
+    result.setdefault("outage_control", {})["pending_exit_as_of"] = date
+    result["outage_control"]["held_exits_require_future_observed_quote"] = True
+    check(result, config)
+    for name, before in state["books"].items():
+        after = result["books"][name]
+        if (before["cash"] != after["cash"] or before["positions"] != after["positions"]
+                or before["trades"] != after["trades"]):
+            raise ValueError("Passive TimesFM mark changed execution economics: " + name)
+    return result, True
+
+
 def freeze_signal(state, config, date, selected, diagnostics):
     check(state, config)
     if date < state["last_session"]:
@@ -206,17 +264,36 @@ def run(config_path, state_path):
         state = initialize(config, day, selected, diagnostics)
         core.atomic_write(state_path, state)
         return {"status": "first_daily_signal_frozen", "date": day, "selected": len(selected)}
+    changed = False
     if day > state["last_session"]:
         if state["last_signal_session"] != state["last_session"]:
             # A prior forecast was not persisted. Record a missed decision,
             # but do not generate or invent it after its next open occurred.
             state = copy.deepcopy(state)
             state["missing_signals"].append(state["last_session"])
-        bars, fx_entry, fx_mark = core._daily_bars(config, state, day, previous)
-        state, changed = process_session(state, config, day, previous, bars,
-                                         fx_entry=fx_entry, fx_mark=fx_mark)
+        stalled_exit = (day >= "2026-11-10" and
+                        bool(state["books"]["timesfm_daily"]["positions"]))
+        # Expired pending orders are not executions and need no price quote.
+        # This read-only projection asks the source for HELD symbols only.
+        quote_book = copy.deepcopy(state) if stalled_exit else state
+        if stalled_exit:
+            for held_book in quote_book["books"].values():
+                held_book["pending"] = []
+        bars, fx_entry, fx_mark = core._daily_bars(config, quote_book, day, previous)
+        if stalled_exit:
+            state, changed = mark_unobserved_exit(
+                state, config, day, previous, bars, fx_mark=fx_mark)
+        else:
+            state, changed = process_session(state, config, day, previous, bars,
+                                             fx_entry=fx_entry, fx_mark=fx_mark)
         if changed:
             core.atomic_write(state_path, state)
+    # Frozen intraday positions which missed their observed exit must first
+    # unwind on a FUTURE verified preclose.  Do not infer/replay new orders.
+    if state["books"]["timesfm_daily"]["positions"]:
+        return {"status": "daily_passive_mark_exit_pending", "date": day,
+                "held": sorted(state["books"]["timesfm_daily"]["positions"]),
+                "changed": changed}
     if state["last_signal_session"] == day:
         return {"status": "already_recorded", "date": day}
     # The settlement above is persisted BEFORE heavy model inference.
