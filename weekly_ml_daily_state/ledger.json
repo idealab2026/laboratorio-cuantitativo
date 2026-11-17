@@ -141,6 +141,103 @@
             "snapshot_sha256": "7a4eabfe31d00d5e07981eb35f7f43228eaeaeab538dc1641e11d305996ca702"
           },
           "recorded_at_utc": "2026-11-05T00:25:34+00:00"
+        },
+        {
+          "date": "2026-11-05",
+          "decision_recorded": false,
+          "inactive_no_fills": true,
+          "nav": 87007.97098096753,
+          "quote_identity": {
+            "closing_mark_scope": "passive_nav_only",
+            "effective_sha256": "e175f0c80241cc7345979db086bcb83d513950cb5a97027aaba92df9783b93e1",
+            "passive_close_provenance": {
+              "CRWD": {
+                "captured_at_utc": "2026-11-05T23:45:35+00:00",
+                "close": 217.1999969482422,
+                "document_sha256": "cac477fcda028e2f06f77ded49a10be04cbc4ab51b132542d3baa14e74b1c405",
+                "session": "2026-11-05"
+              }
+            },
+            "snapshot_sha256": "26bab09fa7bb46ba02e0f82c8d6d190dc7bf8e7a38a4345a2cdec199f03df947"
+          },
+          "recorded_at_utc": "2026-11-17T17:01:30+00:00"
+        },
+        {
+          "date": "2026-11-06",
+          "decision_recorded": false,
+          "inactive_no_fills": true,
+          "nav": 86651.82104657883,
+          "quote_identity": {
+            "effective_sha256": "83bc3bf223004e864717fc44fec924b8df479d9b6dd9c2fad1cef9d5343eca6b",
+            "snapshot_sha256": "a631487625b0226266b3b64885e9d4e28f2a678cf4e5d3082a7aa8de688747c3"
+          },
+          "recorded_at_utc": "2026-11-17T17:01:30+00:00"
+        },
+        {
+          "date": "2026-11-09",
+          "decision_recorded": false,
+          "inactive_no_fills": true,
+          "nav": 89088.33624678919,
+          "quote_identity": {
+            "effective_sha256": "44d94c3e556782780c149749005800389d786d1fa221281ad8a9b43b9a741ddb",
+            "snapshot_sha256": "cf13928f7aced5545f5eb72ea8582736f2975399aa302a5fa81666c85787884f"
+          },
+          "recorded_at_utc": "2026-11-17T17:01:30+00:00"
+        },
+        {
+          "date": "2026-11-10",
+          "decision_recorded": false,
+          "inactive_no_fills": true,
+          "nav": 88043.22836929315,
+          "quote_identity": {
+            "effective_sha256": "74529b48d939f3588c79de31304855abc82bb0c8e847eb2f89d69239e954397c",
+            "snapshot_sha256": "a4ebb3efac79d8ee8e90fc4c88c4ee8ed8ae9d546d99eb482fc7ebf4b6549ccb"
+          },
+          "recorded_at_utc": "2026-11-17T17:01:30+00:00"
+        },
+        {
+          "date": "2026-11-11",
+          "decision_recorded": false,
+          "inactive_no_fills": true,
+          "nav": 89397.00759630016,
+          "quote_identity": {
+            "effective_sha256": "ebcbb988afbec7a1abd694e2153976218ecdcd1215067ef190dd59584e47955e",
+            "snapshot_sha256": "5c22f7caa57b256714ec56694254fee3cb893dc4325d67e726e42e68162a5441"
+          },
+          "recorded_at_utc": "2026-11-17T17:01:30+00:00"
+        },
+        {
+          "date": "2026-11-12",
+          "decision_recorded": false,
+          "inactive_no_fills": true,
+          "nav": 88287.6326944502,
+          "quote_identity": {
+            "effective_sha256": "e6767240da15a78a1a33e8251fae3f19000ce13514d771b5fd03fd01417d4831",
+            "snapshot_sha256": "b45ed70051d99b91cd2faafefe1ea49ff5db12d7615299c4250b24acbaad13cd"
+          },
+          "recorded_at_utc": "2026-11-17T17:01:30+00:00"
+        },
+        {
+          "date": "2026-11-13",
+          "decision_recorded": false,
+          "inactive_no_fills": true,
+          "nav": 87872.10625028408,
+          "quote_identity": {
+            "effective_sha256": "848489c23800e69ce1edda437a865d7ad5edfb378fde9bb48e7804a143374b15",
+            "snapshot_sha256": "2d94d527b4391f9eb2d8283a15b5338336cfa55d582e840a79c7cfd338fae813"
+          },
+          "recorded_at_utc": "2026-11-17T17:01:30+00:00"
+        },
+        {
+          "date": "2026-11-16",
+          "decision_recorded": false,
+          "inactive_no_fills": true,
+          "nav": 86342.47222608142,
+          "quote_identity": {
+            "effective_sha256": "9d8f9a13262b749e8f28bbb4de124015845a20e9955ed87620e16abd6341bd61",
+            "snapshot_sha256": "3649456c956229572f45ee2d3a4164de2926400fe77a8a5a8482ac9b5309bdbe"
+          },
+          "recorded_at_utc": "2026-11-17T17:01:30+00:00"
         }
       ],
       "events": [
@@ -855,14 +952,105 @@
           "missing_tickers": [],
           "reason": "unreconciled_session",
           "type": "weekly_book_paused"
+        },
+        {
+          "date": "2026-11-05",
+          "expired_unfilled_orders": [],
+          "recorded_at_utc": "2026-11-17T17:01:30+00:00",
+          "type": "inactive_mark_no_trades"
+        },
+        {
+          "date": "2026-11-06",
+          "expired_unfilled_orders": [],
+          "recorded_at_utc": "2026-11-17T17:01:30+00:00",
+          "type": "inactive_mark_no_trades"
+        },
+        {
+          "date": "2026-11-06",
+          "held_tickers": [
+            "BBY",
+            "CRWD",
+            "FFIV",
+            "FTNT",
+            "HPQ",
+            "MPC",
+            "MRNA",
+            "NCLH",
+            "NOW",
+            "ROP"
+          ],
+          "recorded_at_utc": "2026-11-17T17:01:30+00:00",
+          "type": "weekly_exit_unobserved_during_outage"
+        },
+        {
+          "date": "2026-11-09",
+          "expired_unfilled_orders": [],
+          "recorded_at_utc": "2026-11-17T17:01:30+00:00",
+          "type": "inactive_mark_no_trades"
+        },
+        {
+          "date": "2026-11-10",
+          "expired_unfilled_orders": [],
+          "recorded_at_utc": "2026-11-17T17:01:30+00:00",
+          "type": "inactive_mark_no_trades"
+        },
+        {
+          "date": "2026-11-11",
+          "expired_unfilled_orders": [],
+          "recorded_at_utc": "2026-11-17T17:01:30+00:00",
+          "type": "inactive_mark_no_trades"
+        },
+        {
+          "date": "2026-11-12",
+          "expired_unfilled_orders": [],
+          "recorded_at_utc": "2026-11-17T17:01:30+00:00",
+          "type": "inactive_mark_no_trades"
+        },
+        {
+          "date": "2026-11-13",
+          "expired_unfilled_orders": [],
+          "recorded_at_utc": "2026-11-17T17:01:30+00:00",
+          "type": "inactive_mark_no_trades"
+        },
+        {
+          "date": "2026-11-13",
+          "held_tickers": [
+            "BBY",
+            "CRWD",
+            "FFIV",
+            "FTNT",
+            "HPQ",
+            "MPC",
+            "MRNA",
+            "NCLH",
+            "NOW",
+            "ROP"
+          ],
+          "recorded_at_utc": "2026-11-17T17:01:30+00:00",
+          "type": "weekly_exit_unobserved_during_outage"
+        },
+        {
+          "date": "2026-11-16",
+          "expired_unfilled_orders": [],
+          "recorded_at_utc": "2026-11-17T17:01:30+00:00",
+          "type": "inactive_mark_no_trades"
         }
       ],
       "last_signal_session": "2026-10-30",
-      "nav": 90892.27011219709,
+      "nav": 86342.47222608142,
+      "outage_control": {
+        "first_trading_session": "2026-11-18",
+        "held_exits_require_future_observed_quote": true,
+        "historical_fills_created": 0
+      },
       "paused_missing_quotes": {
         "date": "2026-11-16",
+        "missed_exit_sessions": [
+          "2026-11-06",
+          "2026-11-13"
+        ],
         "missing_tickers": [],
-        "reason": "unreconciled_session"
+        "reason": "unobserved_weekly_exit"
       },
       "pending": [],
       "positions": {
@@ -5291,6 +5479,103 @@
             "snapshot_sha256": "7a4eabfe31d00d5e07981eb35f7f43228eaeaeab538dc1641e11d305996ca702"
           },
           "recorded_at_utc": "2026-11-05T00:25:34+00:00"
+        },
+        {
+          "date": "2026-11-05",
+          "decision_recorded": false,
+          "inactive_no_fills": true,
+          "nav": 80428.19461056858,
+          "quote_identity": {
+            "closing_mark_scope": "passive_nav_only",
+            "effective_sha256": "e175f0c80241cc7345979db086bcb83d513950cb5a97027aaba92df9783b93e1",
+            "passive_close_provenance": {
+              "CRWD": {
+                "captured_at_utc": "2026-11-05T23:45:35+00:00",
+                "close": 217.1999969482422,
+                "document_sha256": "cac477fcda028e2f06f77ded49a10be04cbc4ab51b132542d3baa14e74b1c405",
+                "session": "2026-11-05"
+              }
+            },
+            "snapshot_sha256": "26bab09fa7bb46ba02e0f82c8d6d190dc7bf8e7a38a4345a2cdec199f03df947"
+          },
+          "recorded_at_utc": "2026-11-17T17:01:30+00:00"
+        },
+        {
+          "date": "2026-11-06",
+          "decision_recorded": false,
+          "inactive_no_fills": true,
+          "nav": 82086.90715449612,
+          "quote_identity": {
+            "effective_sha256": "83bc3bf223004e864717fc44fec924b8df479d9b6dd9c2fad1cef9d5343eca6b",
+            "snapshot_sha256": "a631487625b0226266b3b64885e9d4e28f2a678cf4e5d3082a7aa8de688747c3"
+          },
+          "recorded_at_utc": "2026-11-17T17:01:30+00:00"
+        },
+        {
+          "date": "2026-11-09",
+          "decision_recorded": false,
+          "inactive_no_fills": true,
+          "nav": 85876.50486874362,
+          "quote_identity": {
+            "effective_sha256": "44d94c3e556782780c149749005800389d786d1fa221281ad8a9b43b9a741ddb",
+            "snapshot_sha256": "cf13928f7aced5545f5eb72ea8582736f2975399aa302a5fa81666c85787884f"
+          },
+          "recorded_at_utc": "2026-11-17T17:01:30+00:00"
+        },
+        {
+          "date": "2026-11-10",
+          "decision_recorded": false,
+          "inactive_no_fills": true,
+          "nav": 84851.53884543711,
+          "quote_identity": {
+            "effective_sha256": "74529b48d939f3588c79de31304855abc82bb0c8e847eb2f89d69239e954397c",
+            "snapshot_sha256": "a4ebb3efac79d8ee8e90fc4c88c4ee8ed8ae9d546d99eb482fc7ebf4b6549ccb"
+          },
+          "recorded_at_utc": "2026-11-17T17:01:30+00:00"
+        },
+        {
+          "date": "2026-11-11",
+          "decision_recorded": false,
+          "inactive_no_fills": true,
+          "nav": 88766.3153515161,
+          "quote_identity": {
+            "effective_sha256": "ebcbb988afbec7a1abd694e2153976218ecdcd1215067ef190dd59584e47955e",
+            "snapshot_sha256": "5c22f7caa57b256714ec56694254fee3cb893dc4325d67e726e42e68162a5441"
+          },
+          "recorded_at_utc": "2026-11-17T17:01:30+00:00"
+        },
+        {
+          "date": "2026-11-12",
+          "decision_recorded": false,
+          "inactive_no_fills": true,
+          "nav": 87003.40784375151,
+          "quote_identity": {
+            "effective_sha256": "e6767240da15a78a1a33e8251fae3f19000ce13514d771b5fd03fd01417d4831",
+            "snapshot_sha256": "b45ed70051d99b91cd2faafefe1ea49ff5db12d7615299c4250b24acbaad13cd"
+          },
+          "recorded_at_utc": "2026-11-17T17:01:30+00:00"
+        },
+        {
+          "date": "2026-11-13",
+          "decision_recorded": false,
+          "inactive_no_fills": true,
+          "nav": 85504.61262819484,
+          "quote_identity": {
+            "effective_sha256": "848489c23800e69ce1edda437a865d7ad5edfb378fde9bb48e7804a143374b15",
+            "snapshot_sha256": "2d94d527b4391f9eb2d8283a15b5338336cfa55d582e840a79c7cfd338fae813"
+          },
+          "recorded_at_utc": "2026-11-17T17:01:30+00:00"
+        },
+        {
+          "date": "2026-11-16",
+          "decision_recorded": false,
+          "inactive_no_fills": true,
+          "nav": 82404.72879006807,
+          "quote_identity": {
+            "effective_sha256": "9d8f9a13262b749e8f28bbb4de124015845a20e9955ed87620e16abd6341bd61",
+            "snapshot_sha256": "3649456c956229572f45ee2d3a4164de2926400fe77a8a5a8482ac9b5309bdbe"
+          },
+          "recorded_at_utc": "2026-11-17T17:01:30+00:00"
         }
       ],
       "events": [
@@ -5997,14 +6282,105 @@
           "missing_tickers": [],
           "reason": "unreconciled_session",
           "type": "weekly_book_paused"
+        },
+        {
+          "date": "2026-11-05",
+          "expired_unfilled_orders": [],
+          "recorded_at_utc": "2026-11-17T17:01:30+00:00",
+          "type": "inactive_mark_no_trades"
+        },
+        {
+          "date": "2026-11-06",
+          "expired_unfilled_orders": [],
+          "recorded_at_utc": "2026-11-17T17:01:30+00:00",
+          "type": "inactive_mark_no_trades"
+        },
+        {
+          "date": "2026-11-06",
+          "held_tickers": [
+            "AKAM",
+            "AMAT",
+            "CRWD",
+            "HPE",
+            "MRNA",
+            "MU",
+            "NOW",
+            "ORCL",
+            "PANW",
+            "STX"
+          ],
+          "recorded_at_utc": "2026-11-17T17:01:30+00:00",
+          "type": "weekly_exit_unobserved_during_outage"
+        },
+        {
+          "date": "2026-11-09",
+          "expired_unfilled_orders": [],
+          "recorded_at_utc": "2026-11-17T17:01:30+00:00",
+          "type": "inactive_mark_no_trades"
+        },
+        {
+          "date": "2026-11-10",
+          "expired_unfilled_orders": [],
+          "recorded_at_utc": "2026-11-17T17:01:30+00:00",
+          "type": "inactive_mark_no_trades"
+        },
+        {
+          "date": "2026-11-11",
+          "expired_unfilled_orders": [],
+          "recorded_at_utc": "2026-11-17T17:01:30+00:00",
+          "type": "inactive_mark_no_trades"
+        },
+        {
+          "date": "2026-11-12",
+          "expired_unfilled_orders": [],
+          "recorded_at_utc": "2026-11-17T17:01:30+00:00",
+          "type": "inactive_mark_no_trades"
+        },
+        {
+          "date": "2026-11-13",
+          "expired_unfilled_orders": [],
+          "recorded_at_utc": "2026-11-17T17:01:30+00:00",
+          "type": "inactive_mark_no_trades"
+        },
+        {
+          "date": "2026-11-13",
+          "held_tickers": [
+            "AKAM",
+            "AMAT",
+            "CRWD",
+            "HPE",
+            "MRNA",
+            "MU",
+            "NOW",
+            "ORCL",
+            "PANW",
+            "STX"
+          ],
+          "recorded_at_utc": "2026-11-17T17:01:30+00:00",
+          "type": "weekly_exit_unobserved_during_outage"
+        },
+        {
+          "date": "2026-11-16",
+          "expired_unfilled_orders": [],
+          "recorded_at_utc": "2026-11-17T17:01:30+00:00",
+          "type": "inactive_mark_no_trades"
         }
       ],
       "last_signal_session": "2026-10-30",
-      "nav": 89316.2837861811,
+      "nav": 82404.72879006807,
+      "outage_control": {
+        "first_trading_session": "2026-11-18",
+        "held_exits_require_future_observed_quote": true,
+        "historical_fills_created": 0
+      },
       "paused_missing_quotes": {
         "date": "2026-11-16",
+        "missed_exit_sessions": [
+          "2026-11-06",
+          "2026-11-13"
+        ],
         "missing_tickers": [],
-        "reason": "unreconciled_session"
+        "reason": "unobserved_weekly_exit"
       },
       "pending": [],
       "positions": {
@@ -9187,6 +9563,103 @@
             "snapshot_sha256": "7a4eabfe31d00d5e07981eb35f7f43228eaeaeab538dc1641e11d305996ca702"
           },
           "recorded_at_utc": "2026-11-05T00:25:34+00:00"
+        },
+        {
+          "date": "2026-11-05",
+          "decision_recorded": false,
+          "inactive_no_fills": true,
+          "nav": 85047.76399100301,
+          "quote_identity": {
+            "closing_mark_scope": "passive_nav_only",
+            "effective_sha256": "e175f0c80241cc7345979db086bcb83d513950cb5a97027aaba92df9783b93e1",
+            "passive_close_provenance": {
+              "CRWD": {
+                "captured_at_utc": "2026-11-05T23:45:35+00:00",
+                "close": 217.1999969482422,
+                "document_sha256": "cac477fcda028e2f06f77ded49a10be04cbc4ab51b132542d3baa14e74b1c405",
+                "session": "2026-11-05"
+              }
+            },
+            "snapshot_sha256": "26bab09fa7bb46ba02e0f82c8d6d190dc7bf8e7a38a4345a2cdec199f03df947"
+          },
+          "recorded_at_utc": "2026-11-17T17:01:30+00:00"
+        },
+        {
+          "date": "2026-11-06",
+          "decision_recorded": false,
+          "inactive_no_fills": true,
+          "nav": 83792.47300525777,
+          "quote_identity": {
+            "effective_sha256": "83bc3bf223004e864717fc44fec924b8df479d9b6dd9c2fad1cef9d5343eca6b",
+            "snapshot_sha256": "a631487625b0226266b3b64885e9d4e28f2a678cf4e5d3082a7aa8de688747c3"
+          },
+          "recorded_at_utc": "2026-11-17T17:01:30+00:00"
+        },
+        {
+          "date": "2026-11-09",
+          "decision_recorded": false,
+          "inactive_no_fills": true,
+          "nav": 85318.38728053008,
+          "quote_identity": {
+            "effective_sha256": "44d94c3e556782780c149749005800389d786d1fa221281ad8a9b43b9a741ddb",
+            "snapshot_sha256": "cf13928f7aced5545f5eb72ea8582736f2975399aa302a5fa81666c85787884f"
+          },
+          "recorded_at_utc": "2026-11-17T17:01:30+00:00"
+        },
+        {
+          "date": "2026-11-10",
+          "decision_recorded": false,
+          "inactive_no_fills": true,
+          "nav": 84199.98930753637,
+          "quote_identity": {
+            "effective_sha256": "74529b48d939f3588c79de31304855abc82bb0c8e847eb2f89d69239e954397c",
+            "snapshot_sha256": "a4ebb3efac79d8ee8e90fc4c88c4ee8ed8ae9d546d99eb482fc7ebf4b6549ccb"
+          },
+          "recorded_at_utc": "2026-11-17T17:01:30+00:00"
+        },
+        {
+          "date": "2026-11-11",
+          "decision_recorded": false,
+          "inactive_no_fills": true,
+          "nav": 84953.1700279556,
+          "quote_identity": {
+            "effective_sha256": "ebcbb988afbec7a1abd694e2153976218ecdcd1215067ef190dd59584e47955e",
+            "snapshot_sha256": "5c22f7caa57b256714ec56694254fee3cb893dc4325d67e726e42e68162a5441"
+          },
+          "recorded_at_utc": "2026-11-17T17:01:30+00:00"
+        },
+        {
+          "date": "2026-11-12",
+          "decision_recorded": false,
+          "inactive_no_fills": true,
+          "nav": 83725.04374056838,
+          "quote_identity": {
+            "effective_sha256": "e6767240da15a78a1a33e8251fae3f19000ce13514d771b5fd03fd01417d4831",
+            "snapshot_sha256": "b45ed70051d99b91cd2faafefe1ea49ff5db12d7615299c4250b24acbaad13cd"
+          },
+          "recorded_at_utc": "2026-11-17T17:01:30+00:00"
+        },
+        {
+          "date": "2026-11-13",
+          "decision_recorded": false,
+          "inactive_no_fills": true,
+          "nav": 84148.03320585082,
+          "quote_identity": {
+            "effective_sha256": "848489c23800e69ce1edda437a865d7ad5edfb378fde9bb48e7804a143374b15",
+            "snapshot_sha256": "2d94d527b4391f9eb2d8283a15b5338336cfa55d582e840a79c7cfd338fae813"
+          },
+          "recorded_at_utc": "2026-11-17T17:01:30+00:00"
+        },
+        {
+          "date": "2026-11-16",
+          "decision_recorded": false,
+          "inactive_no_fills": true,
+          "nav": 83041.04197789844,
+          "quote_identity": {
+            "effective_sha256": "9d8f9a13262b749e8f28bbb4de124015845a20e9955ed87620e16abd6341bd61",
+            "snapshot_sha256": "3649456c956229572f45ee2d3a4164de2926400fe77a8a5a8482ac9b5309bdbe"
+          },
+          "recorded_at_utc": "2026-11-17T17:01:30+00:00"
         }
       ],
       "events": [
@@ -9893,14 +10366,105 @@
           "missing_tickers": [],
           "reason": "unreconciled_session",
           "type": "weekly_book_paused"
+        },
+        {
+          "date": "2026-11-05",
+          "expired_unfilled_orders": [],
+          "recorded_at_utc": "2026-11-17T17:01:30+00:00",
+          "type": "inactive_mark_no_trades"
+        },
+        {
+          "date": "2026-11-06",
+          "expired_unfilled_orders": [],
+          "recorded_at_utc": "2026-11-17T17:01:30+00:00",
+          "type": "inactive_mark_no_trades"
+        },
+        {
+          "date": "2026-11-06",
+          "held_tickers": [
+            "BLDR",
+            "CRWD",
+            "DDOG",
+            "DVA",
+            "DXCM",
+            "FICO",
+            "INTU",
+            "MRK",
+            "PANW",
+            "PYPL"
+          ],
+          "recorded_at_utc": "2026-11-17T17:01:30+00:00",
+          "type": "weekly_exit_unobserved_during_outage"
+        },
+        {
+          "date": "2026-11-09",
+          "expired_unfilled_orders": [],
+          "recorded_at_utc": "2026-11-17T17:01:30+00:00",
+          "type": "inactive_mark_no_trades"
+        },
+        {
+          "date": "2026-11-10",
+          "expired_unfilled_orders": [],
+          "recorded_at_utc": "2026-11-17T17:01:30+00:00",
+          "type": "inactive_mark_no_trades"
+        },
+        {
+          "date": "2026-11-11",
+          "expired_unfilled_orders": [],
+          "recorded_at_utc": "2026-11-17T17:01:30+00:00",
+          "type": "inactive_mark_no_trades"
+        },
+        {
+          "date": "2026-11-12",
+          "expired_unfilled_orders": [],
+          "recorded_at_utc": "2026-11-17T17:01:30+00:00",
+          "type": "inactive_mark_no_trades"
+        },
+        {
+          "date": "2026-11-13",
+          "expired_unfilled_orders": [],
+          "recorded_at_utc": "2026-11-17T17:01:30+00:00",
+          "type": "inactive_mark_no_trades"
+        },
+        {
+          "date": "2026-11-13",
+          "held_tickers": [
+            "BLDR",
+            "CRWD",
+            "DDOG",
+            "DVA",
+            "DXCM",
+            "FICO",
+            "INTU",
+            "MRK",
+            "PANW",
+            "PYPL"
+          ],
+          "recorded_at_utc": "2026-11-17T17:01:30+00:00",
+          "type": "weekly_exit_unobserved_during_outage"
+        },
+        {
+          "date": "2026-11-16",
+          "expired_unfilled_orders": [],
+          "recorded_at_utc": "2026-11-17T17:01:30+00:00",
+          "type": "inactive_mark_no_trades"
         }
       ],
       "last_signal_session": "2026-10-30",
-      "nav": 88272.98907336431,
+      "nav": 83041.04197789844,
+      "outage_control": {
+        "first_trading_session": "2026-11-18",
+        "held_exits_require_future_observed_quote": true,
+        "historical_fills_created": 0
+      },
       "paused_missing_quotes": {
         "date": "2026-11-16",
+        "missed_exit_sessions": [
+          "2026-11-06",
+          "2026-11-13"
+        ],
         "missing_tickers": [],
-        "reason": "unreconciled_session"
+        "reason": "unobserved_weekly_exit"
       },
       "pending": [],
       "positions": {
