@@ -465,6 +465,31 @@ def build(registry, paper_config, paper_state=None, legacy_state=None, now=None,
                                 for ticker, p in positions.items()]
             row.update(_activity(positions, book.get("pending"),
                                  pending_label="señales para próxima apertura paper"))
+            # A dated OHLC-derived Friday closing price is NOT an observed
+            # prospective fill. Preserve historical cash, NAV and trades, but
+            # make any post-cutover simulation unambiguously non-certified.
+            unobserved_sales = [
+                event for event in book.get("events", [])
+                if isinstance(event, dict)
+                and event.get("type") == "sell"
+                and event.get("execution") == "simulated_week_close"
+                and isinstance(event.get("date"), str)
+                and event["date"] >= "2026-11-10"
+            ]
+            if unobserved_sales:
+                sessions = sorted({event["date"] for event in unobserved_sales})
+                row["execution_quality_status"] = "unobserved_post_cutover_weekly_sales"
+                row["unobserved_weekly_sales_count"] = len(unobserved_sales)
+                row["unobserved_weekly_sales_sessions"] = sessions
+                row["data_quality_status"] = "unobserved_weekly_sales_in_nav"
+                row["note"] += (
+                    " AVISO AUDITORÍA: " + str(len(unobserved_sales))
+                    + " ventas semanales estimadas con cierre histórico ("
+                    + ", ".join(sessions)
+                    + "), sin cotización intradía observada al ejecutar."
+                    " NAV histórico conservado; rentabilidad NO certificada como"
+                    " operativa prospectiva observada."
+                )
             if paused:
                 row["day_return_pct"] = None
                 row["data_quality_status"] = ("held_quote_unavailable" if paused["missing_tickers"]
@@ -783,6 +808,10 @@ def build(registry, paper_config, paper_state=None, legacy_state=None, now=None,
         if row.get("provisional_valuation_sessions"):
             eligible = False
             reason = "Canje con valoración provisional de un derecho de cobro; excluido de comparación certificada"
+        if row.get("execution_quality_status") == "unobserved_post_cutover_weekly_sales":
+            eligible = False
+            reason = ("Ventas semanales posteriores al corte ejecutadas solo en simulación"
+                      " de cierre histórico; no hay evidencia de ejecución intradía prospectiva")
         row["comparison_eligible"] = eligible
         row["comparison_universe_id"] = "SP500_2026-09-29_503" if eligible else None
         row["comparison_universe_symbols"] = 503 if eligible else None
