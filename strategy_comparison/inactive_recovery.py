@@ -16,9 +16,10 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 MAX_SESSIONS = 4
+REVIEWED_PAUSED_WEEKLY = ("arima_return", "lgbm_ranker", "mlp_return")
 
 
-def window(last, now):
+def window(last, now, *, max_sessions=MAX_SESSIONS):
     import pandas_market_calendars as calendars
     if now.tzinfo is None:
         raise ValueError("Recovery clock must be timezone-aware")
@@ -31,7 +32,9 @@ def window(last, now):
     if not closed or closed[0] != last or not future:
         raise ValueError("Missing closed-session or future-opening boundary")
     days = closed[1:]
-    if len(days) > MAX_SESSIONS:
+    if type(max_sessions) is not int or not MAX_SESSIONS <= max_sessions <= 8:
+        raise ValueError("Reviewed recovery window must be an integer from four to eight")
+    if len(days) > max_sessions:
         raise ValueError("Outage exceeds bounded recovery; explicit review required")
     return closed[-1], future[0], days
 
@@ -81,11 +84,33 @@ def weekly_mark(book, day, bars, *, stamp, identity):
         raw = bars.get(ticker)
         if not isinstance(raw, dict):
             raise ValueError("Missing exact weekly held quote: " + ticker)
-        row = normalize_bar({**raw, "date": raw.get("date", day)}, day, ticker)
-        # The weekly engine has no corporate-action entitlement accounting.
-        if row["dividend"] or row["split"]:
-            raise ValueError("Weekly inactive corporate action needs separate review")
-        marks[ticker] = row["close"]
+        if raw.get("price_scope") == "passive_close_only":
+            proof = (identity.get("passive_close_provenance") or {}).get(ticker)
+            if (identity.get("closing_mark_scope") != "passive_nav_only"
+                    or not isinstance(proof, dict) or raw.get("date") != day
+                    or proof.get("session") != day or
+                    proof.get("close") != raw.get("close")
+                    or not isinstance(proof.get("document_sha256"), str)
+                    or len(proof["document_sha256"]) != 64
+                    or any(ch not in "0123456789abcdef" for ch in proof["document_sha256"])):
+                raise ValueError("Unverified weekly passive close receipt")
+            quote_stamp = datetime.fromisoformat(proof["captured_at_utc"])
+            write_stamp = datetime.fromisoformat(stamp)
+            if (quote_stamp.tzinfo is None or write_stamp.tzinfo is None or
+                    quote_stamp.utcoffset() != timedelta(0) or quote_stamp > write_stamp):
+                raise ValueError("Weekly passive mark is future-dated")
+            if raw.get("split", 0) or raw.get("dividend", 0):
+                raise ValueError("Weekly inactive corporate action needs separate review")
+            close = float(raw["close"])
+            if not math.isfinite(close) or close <= 0:
+                raise ValueError("Invalid weekly passive closing price")
+            marks[ticker] = close
+        else:
+            row = normalize_bar({**raw, "date": raw.get("date", day)}, day, ticker)
+            # The weekly engine has no corporate-action entitlement accounting.
+            if row["dividend"] or row["split"]:
+                raise ValueError("Weekly inactive corporate action needs separate review")
+            marks[ticker] = row["close"]
     nav = float(book["cash"]) + sum(float(pos["shares"]) * marks[t]
                                      for t, pos in book["positions"].items())
     if not math.isfinite(nav) or nav < 0:
@@ -120,9 +145,61 @@ def reconcile_weekly(state, loader, *, now):
     return result, sorted(result["strategies"])
 
 
-def recover(engine, *, root=ROOT, write=False, now=None, only_book=None):
+def reconcile_weekly_paused(state, loader, *, now):
+    """Recover only three audited stale ML portfolios as PAUSED mark-only books.
+
+    Missed Fridays can hide compulsory sells. Those holdings must not
+    participate in new forward opens merely because their NAV is current.
+    """
+    from tfg_ahp.data import is_week_end_session
+    result = copy.deepcopy(state)
+    updated = []
+    for name in REVIEWED_PAUSED_WEEKLY:
+        if name not in state["strategies"]:
+            raise ValueError("Missing reviewed frozen weekly strategy")
+        old = state["strategies"][name]
+        pause = old.get("paused_missing_quotes", {})
+        if pause.get("reason") == "unobserved_weekly_exit":
+            continue
+        if pause.get("reason") != "unreconciled_session":
+            raise ValueError("Weekly selective recovery requires unreconciled pause")
+        last = old["equity"][-1]["date"]
+        latest, first, days = window(last, now, max_sessions=8)
+        if latest != state["last_session"] or not days:
+            raise ValueError("Weekly selective recovery must reach frozen global close")
+        book = result["strategies"][name]
+        missing_exit_sessions = []
+        for day in days:
+            bars, identity = loader(day, set(book["positions"]))
+            identity_check(identity)
+            weekly_mark(book, day, bars,
+                        stamp=now.isoformat(timespec="seconds"), identity=identity)
+            if is_week_end_session(day) and book["positions"]:
+                missing_exit_sessions.append(day)
+                book["events"].append({
+                    "date": day, "type": "weekly_exit_unobserved_during_outage",
+                    "held_tickers": sorted(book["positions"]),
+                    "recorded_at_utc": now.isoformat(timespec="seconds")})
+        if not missing_exit_sessions:
+            raise ValueError("Reviewed weekly outage lacks omitted weekly exit")
+        book["paused_missing_quotes"] = {
+            "date": latest, "reason": "unobserved_weekly_exit",
+            "missing_tickers": [],
+            "missed_exit_sessions": missing_exit_sessions}
+        book["outage_control"] = {
+            "first_trading_session": first,
+            "held_exits_require_future_observed_quote": True,
+            "historical_fills_created": 0}
+        updated.append(name)
+    return result, updated
+
+
+def recover(engine, *, root=ROOT, write=False, now=None, only_book=None,
+            only_paused_weekly=False):
     if engine != "classic" and only_book is not None:
         raise ValueError("Selective recovery is only supported for classic books")
+    if engine != "weekly" and only_paused_weekly:
+        raise ValueError("Reviewed paused weekly recovery requires weekly engine")
 
     from market_data.revisions import load_effective
     from timesfm_strategy.run import atomic_write
@@ -138,7 +215,7 @@ def recover(engine, *, root=ROOT, write=False, now=None, only_book=None):
         bars = copy.deepcopy(effective["bars"])
         identity = {"snapshot_sha256": effective["base"]["sha256"],
                     "effective_sha256": effective["effective_sha256"]}
-        if engine == "classic":
+        if engine == "classic" or only_paused_weekly:
             # Additional close-only observations are never merged into canonical
             # OHLC and never authorize an intraday stop or a missed opening.
             from market_data.close_marks import load_marks, directory
@@ -192,7 +269,9 @@ def recover(engine, *, root=ROOT, write=False, now=None, only_book=None):
         from weekly_ml.daily import _check_config
         config = json.loads((root / "weekly_ml/config.json").read_text())
         _check_config(original, config)
-        updated, names = reconcile_weekly(original, loader, now=now)
+        updated, names = (reconcile_weekly_paused(original, loader, now=now)
+                          if only_paused_weekly else
+                          reconcile_weekly(original, loader, now=now))
         _check_config(updated, config)
         books = "strategies"
     for name, old in original[books].items():
@@ -223,10 +302,14 @@ def main():
     parser.add_argument("--phase", choices=("check", "recover"), default="check")
     parser.add_argument("--only-classic-book", default=None,
                         help="Recover exactly one paused classic book; untouched peers are invariant")
+    parser.add_argument("--only-paused-weekly", action="store_true",
+                        help="Audit only three reviewed stale ML books; preserve missed weekly exits")
     args = parser.parse_args()
     try:
         print(json.dumps(recover(args.engine, write=args.phase == "recover",
-                                 only_book=args.only_classic_book), ensure_ascii=False, sort_keys=True))
+                                 only_book=args.only_classic_book,
+                                 only_paused_weekly=args.only_paused_weekly),
+                         ensure_ascii=False, sort_keys=True))
         return 0
     except (ValueError, OSError, KeyError, TypeError) as exc:
         print("Inactive recovery error: " + repr(exc))
