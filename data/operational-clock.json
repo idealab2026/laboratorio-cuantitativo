@@ -1,5 +1,5 @@
 {
-  "checked_at_utc": "2026-11-17T14:39:39.483981Z",
+  "checked_at_utc": "2026-11-17T14:54:05.101477Z",
   "lock_sha256": "734f92360518eca698a837da8aa9430e835a7e3b048d63620522eba7c9940e3d",
   "mode": "single_midas_operator_monitor_no_broker",
   "note": "Observed quotes are not fills. A native engine must settle quantity/cash before a trade counts in P&L.",
@@ -8,11 +8,11 @@
   "previous_session": "2026-11-16",
   "quote_budget": {
     "hard_symbol_limit": 250,
-    "observed_symbols": 38,
+    "observed_symbols": 34,
     "omitted_algorithm_lanes": {},
-    "requested_symbols": 39
+    "requested_symbols": 35
   },
-  "run_id": 44105442559,
+  "run_id": 44108116773,
   "schema": "midas.operational_clock.v1",
   "session": "2026-11-17",
   "settlement": "native_forward_010_through_027_037_through_044",
@@ -68,7 +68,7 @@
           "recorded_at_utc": "2026-11-17T14:39:39.483981Z"
         }
       ],
-      "native_settlement": "settled_native_paper",
+      "native_settlement": "already_settled",
       "observed": 3,
       "orders": [
         {
@@ -161,7 +161,7 @@
           "recorded_at_utc": "2026-11-17T14:39:39.483981Z"
         }
       ],
-      "native_settlement": "settled_native_paper",
+      "native_settlement": "already_settled",
       "observed": 1,
       "orders": [
         {
@@ -206,7 +206,7 @@
           "recorded_at_utc": "2026-11-17T14:39:39.483981Z"
         }
       ],
-      "native_settlement": "settled_native_paper",
+      "native_settlement": "already_settled",
       "observed": 1,
       "orders": [
         {
@@ -240,7 +240,7 @@
         "first_missing_tickers": [
           "ERIE"
         ],
-        "last_checked_at_utc": "2026-11-17T14:39:39.483981Z",
+        "last_checked_at_utc": "2026-11-17T14:54:05.101477Z",
         "missing_tickers_at_last_attempt": [
           "ERIE"
         ],
@@ -299,7 +299,7 @@
           "recorded_at_utc": "2026-11-17T14:39:39.483981Z"
         }
       ],
-      "native_settlement": "settled_native_paper",
+      "native_settlement": "already_settled",
       "observed": 1,
       "orders": [
         {
