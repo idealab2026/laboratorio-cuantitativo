@@ -50,7 +50,8 @@ export function buildOperationLots(track) {
     boughtCost: invested, basisUnit: invested !== null ? invested / qty : null,
     saleQuantity: 0, saleNotional: 0, realised: 0, feeComplete: buyFee !== null,
     converted: false, convertedTo: null, uncertain: qty === null,
-    saleEvidenceMissing: false, salePriceMissing: false, source: a.price_basis || "not_recorded"
+    saleEvidenceMissing: false, salePriceMissing: false,
+    modelledSale: false, source: a.price_basis || "not_recorded"
    };
    lots.push(lot);
    book(ticker).push(lot);
@@ -79,6 +80,9 @@ export function buildOperationLots(track) {
     const filled = Math.min(lot.remaining,required);
     const allocatedFee = saleFee === null ? 0 : saleFee * filled / a.quantity;
     lot.saleQuantity += filled;
+    // Retain historical modeled sale quantity/price for reconciliation but
+    // never convert a retrospective OHLC proxy into certified realized P/L.
+    if (a.price_basis === "historical_week_close_proxy") lot.modelledSale = true;
     if (salePrice === null) lot.salePriceMissing = true;
     else lot.saleNotional += filled * salePrice;
     if (salePrice === null || lot.basisUnit === null) lot.saleEvidenceMissing = true;
@@ -97,7 +101,9 @@ export function buildOperationLots(track) {
     entryPrice:null,lastSalePrice:salePrice,quantityBought:null,remaining:0,
     splitFactor:1,boughtCost:null,basisUnit:null,saleQuantity:0,saleNotional:0,
     realised:0,feeComplete:false,converted:false,convertedTo:null,uncertain:true,
-    saleEvidenceMissing:true,salePriceMissing:salePrice===null,source:"unmatched_sale"
+    saleEvidenceMissing:true,salePriceMissing:salePrice===null,
+    modelledSale:a.price_basis==="historical_week_close_proxy",
+    source:"unmatched_sale"
    });
   }
  }
@@ -114,7 +120,7 @@ export function buildOperationLots(track) {
    lot.saleQuantity > epsilon ? "parcial" : "abierta";
   // For open lots the retained closing quote is an observed MARK, not a sale.
   const pnl = !lot.uncertain && !lot.saleEvidenceMissing && !lot.converted &&
-   lot.boughtCost !== null && (!isOpen || close !== null)
+   !lot.modelledSale && lot.boughtCost !== null && (!isOpen || close !== null)
    ? lot.realised + (isOpen ? lot.remaining * (close.price - lot.basisUnit) : 0)
    : null;
   const salePrice = lot.salePriceMissing ? null : lot.saleQuantity > epsilon ? lot.saleNotional / lot.saleQuantity : lot.lastSalePrice;
@@ -127,7 +133,8 @@ export function buildOperationLots(track) {
    pnl:goodNumber(pnl), returnPct:safeReturn(pnl,lot.boughtCost),
    markDate:isOpen ? close?.date || null : null,
    markPrice:isOpen ? close?.price || null : null,
-   feeComplete:lot.feeComplete, convertedTo:lot.convertedTo, source:lot.source
+   feeComplete:lot.feeComplete, convertedTo:lot.convertedTo,
+   modelledSale:lot.modelledSale, source:lot.source
   };
  });
 }
