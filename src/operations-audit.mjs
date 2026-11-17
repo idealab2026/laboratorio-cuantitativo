@@ -78,6 +78,16 @@ export function verifyOperationsAudit(doc){
      throw Error("Conversión corporativa sin procedencia verificada");
    }
   }
+  // Counters are derived from the exact published action rows; accepting a
+  // forged count would put retrospective OHLC models back into the fill KPI.
+  const economic=t.sessions.flatMap(s=>s.actions.filter(a=>a.side==="buy"||a.side==="sell"));
+  const estimated=economic.filter(a=>a.price_basis==="historical_week_close_proxy").length;
+  const cov=t.coverage;
+  if(!cov||!Number.isInteger(cov.executions)||cov.executions!==economic.length||
+     !Number.isInteger(cov.modelled_week_close_sales)||cov.modelled_week_close_sales!==estimated||
+     !Number.isInteger(cov.ledger_actions_excluding_week_close_proxy)||
+     cov.ledger_actions_excluding_week_close_proxy!==economic.length-estimated)
+    throw Error("Conteo de cierres OHLC simulados no conciliado");
   if(t.splits!==undefined&&(!Array.isArray(t.splits)||t.splits.some(s=>
      !day(s.date)||!/^[A-Z0-9][A-Z0-9.-]{0,13}$/.test(s.ticker||"")||
      !num(s.ratio)||s.ratio<=0)))throw Error("Split sin trazabilidad");
@@ -105,7 +115,8 @@ export function layoutAuditPriceLabels(points){
  for(const point of prioritized){
   const value=fmt(point.price);
   const text=point.kind==="buy"?"Compra "+value:
-   point.kind==="sell"?"Venta "+value:value;
+   point.kind==="sell"?"Venta "+value:
+   point.kind==="modelled"?"OHLC sim. "+value:value;
   const width=text.length*(point.kind==="close"?6.4:6.75)+5;
   let selected=null;
   for(const dx of [0,16,-16,36,-36,65,-65,95,-95]){
@@ -137,7 +148,10 @@ export function layoutAuditPriceLabels(points){
 function chart(track,ticker){
  const quote=(track.prices[ticker]||[]).map(q=>({date:q.date,price:q.price,kind:"close"}));
  const trades=track.sessions.flatMap(s=>s.actions.filter(a=>a.ticker===ticker&&
-  (a.side==="buy"||a.side==="sell")&&num(a.price)).map(a=>({date:s.date,price:a.price,kind:a.side})));
+  (a.side==="buy"||a.side==="sell")&&num(a.price)).map(a=>({
+   date:s.date,price:a.price,
+   kind:a.price_basis==="historical_week_close_proxy"?"modelled":a.side
+  })));
  const other=track.sessions.flatMap(session=>session.actions.filter(a=>a.ticker===ticker&&
   (a.side==="corporate_action"||
    (a.side==="buy"||a.side==="sell")&&!num(a.price)))
@@ -185,7 +199,9 @@ function chart(track,ticker){
   '" y="61" text-anchor="middle">Sin cierres de mercado archivados</text>':"";
  const tradeGuides=trades.map(p=>'<line class="'+(p.kind==="buy"?"audit-buy-guide":"audit-sell-guide")+
   '" x1="'+n(x(p.date))+'" y1="'+n(y(p.price)+8)+'" x2="'+n(x(p.date))+'" y2="220">'+
-  '<title>'+esc(p.date)+' '+(p.kind==="buy"?"Compra":"Venta")+' a '+esc(fmt(p.price))+'</title></line>').join("");
+  '<title>'+esc(p.date)+' '+(p.kind==="buy"?"Compra":
+    p.kind==="modelled"?"Cierre OHLC simulado; no observado":"Venta")+
+   ' a '+esc(fmt(p.price))+'</title></line>').join("");
  const undatedPrices=other.filter(p=>p.kind==="buy"||p.kind==="sell").map(p=>{
   const cx=n(x(p.date));
   return '<g class="audit-undocumented-operation"><line class="audit-undocumented-guide" x1="'+cx+
@@ -206,8 +222,11 @@ function chart(track,ticker){
    '" r="3.5"><title>Cierre '+esc(q.date)+': '+fmt(q.price)+'</title></circle>').join("");
  const markers=trades.map(p=>{
   const cx=n(x(p.date)),cy=n(y(p.price));
-  return '<circle class="'+(p.kind==="buy"?"audit-buy-dot":"audit-sell-dot")+'" cx="'+cx+'" cy="'+cy+
-   '" r="7" stroke="#fff" stroke-width="1.5"><title>'+esc(p.date)+' '+(p.kind==="buy"?"Compra":"Venta")+
+  return '<circle class="'+(p.kind==="modelled"?"audit-modelled-dot":
+   p.kind==="buy"?"audit-buy-dot":"audit-sell-dot")+'" cx="'+cx+'" cy="'+cy+
+   '" r="7" '+(p.kind==="modelled"?'fill="none" stroke="currentColor" stroke-width="2.5" stroke-dasharray="3 3"':
+      'stroke="#fff" stroke-width="1.5"')+'><title>'+esc(p.date)+' '+
+   (p.kind==="buy"?"Compra":p.kind==="modelled"?"Venta OHLC simulada, no observada":"Venta")+
    ' a '+fmt(p.price)+'</title></circle>';
  }).join("");
  const labels=layoutAuditPriceLabels([...trades,...quote].map(p=>({
@@ -226,9 +245,9 @@ function chart(track,ticker){
   '<text x="870" y="247" text-anchor="end" class="audit-axis-label">'+esc(end)+'</text>'+
   '<text x="870" y="27" text-anchor="end" class="audit-axis-label">Precio ('+currency+')</text>'+
   gapHighlight+lines+tradeGuides+corporateAnnotations+undatedPrices+closeDots+markers+labels+'</svg>'+
-  '<div class="audit-legend"><span class="audit-legend-buy">● Compras</span><span class="audit-legend-sell">● Ventas</span><span class="audit-legend-close">● Precio de cierre del mercado (no es una operación)</span><span class="audit-legend-corporate">│ Conversión corporativa, no venta</span></div>'+
+  '<div class="audit-legend"><span class="audit-legend-buy">● Compras registradas</span><span class="audit-legend-sell">● Ventas registradas</span><span class="audit-legend-close">◌ Ventas OHLC simuladas (no observadas)</span><span class="audit-legend-close">● Precio de cierre de mercado (no es una operación)</span><span class="audit-legend-corporate">│ Conversión corporativa, no venta</span></div>'+
   '<p class="audit-method-note">Las abscisas son fechas de sesión y las ordenadas son precios en '+currency+
-  '. Los precios aparecen sobre cada punto. Los puntos azules son cierres observados de mercado, NO compras ni ventas del algoritmo. La compra verde está colocada en su fecha y precio reales; el área sombreada indica un periodo sin cierres archivados, no un movimiento supuesto. Si no hay punto rojo, no consta una venta ejecutada con precio confirmado en estas sesiones; un evento corporativo puede transformar la posición sin ser una venta. Las operaciones sin precio se señalan por su fecha, sin inventar su cotización. Solo se unen cierres consecutivos realmente guardados; no se interpolan fechas sin cotización. No consta la hora exacta de los fills. '+
+  '. Los precios aparecen sobre cada punto. Los puntos azules son cierres archivados de mercado, NO ejecuciones. Las compras y ventas registradas se distinguen de los círculos discontinuos: estos últimos representan salidas modeladas mediante OHLC histórico, nunca ventas observadas en vivo. El área sombreada indica un intervalo sin cierres archivados y no un movimiento supuesto. Las operaciones sin precio constan solo por fecha. No se interpolan cierres ni se reconstruyen horas de ejecución no guardadas. '+
   (quote.length<2?'No existe una serie de cierres suficiente para mostrar una trayectoria continua.':'')+'</p>';
 }
 /** One and the same table is used by an algorithm fiche and the operational register. */
@@ -244,12 +263,15 @@ export function renderTradeLotsTable(track, key="recent", descending=true){
  const open=lots.filter(l=>["abierta","parcial"].includes(l.action)).length;
  const closed=lots.filter(l=>l.action==="cerrada").length;
  const converted=lots.filter(l=>l.action==="convertida").length;
+ const modelledLots=lots.filter(l=>l.modelledSale).length;
  const cells=[
-  ["ticker","Activo"],["action","Acción ejecutada"],["buyPrice","Precio de compra"],
-  ["salePrice","Precio de venta"],["returnPct","Rentabilidad %"],
+  ["ticker","Activo"],["action","Acción registrada / modelada"],["buyPrice","Precio de compra"],
+  ["salePrice","Precio registrado / referencia OHLC"],["returnPct","Rentabilidad %"],
   ["pnl","P/L total"],["invested","Dinero empleado en compra"],["shares","Nº acciones compradas"]
  ];
- const status=l=>l.action==="abierta"?"COMPRA · ABIERTA":
+ const status=l=>l.modelledSale?
+  (l.action==="parcial"?"VENTA PARCIAL · OHLC SIMULADO":"VENTA · OHLC SIMULADO"):
+  l.action==="abierta"?"COMPRA · ABIERTA":
   l.action==="parcial"?"VENTA PARCIAL · ABIERTA":
   l.action==="cerrada"?"VENTA · CERRADA":
   l.action==="convertida"?"CONVERSIÓN → "+(l.convertedTo||"SUCESORA"):
@@ -258,20 +280,25 @@ export function renderTradeLotsTable(track, key="recent", descending=true){
   '<span>'+lots.length+' lotes documentados</span><span>'+open+' abiertos</span>'+
   '<span>'+closed+' cerrados</span>'+
   (converted?'<span>'+converted+' convertidos (sin venta)</span>':"")+
+  (modelledLots?'<span class="audit-warning">'+modelledLots+
+   ' lotes con venta OHLC simulada: P/L no certificable</span>':"")+
   (calc.length!==lots.length?'<span class="audit-warning">'+(lots.length-calc.length)+' sin P/L verificable</span>':"")+
   '</div><div class="table-scroll audit-lot-scroll"><table class="audit-lot-table"><thead><tr>'+
   cells.map(([keyName,label])=>'<th scope="col"><button type="button" data-action="audit-sort" data-value="'+keyName+
    '" aria-label="Ordenar por '+esc(label)+'">'+esc(label)+(key===keyName?(descending?" ↓":" ↑"):" ↕")+'</button></th>').join("")+
   '</tr></thead><tbody>'+
   lots.map(l=>{
-   const statusTitle=l.action==="parcial"?"Quedan "+fmt(l.remainingShares)+" acciones abiertas; precio de venta ponderado por la cantidad vendida.":
+   const statusTitle=l.modelledSale?
+    "Al menos una venta se calculó con cierre histórico OHLC; NO existe evidencia de fill observado ni P/L realizado acreditado.":
+    l.action==="parcial"?"Quedan "+fmt(l.remainingShares)+" acciones abiertas; precio de venta ponderado por la cantidad vendida.":
     l.action==="convertida"?"Conversión societaria, no venta ni realización de P/L.":
     l.action==="sin_base"?"La operación no permite reconstrucción contable suficiente.":
     l.action==="abierta"?"Valoración a último cierre conservado, no venta realizada.":"Venta cerrada en el libro paper.";
    const priceInfo=l.splitFactor!==1?
     '<small>Compra ajustada por split ×'+esc(fmt(l.splitFactor))+'; acciones de la columna: compra original</small>':"";
    const pnlClass=num(l.pnl)?(l.pnl>0?"audit-gain":l.pnl<0?"audit-loss":""):"";
-   const provenance=l.action==="convertida"?"Conversión societaria no contabilizada como venta":
+   const provenance=l.modelledSale?"Cierre OHLC simulado: no contabilizar como P/L de ejecución prospectiva":
+    l.action==="convertida"?"Conversión societaria no contabilizada como venta":
     l.action==="sin_base"?"Importes no conciliables":
     l.markDate?"Abierta · cierre observado "+esc(l.markDate):
     "P/L realizado por precio de venta";
@@ -290,6 +317,7 @@ export function renderTradeLotsTable(track, key="recent", descending=true){
   'P/L = resultado realizado + valoración de las acciones restantes al último cierre bursátil archivado. '+
   'Se descuentan comisiones únicamente cuando constan en el libro; los demás importes son brutos. '+
   'No incluye dividendos, efectos de divisa ni valoración de derechos derivados de fusiones. '+
+  'Los lotes con ventas modeladas a cierre histórico conservan cantidades y precios por trazabilidad, pero su P/L se marca N/D para no certificar un fill inexistente. '+
   'Si no existen precios, cantidades o procedencia suficientes se muestra N/D; ninguna conversión corporativa se presenta como una venta.</p>';
 }
 /**
@@ -299,13 +327,15 @@ export function renderTradeLotsTable(track, key="recent", descending=true){
 export function summarizeOperationsAudit(doc){
  if(!doc || !doc.tracks || typeof doc.tracks!=="object") return null;
  const rows=Object.values(doc.tracks);
- let withExecutions=0, executions=0, latestTrade=null, latestSession=null, converted=0;
+ let withExecutions=0, executions=0, modelledSales=0, latestTrade=null, latestSession=null, converted=0;
  for(const track of rows){
   let found=false;
   for(const session of track.sessions||[]){
    if(!latestSession||session.date>latestSession)latestSession=session.date;
    for(const a of session.actions||[]){
-    if(a.side==="buy"||a.side==="sell"){
+    if(a.side==="sell"&&a.price_basis==="historical_week_close_proxy"){
+     modelledSales++;
+    }else if(a.side==="buy"||a.side==="sell"){
      found=true;executions++;
      if(!latestTrade||session.date>latestTrade)latestTrade=session.date;
     }else if(a.side==="corporate_action")converted++;
@@ -314,7 +344,8 @@ export function summarizeOperationsAudit(doc){
   if(found)withExecutions++;
  }
  return {slots:rows.length,withExecutions,withoutExecutions:rows.length-withExecutions,
-         executions,latestTrade,latestSession,conversions:converted};
+         executions,modelledSales,totalLedgerActions:executions+modelledSales,
+         latestTrade,latestSession,conversions:converted};
 }
 /**
  * Compact session matrix from dated paper executions.
@@ -332,7 +363,8 @@ export function buildSessionActionColumns(track){
  let nextSplit=0;
  const summary=[];
  for(const session of track.sessions){
-  const buy=new Set(),sell=new Set(),hold=new Set(),partial=new Set(),corporate=[];
+  const buy=new Set(),sell=new Set(),modelledSell=new Set(),
+        hold=new Set(),partial=new Set(),corporate=[];
   // Apply every split known before this session, even if its effective
   // date had no separately archived session in the paper ledger.
   while(nextSplit<splits.length&&splits[nextSplit].date<=session.date){
@@ -350,11 +382,13 @@ export function buildSessionActionColumns(track){
     holdings.set(ticker,num(qty)&&qty>0?
       ((holdings.has(ticker)&&holdings.get(ticker)!==null?holdings.get(ticker):0)+qty):null);
    }else if(action.side==="sell"){
-    sell.add(ticker);
+    if(action.price_basis==="historical_week_close_proxy")modelledSell.add(ticker);
+    else sell.add(ticker);
     const qty=action.quantity,previous=holdings.get(ticker);
     if(num(qty)&&qty>0&&num(previous)&&previous>epsilon){
      const remaining=previous-qty;
-     if(remaining>epsilon)partial.add(ticker);
+     if(remaining>epsilon&&action.price_basis!=="historical_week_close_proxy")
+      partial.add(ticker);
      holdings.set(ticker,remaining>epsilon?remaining:0);
     }else holdings.set(ticker,null);
    }else if(action.side==="hold"){
@@ -373,6 +407,7 @@ export function buildSessionActionColumns(track){
   const sorted=set=>[...set].sort((a,b)=>a.localeCompare(b));
   summary.push({
    date:session.date, buys:sorted(buy),sells:sorted(sell),
+   modelledSells:sorted(modelledSell),
    holds:sorted(hold),partialSells:sorted(partial),corporate
   });
  }
@@ -401,12 +436,17 @@ export function renderOperationsAudit(doc,id,selectedTicker=null,view={}){
  const chosen=symbols.includes(selectedTicker)?selectedTicker:
   symbols.find(t=>sessions.some(s=>s.actions.some(a=>a.ticker===t&&a.side!=="hold")))||symbols[0];
  const totals=sessions.reduce((out,s)=>{for(const a of s.actions)out[a.side]++;return out},{buy:0,sell:0,hold:0,corporate_action:0});
+ const modelledSales=sessions.reduce((n,s)=>n+s.actions.filter(a=>
+  a.side==="sell"&&a.price_basis==="historical_week_close_proxy").length,0);
  const missingExecutionPrices=sessions.reduce((n,session)=>n+session.actions.filter(a=>
   (a.side==="buy"||a.side==="sell")&&!num(a.price)).length,0);
  const intro=heading+
-  '<p>Consulta las compras y ventas paper ejecutadas y las posiciones que continuaron abiertas. Los mantenimientos son una <strong>inferencia contable</strong>; no equivalen a una decisión explícita registrada. Cuando el libro no guarda la señal individual, se describe la regla acreditada del motor y se diferencia de una decisión histórica comprobada.</p>'+
+  '<p>Consulta las acciones registradas en libros paper, distinguiendo las ventas modeladas retrospectivamente con OHLC de las operaciones documentadas. Los mantenimientos son <strong>inferencias contables</strong>, no decisiones explícitas. Un evento histórico no acredita un fill forward observado.</p>'+
   '<div class="audit-counts"><span>'+sessions.length+' sesiones</span><span>'+totals.buy+' compras</span>'+
-  '<span>'+totals.sell+' ventas</span><span>'+totals.hold+' mantenimientos inferidos</span>'+
+  '<span>'+(totals.sell-modelledSales)+' ventas sin proxy OHLC</span>'+
+  (modelledSales?'<span class="audit-warning">'+modelledSales+
+   ' ventas calculadas con cierre OHLC (NO observadas)</span>':"")+
+  '<span>'+totals.hold+' mantenimientos inferidos</span>'+
   (totals.corporate_action?'<span>'+totals.corporate_action+' conversiones corporativas (no ventas)</span>':"")+
   (missingExecutionPrices?'<span class="audit-warning">'+missingExecutionPrices+
    ' ejecuciones sin precio original trazable (marcadas por fecha)</span>':"")+
@@ -426,9 +466,12 @@ export function renderOperationsAudit(doc,id,selectedTicker=null,view={}){
    '<div class="table-scroll audit-table-wrap"><table class="table-compact audit-operation-table"><thead><tr>'+
    '<th>Acción</th><th>Activo</th><th>Precio / referencia</th><th>Unidades</th><th>Motivo y evidencia</th></tr></thead><tbody>'+
    actions.map(a=>{
-    const kind={buy:"COMPRA",sell:"VENTA",hold:"MANTENER · INFERIDO",
-     corporate_action:"CONVERSIÓN CORPORATIVA"}[a.side];
-    const evidence=a.side==="corporate_action"?
+    const kind=a.price_basis==="historical_week_close_proxy"?
+     "VENTA SIMULADA · OHLC":{buy:"COMPRA",sell:"VENTA",hold:"MANTENER · INFERIDO",
+      corporate_action:"CONVERSIÓN CORPORATIVA"}[a.side];
+    const evidence=a.price_basis==="historical_week_close_proxy"?
+      "Cierre OHLC retrospectivo; NO es ejecución paper observada":
+     a.side==="corporate_action"?
       "Transformación societaria acreditada; NO es una compraventa ni mantenimiento de la acción anterior":
      a.reason_basis==="recorded"?"Motivo guardado en libro de órdenes":
      a.reason_basis==="engine_rule"?"Regla acreditada por código; indicador individual no archivado":
@@ -450,9 +493,13 @@ export function renderOperationsAudit(doc,id,selectedTicker=null,view={}){
   const group=sessionColumns[sessions.length-1-i];
   const conversions=group.corporate.length?
    '<small class="audit-session-conversion">Conversión societaria: '+esc(group.corporate.join(", "))+' (no venta)</small>':"";
+  const estimated=group.modelledSells.length?
+   '<small class="audit-session-conversion">Venta OHLC simulada (NO observada): '+
+   esc(group.modelledSells.join(", "))+'</small>':"";
   return '<details class="audit-session"'+(i===0?' open':'')+'><summary class="audit-session-summary">'+
    '<span class="audit-session-title"><strong>Sesión '+n+' · '+date+'</strong>'+
-   '<small>'+actions.length+' acciones documentadas o inferidas</small>'+conversions+'</span>'+
+   '<small>'+actions.length+' acciones registradas, modeladas o inferidas</small>'+
+   conversions+estimated+'</span>'+
    '<span class="audit-session-column audit-session-column-buy"><span class="audit-sr-only">Compras: </span>'+
     sessionTickers(group.buys)+'</span>'+
    '<span class="audit-session-column audit-session-column-sell"><span class="audit-sr-only">Ventas: </span>'+
