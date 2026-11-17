@@ -8,7 +8,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT))
 from strategy_comparison.inactive_recovery import (window, reconcile_classic,
-                                                   reconcile_weekly, weekly_mark)
+                                                   reconcile_weekly, reconcile_weekly_paused, weekly_mark)
 NOW = datetime(2026, 11, 4, 16, 0, tzinfo=timezone.utc)
 IDENTITY = {"snapshot_sha256": "a" * 64, "effective_sha256": "b" * 64}
 
@@ -125,6 +125,66 @@ class InactiveRecoveryTests(unittest.TestCase):
         self.assertEqual(got["cash"], 50.)
         self.assertEqual(got["nav"], 184.5)
         self.assertTrue(got["equity"][-1]["provisional_corporate_valuation"])
+
+    def test_weekly_stale_three_books_only_mark_and_remain_paused(self):
+        then = datetime(2026, 11, 9, 16, tzinfo=timezone.utc)
+        names = ["arima_return", "lgbm_ranker", "mlp_return"]
+        stale = book()
+        stale["equity"][-1]["date"] = "2026-11-05"
+        stale["paused_missing_quotes"] = {
+            "date": "2026-11-06", "reason": "unreconciled_session",
+            "missing_tickers": []}
+        state = {"last_session": "2026-11-06",
+                 "strategies": {**{n: copy.deepcopy(stale) for n in names},
+                                "healthy": {"untouched": True}}}
+        before = copy.deepcopy(state)
+        revised, selected = reconcile_weekly_paused(state, self.loader, now=then)
+        self.assertEqual(selected, names)
+        self.assertEqual(revised["strategies"]["healthy"], before["strategies"]["healthy"])
+        for n in names:
+            old, updated = before["strategies"][n], revised["strategies"][n]
+            self.assertEqual(updated["cash"], old["cash"])
+            self.assertEqual(updated["positions"], old["positions"])
+            self.assertEqual(updated["trades"], old["trades"])
+            self.assertEqual(updated["equity"][:len(old["equity"])], old["equity"])
+            self.assertEqual(updated["equity"][-1]["date"], "2026-11-06")
+            self.assertTrue(updated["equity"][-1]["inactive_no_fills"])
+            self.assertEqual(updated["paused_missing_quotes"]["reason"],
+                             "unobserved_weekly_exit")
+            self.assertEqual(updated["paused_missing_quotes"]["missed_exit_sessions"],
+                             ["2026-11-06"])
+            self.assertTrue(updated["outage_control"]["held_exits_require_future_observed_quote"])
+        self.assertEqual(state, before)
+        again, selected = reconcile_weekly_paused(revised, self.loader, now=then)
+        self.assertEqual((again, selected), (revised, []))
+
+    def test_weekly_close_only_requires_symbol_receipt_not_ohlc_imagination(self):
+        b = book()
+        stamp = "2026-11-06T20:00:00+00:00"
+        row = {"date": "2026-11-06", "close": 105.,
+               "price_scope": "passive_close_only", "dividend": 0, "split": 0}
+        proof = {**IDENTITY, "closing_mark_scope": "passive_nav_only",
+                 "passive_close_provenance": {"AAA": {
+                     "document_sha256": "f"*64, "session": "2026-11-06",
+                     "captured_at_utc": "2026-11-06T19:00:00+00:00",
+                     "close": 105.}}}
+        weekly_mark(b, "2026-11-06", {"AAA": row}, stamp=stamp, identity=proof)
+        self.assertEqual(b["nav"], 155.)
+        self.assertEqual(b["pending"], [])
+        self.assertEqual(b["trades"], [{"preserved": "prior trade"}])
+        wrong = copy.deepcopy(proof)
+        wrong["passive_close_provenance"]["AAA"]["close"] = 106.
+        with self.assertRaisesRegex(ValueError, "passive close receipt"):
+            weekly_mark(book(), "2026-11-06", {"AAA": row},
+                        stamp=stamp, identity=wrong)
+
+    def test_eight_reviewed_weekly_sessions_are_bounded(self):
+        then = datetime(2026, 11, 17, 17, tzinfo=timezone.utc)
+        with self.assertRaisesRegex(ValueError, "bounded"):
+            window("2026-11-04", then)
+        self.assertEqual(len(window("2026-11-04", then, max_sessions=8)[2]), 8)
+        with self.assertRaisesRegex(ValueError, "integer from four to eight"):
+            window("2026-11-04", then, max_sessions=9)
 
     def weekly(self):
         b = book()
