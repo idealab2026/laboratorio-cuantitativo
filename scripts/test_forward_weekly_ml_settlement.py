@@ -241,6 +241,69 @@ class ForwardWeeklyMLTests(unittest.TestCase):
         self.assertTrue(all(x["status"] == "exit_source_changed_or_stale" for x in evidence.values()))
         self.assertEqual(self.state, self.frozen_state)
 
+    def test_multi_symbol_paused_book_rejects_partial_or_quota_truncated_exit(self):
+        self.open = datetime(2026, 11, 20, 14, 30, tzinfo=UTC)
+        self.market = {"session": "2026-11-20", "previous": "2026-11-19",
+                       "open": self.open, "close": self.open + timedelta(hours=6, minutes=30)}
+        self.now = self.market["close"] - timedelta(minutes=2)
+        self.state["last_session"] = "2026-11-19"
+        position = {"shares": 100., "entry_price": 100., "entry_fee": 10.,
+                    "entry_date": "2026-11-02", "signal_date": "2026-10-30"}
+        for slot, name in SLOTS.items():
+            book = self.state["strategies"][name]
+            book.update(cash=80000., nav=100000.,
+                        positions={"AAPL": copy.deepcopy(position), "MSFT": copy.deepcopy(position)},
+                        pending=[], trades=[], events=[],
+                        equity=[{"date": "2026-11-19", "nav": 100000.}])
+            book["paused_missing_quotes"] = {"reason": "unobserved_weekly_exit",
+                "date": "2026-11-19", "missing_tickers": [],
+                "missed_exit_sessions": ["2026-11-13"]}
+            self.tracks[slot] = {"status": "paused", "session": "2026-11-19",
+                                 "holdings": ["AAPL", "MSFT"], "orders": []}
+        self.frozen_state = copy.deepcopy(self.state)
+        self.lock = clock_plan(self.open - timedelta(minutes=10), self.market, self.tracks, "b"*40)
+        requested, omitted = budgeted_quote_targets(self.lock, now=self.now, market=self.market, limit=1)
+        self.assertEqual(requested, set())
+        self.assertEqual(set(omitted), set(SLOTS))
+        self.quotes = {"AAPL": {"price": 110.,
+                       "quote_at_utc": self.now.isoformat(), "observed_at_utc": self.now.isoformat()}}
+        output, evidence = self.settle()
+        self.assertEqual(output, {})
+        self.assertTrue(all(x["status"] == "awaiting_verified_weekly_exit_quotes" for x in evidence.values()))
+        self.assertEqual(self.state, self.frozen_state)
+        self.quotes["MSFT"] = {"price": 120., "quote_at_utc": self.now.isoformat(),
+                                "observed_at_utc": self.now.isoformat()}
+        output, evidence = self.settle()
+        self.assertEqual(set(output), {LEDGER})
+        self.assertTrue(all(x["fills"] == 2 for x in evidence.values()))
+        for book in output[LEDGER]["strategies"].values():
+            self.assertFalse(book["positions"])
+            self.assertEqual([x["ticker"] for x in book["trades"][-2:]], ["AAPL", "MSFT"])
+
+    def test_weekly_exit_observes_actual_early_close_not_a_fabricated_1600(self):
+        # XNYS Black Friday: US session ends at 13:00 ET, not 16:00 ET.
+        self.open = datetime(2026, 11, 27, 14, 30, tzinfo=UTC)
+        self.market = {"session": "2026-11-27", "previous": "2026-11-25",
+                       "open": self.open, "close": datetime(2026, 11, 27, 18, 0, tzinfo=UTC)}
+        self.now = self.market["close"] - timedelta(minutes=2)
+        self.state["last_session"] = "2026-11-25"
+        for slot, name in SLOTS.items():
+            book = self.state["strategies"][name]
+            book.update(cash=90000., positions={"AAPL": {"shares": 100., "entry_price": 100.,
+                            "entry_fee": 10., "entry_date": "2026-11-23", "signal_date": "2026-11-20"}},
+                        pending=[], equity=[{"date": "2026-11-25", "nav": 100000.}],
+                        last_signal_session="2026-11-20")
+            self.tracks[slot] = {"status": "recorded", "session": "2026-11-25",
+                                 "holdings": ["AAPL"], "orders": []}
+        self.frozen_state = copy.deepcopy(self.state)
+        self.lock = clock_plan(self.open - timedelta(minutes=10), self.market, self.tracks, "b"*40)
+        self.quotes = {"AAPL": {"price": 111., "quote_at_utc": self.now.isoformat(),
+                                "observed_at_utc": self.now.isoformat()}}
+        output, evidence = self.settle()
+        self.assertEqual(set(output), {LEDGER})
+        self.assertTrue(all(x["status"] == "settled_native_paper" for x in evidence.values()))
+        self.assertEqual(output[LEDGER]["strategies"]["mlp_return"]["trades"][-1]["exit_date"], "2026-11-27")
+
     def test_nightly_marks_forward_buy_once(self):
         output, _ = self.settle()
         after = output[LEDGER]
