@@ -247,6 +247,10 @@ def process_day(config, state, day, prices, *, previous_session, week_end,
         if last >= day:
             continue
         book = result["strategies"][name]
+        if book.get("paused_missing_quotes", {}).get("reason") == "unobserved_weekly_exit":
+            # The prior Friday's sale has no forward evidence. Never release
+            # this book or insert a new rebalance just because NAV was marked.
+            continue
         signal_day = book.get("last_signal_session", state["last_signal_session"])
         required = set(book["positions"]) if inactive or day >= FORWARD_CUTOVER_SESSION else _book_symbols(book)
         missing = required - prices.keys()
