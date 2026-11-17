@@ -67,6 +67,51 @@ class InactiveRecoveryTests(unittest.TestCase):
                 reconcile_classic(state, loader, now=NOW)
             self.assertEqual(state, before)
 
+    def test_selective_macd_passive_mark_only_keeps_unrelated_claim_frozen(self):
+        stale = book()
+        stale["paused_missing_quotes"]["missing_tickers"] = ["AAA"]
+        unrelated = copy.deepcopy(stale)
+        unrelated["receivables"] = {"KVUE_KMB_2026-11-02": {
+            "status": "unsettled", "symbol": "AAA", "fixed_cash": "10",
+            "fractional_shares": ".1"}}
+        state = {"last_session": "2026-11-03",
+                 "books": {"macd_12_26_9": stale, "genetic_frozen": unrelated}}
+        previous = copy.deepcopy(state)
+        def validated_close(day, symbols):
+            self.assertEqual(symbols, {"AAA"})
+            return {"AAA": {"date": day, "close": 105.,
+                            "price_scope": "passive_close_only", "split": 0,
+                            "dividend": 0}}, {**IDENTITY,
+                "closing_mark_scope": "passive_nav_only",
+                "passive_close_provenance": {"AAA": {
+                    "document_sha256": "c" * 64, "session": day,
+                    "close": 105., "captured_at_utc": "2026-11-03T23:43:00+00:00"}}}
+        recover, names = reconcile_classic(
+            state, validated_close,
+            now=datetime(2026, 11, 4, 16, tzinfo=timezone.utc),
+            only_book="macd_12_26_9")
+        self.assertEqual(names, ["macd_12_26_9"])
+        new = recover["books"]["macd_12_26_9"]
+        for field in ("cash", "trades", "positions"):
+            self.assertEqual(new[field], previous["books"]["macd_12_26_9"][field])
+        self.assertEqual(new["nav"], 155.)
+        self.assertEqual(len(new["equity"]), 2)
+        self.assertEqual(new["events"][-1]["type"], "inactive_mark_no_trades")
+        self.assertTrue(any(e["type"] == "intraday_trigger_unknown_during_outage"
+                            for e in new["events"]))
+        self.assertFalse(any(e["type"] == "unexecuted_during_outage"
+                             for e in new["events"]))
+        self.assertEqual(recover["books"]["genetic_frozen"],
+                         previous["books"]["genetic_frozen"])
+        self.assertEqual(state, previous)
+        with self.assertRaisesRegex(ValueError, "Unknown"):
+            reconcile_classic(state, validated_close, now=NOW, only_book="wrong")
+        missing = lambda d, s: ({"AAA": {"date": d, "close": 105.,
+                             "price_scope": "passive_close_only", "split": 0, "dividend": 0}},
+                             IDENTITY)
+        with self.assertRaisesRegex(ValueError, "passive closing"):
+            reconcile_classic(state, missing, now=NOW, only_book="macd_12_26_9")
+
     def test_receivable_is_valued_without_becoming_spendable_cash(self):
         held = book()
         held["receivables"] = {"merger": {"status": "unsettled", "symbol": "KMB",
