@@ -10846,6 +10846,45 @@
         {
           "date": "2026-11-11",
           "nav": 103149.07967238151
+        },
+        {
+          "date": "2026-11-12",
+          "inactive_no_fills": true,
+          "nav": 102364.94076246698,
+          "quote_identity": {
+            "closing_mark_scope": "passive_nav_only",
+            "effective_sha256": "e6767240da15a78a1a33e8251fae3f19000ce13514d771b5fd03fd01417d4831",
+            "passive_close_provenance": {
+              "IQV": {
+                "captured_at_utc": "2026-11-12T23:44:43+00:00",
+                "close": 271.1099853515625,
+                "document_sha256": "54de228b2c235846da990f85a15ea2b6094ef3020f114f64624c9ac8435607c1",
+                "session": "2026-11-12"
+              }
+            },
+            "snapshot_sha256": "b45ed70051d99b91cd2faafefe1ea49ff5db12d7615299c4250b24acbaad13cd"
+          },
+          "recorded_at_utc": "2026-11-17T16:50:33+00:00"
+        },
+        {
+          "date": "2026-11-13",
+          "inactive_no_fills": true,
+          "nav": 102454.39804306698,
+          "quote_identity": {
+            "effective_sha256": "848489c23800e69ce1edda437a865d7ad5edfb378fde9bb48e7804a143374b15",
+            "snapshot_sha256": "2d94d527b4391f9eb2d8283a15b5338336cfa55d582e840a79c7cfd338fae813"
+          },
+          "recorded_at_utc": "2026-11-17T16:50:33+00:00"
+        },
+        {
+          "date": "2026-11-16",
+          "inactive_no_fills": true,
+          "nav": 101901.68997493117,
+          "quote_identity": {
+            "effective_sha256": "9d8f9a13262b749e8f28bbb4de124015845a20e9955ed87620e16abd6341bd61",
+            "snapshot_sha256": "3649456c956229572f45ee2d3a4164de2926400fe77a8a5a8482ac9b5309bdbe"
+          },
+          "recorded_at_utc": "2026-11-17T16:50:33+00:00"
         }
       ],
       "events": [
@@ -11295,6 +11334,30 @@
             "IQV"
           ],
           "type": "book_quarantined_missing_held_bar"
+        },
+        {
+          "date": "2026-11-12",
+          "recorded_at_utc": "2026-11-17T16:50:33+00:00",
+          "ticker": "IQV",
+          "type": "intraday_trigger_unknown_during_outage"
+        },
+        {
+          "date": "2026-11-12",
+          "expired_unfilled_orders": {},
+          "recorded_at_utc": "2026-11-17T16:50:33+00:00",
+          "type": "inactive_mark_no_trades"
+        },
+        {
+          "date": "2026-11-13",
+          "expired_unfilled_orders": {},
+          "recorded_at_utc": "2026-11-17T16:50:33+00:00",
+          "type": "inactive_mark_no_trades"
+        },
+        {
+          "date": "2026-11-16",
+          "expired_unfilled_orders": {},
+          "recorded_at_utc": "2026-11-17T16:50:33+00:00",
+          "type": "inactive_mark_no_trades"
         }
       ],
       "forward_executions": {
@@ -11324,14 +11387,10 @@
           "source_commit": "372d05ea67a8acc97c47dcffad82348161f91268"
         }
       },
-      "nav": 103149.07967238151,
-      "paused_missing_quotes": {
-        "last_valued_session": "2026-11-11",
-        "missing_tickers": [
-          "IQV"
-        ],
-        "reason": "required same-session bar unavailable",
-        "since": "2026-11-12"
+      "nav": 101901.68997493117,
+      "outage_control": {
+        "first_trading_session": "2026-11-18",
+        "registered_at_utc": "2026-11-17T16:50:33+00:00"
       },
       "pending": {},
       "positions": {
