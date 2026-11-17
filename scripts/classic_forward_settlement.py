@@ -52,6 +52,64 @@ def _provenance(q, lock, ticker, key):
             "idempotency_key": key + ":" + ticker}
 
 
+def _verified_previous_stops_only(original, current, session, lock, commission):
+    """Permit later protected stops while a frozen opening BUY stayed unfilled.
+
+    The only permissible source divergence is already-reconciled same-session
+    stop/target sales, with identical pending orders, NAV and historic prefix.
+    No newly frozen buys, inferred bars or edited position economics qualify.
+    """
+    pending = current.get("pending", {})
+    if (not isinstance(pending, dict) or not pending
+            or pending != original.get("pending")
+            or any(order.get("side") != "buy" for order in pending.values())
+            or current.get("equity") != original.get("equity")
+            or current.get("nav") != original.get("nav")
+            or current.get("signal_counts") != original.get("signal_counts")
+            or current.get("events", [])[:len(original.get("events", []))] != original.get("events", [])
+            or current.get("trades", [])[:len(original.get("trades", []))] != original.get("trades", [])):
+        return False
+    old_markers = original.get("forward_executions", {})
+    markers = current.get("forward_executions", {})
+    if not isinstance(old_markers, dict) or not isinstance(markers, dict):
+        return False
+    if any(markers.get(key) != value for key, value in old_markers.items()):
+        return False
+    new_keys = set(markers) - set(old_markers)
+    if not new_keys or any(markers[key].get("session") != session for key in new_keys):
+        return False
+    try:
+        summary = summarize_session_fills(
+            current, original, session, lock["lock_sha256"],
+            lock["source_commit"], commission)
+    except (ValueError, KeyError, TypeError):
+        return False
+    fills = summary["fills"]
+    sold = {item["ticker"] for item in fills}
+    added_events = current["events"][len(original["events"]):]
+    added_trades = current["trades"][len(original["trades"]):]
+    if (len(sold) != len(fills) or len(fills) != len(new_keys)
+            or len(added_events) != len(fills)
+            or len(added_trades) != len(fills)
+            or any(item["side"] != "sell" for item in fills)
+            or any(event.get("reason") not in
+                   ("stop_forward_observed", "target_forward_observed")
+                   for event in added_events)
+            or any(trade.get("reason") not in
+                   ("stop_forward_observed", "target_forward_observed")
+                   for trade in added_trades)
+            or not sold <= set(original["positions"])):
+        return False
+    expected_positions = {ticker: pos for ticker, pos in original["positions"].items()
+                          if ticker not in sold}
+    if current.get("positions") != expected_positions:
+        return False
+    expected_cash = original["cash"] + sum(
+        item["quantity"] * item["price"] - item["fee"] for item in fills)
+    return math.isclose(current.get("cash", float("nan")), expected_cash,
+                        rel_tol=1e-11, abs_tol=1e-6)
+
+
 def settle_classic(lock, now, market, quotes, *, reader=read, frozen=_source_at):
     verify_lock(lock, market, now)
     from classic_sp500.run import (validate_state, execute_frozen_open, _close_position)
@@ -111,8 +169,18 @@ def settle_classic(lock, now, market, quotes, *, reader=read, frozen=_source_at)
                 evidence[slot] = {"status": "already_settled", "fills": marker["fills_count"],
                                   "marker": marker}
             elif not _source_unchanged(original, book):
-                evidence[slot] = {"status": "source_changed", "fills": 0}
-                continue
+                # A missing fresh quote may block a BUY while an independently
+                # observed protective stop already sold one of the OLD holdings.
+                # Never reopen that buy; allow subsequent observed stops only
+                # after reconciling every economic change against the frozen
+                # source, the same-session markers and the unchanged cash math.
+                if not _verified_previous_stops_only(
+                        original, book, market["session"], lock,
+                        config["execution"]["commission"]):
+                    evidence[slot] = {"status": "source_changed", "fills": 0}
+                    continue
+                evidence[slot] = {"status": "opening_buy_unfilled_after_observed_stop",
+                                  "fills": 0, "pending_open_unfilled": sorted(book["pending"])}
             elif not (isinstance(book["pending"], dict) and
                       len(book["pending"]) == len(lane["orders"]) and
                       set(book["pending"]) == {o["ticker"] for o in lane["orders"]} and
@@ -175,8 +243,11 @@ def settle_classic(lock, now, market, quotes, *, reader=read, frozen=_source_at)
                                       "operations": operations}
         # Intraday stop/target rules use only a fresh OBSERVED quote crossing a
         # frozen level. A missing observation never becomes a retroactive exit.
-        # Books still carrying an unexecuted opening order cannot trade stops.
-        if book["pending"]:
+        # A missing quote for an opening BUY cannot suppress a separately
+        # observed stop/target in a position held before today's opening.
+        # If any SELL order is pending, keep the entire portfolio fail-closed
+        # rather than create a competing liquidation of the same shares.
+        if any(order.get("side") != "buy" for order in book["pending"].values()):
             continue
         for ticker, position in list(book["positions"].items()):
             stop = position.get("stop")
@@ -224,6 +295,8 @@ def settle_classic(lock, now, market, quotes, *, reader=read, frozen=_source_at)
             any_changes = True
             evidence[slot] = {"status": "settled_native_paper", "fills": len(operations),
                               "marker": marker, "operations": operations}
+            if book["pending"]:
+                evidence[slot]["pending_open_unfilled"] = sorted(book["pending"])
         if markers_written:
             book["forward_executions"] = markers
         if not lane["orders"] and not operations:
