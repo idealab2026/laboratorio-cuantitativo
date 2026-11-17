@@ -4,7 +4,7 @@ import {verifyFinancialSankeys} from "./financial-sankey.mjs?v=a50f0cb89012";
 import {verifyOriginalPaper} from "./original-paper.mjs?v=b4ab52ea9863";
 import {algorithmTheory,paperLeaderboard} from "./algorithm-detail.mjs";
 import {glossaryGroups,searchGlossary,verifyGlossary} from "./glossary.mjs";
-import {verifyOperationsAudit,renderOperationsAudit,renderTradeLotsTable,summarizeOperationsAudit,buildSessionActionColumns,renderSessionTickerList} from "./operations-audit.mjs?v=5b772a793f3b";
+import {verifyOperationsAudit,renderOperationsAudit,renderTradeLotsTable,summarizeOperationsAudit,buildSessionActionColumns,renderSessionTickerList} from "./operations-audit.mjs?v=7e8b225e6962";
 import {parseLocalPaperResults,parseLocalPaperCurves,summarizePrivatePaper} from "./private-paper.mjs?v=4baff08a2202";
 import {signalResearchSummary,methodCatalog} from "./paper-methods.mjs";
 import {parseLocalCagr2031} from "./private-theses.mjs";
