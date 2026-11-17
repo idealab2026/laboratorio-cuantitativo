@@ -257,7 +257,7 @@ class NativeClassicClockTests(unittest.TestCase):
         self.book["books"][name]["cash"] += 1.
         invalid, rejected = self.run_clock(quotes=next_quotes, now=later)
         self.assertEqual(rejected[slot]["status"], "source_changed")
-        self.assertNotIn("MTD", invalid[LEDGER]["books"][name]["trades"][-1:])
+        self.assertNotIn(LEDGER, invalid)
         self.book = copy.deepcopy(updated[LEDGER])
 
         # On the next true minute observation, MTD's stop is independently
