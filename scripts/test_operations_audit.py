@@ -185,6 +185,28 @@ class OperationsAuditTests(unittest.TestCase):
         original = normalize_ledger(historical, "classic_sp500_state/ledger.json")
         self.assertEqual(original["2026-11-13"][0]["price_basis"], "book_fill")
 
+    def test_friday_week_close_proxies_are_not_counted_as_verified_fills(self):
+        # Official 2026-11-13 paper history includes 34 retrospectively
+        # modeled weekly closes across six affected strategy slots.
+        actual = 0
+        for slot, track in self.doc["tracks"].items():
+            actions = [a for session in track["sessions"] for a in session["actions"]
+                       if a["side"] in ("buy", "sell")]
+            modelled = [a for a in actions
+                        if a.get("price_basis") == "historical_week_close_proxy"]
+            coverage = track["coverage"]
+            self.assertEqual(coverage["modelled_week_close_sales"], len(modelled), slot)
+            self.assertEqual(coverage["ledger_actions_excluding_week_close_proxy"],
+                             len(actions) - len(modelled), slot)
+            self.assertTrue(all(a["side"] == "sell" and a["price"] is not None
+                                for a in modelled), slot)
+            if track["source_path"] != "weekly_ml_daily_state/ledger.json":
+                self.assertEqual(modelled, [], slot)
+            actual += sum(session["date"] == "2026-11-13" and
+                          action["price_basis"] == "historical_week_close_proxy"
+                          for session in track["sessions"] for action in session["actions"])
+        self.assertEqual(actual, 34)
+
     def test_no_invention_if_book_has_no_execution_events(self):
         fixture={"events":[{"date":"2026-11-02","type":"signal",
                             "ticker":"AAPL","side":"buy"}]}
