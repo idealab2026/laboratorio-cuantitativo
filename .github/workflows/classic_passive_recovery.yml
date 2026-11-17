@@ -6,6 +6,9 @@ on:
       - 'classic_sp500/passive_recover_cli.py'
       - 'classic_sp500/tests/**'
       - '.github/workflows/classic_passive_recovery.yml'
+      - 'strategy_comparison/inactive_recovery.py'
+      - 'strategy_comparison/tests/test_inactive_recovery.py'
+      - 'classic_sp500/corporate_actions.py'
   push:
     branches: [main]
     paths:
@@ -48,6 +51,10 @@ jobs:
         run: |
           python -m unittest discover -s classic_sp500/tests -v
           python -m unittest discover -s market_data/tests -v
+          python -m unittest discover -s strategy_comparison/tests -v
+      - name: Validate targeted MACD recovery on live frozen state WITHOUT writing
+        if: ${{ github.event_name == 'pull_request' }}
+        run: python strategy_comparison/inactive_recovery.py --engine classic --phase check --only-classic-book macd_12_26_9
       - name: Dry run recovery without touching paper state
         if: ${{ github.event_name == 'schedule' || github.event_name == 'workflow_dispatch' }}
         env:
