@@ -1,7 +1,7 @@
 """Native forward entry fills for MIDAS IL-019..IL-027, one shared ML ledger.
 
 A verified quote is a simulated execution price, NOT an exchange fill.
-The nightly daily engine still owns official closing NAV and weekly exits.
+The nightly daily engine owns official closing NAV; weekly exits require a contemporary observation.
 All mutations are made to the existing weekly_ml_daily_state/ledger.json.
 """
 from __future__ import annotations
@@ -50,6 +50,60 @@ def _unchanged(original, current):
                 "last_signal_session"))
 
 
+def _exit_key(slot, session):
+    return f"{slot}:{session}:weekly_ml_observed_exit_v1"
+
+
+def _weekly_exit(book, slot, lock, now, market, quotes, policy):
+    """Sell exact holdings at observed preclose prices, atomically per book."""
+    expected = set(book["positions"])
+    if not expected or book["pending"] or expected != set(lock["slots"][slot].get("monitor_tickers", [])):
+        return None
+    fresh = {t: quotes[t] for t in expected if t in quotes and _quote_valid(quotes[t], now, market)}
+    if set(fresh) != expected:
+        return None
+    start = market["close"] - timedelta(minutes=5)
+    if any(not (start <= datetime.fromisoformat(q["quote_at_utc"].replace("Z", "+00:00")) <= now <= market["close"])
+           for q in fresh.values()):
+        return None
+    key = _exit_key(slot, market["session"])
+    operations = []
+    for ticker in sorted(expected):
+        pos = book["positions"][ticker]
+        shares = float(pos["shares"])
+        price = float(fresh[ticker]["price"]) * (1 - float(policy["slippage"]))
+        fee = shares * price * float(policy["commission"])
+        if not all(math.isfinite(v) for v in (shares, price, fee)) or shares <= 0 or price <= 0 or fee < 0:
+            raise ValueError("Invalid observed weekly exit economics")
+        book["cash"] += shares * price - fee
+        book["trades"].append({"ticker": ticker, "signal_date": pos["signal_date"],
+            "entry_date": pos["entry_date"], "exit_date": market["session"], "shares": shares,
+            "buy_price": pos["entry_price"], "sell_price": price, "buy_commission": pos["entry_fee"],
+            "sell_commission": fee, "net_pnl": shares * price - fee - pos["entry_price"] * shares - pos["entry_fee"]})
+        event = {"date": market["session"], "type": "sell", "ticker": ticker, "shares": shares,
+                 "price": price, "fee": fee, "execution": "observed_preclose_paper",
+                 "quote_at_utc": fresh[ticker]["quote_at_utc"], "observed_at_utc": fresh[ticker]["observed_at_utc"],
+                 "source_commit": lock["source_commit"], "lock_sha256": lock["lock_sha256"],
+                 "idempotency_key": key + ":" + ticker}
+        book["events"].append(event)
+        operations.append({"ticker": ticker, "side": "sell", "quantity": shares, "price": price,
+                           "fee": fee, "observed_at_utc": event["observed_at_utc"]})
+    book["positions"] = {}
+    # A missed historical Friday remains documented; a verified future sale
+    # ends the pause without pretending the prior sale took place then.
+    if book.get("paused_missing_quotes", {}).get("reason") == "unobserved_weekly_exit":
+        missed = list(book["paused_missing_quotes"].get("missed_exit_sessions", []))
+        book["events"].append({"date": market["session"],
+            "type": "prospective_unwind_after_unobserved_weekly_exit",
+            "missed_exit_sessions": missed, "lock_sha256": lock["lock_sha256"]})
+        del book["paused_missing_quotes"]
+    marker = {"session": market["session"], "mode": "weekly_observed_exit", "lock_sha256": lock["lock_sha256"],
+              "source_commit": lock["source_commit"], "recorded_at_utc": timestamp(now),
+              "quotes_sha256": digest(fresh), "fills_count": len(operations), "fill_tickers": sorted(expected)}
+    book.setdefault("forward_executions", {})[key] = marker
+    return marker, operations
+
+
 def settle_weekly(lock, now, market, quotes, *, reader=read, frozen=_source_at):
     """Compute fresh next-open buys and evidence, without mutating the filesystem."""
     verify_lock(lock, market, now)
@@ -69,6 +123,34 @@ def settle_weekly(lock, now, market, quotes, *, reader=read, frozen=_source_at):
         original = source["strategies"][name]
         book = changed["strategies"][name]
         signal = book.get("last_signal_session", current.get("last_signal_session"))
+        exit_key = _exit_key(slot, market["session"])
+        prior_exit = book.get("forward_executions", {}).get(exit_key)
+        if prior_exit is not None:
+            if prior_exit.get("lock_sha256") != lock["lock_sha256"]:
+                raise ValueError(f"{slot}: conflicting observed exit lock")
+            observations[slot] = {"status": "already_settled", "fills": prior_exit["fills_count"], "marker": prior_exit}
+            continue
+        from tfg_ahp.data import is_week_end_session
+        exit_window = market["close"] - timedelta(minutes=5) <= now <= market["close"]
+        if exit_window and is_week_end_session(market["session"]) and book["positions"]:
+            paused = book.get("paused_missing_quotes")
+            paused_exit = (lane.get("exit_only_ready") and lane.get("source_status") == "paused"
+                           and isinstance(paused, dict) and paused.get("reason") == "unobserved_weekly_exit"
+                           and original.get("paused_missing_quotes") == paused)
+            eligible_exit = lane["execution_ready"] and not paused
+            if (not (eligible_exit or paused_exit) or lane["source_session"] != market["previous"]
+                    or book["equity"][-1]["date"] != market["previous"]
+                    or not _unchanged(original, book)):
+                observations[slot] = {"status": "exit_source_changed_or_stale", "fills": 0}
+                continue
+            outcome = _weekly_exit(book, slot, lock, now, market, quotes, config["paper_policy"])
+            if outcome is None:
+                observations[slot] = {"status": "awaiting_verified_weekly_exit_quotes", "fills": 0}
+                continue
+            marker, operations = outcome
+            observations[slot] = {"status": "settled_native_paper", "fills": len(operations),
+                                  "marker": marker, "operations": operations}
+            continue
         key = _key(slot, market["session"], signal)
         previous_marker = book.get("forward_executions", {}).get(key)
         if previous_marker:
@@ -163,7 +245,8 @@ def verify_published(path=ROOT / "data/operational-clock.json", *, remote=_sourc
         if not isinstance(marker, dict):
             raise ValueError(f"{slot}: public ML fill has no marker")
         name = SLOTS[slot]
-        key = _key(slot, marker["session"], marker["signal_date"])
+        key = (_exit_key(slot, marker["session"]) if marker.get("mode") == "weekly_observed_exit"
+               else _key(slot, marker["session"], marker["signal_date"]))
         book = ledger["strategies"][name]
         if book.get("forward_executions", {}).get(key) != marker or book.get("pending"):
             raise ValueError(f"{slot}: published ML fill missing from native book")
