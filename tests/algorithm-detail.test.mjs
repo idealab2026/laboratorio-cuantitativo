@@ -174,7 +174,7 @@ test("Operation audit documents real fills, inferred holds and dated trade marke
  const operationTab=renderOperationsAudit(doc,"IL-038","AAPL",{tab:"operations",sort:"pnl",desc:true});
  assert.ok(operationTab.includes('id="audit-panel-operations" role="tabpanel"'));
  assert.ok(operationTab.includes("Precio de compra"));
- assert.ok(operationTab.includes("Precio de venta"));
+ assert.ok(operationTab.includes("Precio registrado / referencia OHLC"));
  assert.ok(operationTab.includes("Rentabilidad %"));
  assert.ok(operationTab.includes("P/L total"));
  assert.ok(operationTab.includes("Dinero empleado en compra"));
@@ -206,7 +206,7 @@ test("Strategy profiles append source-driven sessions instead of attributing syn
 
 test("Market closing-price blue dots are explicitly distinguished from executed buy/sell orders",()=>{
  const src=readFileSync(new URL("../src/operations-audit.mjs",import.meta.url),"utf8");
- assert.ok(src.includes("Precio de cierre del mercado (no es una operación)"));
+ assert.ok(src.includes("Precio de cierre de mercado (no es una operación)"));
  assert.ok(src.includes("Los puntos azules son cierres archivados de mercado, NO ejecuciones."));
  assert.ok(src.includes("audit-legend-buy"));
  assert.ok(src.includes("audit-legend-sell"));
