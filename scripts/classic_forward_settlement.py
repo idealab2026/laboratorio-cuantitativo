@@ -8,7 +8,8 @@ from __future__ import annotations
 import copy
 import json
 import math
-from datetime import datetime, timedelta
+from datetime import date, datetime, timedelta
+from decimal import Decimal, InvalidOperation
 from pathlib import Path
 
 from operational_clock import _quote_valid, digest, timestamp, verify_lock
@@ -41,7 +42,64 @@ def event_key(slot, session, action):
 
 def _source_unchanged(frozen, current):
     return all(frozen.get(k) == current.get(k) for k in
-               ("cash", "positions", "pending", "trades", "events", "equity", "nav"))
+               ("cash", "positions", "pending", "trades", "events", "equity", "nav",
+                "receivables", "outage_control", "paused_missing_quotes"))
+
+
+def _claims_actually_settled(book, previous):
+    """A historical right is released ONLY after issuer-reviewed cash settlement.
+
+    A clearing reference price (including OCC option deliverables) or an
+    unreviewed receivable never becomes spendable paper cash. The frozen
+    closing ledger must already contain the issuer settlement event matching
+    the full amount, currency, corporate action and payment date.
+    """
+    claims = book.get("receivables", {})
+    if not isinstance(claims, dict):
+        return False
+    for key, claim in claims.items():
+        if not isinstance(claim, dict) or claim.get("action_id") != key or claim.get("status") != "settled":
+            return False
+        if key != "KVUE_KMB_2026-11-02" or claim.get("symbol") != "KMB":
+            return False
+        try:
+            payment = claim["payment_session"]
+            if (not isinstance(payment, str)
+                    or date.fromisoformat(payment).isoformat() != payment
+                    or payment > previous):
+                return False
+            cash = Decimal(claim["settled_cash"])
+            fixed = Decimal(claim["fixed_cash"])
+            fraction = Decimal(claim["fractional_shares"])
+            if (not all(v.is_finite() for v in (cash, fixed, fraction))
+                    or cash <= 0 or fixed < 0 or cash < fixed
+                    or not 0 <= fraction < 1
+                    or cash != cash.quantize(Decimal("0.01"))):
+                return False
+            url = claim["settlement_source_url"]
+            if (not isinstance(url, str) or not url.startswith((
+                    "https://www.sec.gov/Archives/",
+                    "https://www.investor.kimberly-clark.com/"))):
+                return False
+            matching = [event for event in book.get("events", [])
+                        if isinstance(event, dict)
+                        and event.get("type") == "corporate_cash_settlement"
+                        and event.get("action_id") == key]
+            if len(matching) != 1:
+                return False
+            event = matching[0]
+            when = event["date"]
+            if (not isinstance(when, str)
+                    or date.fromisoformat(when).isoformat() != when
+                    or not payment <= when <= previous
+                    or event.get("source_url") != url
+                    or Decimal(str(event["amount"])) != cash
+                    or Decimal(str(event["allocated_cost"])) !=
+                        Decimal(str(claim["allocated_cost"]))):
+                return False
+        except (KeyError, ValueError, TypeError, InvalidOperation, OverflowError):
+            return False
+    return True
 
 
 def _provenance(q, lock, ticker, key):
@@ -66,6 +124,9 @@ def _verified_previous_stops_only(original, current, session, lock, commission):
             or current.get("equity") != original.get("equity")
             or current.get("nav") != original.get("nav")
             or current.get("signal_counts") != original.get("signal_counts")
+            or current.get("receivables") != original.get("receivables")
+            or current.get("outage_control") != original.get("outage_control")
+            or current.get("paused_missing_quotes") != original.get("paused_missing_quotes")
             or current.get("events", [])[:len(original.get("events", []))] != original.get("events", [])
             or current.get("trades", [])[:len(original.get("trades", []))] != original.get("trades", [])):
         return False
@@ -145,9 +206,10 @@ def settle_classic(lock, now, market, quotes, *, reader=read, frozen=_source_at)
                                  if i not in (4, 7)))
         unresolved_outage = bool(outage) and (
             not release_known or market["session"] < first_future)
-        if book.get("receivables") or unresolved_outage:
+        unresolved_claims = not _claims_actually_settled(book, market["previous"])
+        if unresolved_claims or unresolved_outage:
             evidence[slot] = {"status": "corporate_action_review_required"
-                             if book.get("receivables") else "inactive_recovery_not_yet_released",
+                             if unresolved_claims else "inactive_recovery_not_yet_released",
                              "fills": 0}
             continue
         markers = book.get("forward_executions", {}).copy()

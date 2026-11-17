@@ -331,6 +331,66 @@ class NativeClassicClockTests(unittest.TestCase):
                          old["outage_control"])
         self.assertEqual(old["pending"]["AAPL"]["signal_date"], "2026-11-09")
 
+    def test_only_completed_issuer_cash_event_unlocks_future_classic_open(self):
+        # Synthetic future settlement: DO NOT apply to the real pending
+        # KVUE/KMB receivables without a published issuer payment review.
+        slot, name = "IL-011", SLOTS["IL-011"]
+        book = self.book["books"][name]
+        claim = {
+            "action_id": "KVUE_KMB_2026-11-02",
+            "status": "settled", "symbol": "KMB",
+            "fixed_cash": "35.91", "fractional_shares": "0.50056507250",
+            "settled_cash": "90.57", "allocated_cost": 60.0,
+            "payment_session": "2026-11-09",
+            "settlement_source_url":
+                "https://www.sec.gov/Archives/edgar/data/55785/synthetic-payment-review",
+        }
+        recorded = {
+            "date": "2026-11-09", "type": "corporate_cash_settlement",
+            "action_id": claim["action_id"], "amount": 90.57,
+            "allocated_cost": 60.0, "source_url": claim["settlement_source_url"],
+            "recorded_at_utc": "2026-11-09T20:31:00+00:00",
+        }
+        book["receivables"] = {claim["action_id"]: claim}
+        book["events"] = [recorded]
+        book["cash"] += 90.57
+        book["nav"] += 90.57
+        book["equity"][-1]["nav"] += 90.57
+        valid = copy.deepcopy(self.book)
+        self.original = copy.deepcopy(self.book)
+        changed, result = self.run_clock()
+        self.assertEqual(result[slot]["status"], "settled_native_paper")
+        self.assertEqual(result[slot]["fills"], 1)
+        self.assertIn("AAPL", changed[LEDGER]["books"][name]["positions"])
+        self.assertEqual(changed[LEDGER]["books"][name]["receivables"],
+                         valid["books"][name]["receivables"])
+
+        # This issuer-reviewed settlement is fictional. Test all financial
+        # gate failures in isolation; never accept just an OCC option price.
+        bad_cases = [
+            lambda b: b["receivables"][claim["action_id"]].update(status="unsettled"),
+            lambda b: b["receivables"][claim["action_id"]].update(payment_session="2026-11-10"),
+            lambda b: b["receivables"][claim["action_id"]].update(
+                settlement_source_url="https://infomemo.theocc.com/infomemos?number=60189"),
+            lambda b: b["receivables"][claim["action_id"]].update(settled_cash="90.58"),
+            lambda b: b["events"].clear(),
+        ]
+        for mutate in bad_cases:
+            with self.subTest(mutate=bad_cases.index(mutate)):
+                self.book = copy.deepcopy(valid)
+                mutate(self.book["books"][name])
+                self.original = copy.deepcopy(self.book)
+                _, rejected = self.run_clock()
+                self.assertEqual(rejected[slot]["status"],
+                                 "corporate_action_review_required")
+                self.assertEqual(rejected[slot]["fills"], 0)
+        self.book = copy.deepcopy(valid)
+        self.original = copy.deepcopy(valid)
+        self.book["books"][name]["receivables"][claim["action_id"]]["settled_cash"] = "100.00"
+        _, refused = self.run_clock()
+        self.assertEqual(refused[slot]["status"], "corporate_action_review_required")
+
+
     def test_active_outage_and_unsettled_receivable_still_fail_closed(self):
         slot, name = "IL-011", SLOTS["IL-011"]
         old = self.book["books"][name]
