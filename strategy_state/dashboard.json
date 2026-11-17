@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "generated_at_utc": "2026-11-17T17:44:00.762793+00:00",
+  "generated_at_utc": "2026-11-17T18:28:15.338621+00:00",
   "principle": "Comparar rentabilidad acumulada y riesgo observado; no ordenar carteras con distintas fechas de inicio o supuestos de ejecución.",
   "counts": {
     "paper_with_diary": 18,
@@ -2109,13 +2109,19 @@
           "nav": 93661.81418879132
         }
       ],
-      "note": "Campaña diaria prospectiva desde la señal del 09/10/2026. Fills simulados en la siguiente apertura, NAV al cierre y cierre semanal. No hereda el NAV de la campaña de liquidación diferida ni reconstruye compras pasadas.",
+      "note": "Campaña diaria prospectiva desde la señal del 09/10/2026. Fills simulados en la siguiente apertura, NAV al cierre y cierre semanal. No hereda el NAV de la campaña de liquidación diferida ni reconstruye compras pasadas. AVISO AUDITORÍA: 1 ventas semanales estimadas con cierre histórico (2026-11-13), sin cotización intradía observada al ejecutar. NAV histórico conservado; rentabilidad NO certificada como operativa prospectiva observada.",
       "positions": [],
       "activity_state": "cash",
       "activity_label": "Sin compras · en efectivo · Inactividad sin operaciones: 2026-11-03, 2026-11-04 · Reanudación desde apertura: 2026-11-05",
       "activity_tickers": [],
       "open_positions_count": 0,
       "pending_orders_count": 0,
+      "execution_quality_status": "unobserved_post_cutover_weekly_sales",
+      "unobserved_weekly_sales_count": 1,
+      "unobserved_weekly_sales_sessions": [
+        "2026-11-13"
+      ],
+      "data_quality_status": "unobserved_weekly_sales_in_nav",
       "inactive_sessions": [
         "2026-11-03",
         "2026-11-04"
@@ -2124,10 +2130,10 @@
         "first_trading_session": "2026-11-05",
         "registered_at_utc": "2026-11-04T18:03:52+00:00"
       },
-      "comparison_eligible": true,
-      "comparison_universe_id": "SP500_2026-09-29_503",
-      "comparison_universe_symbols": 503,
-      "comparison_exclusion_reason": null,
+      "comparison_eligible": false,
+      "comparison_universe_id": null,
+      "comparison_universe_symbols": null,
+      "comparison_exclusion_reason": "Ventas semanales posteriores al corte ejecutadas solo en simulación de cierre histórico; no hay evidencia de ejecución intradía prospectiva",
       "risk_observations": 27,
       "annualized_volatility_pct": 17.911009,
       "max_drawdown_pct": -7.682816,
@@ -2314,13 +2320,19 @@
           "nav": 100170.49310778703
         }
       ],
-      "note": "Campaña diaria prospectiva desde la señal del 09/10/2026. Fills simulados en la siguiente apertura, NAV al cierre y cierre semanal. No hereda el NAV de la campaña de liquidación diferida ni reconstruye compras pasadas.",
+      "note": "Campaña diaria prospectiva desde la señal del 09/10/2026. Fills simulados en la siguiente apertura, NAV al cierre y cierre semanal. No hereda el NAV de la campaña de liquidación diferida ni reconstruye compras pasadas. AVISO AUDITORÍA: 1 ventas semanales estimadas con cierre histórico (2026-11-13), sin cotización intradía observada al ejecutar. NAV histórico conservado; rentabilidad NO certificada como operativa prospectiva observada.",
       "positions": [],
       "activity_state": "cash",
       "activity_label": "Sin compras · en efectivo · Inactividad sin operaciones: 2026-11-03, 2026-11-04 · Reanudación desde apertura: 2026-11-05",
       "activity_tickers": [],
       "open_positions_count": 0,
       "pending_orders_count": 0,
+      "execution_quality_status": "unobserved_post_cutover_weekly_sales",
+      "unobserved_weekly_sales_count": 1,
+      "unobserved_weekly_sales_sessions": [
+        "2026-11-13"
+      ],
+      "data_quality_status": "unobserved_weekly_sales_in_nav",
       "inactive_sessions": [
         "2026-11-03",
         "2026-11-04"
@@ -2329,10 +2341,10 @@
         "first_trading_session": "2026-11-05",
         "registered_at_utc": "2026-11-04T18:03:52+00:00"
       },
-      "comparison_eligible": true,
-      "comparison_universe_id": "SP500_2026-09-29_503",
-      "comparison_universe_symbols": 503,
-      "comparison_exclusion_reason": null,
+      "comparison_eligible": false,
+      "comparison_universe_id": null,
+      "comparison_universe_symbols": null,
+      "comparison_exclusion_reason": "Ventas semanales posteriores al corte ejecutadas solo en simulación de cierre histórico; no hay evidencia de ejecución intradía prospectiva",
       "risk_observations": 27,
       "annualized_volatility_pct": 14.38473,
       "max_drawdown_pct": -3.237079,
@@ -2519,13 +2531,19 @@
           "nav": 84101.75276020692
         }
       ],
-      "note": "Campaña diaria prospectiva desde la señal del 09/10/2026. Fills simulados en la siguiente apertura, NAV al cierre y cierre semanal. No hereda el NAV de la campaña de liquidación diferida ni reconstruye compras pasadas.",
+      "note": "Campaña diaria prospectiva desde la señal del 09/10/2026. Fills simulados en la siguiente apertura, NAV al cierre y cierre semanal. No hereda el NAV de la campaña de liquidación diferida ni reconstruye compras pasadas. AVISO AUDITORÍA: 2 ventas semanales estimadas con cierre histórico (2026-11-13), sin cotización intradía observada al ejecutar. NAV histórico conservado; rentabilidad NO certificada como operativa prospectiva observada.",
       "positions": [],
       "activity_state": "cash",
       "activity_label": "Sin compras · en efectivo · Inactividad sin operaciones: 2026-11-03, 2026-11-04 · Reanudación desde apertura: 2026-11-05",
       "activity_tickers": [],
       "open_positions_count": 0,
       "pending_orders_count": 0,
+      "execution_quality_status": "unobserved_post_cutover_weekly_sales",
+      "unobserved_weekly_sales_count": 2,
+      "unobserved_weekly_sales_sessions": [
+        "2026-11-13"
+      ],
+      "data_quality_status": "unobserved_weekly_sales_in_nav",
       "inactive_sessions": [
         "2026-11-03",
         "2026-11-04"
@@ -2534,10 +2552,10 @@
         "first_trading_session": "2026-11-05",
         "registered_at_utc": "2026-11-04T18:03:52+00:00"
       },
-      "comparison_eligible": true,
-      "comparison_universe_id": "SP500_2026-09-29_503",
-      "comparison_universe_symbols": 503,
-      "comparison_exclusion_reason": null,
+      "comparison_eligible": false,
+      "comparison_universe_id": null,
+      "comparison_universe_symbols": null,
+      "comparison_exclusion_reason": "Ventas semanales posteriores al corte ejecutadas solo en simulación de cierre histórico; no hay evidencia de ejecución intradía prospectiva",
       "risk_observations": 27,
       "annualized_volatility_pct": 30.701937,
       "max_drawdown_pct": -17.460329,
@@ -2725,13 +2743,19 @@
           "nav": 103643.21151858052
         }
       ],
-      "note": "Campaña diaria prospectiva desde la señal del 09/10/2026. Fills simulados en la siguiente apertura, NAV al cierre y cierre semanal. No hereda el NAV de la campaña de liquidación diferida ni reconstruye compras pasadas.",
+      "note": "Campaña diaria prospectiva desde la señal del 09/10/2026. Fills simulados en la siguiente apertura, NAV al cierre y cierre semanal. No hereda el NAV de la campaña de liquidación diferida ni reconstruye compras pasadas. AVISO AUDITORÍA: 10 ventas semanales estimadas con cierre histórico (2026-11-13), sin cotización intradía observada al ejecutar. NAV histórico conservado; rentabilidad NO certificada como operativa prospectiva observada.",
       "positions": [],
       "activity_state": "cash",
       "activity_label": "Sin compras · en efectivo · Inactividad sin operaciones: 2026-11-03, 2026-11-04 · Reanudación desde apertura: 2026-11-05",
       "activity_tickers": [],
       "open_positions_count": 0,
       "pending_orders_count": 0,
+      "execution_quality_status": "unobserved_post_cutover_weekly_sales",
+      "unobserved_weekly_sales_count": 10,
+      "unobserved_weekly_sales_sessions": [
+        "2026-11-13"
+      ],
+      "data_quality_status": "unobserved_weekly_sales_in_nav",
       "inactive_sessions": [
         "2026-11-03",
         "2026-11-04"
@@ -2740,10 +2764,10 @@
         "first_trading_session": "2026-11-05",
         "registered_at_utc": "2026-11-04T18:03:52+00:00"
       },
-      "comparison_eligible": true,
-      "comparison_universe_id": "SP500_2026-09-29_503",
-      "comparison_universe_symbols": 503,
-      "comparison_exclusion_reason": null,
+      "comparison_eligible": false,
+      "comparison_universe_id": null,
+      "comparison_universe_symbols": null,
+      "comparison_exclusion_reason": "Ventas semanales posteriores al corte ejecutadas solo en simulación de cierre histórico; no hay evidencia de ejecución intradía prospectiva",
       "risk_observations": 27,
       "annualized_volatility_pct": 14.130336,
       "max_drawdown_pct": -2.28747,
@@ -3489,13 +3513,19 @@
           "nav": 96905.48207189851
         }
       ],
-      "note": "Campaña diaria prospectiva desde la señal del 09/10/2026. Fills simulados en la siguiente apertura, NAV al cierre y cierre semanal. No hereda el NAV de la campaña de liquidación diferida ni reconstruye compras pasadas.",
+      "note": "Campaña diaria prospectiva desde la señal del 09/10/2026. Fills simulados en la siguiente apertura, NAV al cierre y cierre semanal. No hereda el NAV de la campaña de liquidación diferida ni reconstruye compras pasadas. AVISO AUDITORÍA: 10 ventas semanales estimadas con cierre histórico (2026-11-13), sin cotización intradía observada al ejecutar. NAV histórico conservado; rentabilidad NO certificada como operativa prospectiva observada.",
       "positions": [],
       "activity_state": "cash",
       "activity_label": "Sin compras · en efectivo · Inactividad sin operaciones: 2026-11-03, 2026-11-04 · Reanudación desde apertura: 2026-11-05",
       "activity_tickers": [],
       "open_positions_count": 0,
       "pending_orders_count": 0,
+      "execution_quality_status": "unobserved_post_cutover_weekly_sales",
+      "unobserved_weekly_sales_count": 10,
+      "unobserved_weekly_sales_sessions": [
+        "2026-11-13"
+      ],
+      "data_quality_status": "unobserved_weekly_sales_in_nav",
       "inactive_sessions": [
         "2026-11-03",
         "2026-11-04"
@@ -3504,10 +3534,10 @@
         "first_trading_session": "2026-11-05",
         "registered_at_utc": "2026-11-04T18:03:52+00:00"
       },
-      "comparison_eligible": true,
-      "comparison_universe_id": "SP500_2026-09-29_503",
-      "comparison_universe_symbols": 503,
-      "comparison_exclusion_reason": null,
+      "comparison_eligible": false,
+      "comparison_universe_id": null,
+      "comparison_universe_symbols": null,
+      "comparison_exclusion_reason": "Ventas semanales posteriores al corte ejecutadas solo en simulación de cierre histórico; no hay evidencia de ejecución intradía prospectiva",
       "risk_observations": 27,
       "annualized_volatility_pct": 37.792358,
       "max_drawdown_pct": -8.534402,
@@ -3978,13 +4008,19 @@
           "nav": 85683.78100397768
         }
       ],
-      "note": "Campaña diaria prospectiva desde la señal del 09/10/2026. Fills simulados en la siguiente apertura, NAV al cierre y cierre semanal. No hereda el NAV de la campaña de liquidación diferida ni reconstruye compras pasadas.",
+      "note": "Campaña diaria prospectiva desde la señal del 09/10/2026. Fills simulados en la siguiente apertura, NAV al cierre y cierre semanal. No hereda el NAV de la campaña de liquidación diferida ni reconstruye compras pasadas. AVISO AUDITORÍA: 10 ventas semanales estimadas con cierre histórico (2026-11-13), sin cotización intradía observada al ejecutar. NAV histórico conservado; rentabilidad NO certificada como operativa prospectiva observada.",
       "positions": [],
       "activity_state": "cash",
       "activity_label": "Sin compras · en efectivo · Inactividad sin operaciones: 2026-11-03, 2026-11-04 · Reanudación desde apertura: 2026-11-05",
       "activity_tickers": [],
       "open_positions_count": 0,
       "pending_orders_count": 0,
+      "execution_quality_status": "unobserved_post_cutover_weekly_sales",
+      "unobserved_weekly_sales_count": 10,
+      "unobserved_weekly_sales_sessions": [
+        "2026-11-13"
+      ],
+      "data_quality_status": "unobserved_weekly_sales_in_nav",
       "inactive_sessions": [
         "2026-11-03",
         "2026-11-04"
@@ -3993,10 +4029,10 @@
         "first_trading_session": "2026-11-05",
         "registered_at_utc": "2026-11-04T18:03:52+00:00"
       },
-      "comparison_eligible": true,
-      "comparison_universe_id": "SP500_2026-09-29_503",
-      "comparison_universe_symbols": 503,
-      "comparison_exclusion_reason": null,
+      "comparison_eligible": false,
+      "comparison_universe_id": null,
+      "comparison_universe_symbols": null,
+      "comparison_exclusion_reason": "Ventas semanales posteriores al corte ejecutadas solo en simulación de cierre histórico; no hay evidencia de ejecución intradía prospectiva",
       "risk_observations": 27,
       "annualized_volatility_pct": 39.408183,
       "max_drawdown_pct": -18.128938,
