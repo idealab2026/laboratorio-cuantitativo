@@ -49,6 +49,9 @@ jobs:
           python -m unittest discover -s timesfm_strategy/tests -v
           python -m unittest discover -s strategy_comparison/tests -v
           python timesfm_strategy/run.py --phase check
+      - name: Proof-only check of missed TimesFM marks (never fake exits)
+        if: github.event_name == 'pull_request'
+        run: python timesfm_strategy/inactive_recovery.py --phase check
       - name: Recover inactive TimesFM EUR marks on audited one-shot push
         if: github.event_name == 'push'
         run: python timesfm_strategy/inactive_recovery.py --phase recover
