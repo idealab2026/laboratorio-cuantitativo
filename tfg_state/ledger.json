@@ -52,8 +52,25 @@
     "closed_trade": null,
     "engine": "tfg_ahp_forward_observed_v1",
     "entry_date": "2026-11-16",
-    "equity_marks": [],
-    "last_mark_session": "2026-11-13",
+    "equity_marks": [
+      {
+        "date": "2026-11-16",
+        "nav": 96829.22985406072,
+        "return_pct": -0.635716945378173,
+        "source_identity": {
+          "effective_sha256": "9d8f9a13262b749e8f28bbb4de124015845a20e9955ed87620e16abd6341bd61",
+          "hash": "3649456c956229572f45ee2d3a4164de2926400fe77a8a5a8482ac9b5309bdbe",
+          "independent_symbols": [],
+          "missing": [],
+          "recovered_bar_methods": {},
+          "revision_hashes": [
+            "9d8f9a13262b749e8f28bbb4de124015845a20e9955ed87620e16abd6341bd61"
+          ],
+          "status": "common_raw_primary"
+        }
+      }
+    ],
+    "last_mark_session": "2026-11-16",
     "nav_before": 97448.72793057082,
     "operations": [
       {
