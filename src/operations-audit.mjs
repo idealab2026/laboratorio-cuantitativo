@@ -9,9 +9,13 @@ const fmtUnits=v=>num(v)?new Intl.NumberFormat("es-ES",{maximumFractionDigits:6}
 function valueCell(a,currency){
  const unit=esc(currency||"");
  if(a.side==="corporate_action")return '<span class="audit-corporate-note">Conversión corporativa; no hubo precio de compraventa</span>';
- if(num(a.price))return '<span class="audit-price-execution">'+esc(fmt(a.price))+' '+unit+
+ if(num(a.price))return '<span class="'+
+  (a.price_basis==="historical_week_close_proxy"?"audit-price-market":"audit-price-execution")+
+  '">'+esc(fmt(a.price))+' '+unit+
   '<small class="smallline">'+
-  (a.price_basis==="corporate_original_entry"?"Precio de compra original acreditado por la conversión":
+  (a.price_basis==="historical_week_close_proxy"?
+   "CIERRE SEMANAL SIMULADO: precio OHLC retrospectivo; NO es una venta observada en directo":
+   a.price_basis==="corporate_original_entry"?"Precio de compra original acreditado por la conversión":
    a.price_basis==="trade_entry_cost_derived"?"Precio reconstruido: coste registrado / unidades / (1 + comisión)":
    a.price_basis==="trade_net_proceeds_derived"?"Precio reconstruido: cobro registrado / unidades / (1 − comisión)":
    a.price_basis==="position_entry"?"Precio de entrada conservado de la posición":
@@ -56,8 +60,12 @@ export function verifyOperationsAudit(doc){
        a.rule_source!==undefined&&a.rule_source!=="classic_sp500/run.py"||
        a.price_basis!==undefined&&
         !["book_fill","position_entry","corporate_original_entry","trade_entry_cost_derived",
-          "trade_net_proceeds_derived","not_recorded","not_applicable"].includes(a.price_basis))
+          "trade_net_proceeds_derived","historical_week_close_proxy",
+          "not_recorded","not_applicable"].includes(a.price_basis))
      throw Error("Fila de operación inválida");
+    if(a.price_basis==="historical_week_close_proxy"&&
+       (a.side!=="sell"||!num(a.price)||t.source_path!=="weekly_ml_daily_state/ledger.json"))
+      throw Error("Weekly OHLC proxy misattributed as an executable price");
     if(a.side==="hold"&&(a.price!==null||a.reason_basis!=="inferred_position_continuity"))
      throw Error("Mantenimiento atribuido como una orden");
     if(a.side==="corporate_action"&&(
