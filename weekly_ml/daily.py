@@ -248,8 +248,26 @@ def process_day(config, state, day, prices, *, previous_session, week_end,
             continue
         book = result["strategies"][name]
         if book.get("paused_missing_quotes", {}).get("reason") == "unobserved_weekly_exit":
-            # The prior Friday's sale has no forward evidence. Never release
-            # this book or insert a new rebalance just because NAV was marked.
+            # Continue valuing the genuinely held position on each verified
+            # subsequent close.  Neither the original missed Friday nor any
+            # following historical OHLC bar may turn into a fictional sale.
+            # An actual future preclose exit is handled only by the forward clock.
+            if last != previous_session or book["pending"]:
+                continue
+            held = set(book["positions"])
+            if any(t not in prices or not isinstance(prices[t], dict)
+                   or prices[t].get("split") or prices[t].get("dividend")
+                   for t in held):
+                continue  # fail closed: missing quotes/corporate action
+            from strategy_comparison.inactive_recovery import weekly_mark
+            weekly_mark(book, day, prices, stamp=stamp, identity=quote_identity or {})
+            if week_end and held:
+                missed = book["paused_missing_quotes"].setdefault("missed_exit_sessions", [])
+                if day not in missed:
+                    missed.append(day)
+                    book["events"].append({"date": day, "type": "weekly_exit_unobserved_during_outage",
+                                           "held_tickers": sorted(held), "recorded_at_utc": stamp})
+            book["paused_missing_quotes"]["date"] = day
             continue
         signal_day = book.get("last_signal_session", state["last_signal_session"])
         required = set(book["positions"]) if inactive or day >= FORWARD_CUTOVER_SESSION else _book_symbols(book)
@@ -284,7 +302,18 @@ def process_day(config, state, day, prices, *, previous_session, week_end,
             from strategy_comparison.inactive_recovery import weekly_mark
             weekly_mark(book, day, prices, stamp=stamp, identity=quote_identity)
         else:
-            _advance_book(name, book, day, prices, policy, week_end=week_end)
+            # Since the prospective cutover, a night-time OHLC close is NOT an
+            # executable sell. Only an observed preclose paper fill can sell.
+            missing_forward_exit = bool(week_end and day >= FORWARD_CUTOVER_SESSION
+                                        and book["positions"])
+            _advance_book(name, book, day, prices, policy,
+                          week_end=week_end and day < FORWARD_CUTOVER_SESSION)
+            if missing_forward_exit:
+                _pause_book(book, day, (), "unobserved_weekly_exit")
+                book["paused_missing_quotes"]["missed_exit_sessions"] = [day]
+                book["events"].append({"date": day, "type": "weekly_exit_unobserved_during_outage",
+                                       "held_tickers": sorted(book["positions"]), "recorded_at_utc": stamp})
+                continue
         pause = book.pop("paused_missing_quotes", None)
         if pause and pause["date"] == day:
             book["equity"][-1].update(late_recorded_verified_date=True, recorded_at_utc=stamp,
