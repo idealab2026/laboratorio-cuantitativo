@@ -203,7 +203,7 @@ class OperationsAuditTests(unittest.TestCase):
             if track["source_path"] != "weekly_ml_daily_state/ledger.json":
                 self.assertEqual(modelled, [], slot)
             actual += sum(session["date"] == "2026-11-13" and
-                          action["price_basis"] == "historical_week_close_proxy"
+                          action.get("price_basis") == "historical_week_close_proxy"
                           for session in track["sessions"] for action in session["actions"])
         self.assertEqual(actual, 34)
 
