@@ -210,6 +210,14 @@ def normalize_ledger(ledger, source):
                 qty=event.get("quantity",event.get("shares"))
                 pr=event.get("price",event.get("price_eur",event.get("entry_eur")))
                 price_basis="book_fill" if number(pr) else "not_recorded"
+                # A historical Friday OHLC settlement is a MODELLED closing
+                # reference, NOT an observed minute quote or prospective fill.
+                # Preserve the ledger price, quantity and cash unchanged.
+                if (source == "weekly_ml_daily_state/ledger.json" and action == "sell"
+                        and event.get("execution") == "simulated_week_close"):
+                    price_basis = "historical_week_close_proxy" if number(pr) else "not_recorded"
+                    reason += (" Cierre semanal estimado con OHLC histórico;"
+                               " no existe evidencia de una venta paper observada en directo.")
                 recovered=classic_prices.get((day,ticker,action))
                 if pr is None and recovered:
                     pr,price_basis=recovered
