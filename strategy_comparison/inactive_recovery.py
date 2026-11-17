@@ -43,11 +43,18 @@ def identity_check(identity):
             raise ValueError("Recovery requires immutable common quote identity")
 
 
-def reconcile_classic(state, loader, *, now, reviews=None):
+def reconcile_classic(state, loader, *, now, reviews=None, only_book=None):
+    """Optional exact-book scope prevents an unrelated claim from being mutated."""
+    if only_book is not None and (not isinstance(only_book, str) or
+                                 only_book not in state["books"]):
+        raise ValueError("Unknown classic recovery book")
+
     from classic_sp500.corporate_actions import inactive_mark, required_claim_quotes
     updated = copy.deepcopy(state)
     names = []
     for name, original in state["books"].items():
+        if only_book is not None and name != only_book:
+            continue
         if not original.get("paused_missing_quotes"):
             continue
         last = original["equity"][-1]["date"]
@@ -113,7 +120,10 @@ def reconcile_weekly(state, loader, *, now):
     return result, sorted(result["strategies"])
 
 
-def recover(engine, *, root=ROOT, write=False, now=None):
+def recover(engine, *, root=ROOT, write=False, now=None, only_book=None):
+    if engine != "classic" and only_book is not None:
+        raise ValueError("Selective recovery is only supported for classic books")
+
     from market_data.revisions import load_effective
     from timesfm_strategy.run import atomic_write
     root, now = Path(root), now or datetime.now(timezone.utc)
@@ -128,6 +138,27 @@ def recover(engine, *, root=ROOT, write=False, now=None):
         bars = copy.deepcopy(effective["bars"])
         identity = {"snapshot_sha256": effective["base"]["sha256"],
                     "effective_sha256": effective["effective_sha256"]}
+        if engine == "classic":
+            # Additional close-only observations are never merged into canonical
+            # OHLC and never authorize an intraday stop or a missed opening.
+            from market_data.close_marks import load_marks, directory
+            passive, hashes, _ = load_marks(root / "market_data/snapshots", day)
+            proven = {}
+            for doc_hash in hashes:
+                doc = json.loads((directory(root / "market_data/snapshots", day) /
+                                  (doc_hash + ".json")).read_text())
+                captured = datetime.fromisoformat(doc["captured_at_utc"])
+                if captured.tzinfo is None or captured > now:
+                    raise ValueError("Passive mark capture is future-dated")
+                for ticker, row in doc["marks"].items():
+                    if ticker in required and ticker not in bars:
+                        proven[ticker] = {
+                            "document_sha256": doc_hash, "session": day,
+                            "close": row["close"], "captured_at_utc": doc["captured_at_utc"]}
+                        bars[ticker] = row
+            if proven:
+                identity["closing_mark_scope"] = "passive_nav_only"
+                identity["passive_close_provenance"] = proven
         independent = set(required) - set(effective["base"]["requested_symbols"])
         if independent:
             if engine != "weekly" or independent != {"RSP"}:
@@ -152,7 +183,7 @@ def recover(engine, *, root=ROOT, write=False, now=None):
         config = json.loads((root / "classic_sp500/config.json").read_text())
         verify_config(config)
         validate_state(original, config)
-        updated, names = reconcile_classic(original, loader, now=now,
+        updated, names = reconcile_classic(original, loader, now=now, only_book=only_book,
             reviews=json.loads((root / "market_data/corporate_action_reviews.json").read_text()))
         validate_state(updated, config)
         books = "books"
@@ -190,9 +221,12 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--engine", choices=("classic", "weekly"), required=True)
     parser.add_argument("--phase", choices=("check", "recover"), default="check")
+    parser.add_argument("--only-classic-book", default=None,
+                        help="Recover exactly one paused classic book; untouched peers are invariant")
     args = parser.parse_args()
     try:
-        print(json.dumps(recover(args.engine, write=args.phase == "recover"), ensure_ascii=False, sort_keys=True))
+        print(json.dumps(recover(args.engine, write=args.phase == "recover",
+                                 only_book=args.only_classic_book), ensure_ascii=False, sort_keys=True))
         return 0
     except (ValueError, OSError, KeyError, TypeError) as exc:
         print("Inactive recovery error: " + repr(exc))
