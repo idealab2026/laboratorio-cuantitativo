@@ -684,7 +684,9 @@ def build(signal_tracks=None):
                                       for d in journal_days],
                           "prices":{},
                           "coverage":{"executions":0,"priced_executions":0,
-                                      "unpriced_executions":0,"corporate_conversions":0}}
+                                      "unpriced_executions":0,"corporate_conversions":0,
+                                      "modelled_week_close_sales":0,
+                                      "ledger_actions_excluding_week_close_proxy":0}}
             continue
         actions=normalize_ledger(book,filename)
         mergers=corporate_events(book) if filename=="classic_sp500_state/ledger.json" else []
@@ -802,9 +804,16 @@ def build(signal_tracks=None):
             by_symbol[ticker]=prices.get(ticker,[]) if original.get("currency")=="USD" else []
         executed=[a for row in session_rows for a in row["actions"] if a["side"] in ("buy","sell")]
         conversions=[a for row in session_rows for a in row["actions"] if a["side"]=="corporate_action"]
+        # This legacy aggregate counts ledger buy/sell ACTIONS, including the
+        # Friday weekly-ML OHLC modelled exits. Disclose that subset explicitly
+        # so the public dashboard never calls them observed paper executions.
+        modelled = sum(a.get("price_basis") == "historical_week_close_proxy"
+                       for a in executed)
         coverage={"executions":len(executed),
                   "priced_executions":sum(number(a.get("price")) is not None for a in executed),
                   "unpriced_executions":sum(number(a.get("price")) is None for a in executed),
+                  "modelled_week_close_sales":modelled,
+                  "ledger_actions_excluding_week_close_proxy":len(executed)-modelled,
                   "corporate_conversions":len(conversions)}
         # Preserve split events as adjustments, not as simulated orders.
         split_adjustments = [
