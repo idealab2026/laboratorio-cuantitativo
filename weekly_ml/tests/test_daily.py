@@ -275,6 +275,61 @@ class DailyPaperTests(unittest.TestCase):
         self.assertEqual(frozen["strategies"]["benchmark_spy"], state["strategies"]["benchmark_spy"])
         self.assertEqual(freeze_signal(self.config, forecast, frozen), (frozen, False))
 
+    def test_post_cutover_friday_requires_real_observed_exit(self):
+        state = self.monday()
+        state["last_session"] = "2026-11-12"
+        book = state["strategies"]["lgbm_return"]
+        book["equity"][-1]["date"] = "2026-11-12"
+        holdings_before = copy.deepcopy(book["positions"])
+        cash_before = book["cash"]
+        trades_before = copy.deepcopy(book["trades"])
+        friday = {"AAA": {"date": "2026-11-13", "open": 101, "high": 111,
+                           "low": 100, "close": 110, "dividend": 0, "split": 0}}
+        closed, changed = process_day(self.config, state, "2026-11-13", friday,
+                                      previous_session="2026-11-12", week_end=True)
+        self.assertTrue(changed)
+        held = closed["strategies"]["lgbm_return"]
+        self.assertEqual(held["positions"], holdings_before)
+        self.assertEqual(held["cash"], cash_before)
+        self.assertEqual(held["trades"], trades_before)
+        self.assertEqual(held["paused_missing_quotes"]["reason"], "unobserved_weekly_exit")
+        self.assertEqual(held["paused_missing_quotes"]["missed_exit_sessions"], ["2026-11-13"])
+        self.assertNotIn("simulated_week_close",
+                         [x.get("execution") for x in held["events"]])
+        again, changed = process_day(self.config, closed, "2026-11-13", friday,
+                                     previous_session="2026-11-12", week_end=True)
+        self.assertFalse(changed)
+        self.assertEqual(again, closed)
+
+    def test_paused_weekly_positions_keep_passive_nav_without_sales(self):
+        state = self.monday()
+        state["last_session"] = "2026-11-16"
+        book = state["strategies"]["lgbm_return"]
+        book["equity"][-1]["date"] = "2026-11-16"
+        book["paused_missing_quotes"] = {"date": "2026-11-16",
+            "reason": "unobserved_weekly_exit", "missing_tickers": [],
+            "missed_exit_sessions": ["2026-11-06", "2026-11-13"]}
+        before_cash = book["cash"]
+        before_positions = copy.deepcopy(book["positions"])
+        before_trades = copy.deepcopy(book["trades"])
+        prices = {"AAA": {"date": "2026-11-17", "open": 104, "high": 111,
+                          "low": 103, "close": 109, "dividend": 0, "split": 0}}
+        next_day, changed = process_day(self.config, state, "2026-11-17", prices,
+                                        previous_session="2026-11-16", week_end=False)
+        self.assertTrue(changed)
+        kept = next_day["strategies"]["lgbm_return"]
+        self.assertEqual(kept["equity"][-1]["date"], "2026-11-17")
+        self.assertTrue(kept["equity"][-1]["inactive_no_fills"])
+        self.assertEqual(kept["positions"], before_positions)
+        self.assertEqual(kept["cash"], before_cash)
+        self.assertEqual(kept["trades"], before_trades)
+        self.assertEqual(kept["paused_missing_quotes"]["reason"], "unobserved_weekly_exit")
+        self.assertEqual(kept["paused_missing_quotes"]["missed_exit_sessions"],
+                         ["2026-11-06", "2026-11-13"])
+        missing, _ = process_day(self.config, next_day, "2026-11-18", {},
+                                 previous_session="2026-11-17", week_end=False)
+        self.assertEqual(missing["strategies"]["lgbm_return"], kept)
+
     def test_idempotence(self):
         state = self.monday()
         again, changed = process_day(self.config, state, "2026-10-12", {},
