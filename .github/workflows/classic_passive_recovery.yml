@@ -55,6 +55,19 @@ jobs:
       - name: Validate targeted MACD recovery on live frozen state WITHOUT writing
         if: ${{ github.event_name == 'pull_request' }}
         run: python strategy_comparison/inactive_recovery.py --engine classic --phase check --only-classic-book macd_12_26_9
+      # One reviewed push can move only this verified, previously paused MACD
+      # book. Do not reactivate unsettled KVUE/KMB or fake missing intraday fills.
+      - name: Recover IL-013 with observed closed NAV only (never fill)
+        if: github.event_name == 'push'
+        run: |
+          python strategy_comparison/inactive_recovery.py --engine classic --phase check --only-classic-book macd_12_26_9
+          python strategy_comparison/inactive_recovery.py --engine classic --phase recover --only-classic-book macd_12_26_9
+      - name: Publish only the verified IL-013 book revision
+        if: github.event_name == 'push'
+        run: |
+          python strategy_comparison/publish_state.py \
+            --message "Recover MACD only with immutable passive NAV marks, no fills" \
+            --path classic_sp500_state
       - name: Dry run recovery without touching paper state
         if: ${{ github.event_name == 'schedule' || github.event_name == 'workflow_dispatch' }}
         env:
