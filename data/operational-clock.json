@@ -1,5 +1,5 @@
 {
-  "checked_at_utc": "2026-11-17T18:34:28.769645Z",
+  "checked_at_utc": "2026-11-17T18:40:48.523346Z",
   "lock_sha256": "734f92360518eca698a837da8aa9430e835a7e3b048d63620522eba7c9940e3d",
   "mode": "single_midas_operator_monitor_no_broker",
   "note": "Observed quotes are not fills. A native engine must settle quantity/cash before a trade counts in P&L.",
@@ -8,11 +8,11 @@
   "previous_session": "2026-11-16",
   "quote_budget": {
     "hard_symbol_limit": 250,
-    "observed_symbols": 34,
+    "observed_symbols": 35,
     "omitted_algorithm_lanes": {},
     "requested_symbols": 35
   },
-  "run_id": 44149154468,
+  "run_id": 44150322592,
   "schema": "midas.operational_clock.v1",
   "session": "2026-11-17",
   "settlement": "native_forward_010_through_027_037_through_044",
@@ -232,18 +232,16 @@
     },
     "IL-016": {
       "holdings_count": 7,
-      "native_settlement": "awaiting_fresh_open_quotes",
+      "native_settlement": "opening_window_missed",
       "observed": 1,
       "opening_quote_diagnostic": {
-        "all_required_quotes_available_now": false,
+        "all_required_quotes_available_now": true,
         "first_missing_at_utc": "2026-11-17T14:39:39.483981Z",
         "first_missing_tickers": [
           "ERIE"
         ],
-        "last_checked_at_utc": "2026-11-17T18:34:28.769645Z",
-        "missing_tickers_at_last_attempt": [
-          "LW"
-        ],
+        "last_checked_at_utc": "2026-11-17T18:40:48.523346Z",
+        "missing_tickers_at_last_attempt": [],
         "opening_cutoff_at_utc": "2026-11-17T15:00:00Z",
         "required_tickers": [
           "ALLE",
@@ -255,7 +253,7 @@
           "ULTA",
           "VLTO"
         ],
-        "settlement_status": "awaiting_fresh_open_quotes"
+        "settlement_status": "opening_window_missed"
       },
       "orders": [
         {
