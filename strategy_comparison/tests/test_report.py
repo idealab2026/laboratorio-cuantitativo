@@ -479,5 +479,66 @@ class ReportTests(unittest.TestCase):
         self.assertEqual(state, before)
         self.assertEqual(row["last_equity"], 100001.)
 
+
+    def test_unobserved_weekly_close_after_cutover_disclosed_and_excluded(self):
+        models = ["lgbm_return", "lgbm_direction", "lgbm_ranker",
+                  "mlp_return", "lstm_return", "arima_return", "ensemble_consensus"]
+        config = {
+            "models": models, "currency": "USD",
+            "paper_policy": {"capital": 100000.0},
+            "universe_file": "weekly_ml/universe_sp500_2026-09-29.csv",
+        }
+        keys = list(self.registry["weekly_ml_tracks"])
+        state = {
+            "config_hash": _config_hash(config),
+            "engine": "weekly_ml_daily_next_open_v1",
+            "first_session": "2026-10-09",
+            "last_session": "2026-11-16",
+            "strategies": {
+                key: {
+                    "nav": 100000.0, "cash": 100000.0, "positions": {},
+                    "pending": [], "events": [], "trades": [],
+                    "equity": [{"date": "2026-10-09", "nav": 100000.0},
+                               {"date": "2026-11-16", "nav": 100000.0}],
+                }
+                for key in keys
+            },
+        }
+        # Pre-cutover weekly simulations are part of the original historical
+        # contract; only unobserved prospective-era exits contaminate the
+        # certified comparison.
+        state["strategies"]["lgbm_direction"]["events"] = [
+            {"date": "2026-11-06", "type": "sell",
+             "execution": "simulated_week_close", "ticker": "AAA"},
+            {"date": "2026-11-13", "type": "sell",
+             "execution": "simulated_week_close", "ticker": "BBB"},
+            {"date": "2026-11-13", "type": "sell",
+             "execution": "simulated_week_close", "ticker": "CCC"},
+        ]
+        original = copy.deepcopy(state)
+        out = build(self.registry, self.config, now=self.now,
+                    weekly_config=config, weekly_daily_state=state)
+        contaminated = next(row for row in out["tracks"]
+                            if row["id"] == "weekly_ml_lgbm_direction_2026")
+        intact = next(row for row in out["tracks"]
+                      if row["id"] == "weekly_ml_lgbm_ranker_2026")
+        self.assertEqual(contaminated["execution_quality_status"],
+                         "unobserved_post_cutover_weekly_sales")
+        self.assertEqual(contaminated["unobserved_weekly_sales_count"], 2)
+        self.assertEqual(contaminated["unobserved_weekly_sales_sessions"],
+                         ["2026-11-13"])
+        self.assertEqual(contaminated["data_quality_status"],
+                         "unobserved_weekly_sales_in_nav")
+        self.assertFalse(contaminated["comparison_eligible"])
+        self.assertIn("sin cotización intradía observada",
+                      contaminated["note"])
+        self.assertIn("simulación", contaminated["comparison_exclusion_reason"])
+        self.assertEqual(contaminated["last_equity"], 100000.0)
+        self.assertEqual(contaminated["return_pct"], 0.0)
+        self.assertTrue(intact["comparison_eligible"])
+        self.assertNotIn("unobserved_weekly_sales_count", intact)
+        self.assertEqual(state, original)
+
+
 if __name__ == "__main__":
     unittest.main()
