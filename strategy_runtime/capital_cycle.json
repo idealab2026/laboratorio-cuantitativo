@@ -1,11 +1,11 @@
 {
   "event": "schedule",
-  "head_sha": "b872e2e7a65462709f35a905207cce34160fbb3b",
+  "head_sha": "aa895af1763b4ff5d9ed8897f48372dfc62bcbe9",
   "outcome": "success",
-  "recorded_at_utc": "2026-11-14T00:40:38.828897+00:00",
+  "recorded_at_utc": "2026-11-17T00:44:57.359594+00:00",
   "run_attempt": 1,
-  "run_id": 43535693366,
-  "run_number": 36,
+  "run_id": 43990073028,
+  "run_number": 39,
   "schema_version": 1,
   "workflow_key": "capital_cycle",
   "workflow_name": "MIDAS capital cycle paper"
