@@ -572,6 +572,11 @@ def main(argv=None):
         for slot, result in {**evidence, **ml_evidence, **classic_evidence, **ahp_evidence, **timesfm_evidence, **genetic_evidence}.items():
             lane = report["slots"][slot]
             lane["native_settlement"] = result["status"]
+            if result.get("pending_open_unfilled"):
+                # One independently observed protective stop is NOT proof
+                # that the unrelated frozen opening BUY was executed.
+                lane["pending_open_unfilled"] = result["pending_open_unfilled"]
+                lane["opening_order_execution"] = "unfilled_not_a_native_trade"
             if slot in {f"IL-{n:03d}" for n in range(11, 18)}:
                 record_opening_quote_diagnostic(
                     lane, (prior or {}).get("slots", {}).get(slot, {}),
