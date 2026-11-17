@@ -159,9 +159,32 @@ def inactive_mark(book, day, bars, *, recorded_at, identity=None, reviews=None):
         raise ValueError("Missing exact held or receivable bar")
     for ticker, pos in book["positions"].items():
         row = bars[ticker]
-        o, h, l, c = (positive(row[k]) for k in ("open", "high", "low", "close"))
-        if l > min(o, c) or h < max(o, c) or row.get("split", 0):
-            raise ValueError("Invalid bar or unreviewed split during inactive session")
+        close_only = row.get("price_scope") == "passive_close_only"
+        if close_only:
+            # The caller must supply a verified per-symbol immutable receipt,
+            # not just a batch-level flag that some closing evidence exists.
+            receipt = ((identity or {}).get("passive_close_provenance") or {}).get(ticker)
+            if ((identity or {}).get("closing_mark_scope") != "passive_nav_only" or
+                    not isinstance(receipt, dict) or
+                    receipt.get("session") != day or row.get("date") != day or
+                    receipt.get("close") != row.get("close") or
+                    not isinstance(receipt.get("document_sha256"), str) or
+                    len(receipt["document_sha256"]) != 64 or
+                    any(ch not in "0123456789abcdef" for ch in receipt["document_sha256"])):
+                raise ValueError("Unverified per-symbol passive closing mark")
+            issued = datetime.fromisoformat(receipt["captured_at_utc"])
+            recorded = datetime.fromisoformat(recorded_at)
+            if (issued.tzinfo is None or recorded.tzinfo is None or
+                    issued > recorded or issued.utcoffset() != timezone.utc.utcoffset(issued)):
+                raise ValueError("Invalid passive closing receipt chronology")
+            positive(row["close"])
+            l = h = None
+        else:
+            o, h, l, c = (positive(row[k]) for k in ("open", "high", "low", "close"))
+            if l > min(o, c) or h < max(o, c):
+                raise ValueError("Invalid historical bar")
+        if row.get("split", 0):
+            raise ValueError("Unreviewed split during inactive session")
         dividend = float(row.get("dividend", 0))
         if not math.isfinite(dividend) or dividend < 0:
             raise ValueError("Invalid dividend")
@@ -174,8 +197,13 @@ def inactive_mark(book, day, bars, *, recorded_at, identity=None, reviews=None):
             pos["dividends"] += amount
             book["events"].append({"date": day, "type": "dividend", "ticker": ticker,
                 "amount": amount, "source_url": action["source_url"], "recorded_at_utc": recorded_at})
-        crossed = "stop" if pos.get("stop") is not None and l <= pos["stop"] else (
-            "target" if pos.get("target") is not None and h >= pos["target"] else None)
+        if close_only and (pos.get("stop") is not None or pos.get("target") is not None):
+            book["events"].append({"date": day,
+                "type": "intraday_trigger_unknown_during_outage",
+                "ticker": ticker, "recorded_at_utc": recorded_at})
+        crossed = None if close_only else (
+            "stop" if pos.get("stop") is not None and l <= pos["stop"] else (
+            "target" if pos.get("target") is not None and h >= pos["target"] else None))
         if crossed:
             book["events"].append({"date": day, "type": "unexecuted_during_outage",
                 "ticker": ticker, "trigger": crossed, "recorded_at_utc": recorded_at})
