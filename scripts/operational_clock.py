@@ -55,6 +55,12 @@ def clock_plan(now, market, tracks, commit, *, fx_reference=None):
         status = record.get("status") if isinstance(record, dict) else "unavailable"
         source_session = record.get("session") if isinstance(record, dict) else None
         eligible = status == "recorded" and source_session == market["previous"]
+        weekly_slot = slot in {f"IL-{n:03d}" for n in range(19, 28)}
+        # An independently paused portfolio may exit a frozen long position
+        # at a future observed preclose, without reviving stale entry orders.
+        exit_only_ready = (weekly_slot and isinstance(record, dict)
+                           and status == "paused" and source_session == market["previous"]
+                           and bool(record.get("holdings")) and not record.get("orders"))
         proposals = record.get("orders", []) if isinstance(record, dict) else []
         orders = []
         seen = set()
@@ -85,6 +91,7 @@ def clock_plan(now, market, tracks, commit, *, fx_reference=None):
                            "target_weight": weight, "limit_price": limit})
         slots[slot] = {
             "source_status": status, "source_session": source_session,
+            "exit_only_ready": exit_only_ready,
             "execution_ready": eligible,
             "orders": sorted(orders, key=lambda row: row["ticker"]) if eligible else [],
             "orders_count": len(orders) if eligible else 0,
@@ -94,7 +101,8 @@ def clock_plan(now, market, tracks, commit, *, fx_reference=None):
             "monitor_tickers": (
                 sorted(set(record.get("holdings", []))
                        | ({o["ticker"] for o in orders} if slot in ("IL-042", "IL-044") else set()))
-                if eligible and (slot in {f"IL-{n:03d}" for n in range(11, 18)}
+                if (eligible or exit_only_ready) and (slot in {f"IL-{n:03d}" for n in range(11, 18)}
+                                 or slot in {f"IL-{n:03d}" for n in range(19, 28)}
                                  or slot in ("IL-037", "IL-040", "IL-042", "IL-044"))
                 and isinstance(record, dict) else []),
         }
@@ -371,6 +379,20 @@ def budgeted_quote_targets(lock, prior=None, *, limit=LIMIT, now=None, market=No
         remaining = (set() if settled.get(slot, {}).get("status") == "native_forward_settled"
                      else {r["ticker"] for r in lane["orders"]})
         monitored = set(lane.get("monitor_tickers", []))
+        if slot in {f"IL-{n:03d}" for n in range(19, 28)}:
+            # Freeze all held names; request them only in the LAST weekly
+            # preclose window, never sacrifice the daily free quote quota.
+            is_close = (now is not None and market is not None
+                        and now >= market["close"] - timedelta(minutes=6))
+            if is_close:
+                from tfg_ahp.data import is_week_end_session
+                is_close = is_week_end_session(market["session"])
+            last_marker = settled.get(slot, {}).get("native_marker") or {}
+            if (last_marker.get("mode") == "weekly_observed_exit"
+                    and last_marker.get("session") == (market or {}).get("session")):
+                is_close = False
+            if not is_close:
+                monitored = set()
         if slot in ("IL-037", "IL-040", "IL-042"):
             # Demand a fresh observed USD stock quote and contemporaneous FX
             # only near the actual closing window. Do not burn the daily
@@ -388,7 +410,7 @@ def budgeted_quote_targets(lock, prior=None, *, limit=LIMIT, now=None, market=No
             elif slot in ("IL-040", "IL-042") and monitored:
                 monitored.add("EURUSD=X")
         remaining |= monitored
-        if not remaining or not lane.get("execution_ready"):
+        if not remaining or not (lane.get("execution_ready") or lane.get("exit_only_ready")):
             continue
         if len(requested | remaining) > limit:
             omitted[slot] = {
