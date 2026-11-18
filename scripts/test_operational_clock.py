@@ -562,7 +562,7 @@ class OpeningRendezvousTests(unittest.TestCase):
             self.assertEqual(observed.call_count,1)
             self.assertEqual(observed.call_args.args[0][1],"observe")
             self.assertIn("--lock",observed.call_args.args[0])
-            self.assertEqual(output.read_text(),"observed=true\\n")
+            self.assertEqual(output.read_text(),"observed=true\n")
 
     def test_late_wakeup_refuses_fill_and_never_emits_publication_signal(self):
         class Clock(datetime):
