@@ -36,6 +36,27 @@ class OpeningPlanTest(unittest.TestCase):
         self.assertEqual(archived["status"], "archived")
         self.assertEqual(archived["orders"], [])
 
+    def test_audit_script_entrypoint_resolves_classic_root_claim_contract(self):
+        # Running from scripts/ must import the identical shared verifier as
+        # the forward executor, without depending on PYTHONPATH or test order.
+        import subprocess
+        import sys
+        root = Path(__file__).resolve().parents[1]
+        code = (
+            "import sys; sys.path.insert(0,'scripts'); "
+            "from build_opening_plan import plan_track; "
+            "p=plan_track('IL-012',"
+            "{'equity':[{'date':'2026-11-18'}],"
+            "'receivables':{'UNKNOWN':{'status':'unsettled'}},"
+            "'positions':{},'pending':{}},"
+            "'2026-11-19','2026-11-18'); "
+            "assert p['status']=='paused',p"
+        )
+        executed = subprocess.run(
+            [sys.executable, "-I", "-c", code], cwd=root,
+            capture_output=True, text=True, timeout=20)
+        self.assertEqual(executed.returncode, 0, executed.stderr)
+
     def test_il012_19nov_preopen_ready_only_if_18nov_close_and_claim_are_valid(self):
         # Deterministic historical fixture, not the mutable production ledger.
         # This test must still pass AFTER the real 18-Nov close is written.
