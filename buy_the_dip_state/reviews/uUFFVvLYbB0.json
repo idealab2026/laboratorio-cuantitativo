@@ -1,0 +1,394 @@
+{
+  "schema_version": 1,
+  "status": "machine_first_pass",
+  "reviewed_at_utc": "2026-11-18T15:58:28.845774+00:00",
+  "source_identity": "Buy The Dip YouTube channel",
+  "transport": {
+    "kind": "official_podcast_mirror",
+    "provider": "iVoox",
+    "guid": "https://www.ivoox.com/184016898",
+    "published_date": "2026-11-18",
+    "youtube_video_id": "uUFFVvLYbB0",
+    "match_score": 1.0,
+    "audio_bytes_processed_transiently": 29260068
+  },
+  "models": {
+    "asr": {
+      "language": "es",
+      "language_probability": 1.0,
+      "duration_seconds": 3657.4040625,
+      "word_count": 9702,
+      "segment_count": 1668,
+      "model": "small"
+    },
+    "semantic": {
+      "repo": "Qwen/Qwen3-4B-GGUF",
+      "file": "Qwen3-4B-Q4_K_M.gguf"
+    }
+  },
+  "metadata": {
+    "video_id": "uUFFVvLYbB0",
+    "youtube_url": "https://www.youtube.com/watch?v=uUFFVvLYbB0",
+    "title": "Nuestra cartera | El FONDO de INVERSIÓN y BTD",
+    "category": "portfolio_update",
+    "guest_likely": false,
+    "podcast_guid": "https://www.ivoox.com/184016898",
+    "published_date": "2026-11-18",
+    "source": "official_podcast_mirror",
+    "match_score": 1.0
+  },
+  "analysis": {
+    "episode_summary": "El episodio analiza la estrategia de inversión Bay de Dip, destacando una cartera con enfoque en rentabilidad agresiva, con ventas de posiciones anteriores y reinversiones en empresas como Constellation Oil y una posición secreta, logrando una rentabilidad anual del 20% y un total de 286% desde marzo de 2022. Se menciona la posibilidad de recapitalización del sistema financiero, la valoración de acciones en el sector, el tamaño del negocio con un backlog de contratos, el análisis técnico de precios y dividendos, y el riesgo asociado a proyectos mineros. También se aborda el impacto político en el sector financiero, con una posible estrategia de Trump que favorece a las GCS, y el análisis de Cineplex con buen desempeño financiero, aunque con cambios en la estrategia de inversión. La cartera prioriza la rentabilidad sobre la diversificación, con una concentración de posiciones en un rango de 7 a 10 empresas, y se destacan temas como la expectativa de un cierre de proyectos mineros en Guinea y la proyección de producción a largo plazo.",
+    "process": {
+      "idea_generation": [],
+      "quality": [],
+      "balance_sheet": [],
+      "valuation": [
+        "La cartera Bay de Dip ha vendido posiciones como Franco Nevada y Freehold Royalty's, reinvirtiendo en Constellation Oil y una posición secreta, con un enfoque en rentabilidad superior al 20%."
+      ],
+      "cycle_macro": [
+        "La cartera ha superado el índice PURS 500 con una rentabilidad anual del 20%, aprovechando la volatilidad del mercado y una relación inversa con el SP500."
+      ],
+      "entry": [
+        "El canal de inversión Bay de Dip presenta una cartera con cambios de posición y una estrategia de inversión más agresiva."
+      ],
+      "sizing": [
+        "La cartera tiene una rentabilidad total de 286% desde marzo de 2022, con un índice de referencia del SP500 al 64,7%, destacando una diferencia significativa en rendimiento."
+      ],
+      "add_hold": [],
+      "exit": [
+        "La administración Trump podría aprovechar el control republicano para hacer cambios en el sector financiero sin enfrentar resistencia política."
+      ],
+      "risk": [
+        "La estrategia de inversión prioriza la rentabilidad sobre la diversificación, con una concentración de posiciones en un rango de 7 a 10 empresas, y un enfoque en evitar prisa en la toma de decisiones."
+      ],
+      "technical": [],
+      "management": [],
+      "mistakes": []
+    },
+    "candidate_rules": [
+      {
+        "rule": "paráfrasis compacta",
+        "scope": "hosts|uncertain_or_guest",
+        "confidence": 0.0,
+        "evidence_timestamps": [],
+        "automation_proxy": "variable/cálculo posible o null",
+        "cross_video_confirmation_required": true
+      }
+    ],
+    "contradictions_or_uncertainties": [],
+    "named_examples": [],
+    "automation_readiness": "medium"
+  },
+  "chunk_evidence": [
+    {
+      "chunk": 1,
+      "evidence": [
+        {
+          "stage": "entry",
+          "paraphrase": "El canal de inversión Bay de Dip presenta una cartera con cambios de posición y una estrategia de inversión más agresiva.",
+          "timestamp": "00:00:16",
+          "scope": "hosts",
+          "confidence": 0.9,
+          "automation_hint": "proxy observable"
+        },
+        {
+          "stage": "valuation",
+          "paraphrase": "La cartera Bay de Dip ha vendido posiciones como Franco Nevada y Freehold Royalty's, reinvirtiendo en Constellation Oil y una posición secreta, con un enfoque en rentabilidad superior al 20%.",
+          "timestamp": "00:01:43",
+          "scope": "hosts",
+          "confidence": 0.8,
+          "automation_hint": "proxy observable"
+        },
+        {
+          "stage": "risk",
+          "paraphrase": "La estrategia de inversión prioriza la rentabilidad sobre la diversificación, con una concentración de posiciones en un rango de 7 a 10 empresas, y un enfoque en evitar prisa en la toma de decisiones.",
+          "timestamp": "00:01:31",
+          "scope": "hosts",
+          "confidence": 0.7,
+          "automation_hint": "proxy observable"
+        },
+        {
+          "stage": "cycle_macro",
+          "paraphrase": "La cartera ha superado el índice PURS 500 con una rentabilidad anual del 20%, aprovechando la volatilidad del mercado y una relación inversa con el SP500.",
+          "timestamp": "00:04:40",
+          "scope": "hosts",
+          "confidence": 0.6,
+          "automation_hint": "proxy observable"
+        },
+        {
+          "stage": "sizing",
+          "paraphrase": "La cartera tiene una rentabilidad total de 286% desde marzo de 2022, con un índice de referencia del SP500 al 64,7%, destacando una diferencia significativa en rendimiento.",
+          "timestamp": "00:06:11",
+          "scope": "hosts",
+          "confidence": 0.5,
+          "automation_hint": "proxy observable"
+        }
+      ],
+      "named_examples": [],
+      "chunk_summary": "El análisis de la cartera Bay de Dip muestra una estrategia de inversión más agresiva, con ventas de posiciones anteriores y reinvestimiento en nuevas, enfocada en maximizar la rentabilidad. La cartera ha superado el índice PURS 500 con una rentabilidad anual del 20%, aprovechando la volatilidad del mercado. La estrategia prioriza la rentabilidad sobre la diversificación, con una concentración de posiciones en un rango de 7 a 10 empresas, y un enfoque en evitar prisa en la toma de decisiones. La cartera ha logrado una rentabilidad total de 286% desde marzo de 2022, con un índice de referencia del SP500 al 64,7%, destacando una diferencia significativa en rendimiento."
+    },
+    {
+      "chunk": 2,
+      "evidence": [
+        {
+          "stage": "entry",
+          "paraphrase": "El presidente Trump tiene un gobierno republicano que podría implementar medidas sin negociar con demócratas, lo que favorece a las GCS.",
+          "timestamp": "00:11:12",
+          "scope": "hosts",
+          "confidence": 0.8,
+          "automation_hint": "proxy observable"
+        },
+        {
+          "stage": "exit",
+          "paraphrase": "La administración Trump podría aprovechar el control republicano para hacer cambios en el sector financiero sin enfrentar resistencia política.",
+          "timestamp": "00:13:00",
+          "scope": "hosts",
+          "confidence": 0.7,
+          "automation_hint": "proxy observable"
+        },
+        {
+          "stage": "risk",
+          "paraphrase": "La posibilidad de que los demócratas impidan medidas de Trump afecta la estabilidad de las GCS y el mercado hipotecario.",
+          "timestamp": "00:14:00",
+          "scope": "hosts",
+          "confidence": 0.6,
+          "automation_hint": "proxy observable"
+        }
+      ],
+      "named_examples": [],
+      "chunk_summary": "El análisis sugiere que el gobierno republicano liderado por Trump podría implementar políticas favorables a las GCS sin obstáculos políticos, mientras que los demócratas podrían dificultar ciertas medidas. La estabilidad del mercado hipotecario y la regulación financiera dependen de la continuidad de un gobierno republicano, lo que influye en la estrategia de inversión en este sector."
+    },
+    {
+      "chunk": 3,
+      "evidence": [
+        {
+          "stage": "entry",
+          "paraphrase": "El análisis menciona que hay empresas que ya han salido del conservator y que la recapitalización del sistema financiero es un tema que no se ha hecho aún, pero que es cuestión de tiempo que se realice.",
+          "timestamp": "00:19:28",
+          "scope": "hosts",
+          "confidence": 0.0
+        },
+        {
+          "stage": "valuation",
+          "paraphrase": "Se menciona que las preferentes valen por encima de 40 dólares y las comunes pueden valer algo, pero si no se espera una recapitalización, ambas son un cero.",
+          "timestamp": "00:20:36",
+          "scope": "hosts",
+          "confidence": 0.0
+        },
+        {
+          "stage": "sizing",
+          "paraphrase": "Se indica que la empresa tiene un backlog de 76% contratado para 2027 y se espera que se extienda a 2028-2030, con un 15% de yield entre dividendos y recompras.",
+          "timestamp": "00:24:00",
+          "scope": "hosts",
+          "confidence": 0.0
+        },
+        {
+          "stage": "technical",
+          "paraphrase": "Se menciona que el precio de la acción no se mueve, lo que permite tomar más posiciones, y que la empresa ha aumentado su dividendo y anunciado un plan de recompra de 35 millones de dólares.",
+          "timestamp": "00:23:54",
+          "scope": "hosts",
+          "confidence": 0.0
+        },
+        {
+          "stage": "risk",
+          "paraphrase": "Se señala que la empresa tiene un capital de 400 millones de dólares y que el capex de Bakken está financiado, lo que reduce el riesgo de no poder cumplir con los proyectos.",
+          "timestamp": "00:26:12",
+          "scope": "hosts",
+          "confidence": 0.0
+        },
+        {
+          "stage": "cycle_macro",
+          "paraphrase": "Se menciona que el proyecto de Bakken en Guinea tiene permisos de explotación y se espera que se inicie la construcción a mediados de 2028, lo que representa un cuestión de tiempo para su implementación.",
+          "timestamp": "00:26:54",
+          "scope": "hosts",
+          "confidence": 0.0
+        }
+      ],
+      "named_examples": [],
+      "chunk_summary": "El análisis aborda la posibilidad de recapitalización del sistema financiero, la valoración de acciones en el sector, el tamaño del negocio con un backlog de contratos, el análisis técnico de precios y dividendos, y el riesgo asociado a proyectos de explotación minera. Se destacan temas como la expectativa de un cierre de proyectos mineros en Guinea y la proyección de producción a largo plazo."
+    },
+    {
+      "chunk": 4,
+      "evidence": [
+        {
+          "stage": "valuation",
+          "paraphrase": "El análisis de Cineplex muestra resultados trimestrales del Q3 con un crecimiento del 26% en ventas y un aumento del 112% en EBITDAL, reflejando un buen desempeño financiero.",
+          "timestamp": "00:30:03",
+          "scope": "hosts",
+          "confidence": 0.9,
+          "automation_hint": "proxy observable"
+        },
+        {
+          "stage": "entry",
+          "paraphrase": "La empresa está en una strategic review y ha sido reemplazada por un nuevo equipo de gestión, lo que sugiere un cambio en la estrategia de inversión.",
+          "timestamp": "00:34:01",
+          "scope": "hosts",
+          "confidence": 0.7,
+          "automation_hint": "proxy observable"
+        },
+        {
+          "stage": "risk",
+          "paraphrase": "El análisis de la oferta de compra de Full Static indica un descuento de valoración inadecuado, lo que sugiere que los accionistas podrían rechazar ofertas por debajo de ciertos niveles.",
+          "timestamp": "00:35:01",
+          "scope": "hosts",
+          "confidence": 0.6,
+          "automation_hint": "proxy observable"
+        }
+      ],
+      "named_examples": [],
+      "chunk_summary": "El análisis de Cineplex muestra un buen desempeño financiero con crecimientos significativos en ventas y márgenes, lo que refuerza su posición como una inversión atractiva. Sin embargo, la empresa está en una strategic review y ha cambiado su equipo de gestión, lo que sugiere un reevaluación de su estrategia. Además, la oferta de compra de Full Static se considera inadecuada, lo que podría influir en la valoración de la empresa."
+    },
+    {
+      "chunk": 5,
+      "evidence": [
+        {
+          "stage": "entry",
+          "paraphrase": "El nuevo CEO está intentando mejorar la situación de la empresa, aunque hay segmentos como las pizzas de take and bake que están malas y han sido adquiridas en 2019, con ventas en declive.",
+          "timestamp": "00:40:01",
+          "scope": "hosts",
+          "confidence": 0.0
+        },
+        {
+          "stage": "risk",
+          "paraphrase": "El segmento de las pizzas de take and bake tiene márgenes muy bajos (menos del 1%) y es un problema estructural, mientras que otros segmentos como las franquicias de quick service en Canadá están mejorando.",
+          "timestamp": "00:41:49",
+          "scope": "hosts",
+          "confidence": 0.0
+        },
+        {
+          "stage": "valuation",
+          "paraphrase": "La empresa tiene una posición sólida en el carbón, con producción de 5,3 millones de toneladas y una adquisición que aumenta su capacidad, aunque se menciona que la valoración de Stambor es atractiva por su relación calidad-precio.",
+          "timestamp": "00:44:55",
+          "scope": "hosts",
+          "confidence": 0.0
+        },
+        {
+          "stage": "sizing",
+          "paraphrase": "La empresa tiene una participación del 14% en el capital, con un accionista principal que controla un 14% y su mujer también está en el borde, lo que le da una posición sólida en la empresa.",
+          "timestamp": "00:38:29",
+          "scope": "hosts",
+          "confidence": 0.0
+        },
+        {
+          "stage": "cycle_macro",
+          "paraphrase": "La empresa está en un ciclo macro positivo para el carbón, con precios elevados del petróleo y una dinámica positiva para el carbón en general, lo que favorece a la empresa minera.",
+          "timestamp": "00:45:19",
+          "scope": "hosts",
+          "confidence": 0.0
+        }
+      ],
+      "named_examples": [],
+      "chunk_summary": "El análisis reconstruye una estrategia de inversión enfocada en la valoración de una empresa minera de carbón (Stambor) y en la gestión de riesgos dentro de una empresa con múltiples segmentos, incluyendo un segmento problemático (pizzas de take and bake) y una posición sólida en el capital. Se menciona la mejora de los márgenes en segmentos como las franquicias de quick service en Canadá, la reducción de deuda y la reinversión de beneficios en la cartera de inversiones. La estrategia se basa en la valoración de activos, la gestión de riesgos estructurales y la dinámica macroeconómica positiva para el carbón."
+    },
+    {
+      "chunk": 6,
+      "evidence": [
+        {
+          "stage": "entry",
+          "paraphrase": "La empresa ha adquirido acciones y está realizando compras estratégicas.",
+          "timestamp": "00:47:01",
+          "scope": "hosts",
+          "confidence": 0.0
+        },
+        {
+          "stage": "entry",
+          "paraphrase": "La empresa está comprando acciones de empresas privadas adyacentes a sus terrenos.",
+          "timestamp": "00:47:25",
+          "scope": "hosts",
+          "confidence": 0.0
+        },
+        {
+          "stage": "entry",
+          "paraphrase": "La empresa ha aumentado su producción de petróleo equivalente a 54.000 a 56.000 barriles diarios.",
+          "timestamp": "00:47:33",
+          "scope": "hosts",
+          "confidence": 0.0
+        },
+        {
+          "stage": "entry",
+          "paraphrase": "La empresa tiene un plan de capes interesante y su valoración es atractiva.",
+          "timestamp": "00:47:45",
+          "scope": "hosts",
+          "confidence": 0.0
+        },
+        {
+          "stage": "entry",
+          "paraphrase": "La empresa tiene una posición de caja significativa, con más de 1.400 millones de dólares.",
+          "timestamp": "00:50:33",
+          "scope": "hosts",
+          "confidence": 0.0
+        },
+        {
+          "stage": "entry",
+          "paraphrase": "La empresa tiene un dividendo especial, aunque bajito, y una producción récord de oro.",
+          "timestamp": "00:50:51",
+          "scope": "hosts",
+          "confidence": 0.0
+        },
+        {
+          "stage": "entry",
+          "paraphrase": "La empresa tiene un fricastro yield elevado y está cotizando a 3.800 millones.",
+          "timestamp": "00:50:49",
+          "scope": "hosts",
+          "confidence": 0.0
+        },
+        {
+          "stage": "entry",
+          "paraphrase": "La empresa tiene un cuello de botella por la falta de licencia para explosivos, pero espera que se resuelva.",
+          "timestamp": "00:51:01",
+          "scope": "hosts",
+          "confidence": 0.0
+        },
+        {
+          "stage": "entry",
+          "paraphrase": "La empresa está retrasando la licencia por cuestiones legales y espera que se resuelva.",
+          "timestamp": "00:51:23",
+          "scope": "hosts",
+          "confidence": 0.0
+        },
+        {
+          "stage": "entry",
+          "paraphrase": "La empresa tiene un plan de recompras de acciones y está valorada atractivamente.",
+          "timestamp": "00:47:07",
+          "scope": "hosts",
+          "confidence": 0.0
+        }
+      ],
+      "named_examples": [],
+      "chunk_summary": "La empresa ha realizado adquisiciones estratégicas, aumentado su producción de petróleo y tiene una posición de caja significativa. Su valoración es atractiva, aunque tiene un cuello de botella por la falta de licencia para explosivos, que espera se resuelva. La empresa está cotizando a un precio elevado y tiene un dividendo especial, aunque bajito. Además, la empresa tiene un fricastro yield elevado y está realizando compras estratégicas de acciones."
+    },
+    {
+      "chunk": 7,
+      "evidence": [
+        {
+          "stage": "entry",
+          "paraphrase": "El análisis menciona una posible adquisición de 40 mil barriles diarios, pero critica la falta de acción estratégica y el uso eficiente de la caja de efectivo.",
+          "timestamp": "00:56:50",
+          "scope": "hosts",
+          "confidence": 0.8,
+          "automation_hint": "proxy observable"
+        },
+        {
+          "stage": "valuation",
+          "paraphrase": "Se destaca un aumento del precio de la acción y una producción de estaño a 54.000 toneladas, generando un 20% de dividendo, lo que refleja un valor alto para la empresa.",
+          "timestamp": "00:59:10",
+          "scope": "hosts",
+          "confidence": 0.7,
+          "automation_hint": "proxy observable"
+        },
+        {
+          "stage": "sizing",
+          "paraphrase": "Se menciona una adquisición de 3.600 toneladas de estaño, representando casi el 20% de la producción de Visi, considerada una decisión estratégica para expandir la presencia en Estados Unidos.",
+          "timestamp": "00:58:26",
+          "scope": "hosts",
+          "confidence": 0.6,
+          "automation_hint": "proxy observable"
+        }
+      ],
+      "named_examples": [],
+      "chunk_summary": "El análisis discute una posible adquisición de 40 mil barriles diarios, critica la falta de acción estratégica y el uso eficiente de la caja de efectivo, destaca un aumento del precio de la acción y una producción de estaño a 54.000 toneladas, generando un 20% de dividendo, y menciona una adquisición de 3.600 toneladas de estaño como una decisión estratégica para expandir la presencia en Estados Unidos."
+    }
+  ],
+  "copyright_note": "No audio or verbatim transcript is persisted; only derived paraphrases."
+}
