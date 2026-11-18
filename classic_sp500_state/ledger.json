@@ -10791,7 +10791,7 @@
       "trades": []
     },
     "macd_12_26_9": {
-      "cash": 42055.06161438019,
+      "cash": 56251.905905099644,
       "equity": [
         {
           "date": "2026-10-12",
@@ -11482,6 +11482,18 @@
           "source_commit": "f1f67b5bce5679c05de36dcabede2b0106722bb4",
           "ticker": "TRGP",
           "type": "buy"
+        },
+        {
+          "date": "2026-11-18",
+          "execution": "forward_observed_paper",
+          "idempotency_key": "IL-013:2026-11-18:stop:IQV:classic_forward_v1:IQV",
+          "lock_sha256": "5c7c7d6f65a3c55e660a0e814565d1955f16c4d5199111b10d51ea7dbd13888a",
+          "observed_at_utc": "2026-11-18T15:22:06.383718Z",
+          "quote_at_utc": "2026-11-18T15:22:00Z",
+          "reason": "stop_forward_observed",
+          "source_commit": "f1f67b5bce5679c05de36dcabede2b0106722bb4",
+          "ticker": "IQV",
+          "type": "sell"
         }
       ],
       "forward_executions": {
@@ -11524,6 +11536,18 @@
           "recorded_at_utc": "2026-11-18T14:34:09.882794Z",
           "session": "2026-11-18",
           "source_commit": "f1f67b5bce5679c05de36dcabede2b0106722bb4"
+        },
+        "IL-013:2026-11-18:stop:IQV:classic_forward_v1": {
+          "fill_tickers": [
+            "IQV"
+          ],
+          "fills_count": 1,
+          "lock_sha256": "5c7c7d6f65a3c55e660a0e814565d1955f16c4d5199111b10d51ea7dbd13888a",
+          "mode": "forward_observed_paper",
+          "quotes_sha256": "d666263f82897c0b745d6a6fc62dda05a817ea439519c7ae0b7558c8ae6dd953",
+          "recorded_at_utc": "2026-11-18T15:22:08.960710Z",
+          "session": "2026-11-18",
+          "source_commit": "f1f67b5bce5679c05de36dcabede2b0106722bb4"
         }
       },
       "nav": 100185.25307034142,
@@ -11550,15 +11574,6 @@
           "shares": 75.8182,
           "stop": 143.95073883819578,
           "target": 179.93842354774472
-        },
-        "IQV": {
-          "cost": 15489.0457925969,
-          "dividends": 0.0,
-          "entry_date": "2026-11-11",
-          "entry_price": 278.60923622131344,
-          "shares": 55.538619,
-          "stop": 256.3204973236084,
-          "target": 320.4006216545104
         },
         "TRGP": {
           "cost": 14928.943883748088,
@@ -11868,6 +11883,22 @@
           "reason": "signal_next_open",
           "source_commit": "f1f67b5bce5679c05de36dcabede2b0106722bb4",
           "ticker": "CDW"
+        },
+        {
+          "dividends": 0.0,
+          "entry_cost": 15489.0457925969,
+          "entry_date": "2026-11-11",
+          "execution": "forward_observed_paper",
+          "exit_date": "2026-11-18",
+          "idempotency_key": "IL-013:2026-11-18:stop:IQV:classic_forward_v1:IQV",
+          "lock_sha256": "5c7c7d6f65a3c55e660a0e814565d1955f16c4d5199111b10d51ea7dbd13888a",
+          "net_pnl": -1292.2015018774437,
+          "observed_at_utc": "2026-11-18T15:22:06.383718Z",
+          "proceeds": 14196.844290719457,
+          "quote_at_utc": "2026-11-18T15:22:00Z",
+          "reason": "stop_forward_observed",
+          "source_commit": "f1f67b5bce5679c05de36dcabede2b0106722bb4",
+          "ticker": "IQV"
         }
       ]
     },

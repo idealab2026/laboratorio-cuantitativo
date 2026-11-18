@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "generated_at_utc": "2026-11-18T14:53:41.152794+00:00",
+  "generated_at_utc": "2026-11-18T15:22:09.785226+00:00",
   "principle": "Comparar rentabilidad acumulada y riesgo observado; no ordenar carteras con distintas fechas de inicio o supuestos de ejecución.",
   "counts": {
     "paper_with_diary": 18,
@@ -1249,14 +1249,13 @@
       "evaluated_universe_symbols": 488,
       "eligible_universe_symbols": 503,
       "activity_state": "active",
-      "activity_label": "4 posiciones abiertas · Inactividad sin operaciones: 2026-11-12, 2026-11-13, 2026-11-16, 2026-11-17 · Reanudación desde apertura: 2026-11-18 · Cálculo tardío: 2026-11-02, 2026-11-04",
+      "activity_label": "3 posiciones abiertas · Inactividad sin operaciones: 2026-11-12, 2026-11-13, 2026-11-16, 2026-11-17 · Reanudación desde apertura: 2026-11-18 · Cálculo tardío: 2026-11-02, 2026-11-04",
       "activity_tickers": [
         "ESS",
         "GILD",
-        "IQV",
         "TRGP"
       ],
-      "open_positions_count": 4,
+      "open_positions_count": 3,
       "pending_orders_count": 0,
       "inactive_sessions": [
         "2026-11-12",
@@ -5342,9 +5341,8 @@
       ],
       "note": "Diario y ejecución propios; observar por separado hasta reconciliar horarios y contabilidad.",
       "activity_state": "active",
-      "activity_label": "7 posiciones abiertas · Inactividad sin operaciones: 2026-10-29, 2026-10-30, 2026-11-02, 2026-11-03 · Reanudación desde apertura: 2026-11-04",
+      "activity_label": "6 posiciones abiertas · Inactividad sin operaciones: 2026-10-29, 2026-10-30, 2026-11-02, 2026-11-03 · Reanudación desde apertura: 2026-11-04",
       "activity_tickers": [
-        "INTU",
         "MAS",
         "MCO",
         "NDAQ",
@@ -5352,7 +5350,7 @@
         "PRU",
         "SHW"
       ],
-      "open_positions_count": 7,
+      "open_positions_count": 6,
       "pending_orders_count": 0,
       "inactive_sessions": [
         "2026-10-29",
@@ -6764,7 +6762,7 @@
       "label": "Prospectivo activo",
       "active": true,
       "source_path": "AGENTE/genetic_invest_agent/registro_historico/diario_portfolio_forward_2026-10-12.json",
-      "source_sha256": "19bf99b509fdfb9ad58c9a07b966869a10ba56336fbd60e3f39f9a18af439754",
+      "source_sha256": "07601a47a9c36c28d4cc25720176191a9064310e1bbc2c6cc4d36b3ffe05f176",
       "first_session": "2026-10-12",
       "last_session": "2026-11-17",
       "initial_capital": 100000.0,

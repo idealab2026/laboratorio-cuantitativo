@@ -1,5 +1,5 @@
 {
-  "checked_at_utc": "2026-11-18T14:53:40.275482Z",
+  "checked_at_utc": "2026-11-18T15:22:08.960710Z",
   "lock_sha256": "5c7c7d6f65a3c55e660a0e814565d1955f16c4d5199111b10d51ea7dbd13888a",
   "mode": "single_midas_operator_monitor_no_broker",
   "note": "Observed quotes are not fills. A native engine must settle quantity/cash before a trade counts in P&L.",
@@ -12,7 +12,7 @@
     "omitted_algorithm_lanes": {},
     "requested_symbols": 38
   },
-  "run_id": 44329163014,
+  "run_id": 44334659097,
   "schema": "midas.operational_clock.v1",
   "session": "2026-11-18",
   "settlement": "native_forward_010_through_027_037_through_044",
@@ -115,22 +115,27 @@
           "quantity": 51.119946,
           "side": "buy",
           "ticker": "TRGP"
+        },
+        {
+          "fee": 14.211055346065523,
+          "observed_at_utc": "2026-11-18T15:22:06.383718Z",
+          "price": 255.8770023803711,
+          "quantity": 55.538619,
+          "side": "sell",
+          "ticker": "IQV"
         }
       ],
-      "fills_count": 4,
+      "fills_count": 5,
       "holdings_count": 3,
       "native_marker": {
         "fill_tickers": [
-          "BBY",
-          "BF-B",
-          "CDW",
-          "TRGP"
+          "IQV"
         ],
-        "fills_count": 4,
+        "fills_count": 1,
         "lock_sha256": "5c7c7d6f65a3c55e660a0e814565d1955f16c4d5199111b10d51ea7dbd13888a",
         "mode": "forward_observed_paper",
-        "quotes_sha256": "79f2532d8987dc3811e1583b167e052df2e279796eff326c25367776dbe943f3",
-        "recorded_at_utc": "2026-11-18T14:34:09.882794Z",
+        "quotes_sha256": "d666263f82897c0b745d6a6fc62dda05a817ea439519c7ae0b7558c8ae6dd953",
+        "recorded_at_utc": "2026-11-18T15:22:08.960710Z",
         "session": "2026-11-18",
         "source_commit": "f1f67b5bce5679c05de36dcabede2b0106722bb4"
       },
@@ -139,9 +144,14 @@
           "fills_count": 4,
           "key": "IL-013:2026-11-18:open:classic_forward_v1",
           "recorded_at_utc": "2026-11-18T14:34:09.882794Z"
+        },
+        {
+          "fills_count": 1,
+          "key": "IL-013:2026-11-18:stop:IQV:classic_forward_v1",
+          "recorded_at_utc": "2026-11-18T15:22:08.960710Z"
         }
       ],
-      "native_settlement": "already_settled",
+      "native_settlement": "settled_native_paper",
       "observed": 4,
       "orders": [
         {
@@ -903,13 +913,47 @@
       "waiting": 0
     },
     "IL-044": {
+      "fills": [
+        {
+          "fee": 13.936145699679534,
+          "observed_at_utc": "2026-11-18T15:22:06.245112Z",
+          "price": 314.4427061004639,
+          "quantity": 44.320143,
+          "side": "sell",
+          "ticker": "INTU"
+        }
+      ],
+      "fills_count": 1,
       "holdings_count": 7,
-      "native_settlement": "no_execution_due",
+      "native_marker": {
+        "fill_tickers": [
+          "INTU"
+        ],
+        "fills_count": 1,
+        "lock_sha256": "5c7c7d6f65a3c55e660a0e814565d1955f16c4d5199111b10d51ea7dbd13888a",
+        "mode": "STOP_OBSERVED",
+        "quotes_sha256": "10d5562166370251cef944bafd6cb547ba3e3910ed031705fb5cb6a04c2a8324",
+        "recorded_at_utc": "2026-11-18T15:22:08.960710Z",
+        "session": "2026-11-18",
+        "source_commit": "f1f67b5bce5679c05de36dcabede2b0106722bb4",
+        "ticker": "INTU"
+      },
+      "native_markers": [
+        {
+          "fills_count": 1,
+          "key": "IL-044:2026-11-18:STOP_OBSERVED:INTU:genetic_forward_v1",
+          "mode": "STOP_OBSERVED",
+          "recorded_at_utc": "2026-11-18T15:22:08.960710Z",
+          "ticker": "INTU"
+        }
+      ],
+      "native_settlement": "settled_native_paper",
       "observed": 0,
       "orders": [],
       "planned": 0,
+      "session_fill_reconciled": true,
       "source_session": "2026-11-17",
-      "status": "active_no_orders",
+      "status": "native_forward_settled",
       "waiting": 0
     }
   },

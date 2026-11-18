@@ -1,5 +1,5 @@
 {
-  "cash": 35037.83549257281,
+  "cash": 48960.04504655267,
   "equity_history": {
     "2026-10-12": 100000.0,
     "2026-10-13": 99740.79683014771,
@@ -115,6 +115,19 @@
       "session": "2026-11-13",
       "source_commit": "70cb7587b7c0418737248da30049cf548d727465",
       "ticker": "EW"
+    },
+    "IL-044:2026-11-18:STOP_OBSERVED:INTU:genetic_forward_v1": {
+      "fill_tickers": [
+        "INTU"
+      ],
+      "fills_count": 1,
+      "lock_sha256": "5c7c7d6f65a3c55e660a0e814565d1955f16c4d5199111b10d51ea7dbd13888a",
+      "mode": "STOP_OBSERVED",
+      "quotes_sha256": "10d5562166370251cef944bafd6cb547ba3e3910ed031705fb5cb6a04c2a8324",
+      "recorded_at_utc": "2026-11-18T15:22:08.960710Z",
+      "session": "2026-11-18",
+      "source_commit": "f1f67b5bce5679c05de36dcabede2b0106722bb4",
+      "ticker": "INTU"
     }
   },
   "inactive_sessions": [
@@ -173,9 +186,9 @@
     },
     {
       "date": "2026-11-13",
-      "type": "observed_dividend",
+      "gross_usd": 0.046976800000000006,
       "ticker": "SHW",
-      "gross_usd": 0.046976800000000006
+      "type": "observed_dividend"
     }
   ],
   "pending": {
@@ -183,12 +196,6 @@
     "sells": []
   },
   "positions": {
-    "INTU": {
-      "entry": 336.168,
-      "shares": 44.320143,
-      "sl": 318.1143052195079,
-      "tp": 399.7432636910789
-    },
     "MAS": {
       "entry": 75.20758316802979,
       "shares": 198.105208,
@@ -241,6 +248,15 @@
     },
     "2026-11-13": {
       "EW": 165.113291,
+      "INTU": 44.320143,
+      "MAS": 198.105208,
+      "MCO": 15.11458,
+      "NDAQ": 157.093581,
+      "NSC": 1.109748,
+      "PRU": 127.763735,
+      "SHW": 0.058721
+    },
+    "2026-11-18": {
       "INTU": 44.320143,
       "MAS": 198.105208,
       "MCO": 15.11458,
@@ -548,6 +564,21 @@
       "side": "SELL",
       "source_commit": "70cb7587b7c0418737248da30049cf548d727465",
       "ticker": "EW"
+    },
+    {
+      "execution": "forward_observed_paper",
+      "fee": 13.936145699679534,
+      "fill": 314.4427061004639,
+      "idempotency_key": "IL-044:2026-11-18:STOP_OBSERVED:INTU:genetic_forward_v1",
+      "lock_sha256": "5c7c7d6f65a3c55e660a0e814565d1955f16c4d5199111b10d51ea7dbd13888a",
+      "observed_at_utc": "2026-11-18T15:22:06.245112Z",
+      "quote_at_utc": "2026-11-18T15:22:00Z",
+      "reason": "STOP_OBSERVED",
+      "session": "2026-11-18",
+      "shares": 44.320143,
+      "side": "SELL",
+      "source_commit": "f1f67b5bce5679c05de36dcabede2b0106722bb4",
+      "ticker": "INTU"
     }
   ]
 }
