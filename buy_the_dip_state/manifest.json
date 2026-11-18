@@ -2,7 +2,7 @@
   "schema_version": 1,
   "channel_url": "https://www.youtube.com/@Buy_The_Dip",
   "channel_id": "UCS5I8A7UAu43QgFxxu8VRbQ",
-  "source_hash": "920f1f4665ab56b290b302276c96782d8c4b85d4dc276d7b9a1b02e9040e9100",
+  "source_hash": "e5aa83690bb584966fb3445fc1e89327dcadbd0e446316b2e4527628f81daea0",
   "videos": [
     {
       "video_id": "-EL1QLkTi_A",
@@ -66,7 +66,7 @@
     },
     {
       "video_id": "1D6zbigy5C0",
-      "title": "El ORO en BOOM: ¿Fin del Ciclo? Otras Inversiones que NO Puedes Ignorar",
+      "title": "Gold Boom: End of the Cycle? Other Investments You Can't Ignore",
       "published_date": null,
       "duration_seconds": 1004,
       "view_count": 990,
@@ -126,7 +126,7 @@
     },
     {
       "video_id": "2F4_-qp2x9g",
-      "title": "The Asset Nobody Is Looking At: SILVER | Buy The Dip Podcast",
+      "title": "El Activo Que Nadie Está Mirando: PLATA | Buy The Dip Podcast",
       "published_date": null,
       "duration_seconds": 4765,
       "view_count": 9000,
@@ -222,7 +222,7 @@
     },
     {
       "video_id": "4Ip-k8Y1nVI",
-      "title": "Nuestra CARTERA y RENTABILIDAD del AÑO 2025 | BUY THE DIP PODCAST",
+      "title": "Our Portfolio and Returns for 2025 | Buy the Dip Podcast",
       "published_date": null,
       "duration_seconds": 3526,
       "view_count": 877,
@@ -330,7 +330,7 @@
     },
     {
       "video_id": "5Vwg9I3k4os",
-      "title": "¿Funcionará la \"One Big Beautiful Bill\" de DONALD TRUMP? - La OPEP aumenta producción",
+      "title": "Will Donald Trump's \"One Big Beautiful Bill\" work? - OPEC increases production",
       "published_date": null,
       "duration_seconds": 1780,
       "view_count": 448,
@@ -582,7 +582,7 @@
     },
     {
       "video_id": "9E8ZKvK1g4c",
-      "title": "Oil Prices Collapse What's Going On?",
+      "title": "El Precio del PETRÓLEO COLAPSA ¿Qué pasa?",
       "published_date": null,
       "duration_seconds": 864,
       "view_count": 890,
@@ -594,7 +594,7 @@
     },
     {
       "video_id": "9dOoU_5xxs4",
-      "title": "Interview with Rafael Valera from Buy&Hold | BUY THE DIP PODCAST",
+      "title": "Entrevista a Rafael Valera Buy&Hold | BUY THE DIP PODCAST",
       "published_date": null,
       "duration_seconds": 5330,
       "view_count": 899,
@@ -642,7 +642,7 @@
     },
     {
       "video_id": "ARpaMofMpx0",
-      "title": "Nuestra CARTERA de INVERSIÓN en AGOSTO | BUY THE DIP PODCAST",
+      "title": "Our Investment Portfolio in August | Buy the Dip Podcast",
       "published_date": null,
       "duration_seconds": 3161,
       "view_count": 1300,
@@ -702,7 +702,7 @@
     },
     {
       "video_id": "BVzSC7RRoJE",
-      "title": "NIKE explota en BOLSA - ¿BULL market en los METALES?",
+      "title": "Nike explodes on the stock market - bull market in metals?",
       "published_date": null,
       "duration_seconds": 923,
       "view_count": 410,
@@ -846,7 +846,7 @@
     },
     {
       "video_id": "EBf4zbAkQoc",
-      "title": "TODO el MUNDO está ganando DINERO con el ORO",
+      "title": "EVERYONE is making MONEY with GOLD",
       "published_date": null,
       "duration_seconds": 819,
       "view_count": 451,
@@ -894,7 +894,7 @@
     },
     {
       "video_id": "GEkJ5Mvxw9Q",
-      "title": "¿Vamos hacia La PEOR RECESIÓN desde 2008? con Diego Puertas  | BUY THE DIP PODCAST",
+      "title": "Are we heading toward the worst recession since 2008? with Diego Puertas | BUY THE DIP PODCAST",
       "published_date": null,
       "duration_seconds": 3324,
       "view_count": 872,
@@ -990,7 +990,7 @@
     },
     {
       "video_id": "HQX9Qdycuus",
-      "title": "¿El MERCADO está PREPARADO? Sube el petróleo y Europa con malas perspectivas",
+      "title": "Is the market ready? Oil prices are rising, and Europe's outlook is bleak.",
       "published_date": null,
       "duration_seconds": 1542,
       "view_count": 626,
@@ -1134,7 +1134,7 @@
     },
     {
       "video_id": "KAPa_BGXkRs",
-      "title": "INVESTING in URANIUM and the COMING BUBBLE | BUY THE DIP PODCAST",
+      "title": "INVERTIR en URANIO y la BURBUJA que viene | BUY THE DIP PODCAST",
       "published_date": null,
       "duration_seconds": 5829,
       "view_count": 3200,
@@ -1398,7 +1398,7 @@
     },
     {
       "video_id": "Nra5bmq3hZ4",
-      "title": "¿Por qué se HUNDE la BOLSA? TRUMP lo vuelve a hacer...",
+      "title": "Why is the stock market collapsing? TRUMP does it again...",
       "published_date": null,
       "duration_seconds": 931,
       "view_count": 1000,
@@ -1829,6 +1829,18 @@
       "url": "https://www.youtube.com/watch?v=UzxdIAOxKCA"
     },
     {
+      "video_id": "V48wYxrKvf4",
+      "title": "EVERYONE IS BEARISH ON OIL... and are they wrong?",
+      "published_date": null,
+      "duration_seconds": 945,
+      "view_count": 999,
+      "surfaces": [
+        "long"
+      ],
+      "format": "long",
+      "url": "https://www.youtube.com/watch?v=V48wYxrKvf4"
+    },
+    {
       "video_id": "V4DT4GakRDM",
       "title": "ESPECIAL 2023 👉 aciertos VS errores de INVERSIÓN  | BUY THE DIP PODCAST",
       "published_date": null,
@@ -1866,7 +1878,7 @@
     },
     {
       "video_id": "Vg0SLGyOpZA",
-      "title": "¿El MERCADO CAMBIA de TENDENCIA? -  American Eagle SE DISPARA en BOLSA",
+      "title": "Is the market changing trends? - American Eagle's stock price soars",
       "published_date": null,
       "duration_seconds": 1220,
       "view_count": 753,
@@ -1962,7 +1974,7 @@
     },
     {
       "video_id": "X9s-_5nz4b4",
-      "title": "El ORO vuela a MÁXIMOS 3500$",
+      "title": "GOLD flies to HIGHS of $3,500",
       "published_date": null,
       "duration_seconds": 721,
       "view_count": 551,
@@ -2334,7 +2346,7 @@
     },
     {
       "video_id": "ckJ0cRRc7DE",
-      "title": "El Lado Oscuro de las Inversiones: Nuestros Fracasos | BUY THE DIP PODCAST",
+      "title": "The Dark Side of Investing: Our Failures | BUY THE DIP PODCAST",
       "published_date": null,
       "duration_seconds": 2516,
       "view_count": 492,
@@ -2358,7 +2370,7 @@
     },
     {
       "video_id": "cz4yrlbAJxE",
-      "title": "AZVALOR's Portfolio 👉 Analyzing INVESTMENT FUNDS | BUY THE DIP PODCAST",
+      "title": "La cartera de AZVALOR 👉 Analizando FONDOS DE INVERSIÓN | BUY THE DIP PODCAST",
       "published_date": null,
       "duration_seconds": 4526,
       "view_count": 5400,
@@ -2658,7 +2670,7 @@
     },
     {
       "video_id": "i9hrrD0WAcM",
-      "title": "Lemonade ($LMND) Tesis de inversión. ¿Invertir en la mejor aseguradora?",
+      "title": "Lemonade ($LMND) Investment Thesis: Investing in the Best Insurance Company?",
       "published_date": null,
       "duration_seconds": 584,
       "view_count": 1400,
@@ -2682,7 +2694,7 @@
     },
     {
       "video_id": "ijwCQJkwDog",
-      "title": "Nuestra CARTERA de INVERSIÓN en OCTUBRE-NOVIEMBRE | BUY THE DIP PODCAST",
+      "title": "Our Investment Portfolio for October-November | Buy the Dip Podcast",
       "published_date": null,
       "duration_seconds": 2883,
       "view_count": 968,
@@ -2742,7 +2754,7 @@
     },
     {
       "video_id": "jf3HWs6bSnQ",
-      "title": "La ENERGÍA, ¿el sector con más OPORTUNIDADES en 2025?",
+      "title": "ENERGY: The Sector with the Most Opportunities in 2025?",
       "published_date": null,
       "duration_seconds": 1129,
       "view_count": 712,
@@ -2826,10 +2838,10 @@
     },
     {
       "video_id": "lsrRumn0OoA",
-      "title": "Is there URANIUM in SPAIN and CAN IT BE EXPLOITED?",
+      "title": "¿Hay URANIO en ESPAÑA y se PUEDE EXPLOTAR?",
       "published_date": null,
       "duration_seconds": 678,
-      "view_count": 432,
+      "view_count": 433,
       "surfaces": [
         "long"
       ],
@@ -2994,7 +3006,7 @@
     },
     {
       "video_id": "o9bXwd98NjE",
-      "title": "¿El FIN de BERKSHIRE HATHAWAY? - Warren Buffett se retira",
+      "title": "Is this the end of Berkshire Hathaway? - Warren Buffett retires",
       "published_date": null,
       "duration_seconds": 651,
       "view_count": 358,
@@ -3153,7 +3165,7 @@
       "title": "BRUTAL CRASH IN BRAZIL: The market plummets due to the elections",
       "published_date": null,
       "duration_seconds": 1003,
-      "view_count": 4100,
+      "view_count": 4200,
       "surfaces": [
         "long"
       ],
@@ -3162,7 +3174,7 @@
     },
     {
       "video_id": "qHzEIugAass",
-      "title": "Nuestra CARTERA de INVERSIÓN en DICIEMBRE | BUY THE DIP PODCAST",
+      "title": "Our Investment Portfolio in December | Buy the Dip Podcast",
       "published_date": null,
       "duration_seconds": 2823,
       "view_count": 1300,
@@ -3186,10 +3198,10 @@
     },
     {
       "video_id": "rAW0FLi__dg",
-      "title": "Por qué La BOLSA DEBE CAER un 50%",
+      "title": "Why the Stock Market Must Fall by 50%",
       "published_date": null,
       "duration_seconds": 890,
-      "view_count": 964,
+      "view_count": 965,
       "surfaces": [
         "long"
       ],
@@ -3270,7 +3282,7 @@
     },
     {
       "video_id": "sc944xFNM00",
-      "title": "Nuestra CARTERA de INVERSIÓN en SEPTIEMBRE | BUY THE DIP PODCAST",
+      "title": "Our September Investment Portfolio | Buy the Dip Podcast",
       "published_date": null,
       "duration_seconds": 2673,
       "view_count": 772,
@@ -3546,7 +3558,7 @@
     },
     {
       "video_id": "xM1ERqrAZKw",
-      "title": "¡EL ORO SE DERRUMBA! ¿Es el FIN DEFINITIVO del Bull Market?",
+      "title": "GOLD IS CRASHING! Is this the DEFINITIVE END of the Bull Market?",
       "published_date": null,
       "duration_seconds": 746,
       "view_count": 1400,
