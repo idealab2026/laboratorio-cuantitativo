@@ -112,6 +112,72 @@ class InactiveRecoveryTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "passive closing"):
             reconcile_classic(state, missing, now=NOW, only_book="macd_12_26_9")
 
+    def test_reviewed_genetic_nine_session_outage_marks_only_no_cash_credit(self):
+        now = datetime(2026, 11, 18, 15, 45, tzinfo=timezone.utc)
+        days = ["2026-11-05", "2026-11-06", "2026-11-09", "2026-11-10",
+                "2026-11-11", "2026-11-12", "2026-11-13", "2026-11-16",
+                "2026-11-17"]
+        self.assertEqual(window("2026-11-04", now, max_sessions=9,
+                                reviewed_genetic_nine=True)[2], days)
+        with self.assertRaisesRegex(ValueError, "bounded"):
+            window("2026-11-04", now)
+        with self.assertRaisesRegex(ValueError, "four to eight"):
+            window("2026-11-04", now, max_sessions=10)
+        with self.assertRaisesRegex(ValueError, "four to eight"):
+            window("2026-11-04", now, max_sessions=9)
+
+        genetic = book()
+        genetic.update(equity=[{"date": "2026-11-04", "nav": 150.}],
+                       paused_missing_quotes={
+                           "since": "2026-11-05", "last_valued_session": "2026-11-04",
+                           "missing_tickers": ["KMB"]},
+                       receivables={"KVUE_KMB_2026-11-02": {
+                           "status": "unsettled", "symbol": "KMB",
+                           "fractional_shares": "0.25", "fixed_cash": "3.50"}})
+        state = {"last_session": "2026-11-17", "books": {
+            "genetic_frozen": genetic,
+            "unrelated": {"trades": [{"preserve": True}]}}}
+        before = copy.deepcopy(state)
+        def observed(day, required):
+            self.assertEqual(required, {"AAA", "KMB"})
+            return {"AAA": bar(day, 105.), "KMB": bar(day, 109.)}, IDENTITY
+
+        with self.assertRaisesRegex(ValueError, "bounded"):
+            reconcile_classic(state, observed, now=now, only_book="genetic_frozen")
+        with self.assertRaisesRegex(ValueError, "genetic_frozen alone"):
+            reconcile_classic(state, observed, now=now, reviewed_genetic_nine=True)
+        got, names = reconcile_classic(
+            state, observed, now=now, only_book="genetic_frozen",
+            reviewed_genetic_nine=True)
+        self.assertEqual(names, ["genetic_frozen"])
+        updated = got["books"]["genetic_frozen"]
+        self.assertEqual(len(updated["equity"]), 10)
+        self.assertEqual([p["date"] for p in updated["equity"][1:]], days)
+        self.assertTrue(all(p["inactive_no_fills"] for p in updated["equity"][1:]))
+        self.assertTrue(all(p["provisional_corporate_valuation"]
+                            for p in updated["equity"][1:]))
+        self.assertEqual(updated["outage_control"]["first_trading_session"], "2026-11-19")
+        self.assertNotIn("paused_missing_quotes", updated)
+        self.assertEqual(updated["pending"], {})
+        self.assertEqual(updated["receivables"]["KVUE_KMB_2026-11-02"]["status"], "unsettled")
+        for field in ("cash", "positions", "trades", "receivables"):
+            self.assertEqual(updated[field], before["books"]["genetic_frozen"][field])
+        self.assertEqual(got["books"]["unrelated"], before["books"]["unrelated"])
+        self.assertEqual(state, before)
+        self.assertFalse(any(evt.get("type") in ("buy", "sell", "fill")
+                             for evt in updated["events"]))
+        again, names = reconcile_classic(
+            got, observed, now=now, only_book="genetic_frozen",
+            reviewed_genetic_nine=True)
+        self.assertEqual((again, names), (got, []))
+
+        def no_kmb(day, required):
+            return {"AAA": bar(day)}, IDENTITY
+        with self.assertRaisesRegex(ValueError, "Missing exact held"):
+            reconcile_classic(state, no_kmb, now=now,
+                              only_book="genetic_frozen", reviewed_genetic_nine=True)
+        self.assertEqual(state, before)
+
     def test_receivable_is_valued_without_becoming_spendable_cash(self):
         held = book()
         held["receivables"] = {"merger": {"status": "unsettled", "symbol": "KMB",

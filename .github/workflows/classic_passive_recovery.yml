@@ -55,18 +55,26 @@ jobs:
       - name: Validate targeted MACD recovery on live frozen state WITHOUT writing
         if: ${{ github.event_name == 'pull_request' }}
         run: python strategy_comparison/inactive_recovery.py --engine classic --phase check --only-classic-book macd_12_26_9
-      # One reviewed push can move only this verified, previously paused MACD
-      # book. Do not reactivate unsettled KVUE/KMB or fake missing intraday fills.
-      - name: Recover IL-013 with observed closed NAV only (never fill)
+      - name: Validate IL-012 exact nine-session replay without writing or buying
+        if: ${{ github.event_name == 'pull_request' }}
+        run: |
+          python strategy_comparison/inactive_recovery.py --engine classic --phase check \
+            --only-classic-book genetic_frozen --reviewed-genetic-nine
+      # First validate every historical quote and entitlement in a dry run.
+      # This branch never changes cash, receivables, positions or trades and
+      # never unlocks the separately guarded forward execution of unsettled KVUE/KMB.
+      - name: Recover IL-013 plus nine IL-012 passive NAV sessions only
         if: github.event_name == 'push'
         run: |
           python strategy_comparison/inactive_recovery.py --engine classic --phase check --only-classic-book macd_12_26_9
+          python strategy_comparison/inactive_recovery.py --engine classic --phase check --only-classic-book genetic_frozen --reviewed-genetic-nine
           python strategy_comparison/inactive_recovery.py --engine classic --phase recover --only-classic-book macd_12_26_9
-      - name: Publish only the verified IL-013 book revision
+          python strategy_comparison/inactive_recovery.py --engine classic --phase recover --only-classic-book genetic_frozen --reviewed-genetic-nine
+      - name: Publish only the verified canonical books (no synthetic fills)
         if: github.event_name == 'push'
         run: |
           python strategy_comparison/publish_state.py \
-            --message "Recover MACD only with immutable passive NAV marks, no fills" \
+            --message "Recover exactly reviewed classic passive NAV, no fills" \
             --path classic_sp500_state
       - name: Dry run recovery without touching paper state
         if: ${{ github.event_name == 'schedule' || github.event_name == 'workflow_dispatch' }}

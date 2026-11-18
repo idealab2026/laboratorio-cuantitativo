@@ -16,10 +16,11 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 MAX_SESSIONS = 4
+GENETIC_NINE_SESSION_BOUND = 9  # Reviewed IL-012 outage 05–17 Nov 2026, never a general limit.
 REVIEWED_PAUSED_WEEKLY = ("arima_return", "lgbm_ranker", "mlp_return")
 
 
-def window(last, now, *, max_sessions=MAX_SESSIONS):
+def window(last, now, *, max_sessions=MAX_SESSIONS, reviewed_genetic_nine=False):
     import pandas_market_calendars as calendars
     if now.tzinfo is None:
         raise ValueError("Recovery clock must be timezone-aware")
@@ -32,8 +33,11 @@ def window(last, now, *, max_sessions=MAX_SESSIONS):
     if not closed or closed[0] != last or not future:
         raise ValueError("Missing closed-session or future-opening boundary")
     days = closed[1:]
-    if type(max_sessions) is not int or not MAX_SESSIONS <= max_sessions <= 8:
-        raise ValueError("Reviewed recovery window must be an integer from four to eight")
+    if not (type(max_sessions) is int and
+            (MAX_SESSIONS <= max_sessions <= 8 or
+             reviewed_genetic_nine is True and max_sessions == GENETIC_NINE_SESSION_BOUND)):
+        raise ValueError("Reviewed recovery window must be an integer from four to eight, "
+                         "except the explicit genetic nine-session review")
     if len(days) > max_sessions:
         raise ValueError("Outage exceeds bounded recovery; explicit review required")
     return closed[-1], future[0], days
@@ -46,12 +50,15 @@ def identity_check(identity):
             raise ValueError("Recovery requires immutable common quote identity")
 
 
-def reconcile_classic(state, loader, *, now, reviews=None, only_book=None):
+def reconcile_classic(state, loader, *, now, reviews=None, only_book=None,
+                      reviewed_genetic_nine=False):
     """Optional exact-book scope prevents an unrelated claim from being mutated."""
     if only_book is not None and (not isinstance(only_book, str) or
                                  only_book not in state["books"]):
         raise ValueError("Unknown classic recovery book")
 
+    if reviewed_genetic_nine and only_book != "genetic_frozen":
+        raise ValueError("Nine-session recovery is authorized for genetic_frozen alone")
     from classic_sp500.corporate_actions import inactive_mark, required_claim_quotes
     updated = copy.deepcopy(state)
     names = []
@@ -61,7 +68,14 @@ def reconcile_classic(state, loader, *, now, reviews=None, only_book=None):
         if not original.get("paused_missing_quotes"):
             continue
         last = original["equity"][-1]["date"]
-        latest, first, days = window(last, now)
+        latest, first, days = window(last, now, max_sessions=(
+            GENETIC_NINE_SESSION_BOUND if reviewed_genetic_nine else MAX_SESSIONS),
+            reviewed_genetic_nine=reviewed_genetic_nine)
+        if reviewed_genetic_nine and days != [
+                "2026-11-05", "2026-11-06", "2026-11-09", "2026-11-10",
+                "2026-11-11", "2026-11-12", "2026-11-13", "2026-11-16",
+                "2026-11-17"]:
+            raise ValueError("Reviewed genetic outage no longer matches 9 dated sessions")
         if latest != state["last_session"] or not days:
             raise ValueError("Classic recovery must reach the current global session")
         book = updated["books"][name]
@@ -195,11 +209,13 @@ def reconcile_weekly_paused(state, loader, *, now):
 
 
 def recover(engine, *, root=ROOT, write=False, now=None, only_book=None,
-            only_paused_weekly=False):
+            only_paused_weekly=False, reviewed_genetic_nine=False):
     if engine != "classic" and only_book is not None:
         raise ValueError("Selective recovery is only supported for classic books")
     if engine != "weekly" and only_paused_weekly:
         raise ValueError("Reviewed paused weekly recovery requires weekly engine")
+    if reviewed_genetic_nine and not (engine == "classic" and only_book == "genetic_frozen"):
+        raise ValueError("Nine-session outage recovery requires the exact IL-012 book")
 
     from market_data.revisions import load_effective
     from timesfm_strategy.run import atomic_write
@@ -261,6 +277,7 @@ def recover(engine, *, root=ROOT, write=False, now=None, only_book=None,
         verify_config(config)
         validate_state(original, config)
         updated, names = reconcile_classic(original, loader, now=now, only_book=only_book,
+            reviewed_genetic_nine=reviewed_genetic_nine,
             reviews=json.loads((root / "market_data/corporate_action_reviews.json").read_text()))
         validate_state(updated, config)
         books = "books"
@@ -304,11 +321,14 @@ def main():
                         help="Recover exactly one paused classic book; untouched peers are invariant")
     parser.add_argument("--only-paused-weekly", action="store_true",
                         help="Audit only three reviewed stale ML books; preserve missed weekly exits")
+    parser.add_argument("--reviewed-genetic-nine", action="store_true",
+                        help="Audit the exact IL-012 05–17 November 2026 outage; NAV only, no fills")
     args = parser.parse_args()
     try:
         print(json.dumps(recover(args.engine, write=args.phase == "recover",
                                  only_book=args.only_classic_book,
-                                 only_paused_weekly=args.only_paused_weekly),
+                                 only_paused_weekly=args.only_paused_weekly,
+                                 reviewed_genetic_nine=args.reviewed_genetic_nine),
                          ensure_ascii=False, sort_keys=True))
         return 0
     except (ValueError, OSError, KeyError, TypeError) as exc:
