@@ -142,3 +142,44 @@ jobs:
           PYTHONPATH=scripts:. python -c 'from forward_ahp_settlement import verify_published; print({"verified_ahp_slots": verify_published()})'
           PYTHONPATH=scripts:. python -c 'from forward_timesfm_settlement import verify_published; print({"verified_timesfm_eur_slots": verify_published()})'
           PYTHONPATH=scripts:. python -c 'from forward_genetic_settlement import verify_published; print({"verified_genetic_slots": verify_published()})'
+
+      # An already-running shared clock may hold a bounded watcher to reach
+      # the true Friday/daily close. GitHub cron was observed arriving after
+      # 16:00 ET: later cron alone does NOT guarantee an observed sell.
+      # This is the SAME operator and same canonical books, not a second engine.
+      - name: Rendezvous at real market preclose within the existing scheduled job
+        if: github.event_name == 'schedule'
+        id: preclose_watch
+        env:
+          XDG_CACHE_HOME: ${{ runner.temp }}/midas-yfinance-${{ github.run_id }}-${{ github.run_attempt }}
+        run: |
+          set -euo pipefail
+          PYTHONPATH=scripts:. python scripts/operational_clock.py --stage observe --watch-preclose
+
+      - name: Publish only a genuinely observed preclose native settlement
+        if: steps.preclose_watch.outputs.observed == 'true'
+        run: |
+          python strategy_comparison/publish_state.py \
+            --message "Record MIDAS observed paper preclose settlement" \
+            --path data/operational-clock.json \
+            --path forward_open_state/global-lock.json \
+            --path capital_cycle_state/ledger.json \
+            --path buy_the_dip_state/ledger.json \
+            --path weekly_ml_daily_state/ledger.json \
+            --path classic_sp500_state/ledger.json \
+            --path tfg_state/ledger.json \
+            --path timesfm_state/ledger.json \
+            --path timesfm_daily_state/ledger.json \
+            --path AGENTE/genetic_invest_agent/registro_historico/diario_portfolio_forward_2026-10-12.json
+
+      - name: Reconcile frozen native fills following preclose publication
+        if: steps.preclose_watch.outputs.observed == 'true'
+        run: |
+          git fetch origin main
+          PYTHONPATH=scripts:. python -c 'from operational_clock import verify_published_lock; print(verify_published_lock())'
+          PYTHONPATH=scripts:. python scripts/native_forward_settlement.py --verify-published
+          PYTHONPATH=scripts:. python -c 'from forward_weekly_ml_settlement import verify_published; print({"verified_weekly_ml_slots": verify_published()})'
+          PYTHONPATH=scripts:. python -c 'from classic_forward_settlement import verify_published; print({"verified_classic_slots": verify_published()})'
+          PYTHONPATH=scripts:. python -c 'from forward_ahp_settlement import verify_published; print({"verified_ahp_slots": verify_published()})'
+          PYTHONPATH=scripts:. python -c 'from forward_timesfm_settlement import verify_published; print({"verified_timesfm_eur_slots": verify_published()})'
+          PYTHONPATH=scripts:. python -c 'from forward_genetic_settlement import verify_published; print({"verified_genetic_slots": verify_published()})'

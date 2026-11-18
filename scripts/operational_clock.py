@@ -14,6 +14,7 @@ import os
 import sqlite3
 import subprocess
 import sys
+import time
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
 from forward_open_il039 import digest, market_window, quotes_yahoo, timestamp
@@ -25,6 +26,11 @@ ACTIVE = tuple(f"IL-{n:03d}" for n in (*range(10, 28), *range(37, 45)))
 MAX_SECONDS = 180
 LIMIT = 250
 PREOPEN_HORIZON = timedelta(hours=4)  # early redundant scheduler attempts, never post-open
+# Bounded same-job close rendezvous: no new runner, ledger or retrospective fill.
+WATCH_HORIZON = timedelta(minutes=35)
+LATEST_ARM = timedelta(minutes=6)
+TARGET_BEFORE_CLOSE = timedelta(minutes=4, seconds=30)
+MAX_SLEEP_SECONDS = 35 * 60
 
 
 def _repo_commit():
@@ -457,12 +463,107 @@ def quote_batch(tickers, now, market):
     return result
 
 
+def preclose_target(now, market, lock):
+    """Return exchange-local rendezvous datetime or None; NEVER derive a fill."""
+    if now.tzinfo is None or not market or not isinstance(lock, dict):
+        return None
+    close = market["close"]
+    if not (market["open"] < close - WATCH_HORIZON <= now
+            < close - LATEST_ARM and lock.get("session") == market["session"]):
+        return None
+
+    from tfg_ahp.data import is_week_end_session
+    friday = is_week_end_session(market["session"])
+    lanes = lock.get("slots", {})
+    watch = []
+    for slot, lane in lanes.items():
+        if not isinstance(lane, dict) or not lane.get("monitor_tickers"):
+            continue
+        if not (lane.get("execution_ready") or lane.get("exit_only_ready")):
+            continue
+        weekly = slot in {f"IL-{i:03d}" for i in range(19, 28)}
+        if (weekly and friday or slot in ("IL-037", "IL-042")
+                or slot == "IL-040" and friday):
+            watch.append(slot)
+    if not watch:
+        return None
+    return close - TARGET_BEFORE_CLOSE
+
+
+def _preclose_report(status, **extra):
+    data = {"mode": "same_shared_clock_preclose_rendezvous",
+            "status": status, **extra}
+    print(json.dumps(data, sort_keys=True), flush=True)
+    summary = os.environ.get("GITHUB_STEP_SUMMARY")
+    if summary:
+        with open(summary, "a", encoding="utf8") as fh:
+            fh.write(f"\nMIDAS preclose guard: **{status}** — "
+                     f"session={extra.get('session', 'N/D')}\n")
+
+
+def run_preclose_watch(lockpath, publicpath):
+    now = datetime.now(UTC)
+    market = market_window(now)
+    if not market:
+        _preclose_report("exchange_closed_no_watch")
+        return 0
+    if not lockpath.is_file():
+        _preclose_report("no_preopen_lock_no_watch", session=market["session"])
+        return 0
+    lock = _read(lockpath)
+    # Ignore a prior day's lock when a delayed job finally starts. No late
+    # rebuilding, re-dating or reuse of somebody else's execution plan.
+    if lock.get("session") != market["session"]:
+        _preclose_report("stale_lock_no_watch", session=market["session"])
+        return 0
+    verify_prepared_lock(lock, market)
+    target = preclose_target(now, market, lock)
+    if target is None:
+        _preclose_report("outside_watch_window_or_no_close_orders", session=market["session"])
+        return 0
+    seconds = (target - now).total_seconds()
+    if not 0 < seconds <= MAX_SLEEP_SECONDS:
+        raise ValueError("Invalid bounded wait duration for exchange close")
+    _preclose_report("armed", session=market["session"], wait_seconds=round(seconds),
+            target_at_utc=target.isoformat())
+    # One sleeping GitHub job is more reliable than a 15:59 cron that may
+    # not start until 16:30. Does not poll, consume market data, or trade.
+    time.sleep(seconds)
+    observed = datetime.now(UTC)
+    new_market = market_window(observed)
+    if (not new_market or new_market["session"] != market["session"]
+            or not target <= observed < market["close"]):
+        _preclose_report("wake_missed_market_close_no_fill", session=market["session"])
+        return 2
+    # The true quote timestamp is collected anew by the original operator.
+    # Never reuse a price from the earlier 15:31 observation.
+    result = main(["--stage", "observe", "--lock", str(lockpath),
+                           "--public", str(publicpath)])
+    if result != 0:
+        _preclose_report("native_observation_refused", session=market["session"],
+                operator_result=result)
+        return result
+    output = os.environ.get("GITHUB_OUTPUT")
+    if output:
+        with open(output, "a", encoding="utf8") as fh:
+            fh.write("observed=true\n")
+    _preclose_report("completed_operator_attempt", session=market["session"],
+            sampled_at_utc=observed.isoformat())
+    return 0
+
+
 def main(argv=None):
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--stage", choices=("auto", "prepare", "observe"), required=True)
+    parser.add_argument("--watch-preclose", action="store_true",
+                        help="Reuse the same already-scheduled clock near real NYSE close")
     parser.add_argument("--lock", type=Path, default=ROOT / "forward_open_state/global-lock.json")
     parser.add_argument("--public", type=Path, default=ROOT / "data/operational-clock.json")
     args = parser.parse_args(argv)
+    if args.watch_preclose:
+        if args.stage != "observe":
+            raise ValueError("Preclose watcher must invoke an observed session only")
+        return run_preclose_watch(args.lock, args.public)
     now = datetime.now(UTC)
     market = market_window(now)
     if not market:
