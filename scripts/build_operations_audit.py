@@ -251,6 +251,58 @@ def normalize_ledger(ledger, source):
                           trade.get("quantity",trade.get("shares")),reason,basis,
                           source+"/closed_trade",trade.get("signal_date"),
                           fee=trade.get("buy_commission" if side=="buy" else "sell_commission"))
+    # AHP native paper fills are kept in forward_book, intentionally separate
+    # from the historical TFG equity/trades. The public operations audit must
+    # consume their actual observed journal, not guess trades from NAV changes.
+    if source == "tfg_state/ledger.json":
+        forward = ledger.get("forward_book")
+        if isinstance(forward, dict) and forward.get("status") in ("open", "closed"):
+            observed = forward.get("operations")
+            if not isinstance(observed, list):
+                raise ValueError("AHP forward operations journal missing")
+            if forward["status"] == "closed":
+                closed = forward.get("closed_trade")
+                if (not isinstance(closed, dict)
+                        or closed.get("status") != "settled_forward_observed"
+                        or closed.get("source_evidence") != observed):
+                    raise ValueError("AHP closed trade and native observations disagree")
+            for fill in observed:
+                if not isinstance(fill, dict) or fill.get("execution") != "forward_observed_paper":
+                    continue
+                day, ticker, side = date(fill.get("date")), clean_ticker(fill.get("ticker")), fill.get("side")
+                price, qty = number(fill.get("price")), number(fill.get("quantity"))
+                fee = fill.get("fee")
+                if (not day or not ticker or side not in SIDES or
+                        price is None or qty is None or
+                        not isinstance(fee, (int, float)) or isinstance(fee, bool)
+                        or not 0 <= fee < 10**8 or
+                        not isinstance(fill.get("idempotency_key"), str)
+                        or not fill["idempotency_key"].startswith("IL-037:" + day + ":")
+                        or not isinstance(fill.get("lock_sha256"), str)
+                        or len(fill["lock_sha256"]) != 64
+                        or not all(c in "0123456789abcdef" for c in fill["lock_sha256"])
+                        or not isinstance(fill.get("source_commit"), str)
+                        or len(fill["source_commit"]) != 40
+                        or not all(c in "0123456789abcdef" for c in fill["source_commit"])
+                        or not all(isinstance(fill.get(field), str) and fill[field].endswith("Z")
+                                   for field in ("quote_at_utc", "observed_at_utc"))):
+                    raise ValueError("AHP forward fill lacks independently recorded provenance")
+                match = next((x for x in out[day] if x["ticker"] == ticker and x["side"] == side), None)
+                if match:
+                    if (match["price"] != price or match["quantity"] != qty or
+                            match.get("fee") != fee):
+                        raise ValueError("Conflicting historical and observed AHP transaction")
+                    continue
+                exit_reason = (forward.get("closed_trade") or {}).get("exit_reason")
+                reason = ("Compra paper observada desde la selección AHP congelada."
+                          if side == "buy" else
+                          "Venta paper observada; motivo de salida: " +
+                          ("stop global en próxima apertura" if exit_reason == "portfolio_stop_next_open"
+                           else "cierre semanal observado" if exit_reason == "week_end_observed_preclose"
+                           else "motivo no identificado") + ".")
+                add_event(out, day, side, ticker, price, qty, reason, "recorded",
+                          source + "/forward_book/operations", forward.get("signal_date"),
+                          price_basis="book_fill", fee=fee)
     return out
 
 
