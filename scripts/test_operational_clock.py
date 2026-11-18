@@ -15,6 +15,7 @@ ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "scripts"))
 import operational_clock
 from operational_clock import (preclose_target, run_preclose_watch,
+                               open_rendezvous_target, run_open_watch,
                                ACTIVE, clock_plan, status_report, verify_lock,
                                verify_prepared_lock, stage_for_actual_time,
                                main, budgeted_quote_targets, quote_batch, LIMIT, record_opening_quote_diagnostic)
@@ -483,6 +484,115 @@ class PrecloseWatcherTests(unittest.TestCase):
         self.assertFalse(output)
         self.assertEqual(len(slept), 1)
         self.assertFalse(called)
+
+
+class OpeningRendezvousTests(unittest.TestCase):
+    """Fallback for delayed/dropped scheduled 09:31 ET opening workflows."""
+
+    def setUp(self):
+        self.open = datetime(2026, 11, 18, 14, 30, tzinfo=UTC)
+        self.market = {
+            "session": "2026-11-18", "previous": "2026-11-17",
+            "open": self.open, "close": self.open + timedelta(hours=6, minutes=30)
+        }
+        self.lock = {"session": "2026-11-18", "slots": {
+            "IL-011": {"execution_ready": True, "orders": [{"ticker":"AES"}],
+                       "monitor_tickers": ["CZR"]},
+            "IL-023": {"execution_ready": False, "exit_only_ready": True,
+                       "orders": [], "monitor_tickers": ["AAPL"]},
+        }}
+        self.start = self.open - timedelta(minutes=64)
+        self.target = self.open + timedelta(minutes=4)
+
+    def test_ordered_immutable_preopen_lock_arms_one_fresh_opening_quote(self):
+        self.assertEqual(open_rendezvous_target(self.start, self.market, self.lock),
+                         self.target)
+        self.assertEqual(open_rendezvous_target(
+            self.open - timedelta(minutes=79), self.market, self.lock), self.target)
+        self.assertIsNone(open_rendezvous_target(
+            self.open - timedelta(minutes=81), self.market, self.lock))
+        self.assertIsNone(open_rendezvous_target(
+            self.open - timedelta(minutes=4), self.market, self.lock))
+
+    def test_stale_source_and_ineligible_lanes_never_create_new_open_plan(self):
+        stale = {**self.lock, "session": "2026-11-17"}
+        self.assertIsNone(open_rendezvous_target(self.start, self.market, stale))
+        paused = {"session": "2026-11-18", "slots": {
+            "IL-023": {"execution_ready": False, "exit_only_ready": True,
+                       "orders": [], "monitor_tickers": ["AAPL"]}}}
+        self.assertIsNone(open_rendezvous_target(self.start, self.market, paused))
+        self.assertIsNone(open_rendezvous_target(
+            self.start.replace(tzinfo=None), self.market, self.lock))
+
+    def test_real_half_day_open_still_has_first_and_last_causal_window(self):
+        # The opening target follows XNYS official calendar, not an
+        # unverified fixed Madrid timestamp or close-time backfill.
+        half = {"session":"2026-11-27", "previous":"2026-11-25",
+                "open":datetime(2026,11,27,14,30,tzinfo=UTC),
+                "close":datetime(2026,11,27,18,0,tzinfo=UTC)}
+        frozen={**self.lock, "session":"2026-11-27"}
+        self.assertEqual(open_rendezvous_target(
+            half["open"]-timedelta(minutes=64), half, frozen),
+            half["open"]+timedelta(minutes=4))
+
+    def test_wakeup_observes_once_and_only_from_fresh_original_operator(self):
+        class Clock(datetime):
+            values=iter((self.start, self.target+timedelta(seconds=3)))
+            @classmethod
+            def now(cls, tz=None):
+                return next(cls.values)
+        with tempfile.TemporaryDirectory() as temp:
+            root=Path(temp)
+            lockpath=root/"lock.json"; lockpath.write_text("{}",encoding="utf8")
+            public=root/"public.json"
+            output=root/"output"
+            with patch.object(operational_clock,"datetime",Clock), \
+                 patch.object(operational_clock,"market_window",
+                              return_value=self.market), \
+                 patch.object(operational_clock,"_read",return_value=self.lock), \
+                 patch.object(operational_clock,"verify_prepared_lock") as verify, \
+                 patch.object(operational_clock.time,"sleep") as slept, \
+                 patch.object(operational_clock,"main",return_value=0) as observed, \
+                 patch.dict(operational_clock.os.environ,{"GITHUB_OUTPUT":str(output)}):
+                result=run_open_watch(lockpath,public)
+            self.assertEqual(result,0)
+            verify.assert_called_once()
+            self.assertAlmostEqual(slept.call_args.args[0],
+                                   (self.target-self.start).total_seconds())
+            self.assertEqual(observed.call_count,1)
+            self.assertEqual(observed.call_args.args[0][1],"observe")
+            self.assertIn("--lock",observed.call_args.args[0])
+            self.assertEqual(output.read_text(),"observed=true\n")
+
+    def test_late_wakeup_refuses_fill_and_never_emits_publication_signal(self):
+        class Clock(datetime):
+            values=iter((self.start, self.open+timedelta(minutes=21)))
+            @classmethod
+            def now(cls, tz=None):
+                return next(cls.values)
+        with tempfile.TemporaryDirectory() as temp:
+            root=Path(temp)
+            path=root/"lock.json";path.write_text("{}",encoding="utf8")
+            output=root/"output"
+            with patch.object(operational_clock,"datetime",Clock), \
+                 patch.object(operational_clock,"market_window",
+                              return_value=self.market), \
+                 patch.object(operational_clock,"_read",return_value=self.lock), \
+                 patch.object(operational_clock,"verify_prepared_lock"), \
+                 patch.object(operational_clock.time,"sleep"), \
+                 patch.object(operational_clock,"main") as observed, \
+                 patch.dict(operational_clock.os.environ,{"GITHUB_OUTPUT":str(output)}):
+                result=run_open_watch(path,root/"public.json")
+            self.assertEqual(result,2)
+            observed.assert_not_called()
+            self.assertFalse(output.exists())
+
+    def test_production_flow_requires_real_observed_flag_for_second_commit(self):
+        workflow=(ROOT/".github/workflows/operational-clock.yml").read_text()
+        self.assertIn("--stage observe --watch-open",workflow)
+        self.assertIn("id: open_watch",workflow)
+        self.assertIn("steps.open_watch.outputs.observed == 'true'",workflow)
+        self.assertIn("Verify native fills survived publication",workflow)
 
 
 if __name__ == "__main__":

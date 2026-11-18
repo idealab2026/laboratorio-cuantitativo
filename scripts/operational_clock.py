@@ -31,6 +31,13 @@ WATCH_HORIZON = timedelta(minutes=35)
 LATEST_ARM = timedelta(minutes=6)
 TARGET_BEFORE_CLOSE = timedelta(minutes=4, seconds=30)
 MAX_SLEEP_SECONDS = 35 * 60
+# Cron starts were absent before the 2026-11-18 opening. A single preopen
+# job may stay alive until a fresh first observation; no retroactive fill.
+OPEN_WATCH_HORIZON = timedelta(minutes=80)
+OPEN_WATCH_LATEST_ARM = timedelta(minutes=5)
+OPEN_OBSERVE_OFFSET = timedelta(minutes=4)
+OPEN_WATCH_LATEST_WAKE = timedelta(minutes=20)
+OPEN_MAX_SLEEP_SECONDS = 85 * 60
 
 
 def _repo_commit():
@@ -463,6 +470,82 @@ def quote_batch(tickers, now, market):
     return result
 
 
+def open_rendezvous_target(now, market, lock):
+    """Real XNYS opening observation from an already-running preopen job.
+
+    Returns a future time, never a trade price, signal, or revised lock.
+    Shorter than GitHub's 90-minute job timeout including setup/publication.
+    """
+    if now.tzinfo is None or not market or not isinstance(lock, dict):
+        return None
+    opening = market["open"]
+    if not (lock.get("session") == market["session"] and
+            opening - OPEN_WATCH_HORIZON <= now <
+            opening - OPEN_WATCH_LATEST_ARM):
+        return None
+    lanes = lock.get("slots", {})
+    if not isinstance(lanes, dict) or not any(
+            isinstance(lane, dict) and lane.get("execution_ready")
+            and (lane.get("orders") or lane.get("monitor_tickers"))
+            for lane in lanes.values()):
+        return None
+    return opening + OPEN_OBSERVE_OFFSET
+
+
+def run_open_watch(lockpath, publicpath):
+    """Observe using the ORIGINAL operator, after first lock publication.
+
+    This bounded in-job wait is a fallback for delayed GitHub cron. It
+    never creates an opening plan, never reuses quotes, and never publishes
+    a retroactive order. The workflow handles the sole subsequent commit.
+    """
+    now = datetime.now(UTC)
+    market = market_window(now)
+    if not market:
+        _preclose_report("open_watch_exchange_closed")
+        return 0
+    if not lockpath.is_file():
+        _preclose_report("open_watch_no_frozen_lock", session=market["session"])
+        return 0
+    lock = _read(lockpath)
+    if lock.get("session") != market["session"]:
+        _preclose_report("open_watch_other_session", session=market["session"])
+        return 0
+    verify_prepared_lock(lock, market)
+    target = open_rendezvous_target(now, market, lock)
+    if target is None:
+        _preclose_report("open_watch_outside_window_or_no_orders", session=market["session"])
+        return 0
+    seconds = (target - now).total_seconds()
+    if not 0 < seconds <= OPEN_MAX_SLEEP_SECONDS:
+        raise ValueError("Invalid bounded wait for NYSE opening")
+    _preclose_report("open_watch_armed", session=market["session"],
+                     wait_seconds=round(seconds), target_at_utc=target.isoformat())
+    time.sleep(seconds)
+    observed = datetime.now(UTC)
+    market_at_wake = market_window(observed)
+    if (not market_at_wake or market_at_wake["session"] != market["session"] or
+            not target <= observed <= market["open"] + OPEN_WATCH_LATEST_WAKE or
+            observed >= market["close"]):
+        _preclose_report("open_watch_woke_too_late_no_fill", session=market["session"])
+        return 2
+    # Fresh quote batch; native settlers validate exact frozen plan,
+    # <=180s quote age, cash/position match, and individual order cutoff.
+    result = main(["--stage", "observe", "--lock", str(lockpath),
+                   "--public", str(publicpath)])
+    if result != 0:
+        _preclose_report("open_watch_operator_refused", session=market["session"],
+                         result=result)
+        return result
+    out = os.environ.get("GITHUB_OUTPUT")
+    if out:
+        with open(out, "a", encoding="utf8") as fh:
+            fh.write("observed=true\n")
+    _preclose_report("open_watch_observed_pending_native_publication",
+                     session=market["session"], timestamp=timestamp(observed))
+    return 0
+
+
 def preclose_target(now, market, lock):
     """Return exchange-local rendezvous datetime or None; NEVER derive a fill."""
     if now.tzinfo is None or not market or not isinstance(lock, dict):
@@ -557,9 +640,15 @@ def main(argv=None):
     parser.add_argument("--stage", choices=("auto", "prepare", "observe"), required=True)
     parser.add_argument("--watch-preclose", action="store_true",
                         help="Reuse the same already-scheduled clock near real NYSE close")
+    parser.add_argument("--watch-open", action="store_true",
+                        help="Bounded opening observation inside an existing preopen job")
     parser.add_argument("--lock", type=Path, default=ROOT / "forward_open_state/global-lock.json")
     parser.add_argument("--public", type=Path, default=ROOT / "data/operational-clock.json")
     args = parser.parse_args(argv)
+    if args.watch_open:
+        if args.stage != "observe" or args.watch_preclose:
+            raise ValueError("Opening watcher requires observe stage only")
+        return run_open_watch(args.lock, args.public)
     if args.watch_preclose:
         if args.stage != "observe":
             raise ValueError("Preclose watcher must invoke an observed session only")
