@@ -117,11 +117,14 @@ class InactiveRecoveryTests(unittest.TestCase):
         days = ["2026-11-05", "2026-11-06", "2026-11-09", "2026-11-10",
                 "2026-11-11", "2026-11-12", "2026-11-13", "2026-11-16",
                 "2026-11-17"]
-        self.assertEqual(window("2026-11-04", now, max_sessions=9)[2], days)
+        self.assertEqual(window("2026-11-04", now, max_sessions=9,
+                                reviewed_genetic_nine=True)[2], days)
         with self.assertRaisesRegex(ValueError, "bounded"):
             window("2026-11-04", now)
-        with self.assertRaisesRegex(ValueError, "bound"):
+        with self.assertRaisesRegex(ValueError, "four to eight"):
             window("2026-11-04", now, max_sessions=10)
+        with self.assertRaisesRegex(ValueError, "four to eight"):
+            window("2026-11-04", now, max_sessions=9)
 
         genetic = book()
         genetic.update(equity=[{"date": "2026-11-04", "nav": 150.}],
