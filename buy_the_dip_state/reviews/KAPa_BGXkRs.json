@@ -1,0 +1,503 @@
+{
+  "schema_version": 1,
+  "status": "machine_first_pass",
+  "reviewed_at_utc": "2026-11-18T14:54:04.695903+00:00",
+  "source_identity": "Buy The Dip YouTube channel",
+  "transport": {
+    "kind": "official_podcast_mirror",
+    "provider": "iVoox",
+    "guid": "https://www.ivoox.com/123022185",
+    "published_date": "2024-01-23",
+    "youtube_video_id": "KAPa_BGXkRs",
+    "match_score": 1.0,
+    "audio_bytes_processed_transiently": 46716177
+  },
+  "models": {
+    "asr": {
+      "language": "es",
+      "language_probability": 1.0,
+      "duration_seconds": 5839.4645,
+      "word_count": 15668,
+      "segment_count": 2616,
+      "model": "small"
+    },
+    "semantic": {
+      "repo": "Qwen/Qwen3-4B-GGUF",
+      "file": "Qwen3-4B-Q4_K_M.gguf"
+    }
+  },
+  "metadata": {
+    "video_id": "KAPa_BGXkRs",
+    "youtube_url": "https://www.youtube.com/watch?v=KAPa_BGXkRs",
+    "title": "INVERTIR en URANIO y la BURBUJA que viene | BUY THE DIP PODCAST",
+    "category": "sector_theme",
+    "guest_likely": false,
+    "podcast_guid": "https://www.ivoox.com/123022185",
+    "published_date": "2024-01-23",
+    "source": "official_podcast_mirror",
+    "match_score": 1.0
+  },
+  "analysis": {
+    "episode_summary": "El episodio analiza la estrategia de inversión en uranio, destacando su ciclo de precios marcado por bull market en 2008, caída tras la crisis financiera, colapso en 2011 tras Fukushima, y recuperación actual por el renacimiento nuclear. Se discute la tesis de inversión publicada en 2020, con un aumento del precio del uranio de 20-30 dólares por libra en 2019 a superar los 100 dólares en 2023, multiplicándose por 4-5 veces. Se analizan proyectos mineros como Denison Mines, con activos en Azabasca con altas concentraciones de uranio, y se mencionan proyectos como Phoenix, Gryphon y Waterbury Lake con múltiplos de valoración. Se aborda la posibilidad de una burbuja especulativa en el mercado del uranio, con riesgos de sobrevaloración y volatilidad. Se destacan empresas con alta calidad, como una empresa de defensa con márgenes altos, visibilidad a largo plazo y un management sostenible, y se sugiere una estrategia de inversión en empresas de calidad con proyecciones de crecimiento estable. Se mencionan desafíos operativos, limitaciones de producción y riesgos de sobrevaloración, aunque se reconoce la posibilidad de un nuevo auge especulativo. Se sugiere revisar oportunidades en otros sectores, como el de oficinas médicas, aunque no se ha realizado un análisis detallado.",
+    "process": {
+      "idea_generation": [],
+      "quality": [],
+      "balance_sheet": [],
+      "valuation": [
+        "El precio del uranio ha subido de 50 a 106 dólares, duplicándose, pero el sector no ha logrado recoger la fuerte subida del 2021, lo que sugiere que el mercado no está completamente alineado con los fundamentales.",
+        "Se menciona que Denison Mines tiene activos en Azabasca, Canadá, con concentraciones de uranio del 11,4%, una de las más altas del mundo, lo que sugiere un valor alto para su empresa.",
+        "El proyecto Phoenix se valora a 1.500 millones de dólares con un múltiplo de 0.7, mientras que Gryphon se valora a 1.000 millones con un múltiplo de 0.5, y Waterbury Lake a 110 millones con un múltiplo de 0.3."
+      ],
+      "sizing": [
+        "La empresa tiene un programa de 30 años de construcción de submarinos y portaaviones nucleares, con un gasto anual de 26-28 billones de dólares en el sector de defensa."
+      ],
+      "add_hold": [],
+      "exit": [
+        "Se menciona que la empresa tiene una proyección de valor futuro de 187-246 dólares por acción en 15 años, lo que sugiere un retorno de 6.8-7.9% anual."
+      ],
+      "risk": [
+        "Se señala que las grandes empresas del sector, como Kazatomprom, enfrentan retos operativos, lo que limita su capacidad para aumentar la producción y afecta la oferta en el mercado.",
+        "La valoración se basa en un escenario especulativo donde el uranio podría subir a 125 dólares, lo que implica un riesgo elevado de sobrevaloración.",
+        "Se alerta sobre la volatilidad del mercado uranio y la posibilidad de que los inversores se equilibren su cartera ante un posible colapso especulativo."
+      ],
+      "technical": [
+        "Se menciona que el proyecto Next Gen de Denison es un activo sin desarrollar con un alto potencial, pero requiere tiempo y financiación para convertirse en producción real."
+      ],
+      "management": [
+        "Se critica la gestión de Nexian por su falta de enfoque real en el sector, lo que sugiere que su participación en la industria no está alineada con sus objetivos reales."
+      ],
+      "mistakes": [
+        "Se reconoce que existen riesgos y que no hay alternativas claras, lo que podría afectar la estrategia de inversión."
+      ]
+    },
+    "candidate_rules": [
+      {
+        "rule": "paráfrasis compacta",
+        "scope": "hosts|uncertain_or_guest",
+        "confidence": 0.0,
+        "evidence_timestamps": [],
+        "automation_proxy": "variable/cálculo posible o null",
+        "cross_video_confirmation_required": true
+      }
+    ],
+    "contradictions_or_uncertainties": [],
+    "named_examples": [],
+    "automation_readiness": "medium"
+  },
+  "chunk_evidence": [
+    {
+      "chunk": 1,
+      "evidence": [
+        {
+          "stage": "valuation",
+          "paraphrase": "El precio del uranio ha subido significativamente desde los 20-30 dólares por libra en 2019 hasta superar los 100 dólares en 2023, multiplicándose por 4-5 veces.",
+          "timestamp": "00:07:12",
+          "scope": "hosts",
+          "confidence": 0.9,
+          "automation_hint": "proxy observable"
+        },
+        {
+          "stage": "cycle_macro",
+          "paraphrase": "El sector del uranio es cíclico, con un bull market en 2008, una caída tras la crisis financiera de 2008, un colapso en 2011 tras el incidente de Fukushima, y una recuperación actual por el renacimiento nuclear.",
+          "timestamp": "00:07:33",
+          "scope": "hosts",
+          "confidence": 0.8,
+          "automation_hint": "proxy observable"
+        },
+        {
+          "stage": "entry",
+          "paraphrase": "La tesis de inversión en uranio fue publicada en 2020, con perspectivas para 2020, y ha sido revisada y actualizada con análisis de mercado y evolución del precio.",
+          "timestamp": "00:07:38",
+          "scope": "hosts",
+          "confidence": 0.7,
+          "automation_hint": "proxy observable"
+        }
+      ],
+      "named_examples": [],
+      "chunk_summary": "El análisis del uranio muestra un ciclo de precios marcado por bull market en 2008, caída tras la crisis financiera, colapso en 2011 tras Fukushima, y actual recuperación por el renacimiento nuclear. La tesis de inversión publicada en 2020 ha sido revisada y actualizada, con un aumento del precio del uranio de 20-30 dólares por libra en 2019 a superar los 100 dólares en 2023, multiplicándose por 4-5 veces."
+    },
+    {
+      "chunk": 2,
+      "evidence": [
+        {
+          "stage": "valuation",
+          "paraphrase": "El precio del uranio ha subido de 50 a 106 dólares, duplicándose, pero el sector no ha logrado recoger la fuerte subida del 2021, lo que sugiere que el mercado no está completamente alineado con los fundamentales.",
+          "timestamp": "00:15:01",
+          "scope": "uncertain_or_guest",
+          "confidence": 0.0,
+          "automation_hint": "proxy observable"
+        },
+        {
+          "stage": "cycle_macro",
+          "paraphrase": "El uranio ha experimentado un bull market en 2021, alcanzando 60 dólares, seguido de una consolidación hasta 2023, donde el precio se duplicó a 106 dólares, pero el interés en el sector ha disminuido, reflejando un deseo de especulación más moderado.",
+          "timestamp": "00:15:01",
+          "scope": "uncertain_or_guest",
+          "confidence": 0.0,
+          "automation_hint": "proxy observable"
+        },
+        {
+          "stage": "entry",
+          "paraphrase": "El análisis sugiere que el precio del uranio podría seguir subiendo, alcanzando niveles históricos, pero el mercado no refleja una especulación tan intensa como en 2007, lo que indica que la estrategia de inversión debe considerar la posibilidad de un nuevo auge especulativo.",
+          "timestamp": "00:19:30",
+          "scope": "uncertain_or_guest",
+          "confidence": 0.0,
+          "automation_hint": "proxy observable"
+        }
+      ],
+      "named_examples": [],
+      "chunk_summary": "El fragmento analiza el precio del uranio, su evolución desde 2021 hasta 2023, y discute la posibilidad de un nuevo auge especulativo. Se menciona que el precio ha duplicado su valor, pero el sector no ha logrado recoger la subida del 2021, lo que sugiere que el mercado no está alineado con los fundamentales. Se compara con el bull market de 2007, donde el interés fue más intenso, y se sugiere que la estrategia de inversión debe considerar la posibilidad de un nuevo auge especulativo, aunque con un nivel de especulación más moderado que en 2007."
+    },
+    {
+      "chunk": 3,
+      "evidence": [
+        {
+          "stage": "entry",
+          "paraphrase": "El análisis señala que el sector de uranio tiene un alto potencial de especulación debido a su tamaño reducido y la restricción de la oferta, lo que podría generar una explosión en la especulación.",
+          "timestamp": "00:20:30",
+          "scope": "hosts",
+          "confidence": 0.0
+        },
+        {
+          "stage": "valuation",
+          "paraphrase": "Se menciona que la producción de uranio está en aumento, pero no cumple con las demandas mundiales, lo que sugiere un desequilibrio entre oferta y demanda.",
+          "timestamp": "00:21:00",
+          "scope": "hosts",
+          "confidence": 0.0
+        },
+        {
+          "stage": "risk",
+          "paraphrase": "Se señala que las grandes empresas del sector, como Kazatomprom, enfrentan retos operativos, lo que limita su capacidad para aumentar la producción y afecta la oferta en el mercado.",
+          "timestamp": "00:24:00",
+          "scope": "hosts",
+          "confidence": 0.0
+        },
+        {
+          "stage": "technical",
+          "paraphrase": "Se menciona que el proyecto Next Gen de Denison es un activo sin desarrollar con un alto potencial, pero requiere tiempo y financiación para convertirse en producción real.",
+          "timestamp": "00:27:00",
+          "scope": "hosts",
+          "confidence": 0.0
+        },
+        {
+          "stage": "management",
+          "paraphrase": "Se critica la gestión de Nexian por su falta de enfoque real en el sector, lo que sugiere que su participación en la industria no está alineada con sus objetivos reales.",
+          "timestamp": "00:28:40",
+          "scope": "hosts",
+          "confidence": 0.0
+        }
+      ],
+      "named_examples": [],
+      "chunk_summary": "El análisis destaca el potencial de especulación en el sector de uranio debido a su tamaño reducido y la restricción de la oferta, aunque se señalan desafíos operativos y la falta de desarrollo de proyectos clave que podrían equilibrar la oferta y la demanda en el mercado."
+    },
+    {
+      "chunk": 4,
+      "evidence": [
+        {
+          "stage": "valuation",
+          "paraphrase": "El analista menciona que Denison Mines tiene activos en Azabasca, Canadá, con concentraciones de uranio del 11,4%, una de las más altas del mundo, lo que sugiere un valor alto para su empresa.",
+          "timestamp": "00:35:58",
+          "scope": "uncertain_or_guest",
+          "confidence": 0.0,
+          "automation_hint": "proxy observable"
+        },
+        {
+          "stage": "management",
+          "paraphrase": "El analista destaca que Denison Mines tiene un director que le pone 'extremadamente nervioso', lo que podría indicar un riesgo o una falta de confianza en la gestión de la empresa.",
+          "timestamp": "00:30:34",
+          "scope": "hosts",
+          "confidence": 0.0,
+          "automation_hint": "proxy observable"
+        },
+        {
+          "stage": "entry",
+          "paraphrase": "El analista sugiere que el capital tenderá a entrar en empresas de calidad y de tamaño grande, como Denison Mines, debido a su posición en el mercado y su potencial de crecimiento.",
+          "timestamp": "00:31:00",
+          "scope": "hosts",
+          "confidence": 0.0,
+          "automation_hint": "proxy observable"
+        }
+      ],
+      "named_examples": [],
+      "chunk_summary": "El fragmento describe la estrategia de inversión en Denison Mines, destacando su ubicación en Azabasca con altas concentraciones de uranio, la gestión del director, y la posibilidad de entrada de capital en empresas de calidad. Se menciona que el valor de la empresa depende de factores como la concentración de uranio, la gestión y la posición en el mercado."
+    },
+    {
+      "chunk": 5,
+      "evidence": [
+        {
+          "stage": "valuation",
+          "paraphrase": "El proyecto Phoenix se valora a 1.500 millones de dólares con un múltiplo de 0.7, mientras que Gryphon se valora a 1.000 millones con un múltiplo de 0.5, y Waterbury Lake a 110 millones con un múltiplo de 0.3.",
+          "timestamp": "00:45:01",
+          "scope": "hosts",
+          "confidence": 0.9,
+          "automation_hint": "proxy observable"
+        },
+        {
+          "stage": "cycle_macro",
+          "paraphrase": "El uranio está a 106 dólares, con expectativas de subir a 125, lo que podría impulsar la valoración de las empresas mineras a niveles especulativos.",
+          "timestamp": "00:47:41",
+          "scope": "hosts",
+          "confidence": 0.8,
+          "automation_hint": "proxy observable"
+        },
+        {
+          "stage": "risk",
+          "paraphrase": "La valoración se basa en un escenario especulativo donde el uranio podría subir a 125 dólares, lo que implica un riesgo elevado de sobrevaloración.",
+          "timestamp": "00:47:49",
+          "scope": "hosts",
+          "confidence": 0.7,
+          "automation_hint": "proxy observable"
+        }
+      ],
+      "named_examples": [],
+      "chunk_summary": "El análisis de valoración de los proyectos mineros se basa en el precio del uranio y la expectativa de crecimiento especulativo, con múltiplos de valoración que reflejan la posibilidad de una burbuja en el mercado del uranio."
+    },
+    {
+      "chunk": 6,
+      "evidence": [
+        {
+          "stage": "entry",
+          "paraphrase": "El analista argumenta que los cazajos no pueden aumentar su producción de uranio debido a limitaciones técnicas y operativas, lo que genera un déficit estructural en el mercado.",
+          "timestamp": "00:53:01",
+          "scope": "uncertain_or_guest",
+          "confidence": 0.0
+        },
+        {
+          "stage": "valuation",
+          "paraphrase": "El analista sugiere que el precio del uranio está influenciado por la oferta limitada y la demanda creciente, lo que podría llevar a una sobrevaloración de los activos mineros en el corto plazo.",
+          "timestamp": "00:54:35",
+          "scope": "uncertain_or_guest",
+          "confidence": 0.0
+        },
+        {
+          "stage": "risk",
+          "paraphrase": "El analista menciona que la minería enfrenta riesgos operativos y de producción, lo que podría afectar negativamente las proyecciones futuras de la industria del uranio.",
+          "timestamp": "00:54:49",
+          "scope": "uncertain_or_guest",
+          "confidence": 0.0
+        }
+      ],
+      "named_examples": [],
+      "chunk_summary": "El analista discute las limitaciones de producción de los cazajos, el déficit estructural en el mercado de uranio y los riesgos operativos que afectan las proyecciones futuras, sugiriendo una posible sobrevaloración de los activos mineros."
+    },
+    {
+      "chunk": 7,
+      "evidence": [
+        {
+          "stage": "entry",
+          "paraphrase": "El inversor analiza la renovación de contratos de uranio y la demanda de reactores nucleares para identificar oportunidades de inversión.",
+          "timestamp": "00:58:03",
+          "scope": "hosts",
+          "confidence": 0.8,
+          "automation_hint": "proxy observable"
+        },
+        {
+          "stage": "valuation",
+          "paraphrase": "Se menciona la posibilidad de una burbuja especulativa en el mercado de uranio, sugiriendo que los precios podrían subir temporalmente.",
+          "timestamp": "00:59:31",
+          "scope": "hosts",
+          "confidence": 0.7,
+          "automation_hint": "proxy observable"
+        },
+        {
+          "stage": "risk",
+          "paraphrase": "Se alerta sobre la volatilidad del mercado uranio y la posibilidad de que los inversores se equilibren su cartera ante un posible colapso especulativo.",
+          "timestamp": "01:01:03",
+          "scope": "hosts",
+          "confidence": 0.6,
+          "automation_hint": "proxy observable"
+        }
+      ],
+      "named_examples": [],
+      "chunk_summary": "El análisis se centra en la renovación de contratos de uranio, la demanda de reactores nucleares y la posibilidad de una burbuja especulativa. Se destacan las oportunidades de inversión en empresas de calidad, la importancia del crecimiento predictible y las barreras competitivas. Se advierte sobre los riesgos de volatilidad y la necesidad de un enfoque a largo plazo en la inversión."
+    },
+    {
+      "chunk": 8,
+      "evidence": [
+        {
+          "stage": "valuation",
+          "paraphrase": "La empresa tiene márgenes netos del 10% y márgenes tangibles del 100%, con una cuota de mercado del 100% y un ROE superior al 100%.",
+          "timestamp": "01:07:01",
+          "scope": "hosts",
+          "confidence": 0.9,
+          "automation_hint": "proxy observable"
+        },
+        {
+          "stage": "entry",
+          "paraphrase": "La empresa es el único proveedor de combustible nuclear para la US Navy y opera en un sector regulado con barreras de entrada enormes.",
+          "timestamp": "01:07:35",
+          "scope": "hosts",
+          "confidence": 0.8,
+          "automation_hint": "proxy observable"
+        },
+        {
+          "stage": "sizing",
+          "paraphrase": "La empresa tiene un programa de 30 años de construcción de submarinos y portaaviones nucleares, con un gasto anual de 26-28 billones de dólares en el sector de defensa.",
+          "timestamp": "01:14:20",
+          "scope": "hosts",
+          "confidence": 0.7,
+          "automation_hint": "proxy observable"
+        },
+        {
+          "stage": "risk",
+          "paraphrase": "La empresa tiene una visibilidad de ventas a largo plazo, con previsibilidad del crecimiento de ventas durante 30 años, y es resistente a crisis debido a su posición en un sector regulado.",
+          "timestamp": "01:08:55",
+          "scope": "hosts",
+          "confidence": 0.6,
+          "automation_hint": "proxy observable"
+        },
+        {
+          "stage": "management",
+          "paraphrase": "El management de la empresa ha estado comprando acciones y pagando dividendos, lo que sugiere una estrategia de inversión conservadora y sostenible.",
+          "timestamp": "01:08:35",
+          "scope": "hosts",
+          "confidence": 0.5,
+          "automation_hint": "proxy observable"
+        }
+      ],
+      "named_examples": [],
+      "chunk_summary": "El análisis destaca una empresa de defensa con márgenes altos, posición dominante en un sector regulado, visibilidad a largo plazo y un management sostenible, lo que sugiere una estrategia de inversión en una empresa con alta calidad y resistencia a crisis."
+    },
+    {
+      "chunk": 9,
+      "evidence": [
+        {
+          "stage": "valuation",
+          "paraphrase": "El análisis de los contratos a largo plazo de la empresa muestra un crecimiento anualizado del 4-5% entre 2020 y 2030, con un periodo de 2020-2024 con retrasos, pero un resurgimiento en 2025-2030.",
+          "timestamp": "01:16:54",
+          "scope": "hosts",
+          "confidence": 0.9,
+          "automation_hint": "proxy observable"
+        },
+        {
+          "stage": "quality",
+          "paraphrase": "La empresa tiene barreras de entrada extremas debido a la regulación del sector y la exclusividad en servicios nucleares, con un único proveedor y un know-how irreplicable.",
+          "timestamp": "01:17:20",
+          "scope": "hosts",
+          "confidence": 0.8,
+          "automation_hint": "proxy observable"
+        },
+        {
+          "stage": "entry",
+          "paraphrase": "La empresa ha experimentado un crecimiento de ventas del 7% desde 2015, con EBITDA creciendo un 8%, y un ROE de 350% en 2015 que cayó a 100% en 2022, aunque mantuvo un ROE sobre equity de 31% en 2022.",
+          "timestamp": "01:20:12",
+          "scope": "hosts",
+          "confidence": 0.7,
+          "automation_hint": "proxy observable"
+        },
+        {
+          "stage": "risk",
+          "paraphrase": "La empresa tiene un alto nivel de deuda, lo que influye en su ROE, pero con un costo de deuda accesible y capacidad para repagar deuda vencida en 2026, 2028 y 2029.",
+          "timestamp": "01:21:00",
+          "scope": "hosts",
+          "confidence": 0.6,
+          "automation_hint": "proxy observable"
+        },
+        {
+          "stage": "cycle_macro",
+          "paraphrase": "El crecimiento de la empresa se ha visto afectado por headwinds entre 2020-2024, pero se espera un resurgimiento en 2025-2030 con un crecimiento similar al observado entre 2016-2020.",
+          "timestamp": "01:19:14",
+          "scope": "hosts",
+          "confidence": 0.5,
+          "automation_hint": "proxy observable"
+        }
+      ],
+      "named_examples": [],
+      "chunk_summary": "El análisis del fragmento muestra que la empresa tiene contratos a largo plazo con un crecimiento anualizado del 4-5% entre 2020 y 2030, barreras de entrada extremas debido a la regulación y exclusividad en servicios nucleares, un crecimiento de ventas del 7% desde 2015, un ROE que cayó de 350% a 100% en 2022, y un alto nivel de deuda con capacidad para repagar deuda vencida en 2026, 2028 y 2029. Además, se espera un resurgimiento del crecimiento en 2025-2030 con un crecimiento similar al observado entre 2016-2020."
+    },
+    {
+      "chunk": 10,
+      "evidence": [
+        {
+          "stage": "valuation",
+          "paraphrase": "Se estima que la empresa tiene un valor de 550 millones con un beneficio neto de 315 millones y un crecimiento proyectado del 8-10% anual durante 15 años.",
+          "timestamp": "01:25:26",
+          "scope": "hosts",
+          "confidence": 0.8
+        },
+        {
+          "stage": "entry",
+          "paraphrase": "Se sugiere que la empresa es una opción viable para inversión debido a su proyección de crecimiento estable y su posición en el mercado nuclear.",
+          "timestamp": "01:25:32",
+          "scope": "hosts",
+          "confidence": 0.7
+        },
+        {
+          "stage": "risk",
+          "paraphrase": "Se reconoce que el futuro es impredecible y que existen riesgos, pero se considera que los múltiplos de precios son razonables y que la empresa tiene una estrategia sólida.",
+          "timestamp": "01:25:42",
+          "scope": "hosts",
+          "confidence": 0.6
+        },
+        {
+          "stage": "exit",
+          "paraphrase": "Se menciona que la empresa tiene una proyección de valor futuro de 187-246 dólares por acción en 15 años, lo que sugiere un retorno de 6.8-7.9% anual.",
+          "timestamp": "01:26:44",
+          "scope": "hosts",
+          "confidence": 0.7
+        },
+        {
+          "stage": "technical",
+          "paraphrase": "Se analiza el crecimiento proyectado del 8-10% anual, lo que implicaría un EPS de 9.35-12.32 dólares en 15 años, basado en un múltiplo de 25 veces los beneficios.",
+          "timestamp": "01:26:12",
+          "scope": "hosts",
+          "confidence": 0.6
+        },
+        {
+          "stage": "management",
+          "paraphrase": "Se menciona que la gestión de la empresa ha cumplido con su objetivo de crecimiento y que el plan de 3-5 años incluye un crecimiento a doble dígito, lo que refuerza la confianza en la estrategia.",
+          "timestamp": "01:27:10",
+          "scope": "hosts",
+          "confidence": 0.7
+        },
+        {
+          "stage": "mistake",
+          "paraphrase": "Se reconoce que existen riesgos y que no hay alternativas claras, lo que podría afectar la estrategia de inversión.",
+          "timestamp": "01:27:40",
+          "scope": "hosts",
+          "confidence": 0.5
+        },
+        {
+          "stage": "other",
+          "paraphrase": "Se menciona que la empresa tiene proyectos en desarrollo, como el reactor nuclear térmico y la producción de tecnecio-99, que podrían aumentar su valor en el futuro.",
+          "timestamp": "01:31:24",
+          "scope": "hosts",
+          "confidence": 0.6
+        }
+      ],
+      "named_examples": [],
+      "chunk_summary": "El análisis sugiere que la empresa tiene un valor de 550 millones con un crecimiento proyectado del 8-10% anual durante 15 años, lo que implica un retorno de 6.8-7.9% anual. Se considera una opción viable para inversión debido a su estrategia sólida, su posición en el mercado nuclear y su proyección de crecimiento estable, aunque se reconoce que existen riesgos y no hay alternativas claras."
+    },
+    {
+      "chunk": 11,
+      "evidence": [
+        {
+          "stage": "entry",
+          "paraphrase": "Se menciona la posibilidad de analizar empresas mineras y de uranio, así como otras que no enriquecen pero son interesantes para invertir.",
+          "timestamp": "01:35:14",
+          "scope": "hosts",
+          "confidence": 0.8,
+          "automation_hint": "proxy observable"
+        },
+        {
+          "stage": "sizing",
+          "paraphrase": "Se sugiere revisar oportunidades en el sector de oficinas, especialmente en áreas como las oficinas médicas, que tienen características únicas y enfrentan desafíos específicos.",
+          "timestamp": "01:36:01",
+          "scope": "hosts",
+          "confidence": 0.7,
+          "automation_hint": "proxy observable"
+        },
+        {
+          "stage": "exit",
+          "paraphrase": "Se indica que aunque no se ha realizado un análisis detallado sobre el tema de oficinas por falta de tiempo, se espera que surjan oportunidades en el futuro.",
+          "timestamp": "01:36:31",
+          "scope": "hosts",
+          "confidence": 0.6,
+          "automation_hint": "proxy observable"
+        }
+      ],
+      "named_examples": [],
+      "chunk_summary": "El programa discute la posibilidad de analizar empresas mineras y de uranio, así como oportunidades en el sector de oficinas, especialmente en áreas específicas como las oficinas médicas. Se menciona que aunque no se ha realizado un análisis detallado sobre el tema de oficinas por falta de tiempo, se espera que surjan oportunidades en el futuro."
+    }
+  ],
+  "copyright_note": "No audio or verbatim transcript is persisted; only derived paraphrases."
+}
