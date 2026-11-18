@@ -3,6 +3,9 @@ import unittest
 import json
 import tempfile
 import datetime as dt
+import os
+import signal
+import subprocess
 import urllib.error
 from unittest.mock import patch
 from pathlib import Path
@@ -113,6 +116,76 @@ class SemanticWorkerTests(unittest.TestCase):
                 return {"choices":[{"message":{"content":'{"evidence": ['}}]}
         with self.assertRaisesRegex(ValueError,"llm_invalid_json_after_retry"):
             worker.chat_json(Broken(),"Solo la fuente","Datos",1600)
+
+
+    def test_sigill_is_classified_without_claiming_a_review(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            with patch.object(worker.subprocess, "run",
+                              return_value=subprocess.CompletedProcess([], -signal.SIGILL)):
+                with self.assertRaisesRegex(RuntimeError, "native_asr_sigill"):
+                    worker.native_subprocess("asr", {"audio_path": "/tmp/temporary.mp3",
+                                                      "model_name": "small"}, tmp)
+            self.assertTrue((Path(tmp)/"native_asr_input.json").is_file())
+            self.assertFalse((Path(tmp)/"native_asr_output.json").exists())
+            self.assertEqual(list(Path(tmp).glob("*.mp3")), [])
+
+    def test_native_child_output_requires_exact_success_and_valid_json(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            def completed(command, **kwargs):
+                output=Path(command[command.index("--stage-output")+1])
+                worker.atomic_json(output, {"transcript":"texto " * 110,
+                                             "asr":{"word_count":110}})
+                self.assertEqual(kwargs["env"]["PYTHONFAULTHANDLER"], "1")
+                self.assertEqual(kwargs["env"]["PYTHONUNBUFFERED"], "1")
+                self.assertNotIn("shell", kwargs)
+                return subprocess.CompletedProcess(command, 0)
+            with patch.object(worker.subprocess, "run", side_effect=completed) as invoke:
+                output=worker.native_subprocess(
+                    "asr",{"audio_path":"/tmp/temporary.mp3","model_name":"small"},tmp)
+            self.assertEqual(output["asr"]["word_count"],110)
+            self.assertEqual(invoke.call_count,1)
+            with self.assertRaisesRegex(ValueError,"reuse previous"):
+                worker.native_subprocess(
+                    "asr",{"audio_path":"/tmp/temporary.mp3","model_name":"small"},tmp)
+
+    def test_semantic_sigill_keeps_queue_pending_no_false_progress_or_review(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root=Path(tmp)
+            queue={"videos":[{"video_id":"SAFE","category":"methodology",
+                                "methodology_relevance_score":9}]}
+            rss={"provider":"synthetic","episodes":[{
+                 "youtube_video_id":"SAFE","match_status":"matched",
+                 "audio_url":"https://example.test/episode.mp3",
+                 "guid":"synthetic"}]}
+            (root/"queue.json").write_text(json.dumps(queue))
+            (root/"rss.json").write_text(json.dumps(rss))
+            def download_stub(_url,target):
+                Path(target).write_bytes(b"temporary" * 256)
+                return Path(target).stat().st_size
+            calls=[]
+            def native_stub(stage, _payload, _directory):
+                calls.append(stage)
+                if stage == "asr":
+                    return {"transcript":"texto "*120,"asr":{"word_count":120}}
+                raise RuntimeError("native_analysis_sigill")
+            with patch.dict(os.environ,{"BTD_NATIVE_ISOLATION":"1"}), \
+                 patch.object(worker,"download",side_effect=download_stub), \
+                 patch.object(worker,"native_subprocess",side_effect=native_stub):
+                with self.assertRaisesRegex(RuntimeError,"native_analysis_sigill"):
+                    worker.run(root/"queue.json",root/"rss.json",root)
+            self.assertEqual(calls,["asr","analysis"])
+            self.assertFalse((root/"reviews").exists())
+            self.assertFalse((root/"semantic_progress.json").exists())
+            self.assertFalse(list(root.glob("native_*")))
+            self.assertFalse(list(root.glob("*.mp3")))
+
+    def test_cli_child_mode_does_not_process_episode_queue(self):
+        with patch.object(worker,"native_stage_child") as child, \
+             patch.object(worker,"run") as full:
+            worker.main(["--native-stage","asr","--stage-input","/tmp/in",
+                         "--stage-output","/tmp/out"])
+            child.assert_called_once_with("asr","/tmp/in","/tmp/out")
+            full.assert_not_called()
 
     def test_publisher_configures_identity_before_rebase(self):
         workflow = (ROOT.parent / ".github/workflows/buy_the_dip_semantic.yml").read_text()
