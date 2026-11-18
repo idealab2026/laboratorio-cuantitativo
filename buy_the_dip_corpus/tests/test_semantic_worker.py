@@ -187,6 +187,21 @@ class SemanticWorkerTests(unittest.TestCase):
             child.assert_called_once_with("asr","/tmp/in","/tmp/out")
             full.assert_not_called()
 
+    def test_semantic_job_uses_portable_source_build_after_native_sigill(self):
+        # Live Nov-18 SIGILL occurred during Llama(model_path=...) after
+        # ASR, model download and llama_cpp import had all succeeded.
+        workflow = (ROOT.parent / ".github/workflows/buy_the_dip_semantic.yml").read_text()
+        self.assertIn("--no-binary=llama-cpp-python", workflow)
+        self.assertIn("--no-cache-dir", workflow)
+        self.assertIn("-DGGML_NATIVE=OFF", workflow)
+        self.assertIn("-DGGML_AVX2=OFF", workflow)
+        self.assertIn("-DGGML_AVX512=OFF", workflow)
+        self.assertIn("-DGGML_FMA=OFF", workflow)
+        self.assertIn("llama-cpp-python==0.3.31", workflow)
+        # Unauthenticated prebuilt CPU wheel could import yet SIGILL on init.
+        self.assertNotIn("--extra-index-url", workflow)
+        self.assertIn("BTD_NATIVE_ISOLATION: '1'", workflow)
+
     def test_publisher_configures_identity_before_rebase(self):
         workflow = (ROOT.parent / ".github/workflows/buy_the_dip_semantic.yml").read_text()
         publisher = workflow.split("- name: Commit semantic evidence", 1)[1]
