@@ -26,6 +26,11 @@ ACTIVE = tuple(f"IL-{n:03d}" for n in (*range(10, 28), *range(37, 45)))
 MAX_SECONDS = 180
 LIMIT = 250
 PREOPEN_HORIZON = timedelta(hours=4)  # early redundant scheduler attempts, never post-open
+# Bounded same-job close rendezvous: no new runner, ledger or retrospective fill.
+WATCH_HORIZON = timedelta(minutes=35)
+LATEST_ARM = timedelta(minutes=6)
+TARGET_BEFORE_CLOSE = timedelta(minutes=4, seconds=30)
+MAX_SLEEP_SECONDS = 35 * 60
 
 
 def _repo_commit():
