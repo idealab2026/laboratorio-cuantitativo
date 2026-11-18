@@ -10476,6 +10476,141 @@
             "KVUE_KMB_2026-11-02"
           ],
           "valuation_reference_url": "https://infomemo.theocc.com/infomemos?number=60113"
+        },
+        {
+          "date": "2026-11-05",
+          "inactive_no_fills": true,
+          "nav": 109033.20548162829,
+          "provisional_corporate_valuation": true,
+          "quote_identity": {
+            "effective_sha256": "e175f0c80241cc7345979db086bcb83d513950cb5a97027aaba92df9783b93e1",
+            "snapshot_sha256": "26bab09fa7bb46ba02e0f82c8d6d190dc7bf8e7a38a4345a2cdec199f03df947"
+          },
+          "recorded_at_utc": "2026-11-18T15:55:52+00:00",
+          "unsettled_receivables": [
+            "KVUE_KMB_2026-11-02"
+          ],
+          "valuation_reference_url": "https://infomemo.theocc.com/infomemos?number=60113"
+        },
+        {
+          "date": "2026-11-06",
+          "inactive_no_fills": true,
+          "nav": 107701.50391845302,
+          "provisional_corporate_valuation": true,
+          "quote_identity": {
+            "effective_sha256": "83bc3bf223004e864717fc44fec924b8df479d9b6dd9c2fad1cef9d5343eca6b",
+            "snapshot_sha256": "a631487625b0226266b3b64885e9d4e28f2a678cf4e5d3082a7aa8de688747c3"
+          },
+          "recorded_at_utc": "2026-11-18T15:55:52+00:00",
+          "unsettled_receivables": [
+            "KVUE_KMB_2026-11-02"
+          ],
+          "valuation_reference_url": "https://infomemo.theocc.com/infomemos?number=60113"
+        },
+        {
+          "date": "2026-11-09",
+          "inactive_no_fills": true,
+          "nav": 109509.97539928691,
+          "provisional_corporate_valuation": true,
+          "quote_identity": {
+            "effective_sha256": "44d94c3e556782780c149749005800389d786d1fa221281ad8a9b43b9a741ddb",
+            "snapshot_sha256": "cf13928f7aced5545f5eb72ea8582736f2975399aa302a5fa81666c85787884f"
+          },
+          "recorded_at_utc": "2026-11-18T15:55:52+00:00",
+          "unsettled_receivables": [
+            "KVUE_KMB_2026-11-02"
+          ],
+          "valuation_reference_url": "https://infomemo.theocc.com/infomemos?number=60113"
+        },
+        {
+          "date": "2026-11-10",
+          "inactive_no_fills": true,
+          "nav": 109044.97148715038,
+          "provisional_corporate_valuation": true,
+          "quote_identity": {
+            "effective_sha256": "74529b48d939f3588c79de31304855abc82bb0c8e847eb2f89d69239e954397c",
+            "snapshot_sha256": "a4ebb3efac79d8ee8e90fc4c88c4ee8ed8ae9d546d99eb482fc7ebf4b6549ccb"
+          },
+          "recorded_at_utc": "2026-11-18T15:55:52+00:00",
+          "unsettled_receivables": [
+            "KVUE_KMB_2026-11-02"
+          ],
+          "valuation_reference_url": "https://infomemo.theocc.com/infomemos?number=60113"
+        },
+        {
+          "date": "2026-11-11",
+          "inactive_no_fills": true,
+          "nav": 108880.09661232024,
+          "provisional_corporate_valuation": true,
+          "quote_identity": {
+            "effective_sha256": "ebcbb988afbec7a1abd694e2153976218ecdcd1215067ef190dd59584e47955e",
+            "snapshot_sha256": "5c22f7caa57b256714ec56694254fee3cb893dc4325d67e726e42e68162a5441"
+          },
+          "recorded_at_utc": "2026-11-18T15:55:52+00:00",
+          "unsettled_receivables": [
+            "KVUE_KMB_2026-11-02"
+          ],
+          "valuation_reference_url": "https://infomemo.theocc.com/infomemos?number=60113"
+        },
+        {
+          "date": "2026-11-12",
+          "inactive_no_fills": true,
+          "nav": 108131.16754114533,
+          "provisional_corporate_valuation": true,
+          "quote_identity": {
+            "effective_sha256": "e6767240da15a78a1a33e8251fae3f19000ce13514d771b5fd03fd01417d4831",
+            "snapshot_sha256": "b45ed70051d99b91cd2faafefe1ea49ff5db12d7615299c4250b24acbaad13cd"
+          },
+          "recorded_at_utc": "2026-11-18T15:55:52+00:00",
+          "unsettled_receivables": [
+            "KVUE_KMB_2026-11-02"
+          ],
+          "valuation_reference_url": "https://infomemo.theocc.com/infomemos?number=60113"
+        },
+        {
+          "date": "2026-11-13",
+          "inactive_no_fills": true,
+          "nav": 108906.08413667457,
+          "provisional_corporate_valuation": true,
+          "quote_identity": {
+            "effective_sha256": "848489c23800e69ce1edda437a865d7ad5edfb378fde9bb48e7804a143374b15",
+            "snapshot_sha256": "2d94d527b4391f9eb2d8283a15b5338336cfa55d582e840a79c7cfd338fae813"
+          },
+          "recorded_at_utc": "2026-11-18T15:55:52+00:00",
+          "unsettled_receivables": [
+            "KVUE_KMB_2026-11-02"
+          ],
+          "valuation_reference_url": "https://infomemo.theocc.com/infomemos?number=60113"
+        },
+        {
+          "date": "2026-11-16",
+          "inactive_no_fills": true,
+          "nav": 109187.87649680703,
+          "provisional_corporate_valuation": true,
+          "quote_identity": {
+            "effective_sha256": "9d8f9a13262b749e8f28bbb4de124015845a20e9955ed87620e16abd6341bd61",
+            "snapshot_sha256": "3649456c956229572f45ee2d3a4164de2926400fe77a8a5a8482ac9b5309bdbe"
+          },
+          "recorded_at_utc": "2026-11-18T15:55:52+00:00",
+          "unsettled_receivables": [
+            "KVUE_KMB_2026-11-02"
+          ],
+          "valuation_reference_url": "https://infomemo.theocc.com/infomemos?number=60113"
+        },
+        {
+          "date": "2026-11-17",
+          "inactive_no_fills": true,
+          "nav": 107741.70764727221,
+          "provisional_corporate_valuation": true,
+          "quote_identity": {
+            "effective_sha256": "9d22076ed0a0b2d21a46d893576826161750cbe9bb92367850f0465ff13e116d",
+            "snapshot_sha256": "2183ed0847ee910e45f32dac6813259f3f4658f6084ef0e6d73026eaa206f004"
+          },
+          "recorded_at_utc": "2026-11-18T15:55:52+00:00",
+          "unsettled_receivables": [
+            "KVUE_KMB_2026-11-02"
+          ],
+          "valuation_reference_url": "https://infomemo.theocc.com/infomemos?number=60113"
         }
       ],
       "events": [
@@ -10619,20 +10754,129 @@
             "KMB"
           ],
           "type": "book_quarantined_missing_held_bar"
+        },
+        {
+          "date": "2026-11-05",
+          "recorded_at_utc": "2026-11-18T15:55:52+00:00",
+          "ticker": "IDXX",
+          "trigger": "target",
+          "type": "unexecuted_during_outage"
+        },
+        {
+          "date": "2026-11-05",
+          "expired_unfilled_orders": {},
+          "recorded_at_utc": "2026-11-18T15:55:52+00:00",
+          "type": "inactive_mark_no_trades"
+        },
+        {
+          "date": "2026-11-06",
+          "recorded_at_utc": "2026-11-18T15:55:52+00:00",
+          "ticker": "IDXX",
+          "trigger": "target",
+          "type": "unexecuted_during_outage"
+        },
+        {
+          "date": "2026-11-06",
+          "expired_unfilled_orders": {},
+          "recorded_at_utc": "2026-11-18T15:55:52+00:00",
+          "type": "inactive_mark_no_trades"
+        },
+        {
+          "date": "2026-11-09",
+          "recorded_at_utc": "2026-11-18T15:55:52+00:00",
+          "ticker": "IDXX",
+          "trigger": "target",
+          "type": "unexecuted_during_outage"
+        },
+        {
+          "date": "2026-11-09",
+          "expired_unfilled_orders": {},
+          "recorded_at_utc": "2026-11-18T15:55:52+00:00",
+          "type": "inactive_mark_no_trades"
+        },
+        {
+          "date": "2026-11-10",
+          "recorded_at_utc": "2026-11-18T15:55:52+00:00",
+          "ticker": "IDXX",
+          "trigger": "target",
+          "type": "unexecuted_during_outage"
+        },
+        {
+          "date": "2026-11-10",
+          "expired_unfilled_orders": {},
+          "recorded_at_utc": "2026-11-18T15:55:52+00:00",
+          "type": "inactive_mark_no_trades"
+        },
+        {
+          "date": "2026-11-11",
+          "recorded_at_utc": "2026-11-18T15:55:52+00:00",
+          "ticker": "IDXX",
+          "trigger": "target",
+          "type": "unexecuted_during_outage"
+        },
+        {
+          "date": "2026-11-11",
+          "expired_unfilled_orders": {},
+          "recorded_at_utc": "2026-11-18T15:55:52+00:00",
+          "type": "inactive_mark_no_trades"
+        },
+        {
+          "date": "2026-11-12",
+          "recorded_at_utc": "2026-11-18T15:55:52+00:00",
+          "ticker": "IDXX",
+          "trigger": "target",
+          "type": "unexecuted_during_outage"
+        },
+        {
+          "date": "2026-11-12",
+          "expired_unfilled_orders": {},
+          "recorded_at_utc": "2026-11-18T15:55:52+00:00",
+          "type": "inactive_mark_no_trades"
+        },
+        {
+          "date": "2026-11-13",
+          "recorded_at_utc": "2026-11-18T15:55:52+00:00",
+          "ticker": "IDXX",
+          "trigger": "target",
+          "type": "unexecuted_during_outage"
+        },
+        {
+          "date": "2026-11-13",
+          "expired_unfilled_orders": {},
+          "recorded_at_utc": "2026-11-18T15:55:52+00:00",
+          "type": "inactive_mark_no_trades"
+        },
+        {
+          "date": "2026-11-16",
+          "recorded_at_utc": "2026-11-18T15:55:52+00:00",
+          "ticker": "IDXX",
+          "trigger": "target",
+          "type": "unexecuted_during_outage"
+        },
+        {
+          "date": "2026-11-16",
+          "expired_unfilled_orders": {},
+          "recorded_at_utc": "2026-11-18T15:55:52+00:00",
+          "type": "inactive_mark_no_trades"
+        },
+        {
+          "date": "2026-11-17",
+          "recorded_at_utc": "2026-11-18T15:55:52+00:00",
+          "ticker": "IDXX",
+          "trigger": "target",
+          "type": "unexecuted_during_outage"
+        },
+        {
+          "date": "2026-11-17",
+          "expired_unfilled_orders": {},
+          "recorded_at_utc": "2026-11-18T15:55:52+00:00",
+          "type": "inactive_mark_no_trades"
         }
       ],
-      "nav": 110271.90384131426,
+      "nav": 107741.70764727221,
       "outage_control": {
-        "first_trading_session": "2026-11-05",
-        "registered_at_utc": "2026-11-04T18:03:08+00:00"
-      },
-      "paused_missing_quotes": {
-        "last_valued_session": "2026-11-04",
-        "missing_tickers": [
-          "KMB"
-        ],
-        "reason": "required same-session bar unavailable",
-        "since": "2026-11-05"
+        "first_trading_session": "2026-11-19",
+        "registered_at_utc": "2026-11-18T15:55:52+00:00"
       },
       "pending": {},
       "positions": {
