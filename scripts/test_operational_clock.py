@@ -366,6 +366,7 @@ class ClockPreopenRecoveryTest(unittest.TestCase):
             self.assertIn("timezone: 'America/New_York'", lines[i+1])
         raw = "\n".join(lines)
         self.assertIn("17,47 7-8 * * 1-5", raw)
+        self.assertIn("11,31,51 8 * * 1-5", raw)
         self.assertIn("7,17 9 * * 1-5", raw)
         self.assertIn("STAGE=auto", raw)
         self.assertIn("verify_published_lock", raw)
