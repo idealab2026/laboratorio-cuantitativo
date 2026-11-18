@@ -10061,6 +10061,11 @@
           "date": "2026-11-17",
           "ticker": "PCG",
           "type": "unfilled"
+        },
+        {
+          "date": "2026-11-18",
+          "ticker": "AES",
+          "type": "unfilled"
         }
       ],
       "forward_executions": {
@@ -10110,6 +10115,16 @@
           "recorded_at_utc": "2026-11-17T14:39:39.483981Z",
           "session": "2026-11-17",
           "source_commit": "37e197537b3a3ceaa2e6e3632c923b2fe16cdca0"
+        },
+        "IL-011:2026-11-18:open:classic_forward_v1": {
+          "fill_tickers": [],
+          "fills_count": 0,
+          "lock_sha256": "5c7c7d6f65a3c55e660a0e814565d1955f16c4d5199111b10d51ea7dbd13888a",
+          "mode": "forward_observed_paper",
+          "quotes_sha256": "7a00915bcab75aadbc8f87f20366a05df33b8965e8c4a6678061dad0888d2c8f",
+          "recorded_at_utc": "2026-11-18T14:34:09.882794Z",
+          "session": "2026-11-18",
+          "source_commit": "f1f67b5bce5679c05de36dcabede2b0106722bb4"
         }
       },
       "nav": 99885.85277448194,
@@ -10117,12 +10132,7 @@
         "first_trading_session": "2026-11-05",
         "registered_at_utc": "2026-11-04T18:03:08+00:00"
       },
-      "pending": {
-        "AES": {
-          "side": "buy",
-          "signal_date": "2026-11-17"
-        }
-      },
+      "pending": {},
       "positions": {
         "BF-B": {
           "cost": 11874.999971558756,
@@ -10781,7 +10791,7 @@
       "trades": []
     },
     "macd_12_26_9": {
-      "cash": 11179.735961665874,
+      "cash": 42055.06161438019,
       "equity": [
         {
           "date": "2026-10-12",
@@ -11413,6 +11423,65 @@
           "expired_unfilled_orders": {},
           "recorded_at_utc": "2026-11-17T23:54:31+00:00",
           "type": "inactive_mark_no_trades"
+        },
+        {
+          "date": "2026-11-18",
+          "execution": "forward_observed_paper",
+          "fee": 15.319320291805806,
+          "idempotency_key": "IL-013:2026-11-18:open:classic_forward_v1:BBY",
+          "lock_sha256": "5c7c7d6f65a3c55e660a0e814565d1955f16c4d5199111b10d51ea7dbd13888a",
+          "observed_at_utc": "2026-11-18T14:34:02.118599Z",
+          "price": 97.43126335525513,
+          "quote_at_utc": "2026-11-18T14:34:00Z",
+          "reason": "signal_next_open",
+          "shares": 157.232081,
+          "source_commit": "f1f67b5bce5679c05de36dcabede2b0106722bb4",
+          "ticker": "BBY",
+          "type": "sell"
+        },
+        {
+          "date": "2026-11-18",
+          "execution": "forward_observed_paper",
+          "fee": 16.004111553467602,
+          "idempotency_key": "IL-013:2026-11-18:open:classic_forward_v1:BF-B",
+          "lock_sha256": "5c7c7d6f65a3c55e660a0e814565d1955f16c4d5199111b10d51ea7dbd13888a",
+          "observed_at_utc": "2026-11-18T14:34:02.275557Z",
+          "price": 30.099942271232607,
+          "quote_at_utc": "2026-11-18T14:34:00Z",
+          "reason": "signal_next_open",
+          "shares": 531.699078,
+          "source_commit": "f1f67b5bce5679c05de36dcabede2b0106722bb4",
+          "ticker": "BF-B",
+          "type": "sell"
+        },
+        {
+          "date": "2026-11-18",
+          "execution": "forward_observed_paper",
+          "fee": 14.52668781084511,
+          "idempotency_key": "IL-013:2026-11-18:open:classic_forward_v1:CDW",
+          "lock_sha256": "5c7c7d6f65a3c55e660a0e814565d1955f16c4d5199111b10d51ea7dbd13888a",
+          "observed_at_utc": "2026-11-18T14:34:02.742299Z",
+          "price": 160.94959053802492,
+          "quote_at_utc": "2026-11-18T14:33:00Z",
+          "reason": "signal_next_open",
+          "shares": 90.256134,
+          "source_commit": "f1f67b5bce5679c05de36dcabede2b0106722bb4",
+          "ticker": "CDW",
+          "type": "sell"
+        },
+        {
+          "date": "2026-11-18",
+          "execution": "forward_observed_paper",
+          "fee": 14.914029853893226,
+          "idempotency_key": "IL-013:2026-11-18:open:classic_forward_v1:TRGP",
+          "lock_sha256": "5c7c7d6f65a3c55e660a0e814565d1955f16c4d5199111b10d51ea7dbd13888a",
+          "observed_at_utc": "2026-11-18T14:34:08.888639Z",
+          "price": 291.7458061065674,
+          "quote_at_utc": "2026-11-18T14:34:00Z",
+          "shares": 51.119946,
+          "source_commit": "f1f67b5bce5679c05de36dcabede2b0106722bb4",
+          "ticker": "TRGP",
+          "type": "buy"
         }
       ],
       "forward_executions": {
@@ -11440,6 +11509,21 @@
           "recorded_at_utc": "2026-11-12T14:38:04.500874Z",
           "session": "2026-11-12",
           "source_commit": "372d05ea67a8acc97c47dcffad82348161f91268"
+        },
+        "IL-013:2026-11-18:open:classic_forward_v1": {
+          "fill_tickers": [
+            "BBY",
+            "BF-B",
+            "CDW",
+            "TRGP"
+          ],
+          "fills_count": 4,
+          "lock_sha256": "5c7c7d6f65a3c55e660a0e814565d1955f16c4d5199111b10d51ea7dbd13888a",
+          "mode": "forward_observed_paper",
+          "quotes_sha256": "79f2532d8987dc3811e1583b167e052df2e279796eff326c25367776dbe943f3",
+          "recorded_at_utc": "2026-11-18T14:34:09.882794Z",
+          "session": "2026-11-18",
+          "source_commit": "f1f67b5bce5679c05de36dcabede2b0106722bb4"
         }
       },
       "nav": 100185.25307034142,
@@ -11447,52 +11531,8 @@
         "first_trading_session": "2026-11-18",
         "registered_at_utc": "2026-11-17T16:50:33+00:00"
       },
-      "pending": {
-        "BBY": {
-          "side": "sell",
-          "signal_date": "2026-11-17"
-        },
-        "BF-B": {
-          "side": "sell",
-          "signal_date": "2026-11-17"
-        },
-        "CDW": {
-          "side": "sell",
-          "signal_date": "2026-11-17"
-        },
-        "TRGP": {
-          "side": "buy",
-          "signal_date": "2026-11-17"
-        }
-      },
+      "pending": {},
       "positions": {
-        "BBY": {
-          "cost": 16138.895776632568,
-          "dividends": 0.0,
-          "entry_date": "2026-11-05",
-          "entry_price": 102.54124286270141,
-          "shares": 157.232081,
-          "stop": 94.3379434336853,
-          "target": 117.92242929210661
-        },
-        "BF-B": {
-          "cost": 15772.55840174806,
-          "dividends": 0.0,
-          "entry_date": "2026-11-03",
-          "entry_price": 29.634810839653014,
-          "shares": 531.699078,
-          "stop": 27.264025972480773,
-          "target": 34.080032465600965
-        },
-        "CDW": {
-          "cost": 15489.04594805785,
-          "dividends": 0.0,
-          "entry_date": "2026-11-11",
-          "entry_price": 171.44067322540283,
-          "shares": 90.256134,
-          "stop": 157.72541936737062,
-          "target": 197.15677420921324
-        },
         "ESS": {
           "cost": 15318.388402952498,
           "dividends": 0.0,
@@ -11519,6 +11559,15 @@
           "shares": 55.538619,
           "stop": 256.3204973236084,
           "target": 320.4006216545104
+        },
+        "TRGP": {
+          "cost": 14928.943883748088,
+          "dividends": 0.0,
+          "entry_date": "2026-11-18",
+          "entry_price": 291.7458061065674,
+          "shares": 51.119946,
+          "stop": 268.406141618042,
+          "target": 335.50767702255246
         }
       },
       "signal_counts": [
@@ -11771,6 +11820,54 @@
           "reason": "signal_next_open",
           "source_commit": "6e0f894b5597a44859ee2feec57cfb73e2a72b47",
           "ticker": "ISRG"
+        },
+        {
+          "dividends": 0.0,
+          "entry_cost": 16138.895776632568,
+          "entry_date": "2026-11-05",
+          "execution": "forward_observed_paper",
+          "exit_date": "2026-11-18",
+          "idempotency_key": "IL-013:2026-11-18:open:classic_forward_v1:BBY",
+          "lock_sha256": "5c7c7d6f65a3c55e660a0e814565d1955f16c4d5199111b10d51ea7dbd13888a",
+          "net_pnl": -834.8948051185689,
+          "observed_at_utc": "2026-11-18T14:34:02.118599Z",
+          "proceeds": 15304.000971513999,
+          "quote_at_utc": "2026-11-18T14:34:00Z",
+          "reason": "signal_next_open",
+          "source_commit": "f1f67b5bce5679c05de36dcabede2b0106722bb4",
+          "ticker": "BBY"
+        },
+        {
+          "dividends": 0.0,
+          "entry_cost": 15772.55840174806,
+          "entry_date": "2026-11-03",
+          "execution": "forward_observed_paper",
+          "exit_date": "2026-11-18",
+          "idempotency_key": "IL-013:2026-11-18:open:classic_forward_v1:BF-B",
+          "lock_sha256": "5c7c7d6f65a3c55e660a0e814565d1955f16c4d5199111b10d51ea7dbd13888a",
+          "net_pnl": 215.54904016607543,
+          "observed_at_utc": "2026-11-18T14:34:02.275557Z",
+          "proceeds": 15988.107441914135,
+          "quote_at_utc": "2026-11-18T14:34:00Z",
+          "reason": "signal_next_open",
+          "source_commit": "f1f67b5bce5679c05de36dcabede2b0106722bb4",
+          "ticker": "BF-B"
+        },
+        {
+          "dividends": 0.0,
+          "entry_cost": 15489.04594805785,
+          "entry_date": "2026-11-11",
+          "execution": "forward_observed_paper",
+          "exit_date": "2026-11-18",
+          "idempotency_key": "IL-013:2026-11-18:open:classic_forward_v1:CDW",
+          "lock_sha256": "5c7c7d6f65a3c55e660a0e814565d1955f16c4d5199111b10d51ea7dbd13888a",
+          "net_pnl": -976.884825023586,
+          "observed_at_utc": "2026-11-18T14:34:02.742299Z",
+          "proceeds": 14512.161123034264,
+          "quote_at_utc": "2026-11-18T14:33:00Z",
+          "reason": "signal_next_open",
+          "source_commit": "f1f67b5bce5679c05de36dcabede2b0106722bb4",
+          "ticker": "CDW"
         }
       ]
     },
@@ -12073,6 +12170,11 @@
           "date": "2026-11-17",
           "ticker": "APTV",
           "type": "unfilled"
+        },
+        {
+          "date": "2026-11-18",
+          "ticker": "CRM",
+          "type": "unfilled"
         }
       ],
       "forward_executions": {
@@ -12105,15 +12207,20 @@
           "recorded_at_utc": "2026-11-17T14:39:39.483981Z",
           "session": "2026-11-17",
           "source_commit": "37e197537b3a3ceaa2e6e3632c923b2fe16cdca0"
+        },
+        "IL-014:2026-11-18:open:classic_forward_v1": {
+          "fill_tickers": [],
+          "fills_count": 0,
+          "lock_sha256": "5c7c7d6f65a3c55e660a0e814565d1955f16c4d5199111b10d51ea7dbd13888a",
+          "mode": "forward_observed_paper",
+          "quotes_sha256": "22cf77d1c933c05dc05f545bb9eb888b0ada34318ece2812359a58bc4e7fb8fa",
+          "recorded_at_utc": "2026-11-18T14:34:09.882794Z",
+          "session": "2026-11-18",
+          "source_commit": "f1f67b5bce5679c05de36dcabede2b0106722bb4"
         }
       },
       "nav": 105738.22593252602,
-      "pending": {
-        "CRM": {
-          "side": "buy",
-          "signal_date": "2026-11-17"
-        }
-      },
+      "pending": {},
       "positions": {
         "ADM": {
           "cost": 16050.90425304054,
