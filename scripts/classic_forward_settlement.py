@@ -102,6 +102,77 @@ def _claims_actually_settled(book, previous):
     return True
 
 
+
+def _isolated_unsettled_kvue_claim(book, previous):
+    """IL-012 may trade its own settled shares using only REAL cash already
+    in book['cash']; the independent merger claim remains nonspendable.
+    This is an eligibility check, not issuer settlement or P&L recognition.
+    No other unreviewed corporate action gains this exception.
+    """
+    from classic_sp500.corporate_actions import ACTION, EFFECTIVE, ISSUER, REFERENCE, RATIO, CASH
+
+    claims = book.get("receivables")
+    if (not isinstance(claims, dict) or set(claims) != {ACTION}
+            or not isinstance(previous, str) or previous < EFFECTIVE
+            or not isinstance(book.get("cash"), (int, float))
+            or isinstance(book["cash"], bool)
+            or not math.isfinite(book["cash"]) or book["cash"] < 0):
+        return False
+    claim = claims[ACTION]
+    if not isinstance(claim, dict):
+        return False
+    expected = {
+        "action_id": ACTION, "effective_session": EFFECTIVE,
+        "status": "unsettled", "symbol": "KMB",
+        "source_url": ISSUER,
+        "valuation_reference_url": REFERENCE,
+        "valuation_policy": "occ_temporary_reference_applied_to_paper_claim",
+    }
+    if (any(claim.get(k) != v for k, v in expected.items())
+            or any(k in claim for k in ("settled_cash", "payment_session",
+                                       "settlement_source_url"))):
+        return False
+    entitlements = [event for event in book.get("events", [])
+                    if isinstance(event, dict) and
+                    event.get("type") == "corporate_merger_entitlement"]
+    if len(entitlements) != 1:
+        return False
+    e = entitlements[0]
+    if (e.get("action_id") != ACTION or e.get("date") != EFFECTIVE
+            or e.get("source_url") != ISSUER
+            or e.get("valuation_reference_url") != REFERENCE
+            or e.get("cash_credited") != 0 or e.get("trades_executed") != 0
+            or e.get("recorded_at_utc") != claim.get("recorded_at_utc")
+            or any(event.get("type") == "corporate_cash_settlement"
+                   and event.get("action_id") == ACTION
+                   for event in book.get("events", []) if isinstance(event, dict))):
+        return False
+    old = e.get("original_position")
+    if not isinstance(old, dict):
+        return False
+    try:
+        shares = Decimal(str(old["shares"]))
+        old_cost = Decimal(str(old["cost"]))
+        full = shares * RATIO
+        whole = int(full)
+        fraction = full - whole
+        fixed = (shares * CASH).quantize(Decimal("0.01"))
+        allocated_cost = Decimal(str(claim["allocated_cost"]))
+        if (not all(v.is_finite() for v in
+                    (shares, old_cost, full, fraction, fixed, allocated_cost))
+                or shares <= 0 or old_cost <= 0 or not 0 < fraction < 1
+                or not 0 < allocated_cost < old_cost
+                or e.get("successor_whole_shares") != whole
+                or str(claim["fractional_shares"]) != str(fraction)
+                or str(e.get("fractional_shares")) != str(fraction)
+                or Decimal(claim["fixed_cash"]) != fixed
+                or Decimal(e["fixed_cash_receivable"]) != fixed):
+            return False
+    except (KeyError, ValueError, TypeError, InvalidOperation, OverflowError):
+        return False
+    return True
+
+
 def _provenance(q, lock, ticker, key):
     return {"quote_at_utc": q["quote_at_utc"],
             "observed_at_utc": q["observed_at_utc"],
@@ -206,7 +277,13 @@ def settle_classic(lock, now, market, quotes, *, reader=read, frozen=_source_at)
                                  if i not in (4, 7)))
         unresolved_outage = bool(outage) and (
             not release_known or market["session"] < first_future)
-        unresolved_claims = not _claims_actually_settled(book, market["previous"])
+        # This narrowly verified paper receivable is not spendable cash.
+        # It need not freeze unrelated *fully owned* shares or cash orders:
+        # execute_frozen_open checks every BUY against book['cash'].
+        unsettled_isolated = (slot == "IL-012" and
+                              _isolated_unsettled_kvue_claim(book, market["previous"]))
+        unresolved_claims = not (_claims_actually_settled(book, market["previous"])
+                                 or unsettled_isolated)
         if unresolved_claims or unresolved_outage:
             evidence[slot] = {"status": "corporate_action_review_required"
                              if unresolved_claims else "inactive_recovery_not_yet_released",

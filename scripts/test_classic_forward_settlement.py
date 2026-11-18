@@ -11,7 +11,8 @@ ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 sys.path.insert(0, str(ROOT / "scripts"))
 from operational_clock import clock_plan
-from classic_forward_settlement import LEDGER, CONFIG, SLOTS, settle_classic, summarize_session_fills
+from classic_forward_settlement import (LEDGER, CONFIG, SLOTS, settle_classic,
+                                        summarize_session_fills, _isolated_unsettled_kvue_claim)
 from classic_sp500 import run as classic
 
 UTC = timezone.utc
@@ -99,6 +100,101 @@ class NativeClassicClockTests(unittest.TestCase):
         self.assertEqual(output, {})
         output, _ = self.run_clock(now=self.open+timedelta(minutes=45))
         self.assertEqual(output, {})
+
+    def test_il012_recovered_claim_does_not_freeze_verified_existing_stock_stop(self):
+        # Recreate the exact documented merger right and a future, reviewed
+        # fresh session. No modeled/retroactive 18-Nov action is allowed.
+        import json
+        frozen_live = json.loads((ROOT / LEDGER).read_text())["books"]["genetic_frozen"]
+        book = self.book["books"]["genetic_frozen"]
+        book["receivables"] = copy.deepcopy(frozen_live["receivables"])
+        book["events"] = [copy.deepcopy(e) for e in frozen_live["events"]
+                          if e.get("type") == "corporate_merger_entitlement"]
+        book["cash"] = frozen_live["cash"]
+        book["positions"] = {"ABT": copy.deepcopy(frozen_live["positions"]["ABT"]),
+                             "KMB": copy.deepcopy(frozen_live["positions"]["KMB"])}
+        book["pending"] = {}
+        book["outage_control"] = {"first_trading_session": "2026-11-10",
+                                  "registered_at_utc": "2026-11-09T23:45:00+00:00"}
+        self.tracks["IL-012"].update(holdings=["ABT", "KMB"], orders=[])
+        self.assertTrue(_isolated_unsettled_kvue_claim(book, "2026-11-09"))
+        self.original = copy.deepcopy(self.book)
+        self.lock = clock_plan(self.open - timedelta(minutes=10),
+                               self.market, self.tracks, "c"*40)
+        quote = {"ABT": {**self.quotes["AAPL"], "price": 94.0}}
+        updated, evidence = self.run_clock(quotes=quote)
+        self.assertEqual(evidence["IL-012"]["status"], "settled_native_paper")
+        self.assertEqual(evidence["IL-012"]["fills"], 1)
+        self.assertEqual(evidence["IL-012"]["operations"][0]["ticker"], "ABT")
+        changed = updated[LEDGER]["books"]["genetic_frozen"]
+        self.assertEqual(set(changed["positions"]), {"KMB"})
+        self.assertEqual(changed["receivables"], book["receivables"])
+        self.assertEqual(changed["events"][0], book["events"][0])
+        self.assertEqual(changed["trades"][-1]["execution"], "forward_observed_paper")
+        self.assertGreater(changed["cash"], book["cash"])
+        self.book = copy.deepcopy(updated[LEDGER])
+        again, repeated = self.run_clock(quotes=quote)
+        self.assertEqual(again, {})
+        self.assertEqual(repeated["IL-012"]["status"], "active_no_orders")
+        self.assertEqual(self.book["books"]["genetic_frozen"]["receivables"], book["receivables"])
+
+    def test_il012_only_issuer_verified_unsettled_claim_may_trade(self):
+        original = json.loads((ROOT / LEDGER).read_text())["books"]["genetic_frozen"]
+        self.assertTrue(_isolated_unsettled_kvue_claim(original, "2026-11-17"))
+        for field, invalid in (
+            ("fixed_cash", "9000.00"),
+            ("fractional_shares", "0.1111"),
+            ("allocated_cost", -1),
+            ("status", "settled"),
+            ("source_url", "https://example.org/"),
+            ("valuation_reference_url", "https://example.org/"),
+            ("effective_session", "2026-11-05"),
+            ("settled_cash", "2257.90"),
+        ):
+            bad = copy.deepcopy(original)
+            bad["receivables"]["KVUE_KMB_2026-11-02"][field] = invalid
+            self.assertFalse(_isolated_unsettled_kvue_claim(bad, "2026-11-17"), field)
+        for change in (
+            lambda b: b.update(cash=-1),
+            lambda b: b["events"].append(copy.deepcopy(next(
+                e for e in b["events"] if e.get("type") == "corporate_merger_entitlement"))),
+            lambda b: b["events"].append({"type": "corporate_cash_settlement",
+                                          "action_id": "KVUE_KMB_2026-11-02"}),
+            lambda b: b["events"].remove(next(
+                e for e in b["events"] if e.get("type") == "corporate_merger_entitlement")),
+            lambda b: b["receivables"].update(
+                {"unknown": {"status": "unsettled"}}),
+        ):
+            bad = copy.deepcopy(original)
+            change(bad)
+            self.assertFalse(_isolated_unsettled_kvue_claim(bad, "2026-11-17"))
+        self.assertFalse(_isolated_unsettled_kvue_claim(original, "2026-11-01"))
+
+    def test_unsettled_merger_claim_does_not_fund_a_paper_buy(self):
+        original = json.loads((ROOT / LEDGER).read_text())["books"]["genetic_frozen"]
+        book = self.book["books"]["genetic_frozen"]
+        book["receivables"] = copy.deepcopy(original["receivables"])
+        book["events"] = [copy.deepcopy(e) for e in original["events"]
+                          if e.get("type") == "corporate_merger_entitlement"]
+        book["positions"] = {"KMB": copy.deepcopy(original["positions"]["KMB"])}
+        book["cash"] = 1.0
+        book["nav"] = 100000.0
+        book["pending"] = {"AAPL": {"side": "buy", "signal_date": "2026-11-09"}}
+        book["outage_control"] = {"first_trading_session": "2026-11-10",
+                                  "registered_at_utc": "2026-11-09T23:45:00+00:00"}
+        self.tracks["IL-012"].update(holdings=["KMB"])
+        self.original = copy.deepcopy(self.book)
+        self.lock = clock_plan(self.open - timedelta(minutes=10),
+                               self.market, self.tracks, "c"*40)
+        quote = {ticker: {**self.quotes["AAPL"], "price": value}
+                 for ticker, value in (("AAPL", 100.0), ("KMB", 108.0))}
+        updated, evidence = self.run_clock(quotes=quote)
+        self.assertEqual(evidence["IL-012"]["status"], "settled_native_paper")
+        self.assertEqual(evidence["IL-012"]["fills"], 0)
+        updated_book = updated[LEDGER]["books"]["genetic_frozen"]
+        self.assertNotIn("AAPL", updated_book["positions"])
+        self.assertEqual(updated_book["cash"], 1.0)
+        self.assertEqual(updated_book["receivables"], book["receivables"])
 
     def test_native_sell_preserves_real_quantity_and_cash(self):
         # One tactical strategy sells exactly the shares it owns; peers buy.
