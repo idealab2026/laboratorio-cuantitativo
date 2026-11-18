@@ -14,8 +14,6 @@ on:
     paths:
       - 'scripts/operational_clock.py'
       - 'scripts/test_operational_clock.py'
-      - 'scripts/preclose_watch.py'
-      - 'scripts/test_preclose_watch.py'
       - 'scripts/native_forward_settlement.py'
       - 'scripts/test_native_forward_settlement.py'
       - 'scripts/forward_weekly_ml_settlement.py'
@@ -92,7 +90,6 @@ jobs:
         run: |
           python -m py_compile scripts/operational_clock.py scripts/forward_open_il039.py scripts/native_forward_settlement.py scripts/forward_weekly_ml_settlement.py scripts/classic_forward_settlement.py scripts/forward_ahp_settlement.py scripts/forward_timesfm_settlement.py timesfm_strategy/forward_execution.py timesfm_strategy/run.py timesfm_strategy/daily_run.py scripts/forward_genetic_settlement.py AGENTE/genetic_invest_agent/forward_portfolio.py weekly_ml/daily.py classic_sp500/run.py tfg_ahp/forward.py
           python -m unittest scripts.test_operational_clock -v
-          python -m unittest scripts.test_preclose_watch -v
           python -m unittest scripts.test_forward_open_il039 -v
           python -m unittest scripts.test_native_forward_settlement -v
           python -m unittest scripts.test_forward_weekly_ml_settlement -v
@@ -157,7 +154,7 @@ jobs:
           XDG_CACHE_HOME: ${{ runner.temp }}/midas-yfinance-${{ github.run_id }}-${{ github.run_attempt }}
         run: |
           set -euo pipefail
-          PYTHONPATH=scripts:. python scripts/preclose_watch.py
+          PYTHONPATH=scripts:. python scripts/operational_clock.py --stage observe --watch-preclose
 
       - name: Publish only a genuinely observed preclose native settlement
         if: steps.preclose_watch.outputs.observed == 'true'
