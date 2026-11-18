@@ -112,7 +112,7 @@ class PrecloseWatcherTests(unittest.TestCase):
         code, output, slept, called = self._run_mocked(
             self.target + timedelta(seconds=2))
         self.assertEqual(code, 0)
-        self.assertEqual(output, "observed=true\\n")
+        self.assertEqual(output, "observed=true\n")
         self.assertEqual(len(slept), 1)
         self.assertAlmostEqual(slept[0].args[0], 24.5 * 60)
         self.assertEqual(len(called), 1)
