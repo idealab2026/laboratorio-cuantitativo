@@ -63,8 +63,34 @@ class ReportTests(unittest.TestCase):
         self.assertIn("no forman una clasificación común", markdown(result))
 
     def test_genetic_frozen_recovery_date_is_conditional_not_a_fill(self):
+        # Synthetic closed-session fixture, not the production ledger, which
+        # changes every night and must not cause tomorrow's CI to fail.
         config = json.loads((ROOT.parent / "classic_sp500/config.json").read_text())
-        state = json.loads((ROOT.parent / "classic_sp500_state/ledger.json").read_text())
+        books = {
+            name: {"nav": 100000.0, "positions": {}, "pending": {},
+                   "equity": [{"date": "2026-10-12", "nav": 100000.0},
+                              {"date": "2026-11-17", "nav": 100000.0}]}
+            for name in [*config["strategies"], "benchmark_spy"]
+        }
+        books["genetic_frozen"].update(
+            nav=107741.70,
+            positions={ticker: {} for ticker in (
+                "ABT", "DRI", "IDXX", "KMB", "LH", "MNST", "SJM", "WELL")},
+            outage_control={"first_trading_session": "2026-11-19"},
+            receivables={"KVUE_KMB_2026-11-02": {"status": "unsettled"}},
+            equity=[{"date": "2026-10-12", "nav": 100000.0},
+                    {"date": "2026-11-17", "nav": 107741.70,
+                     "inactive_no_fills": True,
+                     "provisional_corporate_valuation": True}],
+        )
+        state = {
+            "config_hash": _config_hash(config),
+            "engine": "classic_sp500_next_open_v2",
+            "first_session": "2026-10-12",
+            "last_session": "2026-11-17",
+            "coverage": [],
+            "books": books,
+        }
         report = build(self.registry, self.config, now=self.now,
                        classic_sp500_config=config, classic_sp500_state=state)
         row = next(item for item in report["tracks"]
@@ -72,10 +98,10 @@ class ReportTests(unittest.TestCase):
         self.assertIn("Primera apertura posible (condicionada): 2026-11-19",
                       row["activity_label"])
         self.assertNotIn("Reanudación desde apertura", row["activity_label"])
-        self.assertEqual(row["last_session"], state["books"]["genetic_frozen"]["equity"][-1]["date"])
+        self.assertEqual(row["last_session"], "2026-11-17")
         self.assertEqual(row["open_positions_count"], 8)
         self.assertEqual(row["data_quality_status"], "provisional_corporate_receivable")
-        self.assertEqual(state["books"]["genetic_frozen"]["receivables"][
+        self.assertEqual(books["genetic_frozen"]["receivables"][
             "KVUE_KMB_2026-11-02"]["status"], "unsettled")
 
     def test_genetic_active_outage_is_visible_and_archives_never_join_its_curve(self):
