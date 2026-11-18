@@ -82,6 +82,25 @@ def plan_track(slot, book, target, previous):
         return {"status":"recorded" if valid else "stale",
                 "session":source_day, "orders":orders,
                 "holdings":holdings, "undated":0}
+    if code == 12:
+        # A current NAV does not, by itself, make the genetic book executable:
+        # an unknown/altered merger right must fail CLOSED before allocating
+        # ticker quota or advertising a ready opening plan.
+        from classic_forward_settlement import (
+            _claims_actually_settled, _isolated_unsettled_kvue_claim)
+        holdings = sorted(book.get("positions") or {})
+        outage = book.get("outage_control")
+        boundary = outage.get("first_trading_session") if isinstance(outage, dict) else None
+        safe_boundary = (not outage or (
+            isinstance(boundary, str) and date(boundary) == boundary
+            and target >= boundary))
+        permitted_claim = (_claims_actually_settled(book, previous)
+                           or _isolated_unsettled_kvue_claim(book, previous))
+        if (book.get("paused_missing_quotes") or last != previous
+                or not safe_boundary or not permitted_claim):
+            return {"status": "paused" if last == previous else "stale",
+                    "session": last, "orders": [], "holdings": holdings,
+                    "undated": 0}
     rows = pending_signals(book)
     orders, holdings, undated = [], [], 0
     for row in rows:
