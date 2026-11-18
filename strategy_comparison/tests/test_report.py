@@ -62,6 +62,22 @@ class ReportTests(unittest.TestCase):
                          ("2026-09-28", "2026-09-29", 1.0))
         self.assertIn("no forman una clasificación común", markdown(result))
 
+    def test_genetic_frozen_recovery_date_is_conditional_not_a_fill(self):
+        config = json.loads((ROOT / "classic_sp500/config.json").read_text())
+        state = json.loads((ROOT / "classic_sp500_state/ledger.json").read_text())
+        report = build(self.registry, self.config, now=self.now,
+                       classic_sp500_config=config, classic_sp500_state=state)
+        row = next(item for item in report["tracks"]
+                   if item["id"] == "classic_sp500_genetic_frozen")
+        self.assertIn("Primera apertura posible (condicionada): 2026-11-19",
+                      row["activity_label"])
+        self.assertNotIn("Reanudación desde apertura", row["activity_label"])
+        self.assertEqual(row["last_session"], state["books"]["genetic_frozen"]["equity"][-1]["date"])
+        self.assertEqual(row["open_positions_count"], 8)
+        self.assertEqual(row["data_quality_status"], "provisional_corporate_receivable")
+        self.assertEqual(state["books"]["genetic_frozen"]["receivables"][
+            "KVUE_KMB_2026-11-02"]["status"], "unsettled")
+
     def test_genetic_active_outage_is_visible_and_archives_never_join_its_curve(self):
         active = {"initial_capital": 100000., "equity_history": {
             "2026-10-28": 101000., "2026-11-02": 103000.},
