@@ -51,6 +51,13 @@ on:
     # Scheduled jobs may be delayed or dropped; only the FIRST valid lock wins.
     - cron: '17,47 7-8 * * 1-5'
       timezone: 'America/New_York'
+    # Secondary 08:11/08:31/08:51 ET preopen locks. On 2026-11-18
+    # the 07:17/07:47 ET schedule attempts had not appeared by 08:03 ET.
+    # These only freeze the FIRST valid plan; subsequent attempts leave its
+    # hash/source unchanged. Merge of this workflow also wakes the push
+    # bootstrap, which must run strictly before NYSE opening.
+    - cron: '11,31,51 8 * * 1-5'
+      timezone: 'America/New_York'
     - cron: '7,17 9 * * 1-5'
       timezone: 'America/New_York'
     # Exchange-local opening quotes are best effort, never backfilled.
