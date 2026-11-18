@@ -37,18 +37,42 @@ class OpeningPlanTest(unittest.TestCase):
         self.assertEqual(archived["orders"], [])
 
     def test_il012_19nov_preopen_ready_only_if_18nov_close_and_claim_are_valid(self):
-        # Synthetic future valuation, never written to the canonical paper
-        # ledger. The live 17-Nov book is a read-only accounting fixture.
-        root = Path(__file__).resolve().parents[1]
-        live = json.loads((root / "classic_sp500_state/ledger.json").read_text())
-        book = copy.deepcopy(live["books"]["genetic_frozen"])
+        # Deterministic historical fixture, not the mutable production ledger.
+        # This test must still pass AFTER the real 18-Nov close is written.
+        from classic_sp500.corporate_actions import ACTION, EFFECTIVE, ISSUER, REFERENCE
         previous, target = "2026-11-18", "2026-11-19"
+        observed = "2026-11-03T16:28:14+00:00"
+        book = {
+            "equity": [{"date": "2026-11-17", "nav": 107741.70}],
+            "positions": {ticker: {} for ticker in (
+                "ABT", "DRI", "IDXX", "KMB", "LH", "MNST", "SJM", "WELL")},
+            "pending": {},
+            "cash": 5000.,
+            "outage_control": {"first_trading_session": target},
+            "receivables": {ACTION: {
+                "action_id": ACTION, "effective_session": EFFECTIVE,
+                "status": "unsettled", "symbol": "KMB",
+                "source_url": ISSUER, "valuation_reference_url": REFERENCE,
+                "valuation_policy": "occ_temporary_reference_applied_to_paper_claim",
+                "recorded_at_utc": observed, "fixed_cash": "2257.90",
+                "fractional_shares": "0.34802970125",
+                "allocated_cost": 2169.9297082280136,
+            }},
+            "events": [{
+                "type": "corporate_merger_entitlement",
+                "action_id": ACTION, "date": EFFECTIVE,
+                "source_url": ISSUER, "valuation_reference_url": REFERENCE,
+                "cash_credited": 0, "trades_executed": 0,
+                "recorded_at_utc": observed,
+                "original_position": {"shares": 645.114733, "cost": 11874.999992119001},
+                "successor_whole_shares": 94,
+                "fractional_shares": "0.34802970125",
+                "fixed_cash_receivable": "2257.90",
+            }],
+        }
         self.assertEqual(
             plan_track("IL-012", book, target, previous)["status"], "stale")
-        self.assertEqual(book["receivables"]["KVUE_KMB_2026-11-02"]["status"], "unsettled")
-
-        # Imagine the nightly 18-Nov mark has actually been published.
-        book["equity"].append({"date": previous, "nav": book["nav"],
+        book["equity"].append({"date": previous, "nav": 107741.70,
                                "provisional_corporate_valuation": True})
         eligible = plan_track("IL-012", book, target, previous)
         self.assertEqual(eligible["status"], "recorded")
@@ -56,12 +80,10 @@ class OpeningPlanTest(unittest.TestCase):
         self.assertEqual(eligible["orders"], [])
         self.assertEqual(eligible["holdings"], sorted(book["positions"]))
         market_open = datetime(2026, 11, 19, 14, 30, tzinfo=timezone.utc)
-        frozen = clock_plan(
-            market_open - timedelta(minutes=10),
-            {"session": target, "previous": previous,
-             "open": market_open, "close": market_open + timedelta(hours=6, minutes=30)},
-            {"IL-012": eligible}, "a" * 40)
-        lane = frozen["slots"]["IL-012"]
+        market = {"session": target, "previous": previous,
+                  "open": market_open, "close": market_open + timedelta(hours=6, minutes=30)}
+        lane = clock_plan(market_open-timedelta(minutes=10),
+                          market, {"IL-012": eligible}, "a"*40)["slots"]["IL-012"]
         self.assertTrue(lane["execution_ready"])
         self.assertEqual(lane["monitor_tickers"], sorted(book["positions"]))
         self.assertEqual(lane["orders"], [])
@@ -71,26 +93,20 @@ class OpeningPlanTest(unittest.TestCase):
                                ("fixed_cash", "999999"),
                                ("action_id", "forged")):
             wrong = copy.deepcopy(book)
-            wrong["receivables"]["KVUE_KMB_2026-11-02"][field] = invalid
+            wrong["receivables"][ACTION][field] = invalid
             plan = plan_track("IL-012", wrong, target, previous)
-            self.assertEqual((plan["status"], plan["orders"]),
-                             ("paused", []), field)
-            rejected = clock_plan(
-                market_open - timedelta(minutes=10),
-                {"session": target, "previous": previous,
-                 "open": market_open, "close": market_open + timedelta(hours=6, minutes=30)},
-                {"IL-012": plan}, "a" * 40)
+            self.assertEqual((plan["status"], plan["orders"]), ("paused", []), field)
+            rejected = clock_plan(market_open-timedelta(minutes=10),
+                                  market, {"IL-012": plan}, "a"*40)
             self.assertFalse(rejected["slots"]["IL-012"]["execution_ready"])
             self.assertEqual(rejected["slots"]["IL-012"]["monitor_tickers"], [])
-
-        other = copy.deepcopy(book)
-        other["receivables"]["UNKNOWN"] = {"status": "unsettled"}
-        self.assertEqual(plan_track("IL-012", other, target, previous)["status"], "paused")
-        other = copy.deepcopy(book)
-        other["outage_control"]["first_trading_session"] = "2026-11-20"
-        self.assertEqual(plan_track("IL-012", other, target, previous)["status"], "paused")
-        other = copy.deepcopy(book)
-        other["paused_missing_quotes"] = {"missing_tickers": ["KMB"]}
-        self.assertEqual(plan_track("IL-012", other, target, previous)["status"], "paused")
-        self.assertEqual(live["books"]["genetic_frozen"]["equity"][-1]["date"],
-                         "2026-11-17")
+        wrong = copy.deepcopy(book)
+        wrong["receivables"]["UNKNOWN"] = {"status": "unsettled"}
+        self.assertEqual(plan_track("IL-012", wrong, target, previous)["status"], "paused")
+        wrong = copy.deepcopy(book)
+        wrong["outage_control"]["first_trading_session"] = "2026-11-20"
+        self.assertEqual(plan_track("IL-012", wrong, target, previous)["status"], "paused")
+        wrong = copy.deepcopy(book)
+        wrong["paused_missing_quotes"] = {"missing_tickers": ["KMB"]}
+        self.assertEqual(plan_track("IL-012", wrong, target, previous)["status"], "paused")
+        self.assertEqual(book["receivables"][ACTION]["status"], "unsettled")
