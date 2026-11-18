@@ -195,7 +195,7 @@
       "trades": []
     },
     "timesfm_daily": {
-      "cash": 87317.52463113972,
+      "cash": 99753.75508913813,
       "equity": [
         {
           "date": "2026-10-12",
@@ -994,21 +994,23 @@
             "MSI"
           ],
           "type": "inactive_mark_only_no_execution"
+        },
+        {
+          "date": "2026-11-18",
+          "execution": "forward_observed_preclose",
+          "idempotency_key": "IL-042:2026-11-18:exit:timesfm_eur_forward_v1:MSI",
+          "lock_sha256": "5c7c7d6f65a3c55e660a0e814565d1955f16c4d5199111b10d51ea7dbd13888a",
+          "observed_at_utc": "2026-11-18T20:55:37.459589Z",
+          "price_eur": 477.2913696079349,
+          "quote_at_utc": "2026-11-18T20:55:00Z",
+          "source_commit": "f1f67b5bce5679c05de36dcabede2b0106722bb4",
+          "ticker": "MSI",
+          "type": "sell"
         }
       ],
       "nav": 99795.8549049987,
       "pending": [],
-      "positions": {
-        "MSI": {
-          "cost_eur": 12473.931669943287,
-          "dividends_eur": 0.0,
-          "entry_date": "2026-11-12",
-          "entry_price_eur": 477.78178820766414,
-          "fx_at_entry": 1.1168941259384155,
-          "shares": 26.081928,
-          "signal_date": "2026-11-11"
-        }
-      },
+      "positions": {},
       "trades": [
         {
           "entry_cost_eur": 12499.99987567701,
@@ -1509,6 +1511,23 @@
           "shares": 843.91365,
           "signal_date": "2026-11-06",
           "ticker": "PCG"
+        },
+        {
+          "entry_cost_eur": 12473.931669943287,
+          "entry_date": "2026-11-12",
+          "execution": "forward_observed_preclose",
+          "exit_date": "2026-11-18",
+          "fx_usd_per_eur": 1.0979359149932861,
+          "idempotency_key": "IL-042:2026-11-18:exit:timesfm_eur_forward_v1:MSI",
+          "lock_sha256": "5c7c7d6f65a3c55e660a0e814565d1955f16c4d5199111b10d51ea7dbd13888a",
+          "net_pnl_eur": -37.701211944877286,
+          "observed_at_utc": "2026-11-18T20:55:37.459589Z",
+          "quote_at_utc": "2026-11-18T20:55:00Z",
+          "sale_eur": 12436.23045799841,
+          "shares": 26.081928,
+          "signal_date": "2026-11-11",
+          "source_commit": "f1f67b5bce5679c05de36dcabede2b0106722bb4",
+          "ticker": "MSI"
         }
       ]
     }
@@ -1646,6 +1665,21 @@
       "recorded_at_utc": "2026-11-12T14:38:04.500874Z",
       "session": "2026-11-12",
       "source_commit": "372d05ea67a8acc97c47dcffad82348161f91268"
+    },
+    "IL-042:2026-11-18:exit:timesfm_eur_forward_v1": {
+      "exit_fx_quote_at_utc": "2026-11-18T20:55:00Z",
+      "exit_fx_usd_per_eur": 1.0979359149932861,
+      "family": "daily",
+      "fill_tickers": [
+        "MSI"
+      ],
+      "fills_count": 1,
+      "lock_sha256": "5c7c7d6f65a3c55e660a0e814565d1955f16c4d5199111b10d51ea7dbd13888a",
+      "mode": "exit",
+      "quotes_sha256": "9c287c5ffc2d9204ef12ce5fd03c121053d528d51147c2dd465086fd08daaf5d",
+      "recorded_at_utc": "2026-11-18T20:55:39.447664Z",
+      "session": "2026-11-18",
+      "source_commit": "f1f67b5bce5679c05de36dcabede2b0106722bb4"
     }
   },
   "fx_method": "previous_XNYS_session_EURUSD_close_at_open; current_EURUSD_close_at_mark",

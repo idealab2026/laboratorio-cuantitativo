@@ -1,5 +1,5 @@
 {
-  "checked_at_utc": "2026-11-18T20:36:10.773043Z",
+  "checked_at_utc": "2026-11-18T20:55:39.447664Z",
   "lock_sha256": "5c7c7d6f65a3c55e660a0e814565d1955f16c4d5199111b10d51ea7dbd13888a",
   "mode": "single_midas_operator_monitor_no_broker",
   "note": "Observed quotes are not fills. A native engine must settle quantity/cash before a trade counts in P&L.",
@@ -8,9 +8,9 @@
   "previous_session": "2026-11-17",
   "quote_budget": {
     "hard_symbol_limit": 250,
-    "observed_symbols": 38,
+    "observed_symbols": 54,
     "omitted_algorithm_lanes": {},
-    "requested_symbols": 38
+    "requested_symbols": 54
   },
   "run_id": 44392602813,
   "schema": "midas.operational_clock.v1",
@@ -893,13 +893,41 @@
       "waiting": 0
     },
     "IL-042": {
+      "fills": [
+        {
+          "currency": "EUR",
+          "fee": 12.448679137135548,
+          "fx_usd_per_eur": 1.0979359149932861,
+          "observed_at_utc": "2026-11-18T20:55:37.459589Z",
+          "price": 477.2913696079349,
+          "quantity": 26.081928,
+          "side": "sell",
+          "ticker": "MSI"
+        }
+      ],
+      "fills_count": 1,
       "holdings_count": 1,
-      "native_settlement": "no_execution_due",
+      "native_marker": {
+        "exit_fx_quote_at_utc": "2026-11-18T20:55:00Z",
+        "exit_fx_usd_per_eur": 1.0979359149932861,
+        "family": "daily",
+        "fill_tickers": [
+          "MSI"
+        ],
+        "fills_count": 1,
+        "lock_sha256": "5c7c7d6f65a3c55e660a0e814565d1955f16c4d5199111b10d51ea7dbd13888a",
+        "mode": "exit",
+        "quotes_sha256": "9c287c5ffc2d9204ef12ce5fd03c121053d528d51147c2dd465086fd08daaf5d",
+        "recorded_at_utc": "2026-11-18T20:55:39.447664Z",
+        "session": "2026-11-18",
+        "source_commit": "f1f67b5bce5679c05de36dcabede2b0106722bb4"
+      },
+      "native_settlement": "settled_native_paper",
       "observed": 0,
       "orders": [],
       "planned": 0,
       "source_session": "2026-11-17",
-      "status": "active_no_orders",
+      "status": "native_forward_settled",
       "waiting": 0
     },
     "IL-043": {
