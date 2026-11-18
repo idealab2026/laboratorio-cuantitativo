@@ -158,6 +158,8 @@ class InactiveRecoveryTests(unittest.TestCase):
                             for p in updated["equity"][1:]))
         self.assertEqual(updated["outage_control"]["first_trading_session"], "2026-11-19")
         self.assertNotIn("paused_missing_quotes", updated)
+        self.assertEqual(updated["pending"], {})
+        self.assertEqual(updated["receivables"]["KVUE_KMB_2026-11-02"]["status"], "unsettled")
         for field in ("cash", "positions", "trades", "receivables"):
             self.assertEqual(updated[field], before["books"]["genetic_frozen"][field])
         self.assertEqual(got["books"]["unrelated"], before["books"]["unrelated"])
