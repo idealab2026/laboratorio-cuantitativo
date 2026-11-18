@@ -68,9 +68,27 @@
           ],
           "status": "common_raw_primary"
         }
+      },
+      {
+        "date": "2026-11-17",
+        "nav": 95536.69354570027,
+        "return_pct": -1.9620927081088424,
+        "source_identity": {
+          "effective_sha256": "9d22076ed0a0b2d21a46d893576826161750cbe9bb92367850f0465ff13e116d",
+          "hash": "2183ed0847ee910e45f32dac6813259f3f4658f6084ef0e6d73026eaa206f004",
+          "independent_symbols": [],
+          "missing": [],
+          "recovered_bar_methods": {
+            "KIM": "yahoo_regular_range_daily_ocv_v1"
+          },
+          "revision_hashes": [
+            "9d22076ed0a0b2d21a46d893576826161750cbe9bb92367850f0465ff13e116d"
+          ],
+          "status": "common_raw_primary"
+        }
       }
     ],
-    "last_mark_session": "2026-11-16",
+    "last_mark_session": "2026-11-17",
     "nav_before": 97448.72793057082,
     "operations": [
       {
@@ -454,8 +472,8 @@
     "signal_date": "2026-11-13",
     "signal_hash": "04bf86916db1a43ab3d569971569aa24d150200bc0c6c4114e48868e0fda1d18",
     "status": "open",
-    "stop_due": false,
-    "stop_observed_date": null,
+    "stop_due": true,
+    "stop_observed_date": "2026-11-17",
     "unfilled": []
   },
   "forward_executions": {
