@@ -5,7 +5,7 @@ provenance. YouTube remains the canonical source identity; the official podcast
 feed is only a transport fallback for matched long-form episodes.
 """
 from __future__ import annotations
-import argparse, datetime as dt, json, os, re, tempfile, urllib.request, urllib.error
+import argparse, datetime as dt, json, os, re, signal, subprocess, sys, tempfile, urllib.request, urllib.error
 from pathlib import Path
 
 PRIORITY={"methodology":0,"portfolio_update":1,"sector_theme":2,"company_or_theme":3,
@@ -13,6 +13,91 @@ PRIORITY={"methodology":0,"portfolio_update":1,"sector_theme":2,"company_or_them
 LLM_REPO="Qwen/Qwen3-4B-GGUF"
 LLM_FILE="Qwen3-4B-Q4_K_M.gguf"
 ASR_MODEL="small"
+# A native SIGILL terminates Python before exceptions can be caught. Keep
+# ffmpeg/ASR and llama.cpp in separate processes, using only /tmp for verbatim.
+NATIVE_STAGES = ("asr", "analysis")
+
+
+def stage_trace(stage):
+    """No transcript, title, audio URL, prompt, or full model path in logs."""
+    if stage not in {
+        "audio_download_start", "audio_download_complete",
+        "asr_before_model", "asr_model_ready", "asr_before_decode", "asr_decode_complete",
+        "llm_before_hf_download", "llm_download_complete",
+        "llm_before_native_import", "llm_native_import_complete",
+        "llm_before_model_init", "llm_model_ready", "analysis_before_inference",
+        "analysis_complete", "asr_child_finished", "analysis_child_finished",
+        "asr_sigill", "analysis_sigill", "asr_native_failed", "analysis_native_failed",
+    }:
+        raise ValueError("Unknown native lifecycle stage")
+    print("BTD_NATIVE_STAGE=" + stage, file=sys.stderr, flush=True)
+
+
+def native_subprocess(stage, payload, directory, *, python=None, timeout=9000):
+    """Return native-derived data ONLY after a child exits successfully.
+
+    An OS-level illegal instruction does not kill the parent, truncate an
+    in-repository ledger, or falsely mark the episode reviewed. No process
+    output is captured; logs contain fixed, non-sensitive stage markers only.
+    """
+    if stage not in NATIVE_STAGES:
+        raise ValueError("Unsupported native analysis stage")
+    directory = Path(directory)
+    source = directory / ("native_" + stage + "_input.json")
+    target = directory / ("native_" + stage + "_output.json")
+    if target.exists():
+        raise ValueError("Refusing to reuse previous native stage output")
+    atomic_json(source, payload)
+    env = dict(os.environ, PYTHONFAULTHANDLER="1", PYTHONUNBUFFERED="1")
+    cmd = [python or sys.executable, str(Path(__file__).resolve()),
+           "--native-stage", stage, "--stage-input", str(source),
+           "--stage-output", str(target)]
+    completed = subprocess.run(cmd, check=False, env=env, timeout=timeout)
+    if completed.returncode != 0:
+        sigill = completed.returncode in (-signal.SIGILL, 128 + signal.SIGILL)
+        stage_trace(stage + ("_sigill" if sigill else "_native_failed"))
+        raise RuntimeError("native_" + stage + "_sigill" if sigill
+                           else "native_" + stage + "_failed_code_" +
+                                str(completed.returncode))
+    if not target.is_file():
+        raise ValueError("Native stage produced no verified output")
+    result = read_json(target)
+    if stage == "asr":
+        if (not isinstance(result, dict) or
+                not isinstance(result.get("transcript"), str) or
+                not isinstance(result.get("asr"), dict) or
+                len(result["transcript"].split()) < 100):
+            raise ValueError("Malformed completed native ASR output")
+    elif (not isinstance(result, dict) or
+          not isinstance(result.get("analysis"), dict) or
+          not isinstance(result.get("evidence"), list)):
+        raise ValueError("Malformed completed native LLM output")
+    stage_trace(stage + "_child_finished")
+    return result
+
+
+def native_stage_child(stage, input_path, output_path):
+    """Native work only; parent owns review/progress publication."""
+    if stage not in NATIVE_STAGES:
+        raise ValueError("Unsupported native child stage")
+    data = read_json(input_path)
+    if stage == "asr":
+        audio = Path(data["audio_path"])
+        if not audio.is_file():
+            raise ValueError("Native ASR audio not present in temporary directory")
+        transcript, asr = transcribe(audio, data["model_name"])
+        result = {"transcript": transcript, "asr": asr}
+    else:
+        transcript, meta = data["transcript"], data["metadata"]
+        if not isinstance(transcript, str) or not isinstance(meta, dict):
+            raise ValueError("Invalid temporary semantic input")
+        llm = load_llm(os.environ.get("BTD_LLM_REPO", LLM_REPO),
+                       os.environ.get("BTD_LLM_FILE", LLM_FILE))
+        stage_trace("analysis_before_inference")
+        analysis, evidence = analyze_episode(llm, transcript, meta)
+        stage_trace("analysis_complete")
+        result = {"analysis": analysis, "evidence": evidence}
+    atomic_json(output_path, result)
 
 def read_json(path):
     return json.loads(Path(path).read_text(encoding="utf-8"))
@@ -97,15 +182,19 @@ def stamp(seconds):
     return f"{h:02d}:{m:02d}:{s:02d}"
 
 def transcribe(audio_path,model_name=ASR_MODEL):
+    stage_trace("asr_before_model")
     from faster_whisper import WhisperModel
     model=WhisperModel(model_name,device="cpu",compute_type="int8",cpu_threads=4)
+    stage_trace("asr_model_ready")
     segments,info=model.transcribe(str(audio_path),language="es",beam_size=3,
                                    vad_filter=True,condition_on_previous_text=True)
+    stage_trace("asr_before_decode")
     lines=[]; words=0
     for seg in segments:
         text=re.sub(r"\s+"," ",seg.text or "").strip()
         if not text: continue
         words+=len(text.split()); lines.append(f"[{stamp(seg.start)}] {text}")
+    stage_trace("asr_decode_complete")
     if words<100: raise ValueError("transcription_too_short")
     return "\n".join(lines),{
         "language":getattr(info,"language","es"),
@@ -136,10 +225,17 @@ def json_object(text):
     raise ValueError("llm_invalid_json")
 
 def load_llm(repo_id=LLM_REPO,filename=LLM_FILE):
+    stage_trace("llm_before_hf_download")
     from huggingface_hub import hf_hub_download
-    from llama_cpp import Llama
     path=hf_hub_download(repo_id=repo_id,filename=filename)
-    return Llama(model_path=path,n_ctx=16384,n_threads=4,n_batch=256,verbose=False)
+    stage_trace("llm_download_complete")
+    stage_trace("llm_before_native_import")
+    from llama_cpp import Llama
+    stage_trace("llm_native_import_complete")
+    stage_trace("llm_before_model_init")
+    model=Llama(model_path=path,n_ctx=16384,n_threads=4,n_batch=256,verbose=False)
+    stage_trace("llm_model_ready")
+    return model
 
 def chat_json(llm,system,prompt,max_tokens):
     """Bounded retry for truncated/invalid LLM output; never fabricate evidence."""
@@ -230,7 +326,9 @@ def run(queue_path,rss_path,state_dir,asr_model=ASR_MODEL):
     with tempfile.TemporaryDirectory(prefix="btd-analysis-") as tmp:
         audio=Path(tmp)/"episode.mp3"
         try:
+            stage_trace("audio_download_start")
             audio_bytes=download(ep["audio_url"],audio)
+            stage_trace("audio_download_complete")
         except urllib.error.HTTPError as error:
             if error.code not in (404,410):
                 raise
@@ -240,10 +338,20 @@ def run(queue_path,rss_path,state_dir,asr_model=ASR_MODEL):
             return {"status":"audio_transport_unavailable","video_id":vid,
                     "http_status":error.code,"retry_after_utc":retry,
                     "progress":update_progress(state_dir,queue,rss)}
-        transcript,asr=transcribe(audio,asr_model)
-        llm=load_llm(os.environ.get("BTD_LLM_REPO",LLM_REPO),
-                     os.environ.get("BTD_LLM_FILE",LLM_FILE))
-        analysis,evidence=analyze_episode(llm,transcript,meta)
+        if os.environ.get("BTD_NATIVE_ISOLATION") == "1":
+            asr_done = native_subprocess(
+                "asr", {"audio_path": str(audio), "model_name": asr_model}, tmp)
+            transcript, asr = asr_done["transcript"], asr_done["asr"]
+            reviewed = native_subprocess(
+                "analysis", {"transcript": transcript, "metadata": meta}, tmp)
+            analysis, evidence = reviewed["analysis"], reviewed["evidence"]
+        else:
+            # Direct path retained for simple unit tests; production uses
+            # isolated native workers so SIGILL cannot hide the failing phase.
+            transcript,asr=transcribe(audio,asr_model)
+            llm=load_llm(os.environ.get("BTD_LLM_REPO",LLM_REPO),
+                         os.environ.get("BTD_LLM_FILE",LLM_FILE))
+            analysis,evidence=analyze_episode(llm,transcript,meta)
     review={"schema_version":1,"status":"machine_first_pass",
             "reviewed_at_utc":dt.datetime.now(dt.timezone.utc).isoformat(),
             "source_identity":"Buy The Dip YouTube channel",
@@ -260,10 +368,24 @@ def run(queue_path,rss_path,state_dir,asr_model=ASR_MODEL):
             "category":q.get("category"),"progress":update_progress(state_dir,queue,rss)}
 
 def main(argv=None):
-    p=argparse.ArgumentParser(); p.add_argument("--queue",required=True)
-    p.add_argument("--rss",required=True); p.add_argument("--state",required=True)
+    p=argparse.ArgumentParser()
+    p.add_argument("--queue")
+    p.add_argument("--rss")
+    p.add_argument("--state")
     p.add_argument("--asr-model",default=os.environ.get("BTD_ASR_MODEL",ASR_MODEL))
-    a=p.parse_args(argv); print(json.dumps(run(a.queue,a.rss,a.state,a.asr_model),
-                                           indent=2,ensure_ascii=False))
+    p.add_argument("--native-stage",choices=NATIVE_STAGES)
+    p.add_argument("--stage-input")
+    p.add_argument("--stage-output")
+    a=p.parse_args(argv)
+    if a.native_stage:
+        if not a.stage_input or not a.stage_output or any((
+                a.queue,a.rss,a.state)):
+            p.error("An isolated native child requires only stage input and output")
+        native_stage_child(a.native_stage,a.stage_input,a.stage_output)
+        return
+    if not a.queue or not a.rss or not a.state or a.stage_input or a.stage_output:
+        p.error("--queue, --rss and --state are mandatory for an episode run")
+    print(json.dumps(run(a.queue,a.rss,a.state,a.asr_model),
+                     indent=2,ensure_ascii=False))
 
 if __name__=="__main__": main()

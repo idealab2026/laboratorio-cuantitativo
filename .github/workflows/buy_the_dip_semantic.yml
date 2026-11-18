@@ -89,6 +89,12 @@ jobs:
       - name: Process next eligible episode
         if: ${{ github.event_name != 'pull_request' }}
         env:
+          # Each native backend runs in a separate ephemeral child. If its
+          # C/C++ runtime raises SIGILL, the parent logs the exact stage and
+          # refuses to write an invented reviewed episode.
+          BTD_NATIVE_ISOLATION: '1'
+          PYTHONFAULTHANDLER: '1'
+          PYTHONUNBUFFERED: '1'
           OMP_NUM_THREADS: '4'
           BTD_ASR_MODEL: small
           BTD_LLM_REPO: Qwen/Qwen3-4B-GGUF
