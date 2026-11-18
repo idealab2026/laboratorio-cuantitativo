@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "generated_at_utc": "2026-11-18T23:54:15.101083+00:00",
+  "generated_at_utc": "2026-11-18T23:56:52.623459+00:00",
   "principle": "Comparar rentabilidad acumulada y riesgo observado; no ordenar carteras con distintas fechas de inicio o supuestos de ejecución.",
   "counts": {
     "paper_with_diary": 18,
@@ -5078,11 +5078,11 @@
       "group": "timesfm_daily_demo",
       "status": "demo_con_diario",
       "first_session": "2026-10-12",
-      "last_session": "2026-11-17",
+      "last_session": "2026-11-18",
       "initial_capital": 100000.0,
-      "last_equity": 99795.8549049987,
-      "return_pct": -0.204145,
-      "day_return_pct": -0.158789,
+      "last_equity": 99753.75508913813,
+      "return_pct": -0.246245,
+      "day_return_pct": -0.042186,
       "currency": "EUR",
       "equity_history": [
         {
@@ -5192,29 +5192,36 @@
         {
           "date": "2026-11-17",
           "nav": 99795.8549049987
+        },
+        {
+          "date": "2026-11-18",
+          "nav": 99753.75508913813
         }
       ],
       "period_returns_pct": {
-        "5_sessions": 0.004408,
-        "21_sessions": -0.068711,
+        "5_sessions": -0.03778,
+        "21_sessions": -0.523515,
         "63_sessions": null
       },
       "note": "TimesFM 2.5: predicción de una sesión sobre el S&P 500 canónico; cartera intradía ficticia, EUR 100k, fills next-open, cierre del mismo día; referencia SPY EUR de misma cohorte.",
       "comparison_currency": "EUR",
       "comparison_reference": "timesfm_daily_spy_eur",
-      "activity_state": "cash",
-      "activity_label": "Sin compras · en efectivo",
-      "activity_tickers": [],
+      "activity_state": "pending",
+      "activity_label": "2 compras paper para próxima apertura",
+      "activity_tickers": [
+        "GDDY",
+        "ELV"
+      ],
       "open_positions_count": 0,
-      "pending_orders_count": 0,
+      "pending_orders_count": 2,
       "comparison_eligible": true,
       "comparison_universe_id": "SP500_2026-09-29_503",
       "comparison_universe_symbols": 503,
       "comparison_exclusion_reason": null,
-      "risk_observations": 27,
-      "annualized_volatility_pct": 10.533674,
+      "risk_observations": 28,
+      "annualized_volatility_pct": 10.329718,
       "max_drawdown_pct": -2.841353,
-      "sharpe_0rf": -0.136724
+      "sharpe_0rf": -0.172376
     },
     {
       "id": "timesfm_daily_spy_eur",
@@ -5223,11 +5230,11 @@
       "group": "timesfm_daily_demo",
       "status": "demo_con_diario",
       "first_session": "2026-10-12",
-      "last_session": "2026-11-17",
+      "last_session": "2026-11-18",
       "initial_capital": 100000.0,
-      "last_equity": 96684.66583579511,
-      "return_pct": -3.315334,
-      "day_return_pct": -0.610343,
+      "last_equity": 96601.481616081,
+      "return_pct": -3.398518,
+      "day_return_pct": -0.086037,
       "currency": "EUR",
       "equity_history": [
         {
@@ -5337,11 +5344,15 @@
         {
           "date": "2026-11-17",
           "nav": 96684.66583579511
+        },
+        {
+          "date": "2026-11-18",
+          "nav": 96601.481616081
         }
       ],
       "period_returns_pct": {
-        "5_sessions": -0.620827,
-        "21_sessions": -1.960952,
+        "5_sessions": -2.249073,
+        "21_sessions": -2.37376,
         "63_sessions": null
       },
       "note": "TimesFM 2.5: predicción de una sesión sobre el S&P 500 canónico; cartera intradía ficticia, EUR 100k, fills next-open, cierre del mismo día; referencia SPY EUR de misma cohorte.",
@@ -5358,10 +5369,10 @@
       "comparison_universe_id": "SP500_2026-09-29_503",
       "comparison_universe_symbols": 503,
       "comparison_exclusion_reason": null,
-      "risk_observations": 27,
-      "annualized_volatility_pct": 16.962359,
+      "risk_observations": 28,
+      "annualized_volatility_pct": 16.633367,
       "max_drawdown_pct": -5.097625,
-      "sharpe_0rf": -1.842939
+      "sharpe_0rf": -1.858061
     },
     {
       "id": "genetic_sp500_legacy",
