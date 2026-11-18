@@ -80,11 +80,39 @@ jobs:
           path: ~/.cache/huggingface
           key: btd-local-models-qwen3-4b-whisper-small-v1
 
-      - name: Install local transcription and analysis runtime
+      - name: Install portable local llama.cpp runtime, never the incompatible binary wheel
         if: ${{ github.event_name != 'pull_request' }}
+        env:
+          # Observed SIGILL at Llama(...) model initialization on hosted runner
+          # (2026-11-18 #44290658720): the prebuilt py3-none-linux wheel
+          # imported, but its native backend was NOT compatible with the CPU.
+          # Compile upstream pinned source with a conservative x86_64 baseline.
+          CMAKE_ARGS: >-
+            -DGGML_NATIVE=OFF
+            -DGGML_AVX=OFF
+            -DGGML_AVX2=OFF
+            -DGGML_AVX512=OFF
+            -DGGML_AVX512_VBMI=OFF
+            -DGGML_AVX512_VNNI=OFF
+            -DGGML_AVX512_BF16=OFF
+            -DGGML_FMA=OFF
+            -DGGML_F16C=OFF
+            -DGGML_BMI2=OFF
+            -DGGML_OPENMP=OFF
+            -DGGML_BLAS=OFF
+          CMAKE_BUILD_PARALLEL_LEVEL: '2'
+          FORCE_CMAKE: '1'
         run: |
-          python -m pip install llama-cpp-python==0.3.31 \
-            --extra-index-url https://abetlen.github.io/llama-cpp-python/whl/cpu
+          set -euo pipefail
+          # Explicit --no-binary prevents the CPU wheel that crashed with SIGILL.
+          # --no-cache-dir prevents reuse of an old nonportable compiled wheel.
+          python -m pip install --disable-pip-version-check --no-cache-dir \
+            --no-binary=llama-cpp-python "llama-cpp-python==0.3.31"
+          python - <<'PY'
+          import llama_cpp
+          from llama_cpp import Llama
+          print("portable llama_cpp import OK", llama_cpp.__version__, flush=True)
+          PY
 
       - name: Process next eligible episode
         if: ${{ github.event_name != 'pull_request' }}
