@@ -20,7 +20,7 @@ GENETIC_NINE_SESSION_BOUND = 9  # Reviewed IL-012 outage 05–17 Nov 2026, never
 REVIEWED_PAUSED_WEEKLY = ("arima_return", "lgbm_ranker", "mlp_return")
 
 
-def window(last, now, *, max_sessions=MAX_SESSIONS):
+def window(last, now, *, max_sessions=MAX_SESSIONS, reviewed_genetic_nine=False):
     import pandas_market_calendars as calendars
     if now.tzinfo is None:
         raise ValueError("Recovery clock must be timezone-aware")
@@ -33,8 +33,11 @@ def window(last, now, *, max_sessions=MAX_SESSIONS):
     if not closed or closed[0] != last or not future:
         raise ValueError("Missing closed-session or future-opening boundary")
     days = closed[1:]
-    if type(max_sessions) is not int or not MAX_SESSIONS <= max_sessions <= GENETIC_NINE_SESSION_BOUND:
-        raise ValueError("Reviewed recovery window must be an integer from four to nine")
+    if not (type(max_sessions) is int and
+            (MAX_SESSIONS <= max_sessions <= 8 or
+             reviewed_genetic_nine is True and max_sessions == GENETIC_NINE_SESSION_BOUND)):
+        raise ValueError("Reviewed recovery window must be an integer from four to eight, "
+                         "except the explicit genetic nine-session review")
     if len(days) > max_sessions:
         raise ValueError("Outage exceeds bounded recovery; explicit review required")
     return closed[-1], future[0], days
@@ -66,7 +69,8 @@ def reconcile_classic(state, loader, *, now, reviews=None, only_book=None,
             continue
         last = original["equity"][-1]["date"]
         latest, first, days = window(last, now, max_sessions=(
-            GENETIC_NINE_SESSION_BOUND if reviewed_genetic_nine else MAX_SESSIONS))
+            GENETIC_NINE_SESSION_BOUND if reviewed_genetic_nine else MAX_SESSIONS),
+            reviewed_genetic_nine=reviewed_genetic_nine)
         if reviewed_genetic_nine and days != [
                 "2026-11-05", "2026-11-06", "2026-11-09", "2026-11-10",
                 "2026-11-11", "2026-11-12", "2026-11-13", "2026-11-16",
