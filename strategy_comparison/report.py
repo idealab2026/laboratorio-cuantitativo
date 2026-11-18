@@ -404,7 +404,7 @@ def build(registry, paper_config, paper_state=None, legacy_state=None, now=None,
                 row["outage_control"] = book.get("outage_control", {})
                 first = row["outage_control"].get("first_trading_session")
                 if first:
-                    row["activity_label"] += " · Reanudación desde apertura: " + first
+                    row["activity_label"] += " · Primera apertura posible (condicionada): " + first
             if late:
                 row["late_calculation_sessions"] = late
                 row["activity_label"] += " · Cálculo tardío: " + ", ".join(late)
@@ -418,7 +418,7 @@ def build(registry, paper_config, paper_state=None, legacy_state=None, now=None,
                 row["note"] += " Derecho de cobro pendiente; referencia temporal OCC, no importe final de liquidación."
                 first = None if inactive else book.get("outage_control", {}).get("first_trading_session")
                 if first:
-                    row["activity_label"] += " · Reanudación desde apertura: " + first
+                    row["activity_label"] += " · Primera apertura posible (condicionada): " + first
             if quarantined:
                 row["data_quality_status"] = "held_quote_unavailable"
                 row["activity_label"] = ("VALORACIÓN PAUSADA · falta cotización; "
