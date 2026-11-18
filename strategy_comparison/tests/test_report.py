@@ -63,8 +63,8 @@ class ReportTests(unittest.TestCase):
         self.assertIn("no forman una clasificación común", markdown(result))
 
     def test_genetic_frozen_recovery_date_is_conditional_not_a_fill(self):
-        config = json.loads((ROOT / "classic_sp500/config.json").read_text())
-        state = json.loads((ROOT / "classic_sp500_state/ledger.json").read_text())
+        config = json.loads((ROOT.parent / "classic_sp500/config.json").read_text())
+        state = json.loads((ROOT.parent / "classic_sp500_state/ledger.json").read_text())
         report = build(self.registry, self.config, now=self.now,
                        classic_sp500_config=config, classic_sp500_state=state)
         row = next(item for item in report["tracks"]
