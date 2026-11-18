@@ -233,6 +233,81 @@ if __name__=="__main__":
     unittest.main()
 
 
+    def test_tfg_forward_native_open_and_exit_are_exported_without_invented_orders(self):
+        def fill(day, side, price, fee):
+            return {
+                "date": day, "ticker": "AEE", "side": side, "quantity": 2.0,
+                "price": price, "fee": fee, "execution": "forward_observed_paper",
+                "idempotency_key": f"IL-037:{day}:{'open' if side == 'buy' else 'stop'}:tfg_ahp_forward_v1:AEE",
+                "lock_sha256": "a" * 64, "source_commit": "b" * 40,
+                "quote_at_utc": day + "T14:34:00Z",
+                "observed_at_utc": day + "T14:34:02Z",
+            }
+        entry = fill("2026-11-16", "buy", 100.0, 0.20)
+        exit_fill = fill("2026-11-18", "sell", 95.0, 0.19)
+        observations = [entry, exit_fill]
+        forward = {
+            "status": "closed", "signal_date": "2026-11-13",
+            "operations": observations,
+            "closed_trade": {
+                "status": "settled_forward_observed", "exit_reason": "portfolio_stop_next_open",
+                "source_evidence": observations,
+            },
+        }
+        original = {"events": [], "trades": [], "forward_book": forward}
+        audited = normalize_ledger(original, "tfg_state/ledger.json")
+        buys = audited["2026-11-16"]
+        sells = audited["2026-11-18"]
+        self.assertEqual(len(buys), 1)
+        self.assertEqual(len(sells), 1)
+        self.assertEqual((buys[0]["side"], sells[0]["side"]), ("buy", "sell"))
+        self.assertEqual((buys[0]["price"], buys[0]["quantity"], buys[0]["fee"]),
+                         (100.0, 2.0, 0.20))
+        self.assertEqual((sells[0]["price"], sells[0]["quantity"], sells[0]["fee"]),
+                         (95.0, 2.0, 0.19))
+        self.assertEqual(sells[0]["price_basis"], "book_fill")
+        self.assertEqual(sells[0]["reason_basis"], "recorded")
+        self.assertIn("stop global", sells[0]["reason"])
+        self.assertIn("forward_book/operations", sells[0]["evidence"])
+        self.assertEqual(sells[0]["signal_date"], "2026-11-13")
+        # The historical ledger and frozen NAV are never modified by the exporter.
+        self.assertEqual(original["trades"], [])
+        self.assertEqual(original["events"], [])
+
+        bad = dict(exit_fill, quote_at_utc=None)
+        with self.assertRaisesRegex(ValueError, "provenance"):
+            normalize_ledger({"events": [], "trades": [],
+                              "forward_book": dict(forward, operations=[entry, bad],
+                                                   closed_trade=dict(forward["closed_trade"],
+                                                                     source_evidence=[entry, bad]))},
+                             "tfg_state/ledger.json")
+        # A retrospective proxy is not a certified native execution.
+        ignored = normalize_ledger(
+            {"events": [], "trades": [],
+             "forward_book": {"status": "open", "signal_date": "2026-11-13",
+                              "operations": [dict(entry, execution="simulated_week_close")]}},
+            "tfg_state/ledger.json")
+        self.assertEqual(dict(ignored), {})
+
+    def test_current_tfg_forward_fill_rows_reconcile_with_canonical_book(self):
+        ledger, _ = read("tfg_state/ledger.json")
+        forward = ledger.get("forward_book") or {}
+        observations = [event for event in forward.get("operations", [])
+                        if event.get("execution") == "forward_observed_paper"]
+        if observations:
+            sessions = {row["date"]: row["actions"]
+                        for row in self.doc["tracks"]["IL-037"]["sessions"]}
+            for event in observations:
+                matched = [action for action in sessions[event["date"]]
+                           if action["ticker"] == event["ticker"] and
+                           action["side"] == event["side"]]
+                self.assertEqual(len(matched), 1,
+                                 (event["date"], event["ticker"], event["side"]))
+                self.assertAlmostEqual(matched[0]["quantity"], event["quantity"], places=6)
+                self.assertAlmostEqual(matched[0]["price"], event["price"], places=6)
+                self.assertAlmostEqual(matched[0]["fee"], event["fee"], places=6)
+
+
 class ClassicDecisionTraceTests(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
