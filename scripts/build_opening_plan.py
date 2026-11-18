@@ -3,9 +3,16 @@ from datetime import timedelta
 from functools import lru_cache
 import json
 import subprocess
+import sys
 from zoneinfo import ZoneInfo
 
 from build_operations_audit import ROOT, date, pending_signals, signal_book, source_book, source_for
+
+# Audit packaging invokes this module as 'python scripts/build_operations_audit.py':
+# sys.path then contains only scripts/, while the shared claim verifier imports
+# classic_sp500 from the fixed repository root. Add that trusted root once.
+if str(ROOT) not in sys.path:
+    sys.path.insert(0, str(ROOT))
 
 # These engines consume a pending order on the next XNYS session, even
 # when its ledger only stores signal_date. Archived weekly engines are excluded.
