@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "generated_at_utc": "2026-11-18T17:48:51.078710+00:00",
+  "generated_at_utc": "2026-11-18T18:03:30.225789+00:00",
   "principle": "Comparar rentabilidad acumulada y riesgo observado; no ordenar carteras con distintas fechas de inicio o supuestos de ejecución.",
   "counts": {
     "paper_with_diary": 18,
@@ -795,7 +795,7 @@
       "evaluated_universe_symbols": 488,
       "eligible_universe_symbols": 503,
       "activity_state": "active",
-      "activity_label": "489 posiciones abiertas · Inactividad sin operaciones: 2026-11-02, 2026-11-03 · Reanudación desde apertura: 2026-11-05 · CANJE CON VALORACIÓN PROVISIONAL; cobro separado del efectivo",
+      "activity_label": "489 posiciones abiertas · Inactividad sin operaciones: 2026-11-02, 2026-11-03 · Primera apertura posible (condicionada): 2026-11-05 · CANJE CON VALORACIÓN PROVISIONAL; cobro separado del efectivo",
       "activity_tickers": [
         "A",
         "AAPL",
@@ -968,7 +968,7 @@
       "evaluated_universe_symbols": 488,
       "eligible_universe_symbols": 503,
       "activity_state": "active",
-      "activity_label": "7 posiciones abiertas · Inactividad sin operaciones: 2026-11-03, 2026-11-04 · Reanudación desde apertura: 2026-11-05 · Cálculo tardío: 2026-11-04",
+      "activity_label": "7 posiciones abiertas · Inactividad sin operaciones: 2026-11-03, 2026-11-04 · Primera apertura posible (condicionada): 2026-11-05 · Cálculo tardío: 2026-11-04",
       "activity_tickers": [
         "BF-B",
         "CNP",
@@ -1124,7 +1124,7 @@
       "evaluated_universe_symbols": 488,
       "eligible_universe_symbols": 503,
       "activity_state": "active",
-      "activity_label": "8 posiciones abiertas · Inactividad sin operaciones: 2026-11-02, 2026-11-03, 2026-11-04, 2026-11-05, 2026-11-06, 2026-11-09, 2026-11-10, 2026-11-11, 2026-11-12, 2026-11-13, 2026-11-16, 2026-11-17 · Reanudación desde apertura: 2026-11-19 · CANJE CON VALORACIÓN PROVISIONAL; cobro separado del efectivo",
+      "activity_label": "8 posiciones abiertas · Inactividad sin operaciones: 2026-11-02, 2026-11-03, 2026-11-04, 2026-11-05, 2026-11-06, 2026-11-09, 2026-11-10, 2026-11-11, 2026-11-12, 2026-11-13, 2026-11-16, 2026-11-17 · Primera apertura posible (condicionada): 2026-11-19 · CANJE CON VALORACIÓN PROVISIONAL; cobro separado del efectivo",
       "activity_tickers": [
         "ABT",
         "DRI",
@@ -1303,7 +1303,7 @@
       "evaluated_universe_symbols": 488,
       "eligible_universe_symbols": 503,
       "activity_state": "active",
-      "activity_label": "3 posiciones abiertas · Inactividad sin operaciones: 2026-11-12, 2026-11-13, 2026-11-16, 2026-11-17 · Reanudación desde apertura: 2026-11-18 · Cálculo tardío: 2026-11-02, 2026-11-04",
+      "activity_label": "3 posiciones abiertas · Inactividad sin operaciones: 2026-11-12, 2026-11-13, 2026-11-16, 2026-11-17 · Primera apertura posible (condicionada): 2026-11-18 · Cálculo tardío: 2026-11-02, 2026-11-04",
       "activity_tickers": [
         "ESS",
         "GILD",
@@ -1603,7 +1603,7 @@
       "evaluated_universe_symbols": 488,
       "eligible_universe_symbols": 503,
       "activity_state": "active",
-      "activity_label": "7 posiciones abiertas · Inactividad sin operaciones: 2026-11-03, 2026-11-04 · Reanudación desde apertura: 2026-11-05",
+      "activity_label": "7 posiciones abiertas · Inactividad sin operaciones: 2026-11-03, 2026-11-04 · Primera apertura posible (condicionada): 2026-11-05",
       "activity_tickers": [
         "ABBV",
         "ABNB",
@@ -1756,7 +1756,7 @@
       "evaluated_universe_symbols": 488,
       "eligible_universe_symbols": 503,
       "activity_state": "active",
-      "activity_label": "7 posiciones abiertas · Inactividad sin operaciones: 2026-11-03, 2026-11-04 · Reanudación desde apertura: 2026-11-05",
+      "activity_label": "7 posiciones abiertas · Inactividad sin operaciones: 2026-11-03, 2026-11-04 · Primera apertura posible (condicionada): 2026-11-05",
       "activity_tickers": [
         "ALLE",
         "COST",
