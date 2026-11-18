@@ -3,9 +3,16 @@ from datetime import timedelta
 from functools import lru_cache
 import json
 import subprocess
+import sys
 from zoneinfo import ZoneInfo
 
 from build_operations_audit import ROOT, date, pending_signals, signal_book, source_book, source_for
+
+# Audit packaging invokes this module as 'python scripts/build_operations_audit.py':
+# sys.path then contains only scripts/, while the shared claim verifier imports
+# classic_sp500 from the fixed repository root. Add that trusted root once.
+if str(ROOT) not in sys.path:
+    sys.path.insert(0, str(ROOT))
 
 # These engines consume a pending order on the next XNYS session, even
 # when its ledger only stores signal_date. Archived weekly engines are excluded.
@@ -82,6 +89,25 @@ def plan_track(slot, book, target, previous):
         return {"status":"recorded" if valid else "stale",
                 "session":source_day, "orders":orders,
                 "holdings":holdings, "undated":0}
+    if code == 12:
+        # A current NAV does not, by itself, make the genetic book executable:
+        # an unknown/altered merger right must fail CLOSED before allocating
+        # ticker quota or advertising a ready opening plan.
+        from classic_forward_settlement import (
+            _claims_actually_settled, _isolated_unsettled_kvue_claim)
+        holdings = sorted(book.get("positions") or {})
+        outage = book.get("outage_control")
+        boundary = outage.get("first_trading_session") if isinstance(outage, dict) else None
+        safe_boundary = (not outage or (
+            isinstance(boundary, str) and date(boundary) == boundary
+            and target >= boundary))
+        permitted_claim = (_claims_actually_settled(book, previous)
+                           or _isolated_unsettled_kvue_claim(book, previous))
+        if (book.get("paused_missing_quotes") or last != previous
+                or not safe_boundary or not permitted_claim):
+            return {"status": "paused" if last == previous else "stale",
+                    "session": last, "orders": [], "holdings": holdings,
+                    "undated": 0}
     rows = pending_signals(book)
     orders, holdings, undated = [], [], 0
     for row in rows:
