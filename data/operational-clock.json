@@ -1,5 +1,5 @@
 {
-  "checked_at_utc": "2026-11-19T14:34:11.184679Z",
+  "checked_at_utc": "2026-11-19T14:35:06.497866Z",
   "lock_sha256": "7bee0db8d5d7a5125159da601cbc16829e6d2caac9e8ad81055c5f6a5babaa70",
   "mode": "single_midas_operator_monitor_no_broker",
   "note": "Observed quotes are not fills. A native engine must settle quantity/cash before a trade counts in P&L.",
@@ -8,11 +8,11 @@
   "previous_session": "2026-11-18",
   "quote_budget": {
     "hard_symbol_limit": 250,
-    "observed_symbols": 50,
+    "observed_symbols": 39,
     "omitted_algorithm_lanes": {},
-    "requested_symbols": 51
+    "requested_symbols": 40
   },
-  "run_id": 44533995011,
+  "run_id": 44543370005,
   "schema": "midas.operational_clock.v1",
   "session": "2026-11-19",
   "settlement": "native_forward_010_through_027_037_through_044",
@@ -69,7 +69,7 @@
           "recorded_at_utc": "2026-11-19T14:34:11.184679Z"
         }
       ],
-      "native_settlement": "settled_native_paper",
+      "native_settlement": "active_no_orders",
       "observed": 0,
       "orders": [],
       "planned": 0,
@@ -128,7 +128,7 @@
           "recorded_at_utc": "2026-11-19T14:34:11.184679Z"
         }
       ],
-      "native_settlement": "settled_native_paper",
+      "native_settlement": "already_settled",
       "observed": 5,
       "orders": [
         {
@@ -229,7 +229,7 @@
           "recorded_at_utc": "2026-11-19T14:34:11.184679Z"
         }
       ],
-      "native_settlement": "settled_native_paper",
+      "native_settlement": "already_settled",
       "observed": 1,
       "orders": [
         {
@@ -294,7 +294,7 @@
           "recorded_at_utc": "2026-11-19T14:34:11.184679Z"
         }
       ],
-      "native_settlement": "settled_native_paper",
+      "native_settlement": "already_settled",
       "observed": 3,
       "orders": [
         {
@@ -356,8 +356,9 @@
         "first_missing_tickers": [
           "ERIE"
         ],
-        "last_checked_at_utc": "2026-11-19T14:34:11.184679Z",
+        "last_checked_at_utc": "2026-11-19T14:35:06.497866Z",
         "missing_tickers_at_last_attempt": [
+          "ALLE",
           "ERIE"
         ],
         "opening_cutoff_at_utc": "2026-11-19T15:00:00Z",
@@ -464,7 +465,7 @@
           "recorded_at_utc": "2026-11-19T14:34:11.184679Z"
         }
       ],
-      "native_settlement": "settled_native_paper",
+      "native_settlement": "already_settled",
       "observed": 3,
       "orders": [
         {
@@ -707,7 +708,7 @@
         "session": "2026-11-19",
         "source_commit": "da997560ef3398b2324d16680384c7a710c4df72"
       },
-      "native_settlement": "settled_native_paper",
+      "native_settlement": "already_settled",
       "observed": 2,
       "orders": [
         {
