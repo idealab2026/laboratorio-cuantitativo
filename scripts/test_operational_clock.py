@@ -417,6 +417,11 @@ class PrecloseWatcherTests(unittest.TestCase):
         self.target = self.market["close"] - timedelta(minutes=4, seconds=30)
 
     def test_friday_paused_weekly_books_arm_at_actual_session_close(self):
+        # An early scheduled launch can stay inside the existing workflow
+        # and wake at the true last-five-minute observed-quote window.
+        self.assertEqual(preclose_target(
+            self.market["close"] - timedelta(minutes=34),
+            self.market, self.lock), self.target)
         self.assertEqual(preclose_target(
             self.start, self.market, self.lock), self.target)
         self.assertEqual(preclose_target(
