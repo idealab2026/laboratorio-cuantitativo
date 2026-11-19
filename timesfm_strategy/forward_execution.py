@@ -87,14 +87,25 @@ def observed_open(book, policy, family, day, previous, prices, fx_entry, provena
     return operations
 
 
-def observed_exit(book, policy, family, day, prices, fx_exit, provenance):
-    """Close only TimesFM strategy positions, never passive SPY benchmarks."""
+def observed_exit(book, policy, family, day, prices, fx_exit, provenance, *,
+                  allow_partial_observed=False):
+    """Sell only genuinely observed positions with a contemporaneous EURUSD.
+
+    Partial liquidation is prospective and restricted to the weekly strategy.
+    The daily model and historical call sites retain their existing contract.
+    """
     fx_exit = core._positive(fx_exit, "contemporaneous FX exit")
     expected = set(book["positions"])
-    if not expected or expected != set(prices) or expected != set(provenance):
-        raise ValueError("TimesFM exit must observe all held symbols")
+    actual = set(prices)
+    if (not expected or set(provenance) != actual or
+            (not allow_partial_observed and expected != actual) or
+            (allow_partial_observed and
+             (family != "weekly" or not actual or not actual <= expected))):
+        raise ValueError("TimesFM exit observations inconsistent with held positions")
     operations = []
     for t, position in list(book["positions"].items()):
+        if t not in prices:
+            continue
         raw = core._positive(prices[t], "observed USD exit")
         sell = raw / fx_exit * (1 - policy["slippage"])
         qty = position["shares"]
@@ -137,5 +148,6 @@ def observed_exit(book, policy, family, day, prices, fx_exit, provenance):
             "currency": "EUR", "fx_usd_per_eur": fx_exit,
             "observed_at_utc": provenance[t]["observed_at_utc"],
         })
-    book["positions"] = {}
+    for t in actual:
+        del book["positions"][t]
     return operations
