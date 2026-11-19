@@ -394,6 +394,7 @@ class ClockPreopenRecoveryTest(unittest.TestCase):
         self.assertIn("17,47 7-8 * * 1-5", raw)
         self.assertIn("11,31,51 8 * * 1-5", raw)
         self.assertIn("7,17 9 * * 1-5", raw)
+        self.assertIn("26 12,15 * * 1-5", raw)
         self.assertIn("STAGE=auto", raw)
         self.assertIn("verify_published_lock", raw)
         self.assertIn("ci-{0}", raw)
@@ -416,6 +417,11 @@ class PrecloseWatcherTests(unittest.TestCase):
         self.target = self.market["close"] - timedelta(minutes=4, seconds=30)
 
     def test_friday_paused_weekly_books_arm_at_actual_session_close(self):
+        # An early scheduled launch can stay inside the existing workflow
+        # and wake at the true last-five-minute observed-quote window.
+        self.assertEqual(preclose_target(
+            self.market["close"] - timedelta(minutes=34),
+            self.market, self.lock), self.target)
         self.assertEqual(preclose_target(
             self.start, self.market, self.lock), self.target)
         self.assertEqual(preclose_target(

@@ -65,7 +65,14 @@ on:
       timezone: 'America/New_York'
     - cron: '1,16,31,46 10-15 * * 1-5'
       timezone: 'America/New_York'
-    # Both regular 16:00 and 13:00 half-session preclose exits.
+    # Give a long-lived single shared watcher an EARLY chance to arm:
+    # nominal 12:26 on 13:00 half-sessions, 15:26 on regular 16:00
+    # sessions (both are inside the 35-minute real-exchange horizon).
+    # Delayed GitHub cron may still miss; the frozen session lock, watcher
+    # bounds, shared concurrency and per-symbol idempotency still apply.
+    - cron: '26 12,15 * * 1-5'
+      timezone: 'America/New_York'
+    # Existing late attempts remain backups if an early scheduler drops.
     - cron: '56,58,59 12,15 * * 1-5'
       timezone: 'America/New_York'
 
