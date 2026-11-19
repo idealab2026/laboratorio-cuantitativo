@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "generated_at_utc": "2026-11-19T23:44:50.635637+00:00",
+  "generated_at_utc": "2026-11-19T23:44:59.527079+00:00",
   "principle": "Comparar rentabilidad acumulada y riesgo observado; no ordenar carteras con distintas fechas de inicio o supuestos de ejecución.",
   "counts": {
     "paper_with_diary": 18,
@@ -4577,11 +4577,11 @@
       "group": "buy_the_dip_demo",
       "status": "demo_con_diario",
       "first_session": "2026-10-01",
-      "last_session": "2026-11-18",
+      "last_session": "2026-11-19",
       "initial_capital": 100000.0,
-      "last_equity": 101325.74764101833,
-      "return_pct": 1.325748,
-      "day_return_pct": -1.265869,
+      "last_equity": 98752.9303103413,
+      "return_pct": -1.24707,
+      "day_return_pct": -2.539155,
       "currency": "USD",
       "equity_history": [
         {
@@ -4723,6 +4723,10 @@
         {
           "date": "2026-11-18",
           "nav": 101325.74764101833
+        },
+        {
+          "date": "2026-11-19",
+          "nav": 98752.9303103413
         }
       ],
       "note": "Buy The Dip corpus v0: deep value + special situations; valoración, calidad, capital allocation, dislocación y catalizadores; decisión mensual y fills next-open.",
@@ -4746,10 +4750,10 @@
       "comparison_universe_id": "SP500_2026-09-29_503",
       "comparison_universe_symbols": 503,
       "comparison_exclusion_reason": null,
-      "risk_observations": 35,
-      "annualized_volatility_pct": 25.818742,
-      "max_drawdown_pct": -8.718861,
-      "sharpe_0rf": 0.503407
+      "risk_observations": 36,
+      "annualized_volatility_pct": 26.369052,
+      "max_drawdown_pct": -11.03663,
+      "sharpe_0rf": -0.214491
     },
     {
       "id": "timesfm_2p5_eur_paper",
