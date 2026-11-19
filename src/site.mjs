@@ -591,7 +591,8 @@ async function refreshOperationalClock(force=false){
      Object.entries(doc.slots).some(([slot,lane])=>
       !/^IL-\d{3}$/.test(slot)||!lane||
       !["before_open","source_stale_or_unavailable","active_no_orders",
-        "partial_data","prices_observed_not_settled","native_forward_settled"].includes(lane.status)||
+        "partial_data","prices_observed_not_settled","native_forward_settled",
+        "opening_window_missed"].includes(lane.status)||
       !Number.isInteger(lane.planned)||lane.planned<0||
       !Number.isInteger(lane.observed)||lane.observed<0||
       !Array.isArray(lane.orders)||lane.orders.length>800))
@@ -615,7 +616,8 @@ function operationalClockHTML(){
  const labels={before_open:"Apertura pendiente",source_stale_or_unavailable:"Sin libro vigente",
   active_no_orders:"Operativo · sin operaciones previstas",partial_data:"Esperando cotizaciones",
   prices_observed_not_settled:"Señales con precios observados (sin liquidar)",
-  native_forward_settled:"Compra/venta paper liquidada en cartera oficial"};
+  native_forward_settled:"Compra/venta paper liquidada en cartera oficial",
+  opening_window_missed:"Apertura vencida · orden paper no ejecutada"};
  const clock=doc.checked_at_utc&&Number.isFinite(Date.parse(doc.checked_at_utc))?
   madridDateTime.format(new Date(doc.checked_at_utc))+" Madrid":"Sin ejecución acreditada";
  const entries=Object.entries(doc.slots).sort(([a],[b])=>a.localeCompare(b));
@@ -626,6 +628,12 @@ function operationalClockHTML(){
   const label=signalFeed?.tracks?.[slot]?.label||slot;
   const verifiedFills=Array.isArray(lane.fills)?lane.fills:[];
   const completed=lane.status==="native_forward_settled";
+  const openingMissed=lane.status==="opening_window_missed";
+  const missingQuotes=Array.isArray(lane.opening_quote_diagnostic?.missing_tickers_at_last_attempt)?
+   lane.opening_quote_diagnostic.missing_tickers_at_last_attempt.filter(x=>typeof x==="string"):[];
+  const missedNotice=openingMissed?'<p role="status">Apertura vencida: ninguna de las órdenes de apertura de esta cartera se ha liquidado.'+
+   (missingQuotes.length?' Faltaron cotizaciones válidas: '+missingQuotes.map(esc).join(", ")+'.':"")+
+   ' No se han generado operaciones retroactivas.</p>':"";
   const fillDetails=completed?'<div class="midas-native-fills"><strong>Liquidaciones reales de la cartera paper ('+
    (lane.fills_count??verifiedFills.length)+')</strong>'+
    (verifiedFills.length?'<table><thead><tr><th>Ticker</th><th>Operación</th><th>Acciones</th>'+
@@ -646,14 +654,15 @@ function operationalClockHTML(){
    (o.observed_price==null?"Sin cotización reciente":esc(fmt(o.observed_price))+" USD")+
    '</td><td>'+esc(o.observed_at_utc&&Number.isFinite(Date.parse(o.observed_at_utc))?
    madridDateTime.format(new Date(o.observed_at_utc))+" Madrid":"No observada")+
-   '</td><td>'+esc(o.status==="price_observed"?"Cotización observada, no ejecutada":
+   '</td><td>'+esc(openingMissed?"Apertura vencida · no ejecutada":
+      o.status==="price_observed"?"Cotización observada, no ejecutada":
       o.status==="limit_observed"?"Precio límite observado, no ejecutado":
       o.status==="limit_not_met"?"Límite sin cumplir":"Pendiente de precio")+
    '</td></tr>').join("");
   return '<details class="midas-clock-lane"'+(tradingFilter.slot===slot?' open':'')+'>'+
    '<summary><strong>'+esc(slot)+' · '+esc(label)+'</strong><span>'+esc(labels[lane.status]||lane.status)+
    '</span><small>'+lane.observed+'/'+lane.planned+' señales con precio</small></summary>'+
-   (orderRows?'<div class="midas-clock-tablewrap"><table><thead><tr><th>Ticker</th><th>Acción</th>'+
+   missedNotice+(orderRows?'<div class="midas-clock-tablewrap"><table><thead><tr><th>Ticker</th><th>Acción</th>'+
     '<th>Decisión</th><th>Momento objetivo</th><th>Precio observado</th><th>Hora de observación</th><th>Estado</th>'+
     '</tr></thead><tbody>'+orderRows+'</tbody></table></div>':
     '<p>Sin órdenes ejecutables registradas para esta apertura. '+esc(lane.source_session||
