@@ -130,8 +130,14 @@ FORWARD_CUTOVER_SESSION = "2026-11-10"
 
 
 def fill_pending_at_observed_open(name, book, day, prices, policy, *,
-                                  execution="simulated_next_open", quote_metadata=None):
-    """Apply frozen buy orders to the ORIGINAL ML book; caller owns causality checks."""
+                                  execution="simulated_next_open", quote_metadata=None,
+                                  allow_missing_observed=False):
+    """Apply independently verified paper orders using their original frozen budgets.
+
+    Missing quotes may be skipped only for a current forward observed opening.
+    Historical/nightly processing remains strict. The ORIGINAL pending count
+    determines the sizing, never the number of quotes that happened to arrive.
+    """
     pending = book["pending"]
     if not pending:
         return []
@@ -143,6 +149,13 @@ def fill_pending_at_observed_open(name, book, day, prices, policy, *,
     operations = []
     for order in pending:
         ticker = order["ticker"]
+        if allow_missing_observed and ticker not in prices:
+            if quote_metadata is None or execution != "forward_observed_paper":
+                raise ValueError("Missing-quote isolation is forward-only")
+            book["events"].append({
+                "date": day, "type": "unfilled_missing_observed_quote",
+                "ticker": ticker, "reason": "no_contemporary_opening_quote"})
+            continue
         entry = _price(prices, ticker, "open") * (1 + float(policy["slippage"]))
         shares = _fractional_quantity(budget, entry, policy)
         if shares <= 0:
