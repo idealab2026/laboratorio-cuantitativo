@@ -634,6 +634,30 @@ function operationalClockHTML(){
    weeklyExit?.price_scope==="observed_preclose_paper_only";
   const exitMissing=Array.isArray(weeklyExit?.missing_tickers)?
    weeklyExit.missing_tickers.filter(t=>typeof t==="string"):[];
+  const weeklyProgress=lane.weekly_exit_progress;
+  const weeklyClosed=Array.isArray(weeklyProgress?.closed_tickers)?
+   weeklyProgress.closed_tickers.filter(x=>typeof x==="string"):[];
+  const weeklyRemaining=Array.isArray(weeklyProgress?.remaining_tickers)?
+   weeklyProgress.remaining_tickers.filter(x=>typeof x==="string"):[];
+  const weeklyProgressNotice=weeklyClosed.length?
+   '<p role="status">Ventas semanales paper verificadas: '+weeklyClosed.map(esc).join(", ")+'. '+
+   (weeklyRemaining.length?'Continúan abiertas por falta de salida verificada: '+
+   weeklyRemaining.map(esc).join(", ")+'.':'Todas las posiciones de este ciclo están cerradas.')+
+   ' Las operaciones pendientes no se simulan retroactivamente.</p>':"";
+  const openingIsolation=lane.opening_quote_isolation;
+  const unfilledOpens=Array.isArray(openingIsolation?.unfilled_tickers)?
+   openingIsolation.unfilled_tickers.filter(x=>typeof x==="string"):[];
+  const heldMissing=Array.isArray(openingIsolation?.missing_held_quotes)?
+   openingIsolation.missing_held_quotes.filter(x=>typeof x==="string"):[];
+  const isolatedNotice=(unfilledOpens.length||heldMissing.length)?
+   '<p role="status">Apertura por acción: '+
+   (unfilledOpens.length?'Órdenes sin ejecutar por falta de cotización: '+
+   unfilledOpens.map(esc).join(", ")+'. ':'')+
+   (heldMissing.length?'Posiciones sin precio actual para valoración: '+
+   heldMissing.map(esc).join(", ")+'. ':'')+
+   (openingIsolation?.sizing_reference==="previous_verified_close_nav"?
+   'Las compras independientes usan el NAV verificado del cierre anterior solo como presupuesto; no es una valoración actual.':'')+
+   '</p>':"";
   const exitNotice=exitAwaiting?'<p role="status">Salida semanal paper sin liquidar: '+
    esc(String(weeklyExit.valid_count))+'/'+esc(String(weeklyExit.required_count))+
    ' cotizaciones verificadas en la ventana de cierre.'+
@@ -671,13 +695,17 @@ function operationalClockHTML(){
    '</td></tr>').join("");
   return '<details class="midas-clock-lane"'+(tradingFilter.slot===slot?' open':'')+'>'+
    '<summary><strong>'+esc(slot)+' · '+esc(label)+'</strong><span>'+
-   esc(exitAwaiting?"Salida semanal paper pendiente · no liquidada":labels[lane.status]||lane.status)+
-   '</span><small>'+(exitAwaiting?esc(String(weeklyExit.required_count))+' posiciones por cerrar':
+   esc(weeklyClosed.length?(weeklyRemaining.length?
+    "Ventas semanales parciales · quedan posiciones abiertas":"Ventas semanales completadas"):
+    exitAwaiting?"Salida semanal paper pendiente · no liquidada":labels[lane.status]||lane.status)+
+   '</span><small>'+(weeklyClosed.length?
+    weeklyClosed.length+' ventas · '+weeklyRemaining.length+' pendientes':
+    exitAwaiting?esc(String(weeklyExit.required_count))+' posiciones por cerrar':
     lane.observed+'/'+lane.planned+' señales con precio')+'</small></summary>'+
-   missedNotice+exitNotice+(orderRows?'<div class="midas-clock-tablewrap"><table><thead><tr><th>Ticker</th><th>Acción</th>'+
+   missedNotice+exitNotice+weeklyProgressNotice+isolatedNotice+(orderRows?'<div class="midas-clock-tablewrap"><table><thead><tr><th>Ticker</th><th>Acción</th>'+
     '<th>Decisión</th><th>Momento objetivo</th><th>Precio observado</th><th>Hora de observación</th><th>Estado</th>'+
     '</tr></thead><tbody>'+orderRows+'</tbody></table></div>':
-    (exitAwaiting?"":'<p>Sin órdenes ejecutables registradas para esta apertura. '+
+    (exitAwaiting||weeklyClosed.length?"":'<p>Sin órdenes ejecutables registradas para esta apertura. '+
     esc(lane.source_session||"Libro de origen no acreditado")+'.</p>'))+fillDetails+'</details>';
  }).join("");
  return '<section class="midas-clock" aria-label="Reloj operativo para todos los algoritmos">'+
