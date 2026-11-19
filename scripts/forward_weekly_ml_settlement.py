@@ -54,6 +54,22 @@ def _exit_key(slot, session):
     return f"{slot}:{session}:weekly_ml_observed_exit_v1"
 
 
+def weekly_exit_quote_coverage(book, now, market, quotes):
+    """Count only quotes executable in the real five-minute closing window."""
+    expected = set(book["positions"])
+    first = market["close"] - timedelta(minutes=5)
+    valid = set()
+    for ticker in expected:
+        quote = quotes.get(ticker)
+        if not _quote_valid(quote, now, market):
+            continue
+        stamp = datetime.fromisoformat(quote["quote_at_utc"].replace("Z", "+00:00"))
+        if first <= stamp <= now <= market["close"]:
+            valid.add(ticker)
+    return {"required_count": len(expected), "valid_count": len(valid),
+            "missing": sorted(expected - valid)}
+
+
 def _weekly_exit(book, slot, lock, now, market, quotes, policy):
     """Sell exact holdings at observed preclose prices, atomically per book."""
     expected = set(book["positions"])
@@ -145,7 +161,9 @@ def settle_weekly(lock, now, market, quotes, *, reader=read, frozen=_source_at):
                 continue
             outcome = _weekly_exit(book, slot, lock, now, market, quotes, config["paper_policy"])
             if outcome is None:
-                observations[slot] = {"status": "awaiting_verified_weekly_exit_quotes", "fills": 0}
+                observations[slot] = {
+                    "status": "awaiting_verified_weekly_exit_quotes", "fills": 0,
+                    **weekly_exit_quote_coverage(book, now, market, quotes)}
                 continue
             marker, operations = outcome
             observations[slot] = {"status": "settled_native_paper", "fills": len(operations),
