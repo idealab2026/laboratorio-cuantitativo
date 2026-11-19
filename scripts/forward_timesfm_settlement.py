@@ -78,7 +78,7 @@ def _valid_quotes(quotes, symbols, now, market, mode, *, partial=False):
     if any(not (left <= _date_time(q["quote_at_utc"]) <= cutoff)
            for q in found.values()):
         return None, ["outside_" + mode + "_window"]
-    return found, []
+    return found, missing
 
 
 def _proof(lock, key, found, *, fx_reference=None):
