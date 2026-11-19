@@ -123,7 +123,7 @@ def settle_ahp(lock, now, market, quotes, *, reader=read, frozen=_source_at):
         return {}, {SLOT: {"status": "closed_or_paused", "fills": 0}}
 
     fresh, missing = _fresh(quotes, symbols, now, market)
-    if missing:
+    if missing and (mode != "open" or not fresh):
         return {}, {SLOT: {"status": "awaiting_fresh_quotes", "missing": missing,
                            "fills": 0}}
     # Fail-closed if any quote was received outside its dedicated execution
@@ -141,7 +141,8 @@ def settle_ahp(lock, now, market, quotes, *, reader=read, frozen=_source_at):
     prices = {t: quote["price"] for t, quote in fresh.items()}
     if mode == "open":
         changed, fills = open_week(current, config, market["session"], prices, evidence,
-                                   expected_signal=market["previous"])
+                                   expected_signal=market["previous"],
+                                   allow_missing_observed=bool(missing))
     else:
         reason = ("portfolio_stop_next_open" if mode == "stop"
                   else "week_end_observed_preclose")
@@ -156,7 +157,9 @@ def settle_ahp(lock, now, market, quotes, *, reader=read, frozen=_source_at):
     changed.setdefault("forward_executions", {})[key] = marker
     return {LEDGER: changed}, {
         SLOT: {"status": "settled_native_paper", "fills": len(fills),
-               "marker": marker, "operations": fills}
+               "marker": marker, "operations": fills,
+               **({"unfilled_open_quotes": missing, "sizing_reference": "frozen_signal_weight"}
+                  if mode == "open" and missing else {})}
     }
 
 
