@@ -108,6 +108,46 @@ class ForwardWeeklyMLTests(unittest.TestCase):
             self.quotes, reader=self.reader, frozen=self.frozen)
         self.assertEqual(out, {}, "No fill reconstructed long after the opening")
 
+    def test_missing_one_weekly_buy_quote_fills_other_symbol_without_reallocation(self):
+        # The frozen original size, rather than a resized 1-of-2 basket,
+        # must determine AAPL quantity. MSFT never gets a paper fill.
+        slot, name = "IL-023", SLOTS["IL-023"]
+        book = self.state["strategies"][name]
+        book["pending"].append({"ticker": "MSFT", "signal_date": "2026-11-09"})
+        self.tracks[slot]["orders"].append({
+            "ticker": "MSFT", "action": "buy",
+            "decision_session": "2026-11-09", "target_session": "2026-11-10"})
+        self.frozen_state = copy.deepcopy(self.state)
+        self.lock = clock_plan(self.open - timedelta(minutes=10),
+                               self.market, self.tracks, "b" * 40)
+        all_quotes = dict(self.quotes)
+        all_quotes["MSFT"] = {
+            **self.quotes["AAPL"], "price": 200.0
+        }
+        all_filled, _ = settle_weekly(
+            self.lock, self.now, self.market, all_quotes,
+            reader=self.reader, frozen=self.frozen)
+        expected_shares = all_filled[LEDGER]["strategies"][name]["positions"]["AAPL"]["shares"]
+        partial, evidence = self.settle()
+        self.assertEqual(evidence[slot]["status"], "settled_native_paper")
+        self.assertEqual(evidence[slot]["fills"], 1)
+        self.assertEqual(evidence[slot]["unfilled_open_quotes"], ["MSFT"])
+        after = partial[LEDGER]["strategies"][name]
+        self.assertEqual(set(after["positions"]), {"AAPL"})
+        self.assertEqual(after["positions"]["AAPL"]["shares"], expected_shares)
+        self.assertEqual(after["pending"], [])
+        self.assertTrue(any(e.get("ticker") == "MSFT"
+                            and e.get("type") == "unfilled_missing_observed_quote"
+                            for e in after["events"]))
+        self.assertEqual(len([e for e in after["events"] if e.get("type") == "buy"]), 1)
+        self.assertEqual(after["equity"], [{"date": "2026-11-09", "nav": 100000.0}])
+        self.state = copy.deepcopy(partial[LEDGER])
+        no_duplicate, result = settle_weekly(
+            self.lock, self.now, self.market, all_quotes,
+            reader=self.reader, frozen=self.frozen)
+        self.assertEqual(no_duplicate, {})
+        self.assertEqual(result[slot]["status"], "already_settled")
+
     def test_source_change_rejects_only_changed_strategy(self):
         self.state["strategies"]["mlp_return"]["cash"] += 50
         output, evidence = self.settle()

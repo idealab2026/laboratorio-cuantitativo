@@ -794,12 +794,18 @@ def main(argv=None):
                     "closing_cutoff_at_utc": timestamp(market["close"]),
                     "price_scope": "observed_preclose_paper_only",
                 }
-            if (slot in {f"IL-{n:03d}" for n in range(11, 18)}
-                    and result.get("sizing_reference")):
+            if ((slot in {f"IL-{n:03d}" for n in range(11, 18)}
+                    and result.get("sizing_reference"))
+                    or (slot in {f"IL-{n:03d}" for n in range(19, 28)}
+                        and result.get("unfilled_open_quotes"))):
+                missing_open = result.get("unfilled_open_quotes", [])
+                locked_open = {order["ticker"] for order in lock["slots"][slot]["orders"]}
+                if not set(missing_open) <= locked_open:
+                    raise ValueError(f"{slot}: missing-quote diagnostic violates frozen orders")
                 lane["opening_quote_isolation"] = {
-                    "unfilled_tickers": result.get("unfilled_open_quotes", []),
+                    "unfilled_tickers": missing_open,
                     "missing_held_quotes": result.get("missing_held_quotes", []),
-                    "sizing_reference": result["sizing_reference"],
+                    "sizing_reference": result.get("sizing_reference", "frozen_order_budget"),
                     "scope": "paper_forward_open_only",
                     "checked_at_utc": timestamp(now)}
             if slot in {f"IL-{n:03d}" for n in range(11, 18)}:

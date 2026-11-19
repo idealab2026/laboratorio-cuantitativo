@@ -104,7 +104,7 @@ def _claims_actually_settled(book, previous):
 
 
 def _isolated_unsettled_kvue_claim(book, previous):
-    """IL-012 may trade its own settled shares using only REAL cash already
+    """IL-010 and IL-012 may trade unrelated owned shares using REAL cash already
     in book['cash']; the independent merger claim remains nonspendable.
     This is an eligibility check, not issuer settlement or P&L recognition.
     No other unreviewed corporate action gains this exception.
@@ -280,7 +280,7 @@ def settle_classic(lock, now, market, quotes, *, reader=read, frozen=_source_at)
         # This narrowly verified paper receivable is not spendable cash.
         # It need not freeze unrelated *fully owned* shares or cash orders:
         # execute_frozen_open checks every BUY against book['cash'].
-        unsettled_isolated = (slot == "IL-012" and
+        unsettled_isolated = (slot in ("IL-010", "IL-012") and
                               _isolated_unsettled_kvue_claim(book, market["previous"]))
         unresolved_claims = not (_claims_actually_settled(book, market["previous"])
                                  or unsettled_isolated)

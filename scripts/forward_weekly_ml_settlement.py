@@ -323,12 +323,13 @@ def settle_weekly(lock, now, market, quotes, *, reader=read, frozen=_source_at):
         fresh = {ticker: quotes[ticker] for ticker in expected
                  if ticker in quotes and _quote_valid(quotes[ticker], now, market)}
         missing = sorted(expected - fresh.keys())
-        if missing:
+        if missing and not fresh:
             observations[slot] = {"status": "awaiting_fresh_quotes", "fills": 0,
                                   "missing": missing}
             continue
-        if any(datetime.fromisoformat(q["observed_at_utc"].replace("Z", "+00:00")) >
-               market["open"] + MAX_OPEN_LAG for q in fresh.values()):
+        if (now > market["open"] + MAX_OPEN_LAG or
+                any(datetime.fromisoformat(q["observed_at_utc"].replace("Z", "+00:00")) >
+                    market["open"] + MAX_OPEN_LAG for q in fresh.values())):
             observations[slot] = {"status": "opening_window_missed", "fills": 0}
             continue
         if not math.isfinite(book["cash"]) or book["cash"] < 0:
@@ -344,7 +345,8 @@ def settle_weekly(lock, now, market, quotes, *, reader=read, frozen=_source_at):
         # Uses the EXACT sizing/slippage/fee helper used by nightly ML accounting.
         fills = fill_pending_at_observed_open(
             name, book, market["session"], prices, config["paper_policy"],
-            execution="forward_observed_paper", quote_metadata=meta)
+            execution="forward_observed_paper", quote_metadata=meta,
+            allow_missing_observed=bool(missing))
         marker = {
             "session": market["session"], "signal_date": signal,
             "mode": "forward_observed_paper", "lock_sha256": lock["lock_sha256"],
@@ -355,7 +357,8 @@ def settle_weekly(lock, now, market, quotes, *, reader=read, frozen=_source_at):
         book.setdefault("forward_executions", {})[key] = marker
         observations[slot] = {
             "status": "settled_native_paper", "fills": len(fills),
-            "marker": marker, "operations": [{
+            "marker": marker, "unfilled_open_quotes": missing,
+            "operations": [{
                 "ticker": e["ticker"], "side": "buy", "quantity": e["shares"],
                 "price": e["price"], "fee": e["fee"],
                 "observed_at_utc": e["observed_at_utc"],
