@@ -655,7 +655,7 @@ function operationalClockHTML(){
    unfilledOpens.map(esc).join(", ")+'. ':'')+
    (heldMissing.length?'Posiciones sin precio actual para valoración: '+
    heldMissing.map(esc).join(", ")+'. ':'')+
-   (openingIsolation?.sizing_reference==="previous_verified_close_nav"?
+   (["previous_verified_close_nav", "verified_previous_close_nav"].includes(openingIsolation?.sizing_reference)?
    'Las compras independientes usan el NAV verificado del cierre anterior solo como presupuesto; no es una valoración actual.':'')+
    '</p>':"";
   const exitNotice=exitAwaiting?'<p role="status">Salida semanal paper sin liquidar: '+
