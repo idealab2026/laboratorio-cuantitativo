@@ -138,6 +138,9 @@ class ForwardWeeklyMLTests(unittest.TestCase):
         missing, evidence = settle_weekly(self.lock, self.now, self.market, {}, reader=self.reader, frozen=self.frozen)
         self.assertEqual(missing, {})
         self.assertTrue(all(e["status"] == "awaiting_verified_weekly_exit_quotes" for e in evidence.values()))
+        self.assertEqual(evidence["IL-023"]["missing"], ["AAPL"])
+        self.assertEqual((evidence["IL-023"]["valid_count"],
+                          evidence["IL-023"]["required_count"]), (0, 1))
         stale = copy.deepcopy(self.quotes)
         stale["AAPL"]["quote_at_utc"] = (self.now - timedelta(minutes=8)).isoformat()
         output, _ = settle_weekly(self.lock, self.now, self.market, stale, reader=self.reader, frozen=self.frozen)
@@ -270,6 +273,9 @@ class ForwardWeeklyMLTests(unittest.TestCase):
         output, evidence = self.settle()
         self.assertEqual(output, {})
         self.assertTrue(all(x["status"] == "awaiting_verified_weekly_exit_quotes" for x in evidence.values()))
+        self.assertEqual(evidence["IL-023"]["missing"], ["MSFT"])
+        self.assertEqual((evidence["IL-023"]["valid_count"],
+                          evidence["IL-023"]["required_count"]), (1, 2))
         self.assertEqual(self.state, self.frozen_state)
         self.quotes["MSFT"] = {"price": 120., "quote_at_utc": self.now.isoformat(),
                                 "observed_at_utc": self.now.isoformat()}
