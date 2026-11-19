@@ -93,6 +93,120 @@ def _proof(lock, key, found, *, fx_reference=None):
     } for t, row in found.items()}
 
 
+def verified_weekly_exit_fills(lock, market, original, current, policy):
+    """Reconcile *all* independently observed IL-040 sales against the frozen book.
+
+    A later same-session poll may sell another ticker, but cannot change
+    historical holdings, reinterpret its cost, replay fills or alter NAV.
+    Return canonical session fills only when every received sell has a
+    per-ticker immutable marker and its original position has disappeared.
+    """
+    slot = "IL-040"
+    before = original["books"]["timesfm"]
+    book = current["books"]["timesfm"]
+    if book == before:
+        return []
+    if (original["last_session"] != current["last_session"] or
+            original.get("equity") != current.get("equity") or
+            not isinstance(book.get("positions"), dict) or
+            not isinstance(before.get("positions"), dict)):
+        raise ValueError("TimesFM weekly partial exit origin or portfolio changed")
+    permitted_changes = {"cash", "positions", "trades", "events"}
+    if any(before.get(k) != book.get(k)
+           for k in set(before) | set(book) if k not in permitted_changes):
+        raise ValueError("TimesFM weekly partial exit changed independent accounting")
+    for key in ("trades", "events"):
+        old = before.get(key, [])
+        new = book.get(key, [])
+        if not isinstance(old, list) or not isinstance(new, list) or new[:len(old)] != old:
+            raise ValueError("TimesFM weekly partial exit rewrote the historical book")
+    previous_positions = before["positions"]
+    remaining_positions = book["positions"]
+    if (not set(remaining_positions) <= set(previous_positions) or
+            any(remaining_positions[t] != previous_positions[t]
+                for t in remaining_positions)):
+        raise ValueError("TimesFM weekly partial exit changed held shares")
+    closed = set(previous_positions) - set(remaining_positions)
+    new_trades = book["trades"][len(before["trades"]):]
+    new_events = book["events"][len(before["events"]):]
+    if not closed or len(new_trades) != len(closed) or len(new_events) != len(closed):
+        raise ValueError("TimesFM weekly exit has unaccounted cash or trades")
+    trade_by = {row.get("ticker"): row for row in new_trades}
+    event_by = {row.get("ticker"): row for row in new_events}
+    if (set(trade_by) != closed or set(event_by) != closed or
+            len(trade_by) != len(new_trades) or len(event_by) != len(new_events)):
+        raise ValueError("TimesFM weekly partial sale identity mismatch")
+    base = event_key(slot, market["session"], "exit_symbol") + ":"
+    marks = current.get("forward_executions", {})
+    old_marks = original.get("forward_executions", {})
+    if any(marks.get(k) != value for k, value in old_marks.items()):
+        raise ValueError("TimesFM original execution marker overwritten")
+    commission = float(policy["commission"])
+    if not 0 <= commission < 1 or not math.isfinite(commission):
+        raise ValueError("TimesFM invalid commission")
+    cash = float(before["cash"])
+    fills = []
+    for ticker in sorted(closed):
+        row, event, position = trade_by[ticker], event_by[ticker], previous_positions[ticker]
+        marker = marks.get(base + ticker)
+        if (not isinstance(marker, dict) or
+                marker.get("mode") != "exit_symbol" or marker.get("ticker") != ticker or
+                marker.get("family") != "weekly" or
+                marker.get("session") != market["session"] or
+                marker.get("source_commit") != lock["source_commit"] or
+                marker.get("lock_sha256") != lock["lock_sha256"] or
+                marker.get("fill_tickers") != [ticker] or marker.get("fills_count") != 1 or
+                event.get("date") != market["session"] or
+                event.get("event") != "sell" or
+                event.get("execution") != "forward_observed_preclose" or
+                event.get("idempotency_key") != base + ticker or
+                event.get("source_commit") != lock["source_commit"] or
+                event.get("lock_sha256") != lock["lock_sha256"] or
+                row.get("execution") != "forward_observed_preclose" or
+                row.get("exit_date") != market["session"] or
+                row.get("entry_date") != position["entry_date"] or
+                row.get("signal_date") != position["signal_date"]):
+            raise ValueError("TimesFM weekly sale does not match locked evidence")
+        try:
+            when, received = _date_time(event["quote_at_utc"]), _date_time(event["observed_at_utc"])
+            fx_when = _date_time(marker["exit_fx_quote_at_utc"])
+            fx_received = _date_time(marker["exit_fx_observed_at_utc"])
+            recorded = _date_time(marker["recorded_at_utc"])
+            fx = float(marker["exit_fx_usd_per_eur"])
+            price, shares = float(event["price_eur"]), float(position["shares"])
+            proceeds = shares * price * (1 - commission)
+            if (not (market["close"] - EXIT_WINDOW <= when <= received <= recorded <= market["close"])
+                    or not (market["close"] - EXIT_WINDOW <= fx_when <= fx_received <= recorded)
+                    or not all(math.isfinite(v) and v > 0 for v in (fx, price, shares))
+                    or not math.isclose(float(row["shares_at_exit"]), shares, rel_tol=1e-12)
+                    or not math.isclose(float(row["sell_proceeds_eur"]), proceeds, rel_tol=1e-10, abs_tol=1e-6)
+                    or not math.isclose(float(row["buy_cost_eur"]), float(position["cost_eur"]), rel_tol=1e-12)
+                    or not math.isclose(float(row["dividends_eur"]), float(position["dividends_eur"]), rel_tol=1e-12)
+                    or not math.isclose(float(row["net_pnl_eur"]), proceeds +
+                                        float(position["dividends_eur"]) - float(position["cost_eur"]),
+                                        rel_tol=1e-10, abs_tol=1e-6)
+                    or not math.isclose(float(row["fx_usd_per_eur"]), fx, rel_tol=1e-12)):
+                raise ValueError("TimesFM weekly sale economic or timestamp mismatch")
+            cash += proceeds
+            fills.append({"ticker": ticker, "side": "sell", "quantity": shares,
+                          "price": price, "fee": shares * price * commission,
+                          "currency": "EUR", "fx_usd_per_eur": fx,
+                          "observed_at_utc": event["observed_at_utc"]})
+        except (KeyError, TypeError, ValueError, OverflowError) as exc:
+            raise ValueError("TimesFM invalid weekly sale evidence") from exc
+    if not math.isclose(float(book["cash"]), cash, rel_tol=1e-10, abs_tol=1e-6):
+        raise ValueError("TimesFM weekly partial exit cash mismatch")
+    finished = marks.get(event_key(slot, market["session"], "exit"))
+    if finished is not None:
+        if (remaining_positions or finished.get("mode") != "exit" or
+                finished.get("lock_sha256") != lock["lock_sha256"] or
+                finished.get("source_commit") != lock["source_commit"] or
+                finished.get("fills_count") != len(closed) or
+                finished.get("fill_tickers") != sorted(closed)):
+            raise ValueError("TimesFM full exit marker without completed settlement")
+    return sorted(fills, key=lambda row: (row["observed_at_utc"], row["ticker"]))
+
+
 def settle_timesfm(lock, now, market, quotes, *, reader=read, frozen=_source_at):
     verify_lock(lock, market, now)
     results, evidence = {}, {}
@@ -207,7 +321,18 @@ def settle_timesfm(lock, now, market, quotes, *, reader=read, frozen=_source_at)
                 # Source book may have changed through a recorded same-day
                 # opening, but no unverified or stale mutation is accepted.
                 same_day_open = marker_map.get(event_key(slot, market["session"], "open"))
-                if book != before and not same_day_open:
+                # A prior same-session IL-040 partial sale is legitimate only
+                # if every removed share, cash change, receipt and immutable
+                # per-symbol marker reconcile exactly to the frozen source.
+                verified_prior = []
+                if family == "weekly" and book != before:
+                    try:
+                        verified_prior = verified_weekly_exit_fills(
+                            lock, market, source, current, config["execution"])
+                    except ValueError:
+                        evidence[slot] = {"status": "source_changed", "fills": 0}
+                        continue
+                if book != before and not same_day_open and not verified_prior:
                     evidence[slot] = {"status": "source_changed", "fills": 0}
                     continue
                 if (same_day_open is not None and
@@ -218,8 +343,10 @@ def settle_timesfm(lock, now, market, quotes, *, reader=read, frozen=_source_at)
                     evidence[slot] = {"status": "open_book_missing_or_pending", "fills": 0}
                     continue
                 found, missing = _valid_quotes(
-                    quotes, expected | {FX_TICKER}, now, market, "exit")
-                if missing:
+                    quotes, expected | {FX_TICKER}, now, market, "exit",
+                    partial=family == "weekly")
+                if (found is None or FX_TICKER not in found or
+                        not (set(found) - {FX_TICKER})):
                     evidence[slot] = {
                         "status": "awaiting_contemporaneous_exit_fx_and_quotes",
                         "fills": 0, "missing": missing,
@@ -230,11 +357,13 @@ def settle_timesfm(lock, now, market, quotes, *, reader=read, frozen=_source_at)
                     evidence[slot] = {"status": "invalid_exit_fx", "fills": 0}
                     continue
                 actual = {t: row for t,row in found.items() if t != FX_TICKER}
-                proof = _proof(lock, key, actual)
+                proof = _proof(
+                    lock, event_key(slot, market["session"], "exit_symbol")
+                    if family == "weekly" else key, actual)
                 operations = observed_exit(
                     book, config["execution"], family, market["session"],
                     {t:row["price"] for t,row in actual.items()},
-                    fx_exit, proof)
+                    fx_exit, proof, allow_partial_observed=family == "weekly")
                 verified = found
                 fx_note = {
                     "exit_fx_usd_per_eur": fx_exit,
@@ -250,13 +379,52 @@ def settle_timesfm(lock, now, market, quotes, *, reader=read, frozen=_source_at)
                 "fill_tickers": sorted(x["ticker"] for x in operations),
                 **fx_note,
             }
-            updated.setdefault("forward_executions", {})[key] = marker
+            markers = updated.setdefault("forward_executions", {})
+            weekly_progress = None
+            if mode == "exit" and family == "weekly":
+                # One stable marker per symbol ensures a second observation
+                # cannot overwrite or sell any previously liquidated shares.
+                parent = event_key(slot, market["session"], "exit_symbol")
+                for row in operations:
+                    ticker = row["ticker"]
+                    symbol_key = parent + ":" + ticker
+                    if symbol_key in markers:
+                        raise ValueError("Duplicate TimesFM weekly exit marker")
+                    markers[symbol_key] = {
+                        **marker, "mode": "exit_symbol", "ticker": ticker,
+                        "fills_count": 1, "fill_tickers": [ticker],
+                        "quotes_sha256": digest({
+                            ticker: verified[ticker], FX_TICKER: verified[FX_TICKER]}),
+                        "exit_fx_observed_at_utc": verified[FX_TICKER]["observed_at_utc"],
+                    }
+                session_fills = verified_weekly_exit_fills(
+                    lock, market, source, updated, config["execution"])
+                weekly_progress = {
+                    "closed_tickers": sorted(x["ticker"] for x in session_fills),
+                    "remaining_tickers": sorted(book["positions"]),
+                    "complete": not bool(book["positions"]),
+                    "source": "observed_preclose_eur_symbol_isolated"}
+                if book["positions"]:
+                    marker = markers[parent + ":" + operations[-1]["ticker"]]
+                else:
+                    marker = {**marker,
+                        "fills_count": len(session_fills),
+                        "fill_tickers": sorted(x["ticker"] for x in session_fills),
+                        "observed_sale_evidence_sha256": digest([
+                            x for x in book["events"]
+                            if x.get("date") == market["session"] and
+                            x.get("execution") == "forward_observed_preclose" and
+                            x.get("idempotency_key", "").startswith(parent + ":")])}
+                    markers[key] = marker
+            else:
+                markers[key] = marker
             changed = True
             evidence[slot] = {
                 "status": "settled_native_paper", "fills": len(operations),
                 "marker": marker, "operations": operations,
                 **({"unfilled_open_quotes": missing, "sizing_reference": "frozen_order_budget"}
                    if mode == "open" and missing else {}),
+                **({"weekly_exit_progress": weekly_progress} if weekly_progress else {}),
             }
         if changed:
             results[state_path] = updated
@@ -277,7 +445,9 @@ def verify_published(path=ROOT / "data/operational-clock.json", *, remote=_sourc
             marker = lane.get("native_marker")
             if not isinstance(marker, dict):
                 raise ValueError("TimesFM public settlement has no marker")
-            key = event_key(slot, marker["session"], marker["mode"])
+            key = (event_key(slot, marker["session"], "exit_symbol") + ":" + marker["ticker"]
+                   if marker.get("mode") == "exit_symbol" else
+                   event_key(slot, marker["session"], marker["mode"]))
             if ledger.get("forward_executions", {}).get(key) != marker:
                 raise ValueError("TimesFM canonical paper execution not persisted")
             verified.append(slot)

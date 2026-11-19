@@ -223,6 +223,93 @@ class ForwardTimesFMTwoBooksTests(unittest.TestCase):
         self.assertEqual(out[WEEKLY_PATH]["books"]["timesfm"]["trades"][-1]["execution"],
                          "forward_observed_preclose")
 
+    def test_weekly_two_stock_friday_exit_is_individual_and_idempotent(self):
+        previous = self.market["previous"]
+        selected = [
+            {"ticker": ticker, "signal_date": previous,
+             "predicted_return": 0.05, "score": 0.03}
+            for ticker in ("AAPL", "MSFT")]
+        self.data[WEEKLY_PATH] = weekly.initialize(
+            self.config[WEEKLY_CONFIG], previous, selected, {"synthetic": True})
+        self.snapshot = copy.deepcopy(self.data)
+        self.lock = self._lock(self.market)
+        self.quotes = self._quotes(self.market, {
+            "AAPL": 100.0, "MSFT": 200.0, "SPY": 400.0})
+        first_open, _ = self.settle()
+        self.data.update(copy.deepcopy(first_open))
+        previous = "2026-11-13"
+        for day in ("2026-11-16", "2026-11-17", "2026-11-18", "2026-11-19"):
+            bars = {
+                "AAPL": {"close": 104, "open": 100},
+                "MSFT": {"close": 204, "open": 200},
+                "SPY": {"close": 401, "open": 400},
+            }
+            daily, changed = weekly.process_day(
+                self.data[WEEKLY_PATH], self.config[WEEKLY_CONFIG],
+                day, previous, bars, fx_entry=1.2, fx_mark=1.2, week_end=False)
+            self.assertTrue(changed)
+            self.data[WEEKLY_PATH] = daily
+            previous = day
+        self.snapshot = copy.deepcopy(self.data)
+        friday = self._market("2026-11-20", "2026-11-19")
+        self.market = friday
+        self.lock = self._lock(friday, fx=None)
+        self.now = friday["close"] - timedelta(minutes=2)
+        def observed(entries):
+            return {t: {"price": v, "quote_at_utc":
+                (self.now - timedelta(seconds=30)).isoformat(),
+                "observed_at_utc": self.now.isoformat()}
+                for t,v in entries.items()}
+
+        # One missing stock does not freeze the valid independent sale.
+        only_aapl, proof = self.settle(quotes=observed({
+            "AAPL": 111.0, FX_TICKER: 1.2}))
+        self.assertEqual(proof["IL-040"]["status"], "settled_native_paper")
+        self.assertEqual(proof["IL-040"]["fills"], 1)
+        self.assertEqual(proof["IL-040"]["weekly_exit_progress"]["remaining_tickers"], ["MSFT"])
+        self.assertEqual(proof["IL-040"]["marker"]["mode"], "exit_symbol")
+        first = only_aapl[WEEKLY_PATH]
+        self.assertEqual(set(first["books"]["timesfm"]["positions"]), {"MSFT"})
+        self.assertEqual(first["books"]["timesfm"]["equity"],
+            self.snapshot[WEEKLY_PATH]["books"]["timesfm"]["equity"])
+        self.assertEqual(len(first["books"]["timesfm"]["trades"]),
+            len(self.snapshot[WEEKLY_PATH]["books"]["timesfm"]["trades"]) + 1)
+
+        # A mismatched cash record is not authorized by prior per-symbol proof.
+        self.data[WEEKLY_PATH] = copy.deepcopy(first)
+        self.data[WEEKLY_PATH]["books"]["timesfm"]["cash"] += 1.0
+        rejected, status = self.settle(quotes=observed({
+            "MSFT": 210.0, FX_TICKER: 1.2}))
+        self.assertNotIn(WEEKLY_PATH, rejected)
+        self.assertEqual(status["IL-040"]["status"], "source_changed")
+        self.data[WEEKLY_PATH] = copy.deepcopy(first)
+        no_replay, waiting = self.settle(quotes=observed({
+            "AAPL": 111.0, FX_TICKER: 1.2}))
+        self.assertNotIn(WEEKLY_PATH, no_replay)
+        self.assertEqual(waiting["IL-040"]["status"],
+                         "awaiting_contemporaneous_exit_fx_and_quotes")
+
+        # A separate valid observation may sell the remaining MSFT once.
+        last, status = self.settle(quotes=observed({
+            "MSFT": 210.0, FX_TICKER: 1.2}))
+        self.assertEqual(status["IL-040"]["fills"], 1)
+        self.assertTrue(status["IL-040"]["weekly_exit_progress"]["complete"])
+        self.assertEqual(status["IL-040"]["marker"]["mode"], "exit")
+        self.assertEqual(status["IL-040"]["marker"]["fills_count"], 2)
+        self.assertFalse(last[WEEKLY_PATH]["books"]["timesfm"]["positions"])
+        self.assertEqual(len(last[WEEKLY_PATH]["books"]["timesfm"]["trades"]),
+                         len(self.snapshot[WEEKLY_PATH]["books"]["timesfm"]["trades"]) + 2)
+        from scripts.forward_timesfm_settlement import verified_weekly_exit_fills
+        fills = verified_weekly_exit_fills(
+            self.lock, friday, self.snapshot[WEEKLY_PATH],
+            last[WEEKLY_PATH], self.config[WEEKLY_CONFIG]["execution"])
+        self.assertEqual([x["ticker"] for x in fills], ["AAPL", "MSFT"])
+        self.data[WEEKLY_PATH] = copy.deepcopy(last[WEEKLY_PATH])
+        again, repeated = self.settle(quotes=observed({
+            "AAPL": 111, "MSFT": 210, FX_TICKER: 1.2}))
+        self.assertNotIn(WEEKLY_PATH, again)
+        self.assertEqual(repeated["IL-040"]["status"], "already_settled")
+
     def test_nightly_cutover_refuses_reconstructed_entries_and_exits(self):
         bars={"AAPL":{"open":100,"high":120,"low":90,"close":110,
                       "split":0,"dividend":0},

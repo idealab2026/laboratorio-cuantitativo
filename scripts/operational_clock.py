@@ -831,6 +831,44 @@ def main(argv=None):
                 lane["fills"] = []
             else:
                 publish_missed_open(lane, result)
+        # TimesFM weekly IL-040 may sell independently observed USD stocks
+        # in several preclose polls, but each needs the same-poll EURUSD mark.
+        # Reconstruct its FULL session activity from immutable per-stock
+        # records so a later tick cannot visually erase earlier real sales.
+        from forward_timesfm_settlement import (
+            COHORTS as TF_COHORTS, event_key as tf_event_key,
+            verified_weekly_exit_fills)
+        from native_forward_settlement import _source_at as tf_frozen_source
+        tf_path, tf_config, _ = TF_COHORTS["weekly"]
+        tf_live = _read(ROOT / tf_path)
+        tf_start = tf_frozen_source(lock["source_commit"], tf_path)
+        tf_original = tf_start["books"]["timesfm"]
+        if tf_original["positions"]:
+            tf_prefix = tf_event_key("IL-040", market["session"], "exit_symbol") + ":"
+            if any(key.startswith(tf_prefix)
+                   for key in tf_live.get("forward_executions", {})):
+                tf_policy = _read(ROOT / tf_config)["execution"]
+                session_fills = verified_weekly_exit_fills(
+                    lock, market, tf_start, tf_live, tf_policy)
+                if not session_fills:
+                    raise ValueError("TimesFM exit markers without original fills")
+                tf_markers = tf_live["forward_executions"]
+                all_complete = tf_event_key("IL-040", market["session"], "exit")
+                final_marker = tf_markers.get(all_complete)
+                last_symbol = session_fills[-1]["ticker"]
+                marker = final_marker or tf_markers[tf_prefix + last_symbol]
+                lane = report["slots"]["IL-040"]
+                lane["status"] = "native_forward_settled"
+                lane["native_settlement"] = "settled_native_paper"
+                lane["native_marker"] = marker
+                lane["fills_count"] = len(session_fills)
+                lane["fills"] = session_fills
+                lane["weekly_exit_progress"] = {
+                    "closed_tickers": sorted(f["ticker"] for f in session_fills),
+                    "remaining_tickers": sorted(tf_live["books"]["timesfm"]["positions"]),
+                    "complete": not bool(tf_live["books"]["timesfm"]["positions"]),
+                    "source": "observed_preclose_eur_symbol_isolated"}
+                lane["session_fill_reconciled"] = True
         # Accumulate every verified weekly paper sale from this *session*,
         # even if separate polls saw different symbols. A missing-price retry
         # must not erase earlier closes from the published activity journal.
