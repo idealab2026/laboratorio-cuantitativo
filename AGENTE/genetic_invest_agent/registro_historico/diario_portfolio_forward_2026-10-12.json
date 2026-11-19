@@ -1,5 +1,5 @@
 {
-  "cash": 48960.04504655267,
+  "cash": 49309.72864719579,
   "equity_history": {
     "2026-10-12": 100000.0,
     "2026-10-13": 99740.79683014771,
@@ -129,6 +129,19 @@
       "session": "2026-11-18",
       "source_commit": "f1f67b5bce5679c05de36dcabede2b0106722bb4",
       "ticker": "INTU"
+    },
+    "IL-044:2026-11-19:STOP_OBSERVED:NSC:genetic_forward_v1": {
+      "fill_tickers": [
+        "NSC"
+      ],
+      "fills_count": 1,
+      "lock_sha256": "7bee0db8d5d7a5125159da601cbc16829e6d2caac9e8ad81055c5f6a5babaa70",
+      "mode": "STOP_OBSERVED",
+      "quotes_sha256": "a22437f80377485b9b41bd0c28ddef64df438b85f25fd3155832f58fb8e42b11",
+      "recorded_at_utc": "2026-11-19T15:47:52.634195Z",
+      "session": "2026-11-19",
+      "source_commit": "da997560ef3398b2324d16680384c7a710c4df72",
+      "ticker": "NSC"
     }
   },
   "inactive_sessions": [
@@ -215,12 +228,6 @@
       "sl": 88.76102678911757,
       "tp": 111.55546269906839
     },
-    "NSC": {
-      "entry": 334.2070285491943,
-      "shares": 1.109748,
-      "sl": 316.2586465291259,
-      "tp": 397.4114381522111
-    },
     "PRU": {
       "entry": 115.70782652664184,
       "shares": 127.763735,
@@ -259,6 +266,14 @@
     },
     "2026-11-18": {
       "INTU": 44.320143,
+      "MAS": 198.105208,
+      "MCO": 15.11458,
+      "NDAQ": 157.093581,
+      "NSC": 1.109748,
+      "PRU": 127.763735,
+      "SHW": 0.058721
+    },
+    "2026-11-19": {
       "MAS": 198.105208,
       "MCO": 15.11458,
       "NDAQ": 157.093581,
@@ -580,6 +595,21 @@
       "side": "SELL",
       "source_commit": "f1f67b5bce5679c05de36dcabede2b0106722bb4",
       "ticker": "INTU"
+    },
+    {
+      "execution": "forward_observed_paper",
+      "fee": 0.35003363427740514,
+      "fill": 315.41722470092776,
+      "idempotency_key": "IL-044:2026-11-19:STOP_OBSERVED:NSC:genetic_forward_v1",
+      "lock_sha256": "7bee0db8d5d7a5125159da601cbc16829e6d2caac9e8ad81055c5f6a5babaa70",
+      "observed_at_utc": "2026-11-19T15:47:51.240217Z",
+      "quote_at_utc": "2026-11-19T15:47:00Z",
+      "reason": "STOP_OBSERVED",
+      "session": "2026-11-19",
+      "shares": 1.109748,
+      "side": "SELL",
+      "source_commit": "da997560ef3398b2324d16680384c7a710c4df72",
+      "ticker": "NSC"
     }
   ]
 }

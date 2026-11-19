@@ -1,5 +1,5 @@
 {
-  "checked_at_utc": "2026-11-19T15:23:15.006659Z",
+  "checked_at_utc": "2026-11-19T15:47:52.634195Z",
   "lock_sha256": "7bee0db8d5d7a5125159da601cbc16829e6d2caac9e8ad81055c5f6a5babaa70",
   "mode": "single_midas_operator_monitor_no_broker",
   "note": "Observed quotes are not fills. A native engine must settle quantity/cash before a trade counts in P&L.",
@@ -8,11 +8,11 @@
   "previous_session": "2026-11-18",
   "quote_budget": {
     "hard_symbol_limit": 250,
-    "observed_symbols": 38,
+    "observed_symbols": 39,
     "omitted_algorithm_lanes": {},
     "requested_symbols": 40
   },
-  "run_id": 44554031522,
+  "run_id": 44558686022,
   "schema": "midas.operational_clock.v1",
   "session": "2026-11-19",
   "settlement": "native_forward_010_through_027_037_through_044",
@@ -306,7 +306,7 @@
           "recorded_at_utc": "2026-11-19T15:23:15.006659Z"
         }
       ],
-      "native_settlement": "settled_native_paper",
+      "native_settlement": "already_settled",
       "observed": 3,
       "orders": [
         {
@@ -368,9 +368,8 @@
         "first_missing_tickers": [
           "ERIE"
         ],
-        "last_checked_at_utc": "2026-11-19T15:23:15.006659Z",
+        "last_checked_at_utc": "2026-11-19T15:47:52.634195Z",
         "missing_tickers_at_last_attempt": [
-          "ALLE",
           "ERIE"
         ],
         "opening_cutoff_at_utc": "2026-11-19T15:00:00Z",
@@ -768,13 +767,47 @@
       "waiting": 0
     },
     "IL-044": {
+      "fills": [
+        {
+          "fee": 0.35003363427740514,
+          "observed_at_utc": "2026-11-19T15:47:51.240217Z",
+          "price": 315.41722470092776,
+          "quantity": 1.109748,
+          "side": "sell",
+          "ticker": "NSC"
+        }
+      ],
+      "fills_count": 1,
       "holdings_count": 6,
-      "native_settlement": "no_execution_due",
+      "native_marker": {
+        "fill_tickers": [
+          "NSC"
+        ],
+        "fills_count": 1,
+        "lock_sha256": "7bee0db8d5d7a5125159da601cbc16829e6d2caac9e8ad81055c5f6a5babaa70",
+        "mode": "STOP_OBSERVED",
+        "quotes_sha256": "a22437f80377485b9b41bd0c28ddef64df438b85f25fd3155832f58fb8e42b11",
+        "recorded_at_utc": "2026-11-19T15:47:52.634195Z",
+        "session": "2026-11-19",
+        "source_commit": "da997560ef3398b2324d16680384c7a710c4df72",
+        "ticker": "NSC"
+      },
+      "native_markers": [
+        {
+          "fills_count": 1,
+          "key": "IL-044:2026-11-19:STOP_OBSERVED:NSC:genetic_forward_v1",
+          "mode": "STOP_OBSERVED",
+          "recorded_at_utc": "2026-11-19T15:47:52.634195Z",
+          "ticker": "NSC"
+        }
+      ],
+      "native_settlement": "settled_native_paper",
       "observed": 0,
       "orders": [],
       "planned": 0,
+      "session_fill_reconciled": true,
       "source_session": "2026-11-18",
-      "status": "active_no_orders",
+      "status": "native_forward_settled",
       "waiting": 0
     }
   },
