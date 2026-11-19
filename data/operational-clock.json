@@ -1,5 +1,5 @@
 {
-  "checked_at_utc": "2026-11-19T20:44:30.660165Z",
+  "checked_at_utc": "2026-11-19T20:55:36.268138Z",
   "lock_sha256": "7bee0db8d5d7a5125159da601cbc16829e6d2caac9e8ad81055c5f6a5babaa70",
   "mode": "single_midas_operator_monitor_no_broker",
   "note": "Observed quotes are not fills. A native engine must settle quantity/cash before a trade counts in P&L.",
@@ -8,9 +8,9 @@
   "previous_session": "2026-11-18",
   "quote_budget": {
     "hard_symbol_limit": 250,
-    "observed_symbols": 40,
+    "observed_symbols": 43,
     "omitted_algorithm_lanes": {},
-    "requested_symbols": 40
+    "requested_symbols": 43
   },
   "run_id": 44611613289,
   "schema": "midas.operational_clock.v1",
@@ -369,7 +369,7 @@
         "first_missing_tickers": [
           "ERIE"
         ],
-        "last_checked_at_utc": "2026-11-19T20:44:30.660165Z",
+        "last_checked_at_utc": "2026-11-19T20:55:36.268138Z",
         "missing_tickers_at_last_attempt": [],
         "opening_cutoff_at_utc": "2026-11-19T15:00:00Z",
         "required_tickers": [
@@ -681,44 +681,44 @@
       "fills": [
         {
           "currency": "EUR",
-          "fee": 12.456762575726316,
-          "fx_usd_per_eur": 1.0992876291275024,
-          "observed_at_utc": "2026-11-19T14:34:05.671099Z",
-          "price": 94.49930489477137,
-          "quantity": 131.818563,
-          "side": "buy",
-          "ticker": "GDDY"
+          "fee": 12.198738951298761,
+          "fx_usd_per_eur": 1.0978153944015503,
+          "observed_at_utc": "2026-11-19T20:55:33.197207Z",
+          "price": 356.5755872032827,
+          "quantity": 34.210808,
+          "side": "sell",
+          "ticker": "ELV"
         },
         {
           "currency": "EUR",
-          "fee": 12.456762304109361,
-          "fx_usd_per_eur": 1.0992876291275024,
-          "observed_at_utc": "2026-11-19T14:34:04.568745Z",
-          "price": 364.1177461844844,
-          "quantity": 34.210808,
-          "side": "buy",
-          "ticker": "ELV"
+          "fee": 12.289981004107759,
+          "fx_usd_per_eur": 1.0978153944015503,
+          "observed_at_utc": "2026-11-19T20:55:33.931740Z",
+          "price": 93.23406904464402,
+          "quantity": 131.818563,
+          "side": "sell",
+          "ticker": "GDDY"
         }
       ],
       "fills_count": 2,
       "holdings_count": 0,
       "native_marker": {
-        "entry_fx_usd_per_eur": 1.0992876291275024,
+        "exit_fx_quote_at_utc": "2026-11-19T20:55:00Z",
+        "exit_fx_usd_per_eur": 1.0978153944015503,
         "family": "daily",
         "fill_tickers": [
           "ELV",
           "GDDY"
         ],
         "fills_count": 2,
-        "fx_reference_sha256": "dbbe85661258849becc687408202748f83281c3351ff3bff9b066345b93c7d3d",
         "lock_sha256": "7bee0db8d5d7a5125159da601cbc16829e6d2caac9e8ad81055c5f6a5babaa70",
-        "mode": "open",
-        "quotes_sha256": "ae28bda97f6593302c8e4ffee067be36459670bb79ba906bb0ccdc23ed5d2f6d",
-        "recorded_at_utc": "2026-11-19T14:34:11.184679Z",
+        "mode": "exit",
+        "quotes_sha256": "00bb1e20614111a25625849b3e0137a136a2df1a8eea5c6088086ba64b26daed",
+        "recorded_at_utc": "2026-11-19T20:55:36.268138Z",
         "session": "2026-11-19",
         "source_commit": "da997560ef3398b2324d16680384c7a710c4df72"
       },
-      "native_settlement": "already_settled",
+      "native_settlement": "settled_native_paper",
       "observed": 2,
       "orders": [
         {
