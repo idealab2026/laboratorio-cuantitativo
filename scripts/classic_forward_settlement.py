@@ -356,6 +356,7 @@ def settle_classic(lock, now, market, quotes, *, reader=read, frozen=_source_at)
                     prices = {t: {"open": v["price"]} for t, v in valid.items()}
                     provenance = {t: _provenance(q, lock, t, key) for t, q in valid.items()}
                     missing_held = sorted(set(book["positions"]) - set(valid))
+                    missing_orders = sorted(set(book["pending"]) - set(valid))
                     frozen_nav = book["nav"] if missing_held else None
                     begin = len(book["events"])
                     execute_frozen_open(
@@ -392,8 +393,7 @@ def settle_classic(lock, now, market, quotes, *, reader=read, frozen=_source_at)
                     evidence[slot] = {"status": "settled_native_paper",
                                       "fills": len(operations), "marker": marker,
                                       "operations": operations,
-                                      "unfilled_open_quotes": sorted(set(book.get("pending", {})) - set(valid))
-                                          if False else missing,
+                                      "unfilled_open_quotes": missing_orders,
                                       "missing_held_quotes": missing_held,
                                       "sizing_reference": ("previous_verified_close_nav"
                                                            if missing_held else "observed_open_nav")}
