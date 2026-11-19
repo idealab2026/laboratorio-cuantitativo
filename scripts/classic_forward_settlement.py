@@ -337,7 +337,12 @@ def settle_classic(lock, now, market, quotes, *, reader=read, frozen=_source_at)
                          if t in quotes and _quote_valid(quotes[t], now, market)}
                 missing = sorted(required - set(valid))
                 if missing:
-                    evidence[slot] = {"status": "awaiting_fresh_open_quotes",
+                    # Missing any held or ordered quote blocks the whole open.
+                    # Once its real execution window has expired, this is a
+                    # missed fill, NOT an invitation to fill retrospectively.
+                    expired = now > market["open"] + OPEN_WINDOW
+                    evidence[slot] = {"status": ("opening_window_missed" if expired
+                                                 else "awaiting_fresh_open_quotes"),
                                       "fills": 0, "missing": missing}
                 elif any(datetime.fromisoformat(q["observed_at_utc"].replace("Z", "+00:00")) >
                          market["open"] + OPEN_WINDOW for q in valid.values()):
