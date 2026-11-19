@@ -71,9 +71,13 @@ def clock_plan(now, market, tracks, commit, *, fx_reference=None):
         weekly_slot = slot in {f"IL-{n:03d}" for n in range(19, 28)}
         # An independently paused portfolio may exit a frozen long position
         # at a future observed preclose, without reviving stale entry orders.
+        recovery_due = (slot == "IL-040" and eligible and
+                        isinstance(record, dict) and
+                        record.get("exit_only_due") is True and
+                        bool(record.get("holdings")) and not record.get("orders"))
         exit_only_ready = (weekly_slot and isinstance(record, dict)
                            and status == "paused" and source_session == market["previous"]
-                           and bool(record.get("holdings")) and not record.get("orders"))
+                           and bool(record.get("holdings")) and not record.get("orders")) or recovery_due
         proposals = record.get("orders", []) if isinstance(record, dict) else []
         orders = []
         seen = set()
@@ -105,6 +109,7 @@ def clock_plan(now, market, tracks, commit, *, fx_reference=None):
         slots[slot] = {
             "source_status": status, "source_session": source_session,
             "exit_only_ready": exit_only_ready,
+            "exit_only_due": bool(recovery_due),
             "execution_ready": eligible,
             "orders": sorted(orders, key=lambda row: row["ticker"]) if eligible else [],
             "orders_count": len(orders) if eligible else 0,
@@ -423,7 +428,7 @@ def budgeted_quote_targets(lock, prior=None, *, limit=LIMIT, now=None, market=No
             # budget chasing weekly strategy holdings all day.
             is_close = (now is not None and market is not None
                         and now >= market["close"] - timedelta(minutes=6))
-            if slot == "IL-040" and is_close:
+            if slot == "IL-040" and is_close and not lane.get("exit_only_due"):
                 from tfg_ahp.data import is_week_end_session
                 is_close = is_week_end_session(market["session"])
             last_marker = settled.get(slot, {}).get("native_marker") or {}
@@ -577,7 +582,7 @@ def preclose_target(now, market, lock):
             continue
         weekly = slot in {f"IL-{i:03d}" for i in range(19, 28)}
         if (weekly and friday or slot in ("IL-037", "IL-042")
-                or slot == "IL-040" and friday):
+                or slot == "IL-040" and (friday or lane.get("exit_only_due"))):
             watch.append(slot)
     if not watch:
         return None
