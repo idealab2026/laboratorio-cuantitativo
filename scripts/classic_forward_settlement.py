@@ -336,25 +336,32 @@ def settle_classic(lock, now, market, quotes, *, reader=read, frozen=_source_at)
                 valid = {t: quotes[t] for t in required
                          if t in quotes and _quote_valid(quotes[t], now, market)}
                 missing = sorted(required - set(valid))
-                if missing:
-                    # Missing any held or ordered quote blocks the whole open.
-                    # Once its real execution window has expired, this is a
-                    # missed fill, NOT an invitation to fill retrospectively.
-                    expired = now > market["open"] + OPEN_WINDOW
+                executable = set(book["pending"]) & set(valid)
+                cutoff = market["open"] + OPEN_WINDOW
+                # Individual paper orders can execute without a quote for an
+                # unrelated holding. Current NAV is NOT marked using a stale
+                # price. If a held quote is absent, use the prior verified NAV
+                # *only as a conservative ex-ante sizing reference*.
+                if not executable:
+                    expired = now > cutoff
                     evidence[slot] = {"status": ("opening_window_missed" if expired
                                                  else "awaiting_fresh_open_quotes"),
                                       "fills": 0, "missing": missing}
-                elif any(datetime.fromisoformat(q["observed_at_utc"].replace("Z", "+00:00")) >
-                         market["open"] + OPEN_WINDOW for q in valid.values()):
-                    evidence[slot] = {"status": "opening_window_missed", "fills": 0}
+                elif now > cutoff or any(
+                        datetime.fromisoformat(valid[t]["observed_at_utc"].replace("Z", "+00:00")) > cutoff
+                        for t in executable):
+                    evidence[slot] = {"status": "opening_window_missed", "fills": 0,
+                                      "missing": missing}
                 else:
-                    # The engine's same cost/quantity formula, with all held
-                    # symbols quoted before computing the portfolio's open NAV.
                     prices = {t: {"open": v["price"]} for t, v in valid.items()}
                     provenance = {t: _provenance(q, lock, t, key) for t, q in valid.items()}
+                    missing_held = sorted(set(book["positions"]) - set(valid))
+                    frozen_nav = book["nav"] if missing_held else None
                     begin = len(book["events"])
-                    execute_frozen_open(config, name, book, market["session"], prices,
-                                        provenance=provenance)
+                    execute_frozen_open(
+                        config, name, book, market["session"], prices,
+                        provenance=provenance, allow_missing_orders=True,
+                        sizing_nav_override=frozen_nav)
                     recent = book["events"][begin:]
                     for row in recent:
                         if row.get("execution") != "forward_observed_paper":
@@ -384,16 +391,23 @@ def settle_classic(lock, now, market, quotes, *, reader=read, frozen=_source_at)
                     any_changes = True
                     evidence[slot] = {"status": "settled_native_paper",
                                       "fills": len(operations), "marker": marker,
-                                      "operations": operations}
+                                      "operations": operations,
+                                      "unfilled_open_quotes": sorted(set(book.get("pending", {})) - set(valid))
+                                          if False else missing,
+                                      "missing_held_quotes": missing_held,
+                                      "sizing_reference": ("previous_verified_close_nav"
+                                                           if missing_held else "observed_open_nav")}
         # Intraday stop/target rules use only a fresh OBSERVED quote crossing a
         # frozen level. A missing observation never becomes a retroactive exit.
         # A missing quote for an opening BUY cannot suppress a separately
         # observed stop/target in a position held before today's opening.
-        # If any SELL order is pending, keep the entire portfolio fail-closed
-        # rather than create a competing liquidation of the same shares.
-        if any(order.get("side") != "buy" for order in book["pending"].values()):
-            continue
+        # Never execute a protective sale for the *same* symbol as an
+        # unfilled opening SELL; other independently observed stops remain live.
+        pending_sell = {ticker for ticker, order in book["pending"].items()
+                        if order.get("side") == "sell"}
         for ticker, position in list(book["positions"].items()):
+            if ticker in pending_sell:
+                continue
             stop = position.get("stop")
             target = position.get("target")
             if stop is None and target is None:
