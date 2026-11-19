@@ -262,7 +262,8 @@ def record_opening_quote_diagnostic(lane, previous_lane, frozen_lane, evidence, 
 
 def publish_missed_open(lane, evidence):
     """Show terminal opening misses; never turn an observed quote into a fill."""
-    if evidence.get("status") != "opening_window_missed" or lane.get("status") == "native_forward_settled":
+    if (evidence.get("status") != "opening_window_missed" or
+            lane.get("status") in ("native_forward_settled", "opening_window_missed")):
         return False
     lane["status"] = "opening_window_missed"
     lane["waiting"] = 0
