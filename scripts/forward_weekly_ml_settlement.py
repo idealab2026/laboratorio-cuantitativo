@@ -70,27 +70,128 @@ def weekly_exit_quote_coverage(book, now, market, quotes):
             "missing": sorted(expected - valid)}
 
 
+def _verified_partial_exit(original, book, slot, market, lock, policy):
+    """Reconcile prior same-session symbol sales before observing another one.
+
+    A previously booked close may not be replayed, undone or used to create
+    an unrelated entry. Cash, quantities, trades and receipt provenance must
+    match the immutable previous-session source and this session's lock.
+    """
+    if _unchanged(original, book) and (
+            original.get("trades") == book.get("trades") and
+            original.get("paused_missing_quotes") == book.get("paused_missing_quotes") and
+            original.get("forward_executions") == book.get("forward_executions")):
+        return True
+    if (any(original.get(k) != book.get(k) for k in
+            ("nav", "equity", "pending", "last_signal_session", "paused_missing_quotes"))
+            or not isinstance(original.get("positions"), dict)
+            or not isinstance(book.get("positions"), dict)
+            or not isinstance(book.get("forward_executions"), dict)):
+        return False
+    prefix = _exit_key(slot, market["session"]) + ":"
+    old_markers = original.get("forward_executions", {})
+    markers = book["forward_executions"]
+    if any(markers.get(key) != value for key, value in old_markers.items()):
+        return False
+    added = {key: value for key, value in markers.items() if key not in old_markers}
+    if not added or any(not key.startswith(prefix) for key in added):
+        return False
+    sold = set(original["positions"]) - set(book["positions"])
+    if (len(added) != len(sold) or not sold
+            or any(book["positions"].get(t) != original["positions"][t]
+                   for t in book["positions"] if t in original["positions"])
+            or not set(book["positions"]) <= set(original["positions"])
+            or book.get("events", [])[:len(original.get("events", []))] != original.get("events", [])
+            or book.get("trades", [])[:len(original.get("trades", []))] != original.get("trades", [])):
+        return False
+    events = book["events"][len(original["events"]):]
+    trades = book["trades"][len(original["trades"]):]
+    if len(events) != len(sold) or len(trades) != len(sold):
+        return False
+    by_event = {e.get("ticker"): e for e in events}
+    by_trade = {t.get("ticker"): t for t in trades}
+    if set(by_event) != sold or set(by_trade) != sold:
+        return False
+    cash = float(original["cash"])
+    for ticker in sold:
+        key = prefix + ticker
+        mark = added.get(key)
+        event, trade = by_event[ticker], by_trade[ticker]
+        old = original["positions"][ticker]
+        if (not isinstance(mark, dict)
+                or mark.get("mode") != "weekly_observed_exit_symbol"
+                or mark.get("session") != market["session"]
+                or mark.get("source_commit") != lock["source_commit"]
+                or mark.get("lock_sha256") != lock["lock_sha256"]
+                or mark.get("fills_count") != 1
+                or mark.get("fill_tickers") != [ticker]
+                or event.get("execution") != "observed_preclose_paper"
+                or event.get("idempotency_key") != key
+                or event.get("lock_sha256") != lock["lock_sha256"]
+                or event.get("source_commit") != lock["source_commit"]
+                or event.get("date") != market["session"]
+                or event.get("type") != "sell"
+                or trade.get("exit_date") != market["session"]
+                or trade.get("entry_date") != old["entry_date"]
+                or trade.get("signal_date") != old["signal_date"]):
+            return False
+        try:
+            shares, price, fee = (float(event[x]) for x in ("shares", "price", "fee"))
+            if (not all(math.isfinite(x) for x in (shares, price, fee))
+                    or shares <= 0 or price <= 0 or fee < 0
+                    or not math.isclose(shares, float(old["shares"]), rel_tol=1e-12)
+                    or not math.isclose(price, float(trade["sell_price"]), rel_tol=1e-12)
+                    or not math.isclose(fee, float(trade["sell_commission"]), rel_tol=1e-12)
+                    or not math.isclose(float(trade["net_pnl"]),
+                        shares * price - fee - float(old["entry_price"]) * shares
+                        - float(old["entry_fee"]), rel_tol=1e-10, abs_tol=1e-6)):
+                return False
+            time_mark = datetime.fromisoformat(event["quote_at_utc"].replace("Z", "+00:00"))
+            received = datetime.fromisoformat(event["observed_at_utc"].replace("Z", "+00:00"))
+            if not (market["close"] - timedelta(minutes=5) <= time_mark
+                    <= received <= market["close"]):
+                return False
+            cash += shares * price - fee
+        except (KeyError, TypeError, ValueError, OverflowError):
+            return False
+    return math.isclose(float(book["cash"]), cash, rel_tol=1e-10, abs_tol=1e-6)
+
+
 def _weekly_exit(book, slot, lock, now, market, quotes, policy):
-    """Sell exact holdings at observed preclose prices, atomically per book."""
+    """Sell independently priced *held* tickers; leave missing ones untouched.
+
+    Strictly before official close, use only fresh, dated, single-symbol
+    observations. A different holding's missing quote never cancels a valid
+    independent paper sale. Each sell has an immutable idempotency marker.
+    """
     expected = set(book["positions"])
-    if not expected or book["pending"] or expected != set(lock["slots"][slot].get("monitor_tickers", [])):
-        return None
-    fresh = {t: quotes[t] for t in expected if t in quotes and _quote_valid(quotes[t], now, market)}
-    if set(fresh) != expected:
+    frozen = set(lock["slots"][slot].get("monitor_tickers", []))
+    if not expected or book["pending"] or not expected <= frozen:
         return None
     start = market["close"] - timedelta(minutes=5)
-    if any(not (start <= datetime.fromisoformat(q["quote_at_utc"].replace("Z", "+00:00")) <= now <= market["close"])
-           for q in fresh.values()):
+    fresh = {}
+    for ticker in expected:
+        q = quotes.get(ticker)
+        if not _quote_valid(q, now, market):
+            continue
+        when = datetime.fromisoformat(q["quote_at_utc"].replace("Z", "+00:00"))
+        if start <= when <= now <= market["close"]:
+            fresh[ticker] = q
+    if not fresh:
         return None
-    key = _exit_key(slot, market["session"])
     operations = []
-    for ticker in sorted(expected):
+    markers = book.setdefault("forward_executions", {})
+    last_marker = None
+    for ticker in sorted(fresh):
         pos = book["positions"][ticker]
         shares = float(pos["shares"])
         price = float(fresh[ticker]["price"]) * (1 - float(policy["slippage"]))
         fee = shares * price * float(policy["commission"])
         if not all(math.isfinite(v) for v in (shares, price, fee)) or shares <= 0 or price <= 0 or fee < 0:
             raise ValueError("Invalid observed weekly exit economics")
+        key = _exit_key(slot, market["session"]) + ":" + ticker
+        if key in markers:
+            raise ValueError("Weekly exit already marked for still-held ticker")
         book["cash"] += shares * price - fee
         book["trades"].append({"ticker": ticker, "signal_date": pos["signal_date"],
             "entry_date": pos["entry_date"], "exit_date": market["session"], "shares": shares,
@@ -100,24 +201,38 @@ def _weekly_exit(book, slot, lock, now, market, quotes, policy):
                  "price": price, "fee": fee, "execution": "observed_preclose_paper",
                  "quote_at_utc": fresh[ticker]["quote_at_utc"], "observed_at_utc": fresh[ticker]["observed_at_utc"],
                  "source_commit": lock["source_commit"], "lock_sha256": lock["lock_sha256"],
-                 "idempotency_key": key + ":" + ticker}
+                 "idempotency_key": key}
         book["events"].append(event)
+        del book["positions"][ticker]
         operations.append({"ticker": ticker, "side": "sell", "quantity": shares, "price": price,
                            "fee": fee, "observed_at_utc": event["observed_at_utc"]})
-    book["positions"] = {}
-    # A missed historical Friday remains documented; a verified future sale
-    # ends the pause without pretending the prior sale took place then.
-    if book.get("paused_missing_quotes", {}).get("reason") == "unobserved_weekly_exit":
-        missed = list(book["paused_missing_quotes"].get("missed_exit_sessions", []))
-        book["events"].append({"date": market["session"],
-            "type": "prospective_unwind_after_unobserved_weekly_exit",
-            "missed_exit_sessions": missed, "lock_sha256": lock["lock_sha256"]})
-        del book["paused_missing_quotes"]
-    marker = {"session": market["session"], "mode": "weekly_observed_exit", "lock_sha256": lock["lock_sha256"],
-              "source_commit": lock["source_commit"], "recorded_at_utc": timestamp(now),
-              "quotes_sha256": digest(fresh), "fills_count": len(operations), "fill_tickers": sorted(expected)}
-    book.setdefault("forward_executions", {})[key] = marker
-    return marker, operations
+        last_marker = {"session": market["session"], "mode": "weekly_observed_exit_symbol",
+              "source_commit": lock["source_commit"], "lock_sha256": lock["lock_sha256"],
+              "recorded_at_utc": timestamp(now),
+              "quotes_sha256": digest({ticker: fresh[ticker]}),
+              "fills_count": 1, "fill_tickers": [ticker]}
+        markers[key] = last_marker
+    if not book["positions"]:
+        # Historical missed exits stay disclosed. Complete the unwind only
+        # when every position was independently sold at a real observed price.
+        if book.get("paused_missing_quotes", {}).get("reason") == "unobserved_weekly_exit":
+            missed = list(book["paused_missing_quotes"].get("missed_exit_sessions", []))
+            book["events"].append({"date": market["session"],
+                "type": "prospective_unwind_after_unobserved_weekly_exit",
+                "missed_exit_sessions": missed, "lock_sha256": lock["lock_sha256"]})
+            del book["paused_missing_quotes"]
+        total = len(frozen)
+        final = {"session": market["session"], "mode": "weekly_observed_exit",
+                 "lock_sha256": lock["lock_sha256"], "source_commit": lock["source_commit"],
+                 "recorded_at_utc": timestamp(now),
+                 "observed_fill_events_sha256": digest([
+                     e for e in book["events"] if e.get("date") == market["session"]
+                     and e.get("execution") == "observed_preclose_paper"
+                     and e.get("idempotency_key", "").startswith(_exit_key(slot, market["session"]) + ":")]),
+                 "fills_count": total, "fill_tickers": sorted(frozen)}
+        markers[_exit_key(slot, market["session"])] = final
+        last_marker = final
+    return last_marker, operations
 
 
 def settle_weekly(lock, now, market, quotes, *, reader=read, frozen=_source_at):
@@ -156,7 +271,7 @@ def settle_weekly(lock, now, market, quotes, *, reader=read, frozen=_source_at):
             eligible_exit = lane["execution_ready"] and not paused
             if (not (eligible_exit or paused_exit) or lane["source_session"] != market["previous"]
                     or book["equity"][-1]["date"] != market["previous"]
-                    or not _unchanged(original, book)):
+                    or not _verified_partial_exit(original, book, slot, market, lock, config["paper_policy"])):
                 observations[slot] = {"status": "exit_source_changed_or_stale", "fills": 0}
                 continue
             outcome = _weekly_exit(book, slot, lock, now, market, quotes, config["paper_policy"])
@@ -167,7 +282,9 @@ def settle_weekly(lock, now, market, quotes, *, reader=read, frozen=_source_at):
                 continue
             marker, operations = outcome
             observations[slot] = {"status": "settled_native_paper", "fills": len(operations),
-                                  "marker": marker, "operations": operations}
+                                  "marker": marker, "operations": operations,
+                                  "remaining_tickers": sorted(book["positions"]),
+                                  "exit_scope": "symbol_isolated_verified_preclose"}
             continue
         key = _key(slot, market["session"], signal)
         previous_marker = book.get("forward_executions", {}).get(key)
@@ -264,6 +381,8 @@ def verify_published(path=ROOT / "data/operational-clock.json", *, remote=_sourc
             raise ValueError(f"{slot}: public ML fill has no marker")
         name = SLOTS[slot]
         key = (_exit_key(slot, marker["session"]) if marker.get("mode") == "weekly_observed_exit"
+               else _exit_key(slot, marker["session"]) + ":" + marker["fill_tickers"][0]
+               if marker.get("mode") == "weekly_observed_exit_symbol"
                else _key(slot, marker["session"], marker["signal_date"]))
         book = ledger["strategies"][name]
         if book.get("forward_executions", {}).get(key) != marker or book.get("pending"):

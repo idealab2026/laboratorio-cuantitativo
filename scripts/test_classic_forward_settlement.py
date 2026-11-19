@@ -335,11 +335,9 @@ class NativeClassicClockTests(unittest.TestCase):
                 "quote_at_utc": (now - timedelta(minutes=1)).isoformat(),
                 "observed_at_utc": now.isoformat()}}
 
-        # ERIE is unavailable; VLTO has a quote but its BUY cannot fill.
-        # COST was held before the opening and its independent stop is real
-        # observed paper evidence, not a historic high/low reconstruction.
-        first = {**fresh("VLTO", 120., self.now),
-                 **fresh("COST", 94., self.now),
+        # Both ERIE and the proposed VLTO buy lack a quote. Neither ticker
+        # can be assigned a made-up fill; COST's independent stop stays live.
+        first = {**fresh("COST", 94., self.now),
                  **fresh("MTD", 100., self.now)}
         updated, results = self.run_clock(quotes=first)
         first_book = updated[LEDGER]["books"][name]
@@ -411,12 +409,67 @@ class NativeClassicClockTests(unittest.TestCase):
                   "quote_at_utc": (self.now - timedelta(minutes=1)).isoformat(),
                   "observed_at_utc": self.now.isoformat()}}
         updated, results = self.run_clock(quotes=quote)
-        self.assertEqual(results[slot]["status"], "awaiting_fresh_open_quotes")
-        self.assertEqual(results[slot]["missing"], ["ERIE"])
-        self.assertNotIn(LEDGER, updated)
+        self.assertEqual(results[slot]["status"], "settled_native_paper")
+        self.assertEqual(results[slot]["fills"], 1)
+        self.assertEqual(results[slot]["missing_held_quotes"], ["ERIE"])
+        after = updated[LEDGER]["books"][name]
+        self.assertNotIn("COST", after["positions"])
+        self.assertIn("ERIE", after["positions"])
+        self.assertEqual(results[slot]["operations"][0]["side"], "sell")
+        self.assertEqual(results[slot]["operations"][0]["ticker"], "COST")
+        self.assertEqual(len(after["trades"]), 1)
         self.assertEqual(self.book["books"][name]["trades"], [])
-        self.assertIn("COST", self.book["books"][name]["positions"])
 
+
+    def test_missing_held_quote_does_not_block_independent_open_buy(self):
+        slot, name = "IL-016", SLOTS["IL-016"]
+        self.tracks[slot]["holdings"] = ["ERIE"]
+        book = self.book["books"][name]
+        book["positions"] = {"ERIE": {"shares": 2., "entry_date": "2026-11-06",
+            "entry_price": 100., "cost": 200.2, "dividends": 0.,
+            "stop": 95., "target": 115.}}
+        book["cash"] = 99800.
+        self.original = copy.deepcopy(self.book)
+        self.lock = clock_plan(self.open-timedelta(minutes=10),
+                               self.market, self.tracks, "c"*40)
+        updated, results = self.run_clock()
+        self.assertEqual(results[slot]["status"], "settled_native_paper")
+        self.assertEqual(results[slot]["fills"], 1)
+        self.assertEqual(results[slot]["missing_held_quotes"], ["ERIE"])
+        self.assertEqual(results[slot]["sizing_reference"], "previous_verified_close_nav")
+        after = updated[LEDGER]["books"][name]
+        self.assertIn("AAPL", after["positions"])
+        self.assertIn("ERIE", after["positions"])
+        self.assertEqual(after["equity"], book["equity"])
+        self.assertEqual(after["nav"], book["nav"])
+        self.assertEqual(after["events"][-1]["sizing_reference"], "previous_verified_close_nav")
+        self.assertGreater(after["cash"], 0.)
+        self.book = copy.deepcopy(updated[LEDGER])
+        no_replay, next_result = self.run_clock()
+        self.assertEqual(no_replay, {})
+        self.assertEqual(next_result[slot]["status"], "already_settled")
+
+    def test_missing_pending_buy_does_not_cancel_other_frozen_buy(self):
+        slot, name = "IL-013", SLOTS["IL-013"]
+        self.book["books"][name]["pending"]["MSFT"] = {
+            "side": "buy", "signal_date": "2026-11-09"}
+        self.tracks[slot]["orders"].append({
+            "ticker": "MSFT", "action": "buy", "decision_session": "2026-11-09",
+            "target_session": "2026-11-10"})
+        self.original = copy.deepcopy(self.book)
+        self.lock = clock_plan(self.open-timedelta(minutes=10),
+                               self.market, self.tracks, "c"*40)
+        updated, results = self.run_clock()
+        self.assertEqual(results[slot]["fills"], 1)
+        self.assertEqual(results[slot]["unfilled_open_quotes"], ["MSFT"])
+        after = updated[LEDGER]["books"][name]
+        self.assertEqual(set(after["positions"]), {"AAPL"})
+        self.assertEqual(after["pending"], {})
+        self.assertTrue(any(e.get("ticker") == "MSFT" and
+                            e.get("type") == "unfilled_missing_open_quote"
+                            for e in after["events"]))
+        self.assertEqual(len([e for e in after["events"]
+                              if e.get("execution") == "forward_observed_paper"]), 1)
 
     def test_expired_inactive_recovery_boundary_allows_real_next_open_only(self):
         slot, name = "IL-011", SLOTS["IL-011"]

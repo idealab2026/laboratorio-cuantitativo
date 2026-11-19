@@ -794,6 +794,14 @@ def main(argv=None):
                     "closing_cutoff_at_utc": timestamp(market["close"]),
                     "price_scope": "observed_preclose_paper_only",
                 }
+            if (slot in {f"IL-{n:03d}" for n in range(11, 18)}
+                    and result.get("sizing_reference")):
+                lane["opening_quote_isolation"] = {
+                    "unfilled_tickers": result.get("unfilled_open_quotes", []),
+                    "missing_held_quotes": result.get("missing_held_quotes", []),
+                    "sizing_reference": result["sizing_reference"],
+                    "scope": "paper_forward_open_only",
+                    "checked_at_utc": timestamp(now)}
             if slot in {f"IL-{n:03d}" for n in range(11, 18)}:
                 record_opening_quote_diagnostic(
                     lane, (prior or {}).get("slots", {}).get(slot, {}),
@@ -813,6 +821,66 @@ def main(argv=None):
                 lane["fills"] = []
             else:
                 publish_missed_open(lane, result)
+        # Accumulate every verified weekly paper sale from this *session*,
+        # even if separate polls saw different symbols. A missing-price retry
+        # must not erase earlier closes from the published activity journal.
+        from forward_weekly_ml_settlement import (
+            LEDGER as WEEKLY_LEDGER, SLOTS as WEEKLY_SLOTS, _exit_key as weekly_exit_key)
+        from native_forward_settlement import _source_at as read_original_weekly
+        weekly_ledger = _read(ROOT / WEEKLY_LEDGER)
+        frozen_weekly = read_original_weekly(lock["source_commit"], WEEKLY_LEDGER)
+        for slot, book_name in WEEKLY_SLOTS.items():
+            lane = report["slots"].get(slot)
+            if not lane:
+                continue
+            book = weekly_ledger["strategies"][book_name]
+            original = frozen_weekly["strategies"][book_name]
+            prefix = weekly_exit_key(slot, market["session"]) + ":"
+            closed_events = [
+                e for e in book.get("events", [])
+                if e.get("date") == market["session"]
+                and e.get("execution") == "observed_preclose_paper"
+                and e.get("idempotency_key", "").startswith(prefix)]
+            if not closed_events:
+                continue
+            expected = set(lock["slots"][slot].get("monitor_tickers", []))
+            if expected != set(original["positions"]):
+                raise ValueError(f"{slot}: weekly sold names differ from locked holdings")
+            by_symbol = {e["ticker"]: e for e in closed_events}
+            if (len(by_symbol) != len(closed_events)
+                    or set(by_symbol) | set(book["positions"]) != expected
+                    or set(by_symbol) & set(book["positions"])):
+                raise ValueError(f"{slot}: inconsistent partial weekly exits")
+            fills = []
+            for symbol, e in by_symbol.items():
+                key = prefix + symbol
+                marker = book.get("forward_executions", {}).get(key)
+                if (not marker or marker.get("mode") != "weekly_observed_exit_symbol"
+                        or marker.get("lock_sha256") != lock["lock_sha256"]
+                        or marker.get("source_commit") != lock["source_commit"]
+                        or marker.get("fill_tickers") != [symbol]
+                        or e.get("lock_sha256") != lock["lock_sha256"]
+                        or e.get("source_commit") != lock["source_commit"]
+                        or e.get("idempotency_key") != key):
+                    raise ValueError(f"{slot}: weekly sale lacks immutable native marker")
+                fills.append({"ticker": symbol, "side": "sell",
+                              "quantity": e["shares"], "price": e["price"],
+                              "fee": e["fee"], "observed_at_utc": e["observed_at_utc"]})
+            fills.sort(key=lambda v: (v["observed_at_utc"], v["ticker"]))
+            final_key = weekly_exit_key(slot, market["session"])
+            all_markers = book["forward_executions"]
+            marker = all_markers.get(final_key) or all_markers[prefix + fills[-1]["ticker"]]
+            lane["status"] = "native_forward_settled"
+            lane["native_marker"] = marker
+            lane["fills_count"] = len(fills)
+            lane["fills"] = fills
+            lane["weekly_exit_progress"] = {
+                "closed_tickers": sorted(by_symbol),
+                "remaining_tickers": sorted(book["positions"]),
+                "complete": not bool(book["positions"]),
+                "source": "observed_preclose_paper_symbol_isolated"}
+            lane["session_fill_reconciled"] = True
+
         # A classic book can sell more than one frozen position during separate
         # intraday polls; its latest marker never represents the daily total.
         from classic_forward_settlement import (

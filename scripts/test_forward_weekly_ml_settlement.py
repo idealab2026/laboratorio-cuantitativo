@@ -244,7 +244,7 @@ class ForwardWeeklyMLTests(unittest.TestCase):
         self.assertTrue(all(x["status"] == "exit_source_changed_or_stale" for x in evidence.values()))
         self.assertEqual(self.state, self.frozen_state)
 
-    def test_multi_symbol_paused_book_rejects_partial_or_quota_truncated_exit(self):
+    def test_multi_symbol_paused_book_settles_only_fresh_names_and_retries_without_replay(self):
         self.open = datetime(2026, 11, 20, 14, 30, tzinfo=UTC)
         self.market = {"session": "2026-11-20", "previous": "2026-11-19",
                        "open": self.open, "close": self.open + timedelta(hours=6, minutes=30)}
@@ -269,22 +269,55 @@ class ForwardWeeklyMLTests(unittest.TestCase):
         self.assertEqual(requested, set())
         self.assertEqual(set(omitted), set(SLOTS))
         self.quotes = {"AAPL": {"price": 110.,
-                       "quote_at_utc": self.now.isoformat(), "observed_at_utc": self.now.isoformat()}}
-        output, evidence = self.settle()
-        self.assertEqual(output, {})
-        self.assertTrue(all(x["status"] == "awaiting_verified_weekly_exit_quotes" for x in evidence.values()))
-        self.assertEqual(evidence["IL-023"]["missing"], ["MSFT"])
-        self.assertEqual((evidence["IL-023"]["valid_count"],
-                          evidence["IL-023"]["required_count"]), (1, 2))
-        self.assertEqual(self.state, self.frozen_state)
-        self.quotes["MSFT"] = {"price": 120., "quote_at_utc": self.now.isoformat(),
-                                "observed_at_utc": self.now.isoformat()}
-        output, evidence = self.settle()
-        self.assertEqual(set(output), {LEDGER})
-        self.assertTrue(all(x["fills"] == 2 for x in evidence.values()))
-        for book in output[LEDGER]["strategies"].values():
+            "quote_at_utc": self.now.isoformat(), "observed_at_utc": self.now.isoformat()}}
+        first, evidence = self.settle()
+        self.assertEqual(set(first), {LEDGER})
+        for slot, name in SLOTS.items():
+            self.assertEqual(evidence[slot]["status"], "settled_native_paper")
+            self.assertEqual(evidence[slot]["fills"], 1)
+            self.assertEqual(evidence[slot]["remaining_tickers"], ["MSFT"])
+            self.assertEqual(evidence[slot]["marker"]["mode"], "weekly_observed_exit_symbol")
+            book = first[LEDGER]["strategies"][name]
+            self.assertEqual(set(book["positions"]), {"MSFT"})
+            self.assertIn("paused_missing_quotes", book)
+            self.assertEqual(book["nav"], 100000.)
+            self.assertEqual(book["equity"], [{"date": "2026-11-19", "nav": 100000.}])
+            self.assertEqual([t["ticker"] for t in book["trades"]], ["AAPL"])
+        self.state = copy.deepcopy(first[LEDGER])
+        repeat, evidence = self.settle()
+        self.assertEqual(repeat, {})
+        self.assertTrue(all(x["status"] == "awaiting_verified_weekly_exit_quotes"
+                            and x["missing"] == ["MSFT"] for x in evidence.values()))
+
+        # No economic divergence or forged receipt can authorize a later sale.
+        tampered = copy.deepcopy(self.state)
+        self.state["strategies"]["mlp_return"]["cash"] += 1.
+        second_quotes = {"MSFT": {"price": 120.,
+            "quote_at_utc": self.now.isoformat(), "observed_at_utc": self.now.isoformat()}}
+        self.quotes = second_quotes
+        blocked, rejected = self.settle()
+        self.assertEqual(rejected["IL-024"]["status"], "exit_source_changed_or_stale")
+        self.assertEqual(blocked[LEDGER]["strategies"]["mlp_return"]["cash"],
+                         self.state["strategies"]["mlp_return"]["cash"])
+        self.state = tampered
+
+        second, evidence = self.settle()
+        self.assertEqual(set(second), {LEDGER})
+        for slot, name in SLOTS.items():
+            book = second[LEDGER]["strategies"][name]
             self.assertFalse(book["positions"])
-            self.assertEqual([x["ticker"] for x in book["trades"][-2:]], ["AAPL", "MSFT"])
+            self.assertNotIn("paused_missing_quotes", book)
+            self.assertEqual([t["ticker"] for t in book["trades"]], ["AAPL", "MSFT"])
+            self.assertEqual(evidence[slot]["fills"], 1)
+            self.assertEqual(evidence[slot]["operations"][0]["ticker"], "MSFT")
+            marker = evidence[slot]["marker"]
+            self.assertEqual(marker["mode"], "weekly_observed_exit")
+            self.assertEqual(marker["fills_count"], 2)
+            self.assertEqual(marker["fill_tickers"], ["AAPL", "MSFT"])
+        self.state = copy.deepcopy(second[LEDGER])
+        no_replay, repeated = self.settle()
+        self.assertEqual(no_replay, {})
+        self.assertTrue(all(x["status"] == "already_settled" for x in repeated.values()))
 
     def test_weekly_exit_observes_actual_early_close_not_a_fabricated_1600(self):
         # XNYS Black Friday: US session ends at 13:00 ET, not 16:00 ET.
