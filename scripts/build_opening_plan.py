@@ -30,6 +30,21 @@ def plan_track(slot, book, target, previous):
     history = book.get("equity") or []
     last = date(history[-1].get("date")) if history else date(book.get("last_session"))
     code = int(slot[3:])
+    if code == 40 and book.get("pending_exit"):
+        # A missing Friday exit does NOT authorize a new buy or a fictitious
+        # Friday fill. This dated, verified-close book may only unwind held
+        # positions at a later actual preclose observation, one by one.
+        pending_exit = book["pending_exit"]
+        holdings = sorted(book.get("positions", {}))
+        due = (isinstance(pending_exit, dict) and
+               pending_exit.get("execution_policy") == "next_verified_preclose_exit_only"
+               and isinstance(pending_exit.get("from_session"), str)
+               and pending_exit["from_session"] < target
+               and last == previous and bool(holdings)
+               and not book.get("pending"))
+        return {"status": "recorded" if due else "paused",
+                "session": last, "orders": [], "holdings": holdings,
+                "exit_only_due": bool(due), "undated": 0}
     if code == 37:
         # AHP closes its signal on Friday and enters the following XNYS
         # opening. During the week, its official incremental book supplies
