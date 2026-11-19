@@ -1,5 +1,5 @@
 {
-  "checked_at_utc": "2026-11-19T15:47:52.634195Z",
+  "checked_at_utc": "2026-11-19T16:55:14.188624Z",
   "lock_sha256": "7bee0db8d5d7a5125159da601cbc16829e6d2caac9e8ad81055c5f6a5babaa70",
   "mode": "single_midas_operator_monitor_no_broker",
   "note": "Observed quotes are not fills. A native engine must settle quantity/cash before a trade counts in P&L.",
@@ -12,7 +12,7 @@
     "omitted_algorithm_lanes": {},
     "requested_symbols": 40
   },
-  "run_id": 44558686022,
+  "run_id": 44571298597,
   "schema": "midas.operational_clock.v1",
   "session": "2026-11-19",
   "settlement": "native_forward_010_through_027_037_through_044",
@@ -360,7 +360,7 @@
     },
     "IL-016": {
       "holdings_count": 6,
-      "native_settlement": "awaiting_fresh_open_quotes",
+      "native_settlement": "opening_window_missed",
       "observed": 3,
       "opening_quote_diagnostic": {
         "all_required_quotes_available_now": false,
@@ -368,7 +368,7 @@
         "first_missing_tickers": [
           "ERIE"
         ],
-        "last_checked_at_utc": "2026-11-19T15:47:52.634195Z",
+        "last_checked_at_utc": "2026-11-19T16:55:14.188624Z",
         "missing_tickers_at_last_attempt": [
           "ERIE"
         ],
@@ -384,7 +384,7 @@
           "MTD",
           "ULTA"
         ],
-        "settlement_status": "awaiting_fresh_open_quotes"
+        "settlement_status": "opening_window_missed"
       },
       "orders": [
         {
@@ -801,7 +801,7 @@
           "ticker": "NSC"
         }
       ],
-      "native_settlement": "settled_native_paper",
+      "native_settlement": "no_execution_due",
       "observed": 0,
       "orders": [],
       "planned": 0,
