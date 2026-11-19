@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "generated_at_utc": "2026-11-19T13:30:25.609942+00:00",
+  "generated_at_utc": "2026-11-19T14:34:12.597333+00:00",
   "principle": "Comparar rentabilidad acumulada y riesgo observado; no ordenar carteras con distintas fechas de inicio o supuestos de ejecución.",
   "counts": {
     "paper_with_diary": 18,
@@ -1134,18 +1134,17 @@
       "evaluated_universe_symbols": 488,
       "eligible_universe_symbols": 503,
       "activity_state": "active",
-      "activity_label": "8 posiciones abiertas · Inactividad sin operaciones: 2026-11-02, 2026-11-03, 2026-11-04, 2026-11-05, 2026-11-06, 2026-11-09, 2026-11-10, 2026-11-11, 2026-11-12, 2026-11-13, 2026-11-16, 2026-11-17, 2026-11-18 · Primera apertura posible (condicionada): 2026-11-19 · CANJE CON VALORACIÓN PROVISIONAL; cobro separado del efectivo",
+      "activity_label": "7 posiciones abiertas · Inactividad sin operaciones: 2026-11-02, 2026-11-03, 2026-11-04, 2026-11-05, 2026-11-06, 2026-11-09, 2026-11-10, 2026-11-11, 2026-11-12, 2026-11-13, 2026-11-16, 2026-11-17, 2026-11-18 · Primera apertura posible (condicionada): 2026-11-19 · CANJE CON VALORACIÓN PROVISIONAL; cobro separado del efectivo",
       "activity_tickers": [
         "ABT",
         "DRI",
-        "IDXX",
         "KMB",
         "LH",
         "MNST",
         "SJM",
         "WELL"
       ],
-      "open_positions_count": 8,
+      "open_positions_count": 7,
       "pending_orders_count": 0,
       "inactive_sessions": [
         "2026-11-02",
@@ -1318,20 +1317,18 @@
       "note": "Nueva campaña S&P500 503 símbolos; las carteras originales de 8 títulos se conservan históricas y no transfieren NAV ni operaciones. Reconciliación registrada con retraso sobre órdenes previamente fijadas y OHLC común exacto; no acredita una ejecución puntual.",
       "evaluated_universe_symbols": 488,
       "eligible_universe_symbols": 503,
-      "activity_state": "active_pending",
-      "activity_label": "3 posiciones · 5 órdenes paper para próxima apertura · Inactividad sin operaciones: 2026-11-12, 2026-11-13, 2026-11-16, 2026-11-17 · Primera apertura posible (condicionada): 2026-11-18 · Cálculo tardío: 2026-11-02, 2026-11-04",
+      "activity_state": "active",
+      "activity_label": "6 posiciones abiertas · Inactividad sin operaciones: 2026-11-12, 2026-11-13, 2026-11-16, 2026-11-17 · Primera apertura posible (condicionada): 2026-11-18 · Cálculo tardío: 2026-11-02, 2026-11-04",
       "activity_tickers": [
-        "ESS",
-        "GILD",
-        "TRGP",
         "DLTR",
+        "ESS",
         "FE",
+        "GILD",
         "GNRC",
-        "LYV",
-        "ZTS"
+        "TRGP"
       ],
-      "open_positions_count": 3,
-      "pending_orders_count": 5,
+      "open_positions_count": 6,
+      "pending_orders_count": 0,
       "inactive_sessions": [
         "2026-11-12",
         "2026-11-13",
@@ -1482,8 +1479,8 @@
       "note": "Nueva campaña S&P500 503 símbolos; las carteras originales de 8 títulos se conservan históricas y no transfieren NAV ni operaciones.",
       "evaluated_universe_symbols": 488,
       "eligible_universe_symbols": 503,
-      "activity_state": "active_pending",
-      "activity_label": "7 posiciones · 1 orden paper para próxima apertura",
+      "activity_state": "active",
+      "activity_label": "7 posiciones abiertas",
       "activity_tickers": [
         "ADM",
         "BG",
@@ -1491,11 +1488,10 @@
         "CZR",
         "GOOG",
         "IVZ",
-        "STT",
-        "FSLR"
+        "STT"
       ],
       "open_positions_count": 7,
-      "pending_orders_count": 1,
+      "pending_orders_count": 0,
       "comparison_eligible": true,
       "comparison_universe_id": "SP500_2026-09-29_503",
       "comparison_universe_symbols": 503,
@@ -1632,21 +1628,19 @@
       "note": "Nueva campaña S&P500 503 símbolos; las carteras originales de 8 títulos se conservan históricas y no transfieren NAV ni operaciones.",
       "evaluated_universe_symbols": 488,
       "eligible_universe_symbols": 503,
-      "activity_state": "active_pending",
-      "activity_label": "7 posiciones · 3 órdenes paper para próxima apertura · Inactividad sin operaciones: 2026-11-03, 2026-11-04 · Primera apertura posible (condicionada): 2026-11-05",
+      "activity_state": "active",
+      "activity_label": "7 posiciones abiertas · Inactividad sin operaciones: 2026-11-03, 2026-11-04 · Primera apertura posible (condicionada): 2026-11-05",
       "activity_tickers": [
-        "ABBV",
         "ABNB",
         "CAH",
         "COST",
+        "DRI",
         "EPAM",
         "MTD",
-        "WMT",
-        "DRI",
-        "EIX"
+        "WMT"
       ],
       "open_positions_count": 7,
-      "pending_orders_count": 3,
+      "pending_orders_count": 0,
       "inactive_sessions": [
         "2026-11-03",
         "2026-11-04"
@@ -1950,21 +1944,19 @@
       "note": "Nueva campaña S&P500 503 símbolos; las carteras originales de 8 títulos se conservan históricas y no transfieren NAV ni operaciones.",
       "evaluated_universe_symbols": 488,
       "eligible_universe_symbols": 503,
-      "activity_state": "active_pending",
-      "activity_label": "7 posiciones · 3 órdenes paper para próxima apertura",
+      "activity_state": "active",
+      "activity_label": "7 posiciones abiertas",
       "activity_tickers": [
         "ABBV",
-        "ACN",
+        "CPB",
         "HCA",
         "MCK",
         "MRNA",
         "MTD",
-        "ULTA",
-        "CPB",
-        "LUV"
+        "ULTA"
       ],
       "open_positions_count": 7,
-      "pending_orders_count": 3,
+      "pending_orders_count": 0,
       "comparison_eligible": true,
       "comparison_universe_id": "SP500_2026-09-29_503",
       "comparison_universe_symbols": 503,
@@ -5216,14 +5208,14 @@
       "note": "TimesFM 2.5: predicción de una sesión sobre el S&P 500 canónico; cartera intradía ficticia, EUR 100k, fills next-open, cierre del mismo día; referencia SPY EUR de misma cohorte.",
       "comparison_currency": "EUR",
       "comparison_reference": "timesfm_daily_spy_eur",
-      "activity_state": "pending",
-      "activity_label": "2 compras paper para próxima apertura",
+      "activity_state": "active",
+      "activity_label": "2 posiciones abiertas",
       "activity_tickers": [
-        "GDDY",
-        "ELV"
+        "ELV",
+        "GDDY"
       ],
-      "open_positions_count": 0,
-      "pending_orders_count": 2,
+      "open_positions_count": 2,
+      "pending_orders_count": 0,
       "comparison_eligible": true,
       "comparison_universe_id": "SP500_2026-09-29_503",
       "comparison_universe_symbols": 503,

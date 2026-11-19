@@ -199,7 +199,7 @@
       "trades": []
     },
     "timesfm_daily": {
-      "cash": 99753.75508913813,
+      "cash": 74815.31668442053,
       "equity": [
         {
           "date": "2026-10-12",
@@ -1014,24 +1014,60 @@
           "source_commit": "f1f67b5bce5679c05de36dcabede2b0106722bb4",
           "ticker": "MSI",
           "type": "sell"
+        },
+        {
+          "date": "2026-11-19",
+          "entry_eur": 94.49930489477137,
+          "execution": "forward_observed_paper",
+          "fx": 1.0992876291275024,
+          "fx_entry_reference_sha256": "dbbe85661258849becc687408202748f83281c3351ff3bff9b066345b93c7d3d",
+          "idempotency_key": "IL-042:2026-11-19:open:timesfm_eur_forward_v1:GDDY",
+          "lock_sha256": "7bee0db8d5d7a5125159da601cbc16829e6d2caac9e8ad81055c5f6a5babaa70",
+          "observed_at_utc": "2026-11-19T14:34:05.671099Z",
+          "quote_at_utc": "2026-11-19T14:31:23Z",
+          "shares": 131.818563,
+          "source_commit": "da997560ef3398b2324d16680384c7a710c4df72",
+          "ticker": "GDDY",
+          "type": "buy"
+        },
+        {
+          "date": "2026-11-19",
+          "entry_eur": 364.1177461844844,
+          "execution": "forward_observed_paper",
+          "fx": 1.0992876291275024,
+          "fx_entry_reference_sha256": "dbbe85661258849becc687408202748f83281c3351ff3bff9b066345b93c7d3d",
+          "idempotency_key": "IL-042:2026-11-19:open:timesfm_eur_forward_v1:ELV",
+          "lock_sha256": "7bee0db8d5d7a5125159da601cbc16829e6d2caac9e8ad81055c5f6a5babaa70",
+          "observed_at_utc": "2026-11-19T14:34:04.568745Z",
+          "quote_at_utc": "2026-11-19T14:34:00Z",
+          "shares": 34.210808,
+          "source_commit": "da997560ef3398b2324d16680384c7a710c4df72",
+          "ticker": "ELV",
+          "type": "buy"
         }
       ],
       "nav": 99753.75508913813,
-      "pending": [
-        {
-          "predicted_return": 0.02459239959716797,
-          "score": 0.011943242275375207,
-          "signal_date": "2026-11-18",
-          "ticker": "GDDY"
+      "pending": [],
+      "positions": {
+        "ELV": {
+          "cost_eur": 12469.219066414238,
+          "dividends_eur": 0.0,
+          "entry_date": "2026-11-19",
+          "entry_price_eur": 364.1177461844844,
+          "fx_at_entry": 1.0992876291275024,
+          "shares": 34.210808,
+          "signal_date": "2026-11-18"
         },
-        {
-          "predicted_return": 0.014705538749694824,
-          "score": 0.005287809985753213,
-          "signal_date": "2026-11-18",
-          "ticker": "ELV"
+        "GDDY": {
+          "cost_eur": 12469.219338303355,
+          "dividends_eur": 0.0,
+          "entry_date": "2026-11-19",
+          "entry_price_eur": 94.49930489477137,
+          "fx_at_entry": 1.0992876291275024,
+          "shares": 131.818563,
+          "signal_date": "2026-11-18"
         }
-      ],
-      "positions": {},
+      },
       "trades": [
         {
           "entry_cost_eur": 12499.99987567701,
@@ -1705,6 +1741,22 @@
       "recorded_at_utc": "2026-11-18T20:55:39.447664Z",
       "session": "2026-11-18",
       "source_commit": "f1f67b5bce5679c05de36dcabede2b0106722bb4"
+    },
+    "IL-042:2026-11-19:open:timesfm_eur_forward_v1": {
+      "entry_fx_usd_per_eur": 1.0992876291275024,
+      "family": "daily",
+      "fill_tickers": [
+        "ELV",
+        "GDDY"
+      ],
+      "fills_count": 2,
+      "fx_reference_sha256": "dbbe85661258849becc687408202748f83281c3351ff3bff9b066345b93c7d3d",
+      "lock_sha256": "7bee0db8d5d7a5125159da601cbc16829e6d2caac9e8ad81055c5f6a5babaa70",
+      "mode": "open",
+      "quotes_sha256": "ae28bda97f6593302c8e4ffee067be36459670bb79ba906bb0ccdc23ed5d2f6d",
+      "recorded_at_utc": "2026-11-19T14:34:11.184679Z",
+      "session": "2026-11-19",
+      "source_commit": "da997560ef3398b2324d16680384c7a710c4df72"
     }
   },
   "fx_method": "previous_XNYS_session_EURUSD_close_at_open; current_EURUSD_close_at_mark",

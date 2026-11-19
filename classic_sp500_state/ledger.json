@@ -255,7 +255,7 @@
       "trades": []
     },
     "bollinger_breakout_20": {
-      "cash": 8513.517997295407,
+      "cash": 4645.650833714433,
       "equity": [
         {
           "date": "2026-10-12",
@@ -570,6 +570,40 @@
           "date": "2026-11-17",
           "ticker": "TSN",
           "type": "unfilled"
+        },
+        {
+          "date": "2026-11-19",
+          "execution": "forward_observed_paper",
+          "fee": 11.722398198542882,
+          "idempotency_key": "IL-015:2026-11-19:open:classic_forward_v1:ABBV",
+          "lock_sha256": "7bee0db8d5d7a5125159da601cbc16829e6d2caac9e8ad81055c5f6a5babaa70",
+          "observed_at_utc": "2026-11-19T14:34:01.281419Z",
+          "price": 285.0024165191651,
+          "quote_at_utc": "2026-11-19T14:34:00Z",
+          "reason": "signal_next_open",
+          "shares": 41.130873,
+          "source_commit": "da997560ef3398b2324d16680384c7a710c4df72",
+          "ticker": "ABBV",
+          "type": "sell"
+        },
+        {
+          "date": "2026-11-19",
+          "execution": "forward_observed_paper",
+          "fee": 15.56297998393893,
+          "idempotency_key": "IL-015:2026-11-19:open:classic_forward_v1:DRI",
+          "lock_sha256": "7bee0db8d5d7a5125159da601cbc16829e6d2caac9e8ad81055c5f6a5babaa70",
+          "observed_at_utc": "2026-11-19T14:34:04.038142Z",
+          "price": 234.9924375,
+          "quote_at_utc": "2026-11-19T14:34:00Z",
+          "shares": 66.227578,
+          "source_commit": "da997560ef3398b2324d16680384c7a710c4df72",
+          "ticker": "DRI",
+          "type": "buy"
+        },
+        {
+          "date": "2026-11-19",
+          "ticker": "EIX",
+          "type": "unfilled"
         }
       ],
       "forward_executions": {
@@ -582,6 +616,19 @@
           "recorded_at_utc": "2026-11-17T14:39:39.483981Z",
           "session": "2026-11-17",
           "source_commit": "37e197537b3a3ceaa2e6e3632c923b2fe16cdca0"
+        },
+        "IL-015:2026-11-19:open:classic_forward_v1": {
+          "fill_tickers": [
+            "ABBV",
+            "DRI"
+          ],
+          "fills_count": 2,
+          "lock_sha256": "7bee0db8d5d7a5125159da601cbc16829e6d2caac9e8ad81055c5f6a5babaa70",
+          "mode": "forward_observed_paper",
+          "quotes_sha256": "09f49dbb1b761a6f59fd58ad388afa65392cf105e5d9ba40faffb5fa94102ecc",
+          "recorded_at_utc": "2026-11-19T14:34:11.184679Z",
+          "session": "2026-11-19",
+          "source_commit": "da997560ef3398b2324d16680384c7a710c4df72"
         }
       },
       "nav": 104171.69577741511,
@@ -589,30 +636,8 @@
         "first_trading_session": "2026-11-05",
         "registered_at_utc": "2026-11-04T18:03:08+00:00"
       },
-      "pending": {
-        "ABBV": {
-          "side": "sell",
-          "signal_date": "2026-11-18"
-        },
-        "DRI": {
-          "side": "buy",
-          "signal_date": "2026-11-18"
-        },
-        "EIX": {
-          "side": "buy",
-          "signal_date": "2026-11-18"
-        }
-      },
+      "pending": {},
       "positions": {
-        "ABBV": {
-          "cost": 11874.999758862768,
-          "dividends": 0.0,
-          "entry_date": "2026-10-15",
-          "entry_price": 288.4241387786865,
-          "shares": 41.130873,
-          "stop": 265.35020767639156,
-          "target": 331.6877595954894
-        },
         "ABNB": {
           "cost": 15729.510381451742,
           "dividends": 0.0,
@@ -639,6 +664,15 @@
           "shares": 11.87966,
           "stop": 918.7203171166992,
           "target": 1148.400396395874
+        },
+        "DRI": {
+          "cost": 15578.542963925313,
+          "dividends": 0.0,
+          "entry_date": "2026-11-19",
+          "entry_price": 234.9924375,
+          "shares": 66.227578,
+          "stop": 216.1930425,
+          "target": 270.24130312499994
         },
         "EPAM": {
           "cost": 15688.982646203409,
@@ -814,6 +848,22 @@
           "proceeds": 11847.436265836737,
           "reason": "signal_next_open",
           "ticker": "PFE"
+        },
+        {
+          "dividends": 0.0,
+          "entry_cost": 11874.999758862768,
+          "entry_date": "2026-10-15",
+          "execution": "forward_observed_paper",
+          "exit_date": "2026-11-19",
+          "idempotency_key": "IL-015:2026-11-19:open:classic_forward_v1:ABBV",
+          "lock_sha256": "7bee0db8d5d7a5125159da601cbc16829e6d2caac9e8ad81055c5f6a5babaa70",
+          "net_pnl": -164.3239585184292,
+          "observed_at_utc": "2026-11-19T14:34:01.281419Z",
+          "proceeds": 11710.67580034434,
+          "quote_at_utc": "2026-11-19T14:34:00Z",
+          "reason": "signal_next_open",
+          "source_commit": "da997560ef3398b2324d16680384c7a710c4df72",
+          "ticker": "ABBV"
         }
       ]
     },
@@ -10462,7 +10512,7 @@
       ]
     },
     "genetic_frozen": {
-      "cash": 5000.001250456447,
+      "cash": 20322.595533733664,
       "equity": [
         {
           "date": "2026-10-12",
@@ -10981,8 +11031,34 @@
           "expired_unfilled_orders": {},
           "recorded_at_utc": "2026-11-18T23:54:14+00:00",
           "type": "inactive_mark_no_trades"
+        },
+        {
+          "date": "2026-11-19",
+          "execution": "forward_observed_paper",
+          "idempotency_key": "IL-012:2026-11-19:target:IDXX:classic_forward_v1:IDXX",
+          "lock_sha256": "7bee0db8d5d7a5125159da601cbc16829e6d2caac9e8ad81055c5f6a5babaa70",
+          "observed_at_utc": "2026-11-19T14:34:06.634514Z",
+          "quote_at_utc": "2026-11-19T14:34:00Z",
+          "reason": "target_forward_observed",
+          "source_commit": "da997560ef3398b2324d16680384c7a710c4df72",
+          "ticker": "IDXX",
+          "type": "sell"
         }
       ],
+      "forward_executions": {
+        "IL-012:2026-11-19:target:IDXX:classic_forward_v1": {
+          "fill_tickers": [
+            "IDXX"
+          ],
+          "fills_count": 1,
+          "lock_sha256": "7bee0db8d5d7a5125159da601cbc16829e6d2caac9e8ad81055c5f6a5babaa70",
+          "mode": "forward_observed_paper",
+          "quotes_sha256": "caac53577c35f895e280e9b60a9a9fdeac37ce50291c486c6c41783431d566df",
+          "recorded_at_utc": "2026-11-19T14:34:11.184679Z",
+          "session": "2026-11-19",
+          "source_commit": "da997560ef3398b2324d16680384c7a710c4df72"
+        }
+      },
       "nav": 108542.43816195548,
       "outage_control": {
         "first_trading_session": "2026-11-19",
@@ -11007,15 +11083,6 @@
           "shares": 55.95398,
           "stop": 192.8709175965866,
           "target": 262.2001360796951
-        },
-        "IDXX": {
-          "cost": 11874.999463353706,
-          "dividends": 0.0,
-          "entry_date": "2026-10-15",
-          "entry_price": 538.6091968688964,
-          "shares": 22.025499,
-          "stop": 489.97278639163505,
-          "target": 666.0979937677641
         },
         "KMB": {
           "acquired_by_merger_on": "2026-11-02",
@@ -11146,10 +11213,27 @@
           "date": "2026-11-18"
         }
       ],
-      "trades": []
+      "trades": [
+        {
+          "dividends": 0.0,
+          "entry_cost": 11874.999463353706,
+          "entry_date": "2026-10-15",
+          "execution": "forward_observed_paper",
+          "exit_date": "2026-11-19",
+          "idempotency_key": "IL-012:2026-11-19:target:IDXX:classic_forward_v1:IDXX",
+          "lock_sha256": "7bee0db8d5d7a5125159da601cbc16829e6d2caac9e8ad81055c5f6a5babaa70",
+          "net_pnl": 3447.59481992351,
+          "observed_at_utc": "2026-11-19T14:34:06.634514Z",
+          "proceeds": 15322.594283277216,
+          "quote_at_utc": "2026-11-19T14:34:00Z",
+          "reason": "target_forward_observed",
+          "source_commit": "da997560ef3398b2324d16680384c7a710c4df72",
+          "ticker": "IDXX"
+        }
+      ]
     },
     "macd_12_26_9": {
-      "cash": 56251.905905099644,
+      "cash": 11427.991822255355,
       "equity": [
         {
           "date": "2026-10-12",
@@ -11856,6 +11940,58 @@
           "source_commit": "f1f67b5bce5679c05de36dcabede2b0106722bb4",
           "ticker": "IQV",
           "type": "sell"
+        },
+        {
+          "date": "2026-11-19",
+          "execution": "forward_observed_paper",
+          "fee": 14.926378310678047,
+          "idempotency_key": "IL-013:2026-11-19:open:classic_forward_v1:DLTR",
+          "lock_sha256": "7bee0db8d5d7a5125159da601cbc16829e6d2caac9e8ad81055c5f6a5babaa70",
+          "observed_at_utc": "2026-11-19T14:34:03.851721Z",
+          "price": 140.71031938934325,
+          "quote_at_utc": "2026-11-19T14:34:00Z",
+          "shares": 106.078775,
+          "source_commit": "da997560ef3398b2324d16680384c7a710c4df72",
+          "ticker": "DLTR",
+          "type": "buy"
+        },
+        {
+          "date": "2026-11-19",
+          "execution": "forward_observed_paper",
+          "fee": 14.9263783822189,
+          "idempotency_key": "IL-013:2026-11-19:open:classic_forward_v1:FE",
+          "lock_sha256": "7bee0db8d5d7a5125159da601cbc16829e6d2caac9e8ad81055c5f6a5babaa70",
+          "observed_at_utc": "2026-11-19T14:34:05.339170Z",
+          "price": 47.33365637397766,
+          "quote_at_utc": "2026-11-19T14:34:00Z",
+          "shares": 315.34387,
+          "source_commit": "da997560ef3398b2324d16680384c7a710c4df72",
+          "ticker": "FE",
+          "type": "buy"
+        },
+        {
+          "date": "2026-11-19",
+          "execution": "forward_observed_paper",
+          "fee": 14.926378254993324,
+          "idempotency_key": "IL-013:2026-11-19:open:classic_forward_v1:GNRC",
+          "lock_sha256": "7bee0db8d5d7a5125159da601cbc16829e6d2caac9e8ad81055c5f6a5babaa70",
+          "observed_at_utc": "2026-11-19T14:34:06.052753Z",
+          "price": 209.9349168319702,
+          "quote_at_utc": "2026-11-19T14:34:00Z",
+          "shares": 71.100027,
+          "source_commit": "da997560ef3398b2324d16680384c7a710c4df72",
+          "ticker": "GNRC",
+          "type": "buy"
+        },
+        {
+          "date": "2026-11-19",
+          "ticker": "LYV",
+          "type": "unfilled"
+        },
+        {
+          "date": "2026-11-19",
+          "ticker": "ZTS",
+          "type": "unfilled"
         }
       ],
       "forward_executions": {
@@ -11910,6 +12046,20 @@
           "recorded_at_utc": "2026-11-18T15:22:08.960710Z",
           "session": "2026-11-18",
           "source_commit": "f1f67b5bce5679c05de36dcabede2b0106722bb4"
+        },
+        "IL-013:2026-11-19:open:classic_forward_v1": {
+          "fill_tickers": [
+            "DLTR",
+            "FE",
+            "GNRC"
+          ],
+          "fills_count": 3,
+          "lock_sha256": "7bee0db8d5d7a5125159da601cbc16829e6d2caac9e8ad81055c5f6a5babaa70",
+          "mode": "forward_observed_paper",
+          "quotes_sha256": "e1f0814f12f34b513b6d5ad93190955eaad27be2e100cc806ef149104c981170",
+          "recorded_at_utc": "2026-11-19T14:34:11.184679Z",
+          "session": "2026-11-19",
+          "source_commit": "da997560ef3398b2324d16680384c7a710c4df72"
         }
       },
       "nav": 99582.62445701694,
@@ -11917,29 +12067,17 @@
         "first_trading_session": "2026-11-18",
         "registered_at_utc": "2026-11-17T16:50:33+00:00"
       },
-      "pending": {
-        "DLTR": {
-          "side": "buy",
-          "signal_date": "2026-11-18"
-        },
-        "FE": {
-          "side": "buy",
-          "signal_date": "2026-11-18"
-        },
-        "GNRC": {
-          "side": "buy",
-          "signal_date": "2026-11-18"
-        },
-        "LYV": {
-          "side": "buy",
-          "signal_date": "2026-11-18"
-        },
-        "ZTS": {
-          "side": "buy",
-          "signal_date": "2026-11-18"
-        }
-      },
+      "pending": {},
       "positions": {
+        "DLTR": {
+          "cost": 14941.304688990958,
+          "dividends": 0.0,
+          "entry_date": "2026-11-19",
+          "entry_price": 140.71031938934325,
+          "shares": 106.078775,
+          "stop": 129.4534938381958,
+          "target": 161.81686729774472
+        },
         "ESS": {
           "cost": 15318.388402952498,
           "dividends": 0.0,
@@ -11949,6 +12087,15 @@
           "stop": 245.808831763916,
           "target": 307.261039704895
         },
+        "FE": {
+          "cost": 14941.304760602501,
+          "dividends": 0.0,
+          "entry_date": "2026-11-19",
+          "entry_price": 47.33365637397766,
+          "shares": 315.34387,
+          "stop": 43.54696386405945,
+          "target": 54.433704830074305
+        },
         "GILD": {
           "cost": 11874.999992705953,
           "dividends": 0.0,
@@ -11957,6 +12104,15 @@
           "shares": 75.8182,
           "stop": 143.95073883819578,
           "target": 179.93842354774472
+        },
+        "GNRC": {
+          "cost": 14941.30463325083,
+          "dividends": 0.0,
+          "entry_date": "2026-11-19",
+          "entry_price": 209.9349168319702,
+          "shares": 71.100027,
+          "stop": 193.1401234854126,
+          "target": 241.42515435676572
         },
         "TRGP": {
           "cost": 14928.943883748088,
@@ -12597,6 +12753,11 @@
           "date": "2026-11-18",
           "ticker": "CRM",
           "type": "unfilled"
+        },
+        {
+          "date": "2026-11-19",
+          "ticker": "FSLR",
+          "type": "unfilled"
         }
       ],
       "forward_executions": {
@@ -12639,15 +12800,20 @@
           "recorded_at_utc": "2026-11-18T14:34:09.882794Z",
           "session": "2026-11-18",
           "source_commit": "f1f67b5bce5679c05de36dcabede2b0106722bb4"
+        },
+        "IL-014:2026-11-19:open:classic_forward_v1": {
+          "fill_tickers": [],
+          "fills_count": 0,
+          "lock_sha256": "7bee0db8d5d7a5125159da601cbc16829e6d2caac9e8ad81055c5f6a5babaa70",
+          "mode": "forward_observed_paper",
+          "quotes_sha256": "47205d3df0bd3cce644356581bd15c280ab108a87953be2634897e29cdb7cdca",
+          "recorded_at_utc": "2026-11-19T14:34:11.184679Z",
+          "session": "2026-11-19",
+          "source_commit": "da997560ef3398b2324d16680384c7a710c4df72"
         }
       },
       "nav": 104593.3333111836,
-      "pending": {
-        "FSLR": {
-          "side": "buy",
-          "signal_date": "2026-11-18"
-        }
-      },
+      "pending": {},
       "positions": {
         "ADM": {
           "cost": 16050.90425304054,
@@ -13493,7 +13659,7 @@
       ]
     },
     "turtle_55_20_long": {
-      "cash": 5111.709518074578,
+      "cash": 4000.346631238621,
       "equity": [
         {
           "date": "2026-10-12",
@@ -13734,6 +13900,40 @@
           "date": "2026-11-17",
           "ticker": "VLTO",
           "type": "unfilled"
+        },
+        {
+          "date": "2026-11-19",
+          "execution": "forward_observed_paper",
+          "fee": 12.581984937717536,
+          "idempotency_key": "IL-017:2026-11-19:open:classic_forward_v1:ACN",
+          "lock_sha256": "7bee0db8d5d7a5125159da601cbc16829e6d2caac9e8ad81055c5f6a5babaa70",
+          "observed_at_utc": "2026-11-19T14:34:01.815362Z",
+          "price": 228.20584732055664,
+          "quote_at_utc": "2026-11-19T14:34:00Z",
+          "reason": "signal_next_open",
+          "shares": 55.134367,
+          "source_commit": "da997560ef3398b2324d16680384c7a710c4df72",
+          "ticker": "ACN",
+          "type": "sell"
+        },
+        {
+          "date": "2026-11-19",
+          "execution": "forward_observed_paper",
+          "fee": 13.66709874087428,
+          "idempotency_key": "IL-017:2026-11-19:open:classic_forward_v1:CPB",
+          "lock_sha256": "7bee0db8d5d7a5125159da601cbc16829e6d2caac9e8ad81055c5f6a5babaa70",
+          "observed_at_utc": "2026-11-19T14:34:03.434643Z",
+          "price": 22.98148431301117,
+          "quote_at_utc": "2026-11-19T14:34:00Z",
+          "shares": 594.700436,
+          "source_commit": "da997560ef3398b2324d16680384c7a710c4df72",
+          "ticker": "CPB",
+          "type": "buy"
+        },
+        {
+          "date": "2026-11-19",
+          "ticker": "LUV",
+          "type": "unfilled"
         }
       ],
       "forward_executions": {
@@ -13786,23 +13986,23 @@
           "recorded_at_utc": "2026-11-17T14:39:39.483981Z",
           "session": "2026-11-17",
           "source_commit": "37e197537b3a3ceaa2e6e3632c923b2fe16cdca0"
+        },
+        "IL-017:2026-11-19:open:classic_forward_v1": {
+          "fill_tickers": [
+            "ACN",
+            "CPB"
+          ],
+          "fills_count": 2,
+          "lock_sha256": "7bee0db8d5d7a5125159da601cbc16829e6d2caac9e8ad81055c5f6a5babaa70",
+          "mode": "forward_observed_paper",
+          "quotes_sha256": "6c75a918d81775af6ce4fa990e47aed6dd996b89e3f70c22baac592de64e2922",
+          "recorded_at_utc": "2026-11-19T14:34:11.184679Z",
+          "session": "2026-11-19",
+          "source_commit": "da997560ef3398b2324d16680384c7a710c4df72"
         }
       },
       "nav": 91014.85163723333,
-      "pending": {
-        "ACN": {
-          "side": "sell",
-          "signal_date": "2026-11-18"
-        },
-        "CPB": {
-          "side": "buy",
-          "signal_date": "2026-11-18"
-        },
-        "LUV": {
-          "side": "buy",
-          "signal_date": "2026-11-18"
-        }
-      },
+      "pending": {},
       "positions": {
         "ABBV": {
           "cost": 11874.999758862768,
@@ -13813,12 +14013,12 @@
           "stop": null,
           "target": null
         },
-        "ACN": {
-          "cost": 14787.69037646945,
+        "CPB": {
+          "cost": 13680.765839615777,
           "dividends": 0.0,
-          "entry_date": "2026-11-05",
-          "entry_price": 267.943902557373,
-          "shares": 55.134367,
+          "entry_date": "2026-11-19",
+          "entry_price": 22.98148431301117,
+          "shares": 594.700436,
           "stop": null,
           "target": null
         },
@@ -14008,6 +14208,22 @@
           "proceeds": 9518.485614706487,
           "reason": "signal_next_open",
           "ticker": "VLO"
+        },
+        {
+          "dividends": 0.0,
+          "entry_cost": 14787.69037646945,
+          "entry_date": "2026-11-05",
+          "execution": "forward_observed_paper",
+          "exit_date": "2026-11-19",
+          "idempotency_key": "IL-017:2026-11-19:open:classic_forward_v1:ACN",
+          "lock_sha256": "7bee0db8d5d7a5125159da601cbc16829e6d2caac9e8ad81055c5f6a5babaa70",
+          "net_pnl": -2218.2874236896314,
+          "observed_at_utc": "2026-11-19T14:34:01.815362Z",
+          "proceeds": 12569.40295277982,
+          "quote_at_utc": "2026-11-19T14:34:00Z",
+          "reason": "signal_next_open",
+          "source_commit": "da997560ef3398b2324d16680384c7a710c4df72",
+          "ticker": "ACN"
         }
       ]
     }
