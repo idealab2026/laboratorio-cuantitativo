@@ -9899,6 +9899,25 @@
         {
           "date": "2026-11-17",
           "nav": 99885.85277448194
+        },
+        {
+          "date": "2026-11-18",
+          "inactive_no_fills": true,
+          "nav": 99722.64545556802,
+          "quote_identity": {
+            "closing_mark_scope": "passive_nav_only",
+            "effective_sha256": "10d883d21c20f2c764f468357f0301346c1f41519aeb7e10e778558fd0e26d68",
+            "passive_close_provenance": {
+              "CNP": {
+                "captured_at_utc": "2026-11-18T23:52:06+00:00",
+                "close": 39.880001068115234,
+                "document_sha256": "d95c6b3f7ff07d19cb55d6dc201a0a32478b88d0b61dea626f62b5cfe3f73241",
+                "session": "2026-11-18"
+              }
+            },
+            "snapshot_sha256": "04474ad0ed18c98da40fc65b1e86ca5a9b9049b274c10dba986dcaa02c587575"
+          },
+          "recorded_at_utc": "2026-11-19T17:27:27+00:00"
         }
       ],
       "events": [
@@ -10224,6 +10243,18 @@
             "CNP"
           ],
           "type": "book_quarantined_missing_held_bar"
+        },
+        {
+          "date": "2026-11-18",
+          "recorded_at_utc": "2026-11-19T17:27:27+00:00",
+          "ticker": "CNP",
+          "type": "intraday_trigger_unknown_during_outage"
+        },
+        {
+          "date": "2026-11-18",
+          "expired_unfilled_orders": {},
+          "recorded_at_utc": "2026-11-19T17:27:27+00:00",
+          "type": "inactive_mark_no_trades"
         }
       ],
       "forward_executions": {
@@ -10285,18 +10316,10 @@
           "source_commit": "f1f67b5bce5679c05de36dcabede2b0106722bb4"
         }
       },
-      "nav": 99885.85277448194,
+      "nav": 99722.64545556802,
       "outage_control": {
-        "first_trading_session": "2026-11-05",
-        "registered_at_utc": "2026-11-04T18:03:08+00:00"
-      },
-      "paused_missing_quotes": {
-        "last_valued_session": "2026-11-17",
-        "missing_tickers": [
-          "CNP"
-        ],
-        "reason": "required same-session bar unavailable",
-        "since": "2026-11-18"
+        "first_trading_session": "2026-11-20",
+        "registered_at_utc": "2026-11-19T17:27:27+00:00"
       },
       "pending": {},
       "positions": {
