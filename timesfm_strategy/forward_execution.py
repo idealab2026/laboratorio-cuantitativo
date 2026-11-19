@@ -20,7 +20,8 @@ def _buy_event(family, day, ticker, qty, entry, fx, evidence):
             "execution": "forward_observed_paper", **evidence}
 
 
-def observed_open(book, policy, family, day, previous, prices, fx_entry, provenance, *, book_name):
+def observed_open(book, policy, family, day, previous, prices, fx_entry, provenance, *,
+                  book_name, allow_missing_observed=False):
     """Apply original engine's pending entries, using only timely observations."""
     fx_entry = core._positive(fx_entry, "previous exact FX close")
     if family not in ("weekly", "daily"):
@@ -32,8 +33,11 @@ def observed_open(book, policy, family, day, previous, prices, fx_entry, provena
     pending = book["pending"]
     if (not pending or any(order["signal_date"] != previous for order in pending) or
             len({o["ticker"] for o in pending}) != len(pending) or
-            set(prices) != {o["ticker"] for o in pending} or
-            set(prices) != set(provenance)):
+            (not allow_missing_observed and
+             set(prices) != {o["ticker"] for o in pending}) or
+            (allow_missing_observed and
+             (not prices or not set(prices) <= {o["ticker"] for o in pending})) or
+            set(prices) != set(provenance)): 
         raise ValueError("TimesFM opening orders not exactly frozen")
     n = len(pending)
     budget = min(float(book["nav"]) * policy["capital_fraction"] / n,
@@ -43,6 +47,16 @@ def observed_open(book, policy, family, day, previous, prices, fx_entry, provena
     operations = []
     for order in pending:
         t = order["ticker"]
+        if t not in prices:
+            if not allow_missing_observed:
+                raise ValueError("Missing contemporary TimesFM opening quote")
+            book["events"].append({
+                "date": day, "ticker": t,
+                **({"event": "unfilled_missing_observed_quote"} if family == "weekly"
+                   else {"type": "unfilled_missing_observed_quote"}),
+                "execution": "forward_observed_paper",
+                "reason": "no_contemporary_opening_quote"})
+            continue
         raw = core._positive(prices[t], "observed USD opening")
         entry = raw / fx_entry * (1 + policy["slippage"])
         qty = core._qty(budget, entry, policy)

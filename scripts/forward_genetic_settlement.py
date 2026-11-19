@@ -71,13 +71,30 @@ def _price_guard(position, raw):
         raise ValueError("Genetic corporate-action/discontinuity review required")
 
 
-def open_orders(state, day, prices, proof):
-    """Use the same original next-open sizing and sell-first order sequence."""
+def open_orders(state, day, prices, proof, *, allow_missing_observed=False,
+                verified_previous_nav=None):
+    """Preserve native genetic sizing and sell-first order order.
+
+    In prospective mode, one absent ticker cannot block independently quoted
+    orders. No missing ticker is assigned a price, execution or cash value.
+    When a *held* mark is missing, the existing verified prior-session NAV is
+    used only as an ex-ante sizing reference, never a new valuation.
+    """
     expected = set(state["positions"]) | set(state["pending"]["buys"]) | set(state["pending"]["sells"])
-    if set(prices) != expected or set(proof) != expected:
+    if ((not allow_missing_observed and
+         (set(prices) != expected or set(proof) != expected))
+            or (allow_missing_observed and
+                (not prices or not set(prices) <= expected or set(proof) != set(prices)))):
         raise ValueError("Incomplete genetic opening observations")
+    if verified_previous_nav is not None and (
+            not allow_missing_observed or
+            type(verified_previous_nav) not in (int, float) or
+            not math.isfinite(verified_previous_nav) or verified_previous_nav <= 0):
+        raise ValueError("Genetic prior NAV reference not verified")
     operations = []
     for ticker, pos in list(state["positions"].items()):
+        if ticker not in prices:
+            continue
         raw = core._positive(prices[ticker], ticker + " observed open")
         _price_guard(pos, raw)
         if raw <= pos["sl"] or raw >= pos["tp"]:
@@ -87,15 +104,35 @@ def open_orders(state, day, prices, proof):
                 proof[ticker]))
     for ticker in state["pending"]["sells"]:
         if ticker in state["positions"]:
+            if ticker not in prices:
+                if not allow_missing_observed:
+                    raise ValueError("Missing verified genetic sell quote")
+                state.setdefault("outage_events", []).append({
+                    "date": day, "type": "unfilled_missing_observed_quote",
+                    "ticker": ticker, "side": "sell", "reason": "no_contemporary_opening_quote"})
+                continue
             operations.append(_sale(state, ticker,
                                     core._positive(prices[ticker], "sell quote"),
                                     day, "SIGNAL_NEXT_OPEN", proof[ticker]))
     # Exactly as the historical original engine: mark remaining held positions
     # at the observed open BEFORE allocating capital for new entries.
-    open_nav = state["cash"] + sum(
-        pos["shares"] * core._positive(prices[t], "held open")
-        for t,pos in state["positions"].items())
+    missing_held = sorted(set(state["positions"]) - set(prices))
+    if missing_held:
+        if verified_previous_nav is None:
+            raise ValueError("Missing verified genetic prior NAV for isolated sizing")
+        open_nav = verified_previous_nav
+    else:
+        open_nav = state["cash"] + sum(
+            pos["shares"] * core._positive(prices[t], "held open")
+            for t,pos in state["positions"].items())
     for ticker, order in sorted(state["pending"]["buys"].items()):
+        if ticker not in prices:
+            if not allow_missing_observed:
+                raise ValueError("Missing verified genetic buy quote")
+            state.setdefault("outage_events", []).append({
+                "date": day, "type": "unfilled_missing_observed_quote",
+                "ticker": ticker, "side": "buy", "reason": "no_contemporary_opening_quote"})
+            continue
         if ticker in state["positions"] or any(
                 t["ticker"] == ticker and t["session"] == day
                 for t in state["trades"]):
@@ -126,6 +163,7 @@ def open_orders(state, day, prices, proof):
             "session": day, "ticker": ticker, "side": "BUY",
             "reason": "SIGNAL_NEXT_OPEN", "shares": shares,
             "fill": fill, "fee": fee, **proof[ticker],
+            **({"sizing_reference": "verified_previous_close_nav"} if missing_held else {}),
         })
         operations.append({
             "ticker": ticker, "side": "buy", "quantity": shares,
@@ -189,16 +227,29 @@ def settle_genetic(lock, now, market, quotes, *, reader=read, frozen=_source_at)
         fresh = {t:quotes[t] for t in all_needed
                  if t in quotes and _quote_valid(quotes[t], now, market)}
         missing = sorted(all_needed - set(fresh))
-        if missing:
+        # Wait for an actual pending-order quote when none is usable; held
+        # quotes alone cannot justify expiring a basket prematurely.
+        actionable = (expected_buys | expected_sells) & set(fresh)
+        if not actionable:
             return {}, {SLOT: {"status": "awaiting_fresh_open_quotes",
                                "fills": 0, "missing": missing}}
         if any(datetime.fromisoformat(q["quote_at_utc"].replace("Z","+00:00")) >
                market["open"]+OPEN_WINDOW for q in fresh.values()):
             return {}, {SLOT: {"status": "opening_quote_late", "fills": 0}}
         proof = {t:_metadata(lock,q,opening_key+":"+t) for t,q in fresh.items()}
+        held_missing = sorted(set(current["positions"]) - set(fresh))
+        prior_nav = None
+        if held_missing:
+            prior_nav = current.get("equity_history", {}).get(market["previous"])
+            if (type(prior_nav) not in (int, float) or
+                    not math.isfinite(prior_nav) or prior_nav <= 0):
+                return {}, {SLOT: {"status": "prior_verified_nav_missing",
+                                   "fills": 0, "missing": held_missing}}
         try:
             operations = open_orders(
-                updated, day, {t:q["price"] for t,q in fresh.items()}, proof)
+                updated, day, {t:q["price"] for t,q in fresh.items()}, proof,
+                allow_missing_observed=bool(missing),
+                verified_previous_nav=prior_nav)
         except ValueError as exc:
             if "corporate-action/discontinuity review required" in str(exc):
                 return {}, {SLOT: {"status":"corporate_action_review_required",
@@ -210,6 +261,11 @@ def settle_genetic(lock, now, market, quotes, *, reader=read, frozen=_source_at)
                   "fills_count":len(operations),
                   "fill_tickers":sorted(t["ticker"] for t in operations)}
         markers[opening_key] = marker
+        opening_isolation = {"unfilled_open_quotes":
+                             sorted((expected_buys | expected_sells) - set(fresh)),
+                             "missing_held_quotes": held_missing,
+                             "sizing_reference": ("verified_previous_close_nav"
+                                                  if held_missing else "observed_open_nav")}
     elif lane["orders"] and opening_key in markers:
         # The opening has already settled. Check live SL/TP without replaying
         # the entry. The final report will preserve its initial marker if no
@@ -251,7 +307,9 @@ def settle_genetic(lock, now, market, quotes, *, reader=read, frozen=_source_at)
         latest = marker or markers.get(opening_key)
         return {LEDGER: updated}, {SLOT:{
             "status":"settled_native_paper", "fills":len(operations),
-            "marker":latest,"operations":operations}}
+            "marker":latest,"operations":operations,
+            **(opening_isolation if opening_key in markers and
+               opening_key not in current.get("forward_executions", {}) else {})}}
     if same_day:
         # On a repeated poll preserve the most recent stop/target evidence,
         # never overwrite a later sell marker with the earlier opening buy.

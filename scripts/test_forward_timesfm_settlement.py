@@ -110,6 +110,39 @@ class ForwardTimesFMTwoBooksTests(unittest.TestCase):
         self.assertEqual(same, {})
         self.assertTrue(all(x["status"] == "already_settled" for x in repeat.values()))
 
+    def test_missing_one_eur_buy_quote_never_blocks_other_or_resizes_budget(self):
+        for family, (path, config_path, slots) in COHORTS.items():
+            name = "timesfm" if family == "weekly" else "timesfm_daily"
+            self.data[path]["books"][name]["pending"].append({
+                "ticker": "MSFT", "signal_date": self.market["previous"],
+                "predicted_return": 0.04, "score": 0.03})
+        self.snapshot = copy.deepcopy(self.data)
+        self.lock = self._lock(self.market)
+        full_quotes = self._quotes(self.market, {"AAPL": 100, "MSFT": 200, "SPY": 400})
+        full, _ = self.settle(quotes=full_quotes)
+        partial, evidence = self.settle()
+        for family, (path, config_path, slots) in COHORTS.items():
+            slot = "IL-040" if family == "weekly" else "IL-042"
+            name = "timesfm" if family == "weekly" else "timesfm_daily"
+            self.assertEqual(evidence[slot]["status"], "settled_native_paper")
+            self.assertEqual(evidence[slot]["unfilled_open_quotes"], ["MSFT"])
+            self.assertEqual(evidence[slot]["sizing_reference"], "frozen_order_budget")
+            updated = partial[path]["books"][name]
+            self.assertEqual(set(updated["positions"]), {"AAPL"})
+            self.assertEqual(updated["pending"], [])
+            self.assertEqual(updated["positions"]["AAPL"]["shares"],
+                full[path]["books"][name]["positions"]["AAPL"]["shares"])
+            self.assertTrue(any(e.get("ticker") == "MSFT" and
+                (e.get("event") == "unfilled_missing_observed_quote" or
+                 e.get("type") == "unfilled_missing_observed_quote")
+                for e in updated["events"]))
+            self.assertEqual(updated["equity"], self.data[path]["books"][name]["equity"])
+        self.data = copy.deepcopy(partial)
+        again, repeated = self.settle(quotes=full_quotes)
+        self.assertEqual(again, {})
+        for slot in ("IL-040", "IL-042"):
+            self.assertEqual(repeated[slot]["status"], "already_settled")
+
     def test_missing_preopen_fx_blocks_all_unchanged(self):
         lock = self._lock(self.market, fx=None)
         out, evidence = self.settle(lock=lock)

@@ -796,8 +796,12 @@ def main(argv=None):
                 }
             if ((slot in {f"IL-{n:03d}" for n in range(11, 18)}
                     and result.get("sizing_reference"))
-                    or (slot in {f"IL-{n:03d}" for n in range(19, 28)}
-                        and result.get("unfilled_open_quotes"))):
+                    or (slot in ({f"IL-{n:03d}" for n in range(19, 28)}
+                              | {f"IL-{n:03d}" for n in range(40, 44)})
+                        and result.get("unfilled_open_quotes"))
+                    or (slot == "IL-044" and
+                        (result.get("unfilled_open_quotes") or
+                         result.get("missing_held_quotes")))):
                 missing_open = result.get("unfilled_open_quotes", [])
                 locked_open = {order["ticker"] for order in lock["slots"][slot]["orders"]}
                 if not set(missing_open) <= locked_open:

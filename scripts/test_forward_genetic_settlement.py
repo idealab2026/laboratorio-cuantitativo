@@ -94,18 +94,61 @@ class NativeGeneticProspectiveTests(unittest.TestCase):
         self.assertEqual(again,{})
         self.assertEqual(evidence["IL-044"]["status"],"already_settled")
 
-    def test_missing_quote_prevents_any_open_trade_and_stale_data_is_rejected(self):
+    def test_missing_quote_isolated_without_paper_fills_for_unpriced_symbol(self):
+        # AAPL has a contemporary entry price. MSFT is a held stock with no
+        # quote; only AAPL may be bought, using the verified prior close as a
+        # sizing reference. The official equity history is NOT revalued.
         out,evidence=self.settle(quotes={"AAPL":self.quotes["AAPL"]})
+        self.assertEqual(evidence["IL-044"]["status"],"settled_native_paper")
+        self.assertEqual(evidence["IL-044"]["fills"],1)
+        self.assertEqual(evidence["IL-044"]["missing_held_quotes"],["MSFT"])
+        self.assertEqual(evidence["IL-044"]["sizing_reference"],"verified_previous_close_nav")
+        after=out[LEDGER]
+        self.assertIn("MSFT",after["positions"])
+        self.assertIn("AAPL",after["positions"])
+        self.assertEqual(after["equity_history"],self.before["equity_history"])
+        self.assertEqual(after["trades"][-1]["sizing_reference"],"verified_previous_close_nav")
+        self.state=copy.deepcopy(after)
+        again,repeat=self.settle(quotes=self.quotes)
+        self.assertEqual(again,{})
+        self.assertEqual(repeat["IL-044"]["status"],"already_settled")
+
+    def test_missing_order_quote_waits_without_synthetic_execution(self):
+        out,evidence=self.settle(quotes={"MSFT":self.quotes["MSFT"]})
         self.assertEqual(out,{})
         self.assertEqual(evidence["IL-044"]["status"],"awaiting_fresh_open_quotes")
         rows=copy.deepcopy(self.quotes)
-        rows["MSFT"]["quote_at_utc"]=(self.market["open"]-timedelta(minutes=1)).isoformat()
-        out,_=self.settle(quotes=rows)
+        rows["AAPL"]["quote_at_utc"]=(self.market["open"]-timedelta(minutes=1)).isoformat()
+        out,evidence=self.settle(quotes=rows)
         self.assertEqual(out,{})
+        self.assertEqual(evidence["IL-044"]["status"],"awaiting_fresh_open_quotes")
         out,evidence=self.settle(now=self.market["open"]+timedelta(minutes=45))
         self.assertEqual(out,{})
         self.assertEqual(evidence["IL-044"]["status"],"opening_window_missed")
         self.assertEqual(self.state,self.before)
+
+    def test_genetic_two_frozen_buys_preserve_weight_when_second_quote_missing(self):
+        self.state["pending"]["buys"]["NVDA"]={
+            "weight":.12, "stop_pct":.05, "target_pct":.10}
+        self.before=copy.deepcopy(self.state)
+        self.lock=self.build_lock()
+        full=self.quote_rows({"AAPL":110.,"MSFT":100.,"NVDA":130.},self.now)
+        full_state,full_note=self.settle(quotes=full)
+        partial_state,partial_note=self.settle(quotes=self.quotes)
+        self.assertEqual(partial_note["IL-044"]["status"],"settled_native_paper")
+        self.assertEqual(partial_note["IL-044"]["unfilled_open_quotes"],["NVDA"])
+        self.assertEqual(partial_note["IL-044"]["fills"],1)
+        actual=partial_state[LEDGER]
+        self.assertEqual(set(actual["positions"]),{"MSFT","AAPL"})
+        self.assertFalse(actual["pending"]["buys"])
+        self.assertEqual(actual["positions"]["AAPL"]["shares"],
+                         full_state[LEDGER]["positions"]["AAPL"]["shares"])
+        self.assertTrue(any(e.get("ticker")=="NVDA" and
+             e.get("type")=="unfilled_missing_observed_quote"
+             for e in actual["outage_events"]))
+        self.state=copy.deepcopy(actual)
+        no_replay,_=self.settle(quotes=full)
+        self.assertEqual(no_replay,{})
 
     def test_observed_stop_uses_fresh_quote_and_cannot_be_repeated(self):
         bought,_=self.settle()
