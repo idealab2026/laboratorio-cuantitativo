@@ -106,6 +106,10 @@
         {
           "date": "2026-11-18",
           "nav": 97677.71821148378
+        },
+        {
+          "date": "2026-11-19",
+          "nav": 96170.0312892154
         }
       ],
       "events": [
@@ -126,7 +130,7 @@
           "type": "inactive_mark_only_no_execution"
         }
       ],
-      "nav": 97677.71821148378,
+      "nav": 96170.0312892154,
       "pending": [],
       "positions": {
         "SPY": {
@@ -247,6 +251,10 @@
         {
           "date": "2026-11-18",
           "nav": 104144.68984235053
+        },
+        {
+          "date": "2026-11-19",
+          "nav": 103148.51760106857
         }
       ],
       "events": [
@@ -667,7 +675,7 @@
           "type": "inactive_mark_only_no_execution"
         }
       ],
-      "nav": 104144.68984235053,
+      "nav": 103148.51760106857,
       "pending": [],
       "positions": {
         "AXON": {
@@ -1100,12 +1108,16 @@
     {
       "date": "2026-11-18",
       "nav": 104144.68984235053
+    },
+    {
+      "date": "2026-11-19",
+      "nav": 103148.51760106857
     }
   ],
   "first_session": "2026-10-16",
   "fx_method": "previous_XNYS_session_EURUSD_close_at_open; current_EURUSD_close_at_mark",
   "initial_capital": 100000.0,
-  "last_session": "2026-11-18",
+  "last_session": "2026-11-19",
   "last_signal_session": "2026-11-06",
   "missed_weekly_signal_sessions": [
     "2026-11-13"

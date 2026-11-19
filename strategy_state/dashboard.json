@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "generated_at_utc": "2026-11-19T23:48:54.783425+00:00",
+  "generated_at_utc": "2026-11-19T23:49:28.388394+00:00",
   "principle": "Comparar rentabilidad acumulada y riesgo observado; no ordenar carteras con distintas fechas de inicio o supuestos de ejecución.",
   "counts": {
     "paper_with_diary": 18,
@@ -4833,11 +4833,11 @@
       "group": "timesfm_demo",
       "status": "demo_con_diario",
       "first_session": "2026-10-16",
-      "last_session": "2026-11-18",
+      "last_session": "2026-11-19",
       "initial_capital": 100000.0,
-      "last_equity": 104144.68984235053,
-      "return_pct": 4.14469,
-      "day_return_pct": 0.998557,
+      "last_equity": 103148.51760106857,
+      "return_pct": 3.148518,
+      "day_return_pct": -0.956527,
       "currency": "EUR",
       "equity_history": [
         {
@@ -4935,12 +4935,16 @@
         {
           "date": "2026-11-18",
           "nav": 104144.68984235053
+        },
+        {
+          "date": "2026-11-19",
+          "nav": 103148.51760106857
         }
       ],
       "note": "Campaña forward EUR: TimesFM 2.5, horizonte 5 sesiones, NAV EUR; referencia SPY EUR same-cohort.",
       "period_returns_pct": {
-        "5_sessions": -1.713615,
-        "21_sessions": 3.046991,
+        "5_sessions": -0.951271,
+        "21_sessions": 2.347638,
         "63_sessions": null
       },
       "comparison_currency": "EUR",
@@ -4969,7 +4973,8 @@
         "2026-11-13",
         "2026-11-16",
         "2026-11-17",
-        "2026-11-18"
+        "2026-11-18",
+        "2026-11-19"
       ],
       "activity_state": "active",
       "activity_label": "8 posiciones abiertas",
@@ -4989,10 +4994,10 @@
       "comparison_universe_id": "SP500_2026-09-29_503",
       "comparison_universe_symbols": 503,
       "comparison_exclusion_reason": null,
-      "risk_observations": 24,
-      "annualized_volatility_pct": 20.108404,
+      "risk_observations": 25,
+      "annualized_volatility_pct": 20.01086,
       "max_drawdown_pct": -2.778442,
-      "sharpe_0rf": 2.310364
+      "sharpe_0rf": 1.722987
     },
     {
       "id": "timesfm_spy_eur",
@@ -5001,11 +5006,11 @@
       "group": "timesfm_demo",
       "status": "demo_con_diario",
       "first_session": "2026-10-16",
-      "last_session": "2026-11-18",
+      "last_session": "2026-11-19",
       "initial_capital": 100000.0,
-      "last_equity": 97677.71821148378,
-      "return_pct": -2.322282,
-      "day_return_pct": -0.077565,
+      "last_equity": 96170.0312892154,
+      "return_pct": -3.829969,
+      "day_return_pct": -1.543532,
       "currency": "EUR",
       "equity_history": [
         {
@@ -5103,12 +5108,16 @@
         {
           "date": "2026-11-18",
           "nav": 97677.71821148378
+        },
+        {
+          "date": "2026-11-19",
+          "nav": 96170.0312892154
         }
       ],
       "note": "Campaña forward EUR: TimesFM 2.5, horizonte 5 sesiones, NAV EUR; referencia SPY EUR same-cohort.",
       "period_returns_pct": {
-        "5_sessions": -2.24682,
-        "21_sessions": -2.371857,
+        "5_sessions": -3.806627,
+        "21_sessions": -4.206239,
         "63_sessions": null
       },
       "comparison_currency": "EUR",
@@ -5137,7 +5146,8 @@
         "2026-11-13",
         "2026-11-16",
         "2026-11-17",
-        "2026-11-18"
+        "2026-11-18",
+        "2026-11-19"
       ],
       "activity_state": "active",
       "activity_label": "1 posición abierta",
@@ -5150,10 +5160,10 @@
       "comparison_universe_id": "SP500_2026-09-29_503",
       "comparison_universe_symbols": 503,
       "comparison_exclusion_reason": null,
-      "risk_observations": 24,
-      "annualized_volatility_pct": 17.76525,
-      "max_drawdown_pct": -4.768349,
-      "sharpe_0rf": -1.362728
+      "risk_observations": 25,
+      "annualized_volatility_pct": 17.996702,
+      "max_drawdown_pct": -4.79369,
+      "sharpe_0rf": -2.189711
     },
     {
       "id": "timesfm_2p5_daily_eur_paper",
