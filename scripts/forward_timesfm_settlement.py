@@ -93,6 +93,118 @@ def _proof(lock, key, found, *, fx_reference=None):
     } for t, row in found.items()}
 
 
+def verified_weekly_exit_fills(lock, market, original, current, policy):
+    """Reconcile *all* independently observed IL-040 sales against the frozen book.
+
+    A later same-session poll may sell another ticker, but cannot change
+    historical holdings, reinterpret its cost, replay fills or alter NAV.
+    Return canonical session fills only when every received sell has a
+    per-ticker immutable marker and its original position has disappeared.
+    """
+    slot = "IL-040"
+    before = original["books"]["timesfm"]
+    book = current["books"]["timesfm"]
+    if book == before:
+        return []
+    if (original["last_session"] != current["last_session"] or
+            original.get("equity") != current.get("equity") or
+            not isinstance(book.get("positions"), dict) or
+            not isinstance(before.get("positions"), dict)):
+        raise ValueError("TimesFM weekly partial exit origin or portfolio changed")
+    permitted_changes = {"cash", "positions", "trades", "events"}
+    if any(before.get(k) != book.get(k)
+           for k in set(before) | set(book) if k not in permitted_changes):
+        raise ValueError("TimesFM weekly partial exit changed independent accounting")
+    for key in ("trades", "events"):
+        old = before.get(key, [])
+        new = book.get(key, [])
+        if not isinstance(old, list) or not isinstance(new, list) or new[:len(old)] != old:
+            raise ValueError("TimesFM weekly partial exit rewrote the historical book")
+    previous_positions = before["positions"]
+    remaining_positions = book["positions"]
+    if (not set(remaining_positions) <= set(previous_positions) or
+            any(remaining_positions[t] != previous_positions[t]
+                for t in remaining_positions)):
+        raise ValueError("TimesFM weekly partial exit changed held shares")
+    closed = set(previous_positions) - set(remaining_positions)
+    new_trades = book["trades"][len(before["trades"]):]
+    new_events = book["events"][len(before["events"]):]
+    if not closed or len(new_trades) != len(closed) or len(new_events) != len(closed):
+        raise ValueError("TimesFM weekly exit has unaccounted cash or trades")
+    trade_by = {row.get("ticker"): row for row in new_trades}
+    event_by = {row.get("ticker"): row for row in new_events}
+    if (set(trade_by) != closed or set(event_by) != closed or
+            len(trade_by) != len(new_trades) or len(event_by) != len(new_events)):
+        raise ValueError("TimesFM weekly partial sale identity mismatch")
+    base = event_key(slot, market["session"], "exit_symbol") + ":"
+    marks = current.get("forward_executions", {})
+    old_marks = original.get("forward_executions", {})
+    if any(marks.get(k) != value for k, value in old_marks.items()):
+        raise ValueError("TimesFM original execution marker overwritten")
+    commission = float(policy["commission"])
+    if not 0 <= commission < 1 or not math.isfinite(commission):
+        raise ValueError("TimesFM invalid commission")
+    cash = float(before["cash"])
+    fills = []
+    for ticker in sorted(closed):
+        row, event, position = trade_by[ticker], event_by[ticker], previous_positions[ticker]
+        marker = marks.get(base + ticker)
+        if (not isinstance(marker, dict) or
+                marker.get("mode") != "exit_symbol" or marker.get("ticker") != ticker or
+                marker.get("family") != "weekly" or
+                marker.get("session") != market["session"] or
+                marker.get("source_commit") != lock["source_commit"] or
+                marker.get("lock_sha256") != lock["lock_sha256"] or
+                marker.get("fill_tickers") != [ticker] or marker.get("fills_count") != 1 or
+                event.get("date") != market["session"] or
+                event.get("event") != "sell" or
+                event.get("execution") != "forward_observed_preclose" or
+                event.get("idempotency_key") != base + ticker or
+                event.get("source_commit") != lock["source_commit"] or
+                event.get("lock_sha256") != lock["lock_sha256"] or
+                row.get("execution") != "forward_observed_preclose" or
+                row.get("exit_date") != market["session"] or
+                row.get("entry_date") != position["entry_date"] or
+                row.get("signal_date") != position["signal_date"]):
+            raise ValueError("TimesFM weekly sale does not match locked evidence")
+        try:
+            when, received = _date_time(event["quote_at_utc"]), _date_time(event["observed_at_utc"])
+            fx_when = _date_time(marker["exit_fx_quote_at_utc"])
+            fx = float(marker["exit_fx_usd_per_eur"])
+            price, shares = float(event["price_eur"]), float(position["shares"])
+            proceeds = shares * price * (1 - commission)
+            if (not (market["close"] - EXIT_WINDOW <= when <= received <= market["close"])
+                    or not (market["close"] - EXIT_WINDOW <= fx_when <= received)
+                    or not all(math.isfinite(v) and v > 0 for v in (fx, price, shares))
+                    or not math.isclose(float(row["shares_at_exit"]), shares, rel_tol=1e-12)
+                    or not math.isclose(float(row["sell_proceeds_eur"]), proceeds, rel_tol=1e-10, abs_tol=1e-6)
+                    or not math.isclose(float(row["buy_cost_eur"]), float(position["cost_eur"]), rel_tol=1e-12)
+                    or not math.isclose(float(row["dividends_eur"]), float(position["dividends_eur"]), rel_tol=1e-12)
+                    or not math.isclose(float(row["net_pnl_eur"]), proceeds +
+                                        float(position["dividends_eur"]) - float(position["cost_eur"]),
+                                        rel_tol=1e-10, abs_tol=1e-6)
+                    or not math.isclose(float(row["fx_usd_per_eur"]), fx, rel_tol=1e-12)):
+                raise ValueError("TimesFM weekly sale economic or timestamp mismatch")
+            cash += proceeds
+            fills.append({"ticker": ticker, "side": "sell", "quantity": shares,
+                          "price": price, "fee": shares * price * commission,
+                          "currency": "EUR", "fx_usd_per_eur": fx,
+                          "observed_at_utc": event["observed_at_utc"]})
+        except (KeyError, TypeError, ValueError, OverflowError) as exc:
+            raise ValueError("TimesFM invalid weekly sale evidence") from exc
+    if not math.isclose(float(book["cash"]), cash, rel_tol=1e-10, abs_tol=1e-6):
+        raise ValueError("TimesFM weekly partial exit cash mismatch")
+    finished = marks.get(event_key(slot, market["session"], "exit"))
+    if finished is not None:
+        if (remaining_positions or finished.get("mode") != "exit" or
+                finished.get("lock_sha256") != lock["lock_sha256"] or
+                finished.get("source_commit") != lock["source_commit"] or
+                finished.get("fills_count") != len(closed) or
+                finished.get("fill_tickers") != sorted(closed)):
+            raise ValueError("TimesFM full exit marker without completed settlement")
+    return sorted(fills, key=lambda row: (row["observed_at_utc"], row["ticker"]))
+
+
 def settle_timesfm(lock, now, market, quotes, *, reader=read, frozen=_source_at):
     verify_lock(lock, market, now)
     results, evidence = {}, {}
