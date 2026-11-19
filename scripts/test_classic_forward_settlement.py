@@ -108,6 +108,29 @@ class NativeClassicClockTests(unittest.TestCase):
         self.assertEqual(self.book["books"]["turtle_20_10_long"]["pending"],
                          {"AAPL": {"side": "buy", "signal_date": "2026-11-09"}})
 
+    def test_il010_same_verified_kvue_claim_does_not_freeze_independent_book(self):
+        live = json.loads((ROOT / LEDGER).read_text())["books"]["buy_hold_equal_weight"]
+        self.assertTrue(_isolated_unsettled_kvue_claim(live, "2026-11-18"))
+        slot, name = "IL-010", SLOTS["IL-010"]
+        book = self.book["books"][name]
+        book["receivables"] = copy.deepcopy(live["receivables"])
+        book["events"] = [copy.deepcopy(e) for e in live["events"]
+                          if e.get("type") == "corporate_merger_entitlement"]
+        book["positions"] = {"KMB": copy.deepcopy(live["positions"]["KMB"])}
+        book["cash"] = live["cash"]
+        book["pending"] = {}
+        self.tracks[slot]["holdings"] = ["KMB"]
+        self.tracks[slot]["orders"] = []
+        self.original = copy.deepcopy(self.book)
+        self.lock = clock_plan(self.open - timedelta(minutes=10),
+                               self.market, self.tracks, "c"*40)
+        unchanged, evidence = self.run_clock(quotes={})
+        self.assertNotIn(LEDGER, unchanged)
+        self.assertEqual(evidence[slot]["status"], "active_no_orders")
+        self.assertEqual(evidence[slot]["fills"], 0)
+        self.assertEqual(book["receivables"], live["receivables"])
+        self.assertEqual(book["cash"], live["cash"])
+
     def test_il012_recovered_claim_does_not_freeze_verified_existing_stock_stop(self):
         # Recreate the exact documented merger right and a future, reviewed
         # fresh session. No modeled/retroactive 18-Nov action is allowed.
