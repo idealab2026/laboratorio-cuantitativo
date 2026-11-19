@@ -260,6 +260,17 @@ def record_opening_quote_diagnostic(lane, previous_lane, frozen_lane, evidence, 
     }
 
 
+def publish_missed_open(lane, evidence):
+    """Show terminal opening misses; never turn an observed quote into a fill."""
+    if (evidence.get("status") != "opening_window_missed" or
+            lane.get("status") in ("native_forward_settled", "opening_window_missed")):
+        return False
+    lane["status"] = "opening_window_missed"
+    lane["waiting"] = 0
+    lane["opening_order_execution"] = "unfilled_expired"
+    return True
+
+
 def status_report(lock, now, market, quotes, prior=None, *, run_id=None):
     verify_lock(lock, market, now)
     if prior is not None and prior.get("session") != lock["session"]:
@@ -784,6 +795,8 @@ def main(argv=None):
                 lane["fills_count"] = result["fills"]
                 lane["native_marker"] = result["marker"]
                 lane["fills"] = []
+            else:
+                publish_missed_open(lane, result)
         # A classic book can sell more than one frozen position during separate
         # intraday polls; its latest marker never represents the daily total.
         from classic_forward_settlement import (
