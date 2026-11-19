@@ -794,6 +794,14 @@ def main(argv=None):
                     "closing_cutoff_at_utc": timestamp(market["close"]),
                     "price_scope": "observed_preclose_paper_only",
                 }
+            if (slot in {f"IL-{n:03d}" for n in range(11, 18)}
+                    and result.get("sizing_reference")):
+                lane["opening_quote_isolation"] = {
+                    "unfilled_tickers": result.get("unfilled_open_quotes", []),
+                    "missing_held_quotes": result.get("missing_held_quotes", []),
+                    "sizing_reference": result["sizing_reference"],
+                    "scope": "paper_forward_open_only",
+                    "checked_at_utc": timestamp(now)}
             if slot in {f"IL-{n:03d}" for n in range(11, 18)}:
                 record_opening_quote_diagnostic(
                     lane, (prior or {}).get("slots", {}).get(slot, {}),
