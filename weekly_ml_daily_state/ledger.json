@@ -9,7 +9,7 @@
     "2026-11-04"
   ],
   "initial_capital": 100000.0,
-  "last_session": "2026-11-18",
+  "last_session": "2026-11-19",
   "last_signal_session": "2026-11-06",
   "outage_control": {
     "first_trading_session": "2026-11-05",
@@ -260,6 +260,17 @@
             "snapshot_sha256": "04474ad0ed18c98da40fc65b1e86ca5a9b9049b274c10dba986dcaa02c587575"
           },
           "recorded_at_utc": "2026-11-18T23:52:46+00:00"
+        },
+        {
+          "date": "2026-11-19",
+          "decision_recorded": false,
+          "inactive_no_fills": true,
+          "nav": 84410.89470369281,
+          "quote_identity": {
+            "effective_sha256": "30e4872eccccc21718a68457d8cf85d7b085a59e69c99890b6680843f00d5861",
+            "snapshot_sha256": "fc922b6c2ef0a1551dbabdece1483f1eb14de505d82087ebc60851c6bd156f1f"
+          },
+          "recorded_at_utc": "2026-11-19T23:44:59+00:00"
         }
       ],
       "events": [
@@ -1068,17 +1079,23 @@
           "expired_unfilled_orders": [],
           "recorded_at_utc": "2026-11-18T23:52:46+00:00",
           "type": "inactive_mark_no_trades"
+        },
+        {
+          "date": "2026-11-19",
+          "expired_unfilled_orders": [],
+          "recorded_at_utc": "2026-11-19T23:44:59+00:00",
+          "type": "inactive_mark_no_trades"
         }
       ],
       "last_signal_session": "2026-10-30",
-      "nav": 85365.6347429424,
+      "nav": 84410.89470369281,
       "outage_control": {
         "first_trading_session": "2026-11-18",
         "held_exits_require_future_observed_quote": true,
         "historical_fills_created": 0
       },
       "paused_missing_quotes": {
-        "date": "2026-11-18",
+        "date": "2026-11-19",
         "missed_exit_sessions": [
           "2026-11-06",
           "2026-11-13"
@@ -1701,6 +1718,11 @@
           "date": "2026-11-18",
           "decision_recorded": false,
           "nav": 100170.49310778703
+        },
+        {
+          "date": "2026-11-19",
+          "decision_recorded": false,
+          "nav": 100170.49310778703
         }
       ],
       "events": [
@@ -2078,6 +2100,11 @@
           "date": "2026-11-18",
           "decision_recorded": false,
           "nav": 93661.81418879132
+        },
+        {
+          "date": "2026-11-19",
+          "decision_recorded": false,
+          "nav": 93661.81418879132
         }
       ],
       "events": [
@@ -2453,6 +2480,11 @@
         },
         {
           "date": "2026-11-18",
+          "decision_recorded": false,
+          "nav": 85683.78100397768
+        },
+        {
+          "date": "2026-11-19",
           "decision_recorded": false,
           "nav": 85683.78100397768
         }
@@ -4182,6 +4214,11 @@
           "date": "2026-11-18",
           "decision_recorded": false,
           "nav": 103643.21151858052
+        },
+        {
+          "date": "2026-11-19",
+          "decision_recorded": false,
+          "nav": 103643.21151858052
         }
       ],
       "events": [
@@ -5672,6 +5709,17 @@
             "snapshot_sha256": "04474ad0ed18c98da40fc65b1e86ca5a9b9049b274c10dba986dcaa02c587575"
           },
           "recorded_at_utc": "2026-11-18T23:52:46+00:00"
+        },
+        {
+          "date": "2026-11-19",
+          "decision_recorded": false,
+          "inactive_no_fills": true,
+          "nav": 82412.55119584885,
+          "quote_identity": {
+            "effective_sha256": "30e4872eccccc21718a68457d8cf85d7b085a59e69c99890b6680843f00d5861",
+            "snapshot_sha256": "fc922b6c2ef0a1551dbabdece1483f1eb14de505d82087ebc60851c6bd156f1f"
+          },
+          "recorded_at_utc": "2026-11-19T23:44:59+00:00"
         }
       ],
       "events": [
@@ -6472,17 +6520,23 @@
           "expired_unfilled_orders": [],
           "recorded_at_utc": "2026-11-18T23:52:46+00:00",
           "type": "inactive_mark_no_trades"
+        },
+        {
+          "date": "2026-11-19",
+          "expired_unfilled_orders": [],
+          "recorded_at_utc": "2026-11-19T23:44:59+00:00",
+          "type": "inactive_mark_no_trades"
         }
       ],
       "last_signal_session": "2026-10-30",
-      "nav": 82358.73121842757,
+      "nav": 82412.55119584885,
       "outage_control": {
         "first_trading_session": "2026-11-18",
         "held_exits_require_future_observed_quote": true,
         "historical_fills_created": 0
       },
       "paused_missing_quotes": {
-        "date": "2026-11-18",
+        "date": "2026-11-19",
         "missed_exit_sessions": [
           "2026-11-06",
           "2026-11-13"
@@ -7103,6 +7157,11 @@
         },
         {
           "date": "2026-11-18",
+          "decision_recorded": false,
+          "nav": 84101.75276020692
+        },
+        {
+          "date": "2026-11-19",
           "decision_recorded": false,
           "nav": 84101.75276020692
         }
@@ -8002,6 +8061,11 @@
         },
         {
           "date": "2026-11-18",
+          "decision_recorded": false,
+          "nav": 96905.48207189851
+        },
+        {
+          "date": "2026-11-19",
           "decision_recorded": false,
           "nav": 96905.48207189851
         }
@@ -9810,6 +9874,17 @@
             "snapshot_sha256": "04474ad0ed18c98da40fc65b1e86ca5a9b9049b274c10dba986dcaa02c587575"
           },
           "recorded_at_utc": "2026-11-18T23:52:46+00:00"
+        },
+        {
+          "date": "2026-11-19",
+          "decision_recorded": false,
+          "inactive_no_fills": true,
+          "nav": 80605.07463808202,
+          "quote_identity": {
+            "effective_sha256": "30e4872eccccc21718a68457d8cf85d7b085a59e69c99890b6680843f00d5861",
+            "snapshot_sha256": "fc922b6c2ef0a1551dbabdece1483f1eb14de505d82087ebc60851c6bd156f1f"
+          },
+          "recorded_at_utc": "2026-11-19T23:44:59+00:00"
         }
       ],
       "events": [
@@ -10610,17 +10685,23 @@
           "expired_unfilled_orders": [],
           "recorded_at_utc": "2026-11-18T23:52:46+00:00",
           "type": "inactive_mark_no_trades"
+        },
+        {
+          "date": "2026-11-19",
+          "expired_unfilled_orders": [],
+          "recorded_at_utc": "2026-11-19T23:44:59+00:00",
+          "type": "inactive_mark_no_trades"
         }
       ],
       "last_signal_session": "2026-10-30",
-      "nav": 81413.66039935773,
+      "nav": 80605.07463808202,
       "outage_control": {
         "first_trading_session": "2026-11-18",
         "held_exits_require_future_observed_quote": true,
         "historical_fills_created": 0
       },
       "paused_missing_quotes": {
-        "date": "2026-11-18",
+        "date": "2026-11-19",
         "missed_exit_sessions": [
           "2026-11-06",
           "2026-11-13"

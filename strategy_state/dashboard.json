@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "generated_at_utc": "2026-11-19T23:44:59.527079+00:00",
+  "generated_at_utc": "2026-11-19T23:45:02.784045+00:00",
   "principle": "Comparar rentabilidad acumulada y riesgo observado; no ordenar carteras con distintas fechas de inicio o supuestos de ejecución.",
   "counts": {
     "paper_with_diary": 18,
@@ -2120,7 +2120,7 @@
       "status": "demo_con_diario",
       "daily_mode": true,
       "first_session": "2026-10-09",
-      "last_session": "2026-11-18",
+      "last_session": "2026-11-19",
       "initial_capital": 100000.0,
       "last_equity": 93661.81418879132,
       "return_pct": -6.338186,
@@ -2242,6 +2242,10 @@
         {
           "date": "2026-11-18",
           "nav": 93661.81418879132
+        },
+        {
+          "date": "2026-11-19",
+          "nav": 93661.81418879132
         }
       ],
       "note": "Campaña diaria prospectiva desde la señal del 09/10/2026. Fills simulados en la siguiente apertura, NAV al cierre y cierre semanal. No hereda el NAV de la campaña de liquidación diferida ni reconstruye compras pasadas. AVISO AUDITORÍA: 1 ventas semanales estimadas con cierre histórico (2026-11-13), sin cotización intradía observada al ejecutar. NAV histórico conservado; rentabilidad NO certificada como operativa prospectiva observada.",
@@ -2269,10 +2273,10 @@
       "comparison_universe_id": null,
       "comparison_universe_symbols": null,
       "comparison_exclusion_reason": "Ventas semanales posteriores al corte ejecutadas solo en simulación de cierre histórico; no hay evidencia de ejecución intradía prospectiva",
-      "risk_observations": 29,
-      "annualized_volatility_pct": 17.265113,
+      "risk_observations": 30,
+      "annualized_volatility_pct": 16.967298,
       "max_drawdown_pct": -7.682816,
-      "sharpe_0rf": -3.324916
+      "sharpe_0rf": -3.266611
     },
     {
       "id": "weekly_legacy_weekly_ml_benchmark_spy",
@@ -2339,7 +2343,7 @@
       "status": "demo_con_diario",
       "daily_mode": true,
       "first_session": "2026-10-09",
-      "last_session": "2026-11-18",
+      "last_session": "2026-11-19",
       "initial_capital": 100000.0,
       "last_equity": 100170.49310778703,
       "return_pct": 0.170493,
@@ -2461,6 +2465,10 @@
         {
           "date": "2026-11-18",
           "nav": 100170.49310778703
+        },
+        {
+          "date": "2026-11-19",
+          "nav": 100170.49310778703
         }
       ],
       "note": "Campaña diaria prospectiva desde la señal del 09/10/2026. Fills simulados en la siguiente apertura, NAV al cierre y cierre semanal. No hereda el NAV de la campaña de liquidación diferida ni reconstruye compras pasadas. AVISO AUDITORÍA: 1 ventas semanales estimadas con cierre histórico (2026-11-13), sin cotización intradía observada al ejecutar. NAV histórico conservado; rentabilidad NO certificada como operativa prospectiva observada.",
@@ -2488,10 +2496,10 @@
       "comparison_universe_id": null,
       "comparison_universe_symbols": null,
       "comparison_exclusion_reason": "Ventas semanales posteriores al corte ejecutadas solo en simulación de cierre histórico; no hay evidencia de ejecución intradía prospectiva",
-      "risk_observations": 29,
-      "annualized_volatility_pct": 13.841782,
+      "risk_observations": 30,
+      "annualized_volatility_pct": 13.59239,
       "max_drawdown_pct": -3.237079,
-      "sharpe_0rf": 0.177763
+      "sharpe_0rf": 0.174782
     },
     {
       "id": "weekly_legacy_weekly_ml_benchmark_rsp",
@@ -2558,7 +2566,7 @@
       "status": "demo_con_diario",
       "daily_mode": true,
       "first_session": "2026-10-09",
-      "last_session": "2026-11-18",
+      "last_session": "2026-11-19",
       "initial_capital": 100000.0,
       "last_equity": 84101.75276020692,
       "return_pct": -15.898247,
@@ -2680,6 +2688,10 @@
         {
           "date": "2026-11-18",
           "nav": 84101.75276020692
+        },
+        {
+          "date": "2026-11-19",
+          "nav": 84101.75276020692
         }
       ],
       "note": "Campaña diaria prospectiva desde la señal del 09/10/2026. Fills simulados en la siguiente apertura, NAV al cierre y cierre semanal. No hereda el NAV de la campaña de liquidación diferida ni reconstruye compras pasadas. AVISO AUDITORÍA: 2 ventas semanales estimadas con cierre histórico (2026-11-13), sin cotización intradía observada al ejecutar. NAV histórico conservado; rentabilidad NO certificada como operativa prospectiva observada.",
@@ -2707,10 +2719,10 @@
       "comparison_universe_id": null,
       "comparison_universe_symbols": null,
       "comparison_exclusion_reason": "Ventas semanales posteriores al corte ejecutadas solo en simulación de cierre histórico; no hay evidencia de ejecución intradía prospectiva",
-      "risk_observations": 29,
-      "annualized_volatility_pct": 29.664839,
+      "risk_observations": 30,
+      "annualized_volatility_pct": 29.183789,
       "max_drawdown_pct": -17.460329,
-      "sharpe_0rf": -5.089797
+      "sharpe_0rf": -4.995291
     },
     {
       "id": "weekly_legacy_weekly_ml_lgbm_return_2026",
@@ -2778,7 +2790,7 @@
       "status": "demo_con_diario",
       "daily_mode": true,
       "first_session": "2026-10-09",
-      "last_session": "2026-11-18",
+      "last_session": "2026-11-19",
       "initial_capital": 100000.0,
       "last_equity": 103643.21151858052,
       "return_pct": 3.643212,
@@ -2900,6 +2912,10 @@
         {
           "date": "2026-11-18",
           "nav": 103643.21151858052
+        },
+        {
+          "date": "2026-11-19",
+          "nav": 103643.21151858052
         }
       ],
       "note": "Campaña diaria prospectiva desde la señal del 09/10/2026. Fills simulados en la siguiente apertura, NAV al cierre y cierre semanal. No hereda el NAV de la campaña de liquidación diferida ni reconstruye compras pasadas. AVISO AUDITORÍA: 10 ventas semanales estimadas con cierre histórico (2026-11-13), sin cotización intradía observada al ejecutar. NAV histórico conservado; rentabilidad NO certificada como operativa prospectiva observada.",
@@ -2927,10 +2943,10 @@
       "comparison_universe_id": null,
       "comparison_universe_symbols": null,
       "comparison_exclusion_reason": "Ventas semanales posteriores al corte ejecutadas solo en simulación de cierre histórico; no hay evidencia de ejecución intradía prospectiva",
-      "risk_observations": 29,
-      "annualized_volatility_pct": 13.60968,
+      "risk_observations": 30,
+      "annualized_volatility_pct": 13.370053,
       "max_drawdown_pct": -2.28747,
-      "sharpe_0rf": 2.433076
+      "sharpe_0rf": 2.391281
     },
     {
       "id": "weekly_legacy_weekly_ml_lgbm_direction_2026",
@@ -3006,10 +3022,10 @@
       "status": "demo_con_diario",
       "daily_mode": true,
       "first_session": "2026-10-09",
-      "last_session": "2026-11-18",
+      "last_session": "2026-11-19",
       "initial_capital": 100000.0,
-      "last_equity": 82358.73121842757,
-      "return_pct": -17.641269,
+      "last_equity": 82412.55119584885,
+      "return_pct": -17.587449,
       "day_return_pct": null,
       "currency": "USD",
       "equity_history": [
@@ -3128,9 +3144,13 @@
         {
           "date": "2026-11-18",
           "nav": 82358.73121842757
+        },
+        {
+          "date": "2026-11-19",
+          "nav": 82412.55119584885
         }
       ],
-      "note": "Campaña diaria prospectiva desde la señal del 09/10/2026. Fills simulados en la siguiente apertura, NAV al cierre y cierre semanal. No hereda el NAV de la campaña de liquidación diferida ni reconstruye compras pasadas. Última valoración confirmada: 2026-11-18.",
+      "note": "Campaña diaria prospectiva desde la señal del 09/10/2026. Fills simulados en la siguiente apertura, NAV al cierre y cierre semanal. No hereda el NAV de la campaña de liquidación diferida ni reconstruye compras pasadas. Última valoración confirmada: 2026-11-19.",
       "positions": [
         {
           "ticker": "AKAM",
@@ -3174,7 +3194,7 @@
         }
       ],
       "activity_state": "active",
-      "activity_label": "VALORACIÓN PAUSADA · sesión anterior pendiente de conciliar; 10 posiciones abiertas · Inactividad sin operaciones: 2026-11-03, 2026-11-04, 2026-11-05, 2026-11-06, 2026-11-09, 2026-11-10, 2026-11-11, 2026-11-12, 2026-11-13, 2026-11-16, 2026-11-17, 2026-11-18 · Reanudación desde apertura: 2026-11-05",
+      "activity_label": "VALORACIÓN PAUSADA · sesión anterior pendiente de conciliar; 10 posiciones abiertas · Inactividad sin operaciones: 2026-11-03, 2026-11-04, 2026-11-05, 2026-11-06, 2026-11-09, 2026-11-10, 2026-11-11, 2026-11-12, 2026-11-13, 2026-11-16, 2026-11-17, 2026-11-18, 2026-11-19 · Reanudación desde apertura: 2026-11-05",
       "activity_tickers": [
         "AKAM",
         "AMAT",
@@ -3202,7 +3222,8 @@
         "2026-11-13",
         "2026-11-16",
         "2026-11-17",
-        "2026-11-18"
+        "2026-11-18",
+        "2026-11-19"
       ],
       "outage_control": {
         "first_trading_session": "2026-11-05",
@@ -3212,10 +3233,10 @@
       "comparison_universe_id": "SP500_2026-09-29_503",
       "comparison_universe_symbols": 503,
       "comparison_exclusion_reason": null,
-      "risk_observations": 29,
-      "annualized_volatility_pct": 53.812753,
+      "risk_observations": 30,
+      "annualized_volatility_pct": 52.883263,
       "max_drawdown_pct": -20.185629,
-      "sharpe_0rf": -2.968558
+      "sharpe_0rf": -2.905833
     },
     {
       "id": "weekly_legacy_weekly_ml_lgbm_ranker_2026",
@@ -3291,10 +3312,10 @@
       "status": "demo_con_diario",
       "daily_mode": true,
       "first_session": "2026-10-09",
-      "last_session": "2026-11-18",
+      "last_session": "2026-11-19",
       "initial_capital": 100000.0,
-      "last_equity": 81413.66039935773,
-      "return_pct": -18.58634,
+      "last_equity": 80605.07463808202,
+      "return_pct": -19.394925,
       "day_return_pct": null,
       "currency": "USD",
       "equity_history": [
@@ -3413,9 +3434,13 @@
         {
           "date": "2026-11-18",
           "nav": 81413.66039935773
+        },
+        {
+          "date": "2026-11-19",
+          "nav": 80605.07463808202
         }
       ],
-      "note": "Campaña diaria prospectiva desde la señal del 09/10/2026. Fills simulados en la siguiente apertura, NAV al cierre y cierre semanal. No hereda el NAV de la campaña de liquidación diferida ni reconstruye compras pasadas. Última valoración confirmada: 2026-11-18.",
+      "note": "Campaña diaria prospectiva desde la señal del 09/10/2026. Fills simulados en la siguiente apertura, NAV al cierre y cierre semanal. No hereda el NAV de la campaña de liquidación diferida ni reconstruye compras pasadas. Última valoración confirmada: 2026-11-19.",
       "positions": [
         {
           "ticker": "BLDR",
@@ -3459,7 +3484,7 @@
         }
       ],
       "activity_state": "active",
-      "activity_label": "VALORACIÓN PAUSADA · sesión anterior pendiente de conciliar; 10 posiciones abiertas · Inactividad sin operaciones: 2026-11-03, 2026-11-04, 2026-11-05, 2026-11-06, 2026-11-09, 2026-11-10, 2026-11-11, 2026-11-12, 2026-11-13, 2026-11-16, 2026-11-17, 2026-11-18 · Reanudación desde apertura: 2026-11-05",
+      "activity_label": "VALORACIÓN PAUSADA · sesión anterior pendiente de conciliar; 10 posiciones abiertas · Inactividad sin operaciones: 2026-11-03, 2026-11-04, 2026-11-05, 2026-11-06, 2026-11-09, 2026-11-10, 2026-11-11, 2026-11-12, 2026-11-13, 2026-11-16, 2026-11-17, 2026-11-18, 2026-11-19 · Reanudación desde apertura: 2026-11-05",
       "activity_tickers": [
         "BLDR",
         "CRWD",
@@ -3487,7 +3512,8 @@
         "2026-11-13",
         "2026-11-16",
         "2026-11-17",
-        "2026-11-18"
+        "2026-11-18",
+        "2026-11-19"
       ],
       "outage_control": {
         "first_trading_session": "2026-11-05",
@@ -3497,10 +3523,10 @@
       "comparison_universe_id": "SP500_2026-09-29_503",
       "comparison_universe_symbols": 503,
       "comparison_exclusion_reason": null,
-      "risk_observations": 29,
-      "annualized_volatility_pct": 30.803667,
-      "max_drawdown_pct": -19.076249,
-      "sharpe_0rf": -5.83473
+      "risk_observations": 30,
+      "annualized_volatility_pct": 30.259857,
+      "max_drawdown_pct": -19.394925,
+      "sharpe_0rf": -6.019985
     },
     {
       "id": "weekly_legacy_weekly_ml_mlp_2026",
@@ -3576,7 +3602,7 @@
       "status": "demo_con_diario",
       "daily_mode": true,
       "first_session": "2026-10-09",
-      "last_session": "2026-11-18",
+      "last_session": "2026-11-19",
       "initial_capital": 100000.0,
       "last_equity": 96905.48207189851,
       "return_pct": -3.094518,
@@ -3698,6 +3724,10 @@
         {
           "date": "2026-11-18",
           "nav": 96905.48207189851
+        },
+        {
+          "date": "2026-11-19",
+          "nav": 96905.48207189851
         }
       ],
       "note": "Campaña diaria prospectiva desde la señal del 09/10/2026. Fills simulados en la siguiente apertura, NAV al cierre y cierre semanal. No hereda el NAV de la campaña de liquidación diferida ni reconstruye compras pasadas. AVISO AUDITORÍA: 10 ventas semanales estimadas con cierre histórico (2026-11-13), sin cotización intradía observada al ejecutar. NAV histórico conservado; rentabilidad NO certificada como operativa prospectiva observada.",
@@ -3725,10 +3755,10 @@
       "comparison_universe_id": null,
       "comparison_universe_symbols": null,
       "comparison_exclusion_reason": "Ventas semanales posteriores al corte ejecutadas solo en simulación de cierre histórico; no hay evidencia de ejecución intradía prospectiva",
-      "risk_observations": 29,
-      "annualized_volatility_pct": 36.36781,
+      "risk_observations": 30,
+      "annualized_volatility_pct": 35.713403,
       "max_drawdown_pct": -8.534402,
-      "sharpe_0rf": -0.603424
+      "sharpe_0rf": -0.593292
     },
     {
       "id": "weekly_legacy_weekly_ml_lstm_2026",
@@ -3804,10 +3834,10 @@
       "status": "demo_con_diario",
       "daily_mode": true,
       "first_session": "2026-10-09",
-      "last_session": "2026-11-18",
+      "last_session": "2026-11-19",
       "initial_capital": 100000.0,
-      "last_equity": 85365.6347429424,
-      "return_pct": -14.634365,
+      "last_equity": 84410.89470369281,
+      "return_pct": -15.589105,
       "day_return_pct": null,
       "currency": "USD",
       "equity_history": [
@@ -3926,9 +3956,13 @@
         {
           "date": "2026-11-18",
           "nav": 85365.6347429424
+        },
+        {
+          "date": "2026-11-19",
+          "nav": 84410.89470369281
         }
       ],
-      "note": "Campaña diaria prospectiva desde la señal del 09/10/2026. Fills simulados en la siguiente apertura, NAV al cierre y cierre semanal. No hereda el NAV de la campaña de liquidación diferida ni reconstruye compras pasadas. Última valoración confirmada: 2026-11-18.",
+      "note": "Campaña diaria prospectiva desde la señal del 09/10/2026. Fills simulados en la siguiente apertura, NAV al cierre y cierre semanal. No hereda el NAV de la campaña de liquidación diferida ni reconstruye compras pasadas. Última valoración confirmada: 2026-11-19.",
       "positions": [
         {
           "ticker": "BBY",
@@ -3972,7 +4006,7 @@
         }
       ],
       "activity_state": "active",
-      "activity_label": "VALORACIÓN PAUSADA · sesión anterior pendiente de conciliar; 10 posiciones abiertas · Inactividad sin operaciones: 2026-11-03, 2026-11-04, 2026-11-05, 2026-11-06, 2026-11-09, 2026-11-10, 2026-11-11, 2026-11-12, 2026-11-13, 2026-11-16, 2026-11-17, 2026-11-18 · Reanudación desde apertura: 2026-11-05",
+      "activity_label": "VALORACIÓN PAUSADA · sesión anterior pendiente de conciliar; 10 posiciones abiertas · Inactividad sin operaciones: 2026-11-03, 2026-11-04, 2026-11-05, 2026-11-06, 2026-11-09, 2026-11-10, 2026-11-11, 2026-11-12, 2026-11-13, 2026-11-16, 2026-11-17, 2026-11-18, 2026-11-19 · Reanudación desde apertura: 2026-11-05",
       "activity_tickers": [
         "BBY",
         "CRWD",
@@ -4000,7 +4034,8 @@
         "2026-11-13",
         "2026-11-16",
         "2026-11-17",
-        "2026-11-18"
+        "2026-11-18",
+        "2026-11-19"
       ],
       "outage_control": {
         "first_trading_session": "2026-11-05",
@@ -4010,10 +4045,10 @@
       "comparison_universe_id": "SP500_2026-09-29_503",
       "comparison_universe_symbols": 503,
       "comparison_exclusion_reason": null,
-      "risk_observations": 29,
-      "annualized_volatility_pct": 34.271827,
-      "max_drawdown_pct": -15.404478,
-      "sharpe_0rf": -3.97631
+      "risk_observations": 30,
+      "annualized_volatility_pct": 33.697316,
+      "max_drawdown_pct": -15.589105,
+      "sharpe_0rf": -4.19306
     },
     {
       "id": "weekly_legacy_weekly_ml_arima_2026",
@@ -4089,7 +4124,7 @@
       "status": "demo_con_diario",
       "daily_mode": true,
       "first_session": "2026-10-09",
-      "last_session": "2026-11-18",
+      "last_session": "2026-11-19",
       "initial_capital": 100000.0,
       "last_equity": 85683.78100397768,
       "return_pct": -14.316219,
@@ -4211,6 +4246,10 @@
         {
           "date": "2026-11-18",
           "nav": 85683.78100397768
+        },
+        {
+          "date": "2026-11-19",
+          "nav": 85683.78100397768
         }
       ],
       "note": "Campaña diaria prospectiva desde la señal del 09/10/2026. Fills simulados en la siguiente apertura, NAV al cierre y cierre semanal. No hereda el NAV de la campaña de liquidación diferida ni reconstruye compras pasadas. AVISO AUDITORÍA: 10 ventas semanales estimadas con cierre histórico (2026-11-13), sin cotización intradía observada al ejecutar. NAV histórico conservado; rentabilidad NO certificada como operativa prospectiva observada.",
@@ -4238,10 +4277,10 @@
       "comparison_universe_id": null,
       "comparison_universe_symbols": null,
       "comparison_exclusion_reason": "Ventas semanales posteriores al corte ejecutadas solo en simulación de cierre histórico; no hay evidencia de ejecución intradía prospectiva",
-      "risk_observations": 29,
-      "annualized_volatility_pct": 37.992931,
+      "risk_observations": 30,
+      "annualized_volatility_pct": 37.34014,
       "max_drawdown_pct": -18.128938,
-      "sharpe_0rf": -3.467922
+      "sharpe_0rf": -3.406875
     },
     {
       "id": "weekly_legacy_weekly_ml_ensemble_2026",
