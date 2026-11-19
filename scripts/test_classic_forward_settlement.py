@@ -98,8 +98,15 @@ class NativeClassicClockTests(unittest.TestCase):
         stale["AAPL"]["quote_at_utc"] = (self.open-timedelta(seconds=10)).isoformat()
         output, _ = self.run_clock(quotes=stale)
         self.assertEqual(output, {})
-        output, _ = self.run_clock(now=self.open+timedelta(minutes=45))
+        output, expired = self.run_clock(now=self.open+timedelta(minutes=45))
         self.assertEqual(output, {})
+        # Missing coverage is a terminal missed opening, not perpetual waiting.
+        self.assertTrue(all(result["status"] == "opening_window_missed"
+                            and result["fills"] == 0
+                            and result["missing"] == ["AAPL"]
+                            for result in expired.values()))
+        self.assertEqual(self.book["books"]["turtle_20_10_long"]["pending"],
+                         {"AAPL": {"side": "buy", "signal_date": "2026-11-09"}})
 
     def test_il012_recovered_claim_does_not_freeze_verified_existing_stock_stop(self):
         # Recreate the exact documented merger right and a future, reviewed
