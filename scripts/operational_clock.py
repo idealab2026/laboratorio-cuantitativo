@@ -778,6 +778,22 @@ def main(argv=None):
                 # that the unrelated frozen opening BUY was executed.
                 lane["pending_open_unfilled"] = result["pending_open_unfilled"]
                 lane["opening_order_execution"] = "unfilled_not_a_native_trade"
+            if (slot in {f"IL-{n:03d}" for n in range(19, 28)} and
+                    result["status"] == "awaiting_verified_weekly_exit_quotes"):
+                required = lock["slots"][slot].get("monitor_tickers", [])
+                missing = result.get("missing", [])
+                if (not isinstance(missing, list) or
+                        not set(missing).issubset(set(required))):
+                    raise ValueError("Unexpected weekly exit missing-quote diagnostic")
+                lane["weekly_exit_diagnostic"] = {
+                    "required_tickers": required,
+                    "missing_tickers": missing,
+                    "valid_count": result.get("valid_count", 0),
+                    "required_count": result.get("required_count", len(required)),
+                    "checked_at_utc": timestamp(now),
+                    "closing_cutoff_at_utc": timestamp(market["close"]),
+                    "price_scope": "observed_preclose_paper_only",
+                }
             if slot in {f"IL-{n:03d}" for n in range(11, 18)}:
                 record_opening_quote_diagnostic(
                     lane, (prior or {}).get("slots", {}).get(slot, {}),

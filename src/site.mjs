@@ -629,6 +629,16 @@ function operationalClockHTML(){
   const verifiedFills=Array.isArray(lane.fills)?lane.fills:[];
   const completed=lane.status==="native_forward_settled";
   const openingMissed=lane.status==="opening_window_missed";
+  const weeklyExit=lane.weekly_exit_diagnostic;
+  const exitAwaiting=lane.native_settlement==="awaiting_verified_weekly_exit_quotes"&&
+   weeklyExit?.price_scope==="observed_preclose_paper_only";
+  const exitMissing=Array.isArray(weeklyExit?.missing_tickers)?
+   weeklyExit.missing_tickers.filter(t=>typeof t==="string"):[];
+  const exitNotice=exitAwaiting?'<p role="status">Salida semanal paper sin liquidar: '+
+   esc(String(weeklyExit.valid_count))+'/'+esc(String(weeklyExit.required_count))+
+   ' cotizaciones verificadas en la ventana de cierre.'+
+   (exitMissing.length?' Sin precio válido: '+exitMissing.map(esc).join(", ")+'.':'')+
+   ' Se mantienen las posiciones; no se simulan ventas a precios históricos.</p>':"";
   const missingQuotes=Array.isArray(lane.opening_quote_diagnostic?.missing_tickers_at_last_attempt)?
    lane.opening_quote_diagnostic.missing_tickers_at_last_attempt.filter(x=>typeof x==="string"):[];
   const missedNotice=openingMissed?'<p role="status">Apertura vencida: ninguna de las órdenes de apertura de esta cartera se ha liquidado.'+
@@ -660,13 +670,15 @@ function operationalClockHTML(){
       o.status==="limit_not_met"?"Límite sin cumplir":"Pendiente de precio")+
    '</td></tr>').join("");
   return '<details class="midas-clock-lane"'+(tradingFilter.slot===slot?' open':'')+'>'+
-   '<summary><strong>'+esc(slot)+' · '+esc(label)+'</strong><span>'+esc(labels[lane.status]||lane.status)+
-   '</span><small>'+lane.observed+'/'+lane.planned+' señales con precio</small></summary>'+
-   missedNotice+(orderRows?'<div class="midas-clock-tablewrap"><table><thead><tr><th>Ticker</th><th>Acción</th>'+
+   '<summary><strong>'+esc(slot)+' · '+esc(label)+'</strong><span>'+
+   esc(exitAwaiting?"Salida semanal paper pendiente · no liquidada":labels[lane.status]||lane.status)+
+   '</span><small>'+(exitAwaiting?esc(String(weeklyExit.required_count))+' posiciones por cerrar':
+    lane.observed+'/'+lane.planned+' señales con precio')+'</small></summary>'+
+   missedNotice+exitNotice+(orderRows?'<div class="midas-clock-tablewrap"><table><thead><tr><th>Ticker</th><th>Acción</th>'+
     '<th>Decisión</th><th>Momento objetivo</th><th>Precio observado</th><th>Hora de observación</th><th>Estado</th>'+
     '</tr></thead><tbody>'+orderRows+'</tbody></table></div>':
-    '<p>Sin órdenes ejecutables registradas para esta apertura. '+esc(lane.source_session||
-    "Libro de origen no acreditado")+'.</p>')+fillDetails+'</details>';
+    (exitAwaiting?"":'<p>Sin órdenes ejecutables registradas para esta apertura. '+
+    esc(lane.source_session||"Libro de origen no acreditado")+'.</p>'))+fillDetails+'</details>';
  }).join("");
  return '<section class="midas-clock" aria-label="Reloj operativo para todos los algoritmos">'+
   '<div class="midas-clock-title"><h3>Reloj operativo de MIDAS · '+esc(doc.session||"sin sesión")+'</h3>'+
