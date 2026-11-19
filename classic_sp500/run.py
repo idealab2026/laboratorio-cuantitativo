@@ -202,15 +202,39 @@ def _close_position(book, ticker, value, day, config, reason):
 FORWARD_CUTOVER_SESSION = "2026-11-10"
 
 
-def execute_frozen_open(config, name, book, day, today, *, provenance=None):
-    """Native entry/exit settlement; all currently held positions need open quotes."""
+def execute_frozen_open(config, name, book, day, today, *, provenance=None,
+                        allow_missing_orders=False, sizing_nav_override=None):
+    """Prospective per-symbol paper settlement, without synthesizing absent quotes.
+
+    Nightly/backtest calls remain strict. Forward calls may skip a symbol with
+    no fresh observation while retaining the *full frozen order count* for
+    sizing. Missing previously held marks permit only the prior audited NAV
+    as a budget reference, never a fictitious current quote or official NAV.
+    """
     p = config["execution"]
-    if provenance is not None and not set(book["positions"]) | set(book["pending"]) <= set(today):
+    required = set(book["positions"]) | set(book["pending"])
+    if provenance is not None and not required <= set(today) and not allow_missing_orders:
         raise ValueError("Missing contemporary opening observations")
+    if sizing_nav_override is not None:
+        if (provenance is None or not allow_missing_orders or
+                type(sizing_nav_override) not in (int, float) or
+                not math.isfinite(sizing_nav_override) or sizing_nav_override <= 0 or
+                not math.isclose(float(book["nav"]), sizing_nav_override,
+                                 rel_tol=1e-12, abs_tol=1e-7) or
+                not math.isclose(float(book["equity"][-1]["nav"]), sizing_nav_override,
+                                 rel_tol=1e-12, abs_tol=1e-7)):
+            raise ValueError("Unverified previous-session NAV for isolated buy budget")
     sells = sorted(t for t, order in book["pending"].items() if order["side"] == "sell")
     for ticker in sells:
         if ticker not in book["positions"]:
             raise ValueError("Orphan sell signal")
+        if ticker not in today:
+            if not allow_missing_orders:
+                raise ValueError("Missing contemporary sell quote")
+            book["events"].append({"date": day, "ticker": ticker,
+                                   "type": "unfilled_missing_open_quote", "side": "sell",
+                                   "reason": "unavailable_observed_quote"})
+            continue
         shares = book["positions"][ticker]["shares"]
         _close_position(book, ticker, today[ticker]["open"], day, config, "signal_next_open")
         if provenance is not None:
@@ -221,7 +245,8 @@ def execute_frozen_open(config, name, book, day, today, *, provenance=None):
                                       "fee": fee, **provenance[ticker]})
             book["trades"][-1].update({"execution": "forward_observed_paper", **provenance[ticker]})
     buy_list = sorted(t for t, order in book["pending"].items() if order["side"] == "buy")
-    nav_at_open = portfolio_nav(book, today, "open")
+    nav_at_open = (sizing_nav_override if sizing_nav_override is not None else
+                   portfolio_nav(book, today, "open"))
     if buy_list:
         if name == "buy_hold_equal_weight":
             budget = nav_at_open * p["capital_fraction"] / 503
@@ -237,8 +262,11 @@ def execute_frozen_open(config, name, book, day, today, *, provenance=None):
                 # unavailable constituents' cash or use a later day's price.
                 book["events"].append({
                     "date": day, "ticker": ticker,
-                    "type": "unfilled_missing_dated_bar",
-                    "reason": "required same-session OHLC unavailable",
+                    "type": ("unfilled_missing_open_quote" if provenance is not None
+                             else "unfilled_missing_dated_bar"),
+                    "side": "buy",
+                    "reason": ("unavailable_observed_quote" if provenance is not None
+                               else "required same-session OHLC unavailable"),
                 })
                 continue
             price = market._positive(today[ticker]["open"], "buy open") * (1 + p["slippage"])
@@ -259,6 +287,8 @@ def execute_frozen_open(config, name, book, day, today, *, provenance=None):
             if provenance is not None:
                 event.update({"execution": "forward_observed_paper", "price": price,
                               "fee": cost - shares * price, **provenance[ticker]})
+                if sizing_nav_override is not None:
+                    event["sizing_reference"] = "previous_verified_close_nav"
             book["events"].append(event)
     book["pending"] = {}
 
