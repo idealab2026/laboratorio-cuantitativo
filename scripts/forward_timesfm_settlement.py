@@ -67,11 +67,11 @@ def _weekly_last_day(day):
     return is_week_end_session(day)
 
 
-def _valid_quotes(quotes, symbols, now, market, mode):
+def _valid_quotes(quotes, symbols, now, market, mode, *, partial=False):
     found = {t: quotes[t] for t in symbols
              if t in quotes and _quote_valid(quotes[t], now, market)}
     missing = sorted(set(symbols) - set(found))
-    if missing:
+    if missing and (not partial or not found):
         return None, missing
     cutoff = market["open"] + OPEN_WINDOW if mode == "open" else market["close"]
     left = market["open"] if mode == "open" else market["close"] - EXIT_WINDOW
@@ -183,8 +183,8 @@ def settle_timesfm(lock, now, market, quotes, *, reader=read, frozen=_source_at)
                     evidence[slot] = {"status": "preopen_fx_missing", "fills": 0}
                     continue
                 found, missing = _valid_quotes(
-                    quotes, expected, now, market, "open")
-                if missing:
+                    quotes, expected, now, market, "open", partial=True)
+                if found is None:
                     evidence[slot] = {
                         "status": "awaiting_fresh_open_quotes", "fills": 0,
                         "missing": missing,
@@ -195,7 +195,8 @@ def settle_timesfm(lock, now, market, quotes, *, reader=read, frozen=_source_at)
                 operations = observed_open(
                     book, config["execution"], family, market["session"],
                     market["previous"], {t: row["price"] for t, row in found.items()},
-                    fx_entry, proof, book_name=name)
+                    fx_entry, proof, book_name=name,
+                    allow_missing_observed=bool(missing))
                 verified = found
                 fx_note = {"entry_fx_usd_per_eur": fx_entry,
                            "fx_reference_sha256": digest(lock["fx_reference"])}
@@ -254,6 +255,8 @@ def settle_timesfm(lock, now, market, quotes, *, reader=read, frozen=_source_at)
             evidence[slot] = {
                 "status": "settled_native_paper", "fills": len(operations),
                 "marker": marker, "operations": operations,
+                **({"unfilled_open_quotes": missing, "sizing_reference": "frozen_order_budget"}
+                   if mode == "open" and missing else {}),
             }
         if changed:
             results[state_path] = updated
