@@ -55,6 +55,9 @@ jobs:
       - name: Validate targeted MACD recovery on live frozen state WITHOUT writing
         if: ${{ github.event_name == 'pull_request' }}
         run: python strategy_comparison/inactive_recovery.py --engine classic --phase check --only-classic-book macd_12_26_9
+      - name: Verify IL-011 CNP passive closing mark without writing or buying
+        if: ${{ github.event_name == 'pull_request' }}
+        run: python strategy_comparison/inactive_recovery.py --engine classic --phase check --only-classic-book ema_rsi_fixed
       - name: Validate IL-012 exact nine-session replay without writing or buying
         if: ${{ github.event_name == 'pull_request' }}
         run: |
@@ -70,6 +73,17 @@ jobs:
           python strategy_comparison/inactive_recovery.py --engine classic --phase check --only-classic-book genetic_frozen --reviewed-genetic-nine
           python strategy_comparison/inactive_recovery.py --engine classic --phase recover --only-classic-book macd_12_26_9
           python strategy_comparison/inactive_recovery.py --engine classic --phase recover --only-classic-book genetic_frozen --reviewed-genetic-nine
+      # 2026-11-19 reviewed, exact one-book recovery: IL-011 remained at
+      # 17-Nov NAV because the 18-Nov CNP OHLC was invalid. The separately
+      # SHA-verified 18-Nov CNP close is admissible for passive NAV ONLY.
+      # The existing recovery guard keeps original trades, share counts,
+      # cash, prior NAVs and unrelated classic books unchanged; it may not
+      # synthesize an 18-Nov opening/stop or reopen 19-Nov retrospectively.
+      - name: Recover IL-011 verified 18-Nov passive NAV without retroactive fills
+        if: github.event_name == 'push'
+        run: |
+          python strategy_comparison/inactive_recovery.py --engine classic --phase check --only-classic-book ema_rsi_fixed
+          python strategy_comparison/inactive_recovery.py --engine classic --phase recover --only-classic-book ema_rsi_fixed
       - name: Publish only the verified canonical books (no synthetic fills)
         if: github.event_name == 'push'
         run: |
