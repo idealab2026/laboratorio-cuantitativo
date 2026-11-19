@@ -18,7 +18,8 @@ from operational_clock import (preclose_target, run_preclose_watch,
                                open_rendezvous_target, run_open_watch,
                                ACTIVE, clock_plan, status_report, verify_lock,
                                verify_prepared_lock, stage_for_actual_time,
-                               main, budgeted_quote_targets, quote_batch, LIMIT, record_opening_quote_diagnostic)
+                               main, budgeted_quote_targets, quote_batch, LIMIT,
+                               record_opening_quote_diagnostic, publish_missed_open)
 
 UTC = timezone.utc
 
@@ -146,6 +147,30 @@ class OperatorClockTest(unittest.TestCase):
             unchanged, {}, self.ready["slots"]["IL-015"],
             {"status": "settled_native_paper", "fills": 1}, first, self.market)
         self.assertEqual(unchanged, before)
+
+    def test_expired_classic_open_is_reported_as_missed_without_phantom_fill(self):
+        lane = {"status": "prices_observed_not_settled", "planned": 3,
+                "observed": 3, "waiting": 0,
+                "orders": [{"ticker": "CMG", "status": "price_observed"}],
+                "opening_quote_diagnostic": {
+                    "settlement_status": "opening_window_missed",
+                    "missing_tickers_at_last_attempt": ["ERIE"]}}
+        orders = copy.deepcopy(lane["orders"])
+        self.assertTrue(publish_missed_open(lane, {"status": "opening_window_missed", "fills": 0}))
+        self.assertEqual(lane["status"], "opening_window_missed")
+        self.assertEqual(lane["opening_order_execution"], "unfilled_expired")
+        self.assertEqual(lane["orders"], orders)
+        self.assertEqual(lane["opening_quote_diagnostic"]["missing_tickers_at_last_attempt"], ["ERIE"])
+        self.assertNotIn("fills", lane)
+        self.assertNotIn("native_marker", lane)
+        # Repeated polling cannot silently label an unfilled order as settled.
+        self.assertFalse(publish_missed_open(lane, {"status": "opening_window_missed", "fills": 0}))
+        settled = {"status": "native_forward_settled", "fills_count": 1}
+        self.assertFalse(publish_missed_open(settled, {"status": "opening_window_missed"}))
+        self.assertEqual(settled, {"status": "native_forward_settled", "fills_count": 1})
+        unrelated = {"status": "prices_observed_not_settled"}
+        self.assertFalse(publish_missed_open(unrelated, {"status": "awaiting_fresh_open_quotes"}))
+        self.assertEqual(unrelated["status"], "prices_observed_not_settled")
 
     def test_once_observed_the_order_remains_idempotent_without_new_historical_fill(self):
         first = status_report(self.ready, self.open + timedelta(minutes=2), self.market,
