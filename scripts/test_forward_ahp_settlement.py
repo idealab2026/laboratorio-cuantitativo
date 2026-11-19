@@ -93,14 +93,35 @@ class AHPForwardTests(unittest.TestCase):
         self.assertEqual(again, {})
         self.assertEqual(evidence["IL-037"]["status"], "already_settled")
 
-    def test_missing_quotes_and_missed_open_cannot_backfill(self):
+    def test_missing_quotes_allow_verified_single_ahp_buy_without_resizing_or_backfill(self):
         missing = copy.deepcopy(self.quotes)
         missing.pop("BBB")
         output, info = self._settle(quotes=missing)
-        self.assertEqual(output, {})
-        self.assertIn("BBB", info["IL-037"]["missing"])
+        self.assertEqual(info["IL-037"]["status"], "settled_native_paper")
+        self.assertEqual(info["IL-037"]["fills"], 1)
+        self.assertEqual(info["IL-037"]["unfilled_open_quotes"], ["BBB"])
+        book = output[LEDGER]["forward_book"]
+        self.assertEqual(set(book["positions"]), {"AAA"})
+        self.assertEqual(book["positions"]["AAA"]["weight_target"], 0.45)
+        self.assertEqual(book["unfilled"], [{
+            "ticker": "BBB", "reason": "no_contemporary_opening_quote",
+            "signal_date": FIRST_SIGNAL, "session": "2026-11-16"}])
+        both, _ = self._settle()
+        self.assertEqual(book["positions"]["AAA"]["quantity"],
+                         both[LEDGER]["forward_book"]["positions"]["AAA"]["quantity"])
+        self.assertEqual(output[LEDGER]["nav"], self.state["nav"])
+        self.state = copy.deepcopy(output[LEDGER])
+        repeat, note = self._settle(quotes=self.quotes)
+        self.assertEqual(repeat, {})
+        self.assertEqual(note["IL-037"]["status"], "already_settled")
+
+    def test_all_quotes_missing_or_late_do_not_generate_ahp_fills(self):
+        out, info = self._settle(quotes={})
+        self.assertEqual(out, {})
+        self.assertEqual(info["IL-037"]["missing"], ["AAA", "BBB"])
         stale = copy.deepcopy(self.quotes)
-        stale["AAA"]["quote_at_utc"] = (self.market["open"]-timedelta(minutes=1)).isoformat()
+        for row in stale.values():
+            row["quote_at_utc"] = (self.market["open"]-timedelta(minutes=1)).isoformat()
         out, _ = self._settle(quotes=stale)
         self.assertEqual(out, {})
         late = self.market["open"]+timedelta(minutes=40)

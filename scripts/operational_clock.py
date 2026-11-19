@@ -799,7 +799,7 @@ def main(argv=None):
                     or (slot in ({f"IL-{n:03d}" for n in range(19, 28)}
                               | {f"IL-{n:03d}" for n in range(40, 44)})
                         and result.get("unfilled_open_quotes"))
-                    or (slot == "IL-044" and
+                    or (slot in ("IL-037", "IL-044") and
                         (result.get("unfilled_open_quotes") or
                          result.get("missing_held_quotes")))):
                 missing_open = result.get("unfilled_open_quotes", [])

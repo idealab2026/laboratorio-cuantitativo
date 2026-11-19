@@ -47,8 +47,13 @@ def _event(signal, ticker, side, quantity, price, fee, day, provenance):
             "execution": "forward_observed_paper", **provenance[ticker]}
 
 
-def open_week(state, config, day, prices, provenance, *, expected_signal):
-    """Only invoked by preopen-locked shared operator clock within 30min of open."""
+def open_week(state, config, day, prices, provenance, *, expected_signal,
+              allow_missing_observed=False):
+    """Execute individually observed opens at original frozen weights only.
+
+    An omitted ticker never acquires a synthetic fill or its own budget
+    transferred to other selections. Historical calls remain strict.
+    """
     _ensure_state(state, config)
     signal = state["pending_signal"]
     _validate_signal(signal)
@@ -61,7 +66,11 @@ def open_week(state, config, day, prices, provenance, *, expected_signal):
     selected = signal["selections"]
     if len({i["ticker"] for i in selected}) != len(selected):
         raise ValueError("Duplicate AHP selections")
-    if set(prices) != {x["ticker"] for x in selected} or set(prices) != set(provenance):
+    selected_tickers = {x["ticker"] for x in selected}
+    if (set(prices) != set(provenance) or
+            (not allow_missing_observed and set(prices) != selected_tickers) or
+            (allow_missing_observed and
+             (not prices or not set(prices) <= selected_tickers))):
         raise ValueError("AHP incomplete observed opening")
     policy = config["portfolio"]
     capital = float(state["nav"])
@@ -69,6 +78,12 @@ def open_week(state, config, day, prices, provenance, *, expected_signal):
     positions, operations, unfilled = {}, [], []
     for item in selected:
         ticker = item["ticker"]
+        if ticker not in prices:
+            if not allow_missing_observed:
+                raise ValueError("AHP missing contemporary opening quote")
+            unfilled.append({"ticker": ticker, "reason": "no_contemporary_opening_quote",
+                             "signal_date": signal["asof"], "session": day})
+            continue
         raw = _positive(prices[ticker], "opening quote")
         price = raw * (1 + float(policy["slippage"]))
         quantity = _fractional_quantity(capital * float(item["weight"]), price, policy)
