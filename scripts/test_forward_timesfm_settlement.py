@@ -335,11 +335,81 @@ class ForwardTimesFMTwoBooksTests(unittest.TestCase):
                 bought[DAILY_PATH],self.config[DAILY_CONFIG],
                 "2026-11-16","2026-11-13",bars,
                 fx_entry=1.2,fx_mark=1.15)
-        with self.assertRaisesRegex(ValueError,"weekly exit not observed"):
-            weekly.process_day(
-                bought[WEEKLY_PATH],self.config[WEEKLY_CONFIG],
-                "2026-11-16","2026-11-13",bars,
-                fx_entry=1.2,fx_mark=1.15,week_end=True)
+        # An observed Friday exit may be missing. The nightly ledger MUST
+        # value shares still genuinely held, without inventing their sale,
+        # and preserve a prospective exit-only flag.
+        carried, changed = weekly.process_day(
+            bought[WEEKLY_PATH],self.config[WEEKLY_CONFIG],
+            "2026-11-16","2026-11-13",bars,
+            fx_entry=1.2,fx_mark=1.15,week_end=True)
+        self.assertTrue(changed)
+        held = carried["books"]["timesfm"]
+        self.assertEqual(set(held["positions"]), {"AAPL"})
+        self.assertEqual(held["pending_exit"]["from_session"], "2026-11-16")
+        self.assertFalse(any(e.get("event") == "sell" and e.get("date") == "2026-11-16"
+                             for e in held["events"]))
+
+    def test_missed_friday_unwind_is_marked_and_exits_only_at_future_real_preclose(self):
+        bought, _ = self.settle()
+        self.data.update(copy.deepcopy(bought))
+        previous = "2026-11-13"
+        for day in ("2026-11-16", "2026-11-17", "2026-11-18",
+                    "2026-11-19", "2026-11-20"):
+            bars = {"AAPL": {"close": 104., "open": 100.},
+                    "SPY": {"close": 401., "open": 400.}}
+            self.data[WEEKLY_PATH], _ = weekly.process_day(
+                self.data[WEEKLY_PATH], self.config[WEEKLY_CONFIG],
+                day, previous, bars, fx_entry=1.2, fx_mark=1.2,
+                week_end=(day == "2026-11-20"))
+            previous = day
+        original = self.data[WEEKLY_PATH]
+        previous_trades = len(original["books"]["timesfm"]["trades"])
+        self.assertEqual(original["last_session"], "2026-11-20")
+        self.assertEqual(set(original["books"]["timesfm"]["positions"]), {"AAPL"})
+        self.assertEqual(original["books"]["timesfm"]["pending_exit"]["from_session"],
+                         "2026-11-20")
+        self.assertEqual(len(original["books"]["timesfm"]["trades"]), previous_trades)
+        self.snapshot = copy.deepcopy(self.data)
+
+        monday = self._market("2026-11-23", "2026-11-20")
+        self.market = monday
+        self.lock = self._lock(monday, fx=None)
+        self.assertTrue(self.lock["slots"]["IL-040"]["exit_only_due"])
+        from operational_clock import budgeted_quote_targets, preclose_target
+        now = monday["close"] - timedelta(minutes=2)
+        targets, omitted = budgeted_quote_targets(
+            self.lock, now=now, market=monday, limit=20)
+        self.assertTrue({"AAPL", FX_TICKER} <= targets)
+        self.assertEqual(omitted, {})
+        self.assertIsNotNone(preclose_target(
+            monday["close"] - timedelta(minutes=30), monday, self.lock))
+        self.now = now
+        quote = {"AAPL": 107., FX_TICKER: 1.17}
+        observed = {
+            t: {"price": p, "quote_at_utc": (now-timedelta(minutes=1)).isoformat(),
+                "observed_at_utc": now.isoformat()}
+            for t,p in quote.items()}
+        sold, receipts = self.settle(quotes=observed)
+        self.assertEqual(receipts["IL-040"]["status"], "settled_native_paper")
+        self.assertEqual(receipts["IL-040"]["marker"]["unobserved_exit_from_session"],
+                         "2026-11-20")
+        self.assertEqual(receipts["IL-040"]["fills"], 1)
+        sold_state = sold[WEEKLY_PATH]
+        self.assertFalse(sold_state["books"]["timesfm"]["positions"])
+        self.assertEqual(len(sold_state["books"]["timesfm"]["trades"]),
+                         previous_trades + 1)
+        self.assertEqual(sold_state["books"]["timesfm"]["trades"][-1]["exit_date"],
+                         "2026-11-23")
+        # A dated *passive* close then removes the resolved recovery flag
+        # without creating an additional trade.
+        next_state, _ = weekly.process_day(
+            sold_state, self.config[WEEKLY_CONFIG],
+            "2026-11-23", "2026-11-20",
+            {"SPY": {"close": 404., "open": 403.}},
+            fx_entry=1.2, fx_mark=1.17, week_end=False)
+        self.assertNotIn("pending_exit", next_state["books"]["timesfm"])
+        self.assertEqual(len(next_state["books"]["timesfm"]["trades"]),
+                         previous_trades + 1)
 
     def test_quote_budget_uses_both_fresh_close_values_and_no_fx_at_open(self):
         lock = self._lock(self.market)
