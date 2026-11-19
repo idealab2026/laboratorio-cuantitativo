@@ -254,7 +254,8 @@ def settle_timesfm(lock, now, market, quotes, *, reader=read, frozen=_source_at)
             if name == "benchmark_spy":
                 mode = "open" if lane["orders"] else None
             elif is_exit_time and book["positions"] and (
-                    family == "daily" or _weekly_last_day(market["session"])):
+                    family == "daily" or _weekly_last_day(market["session"]) or
+                    (family == "weekly" and lane.get("exit_only_due") is True)):
                 mode = "exit"
             else:
                 mode = "open" if lane["orders"] else None
@@ -318,6 +319,17 @@ def settle_timesfm(lock, now, market, quotes, *, reader=read, frozen=_source_at)
                 if not is_exit_time or name == "benchmark_spy":
                     evidence[slot] = {"status": "outside_exit_window", "fills": 0}
                     continue
+                if family == "weekly" and not _weekly_last_day(market["session"]):
+                    outstanding = book.get("pending_exit")
+                    if (not lane.get("exit_only_due") or
+                            not isinstance(outstanding, dict) or
+                            outstanding.get("execution_policy") !=
+                                "next_verified_preclose_exit_only" or
+                            not isinstance(outstanding.get("from_session"), str) or
+                            outstanding["from_session"] >= market["session"] or
+                            outstanding != before.get("pending_exit")):
+                        evidence[slot] = {"status": "unverified_weekly_exit_recovery", "fills": 0}
+                        continue
                 # Source book may have changed through a recorded same-day
                 # opening, but no unverified or stale mutation is accepted.
                 same_day_open = marker_map.get(event_key(slot, market["session"], "open"))
@@ -368,6 +380,8 @@ def settle_timesfm(lock, now, market, quotes, *, reader=read, frozen=_source_at)
                 fx_note = {
                     "exit_fx_usd_per_eur": fx_exit,
                     "exit_fx_quote_at_utc": found[FX_TICKER]["quote_at_utc"],
+                    **({"unobserved_exit_from_session": book["pending_exit"]["from_session"]}
+                       if family == "weekly" and book.get("pending_exit") else {}),
                 }
             marker = {
                 "session": market["session"], "mode": mode, "family": family,
