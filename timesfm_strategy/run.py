@@ -266,9 +266,28 @@ def process_day(state, config, date, previous, bars, *, fx_entry, fx_mark, week_
             })
             book["pending"] = []
             pending = []
+        if name == "timesfm" and book.get("pending_exit") and not book["positions"]:
+            old = book.pop("pending_exit")
+            book["events"].append({"date": date,
+                "event": "prior_weekly_unobserved_exit_resolved",
+                "original_missed_session": old["from_session"],
+                "resolution": "future_observed_preclose_paper"})
         if (date >= "2026-11-10" and week_end and name == "timesfm"
                 and book["positions"]):
-            raise ValueError("TimesFM weekly exit not observed before market close")
+            # A single missing preclose quote must NOT make the entire
+            # chronology unmarkable. These shares remain genuinely held:
+            # mark them at verified daily closes, prevent a new weekly
+            # signal and request a FUTURE, clearly labeled exit-only sale.
+            # Never infer a Friday sell from the closing OHLC bar.
+            if not book.get("pending_exit"):
+                book["pending_exit"] = {
+                    "from_session": date,
+                    "reason": "unobserved_weekly_exit_remaining_positions",
+                    "execution_policy": "next_verified_preclose_exit_only"}
+                book["events"].append({
+                    "date": date, "event": "unobserved_weekly_exit",
+                    "held_tickers": sorted(book["positions"]),
+                    "execution": "unfilled_no_backfill"})
         # Apply corporate actions only to previously held shares; new buyers do not
         # receive a dividend on the entry date's ex-dividend event.
         for ticker, position in book["positions"].items():
@@ -480,6 +499,12 @@ def run(config_path, state_path, phase):
             return {"status": "already_signaled", "session": day}
         if state["last_session"] != day:
             raise ValueError("Daily ledger not caught up: refuse forecast")
+        if state["books"]["timesfm"]["positions"]:
+            # No model call, no new basket and no silent wipe of paper risk
+            # while a previous weekly exit remains genuinely unobserved.
+            return {"status": "weekly_exit_pending_prospective_no_signal",
+                    "session": day,
+                    "held": sorted(state["books"]["timesfm"]["positions"])}
     selected, diagnostic = get_forecasts(config, day)
     result = (initialize(config, day, selected, diagnostic) if state is None
               else record_signal(state, config, day, selected, diagnostic)[0])
