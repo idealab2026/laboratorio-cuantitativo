@@ -255,7 +255,7 @@
       "trades": []
     },
     "bollinger_breakout_20": {
-      "cash": 4645.650833714433,
+      "cash": 19051.059726822852,
       "equity": [
         {
           "date": "2026-10-12",
@@ -604,6 +604,18 @@
           "date": "2026-11-19",
           "ticker": "EIX",
           "type": "unfilled"
+        },
+        {
+          "date": "2026-11-19",
+          "execution": "forward_observed_paper",
+          "idempotency_key": "IL-015:2026-11-19:stop:ABNB:classic_forward_v1:ABNB",
+          "lock_sha256": "7bee0db8d5d7a5125159da601cbc16829e6d2caac9e8ad81055c5f6a5babaa70",
+          "observed_at_utc": "2026-11-19T15:23:09.016199Z",
+          "quote_at_utc": "2026-11-19T15:23:00Z",
+          "reason": "stop_forward_observed",
+          "source_commit": "da997560ef3398b2324d16680384c7a710c4df72",
+          "ticker": "ABNB",
+          "type": "sell"
         }
       ],
       "forward_executions": {
@@ -629,6 +641,18 @@
           "recorded_at_utc": "2026-11-19T14:34:11.184679Z",
           "session": "2026-11-19",
           "source_commit": "da997560ef3398b2324d16680384c7a710c4df72"
+        },
+        "IL-015:2026-11-19:stop:ABNB:classic_forward_v1": {
+          "fill_tickers": [
+            "ABNB"
+          ],
+          "fills_count": 1,
+          "lock_sha256": "7bee0db8d5d7a5125159da601cbc16829e6d2caac9e8ad81055c5f6a5babaa70",
+          "mode": "forward_observed_paper",
+          "quotes_sha256": "691ef2071740d552eb5b301e64f94f54fcca9be9bdaf9e3d93f961c108e419af",
+          "recorded_at_utc": "2026-11-19T15:23:15.006659Z",
+          "session": "2026-11-19",
+          "source_commit": "da997560ef3398b2324d16680384c7a710c4df72"
         }
       },
       "nav": 104171.69577741511,
@@ -638,15 +662,6 @@
       },
       "pending": {},
       "positions": {
-        "ABNB": {
-          "cost": 15729.510381451742,
-          "dividends": 0.0,
-          "entry_date": "2026-11-09",
-          "entry_price": 193.39665305328367,
-          "shares": 81.251647,
-          "stop": 177.924920809021,
-          "target": 222.4061510112762
-        },
         "CAH": {
           "cost": 11874.999816718037,
           "dividends": 0.0,
@@ -864,6 +879,22 @@
           "reason": "signal_next_open",
           "source_commit": "da997560ef3398b2324d16680384c7a710c4df72",
           "ticker": "ABBV"
+        },
+        {
+          "dividends": 0.0,
+          "entry_cost": 15729.510381451742,
+          "entry_date": "2026-11-09",
+          "execution": "forward_observed_paper",
+          "exit_date": "2026-11-19",
+          "idempotency_key": "IL-015:2026-11-19:stop:ABNB:classic_forward_v1:ABNB",
+          "lock_sha256": "7bee0db8d5d7a5125159da601cbc16829e6d2caac9e8ad81055c5f6a5babaa70",
+          "net_pnl": -1324.1014883433236,
+          "observed_at_utc": "2026-11-19T15:23:09.016199Z",
+          "proceeds": 14405.408893108419,
+          "quote_at_utc": "2026-11-19T15:23:00Z",
+          "reason": "stop_forward_observed",
+          "source_commit": "da997560ef3398b2324d16680384c7a710c4df72",
+          "ticker": "ABNB"
         }
       ]
     },

@@ -1,5 +1,5 @@
 {
-  "checked_at_utc": "2026-11-19T14:53:16.618176Z",
+  "checked_at_utc": "2026-11-19T15:23:15.006659Z",
   "lock_sha256": "7bee0db8d5d7a5125159da601cbc16829e6d2caac9e8ad81055c5f6a5babaa70",
   "mode": "single_midas_operator_monitor_no_broker",
   "note": "Observed quotes are not fills. A native engine must settle quantity/cash before a trade counts in P&L.",
@@ -12,7 +12,7 @@
     "omitted_algorithm_lanes": {},
     "requested_symbols": 40
   },
-  "run_id": 44548473705,
+  "run_id": 44554031522,
   "schema": "midas.operational_clock.v1",
   "session": "2026-11-19",
   "settlement": "native_forward_010_through_027_037_through_044",
@@ -270,20 +270,27 @@
           "quantity": 66.227578,
           "side": "buy",
           "ticker": "DRI"
+        },
+        {
+          "fee": 14.419828721830251,
+          "observed_at_utc": "2026-11-19T15:23:09.016199Z",
+          "price": 177.4712175598145,
+          "quantity": 81.251647,
+          "side": "sell",
+          "ticker": "ABNB"
         }
       ],
-      "fills_count": 2,
+      "fills_count": 3,
       "holdings_count": 6,
       "native_marker": {
         "fill_tickers": [
-          "ABBV",
-          "DRI"
+          "ABNB"
         ],
-        "fills_count": 2,
+        "fills_count": 1,
         "lock_sha256": "7bee0db8d5d7a5125159da601cbc16829e6d2caac9e8ad81055c5f6a5babaa70",
         "mode": "forward_observed_paper",
-        "quotes_sha256": "09f49dbb1b761a6f59fd58ad388afa65392cf105e5d9ba40faffb5fa94102ecc",
-        "recorded_at_utc": "2026-11-19T14:34:11.184679Z",
+        "quotes_sha256": "691ef2071740d552eb5b301e64f94f54fcca9be9bdaf9e3d93f961c108e419af",
+        "recorded_at_utc": "2026-11-19T15:23:15.006659Z",
         "session": "2026-11-19",
         "source_commit": "da997560ef3398b2324d16680384c7a710c4df72"
       },
@@ -292,9 +299,14 @@
           "fills_count": 2,
           "key": "IL-015:2026-11-19:open:classic_forward_v1",
           "recorded_at_utc": "2026-11-19T14:34:11.184679Z"
+        },
+        {
+          "fills_count": 1,
+          "key": "IL-015:2026-11-19:stop:ABNB:classic_forward_v1",
+          "recorded_at_utc": "2026-11-19T15:23:15.006659Z"
         }
       ],
-      "native_settlement": "already_settled",
+      "native_settlement": "settled_native_paper",
       "observed": 3,
       "orders": [
         {
@@ -356,7 +368,7 @@
         "first_missing_tickers": [
           "ERIE"
         ],
-        "last_checked_at_utc": "2026-11-19T14:53:16.618176Z",
+        "last_checked_at_utc": "2026-11-19T15:23:15.006659Z",
         "missing_tickers_at_last_attempt": [
           "ALLE",
           "ERIE"

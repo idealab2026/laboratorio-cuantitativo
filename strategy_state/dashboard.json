@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "generated_at_utc": "2026-11-19T14:53:17.488357+00:00",
+  "generated_at_utc": "2026-11-19T15:23:15.896289+00:00",
   "principle": "Comparar rentabilidad acumulada y riesgo observado; no ordenar carteras con distintas fechas de inicio o supuestos de ejecución.",
   "counts": {
     "paper_with_diary": 18,
@@ -1629,9 +1629,8 @@
       "evaluated_universe_symbols": 488,
       "eligible_universe_symbols": 503,
       "activity_state": "active",
-      "activity_label": "7 posiciones abiertas · Inactividad sin operaciones: 2026-11-03, 2026-11-04 · Primera apertura posible (condicionada): 2026-11-05",
+      "activity_label": "6 posiciones abiertas · Inactividad sin operaciones: 2026-11-03, 2026-11-04 · Primera apertura posible (condicionada): 2026-11-05",
       "activity_tickers": [
-        "ABNB",
         "CAH",
         "COST",
         "DRI",
@@ -1639,7 +1638,7 @@
         "MTD",
         "WMT"
       ],
-      "open_positions_count": 7,
+      "open_positions_count": 6,
       "pending_orders_count": 0,
       "inactive_sessions": [
         "2026-11-03",
