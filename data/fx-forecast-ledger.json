@@ -192,6 +192,36 @@
       },
       "previous_hash": "a55ed304113e26956b186173989ae246482bf02cce7ae1cba1c2e56114bda4b0",
       "hash": "6f39eb8d9aa19eae5d5dffede2abf9f0cd7d00b893acf2368963fcbd9e344fff"
+    },
+    {
+      "event_type": "resolved",
+      "fixing_date": "2026-11-18",
+      "realized_fixing_date": "2026-11-19",
+      "signal_hash": "6f39eb8d9aa19eae5d5dffede2abf9f0cd7d00b893acf2368963fcbd9e344fff",
+      "realized_rate": "1.0992",
+      "absolute_errors": {
+        "unchanged": "0.002400",
+        "momentum_1": "0.004500",
+        "reversal_1": "0.000300"
+      },
+      "source_sha256": "4b5c6a816fb8dce8f2e520d2b29d756a63bdbb686681887bb91e92258d2b8717",
+      "recorded_at_utc": "2026-11-19T18:30:43Z",
+      "previous_hash": "6f39eb8d9aa19eae5d5dffede2abf9f0cd7d00b893acf2368963fcbd9e344fff",
+      "hash": "ee2adba81265ab40088972e8b73895c3465e8439672d4582d7fea562c020dd24"
+    },
+    {
+      "event_type": "issued",
+      "fixing_date": "2026-11-19",
+      "recorded_at_utc": "2026-11-19T18:30:43Z",
+      "source_sha256": "4b5c6a816fb8dce8f2e520d2b29d756a63bdbb686681887bb91e92258d2b8717",
+      "observed_rate": "1.0992",
+      "predictions": {
+        "unchanged": "1.099200",
+        "momentum_1": "1.101600",
+        "reversal_1": "1.096800"
+      },
+      "previous_hash": "ee2adba81265ab40088972e8b73895c3465e8439672d4582d7fea562c020dd24",
+      "hash": "a5dcc143af08d723d16f5c02392e0a3f2c696067bc84d3436c8afca6095bfb73"
     }
   ]
 }
