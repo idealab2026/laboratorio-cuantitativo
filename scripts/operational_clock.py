@@ -319,7 +319,9 @@ def status_report(lock, now, market, quotes, prior=None, *, run_id=None):
             "waiting": sum(r["status"] == "waiting_fresh_quote" for r in rows),
         }
         if not entry["execution_ready"]:
-            status = "source_stale_or_unavailable"
+            status = ("exit_only_waiting_preclose" if entry.get("exit_only_ready")
+                      and entry.get("monitor_tickers")
+                      else "source_stale_or_unavailable")
         elif not rows:
             status = "active_no_orders"
         elif counts["waiting"]:
@@ -330,6 +332,7 @@ def status_report(lock, now, market, quotes, prior=None, *, run_id=None):
             "status": status, "source_session": entry["source_session"],
             "planned": counts["planned"], "observed": counts["observed"],
             "waiting": counts["waiting"], "holdings_count": entry["holdings_count"],
+            "exit_only_ready": bool(entry.get("exit_only_ready")),
             "orders": rows,
         }
     return {
@@ -713,7 +716,11 @@ def main(argv=None):
                   "mode": "single_midas_operator_monitor_no_broker",
                   "settlement": "native_engine_batch_until_migrated",
                   "slots": {
-                      slot: {"status": "before_open" if p["execution_ready"] else "source_stale_or_unavailable",
+                      slot: {"status": ("before_open" if p["execution_ready"]
+                                       else "exit_only_waiting_preclose"
+                                       if p["exit_only_ready"] and p["monitor_tickers"]
+                                       else "source_stale_or_unavailable"),
+                             "exit_only_ready": bool(p["exit_only_ready"]),
                              "source_session": p["source_session"],
                              "planned": p["orders_count"], "observed": 0,
                              "waiting": p["orders_count"], "holdings_count": p["holdings_count"],

@@ -100,6 +100,28 @@ class OperatorClockTest(unittest.TestCase):
         self.assertEqual(result["settlement"], "native_engine_batch_until_migrated")
         self.assertNotIn("filled", json.dumps(result))
 
+    def test_weekly_exit_only_is_open_holding_not_stale_signal(self):
+        tracks = copy.deepcopy(self.tracks)
+        tracks["IL-023"] = {
+            "status": "paused", "session": self.market["previous"],
+            "orders": [], "holdings": ["AKAM", "AMAT"],
+        }
+        lock = clock_plan(self.open - timedelta(minutes=10),
+                          self.market, tracks, self.sha)
+        slot = lock["slots"]["IL-023"]
+        self.assertFalse(slot["execution_ready"])
+        self.assertTrue(slot["exit_only_ready"])
+        self.assertEqual(slot["monitor_tickers"], ["AKAM", "AMAT"])
+        report = status_report(lock, self.open + timedelta(minutes=2),
+                               self.market, {})
+        lane = report["slots"]["IL-023"]
+        self.assertEqual(lane["status"], "exit_only_waiting_preclose")
+        self.assertTrue(lane["exit_only_ready"])
+        self.assertEqual(lane["holdings_count"], 2)
+        self.assertEqual(lane["planned"], 0)
+        self.assertNotIn("fills", lane)
+        self.assertEqual(report["slots"]["IL-042"]["status"], "source_stale_or_unavailable")
+
     def test_stale_and_future_lookahead_rejected(self):
         now = self.open + timedelta(minutes=10)
         old = self.observed(stamp=self.open + timedelta(minutes=1))

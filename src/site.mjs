@@ -590,7 +590,7 @@ async function refreshOperationalClock(force=false){
      !(doc.session===null||/^\d{4}-\d{2}-\d{2}$/.test(doc.session))||
      Object.entries(doc.slots).some(([slot,lane])=>
       !/^IL-\d{3}$/.test(slot)||!lane||
-      !["before_open","source_stale_or_unavailable","active_no_orders",
+      !["before_open","source_stale_or_unavailable","exit_only_waiting_preclose","active_no_orders",
         "partial_data","prices_observed_not_settled","native_forward_settled",
         "opening_window_missed"].includes(lane.status)||
       !Number.isInteger(lane.planned)||lane.planned<0||
@@ -614,6 +614,7 @@ function operationalClockHTML(){
   month:"2-digit",day:"2-digit"}).format(new Date());
  const stale=!doc.session||doc.session!==nyToday;
  const labels={before_open:"Apertura pendiente",source_stale_or_unavailable:"Sin libro vigente",
+  exit_only_waiting_preclose:"Posiciones abiertas · salida pendiente",
   active_no_orders:"Operativo · sin operaciones previstas",partial_data:"Esperando cotizaciones",
   prices_observed_not_settled:"Señales con precios observados (sin liquidar)",
   native_forward_settled:"Compra/venta paper liquidada en cartera oficial",
@@ -628,6 +629,7 @@ function operationalClockHTML(){
   const label=signalFeed?.tracks?.[slot]?.label||slot;
   const verifiedFills=Array.isArray(lane.fills)?lane.fills:[];
   const completed=lane.status==="native_forward_settled";
+  const exitOnlyWaiting=lane.status==="exit_only_waiting_preclose"&&lane.exit_only_ready===true;
   const openingMissed=lane.status==="opening_window_missed";
   const weeklyExit=lane.weekly_exit_diagnostic;
   const exitAwaiting=lane.native_settlement==="awaiting_verified_weekly_exit_quotes"&&
@@ -665,6 +667,9 @@ function operationalClockHTML(){
    ' Se mantienen las posiciones; no se simulan ventas a precios históricos.</p>':"";
   const missingQuotes=Array.isArray(lane.opening_quote_diagnostic?.missing_tickers_at_last_attempt)?
    lane.opening_quote_diagnostic.missing_tickers_at_last_attempt.filter(x=>typeof x==="string"):[];
+  const exitOnlyNotice=exitOnlyWaiting?
+   '<p role="status">Hay '+esc(String(lane.holdings_count??0))+
+   ' posiciones paper todavía abiertas. Las entradas de esta estrategia están suspendidas; solo se permiten ventas con cotización contemporánea en la ventana de cierre. No son posiciones liquidables al precio de ayer.</p>':"";
   const missedNotice=openingMissed?'<p role="status">Apertura vencida: ninguna de las órdenes de apertura de esta cartera se ha liquidado.'+
    (missingQuotes.length?' Faltaron cotizaciones válidas: '+missingQuotes.map(esc).join(", ")+'.':"")+
    ' No se han generado operaciones retroactivas.</p>':"";
@@ -702,10 +707,10 @@ function operationalClockHTML(){
     weeklyClosed.length+' ventas · '+weeklyRemaining.length+' pendientes':
     exitAwaiting?esc(String(weeklyExit.required_count))+' posiciones por cerrar':
     lane.observed+'/'+lane.planned+' señales con precio')+'</small></summary>'+
-   missedNotice+exitNotice+weeklyProgressNotice+isolatedNotice+(orderRows?'<div class="midas-clock-tablewrap"><table><thead><tr><th>Ticker</th><th>Acción</th>'+
+   missedNotice+exitOnlyNotice+exitNotice+weeklyProgressNotice+isolatedNotice+(orderRows?'<div class="midas-clock-tablewrap"><table><thead><tr><th>Ticker</th><th>Acción</th>'+
     '<th>Decisión</th><th>Momento objetivo</th><th>Precio observado</th><th>Hora de observación</th><th>Estado</th>'+
     '</tr></thead><tbody>'+orderRows+'</tbody></table></div>':
-    (exitAwaiting||weeklyClosed.length?"":'<p>Sin órdenes ejecutables registradas para esta apertura. '+
+    (exitAwaiting||weeklyClosed.length||exitOnlyWaiting?"":'<p>Sin órdenes ejecutables registradas para esta apertura. '+
     esc(lane.source_session||"Libro de origen no acreditado")+'.</p>'))+fillDetails+'</details>';
  }).join("");
  return '<section class="midas-clock" aria-label="Reloj operativo para todos los algoritmos">'+
