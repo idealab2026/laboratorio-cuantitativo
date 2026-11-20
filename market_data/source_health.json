@@ -1,7 +1,7 @@
 {
-  "age_seconds": 340,
+  "age_seconds": 9189,
   "captured_at_utc": "2026-11-19T23:44:09+00:00",
-  "checked_at_utc": "2026-11-19T23:49:49.074723+00:00",
+  "checked_at_utc": "2026-11-20T02:17:18.778356+00:00",
   "consumers": {
     "buy_the_dip_strategy": {
       "ledger_status": "observed",
@@ -42,7 +42,7 @@
         "turtle_20_10_long": "2026-11-19",
         "turtle_55_20_long": "2026-11-19"
       },
-      "workflow_outcome": "success"
+      "workflow_outcome": "failure"
     },
     "timesfm_daily": {
       "ledger_status": "observed",
@@ -138,7 +138,7 @@
   "revision_hashes": [
     "30e4872eccccc21718a68457d8cf85d7b085a59e69c99890b6680843f00d5861"
   ],
-  "run_id": "44639927276",
+  "run_id": "44659316924",
   "schema": "midas.xnys_source_health.v1",
   "sha256": "fc922b6c2ef0a1551dbabdece1483f1eb14de505d82087ebc60851c6bd156f1f",
   "status": "snapshot_verified",
