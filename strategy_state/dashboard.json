@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "generated_at_utc": "2026-11-20T13:27:08.398038+00:00",
+  "generated_at_utc": "2026-11-20T14:34:08.096696+00:00",
   "principle": "Comparar rentabilidad acumulada y riesgo observado; no ordenar carteras con distintas fechas de inicio o supuestos de ejecución.",
   "counts": {
     "paper_with_diary": 18,
@@ -1499,8 +1499,8 @@
       "note": "Nueva campaña S&P500 503 símbolos; las carteras originales de 8 títulos se conservan históricas y no transfieren NAV ni operaciones.",
       "evaluated_universe_symbols": 488,
       "eligible_universe_symbols": 503,
-      "activity_state": "active_pending",
-      "activity_label": "7 posiciones · 1 orden paper para próxima apertura",
+      "activity_state": "active",
+      "activity_label": "7 posiciones abiertas",
       "activity_tickers": [
         "ADM",
         "BG",
@@ -1508,11 +1508,10 @@
         "CZR",
         "GOOG",
         "IVZ",
-        "STT",
-        "COF"
+        "STT"
       ],
       "open_positions_count": 7,
-      "pending_orders_count": 1,
+      "pending_orders_count": 0,
       "comparison_eligible": true,
       "comparison_universe_id": "SP500_2026-09-29_503",
       "comparison_universe_symbols": 503,
@@ -1653,18 +1652,17 @@
       "note": "Nueva campaña S&P500 503 símbolos; las carteras originales de 8 títulos se conservan históricas y no transfieren NAV ni operaciones.",
       "evaluated_universe_symbols": 488,
       "eligible_universe_symbols": 503,
-      "activity_state": "active_pending",
-      "activity_label": "6 posiciones · 1 orden paper para próxima apertura · Inactividad sin operaciones: 2026-11-03, 2026-11-04 · Primera apertura posible (condicionada): 2026-11-05",
+      "activity_state": "active",
+      "activity_label": "5 posiciones abiertas · Inactividad sin operaciones: 2026-11-03, 2026-11-04 · Primera apertura posible (condicionada): 2026-11-05",
       "activity_tickers": [
         "CAH",
         "COST",
         "DRI",
         "EPAM",
-        "MTD",
         "WMT"
       ],
-      "open_positions_count": 6,
-      "pending_orders_count": 1,
+      "open_positions_count": 5,
+      "pending_orders_count": 0,
       "inactive_sessions": [
         "2026-11-03",
         "2026-11-04"
@@ -1813,20 +1811,18 @@
       "note": "Nueva campaña S&P500 503 símbolos; las carteras originales de 8 títulos se conservan históricas y no transfieren NAV ni operaciones.",
       "evaluated_universe_symbols": 488,
       "eligible_universe_symbols": 503,
-      "activity_state": "active_pending",
-      "activity_label": "7 posiciones · 3 órdenes paper para próxima apertura · Inactividad sin operaciones: 2026-11-03, 2026-11-04 · Primera apertura posible (condicionada): 2026-11-05",
+      "activity_state": "active",
+      "activity_label": "6 posiciones abiertas · Inactividad sin operaciones: 2026-11-03, 2026-11-04 · Primera apertura posible (condicionada): 2026-11-05",
       "activity_tickers": [
         "ALLE",
         "COST",
-        "EPAM",
         "ERIE",
         "LW",
         "MTD",
-        "ULTA",
         "PCG"
       ],
-      "open_positions_count": 7,
-      "pending_orders_count": 3,
+      "open_positions_count": 6,
+      "pending_orders_count": 0,
       "inactive_sessions": [
         "2026-11-03",
         "2026-11-04"
@@ -5605,18 +5601,17 @@
         }
       ],
       "note": "Diario y ejecución propios; observar por separado hasta reconciliar horarios y contabilidad.",
-      "activity_state": "active_pending",
-      "activity_label": "5 posiciones · 2 órdenes para próxima apertura · Inactividad sin operaciones: 2026-10-29, 2026-10-30, 2026-11-02, 2026-11-03 · Reanudación desde apertura: 2026-11-04",
+      "activity_state": "active",
+      "activity_label": "5 posiciones abiertas · Inactividad sin operaciones: 2026-10-29, 2026-10-30, 2026-11-02, 2026-11-03 · Reanudación desde apertura: 2026-11-04",
       "activity_tickers": [
         "MAS",
-        "MCO",
         "NDAQ",
         "PRU",
-        "SHW",
-        "ROL"
+        "ROL",
+        "SHW"
       ],
       "open_positions_count": 5,
-      "pending_orders_count": 2,
+      "pending_orders_count": 0,
       "inactive_sessions": [
         "2026-10-29",
         "2026-10-30",
@@ -7027,7 +7022,7 @@
       "label": "Prospectivo activo",
       "active": true,
       "source_path": "AGENTE/genetic_invest_agent/registro_historico/diario_portfolio_forward_2026-10-12.json",
-      "source_sha256": "ec46f80270c21bb710355dc9eddc164a60fed43e90663370a7934230374d176a",
+      "source_sha256": "71c961efcb0ea13724ee78b5c6cde83ef994fffe11cf63114d5ba3ddbef25d52",
       "first_session": "2026-10-12",
       "last_session": "2026-11-19",
       "initial_capital": 100000.0,

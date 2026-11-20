@@ -1,5 +1,5 @@
 {
-  "cash": 49309.72864719579,
+  "cash": 40728.047980382245,
   "equity_history": {
     "2026-10-12": 100000.0,
     "2026-10-13": 99740.79683014771,
@@ -143,6 +143,19 @@
       "session": "2026-11-19",
       "source_commit": "da997560ef3398b2324d16680384c7a710c4df72",
       "ticker": "NSC"
+    },
+    "IL-044:2026-11-20:open:all:genetic_forward_v1": {
+      "fill_tickers": [
+        "MCO",
+        "ROL"
+      ],
+      "fills_count": 2,
+      "lock_sha256": "149dd7181334ac253b3dd43a7eba186bf47d99e881e35c3c8701ca8a205421c8",
+      "mode": "open",
+      "quotes_sha256": "f098e75e9f1f0689cbbf2ea97bb15f8fdee9de5e61c79d92bdec5e8c543ab601",
+      "recorded_at_utc": "2026-11-20T14:34:06.599692Z",
+      "session": "2026-11-20",
+      "source_commit": "cf9cebe218d2e9bda2b5b82ca68f98153b846a7f"
     }
   },
   "inactive_sessions": [
@@ -207,16 +220,8 @@
     }
   ],
   "pending": {
-    "buys": {
-      "ROL": {
-        "weight": 0.15,
-        "stop_pct": 0.05582892954578394,
-        "target_pct": 0.15725534885998138
-      }
-    },
-    "sells": [
-      "MCO"
-    ]
+    "buys": {},
+    "sells": []
   },
   "positions": {
     "MAS": {
@@ -224,12 +229,6 @@
       "shares": 198.105208,
       "sl": 71.16860637162416,
       "tp": 89.4306559515078
-    },
-    "MCO": {
-      "entry": 490.76524900817867,
-      "shares": 15.11458,
-      "sl": 464.40900446834786,
-      "tp": 583.5775634346348
     },
     "NDAQ": {
       "entry": 94.28711786270141,
@@ -242,6 +241,13 @@
       "shares": 127.763735,
       "sl": 110.89365886999616,
       "tp": 135.60780985750134
+    },
+    "ROL": {
+      "entry": 38.474229331970214,
+      "entry_date": "2026-11-20",
+      "shares": 409.672133,
+      "sl": 36.32625429326732,
+      "tp": 44.52450768768812
     },
     "SHW": {
       "entry": 315.8078188934326,
@@ -287,6 +293,13 @@
       "MCO": 15.11458,
       "NDAQ": 157.093581,
       "NSC": 1.109748,
+      "PRU": 127.763735,
+      "SHW": 0.058721
+    },
+    "2026-11-20": {
+      "MAS": 198.105208,
+      "MCO": 15.11458,
+      "NDAQ": 157.093581,
       "PRU": 127.763735,
       "SHW": 0.058721
     }
@@ -619,6 +632,36 @@
       "side": "SELL",
       "source_commit": "da997560ef3398b2324d16680384c7a710c4df72",
       "ticker": "NSC"
+    },
+    {
+      "execution": "forward_observed_paper",
+      "fee": 7.2031038525944115,
+      "fill": 476.5665901794434,
+      "idempotency_key": "IL-044:2026-11-20:open:all:genetic_forward_v1:MCO",
+      "lock_sha256": "149dd7181334ac253b3dd43a7eba186bf47d99e881e35c3c8701ca8a205421c8",
+      "observed_at_utc": "2026-11-20T14:34:04.596392Z",
+      "quote_at_utc": "2026-11-20T14:34:00Z",
+      "reason": "SIGNAL_NEXT_OPEN",
+      "session": "2026-11-20",
+      "shares": 15.11458,
+      "side": "SELL",
+      "source_commit": "cf9cebe218d2e9bda2b5b82ca68f98153b846a7f",
+      "ticker": "MCO"
+    },
+    {
+      "execution": "forward_observed_paper",
+      "fee": 15.761819595959402,
+      "fill": 38.474229331970214,
+      "idempotency_key": "IL-044:2026-11-20:open:all:genetic_forward_v1:ROL",
+      "lock_sha256": "149dd7181334ac253b3dd43a7eba186bf47d99e881e35c3c8701ca8a205421c8",
+      "observed_at_utc": "2026-11-20T14:34:05.678696Z",
+      "quote_at_utc": "2026-11-20T14:34:00Z",
+      "reason": "SIGNAL_NEXT_OPEN",
+      "session": "2026-11-20",
+      "shares": 409.672133,
+      "side": "BUY",
+      "source_commit": "cf9cebe218d2e9bda2b5b82ca68f98153b846a7f",
+      "ticker": "ROL"
     }
   ]
 }
