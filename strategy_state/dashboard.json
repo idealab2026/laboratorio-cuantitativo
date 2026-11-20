@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "generated_at_utc": "2026-11-20T02:17:19.809733+00:00",
+  "generated_at_utc": "2026-11-20T02:22:44.117866+00:00",
   "principle": "Comparar rentabilidad acumulada y riesgo observado; no ordenar carteras con distintas fechas de inicio o supuestos de ejecución.",
   "counts": {
     "paper_with_diary": 18,
@@ -5480,11 +5480,11 @@
       "group": "diario_heredado",
       "status": "diario_heredado_observado",
       "first_session": "2026-10-12",
-      "last_session": "2026-11-18",
+      "last_session": "2026-11-19",
       "initial_capital": 100000.0,
-      "last_equity": 105456.44815820127,
-      "return_pct": 5.456448,
-      "day_return_pct": -0.121394,
+      "last_equity": 104562.3325033192,
+      "return_pct": 4.562333,
+      "day_return_pct": -0.847853,
       "currency": "USD",
       "equity_history": [
         {
@@ -5598,20 +5598,25 @@
         {
           "date": "2026-11-18",
           "nav": 105456.44815820127
+        },
+        {
+          "date": "2026-11-19",
+          "nav": 104562.3325033192
         }
       ],
       "note": "Diario y ejecución propios; observar por separado hasta reconciliar horarios y contabilidad.",
-      "activity_state": "active",
-      "activity_label": "5 posiciones abiertas · Inactividad sin operaciones: 2026-10-29, 2026-10-30, 2026-11-02, 2026-11-03 · Reanudación desde apertura: 2026-11-04",
+      "activity_state": "active_pending",
+      "activity_label": "5 posiciones · 2 órdenes para próxima apertura · Inactividad sin operaciones: 2026-10-29, 2026-10-30, 2026-11-02, 2026-11-03 · Reanudación desde apertura: 2026-11-04",
       "activity_tickers": [
         "MAS",
         "MCO",
         "NDAQ",
         "PRU",
-        "SHW"
+        "SHW",
+        "ROL"
       ],
       "open_positions_count": 5,
-      "pending_orders_count": 0,
+      "pending_orders_count": 2,
       "inactive_sessions": [
         "2026-10-29",
         "2026-10-30",
@@ -5628,10 +5633,10 @@
       "comparison_universe_id": null,
       "comparison_universe_symbols": null,
       "comparison_exclusion_reason": "Campaña archivada o todavía no normalizada al universo S&P 500",
-      "risk_observations": 28,
-      "annualized_volatility_pct": 19.748663,
-      "max_drawdown_pct": -2.26488,
-      "sharpe_0rf": 2.607376
+      "risk_observations": 29,
+      "annualized_volatility_pct": 19.634887,
+      "max_drawdown_pct": -3.09353,
+      "sharpe_0rf": 2.140196
     },
     {
       "id": "tfg_midas_r_2021",
@@ -7022,9 +7027,9 @@
       "label": "Prospectivo activo",
       "active": true,
       "source_path": "AGENTE/genetic_invest_agent/registro_historico/diario_portfolio_forward_2026-10-12.json",
-      "source_sha256": "9374805fca1b77ab9b7a17b4bcd58b2f4e5f162c08a2d99f9451950b43b77f36",
+      "source_sha256": "ec46f80270c21bb710355dc9eddc164a60fed43e90663370a7934230374d176a",
       "first_session": "2026-10-12",
-      "last_session": "2026-11-18",
+      "last_session": "2026-11-19",
       "initial_capital": 100000.0,
       "model": "next_open_raw_ohlc_v1",
       "equity_history": [
@@ -7139,6 +7144,10 @@
         {
           "date": "2026-11-18",
           "nav": 105456.44815820127
+        },
+        {
+          "date": "2026-11-19",
+          "nav": 104562.3325033192
         }
       ]
     }
