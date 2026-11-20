@@ -110,6 +110,10 @@
         {
           "date": "2026-11-19",
           "nav": 96170.0312892154
+        },
+        {
+          "date": "2026-11-20",
+          "nav": 93381.08153824096
         }
       ],
       "events": [
@@ -130,7 +134,7 @@
           "type": "inactive_mark_only_no_execution"
         }
       ],
-      "nav": 96170.0312892154,
+      "nav": 93381.08153824096,
       "pending": [],
       "positions": {
         "SPY": {
@@ -255,6 +259,10 @@
         {
           "date": "2026-11-19",
           "nav": 103148.51760106857
+        },
+        {
+          "date": "2026-11-20",
+          "nav": 100451.71131420572
         }
       ],
       "events": [
@@ -771,7 +779,7 @@
           "ticker": "TRMB"
         }
       ],
-      "nav": 103148.51760106857,
+      "nav": 100451.71131420572,
       "pending": [],
       "positions": {},
       "trades": [
@@ -1279,6 +1287,10 @@
     {
       "date": "2026-11-19",
       "nav": 103148.51760106857
+    },
+    {
+      "date": "2026-11-20",
+      "nav": 100451.71131420572
     }
   ],
   "first_session": "2026-10-16",
@@ -1445,7 +1457,7 @@
   },
   "fx_method": "previous_XNYS_session_EURUSD_close_at_open; current_EURUSD_close_at_mark",
   "initial_capital": 100000.0,
-  "last_session": "2026-11-19",
+  "last_session": "2026-11-20",
   "last_signal_session": "2026-11-06",
   "missed_weekly_signal_sessions": [
     "2026-11-13"
