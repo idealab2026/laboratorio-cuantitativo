@@ -1,5 +1,5 @@
 {
-  "checked_at_utc": "2026-11-20T20:41:46.512896Z",
+  "checked_at_utc": "2026-11-20T20:55:40.957877Z",
   "lock_sha256": "149dd7181334ac253b3dd43a7eba186bf47d99e881e35c3c8701ca8a205421c8",
   "mode": "single_midas_operator_monitor_no_broker",
   "note": "Observed quotes are not fills. A native engine must settle quantity/cash before a trade counts in P&L.",
@@ -8,9 +8,9 @@
   "previous_session": "2026-11-19",
   "quote_budget": {
     "hard_symbol_limit": 250,
-    "observed_symbols": 34,
+    "observed_symbols": 67,
     "omitted_algorithm_lanes": {},
-    "requested_symbols": 34
+    "requested_symbols": 67
   },
   "run_id": 44813524747,
   "schema": "midas.operational_clock.v1",
@@ -371,25 +371,269 @@
     },
     "IL-023": {
       "exit_only_ready": true,
+      "fills": [
+        {
+          "fee": 8.125092289613997,
+          "observed_at_utc": "2026-11-20T20:55:33.124173Z",
+          "price": 85.44725286483765,
+          "quantity": 95.088982,
+          "side": "sell",
+          "ticker": "AKAM"
+        },
+        {
+          "fee": 6.7344015378319355,
+          "observed_at_utc": "2026-11-20T20:55:33.338436Z",
+          "price": 301.4591803588867,
+          "quantity": 22.339348,
+          "side": "sell",
+          "ticker": "AMAT"
+        },
+        {
+          "fee": 7.962467082939216,
+          "observed_at_utc": "2026-11-20T20:55:34.354729Z",
+          "price": 228.45071994018556,
+          "quantity": 34.8542,
+          "side": "sell",
+          "ticker": "CRWD"
+        },
+        {
+          "fee": 6.522954644592748,
+          "observed_at_utc": "2026-11-20T20:55:36.275243Z",
+          "price": 40.99949045753479,
+          "quantity": 159.098432,
+          "side": "sell",
+          "ticker": "HPE"
+        },
+        {
+          "fee": 7.665068480263872,
+          "observed_at_utc": "2026-11-20T20:55:37.865674Z",
+          "price": 194.58765505981447,
+          "quantity": 39.39134,
+          "side": "sell",
+          "ticker": "MRNA"
+        },
+        {
+          "fee": 5.890739678937387,
+          "observed_at_utc": "2026-11-20T20:55:38.098451Z",
+          "price": 594.1833505249024,
+          "quantity": 9.91401,
+          "side": "sell",
+          "ticker": "MU"
+        },
+        {
+          "fee": 7.382821331344368,
+          "observed_at_utc": "2026-11-20T20:55:38.464147Z",
+          "price": 87.66614408493042,
+          "quantity": 84.215194,
+          "side": "sell",
+          "ticker": "NOW"
+        },
+        {
+          "fee": 7.101173147356822,
+          "observed_at_utc": "2026-11-20T20:55:38.836691Z",
+          "price": 101.23436116027833,
+          "quantity": 70.145878,
+          "side": "sell",
+          "ticker": "ORCL"
+        },
+        {
+          "fee": 8.243364182028827,
+          "observed_at_utc": "2026-11-20T20:55:38.993106Z",
+          "price": 343.61811354064946,
+          "quantity": 23.9899,
+          "side": "sell",
+          "ticker": "PANW"
+        },
+        {
+          "fee": 6.250253908263219,
+          "observed_at_utc": "2026-11-20T20:55:40.552919Z",
+          "price": 457.1765097961426,
+          "quantity": 13.671424,
+          "side": "sell",
+          "ticker": "STX"
+        }
+      ],
+      "fills_count": 10,
       "holdings_count": 10,
-      "native_settlement": "no_orders",
+      "native_marker": {
+        "fill_tickers": [
+          "AKAM",
+          "AMAT",
+          "CRWD",
+          "HPE",
+          "MRNA",
+          "MU",
+          "NOW",
+          "ORCL",
+          "PANW",
+          "STX"
+        ],
+        "fills_count": 10,
+        "lock_sha256": "149dd7181334ac253b3dd43a7eba186bf47d99e881e35c3c8701ca8a205421c8",
+        "mode": "weekly_observed_exit",
+        "observed_fill_events_sha256": "2b96783f1cf995e18661a8e3f2d672f6cac5c841ae69fe2d6190df757853d77b",
+        "recorded_at_utc": "2026-11-20T20:55:40.957877Z",
+        "session": "2026-11-20",
+        "source_commit": "cf9cebe218d2e9bda2b5b82ca68f98153b846a7f"
+      },
+      "native_settlement": "settled_native_paper",
       "observed": 0,
       "orders": [],
       "planned": 0,
+      "session_fill_reconciled": true,
       "source_session": "2026-11-19",
-      "status": "exit_only_waiting_preclose",
-      "waiting": 0
+      "status": "native_forward_settled",
+      "waiting": 0,
+      "weekly_exit_progress": {
+        "closed_tickers": [
+          "AKAM",
+          "AMAT",
+          "CRWD",
+          "HPE",
+          "MRNA",
+          "MU",
+          "NOW",
+          "ORCL",
+          "PANW",
+          "STX"
+        ],
+        "complete": true,
+        "remaining_tickers": [],
+        "source": "observed_preclose_paper_symbol_isolated"
+      }
     },
     "IL-024": {
       "exit_only_ready": true,
+      "fills": [
+        {
+          "fee": 7.037474285845035,
+          "observed_at_utc": "2026-11-20T20:55:33.892103Z",
+          "price": 54.952509542465215,
+          "quantity": 128.064657,
+          "side": "sell",
+          "ticker": "BLDR"
+        },
+        {
+          "fee": 7.590698032295276,
+          "observed_at_utc": "2026-11-20T20:55:34.354729Z",
+          "price": 228.45071994018556,
+          "quantity": 33.226851,
+          "side": "sell",
+          "ticker": "CRWD"
+        },
+        {
+          "fee": 5.599461430397979,
+          "observed_at_utc": "2026-11-20T20:55:34.553004Z",
+          "price": 156.6616354904175,
+          "quantity": 35.742391,
+          "side": "sell",
+          "ticker": "DDOG"
+        },
+        {
+          "fee": 7.254246294154135,
+          "observed_at_utc": "2026-11-20T20:55:34.796038Z",
+          "price": 160.61964694976808,
+          "quantity": 45.164128,
+          "side": "sell",
+          "ticker": "DVA"
+        },
+        {
+          "fee": 8.035575667879339,
+          "observed_at_utc": "2026-11-20T20:55:34.923768Z",
+          "price": 79.06044847488404,
+          "quantity": 101.638377,
+          "side": "sell",
+          "ticker": "DXCM"
+        },
+        {
+          "fee": 8.282798392002373,
+          "observed_at_utc": "2026-11-20T20:55:35.796107Z",
+          "price": 693.3581645812989,
+          "quantity": 11.945916,
+          "side": "sell",
+          "ticker": "FICO"
+        },
+        {
+          "fee": 6.766346839982533,
+          "observed_at_utc": "2026-11-20T20:55:36.586727Z",
+          "price": 272.7135811004639,
+          "quantity": 24.811184,
+          "side": "sell",
+          "ticker": "INTU"
+        },
+        {
+          "fee": 7.560373495170766,
+          "observed_at_utc": "2026-11-20T20:55:37.780770Z",
+          "price": 133.6631307296753,
+          "quantity": 56.562894,
+          "side": "sell",
+          "ticker": "MRK"
+        },
+        {
+          "fee": 7.858480281996853,
+          "observed_at_utc": "2026-11-20T20:55:38.993106Z",
+          "price": 343.61811354064946,
+          "quantity": 22.869808,
+          "side": "sell",
+          "ticker": "PANW"
+        },
+        {
+          "fee": 7.79978531588933,
+          "observed_at_utc": "2026-11-20T20:55:39.454779Z",
+          "price": 53.35331106758118,
+          "quantity": 146.191214,
+          "side": "sell",
+          "ticker": "PYPL"
+        }
+      ],
+      "fills_count": 10,
       "holdings_count": 10,
-      "native_settlement": "no_orders",
+      "native_marker": {
+        "fill_tickers": [
+          "BLDR",
+          "CRWD",
+          "DDOG",
+          "DVA",
+          "DXCM",
+          "FICO",
+          "INTU",
+          "MRK",
+          "PANW",
+          "PYPL"
+        ],
+        "fills_count": 10,
+        "lock_sha256": "149dd7181334ac253b3dd43a7eba186bf47d99e881e35c3c8701ca8a205421c8",
+        "mode": "weekly_observed_exit",
+        "observed_fill_events_sha256": "677e5a6b760bf43760ae3d2cb436d4416cbafaaee1c8846158b46551f42fcd83",
+        "recorded_at_utc": "2026-11-20T20:55:40.957877Z",
+        "session": "2026-11-20",
+        "source_commit": "cf9cebe218d2e9bda2b5b82ca68f98153b846a7f"
+      },
+      "native_settlement": "settled_native_paper",
       "observed": 0,
       "orders": [],
       "planned": 0,
+      "session_fill_reconciled": true,
       "source_session": "2026-11-19",
-      "status": "exit_only_waiting_preclose",
-      "waiting": 0
+      "status": "native_forward_settled",
+      "waiting": 0,
+      "weekly_exit_progress": {
+        "closed_tickers": [
+          "BLDR",
+          "CRWD",
+          "DDOG",
+          "DVA",
+          "DXCM",
+          "FICO",
+          "INTU",
+          "MRK",
+          "PANW",
+          "PYPL"
+        ],
+        "complete": true,
+        "remaining_tickers": [],
+        "source": "observed_preclose_paper_symbol_isolated"
+      }
     },
     "IL-025": {
       "exit_only_ready": false,
@@ -404,14 +648,136 @@
     },
     "IL-026": {
       "exit_only_ready": true,
+      "fills": [
+        {
+          "fee": 8.765099960403871,
+          "observed_at_utc": "2026-11-20T20:55:33.660679Z",
+          "price": 97.5611956100464,
+          "quantity": 89.842072,
+          "side": "sell",
+          "ticker": "BBY"
+        },
+        {
+          "fee": 7.671365123759754,
+          "observed_at_utc": "2026-11-20T20:55:34.354729Z",
+          "price": 228.45071994018556,
+          "quantity": 33.579956,
+          "side": "sell",
+          "ticker": "CRWD"
+        },
+        {
+          "fee": 7.657221999613954,
+          "observed_at_utc": "2026-11-20T20:55:35.570323Z",
+          "price": 303.2683034210205,
+          "quantity": 25.249002,
+          "side": "sell",
+          "ticker": "FFIV"
+        },
+        {
+          "fee": 7.77791723934954,
+          "observed_at_utc": "2026-11-20T20:55:35.932517Z",
+          "price": 124.22785591506958,
+          "quantity": 62.61009,
+          "side": "sell",
+          "ticker": "FTNT"
+        },
+        {
+          "fee": 8.259489422949837,
+          "observed_at_utc": "2026-11-20T20:55:36.438746Z",
+          "price": 27.98100333881378,
+          "quantity": 295.182032,
+          "side": "sell",
+          "ticker": "HPQ"
+        },
+        {
+          "fee": 7.153991604040856,
+          "observed_at_utc": "2026-11-20T20:55:37.612613Z",
+          "price": 368.09585877990725,
+          "quantity": 19.435132,
+          "side": "sell",
+          "ticker": "MPC"
+        },
+        {
+          "fee": 7.384839295634443,
+          "observed_at_utc": "2026-11-20T20:55:37.865674Z",
+          "price": 194.58765505981447,
+          "quantity": 37.951222,
+          "side": "sell",
+          "ticker": "MRNA"
+        },
+        {
+          "fee": 7.493758122063158,
+          "observed_at_utc": "2026-11-20T20:55:38.232314Z",
+          "price": 16.031980915069582,
+          "quantity": 467.425589,
+          "side": "sell",
+          "ticker": "NCLH"
+        },
+        {
+          "fee": 7.1129108619592,
+          "observed_at_utc": "2026-11-20T20:55:38.464147Z",
+          "price": 87.66614408493042,
+          "quantity": 81.136349,
+          "side": "sell",
+          "ticker": "NOW"
+        },
+        {
+          "fee": 8.402514528008794,
+          "observed_at_utc": "2026-11-20T20:55:39.867751Z",
+          "price": 460.16979389953616,
+          "quantity": 18.259596,
+          "side": "sell",
+          "ticker": "ROP"
+        }
+      ],
+      "fills_count": 10,
       "holdings_count": 10,
-      "native_settlement": "no_orders",
+      "native_marker": {
+        "fill_tickers": [
+          "BBY",
+          "CRWD",
+          "FFIV",
+          "FTNT",
+          "HPQ",
+          "MPC",
+          "MRNA",
+          "NCLH",
+          "NOW",
+          "ROP"
+        ],
+        "fills_count": 10,
+        "lock_sha256": "149dd7181334ac253b3dd43a7eba186bf47d99e881e35c3c8701ca8a205421c8",
+        "mode": "weekly_observed_exit",
+        "observed_fill_events_sha256": "88d2188a49234a1633354deb4ed56902c65cdbccf3d777e2ecca6069b5f37b33",
+        "recorded_at_utc": "2026-11-20T20:55:40.957877Z",
+        "session": "2026-11-20",
+        "source_commit": "cf9cebe218d2e9bda2b5b82ca68f98153b846a7f"
+      },
+      "native_settlement": "settled_native_paper",
       "observed": 0,
       "orders": [],
       "planned": 0,
+      "session_fill_reconciled": true,
       "source_session": "2026-11-19",
-      "status": "exit_only_waiting_preclose",
-      "waiting": 0
+      "status": "native_forward_settled",
+      "waiting": 0,
+      "weekly_exit_progress": {
+        "closed_tickers": [
+          "BBY",
+          "CRWD",
+          "FFIV",
+          "FTNT",
+          "HPQ",
+          "MPC",
+          "MRNA",
+          "NCLH",
+          "NOW",
+          "ROP"
+        ],
+        "complete": true,
+        "remaining_tickers": [],
+        "source": "observed_preclose_paper_symbol_isolated"
+      }
     },
     "IL-027": {
       "exit_only_ready": false,
@@ -459,14 +825,136 @@
     },
     "IL-040": {
       "exit_only_ready": false,
+      "fills": [
+        {
+          "currency": "EUR",
+          "fee": 9.56198845765813,
+          "fx_usd_per_eur": 1.096611499786377,
+          "observed_at_utc": "2026-11-20T20:55:33.462842Z",
+          "price": 265.0843770983159,
+          "quantity": 36.07149,
+          "side": "sell",
+          "ticker": "AXON"
+        },
+        {
+          "currency": "EUR",
+          "fee": 10.94910270511345,
+          "fx_usd_per_eur": 1.096611499786377,
+          "observed_at_utc": "2026-11-20T20:55:35.093482Z",
+          "price": 56.68270270693346,
+          "quantity": 193.164796,
+          "side": "sell",
+          "ticker": "EIX"
+        },
+        {
+          "currency": "EUR",
+          "fee": 9.871243503494867,
+          "fx_usd_per_eur": 1.096611499786377,
+          "observed_at_utc": "2026-11-20T20:55:36.845883Z",
+          "price": 117.68564814865546,
+          "quantity": 83.878057,
+          "side": "sell",
+          "ticker": "JCI"
+        },
+        {
+          "currency": "EUR",
+          "fee": 10.01477140144559,
+          "fx_usd_per_eur": 1.096611499786377,
+          "observed_at_utc": "2026-11-20T20:55:38.648891Z",
+          "price": 25.338143219230176,
+          "quantity": 395.244881,
+          "side": "sell",
+          "ticker": "NWS"
+        },
+        {
+          "currency": "EUR",
+          "fee": 11.047504506640056,
+          "fx_usd_per_eur": 1.096611499786377,
+          "observed_at_utc": "2026-11-20T20:55:39.201322Z",
+          "price": 12.527798029012581,
+          "quantity": 881.839289,
+          "side": "sell",
+          "ticker": "PCG"
+        },
+        {
+          "currency": "EUR",
+          "fee": 10.474432959743234,
+          "fx_usd_per_eur": 1.096611499786377,
+          "observed_at_utc": "2026-11-20T20:55:39.592572Z",
+          "price": 214.33746125793073,
+          "quantity": 48.868886,
+          "side": "sell",
+          "ticker": "RMD"
+        },
+        {
+          "currency": "EUR",
+          "fee": 8.12033604781313,
+          "fx_usd_per_eur": 1.096611499786377,
+          "observed_at_utc": "2026-11-20T20:55:40.222091Z",
+          "price": 19.73732100248678,
+          "quantity": 411.420377,
+          "side": "sell",
+          "ticker": "SMCI"
+        },
+        {
+          "currency": "EUR",
+          "fee": 9.868812353670357,
+          "fx_usd_per_eur": 1.096611499786377,
+          "observed_at_utc": "2026-11-20T20:55:40.685024Z",
+          "price": 46.16464129272564,
+          "quantity": 213.774267,
+          "side": "sell",
+          "ticker": "TRMB"
+        }
+      ],
+      "fills_count": 8,
       "holdings_count": 8,
-      "native_settlement": "no_execution_due",
+      "native_marker": {
+        "exit_fx_quote_at_utc": "2026-11-20T20:55:00Z",
+        "exit_fx_usd_per_eur": 1.096611499786377,
+        "family": "weekly",
+        "fill_tickers": [
+          "AXON",
+          "EIX",
+          "JCI",
+          "NWS",
+          "PCG",
+          "RMD",
+          "SMCI",
+          "TRMB"
+        ],
+        "fills_count": 8,
+        "lock_sha256": "149dd7181334ac253b3dd43a7eba186bf47d99e881e35c3c8701ca8a205421c8",
+        "mode": "exit",
+        "observed_sale_evidence_sha256": "60866ca8b7282f5939695e986e37307fd67de43b3da2746b3b6b5e159ce61f30",
+        "quotes_sha256": "ffb5d95640f51d967d1c925fc6fdfe539d6c2bd49a85835b4ed511339159ebe7",
+        "recorded_at_utc": "2026-11-20T20:55:40.957877Z",
+        "session": "2026-11-20",
+        "source_commit": "cf9cebe218d2e9bda2b5b82ca68f98153b846a7f"
+      },
+      "native_settlement": "settled_native_paper",
       "observed": 0,
       "orders": [],
       "planned": 0,
+      "session_fill_reconciled": true,
       "source_session": "2026-11-19",
-      "status": "active_no_orders",
-      "waiting": 0
+      "status": "native_forward_settled",
+      "waiting": 0,
+      "weekly_exit_progress": {
+        "closed_tickers": [
+          "AXON",
+          "EIX",
+          "JCI",
+          "NWS",
+          "PCG",
+          "RMD",
+          "SMCI",
+          "TRMB"
+        ],
+        "complete": true,
+        "remaining_tickers": [],
+        "source": "observed_preclose_eur_symbol_isolated"
+      }
     },
     "IL-041": {
       "exit_only_ready": false,

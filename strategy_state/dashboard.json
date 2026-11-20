@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "generated_at_utc": "2026-11-20T20:41:47.309694+00:00",
+  "generated_at_utc": "2026-11-20T20:55:43.322431+00:00",
   "principle": "Comparar rentabilidad acumulada y riesgo observado; no ordenar carteras con distintas fechas de inicio o supuestos de ejecución.",
   "counts": {
     "paper_with_diary": 18,
@@ -3053,7 +3053,7 @@
       "initial_capital": 100000.0,
       "last_equity": 82412.55119584885,
       "return_pct": -17.587449,
-      "day_return_pct": null,
+      "day_return_pct": 0.065348,
       "currency": "USD",
       "equity_history": [
         {
@@ -3177,66 +3177,13 @@
           "nav": 82412.55119584885
         }
       ],
-      "note": "Campaña diaria prospectiva desde la señal del 09/10/2026. Fills simulados en la siguiente apertura, NAV al cierre y cierre semanal. No hereda el NAV de la campaña de liquidación diferida ni reconstruye compras pasadas. Última valoración confirmada: 2026-11-19.",
-      "positions": [
-        {
-          "ticker": "AKAM",
-          "shares": 95.088982
-        },
-        {
-          "ticker": "AMAT",
-          "shares": 22.339348
-        },
-        {
-          "ticker": "CRWD",
-          "shares": 34.8542
-        },
-        {
-          "ticker": "HPE",
-          "shares": 159.098432
-        },
-        {
-          "ticker": "MRNA",
-          "shares": 39.39134
-        },
-        {
-          "ticker": "MU",
-          "shares": 9.91401
-        },
-        {
-          "ticker": "NOW",
-          "shares": 84.215194
-        },
-        {
-          "ticker": "ORCL",
-          "shares": 70.145878
-        },
-        {
-          "ticker": "PANW",
-          "shares": 23.9899
-        },
-        {
-          "ticker": "STX",
-          "shares": 13.671424
-        }
-      ],
-      "activity_state": "active",
-      "activity_label": "VALORACIÓN PAUSADA · sesión anterior pendiente de conciliar; 10 posiciones abiertas · Inactividad sin operaciones: 2026-11-03, 2026-11-04, 2026-11-05, 2026-11-06, 2026-11-09, 2026-11-10, 2026-11-11, 2026-11-12, 2026-11-13, 2026-11-16, 2026-11-17, 2026-11-18, 2026-11-19 · Reanudación desde apertura: 2026-11-05",
-      "activity_tickers": [
-        "AKAM",
-        "AMAT",
-        "CRWD",
-        "HPE",
-        "MRNA",
-        "MU",
-        "NOW",
-        "ORCL",
-        "PANW",
-        "STX"
-      ],
-      "open_positions_count": 10,
+      "note": "Campaña diaria prospectiva desde la señal del 09/10/2026. Fills simulados en la siguiente apertura, NAV al cierre y cierre semanal. No hereda el NAV de la campaña de liquidación diferida ni reconstruye compras pasadas.",
+      "positions": [],
+      "activity_state": "cash",
+      "activity_label": "Sin compras · en efectivo · Inactividad sin operaciones: 2026-11-03, 2026-11-04, 2026-11-05, 2026-11-06, 2026-11-09, 2026-11-10, 2026-11-11, 2026-11-12, 2026-11-13, 2026-11-16, 2026-11-17, 2026-11-18, 2026-11-19 · Reanudación desde apertura: 2026-11-05",
+      "activity_tickers": [],
+      "open_positions_count": 0,
       "pending_orders_count": 0,
-      "data_quality_status": "session_reconciliation_required",
       "inactive_sessions": [
         "2026-11-03",
         "2026-11-04",
@@ -3343,7 +3290,7 @@
       "initial_capital": 100000.0,
       "last_equity": 80605.07463808202,
       "return_pct": -19.394925,
-      "day_return_pct": null,
+      "day_return_pct": -0.993182,
       "currency": "USD",
       "equity_history": [
         {
@@ -3467,66 +3414,13 @@
           "nav": 80605.07463808202
         }
       ],
-      "note": "Campaña diaria prospectiva desde la señal del 09/10/2026. Fills simulados en la siguiente apertura, NAV al cierre y cierre semanal. No hereda el NAV de la campaña de liquidación diferida ni reconstruye compras pasadas. Última valoración confirmada: 2026-11-19.",
-      "positions": [
-        {
-          "ticker": "BLDR",
-          "shares": 128.064657
-        },
-        {
-          "ticker": "CRWD",
-          "shares": 33.226851
-        },
-        {
-          "ticker": "DDOG",
-          "shares": 35.742391
-        },
-        {
-          "ticker": "DVA",
-          "shares": 45.164128
-        },
-        {
-          "ticker": "DXCM",
-          "shares": 101.638377
-        },
-        {
-          "ticker": "FICO",
-          "shares": 11.945916
-        },
-        {
-          "ticker": "INTU",
-          "shares": 24.811184
-        },
-        {
-          "ticker": "MRK",
-          "shares": 56.562894
-        },
-        {
-          "ticker": "PANW",
-          "shares": 22.869808
-        },
-        {
-          "ticker": "PYPL",
-          "shares": 146.191214
-        }
-      ],
-      "activity_state": "active",
-      "activity_label": "VALORACIÓN PAUSADA · sesión anterior pendiente de conciliar; 10 posiciones abiertas · Inactividad sin operaciones: 2026-11-03, 2026-11-04, 2026-11-05, 2026-11-06, 2026-11-09, 2026-11-10, 2026-11-11, 2026-11-12, 2026-11-13, 2026-11-16, 2026-11-17, 2026-11-18, 2026-11-19 · Reanudación desde apertura: 2026-11-05",
-      "activity_tickers": [
-        "BLDR",
-        "CRWD",
-        "DDOG",
-        "DVA",
-        "DXCM",
-        "FICO",
-        "INTU",
-        "MRK",
-        "PANW",
-        "PYPL"
-      ],
-      "open_positions_count": 10,
+      "note": "Campaña diaria prospectiva desde la señal del 09/10/2026. Fills simulados en la siguiente apertura, NAV al cierre y cierre semanal. No hereda el NAV de la campaña de liquidación diferida ni reconstruye compras pasadas.",
+      "positions": [],
+      "activity_state": "cash",
+      "activity_label": "Sin compras · en efectivo · Inactividad sin operaciones: 2026-11-03, 2026-11-04, 2026-11-05, 2026-11-06, 2026-11-09, 2026-11-10, 2026-11-11, 2026-11-12, 2026-11-13, 2026-11-16, 2026-11-17, 2026-11-18, 2026-11-19 · Reanudación desde apertura: 2026-11-05",
+      "activity_tickers": [],
+      "open_positions_count": 0,
       "pending_orders_count": 0,
-      "data_quality_status": "session_reconciliation_required",
       "inactive_sessions": [
         "2026-11-03",
         "2026-11-04",
@@ -3865,7 +3759,7 @@
       "initial_capital": 100000.0,
       "last_equity": 84410.89470369281,
       "return_pct": -15.589105,
-      "day_return_pct": null,
+      "day_return_pct": -1.118413,
       "currency": "USD",
       "equity_history": [
         {
@@ -3989,66 +3883,13 @@
           "nav": 84410.89470369281
         }
       ],
-      "note": "Campaña diaria prospectiva desde la señal del 09/10/2026. Fills simulados en la siguiente apertura, NAV al cierre y cierre semanal. No hereda el NAV de la campaña de liquidación diferida ni reconstruye compras pasadas. Última valoración confirmada: 2026-11-19.",
-      "positions": [
-        {
-          "ticker": "BBY",
-          "shares": 89.842072
-        },
-        {
-          "ticker": "CRWD",
-          "shares": 33.579956
-        },
-        {
-          "ticker": "FFIV",
-          "shares": 25.249002
-        },
-        {
-          "ticker": "FTNT",
-          "shares": 62.61009
-        },
-        {
-          "ticker": "HPQ",
-          "shares": 295.182032
-        },
-        {
-          "ticker": "MPC",
-          "shares": 19.435132
-        },
-        {
-          "ticker": "MRNA",
-          "shares": 37.951222
-        },
-        {
-          "ticker": "NCLH",
-          "shares": 467.425589
-        },
-        {
-          "ticker": "NOW",
-          "shares": 81.136349
-        },
-        {
-          "ticker": "ROP",
-          "shares": 18.259596
-        }
-      ],
-      "activity_state": "active",
-      "activity_label": "VALORACIÓN PAUSADA · sesión anterior pendiente de conciliar; 10 posiciones abiertas · Inactividad sin operaciones: 2026-11-03, 2026-11-04, 2026-11-05, 2026-11-06, 2026-11-09, 2026-11-10, 2026-11-11, 2026-11-12, 2026-11-13, 2026-11-16, 2026-11-17, 2026-11-18, 2026-11-19 · Reanudación desde apertura: 2026-11-05",
-      "activity_tickers": [
-        "BBY",
-        "CRWD",
-        "FFIV",
-        "FTNT",
-        "HPQ",
-        "MPC",
-        "MRNA",
-        "NCLH",
-        "NOW",
-        "ROP"
-      ],
-      "open_positions_count": 10,
+      "note": "Campaña diaria prospectiva desde la señal del 09/10/2026. Fills simulados en la siguiente apertura, NAV al cierre y cierre semanal. No hereda el NAV de la campaña de liquidación diferida ni reconstruye compras pasadas.",
+      "positions": [],
+      "activity_state": "cash",
+      "activity_label": "Sin compras · en efectivo · Inactividad sin operaciones: 2026-11-03, 2026-11-04, 2026-11-05, 2026-11-06, 2026-11-09, 2026-11-10, 2026-11-11, 2026-11-12, 2026-11-13, 2026-11-16, 2026-11-17, 2026-11-18, 2026-11-19 · Reanudación desde apertura: 2026-11-05",
+      "activity_tickers": [],
+      "open_positions_count": 0,
       "pending_orders_count": 0,
-      "data_quality_status": "session_reconciliation_required",
       "inactive_sessions": [
         "2026-11-03",
         "2026-11-04",
@@ -4971,19 +4812,10 @@
         "2026-11-18",
         "2026-11-19"
       ],
-      "activity_state": "active",
-      "activity_label": "8 posiciones abiertas",
-      "activity_tickers": [
-        "AXON",
-        "EIX",
-        "JCI",
-        "NWS",
-        "PCG",
-        "RMD",
-        "SMCI",
-        "TRMB"
-      ],
-      "open_positions_count": 8,
+      "activity_state": "cash",
+      "activity_label": "Sin compras · en efectivo",
+      "activity_tickers": [],
+      "open_positions_count": 0,
       "pending_orders_count": 0,
       "comparison_eligible": true,
       "comparison_universe_id": "SP500_2026-09-29_503",

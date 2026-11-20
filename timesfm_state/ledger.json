@@ -146,7 +146,7 @@
       "trades": []
     },
     "timesfm": {
-      "cash": 20623.42757056249,
+      "cash": 100451.71131420572,
       "equity": [
         {
           "date": "2026-10-16",
@@ -673,84 +673,107 @@
           ],
           "recorded_at_utc": "2026-11-15T23:17:22.843526+00:00",
           "type": "inactive_mark_only_no_execution"
+        },
+        {
+          "date": "2026-11-20",
+          "event": "sell",
+          "execution": "forward_observed_preclose",
+          "idempotency_key": "IL-040:2026-11-20:exit_symbol:timesfm_eur_forward_v1:AXON",
+          "lock_sha256": "149dd7181334ac253b3dd43a7eba186bf47d99e881e35c3c8701ca8a205421c8",
+          "observed_at_utc": "2026-11-20T20:55:33.462842Z",
+          "price_eur": 265.0843770983159,
+          "quote_at_utc": "2026-11-20T20:55:00Z",
+          "source_commit": "cf9cebe218d2e9bda2b5b82ca68f98153b846a7f",
+          "ticker": "AXON"
+        },
+        {
+          "date": "2026-11-20",
+          "event": "sell",
+          "execution": "forward_observed_preclose",
+          "idempotency_key": "IL-040:2026-11-20:exit_symbol:timesfm_eur_forward_v1:EIX",
+          "lock_sha256": "149dd7181334ac253b3dd43a7eba186bf47d99e881e35c3c8701ca8a205421c8",
+          "observed_at_utc": "2026-11-20T20:55:35.093482Z",
+          "price_eur": 56.68270270693346,
+          "quote_at_utc": "2026-11-20T20:55:00Z",
+          "source_commit": "cf9cebe218d2e9bda2b5b82ca68f98153b846a7f",
+          "ticker": "EIX"
+        },
+        {
+          "date": "2026-11-20",
+          "event": "sell",
+          "execution": "forward_observed_preclose",
+          "idempotency_key": "IL-040:2026-11-20:exit_symbol:timesfm_eur_forward_v1:JCI",
+          "lock_sha256": "149dd7181334ac253b3dd43a7eba186bf47d99e881e35c3c8701ca8a205421c8",
+          "observed_at_utc": "2026-11-20T20:55:36.845883Z",
+          "price_eur": 117.68564814865546,
+          "quote_at_utc": "2026-11-20T20:55:00Z",
+          "source_commit": "cf9cebe218d2e9bda2b5b82ca68f98153b846a7f",
+          "ticker": "JCI"
+        },
+        {
+          "date": "2026-11-20",
+          "event": "sell",
+          "execution": "forward_observed_preclose",
+          "idempotency_key": "IL-040:2026-11-20:exit_symbol:timesfm_eur_forward_v1:NWS",
+          "lock_sha256": "149dd7181334ac253b3dd43a7eba186bf47d99e881e35c3c8701ca8a205421c8",
+          "observed_at_utc": "2026-11-20T20:55:38.648891Z",
+          "price_eur": 25.338143219230176,
+          "quote_at_utc": "2026-11-20T20:55:00Z",
+          "source_commit": "cf9cebe218d2e9bda2b5b82ca68f98153b846a7f",
+          "ticker": "NWS"
+        },
+        {
+          "date": "2026-11-20",
+          "event": "sell",
+          "execution": "forward_observed_preclose",
+          "idempotency_key": "IL-040:2026-11-20:exit_symbol:timesfm_eur_forward_v1:PCG",
+          "lock_sha256": "149dd7181334ac253b3dd43a7eba186bf47d99e881e35c3c8701ca8a205421c8",
+          "observed_at_utc": "2026-11-20T20:55:39.201322Z",
+          "price_eur": 12.527798029012581,
+          "quote_at_utc": "2026-11-20T20:55:00Z",
+          "source_commit": "cf9cebe218d2e9bda2b5b82ca68f98153b846a7f",
+          "ticker": "PCG"
+        },
+        {
+          "date": "2026-11-20",
+          "event": "sell",
+          "execution": "forward_observed_preclose",
+          "idempotency_key": "IL-040:2026-11-20:exit_symbol:timesfm_eur_forward_v1:RMD",
+          "lock_sha256": "149dd7181334ac253b3dd43a7eba186bf47d99e881e35c3c8701ca8a205421c8",
+          "observed_at_utc": "2026-11-20T20:55:39.592572Z",
+          "price_eur": 214.33746125793073,
+          "quote_at_utc": "2026-11-20T20:55:00Z",
+          "source_commit": "cf9cebe218d2e9bda2b5b82ca68f98153b846a7f",
+          "ticker": "RMD"
+        },
+        {
+          "date": "2026-11-20",
+          "event": "sell",
+          "execution": "forward_observed_preclose",
+          "idempotency_key": "IL-040:2026-11-20:exit_symbol:timesfm_eur_forward_v1:SMCI",
+          "lock_sha256": "149dd7181334ac253b3dd43a7eba186bf47d99e881e35c3c8701ca8a205421c8",
+          "observed_at_utc": "2026-11-20T20:55:40.222091Z",
+          "price_eur": 19.73732100248678,
+          "quote_at_utc": "2026-11-20T20:55:00Z",
+          "source_commit": "cf9cebe218d2e9bda2b5b82ca68f98153b846a7f",
+          "ticker": "SMCI"
+        },
+        {
+          "date": "2026-11-20",
+          "event": "sell",
+          "execution": "forward_observed_preclose",
+          "idempotency_key": "IL-040:2026-11-20:exit_symbol:timesfm_eur_forward_v1:TRMB",
+          "lock_sha256": "149dd7181334ac253b3dd43a7eba186bf47d99e881e35c3c8701ca8a205421c8",
+          "observed_at_utc": "2026-11-20T20:55:40.685024Z",
+          "price_eur": 46.16464129272564,
+          "quote_at_utc": "2026-11-20T20:55:00Z",
+          "source_commit": "cf9cebe218d2e9bda2b5b82ca68f98153b846a7f",
+          "ticker": "TRMB"
         }
       ],
       "nav": 103148.51760106857,
       "pending": [],
-      "positions": {
-        "AXON": {
-          "cost_eur": 10311.71338977303,
-          "dividends_eur": 0.0,
-          "entry_date": "2026-11-09",
-          "entry_fx": 1.1228259801864624,
-          "entry_price_eur": 285.5832120545959,
-          "shares": 36.07149,
-          "signal_date": "2026-11-06"
-        },
-        "EIX": {
-          "cost_eur": 10311.713568923937,
-          "dividends_eur": 0.0,
-          "entry_date": "2026-11-09",
-          "entry_fx": 1.1228259801864624,
-          "entry_price_eur": 53.32965618003795,
-          "shares": 193.164796,
-          "signal_date": "2026-11-06"
-        },
-        "JCI": {
-          "cost_eur": 10311.713572528644,
-          "dividends_eur": 0.0,
-          "entry_date": "2026-11-09",
-          "entry_fx": 1.1228259801864624,
-          "entry_price_eur": 122.81414864400446,
-          "shares": 83.878057,
-          "signal_date": "2026-11-06"
-        },
-        "NWS": {
-          "cost_eur": 10311.713589791992,
-          "dividends_eur": 0.0,
-          "entry_date": "2026-11-09",
-          "entry_fx": 1.1228259801864624,
-          "entry_price_eur": 26.063366466761092,
-          "shares": 395.244881,
-          "signal_date": "2026-11-06"
-        },
-        "PCG": {
-          "cost_eur": 10311.713595843406,
-          "dividends_eur": 0.0,
-          "entry_date": "2026-11-09",
-          "entry_fx": 1.1228259801864624,
-          "entry_price_eur": 11.681734202772347,
-          "shares": 881.839289,
-          "signal_date": "2026-11-06"
-        },
-        "RMD": {
-          "cost_eur": 10311.71354492389,
-          "dividends_eur": 0.0,
-          "entry_date": "2026-11-09",
-          "entry_fx": 1.1228259801864624,
-          "entry_price_eur": 210.79695028839208,
-          "shares": 48.868886,
-          "signal_date": "2026-11-06"
-        },
-        "SMCI": {
-          "cost_eur": 10311.713573196812,
-          "dividends_eur": 0.0,
-          "entry_date": "2026-11-09",
-          "entry_fx": 1.1228259801864624,
-          "entry_price_eur": 25.038653253277676,
-          "shares": 411.420377,
-          "signal_date": "2026-11-06"
-        },
-        "TRMB": {
-          "cost_eur": 10311.71357332878,
-          "dividends_eur": 0.0,
-          "entry_date": "2026-11-09",
-          "entry_fx": 1.1228259801864624,
-          "entry_price_eur": 48.188270299004756,
-          "shares": 213.774267,
-          "signal_date": "2026-11-06"
-        }
-      },
+      "positions": {},
       "trades": [
         {
           "buy_cost_eur": 11428.571404459093,
@@ -1004,6 +1027,150 @@
           "shares_at_exit": 125.180039,
           "signal_date": "2026-10-30",
           "ticker": "XYL"
+        },
+        {
+          "buy_cost_eur": 10311.71338977303,
+          "dividends_eur": 0.0,
+          "entry_date": "2026-11-09",
+          "execution": "forward_observed_preclose",
+          "exit_date": "2026-11-20",
+          "fx_usd_per_eur": 1.096611499786377,
+          "idempotency_key": "IL-040:2026-11-20:exit_symbol:timesfm_eur_forward_v1:AXON",
+          "lock_sha256": "149dd7181334ac253b3dd43a7eba186bf47d99e881e35c3c8701ca8a205421c8",
+          "net_pnl_eur": -759.2869205725583,
+          "observed_at_utc": "2026-11-20T20:55:33.462842Z",
+          "quote_at_utc": "2026-11-20T20:55:00Z",
+          "sell_proceeds_eur": 9552.42646920047,
+          "shares_at_exit": 36.07149,
+          "signal_date": "2026-11-06",
+          "source_commit": "cf9cebe218d2e9bda2b5b82ca68f98153b846a7f",
+          "ticker": "AXON"
+        },
+        {
+          "buy_cost_eur": 10311.713568923937,
+          "dividends_eur": 0.0,
+          "entry_date": "2026-11-09",
+          "execution": "forward_observed_preclose",
+          "exit_date": "2026-11-20",
+          "fx_usd_per_eur": 1.096611499786377,
+          "idempotency_key": "IL-040:2026-11-20:exit_symbol:timesfm_eur_forward_v1:EIX",
+          "lock_sha256": "149dd7181334ac253b3dd43a7eba186bf47d99e881e35c3c8701ca8a205421c8",
+          "net_pnl_eur": 626.4400334843995,
+          "observed_at_utc": "2026-11-20T20:55:35.093482Z",
+          "quote_at_utc": "2026-11-20T20:55:00Z",
+          "sell_proceeds_eur": 10938.153602408336,
+          "shares_at_exit": 193.164796,
+          "signal_date": "2026-11-06",
+          "source_commit": "cf9cebe218d2e9bda2b5b82ca68f98153b846a7f",
+          "ticker": "EIX"
+        },
+        {
+          "buy_cost_eur": 10311.713572528644,
+          "dividends_eur": 0.0,
+          "entry_date": "2026-11-09",
+          "execution": "forward_observed_preclose",
+          "exit_date": "2026-11-20",
+          "fx_usd_per_eur": 1.096611499786377,
+          "idempotency_key": "IL-040:2026-11-20:exit_symbol:timesfm_eur_forward_v1:JCI",
+          "lock_sha256": "149dd7181334ac253b3dd43a7eba186bf47d99e881e35c3c8701ca8a205421c8",
+          "net_pnl_eur": -450.34131253727173,
+          "observed_at_utc": "2026-11-20T20:55:36.845883Z",
+          "quote_at_utc": "2026-11-20T20:55:00Z",
+          "sell_proceeds_eur": 9861.372259991373,
+          "shares_at_exit": 83.878057,
+          "signal_date": "2026-11-06",
+          "source_commit": "cf9cebe218d2e9bda2b5b82ca68f98153b846a7f",
+          "ticker": "JCI"
+        },
+        {
+          "buy_cost_eur": 10311.713589791992,
+          "dividends_eur": 0.0,
+          "entry_date": "2026-11-09",
+          "execution": "forward_observed_preclose",
+          "exit_date": "2026-11-20",
+          "fx_usd_per_eur": 1.096611499786377,
+          "idempotency_key": "IL-040:2026-11-20:exit_symbol:timesfm_eur_forward_v1:NWS",
+          "lock_sha256": "149dd7181334ac253b3dd43a7eba186bf47d99e881e35c3c8701ca8a205421c8",
+          "net_pnl_eur": -306.9569597478494,
+          "observed_at_utc": "2026-11-20T20:55:38.648891Z",
+          "quote_at_utc": "2026-11-20T20:55:00Z",
+          "sell_proceeds_eur": 10004.756630044143,
+          "shares_at_exit": 395.244881,
+          "signal_date": "2026-11-06",
+          "source_commit": "cf9cebe218d2e9bda2b5b82ca68f98153b846a7f",
+          "ticker": "NWS"
+        },
+        {
+          "buy_cost_eur": 10311.713595843406,
+          "dividends_eur": 0.0,
+          "entry_date": "2026-11-09",
+          "execution": "forward_observed_preclose",
+          "exit_date": "2026-11-20",
+          "fx_usd_per_eur": 1.096611499786377,
+          "idempotency_key": "IL-040:2026-11-20:exit_symbol:timesfm_eur_forward_v1:PCG",
+          "lock_sha256": "149dd7181334ac253b3dd43a7eba186bf47d99e881e35c3c8701ca8a205421c8",
+          "net_pnl_eur": 724.7434062900102,
+          "observed_at_utc": "2026-11-20T20:55:39.201322Z",
+          "quote_at_utc": "2026-11-20T20:55:00Z",
+          "sell_proceeds_eur": 11036.457002133417,
+          "shares_at_exit": 881.839289,
+          "signal_date": "2026-11-06",
+          "source_commit": "cf9cebe218d2e9bda2b5b82ca68f98153b846a7f",
+          "ticker": "PCG"
+        },
+        {
+          "buy_cost_eur": 10311.71354492389,
+          "dividends_eur": 0.0,
+          "entry_date": "2026-11-09",
+          "execution": "forward_observed_preclose",
+          "exit_date": "2026-11-20",
+          "fx_usd_per_eur": 1.096611499786377,
+          "idempotency_key": "IL-040:2026-11-20:exit_symbol:timesfm_eur_forward_v1:RMD",
+          "lock_sha256": "149dd7181334ac253b3dd43a7eba186bf47d99e881e35c3c8701ca8a205421c8",
+          "net_pnl_eur": 152.24498185959965,
+          "observed_at_utc": "2026-11-20T20:55:39.592572Z",
+          "quote_at_utc": "2026-11-20T20:55:00Z",
+          "sell_proceeds_eur": 10463.95852678349,
+          "shares_at_exit": 48.868886,
+          "signal_date": "2026-11-06",
+          "source_commit": "cf9cebe218d2e9bda2b5b82ca68f98153b846a7f",
+          "ticker": "RMD"
+        },
+        {
+          "buy_cost_eur": 10311.713573196812,
+          "dividends_eur": 0.0,
+          "entry_date": "2026-11-09",
+          "execution": "forward_observed_preclose",
+          "exit_date": "2026-11-20",
+          "fx_usd_per_eur": 1.096611499786377,
+          "idempotency_key": "IL-040:2026-11-20:exit_symbol:timesfm_eur_forward_v1:SMCI",
+          "lock_sha256": "149dd7181334ac253b3dd43a7eba186bf47d99e881e35c3c8701ca8a205421c8",
+          "net_pnl_eur": -2199.497861431496,
+          "observed_at_utc": "2026-11-20T20:55:40.222091Z",
+          "quote_at_utc": "2026-11-20T20:55:00Z",
+          "sell_proceeds_eur": 8112.215711765316,
+          "shares_at_exit": 411.420377,
+          "signal_date": "2026-11-06",
+          "source_commit": "cf9cebe218d2e9bda2b5b82ca68f98153b846a7f",
+          "ticker": "SMCI"
+        },
+        {
+          "buy_cost_eur": 10311.71357332878,
+          "dividends_eur": 0.0,
+          "entry_date": "2026-11-09",
+          "execution": "forward_observed_preclose",
+          "exit_date": "2026-11-20",
+          "fx_usd_per_eur": 1.096611499786377,
+          "idempotency_key": "IL-040:2026-11-20:exit_symbol:timesfm_eur_forward_v1:TRMB",
+          "lock_sha256": "149dd7181334ac253b3dd43a7eba186bf47d99e881e35c3c8701ca8a205421c8",
+          "net_pnl_eur": -452.770032012093,
+          "observed_at_utc": "2026-11-20T20:55:40.685024Z",
+          "quote_at_utc": "2026-11-20T20:55:00Z",
+          "sell_proceeds_eur": 9858.943541316687,
+          "shares_at_exit": 213.774267,
+          "signal_date": "2026-11-06",
+          "source_commit": "cf9cebe218d2e9bda2b5b82ca68f98153b846a7f",
+          "ticker": "TRMB"
         }
       ]
     }
@@ -1115,6 +1282,167 @@
     }
   ],
   "first_session": "2026-10-16",
+  "forward_executions": {
+    "IL-040:2026-11-20:exit:timesfm_eur_forward_v1": {
+      "exit_fx_quote_at_utc": "2026-11-20T20:55:00Z",
+      "exit_fx_usd_per_eur": 1.096611499786377,
+      "family": "weekly",
+      "fill_tickers": [
+        "AXON",
+        "EIX",
+        "JCI",
+        "NWS",
+        "PCG",
+        "RMD",
+        "SMCI",
+        "TRMB"
+      ],
+      "fills_count": 8,
+      "lock_sha256": "149dd7181334ac253b3dd43a7eba186bf47d99e881e35c3c8701ca8a205421c8",
+      "mode": "exit",
+      "observed_sale_evidence_sha256": "60866ca8b7282f5939695e986e37307fd67de43b3da2746b3b6b5e159ce61f30",
+      "quotes_sha256": "ffb5d95640f51d967d1c925fc6fdfe539d6c2bd49a85835b4ed511339159ebe7",
+      "recorded_at_utc": "2026-11-20T20:55:40.957877Z",
+      "session": "2026-11-20",
+      "source_commit": "cf9cebe218d2e9bda2b5b82ca68f98153b846a7f"
+    },
+    "IL-040:2026-11-20:exit_symbol:timesfm_eur_forward_v1:AXON": {
+      "exit_fx_observed_at_utc": "2026-11-20T20:55:35.392878Z",
+      "exit_fx_quote_at_utc": "2026-11-20T20:55:00Z",
+      "exit_fx_usd_per_eur": 1.096611499786377,
+      "family": "weekly",
+      "fill_tickers": [
+        "AXON"
+      ],
+      "fills_count": 1,
+      "lock_sha256": "149dd7181334ac253b3dd43a7eba186bf47d99e881e35c3c8701ca8a205421c8",
+      "mode": "exit_symbol",
+      "quotes_sha256": "5bac12ac82d1ad5a154580c60a4a41a96e4908658cccaa8c8a5121b64259a307",
+      "recorded_at_utc": "2026-11-20T20:55:40.957877Z",
+      "session": "2026-11-20",
+      "source_commit": "cf9cebe218d2e9bda2b5b82ca68f98153b846a7f",
+      "ticker": "AXON"
+    },
+    "IL-040:2026-11-20:exit_symbol:timesfm_eur_forward_v1:EIX": {
+      "exit_fx_observed_at_utc": "2026-11-20T20:55:35.392878Z",
+      "exit_fx_quote_at_utc": "2026-11-20T20:55:00Z",
+      "exit_fx_usd_per_eur": 1.096611499786377,
+      "family": "weekly",
+      "fill_tickers": [
+        "EIX"
+      ],
+      "fills_count": 1,
+      "lock_sha256": "149dd7181334ac253b3dd43a7eba186bf47d99e881e35c3c8701ca8a205421c8",
+      "mode": "exit_symbol",
+      "quotes_sha256": "4d03ef19fa846e1847a63a3a996517708b5a74b7e491182d3713c8b6df19d355",
+      "recorded_at_utc": "2026-11-20T20:55:40.957877Z",
+      "session": "2026-11-20",
+      "source_commit": "cf9cebe218d2e9bda2b5b82ca68f98153b846a7f",
+      "ticker": "EIX"
+    },
+    "IL-040:2026-11-20:exit_symbol:timesfm_eur_forward_v1:JCI": {
+      "exit_fx_observed_at_utc": "2026-11-20T20:55:35.392878Z",
+      "exit_fx_quote_at_utc": "2026-11-20T20:55:00Z",
+      "exit_fx_usd_per_eur": 1.096611499786377,
+      "family": "weekly",
+      "fill_tickers": [
+        "JCI"
+      ],
+      "fills_count": 1,
+      "lock_sha256": "149dd7181334ac253b3dd43a7eba186bf47d99e881e35c3c8701ca8a205421c8",
+      "mode": "exit_symbol",
+      "quotes_sha256": "0bc44f285724d1995d39cef46841d208cdfee59361035119544b294011d8b2dd",
+      "recorded_at_utc": "2026-11-20T20:55:40.957877Z",
+      "session": "2026-11-20",
+      "source_commit": "cf9cebe218d2e9bda2b5b82ca68f98153b846a7f",
+      "ticker": "JCI"
+    },
+    "IL-040:2026-11-20:exit_symbol:timesfm_eur_forward_v1:NWS": {
+      "exit_fx_observed_at_utc": "2026-11-20T20:55:35.392878Z",
+      "exit_fx_quote_at_utc": "2026-11-20T20:55:00Z",
+      "exit_fx_usd_per_eur": 1.096611499786377,
+      "family": "weekly",
+      "fill_tickers": [
+        "NWS"
+      ],
+      "fills_count": 1,
+      "lock_sha256": "149dd7181334ac253b3dd43a7eba186bf47d99e881e35c3c8701ca8a205421c8",
+      "mode": "exit_symbol",
+      "quotes_sha256": "3015b13f0cf7ac481c0e9ae454408b8fe497b4b9575551d6bee279f44d43fca9",
+      "recorded_at_utc": "2026-11-20T20:55:40.957877Z",
+      "session": "2026-11-20",
+      "source_commit": "cf9cebe218d2e9bda2b5b82ca68f98153b846a7f",
+      "ticker": "NWS"
+    },
+    "IL-040:2026-11-20:exit_symbol:timesfm_eur_forward_v1:PCG": {
+      "exit_fx_observed_at_utc": "2026-11-20T20:55:35.392878Z",
+      "exit_fx_quote_at_utc": "2026-11-20T20:55:00Z",
+      "exit_fx_usd_per_eur": 1.096611499786377,
+      "family": "weekly",
+      "fill_tickers": [
+        "PCG"
+      ],
+      "fills_count": 1,
+      "lock_sha256": "149dd7181334ac253b3dd43a7eba186bf47d99e881e35c3c8701ca8a205421c8",
+      "mode": "exit_symbol",
+      "quotes_sha256": "978552e0777eaa1df379cad026bf443d47d717a0f9f459b2101b95d2d702a42a",
+      "recorded_at_utc": "2026-11-20T20:55:40.957877Z",
+      "session": "2026-11-20",
+      "source_commit": "cf9cebe218d2e9bda2b5b82ca68f98153b846a7f",
+      "ticker": "PCG"
+    },
+    "IL-040:2026-11-20:exit_symbol:timesfm_eur_forward_v1:RMD": {
+      "exit_fx_observed_at_utc": "2026-11-20T20:55:35.392878Z",
+      "exit_fx_quote_at_utc": "2026-11-20T20:55:00Z",
+      "exit_fx_usd_per_eur": 1.096611499786377,
+      "family": "weekly",
+      "fill_tickers": [
+        "RMD"
+      ],
+      "fills_count": 1,
+      "lock_sha256": "149dd7181334ac253b3dd43a7eba186bf47d99e881e35c3c8701ca8a205421c8",
+      "mode": "exit_symbol",
+      "quotes_sha256": "3b92a14a96e93a6f1db2d2404ccf6f94b9c52055e90949b9a276f91632cda9fe",
+      "recorded_at_utc": "2026-11-20T20:55:40.957877Z",
+      "session": "2026-11-20",
+      "source_commit": "cf9cebe218d2e9bda2b5b82ca68f98153b846a7f",
+      "ticker": "RMD"
+    },
+    "IL-040:2026-11-20:exit_symbol:timesfm_eur_forward_v1:SMCI": {
+      "exit_fx_observed_at_utc": "2026-11-20T20:55:35.392878Z",
+      "exit_fx_quote_at_utc": "2026-11-20T20:55:00Z",
+      "exit_fx_usd_per_eur": 1.096611499786377,
+      "family": "weekly",
+      "fill_tickers": [
+        "SMCI"
+      ],
+      "fills_count": 1,
+      "lock_sha256": "149dd7181334ac253b3dd43a7eba186bf47d99e881e35c3c8701ca8a205421c8",
+      "mode": "exit_symbol",
+      "quotes_sha256": "73cbe1dd87712639cd865dc0b014aa0d2a5dce2d4e2f6ef7f17e14326b67e5bb",
+      "recorded_at_utc": "2026-11-20T20:55:40.957877Z",
+      "session": "2026-11-20",
+      "source_commit": "cf9cebe218d2e9bda2b5b82ca68f98153b846a7f",
+      "ticker": "SMCI"
+    },
+    "IL-040:2026-11-20:exit_symbol:timesfm_eur_forward_v1:TRMB": {
+      "exit_fx_observed_at_utc": "2026-11-20T20:55:35.392878Z",
+      "exit_fx_quote_at_utc": "2026-11-20T20:55:00Z",
+      "exit_fx_usd_per_eur": 1.096611499786377,
+      "family": "weekly",
+      "fill_tickers": [
+        "TRMB"
+      ],
+      "fills_count": 1,
+      "lock_sha256": "149dd7181334ac253b3dd43a7eba186bf47d99e881e35c3c8701ca8a205421c8",
+      "mode": "exit_symbol",
+      "quotes_sha256": "88308c5a3f663ce3d522b7207c76f7c48b2c99d4f1885728c5ce356632c05168",
+      "recorded_at_utc": "2026-11-20T20:55:40.957877Z",
+      "session": "2026-11-20",
+      "source_commit": "cf9cebe218d2e9bda2b5b82ca68f98153b846a7f",
+      "ticker": "TRMB"
+    }
+  },
   "fx_method": "previous_XNYS_session_EURUSD_close_at_open; current_EURUSD_close_at_mark",
   "initial_capital": 100000.0,
   "last_session": "2026-11-19",
