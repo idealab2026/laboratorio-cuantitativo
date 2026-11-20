@@ -1,5 +1,5 @@
 {
-  "checked_at_utc": "2026-11-20T14:36:51.203917Z",
+  "checked_at_utc": "2026-11-20T14:53:38.979753Z",
   "lock_sha256": "149dd7181334ac253b3dd43a7eba186bf47d99e881e35c3c8701ca8a205421c8",
   "mode": "single_midas_operator_monitor_no_broker",
   "note": "Observed quotes are not fills. A native engine must settle quantity/cash before a trade counts in P&L.",
@@ -12,12 +12,13 @@
     "omitted_algorithm_lanes": {},
     "requested_symbols": 34
   },
-  "run_id": 44754989443,
+  "run_id": 44757699841,
   "schema": "midas.operational_clock.v1",
   "session": "2026-11-20",
   "settlement": "native_forward_010_through_027_037_through_044",
   "slots": {
     "IL-010": {
+      "exit_only_ready": false,
       "holdings_count": 489,
       "native_settlement": "active_no_orders",
       "observed": 0,
@@ -28,6 +29,7 @@
       "waiting": 0
     },
     "IL-011": {
+      "exit_only_ready": false,
       "holdings_count": 7,
       "native_settlement": "not_ready",
       "observed": 0,
@@ -38,6 +40,7 @@
       "waiting": 0
     },
     "IL-012": {
+      "exit_only_ready": false,
       "holdings_count": 7,
       "native_settlement": "active_no_orders",
       "observed": 0,
@@ -48,6 +51,7 @@
       "waiting": 0
     },
     "IL-013": {
+      "exit_only_ready": false,
       "holdings_count": 6,
       "native_settlement": "not_ready",
       "observed": 0,
@@ -284,6 +288,7 @@
       "waiting": 0
     },
     "IL-017": {
+      "exit_only_ready": false,
       "holdings_count": 7,
       "native_settlement": "active_no_orders",
       "observed": 0,
@@ -294,6 +299,7 @@
       "waiting": 0
     },
     "IL-018": {
+      "exit_only_ready": false,
       "holdings_count": 1,
       "native_settlement": "active_no_orders",
       "observed": 0,
@@ -304,6 +310,7 @@
       "waiting": 0
     },
     "IL-019": {
+      "exit_only_ready": false,
       "holdings_count": 0,
       "native_settlement": "no_orders",
       "observed": 0,
@@ -314,6 +321,7 @@
       "waiting": 0
     },
     "IL-020": {
+      "exit_only_ready": false,
       "holdings_count": 0,
       "native_settlement": "no_orders",
       "observed": 0,
@@ -324,6 +332,7 @@
       "waiting": 0
     },
     "IL-021": {
+      "exit_only_ready": false,
       "holdings_count": 0,
       "native_settlement": "no_orders",
       "observed": 0,
@@ -334,6 +343,7 @@
       "waiting": 0
     },
     "IL-022": {
+      "exit_only_ready": false,
       "holdings_count": 0,
       "native_settlement": "no_orders",
       "observed": 0,
@@ -344,26 +354,29 @@
       "waiting": 0
     },
     "IL-023": {
+      "exit_only_ready": true,
       "holdings_count": 10,
       "native_settlement": "no_orders",
       "observed": 0,
       "orders": [],
       "planned": 0,
       "source_session": "2026-11-19",
-      "status": "source_stale_or_unavailable",
+      "status": "exit_only_waiting_preclose",
       "waiting": 0
     },
     "IL-024": {
+      "exit_only_ready": true,
       "holdings_count": 10,
       "native_settlement": "no_orders",
       "observed": 0,
       "orders": [],
       "planned": 0,
       "source_session": "2026-11-19",
-      "status": "source_stale_or_unavailable",
+      "status": "exit_only_waiting_preclose",
       "waiting": 0
     },
     "IL-025": {
+      "exit_only_ready": false,
       "holdings_count": 0,
       "native_settlement": "no_orders",
       "observed": 0,
@@ -374,16 +387,18 @@
       "waiting": 0
     },
     "IL-026": {
+      "exit_only_ready": true,
       "holdings_count": 10,
       "native_settlement": "no_orders",
       "observed": 0,
       "orders": [],
       "planned": 0,
       "source_session": "2026-11-19",
-      "status": "source_stale_or_unavailable",
+      "status": "exit_only_waiting_preclose",
       "waiting": 0
     },
     "IL-027": {
+      "exit_only_ready": false,
       "holdings_count": 0,
       "native_settlement": "no_orders",
       "observed": 0,
@@ -394,6 +409,7 @@
       "waiting": 0
     },
     "IL-037": {
+      "exit_only_ready": false,
       "holdings_count": 0,
       "native_settlement": "closed_or_paused",
       "observed": 0,
@@ -404,6 +420,7 @@
       "waiting": 0
     },
     "IL-038": {
+      "exit_only_ready": false,
       "holdings_count": 12,
       "native_settlement": "no_orders",
       "observed": 0,
@@ -414,6 +431,7 @@
       "waiting": 0
     },
     "IL-039": {
+      "exit_only_ready": false,
       "holdings_count": 10,
       "native_settlement": "no_orders",
       "observed": 0,
@@ -424,6 +442,7 @@
       "waiting": 0
     },
     "IL-040": {
+      "exit_only_ready": false,
       "holdings_count": 8,
       "native_settlement": "no_execution_due",
       "observed": 0,
@@ -434,6 +453,7 @@
       "waiting": 0
     },
     "IL-041": {
+      "exit_only_ready": false,
       "holdings_count": 1,
       "native_settlement": "no_execution_due",
       "observed": 0,
@@ -444,6 +464,7 @@
       "waiting": 0
     },
     "IL-042": {
+      "exit_only_ready": false,
       "holdings_count": 0,
       "native_settlement": "no_execution_due",
       "observed": 0,
@@ -454,6 +475,7 @@
       "waiting": 0
     },
     "IL-043": {
+      "exit_only_ready": false,
       "holdings_count": 1,
       "native_settlement": "no_execution_due",
       "observed": 0,
