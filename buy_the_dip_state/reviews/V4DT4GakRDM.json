@@ -1,0 +1,380 @@
+{
+  "schema_version": 1,
+  "status": "machine_first_pass",
+  "reviewed_at_utc": "2026-11-20T15:53:27.810248+00:00",
+  "source_identity": "Buy The Dip YouTube channel",
+  "transport": {
+    "kind": "official_podcast_mirror",
+    "provider": "iVoox",
+    "guid": "https://www.ivoox.com/101359361",
+    "published_date": "2023-01-12",
+    "youtube_video_id": "V4DT4GakRDM",
+    "match_score": 1.0,
+    "audio_bytes_processed_transiently": 36140139
+  },
+  "models": {
+    "asr": {
+      "language": "es",
+      "language_probability": 1.0,
+      "duration_seconds": 4517.511875,
+      "word_count": 12744,
+      "segment_count": 710,
+      "model": "small"
+    },
+    "semantic": {
+      "repo": "Qwen/Qwen3-4B-GGUF",
+      "file": "Qwen3-4B-Q4_K_M.gguf"
+    }
+  },
+  "metadata": {
+    "video_id": "V4DT4GakRDM",
+    "youtube_url": "https://www.youtube.com/watch?v=V4DT4GakRDM",
+    "title": "ESPECIAL 2023 👉 aciertos VS errores de INVERSIÓN  | BUY THE DIP PODCAST",
+    "category": "company_or_theme",
+    "guest_likely": false,
+    "podcast_guid": "https://www.ivoox.com/101359361",
+    "published_date": "2023-01-12",
+    "source": "official_podcast_mirror",
+    "match_score": 1.0
+  },
+  "analysis": {
+    "episode_summary": "El episodio analiza la estrategia de inversión Buy The Dip, discutiendo la revalorización de empresas como Adriatic, la caída del valor de Altisores debido a problemas regulatorios, y la posibilidad de entrada en sectores como energético y metales preciosos. Se mencionan errores en la gestión de capital, riesgos asociados a empresas con dependencia de bonistas senior, y la volatilidad del mercado. Se destacan oportunidades en sectores como financiero y energético, con análisis de valoración y riesgo, aunque se advierte sobre la incertidumbre de las predicciones de precios. El episodio también aborda la reducción de posiciones en ciertas empresas y la expectativa de crecimiento en sectores como uranio y plata.",
+    "process": {
+      "idea_generation": [],
+      "quality": [],
+      "balance_sheet": [],
+      "valuation": [
+        "La empresa Altisores ha experimentado una caída significativa en su valoración bursátil, pasando de 3.600 millones de dólares en 2013 a unos 125 millones actualmente, debido a problemas regulatorios y retrasos en la generación de beneficios."
+      ],
+      "cycle_macro": [
+        "El precio del petróleo ha tenido una volatilidad significativa, con un aumento inicial seguido por una caída, reflejando la influencia de factores macroeconómicos."
+      ],
+      "entry": [
+        "Se sugiere invertir en empresas del sector energético, especialmente en petróleo, debido a la expectativa de que los precios altos ayuden a sanar problemas estructurales de la industria."
+      ],
+      "sizing": [
+        "Las empresas del sector de la plata y el oro, como Guadajuato Silver y Google Resources, son pequeñas y especulativas, lo que ha impactado negativamente en la cartera."
+      ],
+      "add_hold": [
+        "Se espera que la empresa Guadajuato Silver pueda aumentar su valor en los próximos años si el precio se mantiene estable, lo que podría llevar a una cotización de dos dólares en los próximos años."
+      ],
+      "exit": [
+        "Se han salido de posiciones como Google Resources y Guadajuato Silver debido a una mala rentabilidad y una caída en su valor."
+      ],
+      "risk": [
+        "La deuda elevada y la dependencia de bonistas senior crean riesgos de refinanciación en 2024."
+      ],
+      "technical": [
+        "El precio de la acción de Guadajuato Silver ha fluctuado significativamente, con una caída de 15% y una recuperación posterior, reflejando la volatilidad del mercado."
+      ],
+      "management": [
+        "El management de la empresa ha tenido un historial de capital allocation terriblemente malo, lo que ha llevado a una decepción del año 2022."
+      ],
+      "mistakes": [
+        "Se ha cometido un error en la inversión en empresas como Google Resources, que no tienen planes de producción y dependen de la ampliación de reservas, lo que puede afectar negativamente su valor."
+      ]
+    },
+    "candidate_rules": [
+      {
+        "rule": "paráfrasis compacta",
+        "scope": "hosts|uncertain_or_guest",
+        "confidence": 0.0,
+        "evidence_timestamps": [],
+        "automation_proxy": "variable/cálculo posible o null",
+        "cross_video_confirmation_required": true
+      }
+    ],
+    "contradictions_or_uncertainties": [],
+    "named_examples": [],
+    "automation_readiness": "medium"
+  },
+  "chunk_evidence": [
+    {
+      "chunk": 1,
+      "evidence": [
+        {
+          "stage": "entry",
+          "paraphrase": "El programa menciona una oferta limitada para análisis de inversión con un precio reducido de 139 euros por año, válida hasta el 31 de diciembre, seguida de un aumento al 219 euros anuales.",
+          "timestamp": "00:02:31",
+          "scope": "hosts",
+          "confidence": 0.9,
+          "automation_hint": "proxy observable"
+        },
+        {
+          "stage": "valuation",
+          "paraphrase": "La empresa Altisores ha experimentado una caída significativa en su valoración bursátil, pasando de 3.600 millones de dólares en 2013 a unos 125 millones actualmente, debido a problemas regulatorios y retrasos en la generación de beneficios.",
+          "timestamp": "00:08:35",
+          "scope": "hosts",
+          "confidence": 0.8,
+          "automation_hint": "proxy observable"
+        },
+        {
+          "stage": "risk",
+          "paraphrase": "La empresa Altisores enfrenta desafíos de riesgo debido a la dependencia del mercado de vivienda, la incertidumbre regulatoria y la lenta generación de beneficios, lo que limita su capacidad de crecimiento y rendimiento.",
+          "timestamp": "00:09:38",
+          "scope": "hosts",
+          "confidence": 0.7,
+          "automation_hint": "proxy observable"
+        }
+      ],
+      "named_examples": [],
+      "chunk_summary": "El programa discute una oferta especial para análisis de inversión con un precio reducido, analiza el declive del valor de Altisores debido a problemas regulatorios y retrasos en beneficios, y destaca los riesgos asociados a la dependencia del mercado de vivienda y la falta de crecimiento sostenible."
+    },
+    {
+      "chunk": 2,
+      "evidence": [
+        {
+          "stage": "entry",
+          "paraphrase": "El negocio de Lenders One no fue vendido a precio objetivo y se mantuvo en el portafolio.",
+          "timestamp": "00:11:13",
+          "scope": "hosts",
+          "confidence": 0.0
+        },
+        {
+          "stage": "valuation",
+          "paraphrase": "La empresa enfrentó tres decepciones: fracaso en la venta, mentiras sobre control de contratos y retraso en el cierre del fricas flow.",
+          "timestamp": "00:11:18",
+          "scope": "uncertain_or_guest",
+          "confidence": 0.0
+        },
+        {
+          "stage": "risk",
+          "paraphrase": "La deuda elevada y la dependencia de bonistas senior crean riesgos de refinanciación en 2024.",
+          "timestamp": "00:18:04",
+          "scope": "hosts",
+          "confidence": 0.0
+        },
+        {
+          "stage": "exit",
+          "paraphrase": "El valor potencial del negocio se estima en 100-170 millones con un múltiplo de 7 veces la ganancia.",
+          "timestamp": "00:21:28",
+          "scope": "uncertain_or_guest",
+          "confidence": 0.0
+        }
+      ],
+      "named_examples": [],
+      "chunk_summary": "El análisis identifica tres decepciones principales en el negocio de Altizone: fracaso en la venta de Lenders One, mentiras sobre control de contratos y retraso en el cierre del fricas flow. La empresa enfrenta riesgos de refinanciación y un valor potencial estimado de 100-170 millones con un múltiplo de 7 veces la ganancia, aunque se espera una mejora en el futuro."
+    },
+    {
+      "chunk": 3,
+      "evidence": [
+        {
+          "stage": "management",
+          "paraphrase": "El management de la empresa ha tenido un historial de capital allocation terriblemente malo, lo que ha llevado a una decepción del año 2022.",
+          "timestamp": "00:22:34",
+          "scope": "hosts",
+          "confidence": 0.0
+        },
+        {
+          "stage": "entry",
+          "paraphrase": "Se ha entrado en empresas como Pension Resources, pero se ha tenido que salir a tiempo debido a una caída significativa en su valor.",
+          "timestamp": "00:24:04",
+          "scope": "hosts",
+          "confidence": 0.0
+        },
+        {
+          "stage": "exit",
+          "paraphrase": "Se han salido de posiciones como Google Resources y Guadajuato Silver debido a una mala rentabilidad y una caída en su valor.",
+          "timestamp": "00:29:05",
+          "scope": "hosts",
+          "confidence": 0.0
+        },
+        {
+          "stage": "valuation",
+          "paraphrase": "La empresa Guadajuato Silver ha tenido una caída significativa en su valor, lo que ha penalizado la cartera, aunque se espera un futuro positivo si el precio se mantiene estable.",
+          "timestamp": "00:30:09",
+          "scope": "hosts",
+          "confidence": 0.0
+        },
+        {
+          "stage": "risk",
+          "paraphrase": "Existen riesgos asociados a empresas como Google Resources que no tienen planes de producción y dependen de la ampliación de reservas, lo que puede afectar negativamente su valor.",
+          "timestamp": "00:30:57",
+          "scope": "hosts",
+          "confidence": 0.0
+        },
+        {
+          "stage": "technical",
+          "paraphrase": "El precio de la acción de Guadajuato Silver ha fluctuado significativamente, con una caída de 15% y una recuperación posterior, reflejando la volatilidad del mercado.",
+          "timestamp": "00:30:13",
+          "scope": "hosts",
+          "confidence": 0.0
+        },
+        {
+          "stage": "cycle_macro",
+          "paraphrase": "El precio del petróleo ha tenido una volatilidad significativa, con un aumento inicial seguido por una caída, reflejando la influencia de factores macroeconómicos.",
+          "timestamp": "00:28:04",
+          "scope": "hosts",
+          "confidence": 0.0
+        },
+        {
+          "stage": "sizing",
+          "paraphrase": "Las empresas del sector de la plata y el oro, como Guadajuato Silver y Google Resources, son pequeñas y especulativas, lo que ha impactado negativamente en la cartera.",
+          "timestamp": "00:28:33",
+          "scope": "hosts",
+          "confidence": 0.0
+        },
+        {
+          "stage": "add_hold",
+          "paraphrase": "Se espera que la empresa Guadajuato Silver pueda aumentar su valor en los próximos años si el precio se mantiene estable, lo que podría llevar a una cotización de dos dólares en los próximos años.",
+          "timestamp": "00:30:40",
+          "scope": "hosts",
+          "confidence": 0.0
+        },
+        {
+          "stage": "mistake",
+          "paraphrase": "Se ha cometido un error en la inversión en empresas como Google Resources, que no tienen planes de producción y dependen de la ampliación de reservas, lo que puede afectar negativamente su valor.",
+          "timestamp": "00:30:57",
+          "scope": "hosts",
+          "confidence": 0.0
+        }
+      ],
+      "named_examples": [],
+      "chunk_summary": "El análisis de la estrategia de inversión muestra una serie de errores en la gestión del capital y en la selección de empresas, con una caída significativa en valores de acciones y una volatilidad en el mercado. Se han salido de posiciones como Pension Resources y Google Resources debido a una mala rentabilidad, mientras que se espera un futuro positivo para empresas como Guadajuato Silver si el precio se mantiene estable. La estrategia ha tenido una rentabilidad moderada, pero con una volatilidad alta, lo que refleja los riesgos asociados a la inversión en sectores especulativos y la dependencia de factores macroeconómicos."
+    },
+    {
+      "chunk": 4,
+      "evidence": [
+        {
+          "stage": "entry",
+          "paraphrase": "Discusión sobre la reducción de posiciones en Adriatic y la posibilidad de entrada en empresas con potencial de crecimiento.",
+          "timestamp": "00:33:05",
+          "scope": "uncertain_or_guest",
+          "confidence": 0.0
+        },
+        {
+          "stage": "valuation",
+          "paraphrase": "Análisis de la revalorización de Adriatic y su potencial de crecimiento con factores como la ampliación de la mina y los contratos de venta.",
+          "timestamp": "00:34:05",
+          "scope": "hosts",
+          "confidence": 0.0
+        },
+        {
+          "stage": "risk",
+          "paraphrase": "Reconocimiento de un riesgo reducido en Adriatic debido a la revalorización y la estabilidad de los contratos de venta.",
+          "timestamp": "00:34:42",
+          "scope": "hosts",
+          "confidence": 0.0
+        },
+        {
+          "stage": "technical",
+          "paraphrase": "Mención de la revalorización de Adriatic a 5-6 dólares y su impacto en el múltiplo de precio y la rentabilidad.",
+          "timestamp": "00:34:49",
+          "scope": "hosts",
+          "confidence": 0.0
+        },
+        {
+          "stage": "entry",
+          "paraphrase": "Análisis de la posibilidad de entrada en Adriatic basado en su potencial de crecimiento y el riesgo reducido.",
+          "timestamp": "00:35:01",
+          "scope": "hosts",
+          "confidence": 0.0
+        },
+        {
+          "stage": "cycle_macro",
+          "paraphrase": "Referencia a la revalorización del precio de la producción de Adriatic y su relación con el ciclo macro del petróleo.",
+          "timestamp": "00:39:02",
+          "scope": "hosts",
+          "confidence": 0.0
+        }
+      ],
+      "named_examples": [],
+      "chunk_summary": "El fragmento discute la revalorización de la empresa Adriatic, la reducción de posiciones en el mercado, y la posibilidad de entrada en empresas con potencial de crecimiento. Se analiza el valor de la empresa en función de factores como la ampliación de la mina, los contratos de venta, y el riesgo reducido. Se menciona la revalorización a 5-6 dólares y su impacto en el múltiplo de precio y la rentabilidad. También se discute la posibilidad de entrada en Adriatic basada en su potencial de crecimiento y el riesgo reducido, así como la relación con el ciclo macro del petróleo."
+    },
+    {
+      "chunk": 5,
+      "evidence": [
+        {
+          "stage": "valuation",
+          "paraphrase": "El análisis de valoración de Bank of Georgia muestra un ROE del 32% en 2021, con un descuento del 60% en su cotización, y un margen neto de interés del 5,3%.",
+          "timestamp": "00:44:15",
+          "scope": "hosts",
+          "confidence": 0.8
+        },
+        {
+          "stage": "risk",
+          "paraphrase": "El riesgo crediticio de Georgia es muy controlado, con un coverage de non-performing loans del 90% y un colateral que alcanza el 100%, lo que reduce significativamente la exposición al riesgo.",
+          "timestamp": "00:49:27",
+          "scope": "hosts",
+          "confidence": 0.7
+        },
+        {
+          "stage": "entry",
+          "paraphrase": "La entrada en el sector financiero de Georgia se basa en su crecimiento sostenido, con un ROE del 25% y un crecimiento de beneficios a doble dígito, lo que sugiere una oportunidad de inversión sólida.",
+          "timestamp": "00:47:35",
+          "scope": "hosts",
+          "confidence": 0.6
+        }
+      ],
+      "named_examples": [],
+      "chunk_summary": "El análisis de valoración de Bank of Georgia destaca su ROE del 32% en 2021, un descuento del 60% en su cotización, y un margen neto de interés del 5,3%, mientras que el riesgo crediticio es muy controlado con un coverage de non-performing loans del 90%. La entrada en el sector financiero se basa en su crecimiento sostenido y beneficios a doble dígito, lo que sugiere una oportunidad de inversión sólida."
+    },
+    {
+      "chunk": 6,
+      "evidence": [
+        {
+          "stage": "valuation",
+          "paraphrase": "El precio del petróleo está a 70 dólares, lo que sugiere que el sector energético podría ser atractivo a largo plazo.",
+          "timestamp": "01:01:49",
+          "scope": "hosts",
+          "confidence": 0.8,
+          "automation_hint": "proxy observable"
+        },
+        {
+          "stage": "cycle_macro",
+          "paraphrase": "El sector energético está cotizando a 9,7 veces el per forward, lo que lo sitúa más barato que la media histórica del sector.",
+          "timestamp": "01:02:51",
+          "scope": "hosts",
+          "confidence": 0.7,
+          "automation_hint": "proxy observable"
+        },
+        {
+          "stage": "entry",
+          "paraphrase": "Se sugiere invertir en empresas del sector energético, especialmente en petróleo, debido a la expectativa de que los precios altos ayuden a sanar problemas estructurales de la industria.",
+          "timestamp": "01:02:33",
+          "scope": "hosts",
+          "confidence": 0.6,
+          "automation_hint": "proxy observable"
+        }
+      ],
+      "named_examples": [],
+      "chunk_summary": "El análisis sugiere que el sector energético, especialmente el de petróleo, podría ser atractivo a largo plazo debido a su valoración más baja que la media histórica y la expectativa de que los precios altos ayuden a sanar problemas estructurales de la industria."
+    },
+    {
+      "chunk": 7,
+      "evidence": [
+        {
+          "stage": "entry",
+          "paraphrase": "El analista menciona el sector del uranio y la plata como posibles inversiones para 2023, destacando la demanda en India y el déficit en el mercado de plata.",
+          "timestamp": "01:06:21",
+          "scope": "uncertain_or_guest",
+          "confidence": 0.0
+        },
+        {
+          "stage": "valuation",
+          "paraphrase": "El analista expresa deseos específicos de precios para materias primas en 2023, como la plata por encima de 30 dólares, el oro por encima de 2000, y el petróleo a 150 dólares.",
+          "timestamp": "01:07:39",
+          "scope": "uncertain_or_guest",
+          "confidence": 0.0
+        },
+        {
+          "stage": "risk",
+          "paraphrase": "El analista advierte sobre la posibilidad de que las predicciones no se cumplan debido a factores como recesiones o cambios en el contexto del mercado.",
+          "timestamp": "01:09:14",
+          "scope": "uncertain_or_guest",
+          "confidence": 0.0
+        },
+        {
+          "stage": "exit",
+          "paraphrase": "El analista menciona que las predicciones son deseos no garantías, y que el mercado puede no cumplirlos, lo que implica un riesgo de no alcanzar los objetivos establecidos.",
+          "timestamp": "01:10:16",
+          "scope": "uncertain_or_guest",
+          "confidence": 0.0
+        }
+      ],
+      "named_examples": [],
+      "chunk_summary": "El analista discute posibles inversiones en sectores como uranio, plata y oro para 2023, expresando deseos específicos de precios y alertando sobre el riesgo de que las predicciones no se cumplan. Destaca la demanda en India y el déficit en el mercado de plata, mientras advierte sobre la incertidumbre del mercado y la necesidad de no hacer predicciones concretas debido a factores externos."
+    }
+  ],
+  "copyright_note": "No audio or verbatim transcript is persisted; only derived paraphrases."
+}
