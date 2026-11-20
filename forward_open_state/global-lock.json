@@ -1,47 +1,41 @@
 {
-  "fx_reference": {
-    "captured_at_utc": "2026-11-19T13:30:24.899144Z",
-    "pair": "EURUSD=X",
-    "purpose": "paper_previous_XNYS_session_FX_proxy",
-    "rate_usd_per_eur": 1.0992876291275024,
-    "source": "yfinance_unadjusted_daily_close",
-    "source_session": "2026-11-18"
-  },
-  "lock_sha256": "7bee0db8d5d7a5125159da601cbc16829e6d2caac9e8ad81055c5f6a5babaa70",
-  "open_at_utc": "2026-11-19T14:30:00Z",
-  "prepared_at_utc": "2026-11-19T13:30:24.899164Z",
-  "previous_session": "2026-11-18",
+  "lock_sha256": "149dd7181334ac253b3dd43a7eba186bf47d99e881e35c3c8701ca8a205421c8",
+  "open_at_utc": "2026-11-20T14:30:00Z",
+  "prepared_at_utc": "2026-11-20T13:27:07.815512Z",
+  "previous_session": "2026-11-19",
   "schema": "midas.operational_clock.v1",
-  "session": "2026-11-19",
+  "session": "2026-11-20",
   "slots": {
     "IL-010": {
       "execution_ready": true,
+      "exit_only_due": false,
       "exit_only_ready": false,
       "holdings_count": 489,
       "monitor_tickers": [],
       "orders": [],
       "orders_count": 0,
-      "source_session": "2026-11-18",
+      "source_session": "2026-11-19",
       "source_status": "recorded"
     },
     "IL-011": {
       "execution_ready": false,
+      "exit_only_due": false,
       "exit_only_ready": false,
       "holdings_count": 7,
       "monitor_tickers": [],
       "orders": [],
       "orders_count": 0,
-      "source_session": "2026-11-17",
+      "source_session": "2026-11-18",
       "source_status": "paused"
     },
     "IL-012": {
       "execution_ready": true,
+      "exit_only_due": false,
       "exit_only_ready": false,
-      "holdings_count": 8,
+      "holdings_count": 7,
       "monitor_tickers": [
         "ABT",
         "DRI",
-        "IDXX",
         "KMB",
         "LH",
         "MNST",
@@ -50,71 +44,23 @@
       ],
       "orders": [],
       "orders_count": 0,
-      "source_session": "2026-11-18",
+      "source_session": "2026-11-19",
       "source_status": "recorded"
     },
     "IL-013": {
-      "execution_ready": true,
+      "execution_ready": false,
+      "exit_only_due": false,
       "exit_only_ready": false,
-      "holdings_count": 3,
-      "monitor_tickers": [
-        "ESS",
-        "GILD",
-        "TRGP"
-      ],
-      "orders": [
-        {
-          "action": "buy",
-          "limit_price": null,
-          "scheduled_at_utc": "2026-11-19T14:30:00Z",
-          "signal_session": "2026-11-18",
-          "target_session": "2026-11-19",
-          "target_weight": null,
-          "ticker": "DLTR"
-        },
-        {
-          "action": "buy",
-          "limit_price": null,
-          "scheduled_at_utc": "2026-11-19T14:30:00Z",
-          "signal_session": "2026-11-18",
-          "target_session": "2026-11-19",
-          "target_weight": null,
-          "ticker": "FE"
-        },
-        {
-          "action": "buy",
-          "limit_price": null,
-          "scheduled_at_utc": "2026-11-19T14:30:00Z",
-          "signal_session": "2026-11-18",
-          "target_session": "2026-11-19",
-          "target_weight": null,
-          "ticker": "GNRC"
-        },
-        {
-          "action": "buy",
-          "limit_price": null,
-          "scheduled_at_utc": "2026-11-19T14:30:00Z",
-          "signal_session": "2026-11-18",
-          "target_session": "2026-11-19",
-          "target_weight": null,
-          "ticker": "LYV"
-        },
-        {
-          "action": "buy",
-          "limit_price": null,
-          "scheduled_at_utc": "2026-11-19T14:30:00Z",
-          "signal_session": "2026-11-18",
-          "target_session": "2026-11-19",
-          "target_weight": null,
-          "ticker": "ZTS"
-        }
-      ],
-      "orders_count": 5,
+      "holdings_count": 6,
+      "monitor_tickers": [],
+      "orders": [],
+      "orders_count": 0,
       "source_session": "2026-11-18",
-      "source_status": "recorded"
+      "source_status": "paused"
     },
     "IL-014": {
       "execution_ready": true,
+      "exit_only_due": false,
       "exit_only_ready": false,
       "holdings_count": 7,
       "monitor_tickers": [
@@ -130,204 +76,166 @@
         {
           "action": "buy",
           "limit_price": null,
-          "scheduled_at_utc": "2026-11-19T14:30:00Z",
-          "signal_session": "2026-11-18",
-          "target_session": "2026-11-19",
+          "scheduled_at_utc": "2026-11-20T14:30:00Z",
+          "signal_session": "2026-11-19",
+          "target_session": "2026-11-20",
           "target_weight": null,
-          "ticker": "FSLR"
+          "ticker": "COF"
         }
       ],
       "orders_count": 1,
-      "source_session": "2026-11-18",
+      "source_session": "2026-11-19",
       "source_status": "recorded"
     },
     "IL-015": {
       "execution_ready": true,
+      "exit_only_due": false,
       "exit_only_ready": false,
-      "holdings_count": 6,
+      "holdings_count": 5,
       "monitor_tickers": [
-        "ABNB",
         "CAH",
         "COST",
+        "DRI",
         "EPAM",
-        "MTD",
         "WMT"
       ],
       "orders": [
         {
           "action": "sell",
           "limit_price": null,
-          "scheduled_at_utc": "2026-11-19T14:30:00Z",
-          "signal_session": "2026-11-18",
-          "target_session": "2026-11-19",
+          "scheduled_at_utc": "2026-11-20T14:30:00Z",
+          "signal_session": "2026-11-19",
+          "target_session": "2026-11-20",
           "target_weight": null,
-          "ticker": "ABBV"
-        },
-        {
-          "action": "buy",
-          "limit_price": null,
-          "scheduled_at_utc": "2026-11-19T14:30:00Z",
-          "signal_session": "2026-11-18",
-          "target_session": "2026-11-19",
-          "target_weight": null,
-          "ticker": "DRI"
-        },
-        {
-          "action": "buy",
-          "limit_price": null,
-          "scheduled_at_utc": "2026-11-19T14:30:00Z",
-          "signal_session": "2026-11-18",
-          "target_session": "2026-11-19",
-          "target_weight": null,
-          "ticker": "EIX"
+          "ticker": "MTD"
         }
       ],
-      "orders_count": 3,
-      "source_session": "2026-11-18",
+      "orders_count": 1,
+      "source_session": "2026-11-19",
       "source_status": "recorded"
     },
     "IL-016": {
       "execution_ready": true,
+      "exit_only_due": false,
       "exit_only_ready": false,
-      "holdings_count": 6,
+      "holdings_count": 5,
       "monitor_tickers": [
         "ALLE",
         "COST",
-        "EPAM",
         "ERIE",
-        "MTD",
-        "ULTA"
+        "LW",
+        "MTD"
       ],
       "orders": [
         {
-          "action": "buy",
+          "action": "sell",
           "limit_price": null,
-          "scheduled_at_utc": "2026-11-19T14:30:00Z",
-          "signal_session": "2026-11-18",
-          "target_session": "2026-11-19",
+          "scheduled_at_utc": "2026-11-20T14:30:00Z",
+          "signal_session": "2026-11-19",
+          "target_session": "2026-11-20",
           "target_weight": null,
-          "ticker": "CMG"
+          "ticker": "EPAM"
         },
         {
           "action": "buy",
           "limit_price": null,
-          "scheduled_at_utc": "2026-11-19T14:30:00Z",
-          "signal_session": "2026-11-18",
-          "target_session": "2026-11-19",
+          "scheduled_at_utc": "2026-11-20T14:30:00Z",
+          "signal_session": "2026-11-19",
+          "target_session": "2026-11-20",
           "target_weight": null,
-          "ticker": "CPB"
+          "ticker": "PCG"
         },
         {
           "action": "sell",
           "limit_price": null,
-          "scheduled_at_utc": "2026-11-19T14:30:00Z",
-          "signal_session": "2026-11-18",
-          "target_session": "2026-11-19",
+          "scheduled_at_utc": "2026-11-20T14:30:00Z",
+          "signal_session": "2026-11-19",
+          "target_session": "2026-11-20",
           "target_weight": null,
-          "ticker": "LW"
+          "ticker": "ULTA"
         }
       ],
       "orders_count": 3,
-      "source_session": "2026-11-18",
+      "source_session": "2026-11-19",
       "source_status": "recorded"
     },
     "IL-017": {
       "execution_ready": true,
+      "exit_only_due": false,
       "exit_only_ready": false,
-      "holdings_count": 6,
+      "holdings_count": 7,
       "monitor_tickers": [
         "ABBV",
+        "CPB",
         "HCA",
         "MCK",
         "MRNA",
         "MTD",
         "ULTA"
       ],
-      "orders": [
-        {
-          "action": "sell",
-          "limit_price": null,
-          "scheduled_at_utc": "2026-11-19T14:30:00Z",
-          "signal_session": "2026-11-18",
-          "target_session": "2026-11-19",
-          "target_weight": null,
-          "ticker": "ACN"
-        },
-        {
-          "action": "buy",
-          "limit_price": null,
-          "scheduled_at_utc": "2026-11-19T14:30:00Z",
-          "signal_session": "2026-11-18",
-          "target_session": "2026-11-19",
-          "target_weight": null,
-          "ticker": "CPB"
-        },
-        {
-          "action": "buy",
-          "limit_price": null,
-          "scheduled_at_utc": "2026-11-19T14:30:00Z",
-          "signal_session": "2026-11-18",
-          "target_session": "2026-11-19",
-          "target_weight": null,
-          "ticker": "LUV"
-        }
-      ],
-      "orders_count": 3,
-      "source_session": "2026-11-18",
+      "orders": [],
+      "orders_count": 0,
+      "source_session": "2026-11-19",
       "source_status": "recorded"
     },
     "IL-018": {
       "execution_ready": true,
+      "exit_only_due": false,
       "exit_only_ready": false,
       "holdings_count": 1,
       "monitor_tickers": [],
       "orders": [],
       "orders_count": 0,
-      "source_session": "2026-11-18",
+      "source_session": "2026-11-19",
       "source_status": "recorded"
     },
     "IL-019": {
       "execution_ready": true,
+      "exit_only_due": false,
       "exit_only_ready": false,
       "holdings_count": 0,
       "monitor_tickers": [],
       "orders": [],
       "orders_count": 0,
-      "source_session": "2026-11-18",
+      "source_session": "2026-11-19",
       "source_status": "recorded"
     },
     "IL-020": {
       "execution_ready": true,
+      "exit_only_due": false,
       "exit_only_ready": false,
       "holdings_count": 0,
       "monitor_tickers": [],
       "orders": [],
       "orders_count": 0,
-      "source_session": "2026-11-18",
+      "source_session": "2026-11-19",
       "source_status": "recorded"
     },
     "IL-021": {
       "execution_ready": true,
+      "exit_only_due": false,
       "exit_only_ready": false,
       "holdings_count": 0,
       "monitor_tickers": [],
       "orders": [],
       "orders_count": 0,
-      "source_session": "2026-11-18",
+      "source_session": "2026-11-19",
       "source_status": "recorded"
     },
     "IL-022": {
       "execution_ready": true,
+      "exit_only_due": false,
       "exit_only_ready": false,
       "holdings_count": 0,
       "monitor_tickers": [],
       "orders": [],
       "orders_count": 0,
-      "source_session": "2026-11-18",
+      "source_session": "2026-11-19",
       "source_status": "recorded"
     },
     "IL-023": {
       "execution_ready": false,
+      "exit_only_due": false,
       "exit_only_ready": true,
       "holdings_count": 10,
       "monitor_tickers": [
@@ -344,11 +252,12 @@
       ],
       "orders": [],
       "orders_count": 0,
-      "source_session": "2026-11-18",
+      "source_session": "2026-11-19",
       "source_status": "paused"
     },
     "IL-024": {
       "execution_ready": false,
+      "exit_only_due": false,
       "exit_only_ready": true,
       "holdings_count": 10,
       "monitor_tickers": [
@@ -365,21 +274,23 @@
       ],
       "orders": [],
       "orders_count": 0,
-      "source_session": "2026-11-18",
+      "source_session": "2026-11-19",
       "source_status": "paused"
     },
     "IL-025": {
       "execution_ready": true,
+      "exit_only_due": false,
       "exit_only_ready": false,
       "holdings_count": 0,
       "monitor_tickers": [],
       "orders": [],
       "orders_count": 0,
-      "source_session": "2026-11-18",
+      "source_session": "2026-11-19",
       "source_status": "recorded"
     },
     "IL-026": {
       "execution_ready": false,
+      "exit_only_due": false,
       "exit_only_ready": true,
       "holdings_count": 10,
       "monitor_tickers": [
@@ -396,51 +307,56 @@
       ],
       "orders": [],
       "orders_count": 0,
-      "source_session": "2026-11-18",
+      "source_session": "2026-11-19",
       "source_status": "paused"
     },
     "IL-027": {
       "execution_ready": true,
+      "exit_only_due": false,
       "exit_only_ready": false,
       "holdings_count": 0,
       "monitor_tickers": [],
       "orders": [],
       "orders_count": 0,
-      "source_session": "2026-11-18",
+      "source_session": "2026-11-19",
       "source_status": "recorded"
     },
     "IL-037": {
       "execution_ready": true,
+      "exit_only_due": false,
       "exit_only_ready": false,
       "holdings_count": 0,
       "monitor_tickers": [],
       "orders": [],
       "orders_count": 0,
-      "source_session": "2026-11-18",
+      "source_session": "2026-11-19",
       "source_status": "recorded"
     },
     "IL-038": {
       "execution_ready": true,
+      "exit_only_due": false,
       "exit_only_ready": false,
       "holdings_count": 12,
       "monitor_tickers": [],
       "orders": [],
       "orders_count": 0,
-      "source_session": "2026-11-18",
+      "source_session": "2026-11-19",
       "source_status": "recorded"
     },
     "IL-039": {
       "execution_ready": true,
+      "exit_only_due": false,
       "exit_only_ready": false,
       "holdings_count": 10,
       "monitor_tickers": [],
       "orders": [],
       "orders_count": 0,
-      "source_session": "2026-11-18",
+      "source_session": "2026-11-19",
       "source_status": "recorded"
     },
     "IL-040": {
       "execution_ready": true,
+      "exit_only_due": false,
       "exit_only_ready": false,
       "holdings_count": 8,
       "monitor_tickers": [
@@ -455,78 +371,79 @@
       ],
       "orders": [],
       "orders_count": 0,
-      "source_session": "2026-11-18",
+      "source_session": "2026-11-19",
       "source_status": "recorded"
     },
     "IL-041": {
       "execution_ready": true,
+      "exit_only_due": false,
       "exit_only_ready": false,
       "holdings_count": 1,
       "monitor_tickers": [],
       "orders": [],
       "orders_count": 0,
-      "source_session": "2026-11-18",
+      "source_session": "2026-11-19",
       "source_status": "recorded"
     },
     "IL-042": {
       "execution_ready": true,
+      "exit_only_due": false,
       "exit_only_ready": false,
       "holdings_count": 0,
-      "monitor_tickers": [
-        "ELV",
-        "GDDY"
-      ],
-      "orders": [
-        {
-          "action": "buy",
-          "limit_price": null,
-          "scheduled_at_utc": "2026-11-19T14:30:00Z",
-          "signal_session": "2026-11-18",
-          "target_session": "2026-11-19",
-          "target_weight": null,
-          "ticker": "ELV"
-        },
-        {
-          "action": "buy",
-          "limit_price": null,
-          "scheduled_at_utc": "2026-11-19T14:30:00Z",
-          "signal_session": "2026-11-18",
-          "target_session": "2026-11-19",
-          "target_weight": null,
-          "ticker": "GDDY"
-        }
-      ],
-      "orders_count": 2,
-      "source_session": "2026-11-18",
+      "monitor_tickers": [],
+      "orders": [],
+      "orders_count": 0,
+      "source_session": "2026-11-19",
       "source_status": "recorded"
     },
     "IL-043": {
       "execution_ready": true,
+      "exit_only_due": false,
       "exit_only_ready": false,
       "holdings_count": 1,
       "monitor_tickers": [],
       "orders": [],
       "orders_count": 0,
-      "source_session": "2026-11-18",
+      "source_session": "2026-11-19",
       "source_status": "recorded"
     },
     "IL-044": {
       "execution_ready": true,
+      "exit_only_due": false,
       "exit_only_ready": false,
-      "holdings_count": 6,
+      "holdings_count": 5,
       "monitor_tickers": [
         "MAS",
         "MCO",
         "NDAQ",
-        "NSC",
         "PRU",
+        "ROL",
         "SHW"
       ],
-      "orders": [],
-      "orders_count": 0,
-      "source_session": "2026-11-18",
+      "orders": [
+        {
+          "action": "sell",
+          "limit_price": null,
+          "scheduled_at_utc": "2026-11-20T14:30:00Z",
+          "signal_session": "2026-11-19",
+          "target_session": "2026-11-20",
+          "target_weight": 0.0,
+          "ticker": "MCO"
+        },
+        {
+          "action": "buy",
+          "limit_price": null,
+          "scheduled_at_utc": "2026-11-20T14:30:00Z",
+          "signal_session": "2026-11-19",
+          "target_session": "2026-11-20",
+          "target_weight": 0.15,
+          "ticker": "ROL"
+        }
+      ],
+      "orders_count": 2,
+      "source_session": "2026-11-19",
       "source_status": "recorded"
     }
   },
-  "source_commit": "da997560ef3398b2324d16680384c7a710c4df72"
+  "source_commit": "cf9cebe218d2e9bda2b5b82ca68f98153b846a7f"
 }
