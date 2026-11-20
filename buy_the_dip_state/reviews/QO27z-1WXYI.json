@@ -1,0 +1,297 @@
+{
+  "schema_version": 1,
+  "status": "machine_first_pass",
+  "reviewed_at_utc": "2026-11-20T03:37:22.511214+00:00",
+  "source_identity": "Buy The Dip YouTube channel",
+  "transport": {
+    "kind": "official_podcast_mirror",
+    "provider": "iVoox",
+    "guid": "https://www.ivoox.com/105159515",
+    "published_date": "2023-03-25",
+    "youtube_video_id": "QO27z-1WXYI",
+    "match_score": 1.0,
+    "audio_bytes_processed_transiently": 18103527
+  },
+  "models": {
+    "asr": {
+      "language": "es",
+      "language_probability": 1.0,
+      "duration_seconds": 2262.88325,
+      "word_count": 6152,
+      "segment_count": 759,
+      "model": "small"
+    },
+    "semantic": {
+      "repo": "Qwen/Qwen3-4B-GGUF",
+      "file": "Qwen3-4B-Q4_K_M.gguf"
+    }
+  },
+  "metadata": {
+    "video_id": "QO27z-1WXYI",
+    "youtube_url": "https://www.youtube.com/watch?v=QO27z-1WXYI",
+    "title": "2 EMPRESAS para INVERTIR | BUY THE DIP PODCAST",
+    "category": "company_or_theme",
+    "guest_likely": false,
+    "podcast_guid": "https://www.ivoox.com/105159515",
+    "published_date": "2023-03-25",
+    "source": "official_podcast_mirror",
+    "match_score": 1.0
+  },
+  "analysis": {
+    "episode_summary": "El episodio analiza dos empresas para inversión bajo la estrategia Buy The Dip. La primera empresa, Farmer Mac, se destaca por su rendimiento financiero sólido, baja tasa de impago, diversificación geográfica y de productos, tamaño de mercado significativo, y garantía gubernamental, lo que sugiere un alto potencial de crecimiento y bajo riesgo. La segunda empresa, una minera en Arizona, tiene un proyecto de cobre polimetálico con alta concentración y buenos resultados de exploración, ubicación en tierras privadas que reduce regulaciones federales, y un valor presente neto positivo con un retorno alto. Sin embargo, existen riesgos de dilución, regulaciones federales, y una estructura de gestión limitada. Ambas empresas se analizan con enfoque en valoración, riesgo, entrada y salida, destacando su resistencia y estabilidad a largo plazo.",
+    "process": {
+      "idea_generation": [],
+      "quality": [
+        "La empresa opera en un sector con diversificación geográfica y de productos, lo que reduce el impacto de eventos adversos locales."
+      ],
+      "balance_sheet": [],
+      "valuation": [
+        "La empresa Farmer Mac tiene un rendimiento anual del 16% sin dividendos y un dividendo del 4%.",
+        "El proyecto tiene un valor presente neto de 525 millones de dólares antes de impuestos con un retorno del 42%.",
+        "El análisis de Farmer Mac menciona un retorno implícito anual del 6,6% y un apalancamiento de 21 veces, con un RoE del 17% que se normaliza a 10%."
+      ],
+      "cycle_macro": [
+        "El proyecto se sitúa en un ciclo macro positivo, con un horizonte de 10 años y una proyección de crecimiento en la producción de cobre."
+      ],
+      "entry": [
+        "La empresa es una institución gubernamental (GCE) con garantía implícita, lo que permite una financiación a bajo costo y un modelo de negocio estable.",
+        "Se sugiere una estrategia de entrada basada en el análisis de los retornos y el apalancamiento, con un interés en mantener el negocio a largo plazo (buy and hold) debido a su resistencia y estabilidad."
+      ],
+      "sizing": [
+        "La empresa tiene un tamaño de 1.400 millones de dólares y una cuota de mercado del 6%, lo que sugiere un potencial de crecimiento superior al sector.",
+        "El proyecto tiene un recurso de 11,4 millones de toneladas, con 2,1% de cobre, 5% de zinc, y otros metales, lo que sugiere un alto potencial de producción."
+      ],
+      "add_hold": [],
+      "exit": [
+        "La empresa podría cotizar entre 100 y 150 millones de dólares si se publica el PIA, lo que sugiere una estrategia de salida basada en el valor del proyecto."
+      ],
+      "risk": [
+        "La empresa tiene una tasa de impago muy baja (2 puntos básicos en 30 años) y una garantía gubernamental que reduce su riesgo.",
+        "La empresa enfrenta riesgos de levantamiento de capital y regulaciones federales, pero su ubicación en tierras privadas reduce estos riesgos.",
+        "El análisis no considera la dilución de capital y los riesgos asociados a la ampliación de capital, lo que podría afectar el valor del proyecto."
+      ],
+      "technical": [
+        "Los resultados de exploración muestran una concentración de cobre equivalente del 4,1%, con 27 metros a 7% de cobre en un drill, indicando una alta calidad del mineral."
+      ],
+      "management": [
+        "El proyecto tiene un nivel de gestión bajo, lo que sugiere que la empresa no tiene una estructura de control adecuada para manejar el riesgo de dilución."
+      ],
+      "mistakes": [
+        "La empresa ha tenido problemas con la administración federal, como la prohibición de exploración de langas en tierras federales, lo que podría afectar su operación."
+      ]
+    },
+    "candidate_rules": [
+      {
+        "rule": "paráfrasis compacta",
+        "scope": "hosts|uncertain_or_guest",
+        "confidence": 0.0,
+        "evidence_timestamps": [],
+        "automation_proxy": "variable/cálculo posible o null",
+        "cross_video_confirmation_required": true
+      }
+    ],
+    "contradictions_or_uncertainties": [],
+    "named_examples": [],
+    "automation_readiness": "medium"
+  },
+  "chunk_evidence": [
+    {
+      "chunk": 1,
+      "evidence": [
+        {
+          "stage": "valuation",
+          "paraphrase": "La empresa Farmer Mac tiene un rendimiento anual del 16% sin dividendos y un dividendo del 4%.",
+          "timestamp": "00:02:05",
+          "scope": "hosts",
+          "confidence": 0.9,
+          "automation_hint": "proxy observable"
+        },
+        {
+          "stage": "risk",
+          "paraphrase": "La empresa tiene una tasa de impago muy baja (2 puntos básicos en 30 años) y una garantía gubernamental que reduce su riesgo.",
+          "timestamp": "00:03:55",
+          "scope": "hosts",
+          "confidence": 0.8,
+          "automation_hint": "proxy observable"
+        },
+        {
+          "stage": "quality",
+          "paraphrase": "La empresa opera en un sector con diversificación geográfica y de productos, lo que reduce el impacto de eventos adversos locales.",
+          "timestamp": "00:07:35",
+          "scope": "hosts",
+          "confidence": 0.7,
+          "automation_hint": "proxy observable"
+        },
+        {
+          "stage": "sizing",
+          "paraphrase": "La empresa tiene un tamaño de 1.400 millones de dólares y una cuota de mercado del 6%, lo que sugiere un potencial de crecimiento superior al sector.",
+          "timestamp": "00:04:51",
+          "scope": "hosts",
+          "confidence": 0.6,
+          "automation_hint": "proxy observable"
+        },
+        {
+          "stage": "entry",
+          "paraphrase": "La empresa es una institución gubernamental (GCE) con garantía implícita, lo que permite una financiación a bajo costo y un modelo de negocio estable.",
+          "timestamp": "00:06:15",
+          "scope": "hosts",
+          "confidence": 0.5,
+          "automation_hint": "proxy observable"
+        }
+      ],
+      "named_examples": [],
+      "chunk_summary": "El análisis de la empresa Farmer Mac se basa en su rendimiento financiero sólido, baja tasa de impago, diversificación del negocio, tamaño del mercado y garantía gubernamental, lo que sugiere una estrategia de inversión con alto potencial de crecimiento y bajo riesgo."
+    },
+    {
+      "chunk": 2,
+      "evidence": [
+        {
+          "stage": "valuation",
+          "paraphrase": "El análisis de Farmer Mac menciona un retorno implícito anual del 6,6% y un apalancamiento de 21 veces, con un RoE del 17% que se normaliza a 10%.",
+          "timestamp": "00:11:31",
+          "scope": "hosts",
+          "confidence": 0.9,
+          "automation_hint": "proxy observable"
+        },
+        {
+          "stage": "risk",
+          "paraphrase": "Se menciona que el negocio de Farmer Mac tiene una resiliencia y solidez probadas, aunque existen riesgos de volatilidad en los retornos debido a la naturaleza del negocio y el apalancamiento.",
+          "timestamp": "00:11:12",
+          "scope": "uncertain_or_guest",
+          "confidence": 0.7,
+          "automation_hint": "proxy observable"
+        },
+        {
+          "stage": "entry",
+          "paraphrase": "Se sugiere una estrategia de entrada basada en el análisis de los retornos y el apalancamiento, con un interés en mantener el negocio a largo plazo (buy and hold) debido a su resistencia y estabilidad.",
+          "timestamp": "00:15:50",
+          "scope": "hosts",
+          "confidence": 0.8,
+          "automation_hint": "proxy observable"
+        }
+      ],
+      "named_examples": [],
+      "chunk_summary": "El análisis de Farmer Mac enfatiza un retorno implícito anual del 6,6% y un apalancamiento de 21 veces, con un RoE del 17% que se normaliza a 10%. Se menciona la resiliencia del negocio, aunque existen riesgos de volatilidad. Se sugiere una estrategia de entrada basada en el análisis de los retornos y el apalancamiento, con un interés en mantener el negocio a largo plazo debido a su resistencia y estabilidad."
+    },
+    {
+      "chunk": 3,
+      "evidence": [
+        {
+          "stage": "valuation",
+          "paraphrase": "La empresa tiene un proyecto de cobre polimetálico con alta concentración y buenos resultados de exploración, con un nuevo Scoping Study que mejora las cifras de mineralización y producción.",
+          "timestamp": "00:20:42",
+          "scope": "uncertain_or_guest",
+          "confidence": 0.0
+        },
+        {
+          "stage": "entry",
+          "paraphrase": "La empresa opera en Arizona, con propiedades privadas que evitan regulaciones federales, y tiene un 3% de impuesto de minería, lo que facilita la explotación.",
+          "timestamp": "00:22:00",
+          "scope": "hosts",
+          "confidence": 0.0
+        },
+        {
+          "stage": "sizing",
+          "paraphrase": "El proyecto tiene un recurso de 11,4 millones de toneladas, con 2,1% de cobre, 5% de zinc, y otros metales, lo que sugiere un alto potencial de producción.",
+          "timestamp": "00:27:00",
+          "scope": "hosts",
+          "confidence": 0.0
+        },
+        {
+          "stage": "risk",
+          "paraphrase": "La empresa enfrenta riesgos de levantamiento de capital y regulaciones federales, pero su ubicación en tierras privadas reduce estos riesgos.",
+          "timestamp": "00:21:04",
+          "scope": "uncertain_or_guest",
+          "confidence": 0.0
+        },
+        {
+          "stage": "technical",
+          "paraphrase": "Los resultados de exploración muestran una concentración de cobre equivalente del 4,1%, con 27 metros a 7% de cobre en un drill, indicando una alta calidad del mineral.",
+          "timestamp": "00:24:14",
+          "scope": "uncertain_or_guest",
+          "confidence": 0.0
+        },
+        {
+          "stage": "mistake",
+          "paraphrase": "La empresa ha tenido problemas con la administración federal, como la prohibición de exploración de langas en tierras federales, lo que podría afectar su operación.",
+          "timestamp": "00:22:33",
+          "scope": "uncertain_or_guest",
+          "confidence": 0.0
+        },
+        {
+          "stage": "other",
+          "paraphrase": "El Scoping Study actualiza el recurso minero, mejorando las cifras de producción y concentración, lo que podría aumentar el valor del proyecto.",
+          "timestamp": "00:24:42",
+          "scope": "hosts",
+          "confidence": 0.0
+        }
+      ],
+      "named_examples": [],
+      "chunk_summary": "El fragmento describe un análisis de una empresa minera con un proyecto de cobre polimetálico, destacando su ubicación en Arizona, un recurso minero actualizado con buenos resultados de exploración, y riesgos relacionados con regulaciones federales. Se mencionan beneficios como el bajo impuesto de minería y la propiedad privada, que reducen riesgos, pero también se alerta sobre posibles problemas con la administración federal y el riesgo de levantamiento de capital."
+    },
+    {
+      "chunk": 4,
+      "evidence": [
+        {
+          "stage": "valuation",
+          "paraphrase": "El proyecto tiene un valor presente neto de 525 millones de dólares antes de impuestos con un retorno del 42%, lo cual es muy favorable.",
+          "timestamp": "00:30:54",
+          "scope": "hosts",
+          "confidence": 0.8
+        },
+        {
+          "stage": "risk",
+          "paraphrase": "El riesgo político en Arizona es menor que en Perú, lo que reduce el riesgo asociado al proyecto.",
+          "timestamp": "00:30:43",
+          "scope": "hosts",
+          "confidence": 0.7
+        },
+        {
+          "stage": "entry",
+          "paraphrase": "El proyecto requiere una inversión inicial (CAPEX) y tiene un plazo de 10 años, lo que sugiere una estrategia de entrada basada en un horizonte de tiempo amplio.",
+          "timestamp": "00:30:28",
+          "scope": "hosts",
+          "confidence": 0.6
+        },
+        {
+          "stage": "technical",
+          "paraphrase": "El análisis técnico del proyecto incluye una conciliación de cobre de 3,3 y una proyección de 135 millones de dólares anuales antes de impuestos.",
+          "timestamp": "00:31:24",
+          "scope": "hosts",
+          "confidence": 0.7
+        },
+        {
+          "stage": "exit",
+          "paraphrase": "La empresa podría cotizar entre 100 y 150 millones de dólares si se publica el PIA, lo que sugiere una estrategia de salida basada en el valor del proyecto.",
+          "timestamp": "00:34:03",
+          "scope": "hosts",
+          "confidence": 0.6
+        },
+        {
+          "stage": "mistake",
+          "paraphrase": "El análisis no considera la dilución de capital y los riesgos asociados a la ampliación de capital, lo que podría afectar el valor del proyecto.",
+          "timestamp": "00:32:31",
+          "scope": "uncertain_or_guest",
+          "confidence": 0.5
+        },
+        {
+          "stage": "management",
+          "paraphrase": "El proyecto tiene un nivel de gestión bajo, lo que sugiere que la empresa no tiene una estructura de control adecuada para manejar el riesgo de dilución.",
+          "timestamp": "00:32:03",
+          "scope": "hosts",
+          "confidence": 0.6
+        },
+        {
+          "stage": "cycle_macro",
+          "paraphrase": "El proyecto se sitúa en un ciclo macro positivo, con un horizonte de 10 años y una proyección de crecimiento en la producción de cobre.",
+          "timestamp": "00:30:03",
+          "scope": "hosts",
+          "confidence": 0.7
+        }
+      ],
+      "named_examples": [],
+      "chunk_summary": "El análisis del proyecto incluye una evaluación de valor presente neto, un retorno alto, un horizonte de 10 años, y una proyección de producción. Sin embargo, existen riesgos de dilución y una estructura de gestión limitada. La empresa podría cotizar en un rango alto si se publica el PIA, lo que sugiere una estrategia de entrada basada en un valor positivo, pero con riesgos de dilución y una falta de control de gestión."
+    }
+  ],
+  "copyright_note": "No audio or verbatim transcript is persisted; only derived paraphrases."
+}
