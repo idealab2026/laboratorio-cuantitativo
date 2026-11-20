@@ -12634,7 +12634,7 @@
       ]
     },
     "rsi_reversion_14": {
-      "cash": 7102.018676222297,
+      "cash": 21904.26474851009,
       "equity": [
         {
           "date": "2026-10-12",
@@ -12955,6 +12955,18 @@
           "date": "2026-11-20",
           "ticker": "COF",
           "type": "unfilled"
+        },
+        {
+          "date": "2026-11-20",
+          "execution": "forward_observed_paper",
+          "idempotency_key": "IL-014:2026-11-20:stop:CMI:classic_forward_v1:CMI",
+          "lock_sha256": "149dd7181334ac253b3dd43a7eba186bf47d99e881e35c3c8701ca8a205421c8",
+          "observed_at_utc": "2026-11-20T16:50:40.940383Z",
+          "quote_at_utc": "2026-11-20T16:50:00Z",
+          "reason": "stop_forward_observed",
+          "source_commit": "cf9cebe218d2e9bda2b5b82ca68f98153b846a7f",
+          "ticker": "CMI",
+          "type": "sell"
         }
       ],
       "forward_executions": {
@@ -13017,6 +13029,18 @@
           "recorded_at_utc": "2026-11-20T14:34:06.599692Z",
           "session": "2026-11-20",
           "source_commit": "cf9cebe218d2e9bda2b5b82ca68f98153b846a7f"
+        },
+        "IL-014:2026-11-20:stop:CMI:classic_forward_v1": {
+          "fill_tickers": [
+            "CMI"
+          ],
+          "fills_count": 1,
+          "lock_sha256": "149dd7181334ac253b3dd43a7eba186bf47d99e881e35c3c8701ca8a205421c8",
+          "mode": "forward_observed_paper",
+          "quotes_sha256": "30174b6ba3db334c86c7361a81382a5c1a0dcca795cce76193a8187c38b8a831",
+          "recorded_at_utc": "2026-11-20T16:50:43.887146Z",
+          "session": "2026-11-20",
+          "source_commit": "cf9cebe218d2e9bda2b5b82ca68f98153b846a7f"
         }
       },
       "nav": 102849.46187388511,
@@ -13039,15 +13063,6 @@
           "shares": 163.826279,
           "stop": 88.6495003527832,
           "target": 110.811875440979
-        },
-        "CMI": {
-          "cost": 16328.092587302495,
-          "dividends": 0.0,
-          "entry_date": "2026-11-05",
-          "entry_price": 448.224,
-          "shares": 36.392029,
-          "stop": 412.36608,
-          "target": 515.4576
         },
         "CZR": {
           "cost": 11874.999971653644,
@@ -13260,6 +13275,22 @@
           "proceeds": 13202.239705492244,
           "reason": "signal_next_open",
           "ticker": "BEN"
+        },
+        {
+          "dividends": 0.0,
+          "entry_cost": 16328.092587302495,
+          "entry_date": "2026-11-05",
+          "execution": "forward_observed_paper",
+          "exit_date": "2026-11-20",
+          "idempotency_key": "IL-014:2026-11-20:stop:CMI:classic_forward_v1:CMI",
+          "lock_sha256": "149dd7181334ac253b3dd43a7eba186bf47d99e881e35c3c8701ca8a205421c8",
+          "net_pnl": -1525.8465150147003,
+          "observed_at_utc": "2026-11-20T16:50:40.940383Z",
+          "proceeds": 14802.246072287795,
+          "quote_at_utc": "2026-11-20T16:50:00Z",
+          "reason": "stop_forward_observed",
+          "source_commit": "cf9cebe218d2e9bda2b5b82ca68f98153b846a7f",
+          "ticker": "CMI"
         }
       ]
     },
