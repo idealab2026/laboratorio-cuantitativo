@@ -1,0 +1,39 @@
+{
+  "bars": {
+    "BF-B": {
+      "close": 30.1200008392334,
+      "date": "2026-11-19",
+      "dividend": 0.0,
+      "high": 30.540000915527344,
+      "low": 29.68000030517578,
+      "open": 30.540000915527344,
+      "provider_symbol": "BF-B",
+      "split": 0.0,
+      "volume": 2257200.0
+    },
+    "ESS": {
+      "close": 269.3900146484375,
+      "date": "2026-11-19",
+      "dividend": 0.0,
+      "high": 272.3800048828125,
+      "low": 268.3299865722656,
+      "open": 272.3699951171875,
+      "provider_symbol": "ESS",
+      "split": 0.0,
+      "volume": 412100.0
+    }
+  },
+  "base_sha256": "fc922b6c2ef0a1551dbabdece1483f1eb14de505d82087ebc60851c6bd156f1f",
+  "captured_at_utc": "2026-11-21T06:44:09+00:00",
+  "parent_sha256": "30e4872eccccc21718a68457d8cf85d7b085a59e69c99890b6680843f00d5861",
+  "schema": "midas.xnys_missing_revision.v1",
+  "session": "2026-11-19",
+  "sha256": "3bce6e959064265876c9af5162509d03af910090e5a80aff0bb2d98bb0b6f33b",
+  "source": {
+    "actions": true,
+    "auto_adjust": false,
+    "client": "yfinance",
+    "interval": "1d",
+    "vendor": "Yahoo Finance"
+  }
+}
