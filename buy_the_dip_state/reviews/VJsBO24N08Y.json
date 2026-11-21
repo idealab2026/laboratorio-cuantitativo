@@ -1,0 +1,355 @@
+{
+  "schema_version": 1,
+  "status": "machine_first_pass",
+  "reviewed_at_utc": "2026-11-21T03:43:01.829162+00:00",
+  "source_identity": "Buy The Dip YouTube channel",
+  "transport": {
+    "kind": "official_podcast_mirror",
+    "provider": "iVoox",
+    "guid": "https://www.ivoox.com/75563007",
+    "published_date": "2021-09-16",
+    "youtube_video_id": "VJsBO24N08Y",
+    "match_score": 0.919245,
+    "audio_bytes_processed_transiently": 24217017
+  },
+  "models": {
+    "asr": {
+      "language": "es",
+      "language_probability": 1.0,
+      "duration_seconds": 3027.1216875,
+      "word_count": 8192,
+      "segment_count": 1226,
+      "model": "small"
+    },
+    "semantic": {
+      "repo": "Qwen/Qwen3-4B-GGUF",
+      "file": "Qwen3-4B-Q4_K_M.gguf"
+    }
+  },
+  "metadata": {
+    "video_id": "VJsBO24N08Y",
+    "youtube_url": "https://www.youtube.com/watch?v=VJsBO24N08Y",
+    "title": "BUY THE DIP PODCAST EPISODIO 59: El regreso de BUY THE DIP",
+    "category": "company_or_theme",
+    "guest_likely": false,
+    "podcast_guid": "https://www.ivoox.com/75563007",
+    "published_date": "2021-09-16",
+    "source": "official_podcast_mirror",
+    "match_score": 0.919245
+  },
+  "analysis": {
+    "episode_summary": "El episodio discute una estrategia de inversión basada en el método Buy The Dip, analizando empresas como Adriatic Metals, Fanny May, Five Pole Holdings, y Guanajuato Silver. Se destacan oportunidades de inversión en acciones con precios bajos, como Fanny May y Guanajuato Silver, con incertidumbres sobre su valoración y riesgos asociados. Se mencionan posiciones secretas en Five Pole Holdings y una tesis de inversión en Microstratigy, con enfoques en rentabilidades altas y volatilidad. También se analizan empresas de munición y American Tower, con potencial de crecimiento y riesgos regulatorios. El análisis sugiere que las acciones con valores bajos pueden subir significativamente si se confirman descubrimientos minerales o se logran contratos de alto valor, aunque con consideraciones sobre la incertidumbre y la regulación.",
+    "process": {
+      "idea_generation": [],
+      "quality": [],
+      "balance_sheet": [],
+      "valuation": [],
+      "cycle_macro": [
+        "La empresa 'Guanajuato Silver' tiene un potencial de crecimiento en el futuro debido a su posición en el mercado y su capacidad para producir en el futuro."
+      ],
+      "entry": [
+        "La cartera de inversión menciona la actualización de posiciones en Adriatic Metals, destacando cambios en el Feciability y potencial de revalorización si se confirman los descubrimientos minerales.",
+        "El analista menciona que Fanny May es una posición principal y que su valor está en niveles bajos, con incertidumbre sobre el futuro del mercado.",
+        "Se menciona una posición secreta en Five Pole Holdings, que no se comentará, pero se indica que ha subido un 80% desde los mínimos."
+      ],
+      "sizing": [
+        "American Tower tiene aproximadamente 100.000 torres, mientras que China Tower tiene 2 millones, lo que sugiere una escala significativa y barreras de entrada elevadas."
+      ],
+      "add_hold": [],
+      "exit": [
+        "Se menciona que la tesis de inversión en Microstratigy se mantiene de manera especulativa, con un enfoque en el valor contable superior a la rentabilidad actual."
+      ],
+      "risk": [
+        "El análisis señala que Adriatic Metals cotiza a múltiplos baratos, lo que sugiere que podría haber una revalorización significativa si se confirman los descubrimientos minerales y se mejora el financiamiento.",
+        "El gobierno chino regula estrictamente a las empresas tecnológicas, lo que podría limitar el crecimiento de American Tower en el mercado chino."
+      ],
+      "technical": [
+        "Se destaca un aumento del 126% en el valor de la acción de Joe desde los mínimos de marzo de 2020, con un rendimiento anual del 200% en San Joe."
+      ],
+      "management": [
+        "La empresa 'Guanajuato Silver' tiene una tasa de crecimiento de 987% desde marzo de 2020, lo que indica una alta volatilidad y posibles errores en la cotización."
+      ],
+      "mistakes": []
+    },
+    "candidate_rules": [
+      {
+        "rule": "paráfrasis compacta",
+        "scope": "hosts|uncertain_or_guest",
+        "confidence": 0.0,
+        "evidence_timestamps": [],
+        "automation_proxy": "variable/cálculo posible o null",
+        "cross_video_confirmation_required": true
+      }
+    ],
+    "contradictions_or_uncertainties": [],
+    "named_examples": [
+      "Adriatic Metals: análisis de Feciability con descubrimientos minerales y potencial de revalorización.",
+      "Fanny May: posición principal con valor bajo y incertidumbre sobre el futuro del mercado.",
+      "Guanajuato Silver: cotización volátil con alta tasa de crecimiento y posibles errores en la cotización.",
+      "American Tower: potencial de crecimiento con implementación de 5G y regulaciones estrictas en China."
+    ],
+    "automation_readiness": "medium"
+  },
+  "chunk_evidence": [
+    {
+      "chunk": 1,
+      "evidence": [
+        {
+          "stage": "valuation",
+          "paraphrase": "El análisis de Adriatic Metals muestra que su precio actual está cerca de los 2,99 dólares, con noticas positivas sobre el Feciability, incluyendo la eliminación de operaciones costosas y descubrimientos de mineralización en nuevas áreas.",
+          "timestamp": "00:08:20",
+          "scope": "hosts",
+          "confidence": 0.9,
+          "automation_hint": "proxy observable"
+        },
+        {
+          "stage": "entry",
+          "paraphrase": "La cartera de inversión menciona la actualización de posiciones en Adriatic Metals, destacando cambios en el Feciability y potencial de revalorización si se confirman los descubrimientos minerales.",
+          "timestamp": "00:08:32",
+          "scope": "hosts",
+          "confidence": 0.8,
+          "automation_hint": "proxy observable"
+        },
+        {
+          "stage": "risk",
+          "paraphrase": "El análisis señala que Adriatic Metals cotiza a múltiplos baratos, lo que sugiere que podría haber una revalorización significativa si se confirman los descubrimientos minerales y se mejora el financiamiento.",
+          "timestamp": "00:09:58",
+          "scope": "hosts",
+          "confidence": 0.7,
+          "automation_hint": "proxy observable"
+        }
+      ],
+      "named_examples": [],
+      "chunk_summary": "El podcast discute la cartera de inversión, destacando la posición en Adriatic Metals. Se mencionan actualizaciones en el Feciability, cambios en operaciones mineras, y potencial de revalorización si se confirman descubrimientos minerales. El análisis sugiere que el precio de la acción podría subir a 5 dólares si se mantienen los múltiplos actuales."
+    },
+    {
+      "chunk": 2,
+      "evidence": [
+        {
+          "stage": "entry",
+          "paraphrase": "El analista menciona que Fanny May es una posición principal y que su valor está en niveles bajos, con incertidumbre sobre el futuro del mercado.",
+          "timestamp": "00:10:38",
+          "scope": "hosts",
+          "confidence": 0.8
+        },
+        {
+          "stage": "valuation",
+          "paraphrase": "Las acciones de Fanny May están cotizando a precios muy bajos, con un valor de menos de un dólar, y se consideran una oportunidad de inversión a pesar de la incertidumbre.",
+          "timestamp": "00:11:37",
+          "scope": "hosts",
+          "confidence": 0.7
+        },
+        {
+          "stage": "risk",
+          "paraphrase": "El analista señala que la incertidumbre sobre el futuro del Congreso y la posibilidad de que los demócratas no hagan cambios afectan la valoración de las acciones de Fanny May.",
+          "timestamp": "00:12:48",
+          "scope": "hosts",
+          "confidence": 0.6
+        },
+        {
+          "stage": "entry",
+          "paraphrase": "El analista menciona que la posibilidad de que Michael Calhoun sea el nuevo director de la FHFA podría ser beneficioso para las acciones de Fanny May, ya que es pro-recap on release.",
+          "timestamp": "00:12:05",
+          "scope": "hosts",
+          "confidence": 0.7
+        },
+        {
+          "stage": "valuation",
+          "paraphrase": "Las preferentes de Fanny May están valoradas a 50, con un nivel mínimo de 2,2, lo que se considera un valor muy bajo y una oportunidad de inversión.",
+          "timestamp": "00:11:48",
+          "scope": "hosts",
+          "confidence": 0.6
+        }
+      ],
+      "chunk_summary": "El analista discute la estrategia de inversión en Fanny May, destacando su valor bajo, la incertidumbre sobre el futuro del mercado y la posibilidad de que eventos políticos afecten su valoración. Menciona la posibilidad de que el nuevo director de la FHFA sea beneficioso para las acciones, y compara su valoración con otras empresas, como Osino y Samstorm, destacando su potencial de rentabilidad a largo plazo."
+    },
+    {
+      "chunk": 3,
+      "evidence": [
+        {
+          "stage": "valuation",
+          "paraphrase": "El análisis menciona un crecimiento mensual del 7% al 14%, destacando su alta rentabilidad.",
+          "timestamp": "00:20:32",
+          "scope": "hosts",
+          "confidence": 0.8,
+          "automation_hint": "proxy observable"
+        },
+        {
+          "stage": "entry",
+          "paraphrase": "Se menciona una posición secreta en Five Pole Holdings, que no se comentará, pero se indica que ha subido un 80% desde los mínimos.",
+          "timestamp": "00:21:12",
+          "scope": "hosts",
+          "confidence": 0.7,
+          "automation_hint": "proxy observable"
+        },
+        {
+          "stage": "risk",
+          "paraphrase": "Se señala una estrategia de inversión basada en la percepción de los ojos rojos en Twitter, con una rentabilidad mensual estimada del 5.000%.",
+          "timestamp": "00:22:50",
+          "scope": "uncertain_or_guest",
+          "confidence": 0.5,
+          "automation_hint": "proxy observable"
+        },
+        {
+          "stage": "exit",
+          "paraphrase": "Se menciona que la tesis de inversión en Microstratigy se mantiene de manera especulativa, con un enfoque en el valor contable superior a la rentabilidad actual.",
+          "timestamp": "00:23:03",
+          "scope": "hosts",
+          "confidence": 0.6,
+          "automation_hint": "proxy observable"
+        },
+        {
+          "stage": "technical",
+          "paraphrase": "Se destaca un aumento del 126% en el valor de la acción de Joe desde los mínimos de marzo de 2020, con un rendimiento anual del 200% en San Joe.",
+          "timestamp": "00:22:00",
+          "scope": "hosts",
+          "confidence": 0.7,
+          "automation_hint": "proxy observable"
+        }
+      ],
+      "named_examples": [],
+      "chunk_summary": "El análisis presenta una estrategia de inversión basada en la percepción de los ojos rojos en Twitter, con un enfoque en la rentabilidad mensual del 5.000%, y menciona posiciones secretas en Five Pole Holdings y una tesis de inversión en Microstratigy. Se destacan crecimientos significativos en acciones como San Joe y Five Pole Holdings, así como una estrategia de valor contable superior a la rentabilidad actual."
+    },
+    {
+      "chunk": 4,
+      "evidence": [
+        {
+          "stage": "entry",
+          "paraphrase": "Se presentaron tres empresas: Trexton (aliada con Winchester), General Dynamics (aliada con Trubelosity) y Six Hour, que se destacaron por su innovación en el desarrollo de munición de calibre 6,8, superior a la estándar de 5,56, con un sistema de munición nuevo aprobado por el Departamento de Defensa.",
+          "timestamp": "00:30:00",
+          "scope": "hosts",
+          "confidence": 0.8,
+          "automation_hint": "proxy observable"
+        },
+        {
+          "stage": "valuation",
+          "paraphrase": "La empresa de munición, con un crecimiento anual de triple dígito, tiene potencial para ganar un contrato de alto valor, lo que podría impulsar su valoración a 6 veces las ganancias, con una oportunidad de adquisición significativa si se adjudica el contrato.",
+          "timestamp": "00:33:12",
+          "scope": "hosts",
+          "confidence": 0.7,
+          "automation_hint": "proxy observable"
+        },
+        {
+          "stage": "risk",
+          "paraphrase": "Aunque el contrato representa una oportunidad de alto rendimiento, existe un riesgo de que la empresa no logre el éxito esperado, lo que podría afectar negativamente su valoración y las ganancias del inversor.",
+          "timestamp": "00:33:34",
+          "scope": "hosts",
+          "confidence": 0.6,
+          "automation_hint": "proxy observable"
+        }
+      ],
+      "named_examples": [],
+      "chunk_summary": "El análisis destaca una empresa de munición que ha sido seleccionada para un contrato de alto valor, con potencial de crecimiento significativo, pero con riesgos asociados. La empresa tiene una valoración de 6 veces las ganancias, con un crecimiento anual de triple dígito, y está en una fase de evaluación de riesgo y valoración, con una oportunidad de adquisición importante si logra el contrato."
+    },
+    {
+      "chunk": 5,
+      "evidence": [
+        {
+          "stage": "entry",
+          "paraphrase": "El análisis menciona una empresa con activos que han caído debido a factores temporales, pero que tienen potencial para recuperar valor.",
+          "timestamp": "00:43:00",
+          "scope": "uncertain_or_guest",
+          "confidence": 0.0
+        },
+        {
+          "stage": "valuation",
+          "paraphrase": "La empresa 'Guanajuato Silver' (antigua Bangold) tiene una cotización que ha fluctuado significativamente, con un aumento potencial al final del año.",
+          "timestamp": "00:39:30",
+          "scope": "hosts",
+          "confidence": 0.0
+        },
+        {
+          "stage": "risk",
+          "paraphrase": "La volatilidad de la acción 'Guanajuato Silver' es muy alta, con fluctuaciones de más del 15% en un día.",
+          "timestamp": "00:40:24",
+          "scope": "hosts",
+          "confidence": 0.0
+        },
+        {
+          "stage": "technical",
+          "paraphrase": "La acción 'Guanajuato Silver' está cotizada a 0,44 dólares, con un potencial de subida a 0,7 o 0,8 dólares al final del año.",
+          "timestamp": "00:40:06",
+          "scope": "hosts",
+          "confidence": 0.0
+        },
+        {
+          "stage": "management",
+          "paraphrase": "La empresa 'Guanajuato Silver' tiene una tasa de crecimiento de 987% desde marzo de 2020, lo que indica una alta volatilidad y posibles errores en la cotización.",
+          "timestamp": "00:42:00",
+          "scope": "hosts",
+          "confidence": 0.0
+        },
+        {
+          "stage": "sizing",
+          "paraphrase": "La empresa 'Guanajuato Silver' tiene un capital de unos 100 millones de dólares y está en una situación especial debido a factores temporales que afectan su valor.",
+          "timestamp": "00:43:00",
+          "scope": "hosts",
+          "confidence": 0.0
+        },
+        {
+          "stage": "cycle_macro",
+          "paraphrase": "La empresa 'Guanajuato Silver' tiene un potencial de crecimiento en el futuro debido a su posición en el mercado y su capacidad para producir en el futuro.",
+          "timestamp": "00:42:50",
+          "scope": "hosts",
+          "confidence": 0.0
+        },
+        {
+          "stage": "mistake",
+          "paraphrase": "El analista menciona que la cotización de 'Guanajuato Silver' podría estar mal, ya que la empresa ha cambiado de nombre y directiva, lo que podría afectar su valor.",
+          "timestamp": "00:40:30",
+          "scope": "hosts",
+          "confidence": 0.0
+        },
+        {
+          "stage": "other",
+          "paraphrase": "La empresa 'Guanajuato Silver' tiene una tasa de crecimiento de 987% desde marzo de 2020, lo que indica una alta volatilidad y posibles errores en la cotización.",
+          "timestamp": "00:42:00",
+          "scope": "hosts",
+          "confidence": 0.0
+        }
+      ],
+      "named_examples": [],
+      "chunk_summary": "El análisis menciona una empresa con activos que han caído debido a factores temporales, pero que tienen potencial para recuperar valor. La empresa 'Guanajuato Silver' (antigua Bangold) tiene una cotización que ha fluctuado significativamente, con un aumento potencial al final del año. La volatilidad de la acción es muy alta, con fluctuaciones de más del 15% en un día. La empresa tiene un capital de unos 100 millones de dólares y está en una situación especial debido a factores temporales que afectan su valor. La tasa de crecimiento de la empresa es de 987% desde marzo de 2020, lo que indica una alta volatilidad y posibles errores en la cotización."
+    },
+    {
+      "chunk": 6,
+      "evidence": [
+        {
+          "stage": "entry",
+          "paraphrase": "El aumento de la rentabilidad de American Tower debido a la implementación de tecnologías como 5G y el crecimiento de su número de torres.",
+          "timestamp": "00:47:48",
+          "scope": "hosts",
+          "confidence": 0.8,
+          "automation_hint": "proxy observable"
+        },
+        {
+          "stage": "valuation",
+          "paraphrase": "La rentabilidad de American Tower podría aumentar de un 7% a un 25-27% o incluso 30% con la implementación de nuevas tecnologías.",
+          "timestamp": "00:48:00",
+          "scope": "hosts",
+          "confidence": 0.7,
+          "automation_hint": "proxy observable"
+        },
+        {
+          "stage": "sizing",
+          "paraphrase": "American Tower tiene aproximadamente 100.000 torres, mientras que China Tower tiene 2 millones, lo que sugiere una escala significativa y barreras de entrada elevadas.",
+          "timestamp": "00:48:26",
+          "scope": "hosts",
+          "confidence": 0.6,
+          "automation_hint": "proxy observable"
+        },
+        {
+          "stage": "risk",
+          "paraphrase": "El gobierno chino regula estrictamente a las empresas tecnológicas, lo que podría limitar el crecimiento de American Tower en el mercado chino.",
+          "timestamp": "00:48:58",
+          "scope": "hosts",
+          "confidence": 0.5,
+          "automation_hint": "proxy observable"
+        }
+      ],
+      "named_examples": [],
+      "chunk_summary": "El análisis discute la potencial de crecimiento de American Tower mediante la implementación de tecnologías como 5G, el aumento de su rentabilidad y su escala comparativa con China Tower, aunque menciona las regulaciones estrictas del gobierno chino como un factor de riesgo. Se sugiere una estrategia de inversión basada en la proyección de crecimiento de rentabilidad y la escala de la empresa, aunque con consideraciones sobre las regulaciones."
+    }
+  ],
+  "copyright_note": "No audio or verbatim transcript is persisted; only derived paraphrases."
+}
