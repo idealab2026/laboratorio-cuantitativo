@@ -1,7 +1,7 @@
 {
-  "age_seconds": 338,
+  "age_seconds": 8893,
   "captured_at_utc": "2026-11-20T23:48:31+00:00",
-  "checked_at_utc": "2026-11-20T23:54:09.316586+00:00",
+  "checked_at_utc": "2026-11-21T02:16:44.994123+00:00",
   "consumers": {
     "buy_the_dip_strategy": {
       "ledger_status": "observed",
@@ -122,7 +122,7 @@
   "revision_hashes": [
     "5af5d4d2e8993471c231c03734d4b96d96acda17656bbadc7f2329fae7aa257d"
   ],
-  "run_id": "44839202403",
+  "run_id": "44854681045",
   "schema": "midas.xnys_source_health.v1",
   "sha256": "22bf660ac732725ebf4d110f5db70d5d14ab88cf29b9eaba01db54824c4d0ac9",
   "status": "snapshot_verified",
