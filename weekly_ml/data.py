@@ -58,6 +58,10 @@ def eligible_session(now=None):
     next_open = upcoming.iloc[0]["market_open"].to_pydatetime()
     if now >= next_open:
         raise ValueError("La próxima apertura ya ocurrió; no registrar señal retrospectiva")
+    # A manual or delayed run may occur on any day: only the final XNYS
+    # session of the week can seed a next-week opening forecast.
+    if session.to_period("W-FRI") == upcoming.index[0].to_period("W-FRI"):
+        return None
     return session.date().isoformat()
 
 

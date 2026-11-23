@@ -4,6 +4,7 @@ import tempfile
 import unittest
 from pathlib import Path
 import sys
+from datetime import datetime, timezone
 from unittest.mock import patch
 
 import numpy as np
@@ -12,7 +13,7 @@ import pandas as pd
 ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT / "weekly_ml"))
 
-from data import build_dataset
+from data import build_dataset, eligible_session
 from paper import advance, digest
 import run as weekly_runner
 
@@ -215,6 +216,29 @@ class WeeklyDiagnosticMissingQuoteTests(unittest.TestCase):
                                abs(.01 - .03))
         self.assertEqual(evaluated["forecast_asof"], "2026-10-02")
 
+    def test_omitted_forecast_week_scores_original_week_not_current_week(self):
+        previous = {"asof": "2026-10-02", "live_tickers": ["AAA"],
+                    "models": {"lgbm_return": {"AAA": {"predicted_return": 0.01}}}}
+        panel = {"AAA": self.frame()}
+        result = weekly_runner.evaluate(previous, panel, "2026-10-16")
+        self.assertEqual(result["actual_tickers"], 1)
+        self.assertEqual(result["evaluated_at_session"], "2026-10-16")
+        self.assertAlmostEqual(result["metrics"]["lgbm_return"]["mae"], .02)
+
+    def test_missing_first_open_cannot_use_later_session_or_later_week(self):
+        prev = {"asof": "2026-10-02", "live_tickers": ["AAA", "BBB"], "models": {}}
+        missing_monday = self.frame().drop(pd.Timestamp("2026-10-05"))
+        result = weekly_runner.evaluate(prev, {"AAA": self.frame(), "BBB": missing_monday}, "2026-10-16")
+        self.assertEqual(result["missing_tickers"]["BBB"], "weekly_first_open_unavailable")
+        with self.assertRaisesRegex(ValueError, "aún no está disponible"):
+            weekly_runner.evaluate(prev, {"AAA": self.frame()}, "2026-10-08")
+
+    def test_holiday_week_uses_actual_last_exchange_session(self):
+        dates = pd.to_datetime(["2026-12-18", "2026-12-21", "2026-12-24"])
+        frame = pd.DataFrame({"open": [100., 100., 100.], "close": [100., 100., 102.]}, index=dates)
+        prev = {"asof": "2026-12-18", "live_tickers": ["AAA"], "models": {}}
+        self.assertEqual(weekly_runner.evaluate(prev, {"AAA": frame}, "2026-12-31")["actual_tickers"], 1)
+
     def test_completely_missing_evaluation_is_rejected(self):
         with self.assertRaisesRegex(ValueError, "Sin precios observados"):
             weekly_runner.evaluate({
@@ -232,7 +256,56 @@ class WeeklyDiagnosticMissingQuoteTests(unittest.TestCase):
             weekly_runner.evaluate(previous, panel, "2026-10-09")
 
 
+class WeeklyForecastWindowTests(unittest.TestCase):
+    def test_only_final_weekly_close_before_next_open_is_eligible(self):
+        utc = timezone.utc
+        self.assertEqual(eligible_session(datetime(2026, 11, 23, 10, 0, tzinfo=utc)), "2026-11-20")
+        self.assertIsNone(eligible_session(datetime(2026, 11, 24, 10, 0, tzinfo=utc)))
+        self.assertEqual(eligible_session(datetime(2026, 12, 24, 23, 0, tzinfo=utc)), "2026-12-24")
+        with self.assertRaisesRegex(ValueError, "apertura ya ocurrió"):
+            eligible_session(datetime(2026, 11, 23, 15, 0, tzinfo=utc))
+
+
 class WeeklyRunnerIdempotencyTests(unittest.TestCase):
+    def test_failed_ledger_or_late_model_never_publishes_new_forecast(self):
+        config = {"schema_version": 1, "calendar": "XNYS", "currency": "USD",
+                  "universe_file": "weekly_ml/universe.json", "models": ["lgbm_return"],
+                  "version": "test", "paper_policy": {}}
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            config_path = root / "config.json"
+            config_path.write_text(json.dumps(config), encoding="utf8")
+            out = root / "state"
+            (out / "forecasts").mkdir(parents=True)
+            old = {"asof": "2026-11-06", "config_hash": digest(config), "live_tickers": [], "models": {}}
+            (out / "forecasts/2026-11-06.json").write_text(json.dumps(old), encoding="utf8")
+            ledger = {"config_hash": digest(config), "last_session": "2026-11-06"}
+            (out / "ledger.json").write_text(json.dumps(ledger), encoding="utf8")
+            snapshot = ({}, {}, [], {}, "2026-11-20")
+            data = pd.DataFrame({"signal_date": ["2026-11-20"], "ticker": ["AAA"]})
+            forecast_file = out / "forecasts/2026-11-20.json"
+            with patch.object(weekly_runner, "live_panel", return_value=snapshot), \
+                 patch.object(weekly_runner, "build_dataset", return_value=(data, data, {})), \
+                 patch.object(weekly_runner, "evaluate", return_value={"evaluated_at_session": "2026-11-20"}), \
+                 patch.object(weekly_runner, "fit_predict", return_value=({"lgbm_return": {}}, {}, {})), \
+                 patch.object(weekly_runner, "_installed_version", return_value="test"), \
+                 patch.object(weekly_runner, "eligible_session", return_value="2026-11-20"), \
+                 patch.object(weekly_runner, "advance", side_effect=ValueError("blocked ledger")):
+                with self.assertRaisesRegex(ValueError, "blocked ledger"):
+                    weekly_runner.run(config_path, out)
+                self.assertFalse(forecast_file.exists())
+                self.assertEqual(json.loads((out / "ledger.json").read_text()), ledger)
+            with patch.object(weekly_runner, "live_panel", return_value=snapshot), \
+                 patch.object(weekly_runner, "build_dataset", return_value=(data, data, {})), \
+                 patch.object(weekly_runner, "evaluate", return_value={"evaluated_at_session": "2026-11-20"}), \
+                 patch.object(weekly_runner, "fit_predict", return_value=({"lgbm_return": {}}, {}, {})), \
+                 patch.object(weekly_runner, "_installed_version", return_value="test"), \
+                 patch.object(weekly_runner, "eligible_session", side_effect=ValueError("opening already passed")):
+                with self.assertRaisesRegex(ValueError, "opening already passed"):
+                    weekly_runner.run(config_path, out)
+                self.assertFalse(forecast_file.exists())
+                self.assertEqual(json.loads((out / "ledger.json").read_text()), ledger)
+
     def test_backup_does_not_recompute_a_frozen_weekly_forecast(self):
         with tempfile.TemporaryDirectory() as temporary:
             root = Path(temporary)
