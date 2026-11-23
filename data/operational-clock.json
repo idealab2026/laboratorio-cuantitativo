@@ -1,5 +1,5 @@
 {
-  "checked_at_utc": "2026-11-23T14:34:31.308010Z",
+  "checked_at_utc": "2026-11-23T14:35:41.259638Z",
   "lock_sha256": "7b21cbe6411a5cb09c68db50cf6650d5f750090c1e1ccfe004da9b927311f984",
   "mode": "single_midas_operator_monitor_no_broker",
   "note": "Observed quotes are not fills. A native engine must settle quantity/cash before a trade counts in P&L.",
@@ -8,11 +8,11 @@
   "previous_session": "2026-11-20",
   "quote_budget": {
     "hard_symbol_limit": 250,
-    "observed_symbols": 110,
+    "observed_symbols": 43,
     "omitted_algorithm_lanes": {},
-    "requested_symbols": 111
+    "requested_symbols": 44
   },
-  "run_id": 45184939458,
+  "run_id": 45194775879,
   "schema": "midas.operational_clock.v1",
   "session": "2026-11-23",
   "settlement": "native_forward_010_through_027_037_through_044",
@@ -72,7 +72,7 @@
           "recorded_at_utc": "2026-11-23T14:34:31.308010Z"
         }
       ],
-      "native_settlement": "settled_native_paper",
+      "native_settlement": "already_settled",
       "observed": 1,
       "opening_quote_isolation": {
         "checked_at_utc": "2026-11-23T14:34:31.308010Z",
@@ -147,7 +147,7 @@
           "recorded_at_utc": "2026-11-23T14:34:31.308010Z"
         }
       ],
-      "native_settlement": "settled_native_paper",
+      "native_settlement": "already_settled",
       "observed": 2,
       "opening_quote_isolation": {
         "checked_at_utc": "2026-11-23T14:34:31.308010Z",
@@ -225,7 +225,7 @@
           "recorded_at_utc": "2026-11-23T14:34:31.308010Z"
         }
       ],
-      "native_settlement": "settled_native_paper",
+      "native_settlement": "already_settled",
       "observed": 1,
       "opening_quote_isolation": {
         "checked_at_utc": "2026-11-23T14:34:31.308010Z",
@@ -307,7 +307,7 @@
           "recorded_at_utc": "2026-11-23T14:34:31.308010Z"
         }
       ],
-      "native_settlement": "settled_native_paper",
+      "native_settlement": "already_settled",
       "observed": 3,
       "opening_quote_isolation": {
         "checked_at_utc": "2026-11-23T14:34:31.308010Z",
@@ -388,7 +388,7 @@
           "recorded_at_utc": "2026-11-23T14:34:31.308010Z"
         }
       ],
-      "native_settlement": "settled_native_paper",
+      "native_settlement": "already_settled",
       "observed": 1,
       "opening_quote_isolation": {
         "checked_at_utc": "2026-11-23T14:34:31.308010Z",
@@ -457,7 +457,7 @@
         "signal_date": "2026-11-20",
         "source_commit": "70ef2402f627c35228f3109b282e6424cb40ab88"
       },
-      "native_settlement": "settled_native_paper",
+      "native_settlement": "already_settled",
       "observed": 1,
       "orders": [
         {
@@ -507,7 +507,7 @@
         "signal_date": "2026-11-20",
         "source_commit": "70ef2402f627c35228f3109b282e6424cb40ab88"
       },
-      "native_settlement": "settled_native_paper",
+      "native_settlement": "already_settled",
       "observed": 1,
       "orders": [
         {
@@ -638,7 +638,7 @@
         "signal_date": "2026-11-20",
         "source_commit": "70ef2402f627c35228f3109b282e6424cb40ab88"
       },
-      "native_settlement": "settled_native_paper",
+      "native_settlement": "already_settled",
       "observed": 10,
       "orders": [
         {
@@ -895,7 +895,7 @@
         "signal_date": "2026-11-20",
         "source_commit": "70ef2402f627c35228f3109b282e6424cb40ab88"
       },
-      "native_settlement": "settled_native_paper",
+      "native_settlement": "already_settled",
       "observed": 10,
       "orders": [
         {
@@ -1152,7 +1152,7 @@
         "signal_date": "2026-11-20",
         "source_commit": "70ef2402f627c35228f3109b282e6424cb40ab88"
       },
-      "native_settlement": "settled_native_paper",
+      "native_settlement": "already_settled",
       "observed": 10,
       "orders": [
         {
@@ -1409,7 +1409,7 @@
         "signal_date": "2026-11-20",
         "source_commit": "70ef2402f627c35228f3109b282e6424cb40ab88"
       },
-      "native_settlement": "settled_native_paper",
+      "native_settlement": "already_settled",
       "observed": 10,
       "orders": [
         {
@@ -1657,7 +1657,7 @@
         "signal_date": "2026-11-20",
         "source_commit": "70ef2402f627c35228f3109b282e6424cb40ab88"
       },
-      "native_settlement": "settled_native_paper",
+      "native_settlement": "already_settled",
       "observed": 9,
       "opening_quote_isolation": {
         "checked_at_utc": "2026-11-23T14:34:31.308010Z",
@@ -1923,7 +1923,7 @@
         "signal_date": "2026-11-20",
         "source_commit": "70ef2402f627c35228f3109b282e6424cb40ab88"
       },
-      "native_settlement": "settled_native_paper",
+      "native_settlement": "already_settled",
       "observed": 10,
       "orders": [
         {
@@ -2180,7 +2180,7 @@
         "signal_date": "2026-11-20",
         "source_commit": "70ef2402f627c35228f3109b282e6424cb40ab88"
       },
-      "native_settlement": "settled_native_paper",
+      "native_settlement": "already_settled",
       "observed": 10,
       "orders": [
         {
@@ -2571,7 +2571,7 @@
         "session": "2026-11-23",
         "source_commit": "70ef2402f627c35228f3109b282e6424cb40ab88"
       },
-      "native_settlement": "settled_native_paper",
+      "native_settlement": "already_settled",
       "observed": 15,
       "orders": [
         {
