@@ -1,11 +1,11 @@
 {
   "schema_version": 1,
-  "updated_at_utc": "2026-11-23T04:01:46.918963+00:00",
+  "updated_at_utc": "2026-11-23T15:47:41.225369+00:00",
   "youtube_catalog_count": 307,
-  "official_podcast_matched_count": 123,
-  "reviewed_count": 79,
+  "official_podcast_matched_count": 131,
+  "reviewed_count": 80,
   "temporarily_unavailable_audio_count": 1,
-  "reviewed_official_podcast_count": 72,
-  "remaining_official_podcast_count": 51,
+  "reviewed_official_podcast_count": 75,
+  "remaining_official_podcast_count": 56,
   "coverage_note": "Official-podcast matches use local ASR; YouTube-only items remain queued."
 }

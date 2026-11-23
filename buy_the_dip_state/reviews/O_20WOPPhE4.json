@@ -1,0 +1,252 @@
+{
+  "schema_version": 1,
+  "status": "machine_first_pass",
+  "reviewed_at_utc": "2026-11-23T15:47:41.224643+00:00",
+  "source_identity": "Buy The Dip YouTube channel",
+  "transport": {
+    "kind": "official_podcast_mirror",
+    "provider": "iVoox",
+    "guid": "https://www.ivoox.com/180143520",
+    "published_date": "2026-09-07",
+    "youtube_video_id": "O_20WOPPhE4",
+    "match_score": 1.0,
+    "audio_bytes_processed_transiently": 20111778
+  },
+  "models": {
+    "asr": {
+      "language": "es",
+      "language_probability": 1.0,
+      "duration_seconds": 2513.86775,
+      "word_count": 6900,
+      "segment_count": 395,
+      "model": "small"
+    },
+    "semantic": {
+      "repo": "Qwen/Qwen3-4B-GGUF",
+      "file": "Qwen3-4B-Q4_K_M.gguf"
+    }
+  },
+  "metadata": {
+    "video_id": "O_20WOPPhE4",
+    "youtube_url": "https://www.youtube.com/watch?v=O_20WOPPhE4",
+    "title": "¿En qué INVERTIRMOS este SEPTIEMBRE? - NUESTRA CARTERA | BUY THE DIP PODCAST",
+    "category": "portfolio_update",
+    "guest_likely": false,
+    "podcast_guid": "https://www.ivoox.com/180143520",
+    "published_date": "2026-09-07",
+    "source": "official_podcast_mirror",
+    "match_score": 1.0
+  },
+  "analysis": {
+    "episode_summary": "El episodio discute la estrategia de inversión en la cartera del fondo Gerunda Global y BDB, enfocándose en la venta de posiciones secretas, reinversiones en oportunidades atractivas, y adiciones en el sector minero. Se destacan rendimientos altos, riesgos temporales, y evaluaciones de empresas con potencial de crecimiento. También se mencionan empresas con descuentos significativos en su valoración, activos únicos, y errores de gestión que afectaron negativamente su valoración. Además, se analizan desafíos en el segmento de cines debido a problemas de gestión y falta de estrategia clara, y se destacan activos de petróleo y minerales con planes de expansión y riesgos asociados a los precios del petróleo.",
+    "process": {
+      "idea_generation": [],
+      "quality": [],
+      "balance_sheet": [],
+      "valuation": [
+        "Se señala una empresa con un descuento elevado respecto a sus comparables, con activos ocultos relevantes y una visión a largo plazo, que invierte en crecimiento y diversificación."
+      ],
+      "cycle_macro": [
+        "El ciclo macro afecta la capacidad de la empresa para generar ingresos y mantener su posición en el mercado."
+      ],
+      "entry": [
+        "Se menciona una empresa con un descuento significativo en su valoración comparativa con sus competidores, que invierte en crecimiento y tiene activos únicos y replicables."
+      ],
+      "sizing": [
+        "Se destaca la reinversión de ganancias en una nueva posición secreta con un rendimiento anualizado del 44%."
+      ],
+      "add_hold": [
+        "Se describe la venta de 'Ausgold', una minera con un 30% de prima, y la adición de tésis similares en el sector minero."
+      ],
+      "exit": [
+        "Se describe la venta de 'Ausgold', una minera con un 30% de prima, y la adición de tésis similares en el sector minero."
+      ],
+      "risk": [
+        "Se menciona una empresa con 'riesgos temporales' y un 'management gilipollas' que podría afectar su valoración."
+      ],
+      "technical": [],
+      "management": [
+        "La gestión de la empresa es criticada por decisiones ineficientes y falta de liderazgo efectivo."
+      ],
+      "mistakes": [
+        "La empresa ha cometido errores en la gestión de costos y en la toma de decisiones estratégicas."
+      ]
+    },
+    "candidate_rules": [
+      {
+        "rule": "paráfrasis compacta",
+        "scope": "hosts|uncertain_or_guest",
+        "confidence": 0.0,
+        "evidence_timestamps": [],
+        "automation_proxy": "variable/cálculo posible o null",
+        "cross_video_confirmation_required": true
+      }
+    ],
+    "contradictions_or_uncertainties": [],
+    "named_examples": [],
+    "automation_readiness": "medium"
+  },
+  "chunk_evidence": [
+    {
+      "chunk": 1,
+      "evidence": [
+        {
+          "stage": "entry",
+          "paraphrase": "Se menciona la venta de posiciones secretas como 'un banco en Estados Unidos' y 'Tinny Will' con rendimientos altos, seguidas de reinversiones en otras oportunidades.",
+          "timestamp": "00:02:12",
+          "scope": "hosts",
+          "confidence": 0.8
+        },
+        {
+          "stage": "sizing",
+          "paraphrase": "Se destaca la reinversión de ganancias en una nueva posición secreta con un rendimiento anualizado del 44%.",
+          "timestamp": "00:04:05",
+          "scope": "hosts",
+          "confidence": 0.7
+        },
+        {
+          "stage": "exit",
+          "paraphrase": "Se describe la venta de 'Ausgold', una minera con un 30% de prima, y la adición de tésis similares en el sector minero.",
+          "timestamp": "00:05:18",
+          "scope": "hosts",
+          "confidence": 0.6
+        },
+        {
+          "stage": "risk",
+          "paraphrase": "Se menciona una empresa con 'riesgos temporales' y un 'management gilipollas' que podría afectar su valoración.",
+          "timestamp": "00:09:25",
+          "scope": "hosts",
+          "confidence": 0.5
+        },
+        {
+          "stage": "valuation",
+          "paraphrase": "Se destaca una empresa con un 'activo que representa el 5% del FICAS FLOW' que tiene potencial de monetización.",
+          "timestamp": "00:09:41",
+          "scope": "hosts",
+          "confidence": 0.4
+        }
+      ],
+      "named_examples": [],
+      "chunk_summary": "El podcast discute la estrategia de inversión en la cartera del fondo Gerunda Global y BDB, destacando ventas de posiciones secretas, reinversiones en oportunidades atractivas, y adiciones de tésis en el sector minero. Se mencionan rendimientos altos, riesgos temporales, y evaluaciones de empresas con potencial de crecimiento."
+    },
+    {
+      "chunk": 2,
+      "evidence": [
+        {
+          "stage": "entry",
+          "paraphrase": "Se menciona una empresa con un descuento significativo en su valoración comparativa con sus competidores, que invierte en crecimiento y tiene activos únicos y replicables.",
+          "timestamp": "00:12:58",
+          "scope": "hosts",
+          "confidence": 0.8,
+          "automation_hint": "proxy observable"
+        },
+        {
+          "stage": "risk",
+          "paraphrase": "Se destaca una empresa que tuvo un error de gestión (anunciando una adquisición costosa) que afectó negativamente su valoración y el mercado.",
+          "timestamp": "00:11:54",
+          "scope": "hosts",
+          "confidence": 0.7,
+          "automation_hint": "proxy observable"
+        },
+        {
+          "stage": "valuation",
+          "paraphrase": "Se señala una empresa con un descuento elevado respecto a sus comparables, con activos ocultos relevantes y una visión a largo plazo, que invierte en crecimiento y diversificación.",
+          "timestamp": "00:12:42",
+          "scope": "hosts",
+          "confidence": 0.6,
+          "automation_hint": "proxy observable"
+        }
+      ],
+      "named_examples": [],
+      "chunk_summary": "El fragmento describe una estrategia de inversión basada en identificar empresas con potencial, descuentos significativos en su valoración, y riesgos asociados a errores de gestión. Se destacan empresas con activos únicos, inversiones en crecimiento, y una visión a largo plazo, aunque también se mencionan errores de gestión que afectaron negativamente su valoración. El análisis se basa en factores como el descuento en la valoración, el peso relativo de la empresa, y la visión a largo plazo, con un enfoque en identificar oportunidades de inversión en empresas con potencial, aunque con riesgos asociados a errores de gestión o factores macroeconómicos."
+    },
+    {
+      "chunk": 3,
+      "evidence": [
+        {
+          "stage": "risk",
+          "paraphrase": "El segmento de cine enfrenta problemas de gestión y decisiones que afectan su rentabilidad y operación.",
+          "timestamp": "00:24:31",
+          "scope": "uncertain_or_guest",
+          "confidence": 0.0
+        },
+        {
+          "stage": "valuation",
+          "paraphrase": "La valoración de cine plays es desequilibrada debido a la falta de eficiencia en la gestión y decisiones de inversión.",
+          "timestamp": "00:24:31",
+          "scope": "uncertain_or_guest",
+          "confidence": 0.0
+        },
+        {
+          "stage": "entry",
+          "paraphrase": "La entrada en el mercado de cines enfrenta desafíos por la falta de estrategia clara y decisiones de inversión.",
+          "timestamp": "00:24:31",
+          "scope": "uncertain_or_guest",
+          "confidence": 0.0
+        },
+        {
+          "stage": "cycle_macro",
+          "paraphrase": "El ciclo macro afecta la capacidad de la empresa para generar ingresos y mantener su posición en el mercado.",
+          "timestamp": "00:24:31",
+          "scope": "uncertain_or_guest",
+          "confidence": 0.0
+        },
+        {
+          "stage": "management",
+          "paraphrase": "La gestión de la empresa es criticada por decisiones ineficientes y falta de liderazgo efectivo.",
+          "timestamp": "00:24:31",
+          "scope": "uncertain_or_guest",
+          "confidence": 0.0
+        },
+        {
+          "stage": "mistake",
+          "paraphrase": "La empresa ha cometido errores en la gestión de costos y en la toma de decisiones estratégicas.",
+          "timestamp": "00:24:31",
+          "scope": "uncertain_or_guest",
+          "confidence": 0.0
+        },
+        {
+          "stage": "entry",
+          "paraphrase": "La entrada en el mercado de cines enfrenta desafíos por la falta de estrategia clara y decisiones de inversión.",
+          "timestamp": "00:24:31",
+          "scope": "uncertain_or_guest",
+          "confidence": 0.0
+        }
+      ],
+      "named_examples": [],
+      "chunk_summary": "El fragmento discute las dificultades de la empresa en el segmento de cines debido a problemas de gestión, decisiones ineficientes y falta de estrategia clara, lo que afecta su rentabilidad y operación. Se menciona la crítica hacia la gestión actual y la posibilidad de que un cambio de liderazgo pueda mejorar la situación, aunque se advierte que los números actuales no justifican la inversión. Además, se analiza la valoración de la empresa en comparación con otros actores del mercado y se destacan los desafíos operativos y financieros que enfrenta la empresa en el contexto macroeconómico."
+    },
+    {
+      "chunk": 4,
+      "evidence": [
+        {
+          "stage": "entry",
+          "paraphrase": "La empresa tiene un activo de producción de petróleo con 30,000 barriles diarios y planes de aumentar a 80,000 barriles diarios.",
+          "timestamp": "00:34:03",
+          "scope": "hosts",
+          "confidence": 0.8,
+          "automation_hint": "proxy observable"
+        },
+        {
+          "stage": "valuation",
+          "paraphrase": "La empresa tiene un yacimiento de cobre y oro con 320 metros de profundidad y 1.08 cobre equivalente, lo que sugiere un activo de alto valor.",
+          "timestamp": "00:38:41",
+          "scope": "hosts",
+          "confidence": 0.7,
+          "automation_hint": "proxy observable"
+        },
+        {
+          "stage": "risk",
+          "paraphrase": "La empresa enfrenta riesgos de precios del petróleo, pero espera mejoras en el tercer y cuarto trimestre del año.",
+          "timestamp": "00:35:15",
+          "scope": "hosts",
+          "confidence": 0.6,
+          "automation_hint": "proxy observable"
+        }
+      ],
+      "named_examples": [],
+      "chunk_summary": "El análisis destaca un activo de petróleo con planes de expansión y un yacimiento de cobre y oro con resultados prometedores, aunque se mencionan riesgos relacionados con los precios del petróleo. La empresa espera mejoras en los resultados futuros y tiene una posición sólida en el mercado de oro."
+    }
+  ],
+  "copyright_note": "No audio or verbatim transcript is persisted; only derived paraphrases."
+}
