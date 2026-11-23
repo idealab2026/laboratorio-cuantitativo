@@ -19,7 +19,7 @@
   "signal_hash": "998b259954e3033dd32dfc836a1272e486a001ddeeb4c15cdda7eb34818f40d1",
   "strategies": {
     "arima_return": {
-      "cash": 82085.59365527469,
+      "cash": 4104.281553900629,
       "equity": [
         {
           "date": "2026-10-09",
@@ -1244,9 +1244,171 @@
           "count": 10,
           "date": "2026-11-20",
           "type": "signal_frozen"
+        },
+        {
+          "date": "2026-11-23",
+          "execution": "forward_observed_paper",
+          "fee": 7.7903406508913235,
+          "idempotency_key": "IL-026:2026-11-20:2026-11-23:weekly_ml_forward_v1:AMD",
+          "lock_sha256": "7b21cbe6411a5cb09c68db50cf6650d5f750090c1e1ccfe004da9b927311f984",
+          "observed_at_utc": "2026-11-23T14:34:03.629983Z",
+          "price": 462.4711102294922,
+          "quote_at_utc": "2026-11-23T14:34:00Z",
+          "shares": 16.845032,
+          "source_commit": "70ef2402f627c35228f3109b282e6424cb40ab88",
+          "ticker": "AMD",
+          "type": "buy"
+        },
+        {
+          "date": "2026-11-23",
+          "execution": "forward_observed_paper",
+          "fee": 7.7903409640370755,
+          "idempotency_key": "IL-026:2026-11-20:2026-11-23:weekly_ml_forward_v1:MU",
+          "lock_sha256": "7b21cbe6411a5cb09c68db50cf6650d5f750090c1e1ccfe004da9b927311f984",
+          "observed_at_utc": "2026-11-23T14:34:21.594916Z",
+          "price": 686.474779724121,
+          "quote_at_utc": "2026-11-23T14:34:00Z",
+          "shares": 11.348328,
+          "source_commit": "70ef2402f627c35228f3109b282e6424cb40ab88",
+          "ticker": "MU",
+          "type": "buy"
+        },
+        {
+          "date": "2026-11-23",
+          "execution": "forward_observed_paper",
+          "fee": 7.790341024050099,
+          "idempotency_key": "IL-026:2026-11-20:2026-11-23:weekly_ml_forward_v1:ANET",
+          "lock_sha256": "7b21cbe6411a5cb09c68db50cf6650d5f750090c1e1ccfe004da9b927311f984",
+          "observed_at_utc": "2026-11-23T14:34:03.842824Z",
+          "price": 185.03747982788084,
+          "quote_at_utc": "2026-11-23T14:34:00Z",
+          "shares": 42.101422,
+          "source_commit": "70ef2402f627c35228f3109b282e6424cb40ab88",
+          "ticker": "ANET",
+          "type": "buy"
+        },
+        {
+          "date": "2026-11-23",
+          "execution": "forward_observed_paper",
+          "fee": 7.790340830189759,
+          "idempotency_key": "IL-026:2026-11-20:2026-11-23:weekly_ml_forward_v1:ADI",
+          "lock_sha256": "7b21cbe6411a5cb09c68db50cf6650d5f750090c1e1ccfe004da9b927311f984",
+          "observed_at_utc": "2026-11-23T14:34:02.011389Z",
+          "price": 378.5942012786865,
+          "quote_at_utc": "2026-11-23T14:34:00Z",
+          "shares": 20.577021,
+          "source_commit": "70ef2402f627c35228f3109b282e6424cb40ab88",
+          "ticker": "ADI",
+          "type": "buy"
+        },
+        {
+          "date": "2026-11-23",
+          "execution": "forward_observed_paper",
+          "fee": 7.790340866662912,
+          "idempotency_key": "IL-026:2026-11-20:2026-11-23:weekly_ml_forward_v1:MRNA",
+          "lock_sha256": "7b21cbe6411a5cb09c68db50cf6650d5f750090c1e1ccfe004da9b927311f984",
+          "observed_at_utc": "2026-11-23T14:34:21.119541Z",
+          "price": 205.66277755737303,
+          "quote_at_utc": "2026-11-23T14:34:00Z",
+          "shares": 37.879197,
+          "source_commit": "70ef2402f627c35228f3109b282e6424cb40ab88",
+          "ticker": "MRNA",
+          "type": "buy"
+        },
+        {
+          "date": "2026-11-23",
+          "execution": "forward_observed_paper",
+          "fee": 7.790341053344921,
+          "idempotency_key": "IL-026:2026-11-20:2026-11-23:weekly_ml_forward_v1:TXN",
+          "lock_sha256": "7b21cbe6411a5cb09c68db50cf6650d5f750090c1e1ccfe004da9b927311f984",
+          "observed_at_utc": "2026-11-23T14:34:28.833681Z",
+          "price": 290.9153740081787,
+          "quote_at_utc": "2026-11-23T14:34:00Z",
+          "shares": 26.778719,
+          "source_commit": "70ef2402f627c35228f3109b282e6424cb40ab88",
+          "ticker": "TXN",
+          "type": "buy"
+        },
+        {
+          "date": "2026-11-23",
+          "execution": "forward_observed_paper",
+          "fee": 7.790340842960241,
+          "idempotency_key": "IL-026:2026-11-20:2026-11-23:weekly_ml_forward_v1:MPC",
+          "lock_sha256": "7b21cbe6411a5cb09c68db50cf6650d5f750090c1e1ccfe004da9b927311f984",
+          "observed_at_utc": "2026-11-23T14:34:20.597339Z",
+          "price": 363.8418336639404,
+          "quote_at_utc": "2026-11-23T14:34:00Z",
+          "shares": 21.411339,
+          "source_commit": "70ef2402f627c35228f3109b282e6424cb40ab88",
+          "ticker": "MPC",
+          "type": "buy"
+        },
+        {
+          "date": "2026-11-23",
+          "execution": "forward_observed_paper",
+          "fee": 7.7903405210001155,
+          "idempotency_key": "IL-026:2026-11-20:2026-11-23:weekly_ml_forward_v1:URI",
+          "lock_sha256": "7b21cbe6411a5cb09c68db50cf6650d5f750090c1e1ccfe004da9b927311f984",
+          "observed_at_utc": "2026-11-23T14:34:29.258829Z",
+          "price": 1041.8056766967773,
+          "quote_at_utc": "2026-11-23T14:34:00Z",
+          "shares": 7.477729,
+          "source_commit": "70ef2402f627c35228f3109b282e6424cb40ab88",
+          "ticker": "URI",
+          "type": "buy"
+        },
+        {
+          "date": "2026-11-23",
+          "execution": "forward_observed_paper",
+          "fee": 7.790341053598817,
+          "idempotency_key": "IL-026:2026-11-20:2026-11-23:weekly_ml_forward_v1:IRM",
+          "lock_sha256": "7b21cbe6411a5cb09c68db50cf6650d5f750090c1e1ccfe004da9b927311f984",
+          "observed_at_utc": "2026-11-23T14:34:16.933846Z",
+          "price": 108.44419438934325,
+          "quote_at_utc": "2026-11-23T14:34:00Z",
+          "shares": 71.837327,
+          "source_commit": "70ef2402f627c35228f3109b282e6424cb40ab88",
+          "ticker": "IRM",
+          "type": "buy"
+        },
+        {
+          "date": "2026-11-23",
+          "execution": "forward_observed_paper",
+          "fee": 7.790340885946109,
+          "idempotency_key": "IL-026:2026-11-20:2026-11-23:weekly_ml_forward_v1:CEG",
+          "lock_sha256": "7b21cbe6411a5cb09c68db50cf6650d5f750090c1e1ccfe004da9b927311f984",
+          "observed_at_utc": "2026-11-23T14:34:06.899288Z",
+          "price": 255.7984285583496,
+          "quote_at_utc": "2026-11-23T14:34:00Z",
+          "shares": 30.454999,
+          "source_commit": "70ef2402f627c35228f3109b282e6424cb40ab88",
+          "ticker": "CEG",
+          "type": "buy"
         }
       ],
       "forward_executions": {
+        "IL-026:2026-11-20:2026-11-23:weekly_ml_forward_v1": {
+          "fill_tickers": [
+            "ADI",
+            "AMD",
+            "ANET",
+            "CEG",
+            "IRM",
+            "MPC",
+            "MRNA",
+            "MU",
+            "TXN",
+            "URI"
+          ],
+          "fills_count": 10,
+          "lock_sha256": "7b21cbe6411a5cb09c68db50cf6650d5f750090c1e1ccfe004da9b927311f984",
+          "mode": "forward_observed_paper",
+          "quotes_sha256": "104aeb71a5e9dd5d1f890ca2aa2498dd2ce978db35aa89461e98502f8ad28da2",
+          "recorded_at_utc": "2026-11-23T14:34:31.308010Z",
+          "session": "2026-11-23",
+          "signal_date": "2026-11-20",
+          "source_commit": "70ef2402f627c35228f3109b282e6424cb40ab88"
+        },
         "IL-026:2026-11-20:weekly_ml_observed_exit_v1": {
           "fill_tickers": [
             "BBY",
@@ -1396,69 +1558,79 @@
         "held_exits_require_future_observed_quote": true,
         "historical_fills_created": 0
       },
-      "pending": [
-        {
-          "predicted_return": 0.09001114401903525,
-          "score": 0.09001114401903525,
-          "signal_date": "2026-11-20",
-          "ticker": "AMD"
+      "pending": [],
+      "positions": {
+        "ADI": {
+          "entry_date": "2026-11-23",
+          "entry_fee": 7.790340830189759,
+          "entry_price": 378.5942012786865,
+          "shares": 20.577021,
+          "signal_date": "2026-11-20"
         },
-        {
-          "predicted_return": 0.07742203311033376,
-          "score": 0.07742203311033376,
-          "signal_date": "2026-11-20",
-          "ticker": "MU"
+        "AMD": {
+          "entry_date": "2026-11-23",
+          "entry_fee": 7.7903406508913235,
+          "entry_price": 462.4711102294922,
+          "shares": 16.845032,
+          "signal_date": "2026-11-20"
         },
-        {
-          "predicted_return": 0.06811871537556967,
-          "score": 0.06811871537556967,
-          "signal_date": "2026-11-20",
-          "ticker": "ANET"
+        "ANET": {
+          "entry_date": "2026-11-23",
+          "entry_fee": 7.790341024050099,
+          "entry_price": 185.03747982788084,
+          "shares": 42.101422,
+          "signal_date": "2026-11-20"
         },
-        {
-          "predicted_return": 0.06744616302186199,
-          "score": 0.06744616302186199,
-          "signal_date": "2026-11-20",
-          "ticker": "ADI"
+        "CEG": {
+          "entry_date": "2026-11-23",
+          "entry_fee": 7.790340885946109,
+          "entry_price": 255.7984285583496,
+          "shares": 30.454999,
+          "signal_date": "2026-11-20"
         },
-        {
-          "predicted_return": 0.0648688156080594,
-          "score": 0.0648688156080594,
-          "signal_date": "2026-11-20",
-          "ticker": "MRNA"
+        "IRM": {
+          "entry_date": "2026-11-23",
+          "entry_fee": 7.790341053598817,
+          "entry_price": 108.44419438934325,
+          "shares": 71.837327,
+          "signal_date": "2026-11-20"
         },
-        {
-          "predicted_return": 0.06150214493343487,
-          "score": 0.06150214493343487,
-          "signal_date": "2026-11-20",
-          "ticker": "TXN"
+        "MPC": {
+          "entry_date": "2026-11-23",
+          "entry_fee": 7.790340842960241,
+          "entry_price": 363.8418336639404,
+          "shares": 21.411339,
+          "signal_date": "2026-11-20"
         },
-        {
-          "predicted_return": 0.05668273534537761,
-          "score": 0.05668273534537761,
-          "signal_date": "2026-11-20",
-          "ticker": "MPC"
+        "MRNA": {
+          "entry_date": "2026-11-23",
+          "entry_fee": 7.790340866662912,
+          "entry_price": 205.66277755737303,
+          "shares": 37.879197,
+          "signal_date": "2026-11-20"
         },
-        {
-          "predicted_return": 0.056450198461479056,
-          "score": 0.056450198461479056,
-          "signal_date": "2026-11-20",
-          "ticker": "URI"
+        "MU": {
+          "entry_date": "2026-11-23",
+          "entry_fee": 7.7903409640370755,
+          "entry_price": 686.474779724121,
+          "shares": 11.348328,
+          "signal_date": "2026-11-20"
         },
-        {
-          "predicted_return": 0.055830778669064274,
-          "score": 0.055830778669064274,
-          "signal_date": "2026-11-20",
-          "ticker": "IRM"
+        "TXN": {
+          "entry_date": "2026-11-23",
+          "entry_fee": 7.790341053344921,
+          "entry_price": 290.9153740081787,
+          "shares": 26.778719,
+          "signal_date": "2026-11-20"
         },
-        {
-          "predicted_return": 0.05547314797488714,
-          "score": 0.05547314797488714,
-          "signal_date": "2026-11-20",
-          "ticker": "CEG"
+        "URI": {
+          "entry_date": "2026-11-23",
+          "entry_fee": 7.7903405210001155,
+          "entry_price": 1041.8056766967773,
+          "shares": 7.477729,
+          "signal_date": "2026-11-20"
         }
-      ],
-      "positions": {},
+      },
       "trades": [
         {
           "buy_commission": 9.490508965384615,
@@ -1943,7 +2115,7 @@
       ]
     },
     "benchmark_rsp": {
-      "cash": 100170.49310778703,
+      "cash": 5008.524819943035,
       "equity": [
         {
           "date": "2026-10-09",
@@ -2265,18 +2437,49 @@
           "count": 1,
           "date": "2026-11-20",
           "type": "signal_frozen"
+        },
+        {
+          "date": "2026-11-23",
+          "execution": "forward_observed_paper",
+          "fee": 95.06690138645754,
+          "idempotency_key": "IL-020:2026-11-20:2026-11-23:weekly_ml_forward_v1:RSP",
+          "lock_sha256": "7b21cbe6411a5cb09c68db50cf6650d5f750090c1e1ccfe004da9b927311f984",
+          "observed_at_utc": "2026-11-23T14:34:24.531531Z",
+          "price": 211.74581938934324,
+          "quote_at_utc": "2026-11-23T14:34:00Z",
+          "shares": 448.967076,
+          "source_commit": "70ef2402f627c35228f3109b282e6424cb40ab88",
+          "ticker": "RSP",
+          "type": "buy"
         }
       ],
+      "forward_executions": {
+        "IL-020:2026-11-20:2026-11-23:weekly_ml_forward_v1": {
+          "fill_tickers": [
+            "RSP"
+          ],
+          "fills_count": 1,
+          "lock_sha256": "7b21cbe6411a5cb09c68db50cf6650d5f750090c1e1ccfe004da9b927311f984",
+          "mode": "forward_observed_paper",
+          "quotes_sha256": "67819e0f326e0d918a058ebc34014d8fdc3b0a6f4f325e3ef4de15725155e26c",
+          "recorded_at_utc": "2026-11-23T14:34:31.308010Z",
+          "session": "2026-11-23",
+          "signal_date": "2026-11-20",
+          "source_commit": "70ef2402f627c35228f3109b282e6424cb40ab88"
+        }
+      },
       "last_signal_session": "2026-11-20",
       "nav": 100170.49310778703,
-      "pending": [
-        {
-          "score": 1.0,
-          "signal_date": "2026-11-20",
-          "ticker": "RSP"
+      "pending": [],
+      "positions": {
+        "RSP": {
+          "entry_date": "2026-11-23",
+          "entry_fee": 95.06690138645754,
+          "entry_price": 211.74581938934324,
+          "shares": 448.967076,
+          "signal_date": "2026-11-20"
         }
-      ],
-      "positions": {},
+      },
       "trades": [
         {
           "buy_commission": 94.90509486176578,
@@ -2341,7 +2544,7 @@
       ]
     },
     "benchmark_spy": {
-      "cash": 93661.81418879132,
+      "cash": 4683.091012700184,
       "equity": [
         {
           "date": "2026-10-09",
@@ -2663,18 +2866,49 @@
           "count": 1,
           "date": "2026-11-20",
           "type": "signal_frozen"
+        },
+        {
+          "date": "2026-11-23",
+          "execution": "forward_observed_paper",
+          "fee": 88.88983334274839,
+          "idempotency_key": "IL-019:2026-11-20:2026-11-23:weekly_ml_forward_v1:SPY",
+          "lock_sha256": "7b21cbe6411a5cb09c68db50cf6650d5f750090c1e1ccfe004da9b927311f984",
+          "observed_at_utc": "2026-11-23T14:34:25.900306Z",
+          "price": 720.8902943115233,
+          "quote_at_utc": "2026-11-23T14:34:00Z",
+          "shares": 123.305632,
+          "source_commit": "70ef2402f627c35228f3109b282e6424cb40ab88",
+          "ticker": "SPY",
+          "type": "buy"
         }
       ],
+      "forward_executions": {
+        "IL-019:2026-11-20:2026-11-23:weekly_ml_forward_v1": {
+          "fill_tickers": [
+            "SPY"
+          ],
+          "fills_count": 1,
+          "lock_sha256": "7b21cbe6411a5cb09c68db50cf6650d5f750090c1e1ccfe004da9b927311f984",
+          "mode": "forward_observed_paper",
+          "quotes_sha256": "31b9ad30a81cace7306b0a20ab0d50203f3e5cee0f6401b4a22441d140f9b6ab",
+          "recorded_at_utc": "2026-11-23T14:34:31.308010Z",
+          "session": "2026-11-23",
+          "signal_date": "2026-11-20",
+          "source_commit": "70ef2402f627c35228f3109b282e6424cb40ab88"
+        }
+      },
       "last_signal_session": "2026-11-20",
       "nav": 93661.81418879132,
-      "pending": [
-        {
-          "score": 1.0,
-          "signal_date": "2026-11-20",
-          "ticker": "SPY"
+      "pending": [],
+      "positions": {
+        "SPY": {
+          "entry_date": "2026-11-23",
+          "entry_fee": 88.88983334274839,
+          "entry_price": 720.8902943115233,
+          "shares": 123.305632,
+          "signal_date": "2026-11-20"
         }
-      ],
-      "positions": {},
+      },
       "trades": [
         {
           "buy_commission": 94.90509486345954,
@@ -2739,7 +2973,7 @@
       ]
     },
     "ensemble_consensus": {
-      "cash": 85683.78100397768,
+      "cash": 4284.191025847629,
       "equity": [
         {
           "date": "2026-10-09",
@@ -3871,93 +4105,247 @@
           "count": 10,
           "date": "2026-11-20",
           "type": "signal_frozen"
+        },
+        {
+          "date": "2026-11-23",
+          "execution": "forward_observed_paper",
+          "fee": 8.131827014316132,
+          "idempotency_key": "IL-027:2026-11-20:2026-11-23:weekly_ml_forward_v1:STX",
+          "lock_sha256": "7b21cbe6411a5cb09c68db50cf6650d5f750090c1e1ccfe004da9b927311f984",
+          "observed_at_utc": "2026-11-23T14:34:26.651161Z",
+          "price": 537.3685255737305,
+          "quote_at_utc": "2026-11-23T14:34:00Z",
+          "shares": 15.132682,
+          "source_commit": "70ef2402f627c35228f3109b282e6424cb40ab88",
+          "ticker": "STX",
+          "type": "buy"
+        },
+        {
+          "date": "2026-11-23",
+          "execution": "forward_observed_paper",
+          "fee": 8.131827120830115,
+          "idempotency_key": "IL-027:2026-11-20:2026-11-23:weekly_ml_forward_v1:ADI",
+          "lock_sha256": "7b21cbe6411a5cb09c68db50cf6650d5f750090c1e1ccfe004da9b927311f984",
+          "observed_at_utc": "2026-11-23T14:34:02.011389Z",
+          "price": 378.5942012786865,
+          "quote_at_utc": "2026-11-23T14:34:00Z",
+          "shares": 21.479006,
+          "source_commit": "70ef2402f627c35228f3109b282e6424cb40ab88",
+          "ticker": "ADI",
+          "type": "buy"
+        },
+        {
+          "date": "2026-11-23",
+          "execution": "forward_observed_paper",
+          "fee": 8.13182713416753,
+          "idempotency_key": "IL-027:2026-11-20:2026-11-23:weekly_ml_forward_v1:MPWR",
+          "lock_sha256": "7b21cbe6411a5cb09c68db50cf6650d5f750090c1e1ccfe004da9b927311f984",
+          "observed_at_utc": "2026-11-23T14:34:20.850704Z",
+          "price": 1310.895110229492,
+          "quote_at_utc": "2026-11-23T14:34:00Z",
+          "shares": 6.203263,
+          "source_commit": "70ef2402f627c35228f3109b282e6424cb40ab88",
+          "ticker": "MPWR",
+          "type": "buy"
+        },
+        {
+          "date": "2026-11-23",
+          "execution": "forward_observed_paper",
+          "fee": 8.131827333856654,
+          "idempotency_key": "IL-027:2026-11-20:2026-11-23:weekly_ml_forward_v1:ARE",
+          "lock_sha256": "7b21cbe6411a5cb09c68db50cf6650d5f750090c1e1ccfe004da9b927311f984",
+          "observed_at_utc": "2026-11-23T14:34:04.071735Z",
+          "price": 41.12555204200744,
+          "quote_at_utc": "2026-11-23T14:34:00Z",
+          "shares": 197.731749,
+          "source_commit": "70ef2402f627c35228f3109b282e6424cb40ab88",
+          "ticker": "ARE",
+          "type": "buy"
+        },
+        {
+          "date": "2026-11-23",
+          "execution": "forward_observed_paper",
+          "fee": 8.131827308120522,
+          "idempotency_key": "IL-027:2026-11-20:2026-11-23:weekly_ml_forward_v1:MCHP",
+          "lock_sha256": "7b21cbe6411a5cb09c68db50cf6650d5f750090c1e1ccfe004da9b927311f984",
+          "observed_at_utc": "2026-11-23T14:34:19.399863Z",
+          "price": 60.265118110656736,
+          "quote_at_utc": "2026-11-23T14:34:00Z",
+          "shares": 134.93423,
+          "source_commit": "70ef2402f627c35228f3109b282e6424cb40ab88",
+          "ticker": "MCHP",
+          "type": "buy"
+        },
+        {
+          "date": "2026-11-23",
+          "execution": "forward_observed_paper",
+          "fee": 8.131826658785672,
+          "idempotency_key": "IL-027:2026-11-20:2026-11-23:weekly_ml_forward_v1:GS",
+          "lock_sha256": "7b21cbe6411a5cb09c68db50cf6650d5f750090c1e1ccfe004da9b927311f984",
+          "observed_at_utc": "2026-11-23T14:34:15.448203Z",
+          "price": 828.6141122131347,
+          "quote_at_utc": "2026-11-23T14:34:00Z",
+          "shares": 9.813768,
+          "source_commit": "70ef2402f627c35228f3109b282e6424cb40ab88",
+          "ticker": "GS",
+          "type": "buy"
+        },
+        {
+          "date": "2026-11-23",
+          "execution": "forward_observed_paper",
+          "fee": 8.131827281568098,
+          "idempotency_key": "IL-027:2026-11-20:2026-11-23:weekly_ml_forward_v1:AVGO",
+          "lock_sha256": "7b21cbe6411a5cb09c68db50cf6650d5f750090c1e1ccfe004da9b927311f984",
+          "observed_at_utc": "2026-11-23T14:34:04.330125Z",
+          "price": 317.9188897705078,
+          "quote_at_utc": "2026-11-23T14:34:00Z",
+          "shares": 25.578308,
+          "source_commit": "70ef2402f627c35228f3109b282e6424cb40ab88",
+          "ticker": "AVGO",
+          "type": "buy"
+        },
+        {
+          "date": "2026-11-23",
+          "execution": "forward_observed_paper",
+          "fee": 8.131827322997493,
+          "idempotency_key": "IL-027:2026-11-20:2026-11-23:weekly_ml_forward_v1:ANET",
+          "lock_sha256": "7b21cbe6411a5cb09c68db50cf6650d5f750090c1e1ccfe004da9b927311f984",
+          "observed_at_utc": "2026-11-23T14:34:03.842824Z",
+          "price": 185.03747982788084,
+          "quote_at_utc": "2026-11-23T14:34:00Z",
+          "shares": 43.94692,
+          "source_commit": "70ef2402f627c35228f3109b282e6424cb40ab88",
+          "ticker": "ANET",
+          "type": "buy"
+        },
+        {
+          "date": "2026-11-23",
+          "execution": "forward_observed_paper",
+          "fee": 8.131827281669468,
+          "idempotency_key": "IL-027:2026-11-20:2026-11-23:weekly_ml_forward_v1:KLAC",
+          "lock_sha256": "7b21cbe6411a5cb09c68db50cf6650d5f750090c1e1ccfe004da9b927311f984",
+          "observed_at_utc": "2026-11-23T14:34:17.628008Z",
+          "price": 144.64229232788085,
+          "quote_at_utc": "2026-11-23T14:34:00Z",
+          "shares": 56.22026,
+          "source_commit": "70ef2402f627c35228f3109b282e6424cb40ab88",
+          "ticker": "KLAC",
+          "type": "buy"
+        },
+        {
+          "date": "2026-11-23",
+          "execution": "forward_observed_paper",
+          "fee": 8.131827250111948,
+          "idempotency_key": "IL-027:2026-11-20:2026-11-23:weekly_ml_forward_v1:MRNA",
+          "lock_sha256": "7b21cbe6411a5cb09c68db50cf6650d5f750090c1e1ccfe004da9b927311f984",
+          "observed_at_utc": "2026-11-23T14:34:21.119541Z",
+          "price": 205.66277755737303,
+          "quote_at_utc": "2026-11-23T14:34:00Z",
+          "shares": 39.539616,
+          "source_commit": "70ef2402f627c35228f3109b282e6424cb40ab88",
+          "ticker": "MRNA",
+          "type": "buy"
         }
       ],
+      "forward_executions": {
+        "IL-027:2026-11-20:2026-11-23:weekly_ml_forward_v1": {
+          "fill_tickers": [
+            "ADI",
+            "ANET",
+            "ARE",
+            "AVGO",
+            "GS",
+            "KLAC",
+            "MCHP",
+            "MPWR",
+            "MRNA",
+            "STX"
+          ],
+          "fills_count": 10,
+          "lock_sha256": "7b21cbe6411a5cb09c68db50cf6650d5f750090c1e1ccfe004da9b927311f984",
+          "mode": "forward_observed_paper",
+          "quotes_sha256": "4f45d3a3ec302ea5448f2f357e3c4d4d9ecde509dc25487f2b1fb7fd3b1ed39e",
+          "recorded_at_utc": "2026-11-23T14:34:31.308010Z",
+          "session": "2026-11-23",
+          "signal_date": "2026-11-20",
+          "source_commit": "70ef2402f627c35228f3109b282e6424cb40ab88"
+        }
+      },
       "last_signal_session": "2026-11-20",
       "nav": 85683.78100397768,
-      "pending": [
-        {
-          "positive_votes": 5,
-          "predicted_return": 0.04352249918326944,
-          "rank_dispersion": 0.07309062349396414,
-          "score": 0.9166666666666666,
-          "signal_date": "2026-11-20",
-          "ticker": "STX"
+      "pending": [],
+      "positions": {
+        "ADI": {
+          "entry_date": "2026-11-23",
+          "entry_fee": 8.131827120830115,
+          "entry_price": 378.5942012786865,
+          "shares": 21.479006,
+          "signal_date": "2026-11-20"
         },
-        {
-          "positive_votes": 5,
-          "predicted_return": 0.061356902927083734,
-          "rank_dispersion": 0.1297063523187102,
-          "score": 0.8794398907103824,
-          "signal_date": "2026-11-20",
-          "ticker": "ADI"
+        "ANET": {
+          "entry_date": "2026-11-23",
+          "entry_fee": 8.131827322997493,
+          "entry_price": 185.03747982788084,
+          "shares": 43.94692,
+          "signal_date": "2026-11-20"
         },
-        {
-          "positive_votes": 5,
-          "predicted_return": 0.04146961304005445,
-          "rank_dispersion": 0.08362954610908835,
-          "score": 0.8743169398907105,
-          "signal_date": "2026-11-20",
-          "ticker": "MPWR"
+        "ARE": {
+          "entry_date": "2026-11-23",
+          "entry_fee": 8.131827333856654,
+          "entry_price": 41.12555204200744,
+          "shares": 197.731749,
+          "signal_date": "2026-11-20"
         },
-        {
-          "positive_votes": 5,
-          "predicted_return": 0.03019837933854927,
-          "rank_dispersion": 0.09315259631670748,
-          "score": 0.8609972677595628,
-          "signal_date": "2026-11-20",
-          "ticker": "ARE"
+        "AVGO": {
+          "entry_date": "2026-11-23",
+          "entry_fee": 8.131827281568098,
+          "entry_price": 317.9188897705078,
+          "shares": 25.578308,
+          "signal_date": "2026-11-20"
         },
-        {
-          "positive_votes": 5,
-          "predicted_return": 0.03351067105780504,
-          "rank_dispersion": 0.08787349952369265,
-          "score": 0.8510928961748635,
-          "signal_date": "2026-11-20",
-          "ticker": "MCHP"
+        "GS": {
+          "entry_date": "2026-11-23",
+          "entry_fee": 8.131826658785672,
+          "entry_price": 828.6141122131347,
+          "shares": 9.813768,
+          "signal_date": "2026-11-20"
         },
-        {
-          "positive_votes": 5,
-          "predicted_return": 0.044835069283171866,
-          "rank_dispersion": 0.10079318040332458,
-          "score": 0.8502390710382514,
-          "signal_date": "2026-11-20",
-          "ticker": "GS"
+        "KLAC": {
+          "entry_date": "2026-11-23",
+          "entry_fee": 8.131827281669468,
+          "entry_price": 144.64229232788085,
+          "shares": 56.22026,
+          "signal_date": "2026-11-20"
         },
-        {
-          "positive_votes": 5,
-          "predicted_return": 0.05235455218540795,
-          "rank_dispersion": 0.16046861488739994,
-          "score": 0.8493852459016393,
-          "signal_date": "2026-11-20",
-          "ticker": "AVGO"
+        "MCHP": {
+          "entry_date": "2026-11-23",
+          "entry_fee": 8.131827308120522,
+          "entry_price": 60.265118110656736,
+          "shares": 134.93423,
+          "signal_date": "2026-11-20"
         },
-        {
-          "positive_votes": 5,
-          "predicted_return": 0.059791014558915556,
-          "rank_dispersion": 0.18677041857899682,
-          "score": 0.8408469945355191,
-          "signal_date": "2026-11-20",
-          "ticker": "ANET"
+        "MPWR": {
+          "entry_date": "2026-11-23",
+          "entry_fee": 8.13182713416753,
+          "entry_price": 1310.895110229492,
+          "shares": 6.203263,
+          "signal_date": "2026-11-20"
         },
-        {
-          "positive_votes": 5,
-          "predicted_return": 0.03669325389524576,
-          "rank_dispersion": 0.21445728406083084,
-          "score": 0.8341871584699453,
-          "signal_date": "2026-11-20",
-          "ticker": "KLAC"
+        "MRNA": {
+          "entry_date": "2026-11-23",
+          "entry_fee": 8.131827250111948,
+          "entry_price": 205.66277755737303,
+          "shares": 39.539616,
+          "signal_date": "2026-11-20"
         },
-        {
-          "positive_votes": 5,
-          "predicted_return": 0.05746546495899951,
-          "rank_dispersion": 0.2862176724164038,
-          "score": 0.8312841530054644,
-          "signal_date": "2026-11-20",
-          "ticker": "MRNA"
+        "STX": {
+          "entry_date": "2026-11-23",
+          "entry_fee": 8.131827014316132,
+          "entry_price": 537.3685255737305,
+          "shares": 15.132682,
+          "signal_date": "2026-11-20"
         }
-      ],
-      "positions": {},
+      },
       "trades": [
         {
           "buy_commission": 9.490509257069236,
@@ -4562,7 +4950,7 @@
       ]
     },
     "lgbm_direction": {
-      "cash": 103643.21151858052,
+      "cash": 5182.161614614681,
       "equity": [
         {
           "date": "2026-10-09",
@@ -5514,73 +5902,247 @@
           "count": 10,
           "date": "2026-11-20",
           "type": "signal_frozen"
+        },
+        {
+          "date": "2026-11-23",
+          "execution": "forward_observed_paper",
+          "fee": 9.836268700036113,
+          "idempotency_key": "IL-022:2026-11-20:2026-11-23:weekly_ml_forward_v1:TPL",
+          "lock_sha256": "7b21cbe6411a5cb09c68db50cf6650d5f750090c1e1ccfe004da9b927311f984",
+          "observed_at_utc": "2026-11-23T14:34:27.909550Z",
+          "price": 282.4098416290283,
+          "quote_at_utc": "2026-11-23T14:34:00Z",
+          "shares": 34.829766,
+          "source_commit": "70ef2402f627c35228f3109b282e6424cb40ab88",
+          "ticker": "TPL",
+          "type": "buy"
+        },
+        {
+          "date": "2026-11-23",
+          "execution": "forward_observed_paper",
+          "fee": 9.836268797951213,
+          "idempotency_key": "IL-022:2026-11-20:2026-11-23:weekly_ml_forward_v1:EQT",
+          "lock_sha256": "7b21cbe6411a5cb09c68db50cf6650d5f750090c1e1ccfe004da9b927311f984",
+          "observed_at_utc": "2026-11-23T14:34:11.375558Z",
+          "price": 49.3146459159851,
+          "quote_at_utc": "2026-11-23T14:34:00Z",
+          "shares": 199.459382,
+          "source_commit": "70ef2402f627c35228f3109b282e6424cb40ab88",
+          "ticker": "EQT",
+          "type": "buy"
+        },
+        {
+          "date": "2026-11-23",
+          "execution": "forward_observed_paper",
+          "fee": 9.836268757418766,
+          "idempotency_key": "IL-022:2026-11-20:2026-11-23:weekly_ml_forward_v1:EXE",
+          "lock_sha256": "7b21cbe6411a5cb09c68db50cf6650d5f750090c1e1ccfe004da9b927311f984",
+          "observed_at_utc": "2026-11-23T14:34:12.682116Z",
+          "price": 81.8659094467163,
+          "quote_at_utc": "2026-11-23T14:34:00Z",
+          "shares": 120.150974,
+          "source_commit": "70ef2402f627c35228f3109b282e6424cb40ab88",
+          "ticker": "EXE",
+          "type": "buy"
+        },
+        {
+          "date": "2026-11-23",
+          "execution": "forward_observed_paper",
+          "fee": 9.836268814447877,
+          "idempotency_key": "IL-022:2026-11-20:2026-11-23:weekly_ml_forward_v1:BSX",
+          "lock_sha256": "7b21cbe6411a5cb09c68db50cf6650d5f750090c1e1ccfe004da9b927311f984",
+          "observed_at_utc": "2026-11-23T14:34:05.677956Z",
+          "price": 42.36617372131347,
+          "quote_at_utc": "2026-11-23T14:34:00Z",
+          "shares": 232.172697,
+          "source_commit": "70ef2402f627c35228f3109b282e6424cb40ab88",
+          "ticker": "BSX",
+          "type": "buy"
+        },
+        {
+          "date": "2026-11-23",
+          "execution": "forward_observed_paper",
+          "fee": 9.836268820717372,
+          "idempotency_key": "IL-022:2026-11-20:2026-11-23:weekly_ml_forward_v1:VICI",
+          "lock_sha256": "7b21cbe6411a5cb09c68db50cf6650d5f750090c1e1ccfe004da9b927311f984",
+          "observed_at_utc": "2026-11-23T14:34:29.482802Z",
+          "price": 24.077033034324646,
+          "quote_at_utc": "2026-11-23T14:34:00Z",
+          "shares": 408.533261,
+          "source_commit": "70ef2402f627c35228f3109b282e6424cb40ab88",
+          "ticker": "VICI",
+          "type": "buy"
+        },
+        {
+          "date": "2026-11-23",
+          "execution": "forward_observed_paper",
+          "fee": 9.836268749155892,
+          "idempotency_key": "IL-022:2026-11-20:2026-11-23:weekly_ml_forward_v1:PODD",
+          "lock_sha256": "7b21cbe6411a5cb09c68db50cf6650d5f750090c1e1ccfe004da9b927311f984",
+          "observed_at_utc": "2026-11-23T14:34:23.082953Z",
+          "price": 134.9024242172241,
+          "quote_at_utc": "2026-11-23T14:34:00Z",
+          "shares": 72.913951,
+          "source_commit": "70ef2402f627c35228f3109b282e6424cb40ab88",
+          "ticker": "PODD",
+          "type": "buy"
+        },
+        {
+          "date": "2026-11-23",
+          "execution": "forward_observed_paper",
+          "fee": 9.836268794608829,
+          "idempotency_key": "IL-022:2026-11-20:2026-11-23:weekly_ml_forward_v1:SCHW",
+          "lock_sha256": "7b21cbe6411a5cb09c68db50cf6650d5f750090c1e1ccfe004da9b927311f984",
+          "observed_at_utc": "2026-11-23T14:34:24.909975Z",
+          "price": 91.67801824951171,
+          "quote_at_utc": "2026-11-23T14:34:00Z",
+          "shares": 107.291464,
+          "source_commit": "70ef2402f627c35228f3109b282e6424cb40ab88",
+          "ticker": "SCHW",
+          "type": "buy"
+        },
+        {
+          "date": "2026-11-23",
+          "execution": "forward_observed_paper",
+          "fee": 9.836268745506793,
+          "idempotency_key": "IL-022:2026-11-20:2026-11-23:weekly_ml_forward_v1:GLW",
+          "lock_sha256": "7b21cbe6411a5cb09c68db50cf6650d5f750090c1e1ccfe004da9b927311f984",
+          "observed_at_utc": "2026-11-23T14:34:14.637647Z",
+          "price": 107.66380561065674,
+          "quote_at_utc": "2026-11-23T14:34:00Z",
+          "shares": 91.360961,
+          "source_commit": "70ef2402f627c35228f3109b282e6424cb40ab88",
+          "ticker": "GLW",
+          "type": "buy"
+        },
+        {
+          "date": "2026-11-23",
+          "execution": "forward_observed_paper",
+          "fee": 9.836268721336616,
+          "idempotency_key": "IL-022:2026-11-20:2026-11-23:weekly_ml_forward_v1:FICO",
+          "lock_sha256": "7b21cbe6411a5cb09c68db50cf6650d5f750090c1e1ccfe004da9b927311f984",
+          "observed_at_utc": "2026-11-23T14:34:13.587324Z",
+          "price": 711.0103568115234,
+          "quote_at_utc": "2026-11-23T14:34:00Z",
+          "shares": 13.834213,
+          "source_commit": "70ef2402f627c35228f3109b282e6424cb40ab88",
+          "ticker": "FICO",
+          "type": "buy"
+        },
+        {
+          "date": "2026-11-23",
+          "execution": "forward_observed_paper",
+          "fee": 9.836268315569626,
+          "idempotency_key": "IL-022:2026-11-20:2026-11-23:weekly_ml_forward_v1:NOC",
+          "lock_sha256": "7b21cbe6411a5cb09c68db50cf6650d5f750090c1e1ccfe004da9b927311f984",
+          "observed_at_utc": "2026-11-23T14:34:22.135121Z",
+          "price": 535.517625,
+          "quote_at_utc": "2026-11-23T14:34:00Z",
+          "shares": 18.367777,
+          "source_commit": "70ef2402f627c35228f3109b282e6424cb40ab88",
+          "ticker": "NOC",
+          "type": "buy"
         }
       ],
+      "forward_executions": {
+        "IL-022:2026-11-20:2026-11-23:weekly_ml_forward_v1": {
+          "fill_tickers": [
+            "BSX",
+            "EQT",
+            "EXE",
+            "FICO",
+            "GLW",
+            "NOC",
+            "PODD",
+            "SCHW",
+            "TPL",
+            "VICI"
+          ],
+          "fills_count": 10,
+          "lock_sha256": "7b21cbe6411a5cb09c68db50cf6650d5f750090c1e1ccfe004da9b927311f984",
+          "mode": "forward_observed_paper",
+          "quotes_sha256": "2d4086fd51ef7178b9de08c00dd52d78c72a4c3e618bc224fc91a891e3fd3353",
+          "recorded_at_utc": "2026-11-23T14:34:31.308010Z",
+          "session": "2026-11-23",
+          "signal_date": "2026-11-20",
+          "source_commit": "70ef2402f627c35228f3109b282e6424cb40ab88"
+        }
+      },
       "last_signal_session": "2026-11-20",
       "nav": 103643.21151858052,
-      "pending": [
-        {
-          "direction_probability": 0.8458885108345698,
-          "score": 0.8458885108345698,
-          "signal_date": "2026-11-20",
-          "ticker": "TPL"
+      "pending": [],
+      "positions": {
+        "BSX": {
+          "entry_date": "2026-11-23",
+          "entry_fee": 9.836268814447877,
+          "entry_price": 42.36617372131347,
+          "shares": 232.172697,
+          "signal_date": "2026-11-20"
         },
-        {
-          "direction_probability": 0.8433407745162783,
-          "score": 0.8433407745162783,
-          "signal_date": "2026-11-20",
-          "ticker": "EQT"
+        "EQT": {
+          "entry_date": "2026-11-23",
+          "entry_fee": 9.836268797951213,
+          "entry_price": 49.3146459159851,
+          "shares": 199.459382,
+          "signal_date": "2026-11-20"
         },
-        {
-          "direction_probability": 0.842797787500027,
-          "score": 0.842797787500027,
-          "signal_date": "2026-11-20",
-          "ticker": "EXE"
+        "EXE": {
+          "entry_date": "2026-11-23",
+          "entry_fee": 9.836268757418766,
+          "entry_price": 81.8659094467163,
+          "shares": 120.150974,
+          "signal_date": "2026-11-20"
         },
-        {
-          "direction_probability": 0.8426874056559354,
-          "score": 0.8426874056559354,
-          "signal_date": "2026-11-20",
-          "ticker": "BSX"
+        "FICO": {
+          "entry_date": "2026-11-23",
+          "entry_fee": 9.836268721336616,
+          "entry_price": 711.0103568115234,
+          "shares": 13.834213,
+          "signal_date": "2026-11-20"
         },
-        {
-          "direction_probability": 0.8399641015600992,
-          "score": 0.8399641015600992,
-          "signal_date": "2026-11-20",
-          "ticker": "VICI"
+        "GLW": {
+          "entry_date": "2026-11-23",
+          "entry_fee": 9.836268745506793,
+          "entry_price": 107.66380561065674,
+          "shares": 91.360961,
+          "signal_date": "2026-11-20"
         },
-        {
-          "direction_probability": 0.8388633465708073,
-          "score": 0.8388633465708073,
-          "signal_date": "2026-11-20",
-          "ticker": "PODD"
+        "NOC": {
+          "entry_date": "2026-11-23",
+          "entry_fee": 9.836268315569626,
+          "entry_price": 535.517625,
+          "shares": 18.367777,
+          "signal_date": "2026-11-20"
         },
-        {
-          "direction_probability": 0.8372378464055259,
-          "score": 0.8372378464055259,
-          "signal_date": "2026-11-20",
-          "ticker": "SCHW"
+        "PODD": {
+          "entry_date": "2026-11-23",
+          "entry_fee": 9.836268749155892,
+          "entry_price": 134.9024242172241,
+          "shares": 72.913951,
+          "signal_date": "2026-11-20"
         },
-        {
-          "direction_probability": 0.8368149843375026,
-          "score": 0.8368149843375026,
-          "signal_date": "2026-11-20",
-          "ticker": "GLW"
+        "SCHW": {
+          "entry_date": "2026-11-23",
+          "entry_fee": 9.836268794608829,
+          "entry_price": 91.67801824951171,
+          "shares": 107.291464,
+          "signal_date": "2026-11-20"
         },
-        {
-          "direction_probability": 0.8361073762213673,
-          "score": 0.8361073762213673,
-          "signal_date": "2026-11-20",
-          "ticker": "FICO"
+        "TPL": {
+          "entry_date": "2026-11-23",
+          "entry_fee": 9.836268700036113,
+          "entry_price": 282.4098416290283,
+          "shares": 34.829766,
+          "signal_date": "2026-11-20"
         },
-        {
-          "direction_probability": 0.8359004207583554,
-          "score": 0.8359004207583554,
-          "signal_date": "2026-11-20",
-          "ticker": "NOC"
+        "VICI": {
+          "entry_date": "2026-11-23",
+          "entry_fee": 9.836268820717372,
+          "entry_price": 24.077033034324646,
+          "shares": 408.533261,
+          "signal_date": "2026-11-20"
         }
-      ],
-      "positions": {},
+      },
       "trades": [
         {
           "buy_commission": 9.490509257069236,
@@ -6065,7 +6627,7 @@
       ]
     },
     "lgbm_ranker": {
-      "cash": 76460.78198757014,
+      "cash": 3823.040412467991,
       "equity": [
         {
           "date": "2026-10-09",
@@ -7282,9 +7844,171 @@
           "count": 10,
           "date": "2026-11-20",
           "type": "signal_frozen"
+        },
+        {
+          "date": "2026-11-23",
+          "execution": "forward_observed_paper",
+          "fee": 7.256517581080207,
+          "idempotency_key": "IL-023:2026-11-20:2026-11-23:weekly_ml_forward_v1:MU",
+          "lock_sha256": "7b21cbe6411a5cb09c68db50cf6650d5f750090c1e1ccfe004da9b927311f984",
+          "observed_at_utc": "2026-11-23T14:34:21.594916Z",
+          "price": 686.474779724121,
+          "quote_at_utc": "2026-11-23T14:34:00Z",
+          "shares": 10.570698,
+          "source_commit": "70ef2402f627c35228f3109b282e6424cb40ab88",
+          "ticker": "MU",
+          "type": "buy"
+        },
+        {
+          "date": "2026-11-23",
+          "execution": "forward_observed_paper",
+          "fee": 7.256517725609008,
+          "idempotency_key": "IL-023:2026-11-20:2026-11-23:weekly_ml_forward_v1:TER",
+          "lock_sha256": "7b21cbe6411a5cb09c68db50cf6650d5f750090c1e1ccfe004da9b927311f984",
+          "observed_at_utc": "2026-11-23T14:34:27.326920Z",
+          "price": 239.3496107254028,
+          "quote_at_utc": "2026-11-23T14:34:00Z",
+          "shares": 30.31765,
+          "source_commit": "70ef2402f627c35228f3109b282e6424cb40ab88",
+          "ticker": "TER",
+          "type": "buy"
+        },
+        {
+          "date": "2026-11-23",
+          "execution": "forward_observed_paper",
+          "fee": 7.2565176910067555,
+          "idempotency_key": "IL-023:2026-11-20:2026-11-23:weekly_ml_forward_v1:LRCX",
+          "lock_sha256": "7b21cbe6411a5cb09c68db50cf6650d5f750090c1e1ccfe004da9b927311f984",
+          "observed_at_utc": "2026-11-23T14:34:18.501347Z",
+          "price": 212.1267165298462,
+          "quote_at_utc": "2026-11-23T14:34:00Z",
+          "shares": 34.20841,
+          "source_commit": "70ef2402f627c35228f3109b282e6424cb40ab88",
+          "ticker": "LRCX",
+          "type": "buy"
+        },
+        {
+          "date": "2026-11-23",
+          "execution": "forward_observed_paper",
+          "fee": 7.256517706067995,
+          "idempotency_key": "IL-023:2026-11-20:2026-11-23:weekly_ml_forward_v1:ADI",
+          "lock_sha256": "7b21cbe6411a5cb09c68db50cf6650d5f750090c1e1ccfe004da9b927311f984",
+          "observed_at_utc": "2026-11-23T14:34:02.011389Z",
+          "price": 378.5942012786865,
+          "quote_at_utc": "2026-11-23T14:34:00Z",
+          "shares": 19.167007,
+          "source_commit": "70ef2402f627c35228f3109b282e6424cb40ab88",
+          "ticker": "ADI",
+          "type": "buy"
+        },
+        {
+          "date": "2026-11-23",
+          "execution": "forward_observed_paper",
+          "fee": 7.256517694157652,
+          "idempotency_key": "IL-023:2026-11-20:2026-11-23:weekly_ml_forward_v1:SWKS",
+          "lock_sha256": "7b21cbe6411a5cb09c68db50cf6650d5f750090c1e1ccfe004da9b927311f984",
+          "observed_at_utc": "2026-11-23T14:34:27.077260Z",
+          "price": 77.91893725204467,
+          "quote_at_utc": "2026-11-23T14:34:00Z",
+          "shares": 93.129064,
+          "source_commit": "70ef2402f627c35228f3109b282e6424cb40ab88",
+          "ticker": "SWKS",
+          "type": "buy"
+        },
+        {
+          "date": "2026-11-23",
+          "execution": "forward_observed_paper",
+          "fee": 7.256517562060203,
+          "idempotency_key": "IL-023:2026-11-20:2026-11-23:weekly_ml_forward_v1:MPWR",
+          "lock_sha256": "7b21cbe6411a5cb09c68db50cf6650d5f750090c1e1ccfe004da9b927311f984",
+          "observed_at_utc": "2026-11-23T14:34:20.850704Z",
+          "price": 1310.895110229492,
+          "quote_at_utc": "2026-11-23T14:34:00Z",
+          "shares": 5.535544,
+          "source_commit": "70ef2402f627c35228f3109b282e6424cb40ab88",
+          "ticker": "MPWR",
+          "type": "buy"
+        },
+        {
+          "date": "2026-11-23",
+          "execution": "forward_observed_paper",
+          "fee": 7.256517647891184,
+          "idempotency_key": "IL-023:2026-11-20:2026-11-23:weekly_ml_forward_v1:AMD",
+          "lock_sha256": "7b21cbe6411a5cb09c68db50cf6650d5f750090c1e1ccfe004da9b927311f984",
+          "observed_at_utc": "2026-11-23T14:34:03.629983Z",
+          "price": 462.4711102294922,
+          "quote_at_utc": "2026-11-23T14:34:00Z",
+          "shares": 15.690748,
+          "source_commit": "70ef2402f627c35228f3109b282e6424cb40ab88",
+          "ticker": "AMD",
+          "type": "buy"
+        },
+        {
+          "date": "2026-11-23",
+          "execution": "forward_observed_paper",
+          "fee": 7.256517385494427,
+          "idempotency_key": "IL-023:2026-11-20:2026-11-23:weekly_ml_forward_v1:PWR",
+          "lock_sha256": "7b21cbe6411a5cb09c68db50cf6650d5f750090c1e1ccfe004da9b927311f984",
+          "observed_at_utc": "2026-11-23T14:34:23.605507Z",
+          "price": 605.8227795410156,
+          "quote_at_utc": "2026-11-23T14:34:00Z",
+          "shares": 11.977954,
+          "source_commit": "70ef2402f627c35228f3109b282e6424cb40ab88",
+          "ticker": "PWR",
+          "type": "buy"
+        },
+        {
+          "date": "2026-11-23",
+          "execution": "forward_observed_paper",
+          "fee": 7.256517742178141,
+          "idempotency_key": "IL-023:2026-11-20:2026-11-23:weekly_ml_forward_v1:TXN",
+          "lock_sha256": "7b21cbe6411a5cb09c68db50cf6650d5f750090c1e1ccfe004da9b927311f984",
+          "observed_at_utc": "2026-11-23T14:34:28.833681Z",
+          "price": 290.9153740081787,
+          "quote_at_utc": "2026-11-23T14:34:00Z",
+          "shares": 24.943741,
+          "source_commit": "70ef2402f627c35228f3109b282e6424cb40ab88",
+          "ticker": "TXN",
+          "type": "buy"
+        },
+        {
+          "date": "2026-11-23",
+          "execution": "forward_observed_paper",
+          "fee": 7.256517663157877,
+          "idempotency_key": "IL-023:2026-11-20:2026-11-23:weekly_ml_forward_v1:CHTR",
+          "lock_sha256": "7b21cbe6411a5cb09c68db50cf6650d5f750090c1e1ccfe004da9b927311f984",
+          "observed_at_utc": "2026-11-23T14:34:07.172434Z",
+          "price": 127.71882627868652,
+          "quote_at_utc": "2026-11-23T14:34:00Z",
+          "shares": 56.816351,
+          "source_commit": "70ef2402f627c35228f3109b282e6424cb40ab88",
+          "ticker": "CHTR",
+          "type": "buy"
         }
       ],
       "forward_executions": {
+        "IL-023:2026-11-20:2026-11-23:weekly_ml_forward_v1": {
+          "fill_tickers": [
+            "ADI",
+            "AMD",
+            "CHTR",
+            "LRCX",
+            "MPWR",
+            "MU",
+            "PWR",
+            "SWKS",
+            "TER",
+            "TXN"
+          ],
+          "fills_count": 10,
+          "lock_sha256": "7b21cbe6411a5cb09c68db50cf6650d5f750090c1e1ccfe004da9b927311f984",
+          "mode": "forward_observed_paper",
+          "quotes_sha256": "81060cc4098304325a9c72d61f210fb4f62c834a41f4eb438a20b35741dcae85",
+          "recorded_at_utc": "2026-11-23T14:34:31.308010Z",
+          "session": "2026-11-23",
+          "signal_date": "2026-11-20",
+          "source_commit": "70ef2402f627c35228f3109b282e6424cb40ab88"
+        },
         "IL-023:2026-11-20:weekly_ml_observed_exit_v1": {
           "fill_tickers": [
             "AKAM",
@@ -7434,59 +8158,79 @@
         "held_exits_require_future_observed_quote": true,
         "historical_fills_created": 0
       },
-      "pending": [
-        {
-          "score": 0.22787456340386114,
-          "signal_date": "2026-11-20",
-          "ticker": "MU"
+      "pending": [],
+      "positions": {
+        "ADI": {
+          "entry_date": "2026-11-23",
+          "entry_fee": 7.256517706067995,
+          "entry_price": 378.5942012786865,
+          "shares": 19.167007,
+          "signal_date": "2026-11-20"
         },
-        {
-          "score": 0.22787456340386114,
-          "signal_date": "2026-11-20",
-          "ticker": "TER"
+        "AMD": {
+          "entry_date": "2026-11-23",
+          "entry_fee": 7.256517647891184,
+          "entry_price": 462.4711102294922,
+          "shares": 15.690748,
+          "signal_date": "2026-11-20"
         },
-        {
-          "score": 0.2254387317336271,
-          "signal_date": "2026-11-20",
-          "ticker": "LRCX"
+        "CHTR": {
+          "entry_date": "2026-11-23",
+          "entry_fee": 7.256517663157877,
+          "entry_price": 127.71882627868652,
+          "shares": 56.816351,
+          "signal_date": "2026-11-20"
         },
-        {
-          "score": 0.219819757174196,
-          "signal_date": "2026-11-20",
-          "ticker": "ADI"
+        "LRCX": {
+          "entry_date": "2026-11-23",
+          "entry_fee": 7.2565176910067555,
+          "entry_price": 212.1267165298462,
+          "shares": 34.20841,
+          "signal_date": "2026-11-20"
         },
-        {
-          "score": 0.21023860447012593,
-          "signal_date": "2026-11-20",
-          "ticker": "SWKS"
+        "MPWR": {
+          "entry_date": "2026-11-23",
+          "entry_fee": 7.256517562060203,
+          "entry_price": 1310.895110229492,
+          "shares": 5.535544,
+          "signal_date": "2026-11-20"
         },
-        {
-          "score": 0.20404095912226713,
-          "signal_date": "2026-11-20",
-          "ticker": "MPWR"
+        "MU": {
+          "entry_date": "2026-11-23",
+          "entry_fee": 7.256517581080207,
+          "entry_price": 686.474779724121,
+          "shares": 10.570698,
+          "signal_date": "2026-11-20"
         },
-        {
-          "score": 0.19825743340276733,
-          "signal_date": "2026-11-20",
-          "ticker": "AMD"
+        "PWR": {
+          "entry_date": "2026-11-23",
+          "entry_fee": 7.256517385494427,
+          "entry_price": 605.8227795410156,
+          "shares": 11.977954,
+          "signal_date": "2026-11-20"
         },
-        {
-          "score": 0.1922062988522795,
-          "signal_date": "2026-11-20",
-          "ticker": "PWR"
+        "SWKS": {
+          "entry_date": "2026-11-23",
+          "entry_fee": 7.256517694157652,
+          "entry_price": 77.91893725204467,
+          "shares": 93.129064,
+          "signal_date": "2026-11-20"
         },
-        {
-          "score": 0.19220590913794247,
-          "signal_date": "2026-11-20",
-          "ticker": "TXN"
+        "TER": {
+          "entry_date": "2026-11-23",
+          "entry_fee": 7.256517725609008,
+          "entry_price": 239.3496107254028,
+          "shares": 30.31765,
+          "signal_date": "2026-11-20"
         },
-        {
-          "score": 0.19021154738305637,
-          "signal_date": "2026-11-20",
-          "ticker": "CHTR"
+        "TXN": {
+          "entry_date": "2026-11-23",
+          "entry_fee": 7.256517742178141,
+          "entry_price": 290.9153740081787,
+          "shares": 24.943741,
+          "signal_date": "2026-11-20"
         }
-      ],
-      "positions": {},
+      },
       "trades": [
         {
           "buy_commission": 9.490509473258017,
@@ -7971,7 +8715,7 @@
       ]
     },
     "lgbm_return": {
-      "cash": 84101.75276020692,
+      "cash": 4205.089323351009,
       "equity": [
         {
           "date": "2026-10-09",
@@ -8599,73 +9343,247 @@
           "count": 10,
           "date": "2026-11-20",
           "type": "signal_frozen"
+        },
+        {
+          "date": "2026-11-23",
+          "execution": "forward_observed_paper",
+          "fee": 7.981684636165254,
+          "idempotency_key": "IL-021:2026-11-20:2026-11-23:weekly_ml_forward_v1:STX",
+          "lock_sha256": "7b21cbe6411a5cb09c68db50cf6650d5f750090c1e1ccfe004da9b927311f984",
+          "observed_at_utc": "2026-11-23T14:34:26.651161Z",
+          "price": 537.3685255737305,
+          "quote_at_utc": "2026-11-23T14:34:00Z",
+          "shares": 14.853279,
+          "source_commit": "70ef2402f627c35228f3109b282e6424cb40ab88",
+          "ticker": "STX",
+          "type": "buy"
+        },
+        {
+          "date": "2026-11-23",
+          "execution": "forward_observed_paper",
+          "fee": 7.981684536623992,
+          "idempotency_key": "IL-021:2026-11-20:2026-11-23:weekly_ml_forward_v1:WDC",
+          "lock_sha256": "7b21cbe6411a5cb09c68db50cf6650d5f750090c1e1ccfe004da9b927311f984",
+          "observed_at_utc": "2026-11-23T14:34:29.839224Z",
+          "price": 304.2970615081787,
+          "quote_at_utc": "2026-11-23T14:34:00Z",
+          "shares": 26.22991,
+          "source_commit": "70ef2402f627c35228f3109b282e6424cb40ab88",
+          "ticker": "WDC",
+          "type": "buy"
+        },
+        {
+          "date": "2026-11-23",
+          "execution": "forward_observed_paper",
+          "fee": 7.981684811013356,
+          "idempotency_key": "IL-021:2026-11-20:2026-11-23:weekly_ml_forward_v1:SMCI",
+          "lock_sha256": "7b21cbe6411a5cb09c68db50cf6650d5f750090c1e1ccfe004da9b927311f984",
+          "observed_at_utc": "2026-11-23T14:34:25.643431Z",
+          "price": 25.572779465675353,
+          "quote_at_utc": "2026-11-23T14:34:00Z",
+          "shares": 312.116437,
+          "source_commit": "70ef2402f627c35228f3109b282e6424cb40ab88",
+          "ticker": "SMCI",
+          "type": "buy"
+        },
+        {
+          "date": "2026-11-23",
+          "execution": "forward_observed_paper",
+          "fee": 7.981684759854525,
+          "idempotency_key": "IL-021:2026-11-20:2026-11-23:weekly_ml_forward_v1:GLW",
+          "lock_sha256": "7b21cbe6411a5cb09c68db50cf6650d5f750090c1e1ccfe004da9b927311f984",
+          "observed_at_utc": "2026-11-23T14:34:14.637647Z",
+          "price": 107.66380561065674,
+          "quote_at_utc": "2026-11-23T14:34:00Z",
+          "shares": 74.135265,
+          "source_commit": "70ef2402f627c35228f3109b282e6424cb40ab88",
+          "ticker": "GLW",
+          "type": "buy"
+        },
+        {
+          "date": "2026-11-23",
+          "execution": "forward_observed_paper",
+          "fee": 7.981684813399029,
+          "idempotency_key": "IL-021:2026-11-20:2026-11-23:weekly_ml_forward_v1:INTC",
+          "lock_sha256": "7b21cbe6411a5cb09c68db50cf6650d5f750090c1e1ccfe004da9b927311f984",
+          "observed_at_utc": "2026-11-23T14:34:16.699789Z",
+          "price": 58.262915880203245,
+          "quote_at_utc": "2026-11-23T14:34:00Z",
+          "shares": 136.994256,
+          "source_commit": "70ef2402f627c35228f3109b282e6424cb40ab88",
+          "ticker": "INTC",
+          "type": "buy"
+        },
+        {
+          "date": "2026-11-23",
+          "execution": "forward_observed_paper",
+          "fee": 7.981684802652726,
+          "idempotency_key": "IL-021:2026-11-20:2026-11-23:weekly_ml_forward_v1:FIS",
+          "lock_sha256": "7b21cbe6411a5cb09c68db50cf6650d5f750090c1e1ccfe004da9b927311f984",
+          "observed_at_utc": "2026-11-23T14:34:13.824077Z",
+          "price": 26.143064160346984,
+          "quote_at_utc": "2026-11-23T14:34:00Z",
+          "shares": 305.30793,
+          "source_commit": "70ef2402f627c35228f3109b282e6424cb40ab88",
+          "ticker": "FIS",
+          "type": "buy"
+        },
+        {
+          "date": "2026-11-23",
+          "execution": "forward_observed_paper",
+          "fee": 7.981684794441243,
+          "idempotency_key": "IL-021:2026-11-20:2026-11-23:weekly_ml_forward_v1:COIN",
+          "lock_sha256": "7b21cbe6411a5cb09c68db50cf6650d5f750090c1e1ccfe004da9b927311f984",
+          "observed_at_utc": "2026-11-23T14:34:08.102949Z",
+          "price": 110.54524286270141,
+          "quote_at_utc": "2026-11-23T14:34:00Z",
+          "shares": 72.202879,
+          "source_commit": "70ef2402f627c35228f3109b282e6424cb40ab88",
+          "ticker": "COIN",
+          "type": "buy"
+        },
+        {
+          "date": "2026-11-23",
+          "execution": "forward_observed_paper",
+          "fee": 7.981684372979893,
+          "idempotency_key": "IL-021:2026-11-20:2026-11-23:weekly_ml_forward_v1:AMD",
+          "lock_sha256": "7b21cbe6411a5cb09c68db50cf6650d5f750090c1e1ccfe004da9b927311f984",
+          "observed_at_utc": "2026-11-23T14:34:03.629983Z",
+          "price": 462.4711102294922,
+          "quote_at_utc": "2026-11-23T14:34:00Z",
+          "shares": 17.258774,
+          "source_commit": "70ef2402f627c35228f3109b282e6424cb40ab88",
+          "ticker": "AMD",
+          "type": "buy"
+        },
+        {
+          "date": "2026-11-23",
+          "execution": "forward_observed_paper",
+          "fee": 7.981684825288698,
+          "idempotency_key": "IL-021:2026-11-20:2026-11-23:weekly_ml_forward_v1:MU",
+          "lock_sha256": "7b21cbe6411a5cb09c68db50cf6650d5f750090c1e1ccfe004da9b927311f984",
+          "observed_at_utc": "2026-11-23T14:34:21.594916Z",
+          "price": 686.474779724121,
+          "quote_at_utc": "2026-11-23T14:34:00Z",
+          "shares": 11.627062,
+          "source_commit": "70ef2402f627c35228f3109b282e6424cb40ab88",
+          "ticker": "MU",
+          "type": "buy"
+        },
+        {
+          "date": "2026-11-23",
+          "execution": "forward_observed_paper",
+          "fee": 7.981684237846931,
+          "idempotency_key": "IL-021:2026-11-20:2026-11-23:weekly_ml_forward_v1:FICO",
+          "lock_sha256": "7b21cbe6411a5cb09c68db50cf6650d5f750090c1e1ccfe004da9b927311f984",
+          "observed_at_utc": "2026-11-23T14:34:13.587324Z",
+          "price": 711.0103568115234,
+          "quote_at_utc": "2026-11-23T14:34:00Z",
+          "shares": 11.225834,
+          "source_commit": "70ef2402f627c35228f3109b282e6424cb40ab88",
+          "ticker": "FICO",
+          "type": "buy"
         }
       ],
+      "forward_executions": {
+        "IL-021:2026-11-20:2026-11-23:weekly_ml_forward_v1": {
+          "fill_tickers": [
+            "AMD",
+            "COIN",
+            "FICO",
+            "FIS",
+            "GLW",
+            "INTC",
+            "MU",
+            "SMCI",
+            "STX",
+            "WDC"
+          ],
+          "fills_count": 10,
+          "lock_sha256": "7b21cbe6411a5cb09c68db50cf6650d5f750090c1e1ccfe004da9b927311f984",
+          "mode": "forward_observed_paper",
+          "quotes_sha256": "0882180f44b7e09901d76ee56fe3689a82e7db2803642acc0abf367ee142eeca",
+          "recorded_at_utc": "2026-11-23T14:34:31.308010Z",
+          "session": "2026-11-23",
+          "signal_date": "2026-11-20",
+          "source_commit": "70ef2402f627c35228f3109b282e6424cb40ab88"
+        }
+      },
       "last_signal_session": "2026-11-20",
       "nav": 84101.75276020692,
-      "pending": [
-        {
-          "predicted_return": 0.08540022696893125,
-          "score": 0.08540022696893125,
-          "signal_date": "2026-11-20",
-          "ticker": "STX"
+      "pending": [],
+      "positions": {
+        "AMD": {
+          "entry_date": "2026-11-23",
+          "entry_fee": 7.981684372979893,
+          "entry_price": 462.4711102294922,
+          "shares": 17.258774,
+          "signal_date": "2026-11-20"
         },
-        {
-          "predicted_return": 0.08210600466927492,
-          "score": 0.08210600466927492,
-          "signal_date": "2026-11-20",
-          "ticker": "WDC"
+        "COIN": {
+          "entry_date": "2026-11-23",
+          "entry_fee": 7.981684794441243,
+          "entry_price": 110.54524286270141,
+          "shares": 72.202879,
+          "signal_date": "2026-11-20"
         },
-        {
-          "predicted_return": 0.08071851897200027,
-          "score": 0.08071851897200027,
-          "signal_date": "2026-11-20",
-          "ticker": "SMCI"
+        "FICO": {
+          "entry_date": "2026-11-23",
+          "entry_fee": 7.981684237846931,
+          "entry_price": 711.0103568115234,
+          "shares": 11.225834,
+          "signal_date": "2026-11-20"
         },
-        {
-          "predicted_return": 0.07943330159124312,
-          "score": 0.07943330159124312,
-          "signal_date": "2026-11-20",
-          "ticker": "GLW"
+        "FIS": {
+          "entry_date": "2026-11-23",
+          "entry_fee": 7.981684802652726,
+          "entry_price": 26.143064160346984,
+          "shares": 305.30793,
+          "signal_date": "2026-11-20"
         },
-        {
-          "predicted_return": 0.07440353729901807,
-          "score": 0.07440353729901807,
-          "signal_date": "2026-11-20",
-          "ticker": "INTC"
+        "GLW": {
+          "entry_date": "2026-11-23",
+          "entry_fee": 7.981684759854525,
+          "entry_price": 107.66380561065674,
+          "shares": 74.135265,
+          "signal_date": "2026-11-20"
         },
-        {
-          "predicted_return": 0.0734002938304299,
-          "score": 0.0734002938304299,
-          "signal_date": "2026-11-20",
-          "ticker": "FIS"
+        "INTC": {
+          "entry_date": "2026-11-23",
+          "entry_fee": 7.981684813399029,
+          "entry_price": 58.262915880203245,
+          "shares": 136.994256,
+          "signal_date": "2026-11-20"
         },
-        {
-          "predicted_return": 0.07227552075522857,
-          "score": 0.07227552075522857,
-          "signal_date": "2026-11-20",
-          "ticker": "COIN"
+        "MU": {
+          "entry_date": "2026-11-23",
+          "entry_fee": 7.981684825288698,
+          "entry_price": 686.474779724121,
+          "shares": 11.627062,
+          "signal_date": "2026-11-20"
         },
-        {
-          "predicted_return": 0.07126279318286574,
-          "score": 0.07126279318286574,
-          "signal_date": "2026-11-20",
-          "ticker": "AMD"
+        "SMCI": {
+          "entry_date": "2026-11-23",
+          "entry_fee": 7.981684811013356,
+          "entry_price": 25.572779465675353,
+          "shares": 312.116437,
+          "signal_date": "2026-11-20"
         },
-        {
-          "predicted_return": 0.07109955400634245,
-          "score": 0.07109955400634245,
-          "signal_date": "2026-11-20",
-          "ticker": "MU"
+        "STX": {
+          "entry_date": "2026-11-23",
+          "entry_fee": 7.981684636165254,
+          "entry_price": 537.3685255737305,
+          "shares": 14.853279,
+          "signal_date": "2026-11-20"
         },
-        {
-          "predicted_return": 0.06952150251366947,
-          "score": 0.06952150251366947,
-          "signal_date": "2026-11-20",
-          "ticker": "FICO"
+        "WDC": {
+          "entry_date": "2026-11-23",
+          "entry_fee": 7.981684536623992,
+          "entry_price": 304.2970615081787,
+          "shares": 26.22991,
+          "signal_date": "2026-11-20"
         }
-      ],
-      "positions": {},
+      },
       "trades": [
         {
           "buy_commission": 9.490509243376936,
@@ -8934,7 +9852,7 @@
       ]
     },
     "lstm_return": {
-      "cash": 96905.48207189851,
+      "cash": 14051.295590141586,
       "equity": [
         {
           "date": "2026-10-09",
@@ -10094,73 +11012,231 @@
           "count": 10,
           "date": "2026-11-20",
           "type": "signal_frozen"
+        },
+        {
+          "date": "2026-11-23",
+          "execution": "forward_observed_paper",
+          "fee": 9.196823904102365,
+          "idempotency_key": "IL-025:2026-11-20:2026-11-23:weekly_ml_forward_v1:GLW",
+          "lock_sha256": "7b21cbe6411a5cb09c68db50cf6650d5f750090c1e1ccfe004da9b927311f984",
+          "observed_at_utc": "2026-11-23T14:34:14.637647Z",
+          "price": 107.66380561065674,
+          "quote_at_utc": "2026-11-23T14:34:00Z",
+          "shares": 85.421687,
+          "source_commit": "70ef2402f627c35228f3109b282e6424cb40ab88",
+          "ticker": "GLW",
+          "type": "buy"
+        },
+        {
+          "date": "2026-11-23",
+          "execution": "forward_observed_paper",
+          "fee": 9.19682388238425,
+          "idempotency_key": "IL-025:2026-11-20:2026-11-23:weekly_ml_forward_v1:NVDA",
+          "lock_sha256": "7b21cbe6411a5cb09c68db50cf6650d5f750090c1e1ccfe004da9b927311f984",
+          "observed_at_utc": "2026-11-23T14:34:22.548756Z",
+          "price": 161.58075,
+          "quote_at_utc": "2026-11-23T14:34:00Z",
+          "shares": 56.917819,
+          "source_commit": "70ef2402f627c35228f3109b282e6424cb40ab88",
+          "ticker": "NVDA",
+          "type": "buy"
+        },
+        {
+          "date": "2026-11-23",
+          "execution": "forward_observed_paper",
+          "fee": 9.196823599182842,
+          "idempotency_key": "IL-025:2026-11-20:2026-11-23:weekly_ml_forward_v1:CAT",
+          "lock_sha256": "7b21cbe6411a5cb09c68db50cf6650d5f750090c1e1ccfe004da9b927311f984",
+          "observed_at_utc": "2026-11-23T14:34:06.352369Z",
+          "price": 545.9478252868652,
+          "quote_at_utc": "2026-11-23T14:34:00Z",
+          "shares": 16.845609,
+          "source_commit": "70ef2402f627c35228f3109b282e6424cb40ab88",
+          "ticker": "CAT",
+          "type": "buy"
+        },
+        {
+          "date": "2026-11-23",
+          "execution": "forward_observed_paper",
+          "fee": 9.19682393198002,
+          "idempotency_key": "IL-025:2026-11-20:2026-11-23:weekly_ml_forward_v1:GEV",
+          "lock_sha256": "7b21cbe6411a5cb09c68db50cf6650d5f750090c1e1ccfe004da9b927311f984",
+          "observed_at_utc": "2026-11-23T14:34:14.141992Z",
+          "price": 776.4430201721191,
+          "quote_at_utc": "2026-11-23T14:34:00Z",
+          "shares": 11.844815,
+          "source_commit": "70ef2402f627c35228f3109b282e6424cb40ab88",
+          "ticker": "GEV",
+          "type": "buy"
+        },
+        {
+          "date": "2026-11-23",
+          "execution": "forward_observed_paper",
+          "fee": 9.196823971574888,
+          "idempotency_key": "IL-025:2026-11-20:2026-11-23:weekly_ml_forward_v1:COIN",
+          "lock_sha256": "7b21cbe6411a5cb09c68db50cf6650d5f750090c1e1ccfe004da9b927311f984",
+          "observed_at_utc": "2026-11-23T14:34:08.102949Z",
+          "price": 110.54524286270141,
+          "quote_at_utc": "2026-11-23T14:34:00Z",
+          "shares": 83.195113,
+          "source_commit": "70ef2402f627c35228f3109b282e6424cb40ab88",
+          "ticker": "COIN",
+          "type": "buy"
+        },
+        {
+          "date": "2026-11-23",
+          "execution": "forward_observed_paper",
+          "fee": 9.196823967091648,
+          "idempotency_key": "IL-025:2026-11-20:2026-11-23:weekly_ml_forward_v1:CTVA",
+          "lock_sha256": "7b21cbe6411a5cb09c68db50cf6650d5f750090c1e1ccfe004da9b927311f984",
+          "observed_at_utc": "2026-11-23T14:34:08.752291Z",
+          "price": 7.933964828252792,
+          "quote_at_utc": "2026-11-23T14:34:00Z",
+          "shares": 1159.171255,
+          "source_commit": "70ef2402f627c35228f3109b282e6424cb40ab88",
+          "ticker": "CTVA",
+          "type": "buy"
+        },
+        {
+          "date": "2026-11-23",
+          "execution": "forward_observed_paper",
+          "fee": 9.196823963823233,
+          "idempotency_key": "IL-025:2026-11-20:2026-11-23:weekly_ml_forward_v1:NRG",
+          "lock_sha256": "7b21cbe6411a5cb09c68db50cf6650d5f750090c1e1ccfe004da9b927311f984",
+          "observed_at_utc": "2026-11-23T14:34:22.349812Z",
+          "price": 94.40218085861206,
+          "quote_at_utc": "2026-11-23T14:34:00Z",
+          "shares": 97.421732,
+          "source_commit": "70ef2402f627c35228f3109b282e6424cb40ab88",
+          "ticker": "NRG",
+          "type": "buy"
+        },
+        {
+          "date": "2026-11-23",
+          "execution": "forward_observed_paper",
+          "fee": 9.196823910586636,
+          "idempotency_key": "IL-025:2026-11-20:2026-11-23:weekly_ml_forward_v1:TPL",
+          "lock_sha256": "7b21cbe6411a5cb09c68db50cf6650d5f750090c1e1ccfe004da9b927311f984",
+          "observed_at_utc": "2026-11-23T14:34:27.909550Z",
+          "price": 282.4098416290283,
+          "quote_at_utc": "2026-11-23T14:34:00Z",
+          "shares": 32.565522,
+          "source_commit": "70ef2402f627c35228f3109b282e6424cb40ab88",
+          "ticker": "TPL",
+          "type": "buy"
+        },
+        {
+          "date": "2026-11-23",
+          "reason": "no_contemporary_opening_quote",
+          "ticker": "CMI",
+          "type": "unfilled_missing_observed_quote"
+        },
+        {
+          "date": "2026-11-23",
+          "execution": "forward_observed_paper",
+          "fee": 9.19682393596436,
+          "idempotency_key": "IL-025:2026-11-20:2026-11-23:weekly_ml_forward_v1:INTC",
+          "lock_sha256": "7b21cbe6411a5cb09c68db50cf6650d5f750090c1e1ccfe004da9b927311f984",
+          "observed_at_utc": "2026-11-23T14:34:16.699789Z",
+          "price": 58.262915880203245,
+          "quote_at_utc": "2026-11-23T14:34:00Z",
+          "shares": 157.850389,
+          "source_commit": "70ef2402f627c35228f3109b282e6424cb40ab88",
+          "ticker": "INTC",
+          "type": "buy"
         }
       ],
+      "forward_executions": {
+        "IL-025:2026-11-20:2026-11-23:weekly_ml_forward_v1": {
+          "fill_tickers": [
+            "CAT",
+            "COIN",
+            "CTVA",
+            "GEV",
+            "GLW",
+            "INTC",
+            "NRG",
+            "NVDA",
+            "TPL"
+          ],
+          "fills_count": 9,
+          "lock_sha256": "7b21cbe6411a5cb09c68db50cf6650d5f750090c1e1ccfe004da9b927311f984",
+          "mode": "forward_observed_paper",
+          "quotes_sha256": "21178caea4beb7d79d692b6806e187eccd9fbc280648fd7faa967971df54caa0",
+          "recorded_at_utc": "2026-11-23T14:34:31.308010Z",
+          "session": "2026-11-23",
+          "signal_date": "2026-11-20",
+          "source_commit": "70ef2402f627c35228f3109b282e6424cb40ab88"
+        }
+      },
       "last_signal_session": "2026-11-20",
       "nav": 96905.48207189851,
-      "pending": [
-        {
-          "predicted_return": 0.017603106796741486,
-          "score": 0.017603106796741486,
-          "signal_date": "2026-11-20",
-          "ticker": "GLW"
+      "pending": [],
+      "positions": {
+        "CAT": {
+          "entry_date": "2026-11-23",
+          "entry_fee": 9.196823599182842,
+          "entry_price": 545.9478252868652,
+          "shares": 16.845609,
+          "signal_date": "2026-11-20"
         },
-        {
-          "predicted_return": 0.016421405598521233,
-          "score": 0.016421405598521233,
-          "signal_date": "2026-11-20",
-          "ticker": "NVDA"
+        "COIN": {
+          "entry_date": "2026-11-23",
+          "entry_fee": 9.196823971574888,
+          "entry_price": 110.54524286270141,
+          "shares": 83.195113,
+          "signal_date": "2026-11-20"
         },
-        {
-          "predicted_return": 0.014678824692964554,
-          "score": 0.014678824692964554,
-          "signal_date": "2026-11-20",
-          "ticker": "CAT"
+        "CTVA": {
+          "entry_date": "2026-11-23",
+          "entry_fee": 9.196823967091648,
+          "entry_price": 7.933964828252792,
+          "shares": 1159.171255,
+          "signal_date": "2026-11-20"
         },
-        {
-          "predicted_return": 0.014350194483995438,
-          "score": 0.014350194483995438,
-          "signal_date": "2026-11-20",
-          "ticker": "GEV"
+        "GEV": {
+          "entry_date": "2026-11-23",
+          "entry_fee": 9.19682393198002,
+          "entry_price": 776.4430201721191,
+          "shares": 11.844815,
+          "signal_date": "2026-11-20"
         },
-        {
-          "predicted_return": 0.013110890984535217,
-          "score": 0.013110890984535217,
-          "signal_date": "2026-11-20",
-          "ticker": "COIN"
+        "GLW": {
+          "entry_date": "2026-11-23",
+          "entry_fee": 9.196823904102365,
+          "entry_price": 107.66380561065674,
+          "shares": 85.421687,
+          "signal_date": "2026-11-20"
         },
-        {
-          "predicted_return": 0.0130290687084198,
-          "score": 0.0130290687084198,
-          "signal_date": "2026-11-20",
-          "ticker": "CTVA"
+        "INTC": {
+          "entry_date": "2026-11-23",
+          "entry_fee": 9.19682393596436,
+          "entry_price": 58.262915880203245,
+          "shares": 157.850389,
+          "signal_date": "2026-11-20"
         },
-        {
-          "predicted_return": 0.012642472982406616,
-          "score": 0.012642472982406616,
-          "signal_date": "2026-11-20",
-          "ticker": "NRG"
+        "NRG": {
+          "entry_date": "2026-11-23",
+          "entry_fee": 9.196823963823233,
+          "entry_price": 94.40218085861206,
+          "shares": 97.421732,
+          "signal_date": "2026-11-20"
         },
-        {
-          "predicted_return": 0.012080075219273567,
-          "score": 0.012080075219273567,
-          "signal_date": "2026-11-20",
-          "ticker": "TPL"
+        "NVDA": {
+          "entry_date": "2026-11-23",
+          "entry_fee": 9.19682388238425,
+          "entry_price": 161.58075,
+          "shares": 56.917819,
+          "signal_date": "2026-11-20"
         },
-        {
-          "predicted_return": 0.011697826907038689,
-          "score": 0.011697826907038689,
-          "signal_date": "2026-11-20",
-          "ticker": "CMI"
-        },
-        {
-          "predicted_return": 0.011561768129467964,
-          "score": 0.011561768129467964,
-          "signal_date": "2026-11-20",
-          "ticker": "INTC"
+        "TPL": {
+          "entry_date": "2026-11-23",
+          "entry_fee": 9.196823910586636,
+          "entry_price": 282.4098416290283,
+          "shares": 32.565522,
+          "signal_date": "2026-11-20"
         }
-      ],
-      "positions": {},
+      },
       "trades": [
         {
           "buy_commission": 9.490509443008868,
@@ -10765,7 +11841,7 @@
       ]
     },
     "mlp_return": {
-      "cash": 78148.4670281601,
+      "cash": 3907.4246223233977,
       "equity": [
         {
           "date": "2026-10-09",
@@ -11982,9 +13058,171 @@
           "count": 10,
           "date": "2026-11-20",
           "type": "signal_frozen"
+        },
+        {
+          "date": "2026-11-23",
+          "execution": "forward_observed_paper",
+          "fee": 7.416687590827239,
+          "idempotency_key": "IL-024:2026-11-20:2026-11-23:weekly_ml_forward_v1:MRNA",
+          "lock_sha256": "7b21cbe6411a5cb09c68db50cf6650d5f750090c1e1ccfe004da9b927311f984",
+          "observed_at_utc": "2026-11-23T14:34:21.119541Z",
+          "price": 205.66277755737303,
+          "quote_at_utc": "2026-11-23T14:34:00Z",
+          "shares": 36.062372,
+          "source_commit": "70ef2402f627c35228f3109b282e6424cb40ab88",
+          "ticker": "MRNA",
+          "type": "buy"
+        },
+        {
+          "date": "2026-11-23",
+          "execution": "forward_observed_paper",
+          "fee": 7.416687649047763,
+          "idempotency_key": "IL-024:2026-11-20:2026-11-23:weekly_ml_forward_v1:HPE",
+          "lock_sha256": "7b21cbe6411a5cb09c68db50cf6650d5f750090c1e1ccfe004da9b927311f984",
+          "observed_at_utc": "2026-11-23T14:34:16.174400Z",
+          "price": 46.46321862602234,
+          "quote_at_utc": "2026-11-23T14:34:00Z",
+          "shares": 159.624922,
+          "source_commit": "70ef2402f627c35228f3109b282e6424cb40ab88",
+          "ticker": "HPE",
+          "type": "buy"
+        },
+        {
+          "date": "2026-11-23",
+          "execution": "forward_observed_paper",
+          "fee": 7.416687579852514,
+          "idempotency_key": "IL-024:2026-11-20:2026-11-23:weekly_ml_forward_v1:AMD",
+          "lock_sha256": "7b21cbe6411a5cb09c68db50cf6650d5f750090c1e1ccfe004da9b927311f984",
+          "observed_at_utc": "2026-11-23T14:34:03.629983Z",
+          "price": 462.4711102294922,
+          "quote_at_utc": "2026-11-23T14:34:00Z",
+          "shares": 16.037083,
+          "source_commit": "70ef2402f627c35228f3109b282e6424cb40ab88",
+          "ticker": "AMD",
+          "type": "buy"
+        },
+        {
+          "date": "2026-11-23",
+          "execution": "forward_observed_paper",
+          "fee": 7.4166875376148385,
+          "idempotency_key": "IL-024:2026-11-20:2026-11-23:weekly_ml_forward_v1:ABNB",
+          "lock_sha256": "7b21cbe6411a5cb09c68db50cf6650d5f750090c1e1ccfe004da9b927311f984",
+          "observed_at_utc": "2026-11-23T14:34:01.524464Z",
+          "price": 174.38715305328367,
+          "quote_at_utc": "2026-11-23T14:34:00Z",
+          "shares": 42.530011,
+          "source_commit": "70ef2402f627c35228f3109b282e6424cb40ab88",
+          "ticker": "ABNB",
+          "type": "buy"
+        },
+        {
+          "date": "2026-11-23",
+          "execution": "forward_observed_paper",
+          "fee": 7.4166872496349985,
+          "idempotency_key": "IL-024:2026-11-20:2026-11-23:weekly_ml_forward_v1:MU",
+          "lock_sha256": "7b21cbe6411a5cb09c68db50cf6650d5f750090c1e1ccfe004da9b927311f984",
+          "observed_at_utc": "2026-11-23T14:34:21.594916Z",
+          "price": 686.474779724121,
+          "quote_at_utc": "2026-11-23T14:34:00Z",
+          "shares": 10.80402,
+          "source_commit": "70ef2402f627c35228f3109b282e6424cb40ab88",
+          "ticker": "MU",
+          "type": "buy"
+        },
+        {
+          "date": "2026-11-23",
+          "execution": "forward_observed_paper",
+          "fee": 7.416687653212572,
+          "idempotency_key": "IL-024:2026-11-20:2026-11-23:weekly_ml_forward_v1:MOH",
+          "lock_sha256": "7b21cbe6411a5cb09c68db50cf6650d5f750090c1e1ccfe004da9b927311f984",
+          "observed_at_utc": "2026-11-23T14:34:20.107639Z",
+          "price": 197.06848622131346,
+          "quote_at_utc": "2026-11-23T14:34:00Z",
+          "shares": 37.635077,
+          "source_commit": "70ef2402f627c35228f3109b282e6424cb40ab88",
+          "ticker": "MOH",
+          "type": "buy"
+        },
+        {
+          "date": "2026-11-23",
+          "execution": "forward_observed_paper",
+          "fee": 7.416687476915634,
+          "idempotency_key": "IL-024:2026-11-20:2026-11-23:weekly_ml_forward_v1:DELL",
+          "lock_sha256": "7b21cbe6411a5cb09c68db50cf6650d5f750090c1e1ccfe004da9b927311f984",
+          "observed_at_utc": "2026-11-23T14:34:09.213190Z",
+          "price": 360.2300127868652,
+          "quote_at_utc": "2026-11-23T14:31:58Z",
+          "shares": 20.588755,
+          "source_commit": "70ef2402f627c35228f3109b282e6424cb40ab88",
+          "ticker": "DELL",
+          "type": "buy"
+        },
+        {
+          "date": "2026-11-23",
+          "execution": "forward_observed_paper",
+          "fee": 7.416687678297862,
+          "idempotency_key": "IL-024:2026-11-20:2026-11-23:weekly_ml_forward_v1:MOS",
+          "lock_sha256": "7b21cbe6411a5cb09c68db50cf6650d5f750090c1e1ccfe004da9b927311f984",
+          "observed_at_utc": "2026-11-23T14:34:20.348268Z",
+          "price": 19.174583415985108,
+          "quote_at_utc": "2026-11-23T14:34:00Z",
+          "shares": 386.797852,
+          "source_commit": "70ef2402f627c35228f3109b282e6424cb40ab88",
+          "ticker": "MOS",
+          "type": "buy"
+        },
+        {
+          "date": "2026-11-23",
+          "execution": "forward_observed_paper",
+          "fee": 7.416687496243837,
+          "idempotency_key": "IL-024:2026-11-20:2026-11-23:weekly_ml_forward_v1:AVGO",
+          "lock_sha256": "7b21cbe6411a5cb09c68db50cf6650d5f750090c1e1ccfe004da9b927311f984",
+          "observed_at_utc": "2026-11-23T14:34:04.330125Z",
+          "price": 317.9188897705078,
+          "quote_at_utc": "2026-11-23T14:34:00Z",
+          "shares": 23.328867,
+          "source_commit": "70ef2402f627c35228f3109b282e6424cb40ab88",
+          "ticker": "AVGO",
+          "type": "buy"
+        },
+        {
+          "date": "2026-11-23",
+          "execution": "forward_observed_paper",
+          "fee": 7.416687618659141,
+          "idempotency_key": "IL-024:2026-11-20:2026-11-23:weekly_ml_forward_v1:DXCM",
+          "lock_sha256": "7b21cbe6411a5cb09c68db50cf6650d5f750090c1e1ccfe004da9b927311f984",
+          "observed_at_utc": "2026-11-23T14:34:10.415783Z",
+          "price": 80.89042347335815,
+          "quote_at_utc": "2026-11-23T14:34:00Z",
+          "shares": 91.68808,
+          "source_commit": "70ef2402f627c35228f3109b282e6424cb40ab88",
+          "ticker": "DXCM",
+          "type": "buy"
         }
       ],
       "forward_executions": {
+        "IL-024:2026-11-20:2026-11-23:weekly_ml_forward_v1": {
+          "fill_tickers": [
+            "ABNB",
+            "AMD",
+            "AVGO",
+            "DELL",
+            "DXCM",
+            "HPE",
+            "MOH",
+            "MOS",
+            "MRNA",
+            "MU"
+          ],
+          "fills_count": 10,
+          "lock_sha256": "7b21cbe6411a5cb09c68db50cf6650d5f750090c1e1ccfe004da9b927311f984",
+          "mode": "forward_observed_paper",
+          "quotes_sha256": "c5f558f4a7854bfd437606c5ba57c3d4c34482c76e417e4a7b5ebc8ae61e4bf6",
+          "recorded_at_utc": "2026-11-23T14:34:31.308010Z",
+          "session": "2026-11-23",
+          "signal_date": "2026-11-20",
+          "source_commit": "70ef2402f627c35228f3109b282e6424cb40ab88"
+        },
         "IL-024:2026-11-20:weekly_ml_observed_exit_v1": {
           "fill_tickers": [
             "BLDR",
@@ -12134,69 +13372,79 @@
         "held_exits_require_future_observed_quote": true,
         "historical_fills_created": 0
       },
-      "pending": [
-        {
-          "predicted_return": 0.18178974847954604,
-          "score": 0.18178974847954604,
-          "signal_date": "2026-11-20",
-          "ticker": "MRNA"
+      "pending": [],
+      "positions": {
+        "ABNB": {
+          "entry_date": "2026-11-23",
+          "entry_fee": 7.4166875376148385,
+          "entry_price": 174.38715305328367,
+          "shares": 42.530011,
+          "signal_date": "2026-11-20"
         },
-        {
-          "predicted_return": 0.16507090199551264,
-          "score": 0.16507090199551264,
-          "signal_date": "2026-11-20",
-          "ticker": "HPE"
+        "AMD": {
+          "entry_date": "2026-11-23",
+          "entry_fee": 7.416687579852514,
+          "entry_price": 462.4711102294922,
+          "shares": 16.037083,
+          "signal_date": "2026-11-20"
         },
-        {
-          "predicted_return": 0.1285444549266272,
-          "score": 0.1285444549266272,
-          "signal_date": "2026-11-20",
-          "ticker": "AMD"
+        "AVGO": {
+          "entry_date": "2026-11-23",
+          "entry_fee": 7.416687496243837,
+          "entry_price": 317.9188897705078,
+          "shares": 23.328867,
+          "signal_date": "2026-11-20"
         },
-        {
-          "predicted_return": 0.12757996874824393,
-          "score": 0.12757996874824393,
-          "signal_date": "2026-11-20",
-          "ticker": "ABNB"
+        "DELL": {
+          "entry_date": "2026-11-23",
+          "entry_fee": 7.416687476915634,
+          "entry_price": 360.2300127868652,
+          "shares": 20.588755,
+          "signal_date": "2026-11-20"
         },
-        {
-          "predicted_return": 0.11761084983337922,
-          "score": 0.11761084983337922,
-          "signal_date": "2026-11-20",
-          "ticker": "MU"
+        "DXCM": {
+          "entry_date": "2026-11-23",
+          "entry_fee": 7.416687618659141,
+          "entry_price": 80.89042347335815,
+          "shares": 91.68808,
+          "signal_date": "2026-11-20"
         },
-        {
-          "predicted_return": 0.11648554061836304,
-          "score": 0.11648554061836304,
-          "signal_date": "2026-11-20",
-          "ticker": "MOH"
+        "HPE": {
+          "entry_date": "2026-11-23",
+          "entry_fee": 7.416687649047763,
+          "entry_price": 46.46321862602234,
+          "shares": 159.624922,
+          "signal_date": "2026-11-20"
         },
-        {
-          "predicted_return": 0.11381332073477772,
-          "score": 0.11381332073477772,
-          "signal_date": "2026-11-20",
-          "ticker": "DELL"
+        "MOH": {
+          "entry_date": "2026-11-23",
+          "entry_fee": 7.416687653212572,
+          "entry_price": 197.06848622131346,
+          "shares": 37.635077,
+          "signal_date": "2026-11-20"
         },
-        {
-          "predicted_return": 0.1136695688934351,
-          "score": 0.1136695688934351,
-          "signal_date": "2026-11-20",
-          "ticker": "MOS"
+        "MOS": {
+          "entry_date": "2026-11-23",
+          "entry_fee": 7.416687678297862,
+          "entry_price": 19.174583415985108,
+          "shares": 386.797852,
+          "signal_date": "2026-11-20"
         },
-        {
-          "predicted_return": 0.11302430889415292,
-          "score": 0.11302430889415292,
-          "signal_date": "2026-11-20",
-          "ticker": "AVGO"
+        "MRNA": {
+          "entry_date": "2026-11-23",
+          "entry_fee": 7.416687590827239,
+          "entry_price": 205.66277755737303,
+          "shares": 36.062372,
+          "signal_date": "2026-11-20"
         },
-        {
-          "predicted_return": 0.0934620759329952,
-          "score": 0.0934620759329952,
-          "signal_date": "2026-11-20",
-          "ticker": "DXCM"
+        "MU": {
+          "entry_date": "2026-11-23",
+          "entry_fee": 7.4166872496349985,
+          "entry_price": 686.474779724121,
+          "shares": 10.80402,
+          "signal_date": "2026-11-20"
         }
-      ],
-      "positions": {},
+      },
       "trades": [
         {
           "buy_commission": 9.490509459287999,

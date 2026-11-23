@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "generated_at_utc": "2026-11-23T13:33:15.753269+00:00",
+  "generated_at_utc": "2026-11-23T14:34:32.594650+00:00",
   "principle": "Comparar rentabilidad acumulada y riesgo observado; no ordenar carteras con distintas fechas de inicio o supuestos de ejecución.",
   "counts": {
     "paper_with_diary": 18,
@@ -1165,8 +1165,8 @@
       "note": "Nueva campaña S&P500 503 símbolos; las carteras originales de 8 títulos se conservan históricas y no transfieren NAV ni operaciones. Derecho de cobro pendiente; referencia temporal OCC, no importe final de liquidación.",
       "evaluated_universe_symbols": 488,
       "eligible_universe_symbols": 503,
-      "activity_state": "active_pending",
-      "activity_label": "7 posiciones · 1 orden paper para próxima apertura · Inactividad sin operaciones: 2026-11-02, 2026-11-03, 2026-11-04, 2026-11-05, 2026-11-06, 2026-11-09, 2026-11-10, 2026-11-11, 2026-11-12, 2026-11-13, 2026-11-16, 2026-11-17, 2026-11-18 · Primera apertura posible (condicionada): 2026-11-19 · CANJE CON VALORACIÓN PROVISIONAL; cobro separado del efectivo",
+      "activity_state": "active",
+      "activity_label": "8 posiciones abiertas · Inactividad sin operaciones: 2026-11-02, 2026-11-03, 2026-11-04, 2026-11-05, 2026-11-06, 2026-11-09, 2026-11-10, 2026-11-11, 2026-11-12, 2026-11-13, 2026-11-16, 2026-11-17, 2026-11-18 · Primera apertura posible (condicionada): 2026-11-19 · CANJE CON VALORACIÓN PROVISIONAL; cobro separado del efectivo",
       "activity_tickers": [
         "ABT",
         "DRI",
@@ -1174,11 +1174,11 @@
         "LH",
         "MNST",
         "SJM",
-        "WELL",
-        "TJX"
+        "TJX",
+        "WELL"
       ],
-      "open_positions_count": 7,
-      "pending_orders_count": 1,
+      "open_positions_count": 8,
+      "pending_orders_count": 0,
       "inactive_sessions": [
         "2026-11-02",
         "2026-11-03",
@@ -1532,20 +1532,19 @@
       "note": "Nueva campaña S&P500 503 símbolos; las carteras originales de 8 títulos se conservan históricas y no transfieren NAV ni operaciones.",
       "evaluated_universe_symbols": 488,
       "eligible_universe_symbols": 503,
-      "activity_state": "active_pending",
-      "activity_label": "6 posiciones · 2 órdenes paper para próxima apertura",
+      "activity_state": "active",
+      "activity_label": "7 posiciones abiertas",
       "activity_tickers": [
         "ADM",
+        "BAC",
         "BG",
         "CZR",
         "GOOG",
         "IVZ",
-        "STT",
-        "BAC",
-        "HBAN"
+        "STT"
       ],
-      "open_positions_count": 6,
-      "pending_orders_count": 2,
+      "open_positions_count": 7,
+      "pending_orders_count": 0,
       "comparison_eligible": true,
       "comparison_universe_id": "SP500_2026-09-29_503",
       "comparison_universe_symbols": 503,
@@ -1690,17 +1689,16 @@
       "note": "Nueva campaña S&P500 503 símbolos; las carteras originales de 8 títulos se conservan históricas y no transfieren NAV ni operaciones.",
       "evaluated_universe_symbols": 488,
       "eligible_universe_symbols": 503,
-      "activity_state": "active_pending",
-      "activity_label": "5 posiciones · 1 orden paper para próxima apertura · Inactividad sin operaciones: 2026-11-03, 2026-11-04 · Primera apertura posible (condicionada): 2026-11-05",
+      "activity_state": "active",
+      "activity_label": "4 posiciones abiertas · Inactividad sin operaciones: 2026-11-03, 2026-11-04 · Primera apertura posible (condicionada): 2026-11-05",
       "activity_tickers": [
         "CAH",
         "COST",
-        "DRI",
         "EPAM",
         "WMT"
       ],
-      "open_positions_count": 5,
-      "pending_orders_count": 1,
+      "open_positions_count": 4,
+      "pending_orders_count": 0,
       "inactive_sessions": [
         "2026-11-03",
         "2026-11-04"
@@ -1853,19 +1851,17 @@
       "note": "Nueva campaña S&P500 503 símbolos; las carteras originales de 8 títulos se conservan históricas y no transfieren NAV ni operaciones.",
       "evaluated_universe_symbols": 488,
       "eligible_universe_symbols": 503,
-      "activity_state": "active_pending",
-      "activity_label": "6 posiciones · 3 órdenes paper para próxima apertura · Inactividad sin operaciones: 2026-11-03, 2026-11-04 · Primera apertura posible (condicionada): 2026-11-05",
+      "activity_state": "active",
+      "activity_label": "5 posiciones abiertas · Inactividad sin operaciones: 2026-11-03, 2026-11-04 · Primera apertura posible (condicionada): 2026-11-05",
       "activity_tickers": [
-        "ALLE",
         "COST",
         "ERIE",
+        "HRL",
         "LW",
-        "MTD",
-        "PCG",
-        "HRL"
+        "PCG"
       ],
-      "open_positions_count": 6,
-      "pending_orders_count": 3,
+      "open_positions_count": 5,
+      "pending_orders_count": 0,
       "inactive_sessions": [
         "2026-11-03",
         "2026-11-04"
@@ -2018,8 +2014,8 @@
       "note": "Nueva campaña S&P500 503 símbolos; las carteras originales de 8 títulos se conservan históricas y no transfieren NAV ni operaciones.",
       "evaluated_universe_symbols": 488,
       "eligible_universe_symbols": 503,
-      "activity_state": "active_pending",
-      "activity_label": "7 posiciones · 1 orden paper para próxima apertura",
+      "activity_state": "active",
+      "activity_label": "7 posiciones abiertas",
       "activity_tickers": [
         "ABBV",
         "CPB",
@@ -2027,11 +2023,10 @@
         "MCK",
         "MRNA",
         "MTD",
-        "ULTA",
-        "HRL"
+        "ULTA"
       ],
       "open_positions_count": 7,
-      "pending_orders_count": 1,
+      "pending_orders_count": 0,
       "comparison_eligible": true,
       "comparison_universe_id": "SP500_2026-09-29_503",
       "comparison_universe_symbols": 503,
@@ -2333,14 +2328,19 @@
         }
       ],
       "note": "Campaña diaria prospectiva desde la señal del 09/10/2026. Fills simulados en la siguiente apertura, NAV al cierre y cierre semanal. No hereda el NAV de la campaña de liquidación diferida ni reconstruye compras pasadas. AVISO AUDITORÍA: 1 ventas semanales estimadas con cierre histórico (2026-11-13), sin cotización intradía observada al ejecutar. NAV histórico conservado; rentabilidad NO certificada como operativa prospectiva observada.",
-      "positions": [],
-      "activity_state": "pending",
-      "activity_label": "1 señal para próxima apertura paper · Inactividad sin operaciones: 2026-11-03, 2026-11-04 · Reanudación desde apertura: 2026-11-05",
+      "positions": [
+        {
+          "ticker": "SPY",
+          "shares": 123.305632
+        }
+      ],
+      "activity_state": "active",
+      "activity_label": "1 posición abierta · Inactividad sin operaciones: 2026-11-03, 2026-11-04 · Reanudación desde apertura: 2026-11-05",
       "activity_tickers": [
         "SPY"
       ],
-      "open_positions_count": 0,
-      "pending_orders_count": 1,
+      "open_positions_count": 1,
+      "pending_orders_count": 0,
       "execution_quality_status": "unobserved_post_cutover_weekly_sales",
       "unobserved_weekly_sales_count": 1,
       "unobserved_weekly_sales_sessions": [
@@ -2566,14 +2566,19 @@
         }
       ],
       "note": "Campaña diaria prospectiva desde la señal del 09/10/2026. Fills simulados en la siguiente apertura, NAV al cierre y cierre semanal. No hereda el NAV de la campaña de liquidación diferida ni reconstruye compras pasadas. AVISO AUDITORÍA: 1 ventas semanales estimadas con cierre histórico (2026-11-13), sin cotización intradía observada al ejecutar. NAV histórico conservado; rentabilidad NO certificada como operativa prospectiva observada.",
-      "positions": [],
-      "activity_state": "pending",
-      "activity_label": "1 señal para próxima apertura paper · Inactividad sin operaciones: 2026-11-03, 2026-11-04 · Reanudación desde apertura: 2026-11-05",
+      "positions": [
+        {
+          "ticker": "RSP",
+          "shares": 448.967076
+        }
+      ],
+      "activity_state": "active",
+      "activity_label": "1 posición abierta · Inactividad sin operaciones: 2026-11-03, 2026-11-04 · Reanudación desde apertura: 2026-11-05",
       "activity_tickers": [
         "RSP"
       ],
-      "open_positions_count": 0,
-      "pending_orders_count": 1,
+      "open_positions_count": 1,
+      "pending_orders_count": 0,
       "execution_quality_status": "unobserved_post_cutover_weekly_sales",
       "unobserved_weekly_sales_count": 1,
       "unobserved_weekly_sales_sessions": [
@@ -2799,23 +2804,64 @@
         }
       ],
       "note": "Campaña diaria prospectiva desde la señal del 09/10/2026. Fills simulados en la siguiente apertura, NAV al cierre y cierre semanal. No hereda el NAV de la campaña de liquidación diferida ni reconstruye compras pasadas. AVISO AUDITORÍA: 2 ventas semanales estimadas con cierre histórico (2026-11-13), sin cotización intradía observada al ejecutar. NAV histórico conservado; rentabilidad NO certificada como operativa prospectiva observada.",
-      "positions": [],
-      "activity_state": "pending",
-      "activity_label": "10 señales para próxima apertura paper · Inactividad sin operaciones: 2026-11-03, 2026-11-04 · Reanudación desde apertura: 2026-11-05",
+      "positions": [
+        {
+          "ticker": "AMD",
+          "shares": 17.258774
+        },
+        {
+          "ticker": "COIN",
+          "shares": 72.202879
+        },
+        {
+          "ticker": "FICO",
+          "shares": 11.225834
+        },
+        {
+          "ticker": "FIS",
+          "shares": 305.30793
+        },
+        {
+          "ticker": "GLW",
+          "shares": 74.135265
+        },
+        {
+          "ticker": "INTC",
+          "shares": 136.994256
+        },
+        {
+          "ticker": "MU",
+          "shares": 11.627062
+        },
+        {
+          "ticker": "SMCI",
+          "shares": 312.116437
+        },
+        {
+          "ticker": "STX",
+          "shares": 14.853279
+        },
+        {
+          "ticker": "WDC",
+          "shares": 26.22991
+        }
+      ],
+      "activity_state": "active",
+      "activity_label": "10 posiciones abiertas · Inactividad sin operaciones: 2026-11-03, 2026-11-04 · Reanudación desde apertura: 2026-11-05",
       "activity_tickers": [
-        "STX",
-        "WDC",
-        "SMCI",
+        "AMD",
+        "COIN",
+        "FICO",
+        "FIS",
         "GLW",
         "INTC",
-        "FIS",
-        "COIN",
-        "AMD",
         "MU",
-        "FICO"
+        "SMCI",
+        "STX",
+        "WDC"
       ],
-      "open_positions_count": 0,
-      "pending_orders_count": 10,
+      "open_positions_count": 10,
+      "pending_orders_count": 0,
       "execution_quality_status": "unobserved_post_cutover_weekly_sales",
       "unobserved_weekly_sales_count": 2,
       "unobserved_weekly_sales_sessions": [
@@ -3050,23 +3096,64 @@
         }
       ],
       "note": "Campaña diaria prospectiva desde la señal del 09/10/2026. Fills simulados en la siguiente apertura, NAV al cierre y cierre semanal. No hereda el NAV de la campaña de liquidación diferida ni reconstruye compras pasadas. AVISO AUDITORÍA: 10 ventas semanales estimadas con cierre histórico (2026-11-13), sin cotización intradía observada al ejecutar. NAV histórico conservado; rentabilidad NO certificada como operativa prospectiva observada.",
-      "positions": [],
-      "activity_state": "pending",
-      "activity_label": "10 señales para próxima apertura paper · Inactividad sin operaciones: 2026-11-03, 2026-11-04 · Reanudación desde apertura: 2026-11-05",
+      "positions": [
+        {
+          "ticker": "BSX",
+          "shares": 232.172697
+        },
+        {
+          "ticker": "EQT",
+          "shares": 199.459382
+        },
+        {
+          "ticker": "EXE",
+          "shares": 120.150974
+        },
+        {
+          "ticker": "FICO",
+          "shares": 13.834213
+        },
+        {
+          "ticker": "GLW",
+          "shares": 91.360961
+        },
+        {
+          "ticker": "NOC",
+          "shares": 18.367777
+        },
+        {
+          "ticker": "PODD",
+          "shares": 72.913951
+        },
+        {
+          "ticker": "SCHW",
+          "shares": 107.291464
+        },
+        {
+          "ticker": "TPL",
+          "shares": 34.829766
+        },
+        {
+          "ticker": "VICI",
+          "shares": 408.533261
+        }
+      ],
+      "activity_state": "active",
+      "activity_label": "10 posiciones abiertas · Inactividad sin operaciones: 2026-11-03, 2026-11-04 · Reanudación desde apertura: 2026-11-05",
       "activity_tickers": [
-        "TPL",
+        "BSX",
         "EQT",
         "EXE",
-        "BSX",
-        "VICI",
+        "FICO",
+        "GLW",
+        "NOC",
         "PODD",
         "SCHW",
-        "GLW",
-        "FICO",
-        "NOC"
+        "TPL",
+        "VICI"
       ],
-      "open_positions_count": 0,
-      "pending_orders_count": 10,
+      "open_positions_count": 10,
+      "pending_orders_count": 0,
       "execution_quality_status": "unobserved_post_cutover_weekly_sales",
       "unobserved_weekly_sales_count": 10,
       "unobserved_weekly_sales_sessions": [
@@ -3301,23 +3388,64 @@
         }
       ],
       "note": "Campaña diaria prospectiva desde la señal del 09/10/2026. Fills simulados en la siguiente apertura, NAV al cierre y cierre semanal. No hereda el NAV de la campaña de liquidación diferida ni reconstruye compras pasadas.",
-      "positions": [],
-      "activity_state": "pending",
-      "activity_label": "10 señales para próxima apertura paper · Inactividad sin operaciones: 2026-11-03, 2026-11-04, 2026-11-05, 2026-11-06, 2026-11-09, 2026-11-10, 2026-11-11, 2026-11-12, 2026-11-13, 2026-11-16, 2026-11-17, 2026-11-18, 2026-11-19 · Reanudación desde apertura: 2026-11-05",
-      "activity_tickers": [
-        "MU",
-        "TER",
-        "LRCX",
-        "ADI",
-        "SWKS",
-        "MPWR",
-        "AMD",
-        "PWR",
-        "TXN",
-        "CHTR"
+      "positions": [
+        {
+          "ticker": "ADI",
+          "shares": 19.167007
+        },
+        {
+          "ticker": "AMD",
+          "shares": 15.690748
+        },
+        {
+          "ticker": "CHTR",
+          "shares": 56.816351
+        },
+        {
+          "ticker": "LRCX",
+          "shares": 34.20841
+        },
+        {
+          "ticker": "MPWR",
+          "shares": 5.535544
+        },
+        {
+          "ticker": "MU",
+          "shares": 10.570698
+        },
+        {
+          "ticker": "PWR",
+          "shares": 11.977954
+        },
+        {
+          "ticker": "SWKS",
+          "shares": 93.129064
+        },
+        {
+          "ticker": "TER",
+          "shares": 30.31765
+        },
+        {
+          "ticker": "TXN",
+          "shares": 24.943741
+        }
       ],
-      "open_positions_count": 0,
-      "pending_orders_count": 10,
+      "activity_state": "active",
+      "activity_label": "10 posiciones abiertas · Inactividad sin operaciones: 2026-11-03, 2026-11-04, 2026-11-05, 2026-11-06, 2026-11-09, 2026-11-10, 2026-11-11, 2026-11-12, 2026-11-13, 2026-11-16, 2026-11-17, 2026-11-18, 2026-11-19 · Reanudación desde apertura: 2026-11-05",
+      "activity_tickers": [
+        "ADI",
+        "AMD",
+        "CHTR",
+        "LRCX",
+        "MPWR",
+        "MU",
+        "PWR",
+        "SWKS",
+        "TER",
+        "TXN"
+      ],
+      "open_positions_count": 10,
+      "pending_orders_count": 0,
       "inactive_sessions": [
         "2026-11-03",
         "2026-11-04",
@@ -3557,23 +3685,64 @@
         }
       ],
       "note": "Campaña diaria prospectiva desde la señal del 09/10/2026. Fills simulados en la siguiente apertura, NAV al cierre y cierre semanal. No hereda el NAV de la campaña de liquidación diferida ni reconstruye compras pasadas.",
-      "positions": [],
-      "activity_state": "pending",
-      "activity_label": "10 señales para próxima apertura paper · Inactividad sin operaciones: 2026-11-03, 2026-11-04, 2026-11-05, 2026-11-06, 2026-11-09, 2026-11-10, 2026-11-11, 2026-11-12, 2026-11-13, 2026-11-16, 2026-11-17, 2026-11-18, 2026-11-19 · Reanudación desde apertura: 2026-11-05",
-      "activity_tickers": [
-        "MRNA",
-        "HPE",
-        "AMD",
-        "ABNB",
-        "MU",
-        "MOH",
-        "DELL",
-        "MOS",
-        "AVGO",
-        "DXCM"
+      "positions": [
+        {
+          "ticker": "ABNB",
+          "shares": 42.530011
+        },
+        {
+          "ticker": "AMD",
+          "shares": 16.037083
+        },
+        {
+          "ticker": "AVGO",
+          "shares": 23.328867
+        },
+        {
+          "ticker": "DELL",
+          "shares": 20.588755
+        },
+        {
+          "ticker": "DXCM",
+          "shares": 91.68808
+        },
+        {
+          "ticker": "HPE",
+          "shares": 159.624922
+        },
+        {
+          "ticker": "MOH",
+          "shares": 37.635077
+        },
+        {
+          "ticker": "MOS",
+          "shares": 386.797852
+        },
+        {
+          "ticker": "MRNA",
+          "shares": 36.062372
+        },
+        {
+          "ticker": "MU",
+          "shares": 10.80402
+        }
       ],
-      "open_positions_count": 0,
-      "pending_orders_count": 10,
+      "activity_state": "active",
+      "activity_label": "10 posiciones abiertas · Inactividad sin operaciones: 2026-11-03, 2026-11-04, 2026-11-05, 2026-11-06, 2026-11-09, 2026-11-10, 2026-11-11, 2026-11-12, 2026-11-13, 2026-11-16, 2026-11-17, 2026-11-18, 2026-11-19 · Reanudación desde apertura: 2026-11-05",
+      "activity_tickers": [
+        "ABNB",
+        "AMD",
+        "AVGO",
+        "DELL",
+        "DXCM",
+        "HPE",
+        "MOH",
+        "MOS",
+        "MRNA",
+        "MU"
+      ],
+      "open_positions_count": 10,
+      "pending_orders_count": 0,
       "inactive_sessions": [
         "2026-11-03",
         "2026-11-04",
@@ -3813,23 +3982,59 @@
         }
       ],
       "note": "Campaña diaria prospectiva desde la señal del 09/10/2026. Fills simulados en la siguiente apertura, NAV al cierre y cierre semanal. No hereda el NAV de la campaña de liquidación diferida ni reconstruye compras pasadas. AVISO AUDITORÍA: 10 ventas semanales estimadas con cierre histórico (2026-11-13), sin cotización intradía observada al ejecutar. NAV histórico conservado; rentabilidad NO certificada como operativa prospectiva observada.",
-      "positions": [],
-      "activity_state": "pending",
-      "activity_label": "10 señales para próxima apertura paper · Inactividad sin operaciones: 2026-11-03, 2026-11-04 · Reanudación desde apertura: 2026-11-05",
+      "positions": [
+        {
+          "ticker": "CAT",
+          "shares": 16.845609
+        },
+        {
+          "ticker": "COIN",
+          "shares": 83.195113
+        },
+        {
+          "ticker": "CTVA",
+          "shares": 1159.171255
+        },
+        {
+          "ticker": "GEV",
+          "shares": 11.844815
+        },
+        {
+          "ticker": "GLW",
+          "shares": 85.421687
+        },
+        {
+          "ticker": "INTC",
+          "shares": 157.850389
+        },
+        {
+          "ticker": "NRG",
+          "shares": 97.421732
+        },
+        {
+          "ticker": "NVDA",
+          "shares": 56.917819
+        },
+        {
+          "ticker": "TPL",
+          "shares": 32.565522
+        }
+      ],
+      "activity_state": "active",
+      "activity_label": "9 posiciones abiertas · Inactividad sin operaciones: 2026-11-03, 2026-11-04 · Reanudación desde apertura: 2026-11-05",
       "activity_tickers": [
-        "GLW",
-        "NVDA",
         "CAT",
-        "GEV",
         "COIN",
         "CTVA",
+        "GEV",
+        "GLW",
+        "INTC",
         "NRG",
-        "TPL",
-        "CMI",
-        "INTC"
+        "NVDA",
+        "TPL"
       ],
-      "open_positions_count": 0,
-      "pending_orders_count": 10,
+      "open_positions_count": 9,
+      "pending_orders_count": 0,
       "execution_quality_status": "unobserved_post_cutover_weekly_sales",
       "unobserved_weekly_sales_count": 10,
       "unobserved_weekly_sales_sessions": [
@@ -4064,23 +4269,64 @@
         }
       ],
       "note": "Campaña diaria prospectiva desde la señal del 09/10/2026. Fills simulados en la siguiente apertura, NAV al cierre y cierre semanal. No hereda el NAV de la campaña de liquidación diferida ni reconstruye compras pasadas.",
-      "positions": [],
-      "activity_state": "pending",
-      "activity_label": "10 señales para próxima apertura paper · Inactividad sin operaciones: 2026-11-03, 2026-11-04, 2026-11-05, 2026-11-06, 2026-11-09, 2026-11-10, 2026-11-11, 2026-11-12, 2026-11-13, 2026-11-16, 2026-11-17, 2026-11-18, 2026-11-19 · Reanudación desde apertura: 2026-11-05",
-      "activity_tickers": [
-        "AMD",
-        "MU",
-        "ANET",
-        "ADI",
-        "MRNA",
-        "TXN",
-        "MPC",
-        "URI",
-        "IRM",
-        "CEG"
+      "positions": [
+        {
+          "ticker": "ADI",
+          "shares": 20.577021
+        },
+        {
+          "ticker": "AMD",
+          "shares": 16.845032
+        },
+        {
+          "ticker": "ANET",
+          "shares": 42.101422
+        },
+        {
+          "ticker": "CEG",
+          "shares": 30.454999
+        },
+        {
+          "ticker": "IRM",
+          "shares": 71.837327
+        },
+        {
+          "ticker": "MPC",
+          "shares": 21.411339
+        },
+        {
+          "ticker": "MRNA",
+          "shares": 37.879197
+        },
+        {
+          "ticker": "MU",
+          "shares": 11.348328
+        },
+        {
+          "ticker": "TXN",
+          "shares": 26.778719
+        },
+        {
+          "ticker": "URI",
+          "shares": 7.477729
+        }
       ],
-      "open_positions_count": 0,
-      "pending_orders_count": 10,
+      "activity_state": "active",
+      "activity_label": "10 posiciones abiertas · Inactividad sin operaciones: 2026-11-03, 2026-11-04, 2026-11-05, 2026-11-06, 2026-11-09, 2026-11-10, 2026-11-11, 2026-11-12, 2026-11-13, 2026-11-16, 2026-11-17, 2026-11-18, 2026-11-19 · Reanudación desde apertura: 2026-11-05",
+      "activity_tickers": [
+        "ADI",
+        "AMD",
+        "ANET",
+        "CEG",
+        "IRM",
+        "MPC",
+        "MRNA",
+        "MU",
+        "TXN",
+        "URI"
+      ],
+      "open_positions_count": 10,
+      "pending_orders_count": 0,
       "inactive_sessions": [
         "2026-11-03",
         "2026-11-04",
@@ -4320,23 +4566,64 @@
         }
       ],
       "note": "Campaña diaria prospectiva desde la señal del 09/10/2026. Fills simulados en la siguiente apertura, NAV al cierre y cierre semanal. No hereda el NAV de la campaña de liquidación diferida ni reconstruye compras pasadas. AVISO AUDITORÍA: 10 ventas semanales estimadas con cierre histórico (2026-11-13), sin cotización intradía observada al ejecutar. NAV histórico conservado; rentabilidad NO certificada como operativa prospectiva observada.",
-      "positions": [],
-      "activity_state": "pending",
-      "activity_label": "10 señales para próxima apertura paper · Inactividad sin operaciones: 2026-11-03, 2026-11-04 · Reanudación desde apertura: 2026-11-05",
-      "activity_tickers": [
-        "STX",
-        "ADI",
-        "MPWR",
-        "ARE",
-        "MCHP",
-        "GS",
-        "AVGO",
-        "ANET",
-        "KLAC",
-        "MRNA"
+      "positions": [
+        {
+          "ticker": "ADI",
+          "shares": 21.479006
+        },
+        {
+          "ticker": "ANET",
+          "shares": 43.94692
+        },
+        {
+          "ticker": "ARE",
+          "shares": 197.731749
+        },
+        {
+          "ticker": "AVGO",
+          "shares": 25.578308
+        },
+        {
+          "ticker": "GS",
+          "shares": 9.813768
+        },
+        {
+          "ticker": "KLAC",
+          "shares": 56.22026
+        },
+        {
+          "ticker": "MCHP",
+          "shares": 134.93423
+        },
+        {
+          "ticker": "MPWR",
+          "shares": 6.203263
+        },
+        {
+          "ticker": "MRNA",
+          "shares": 39.539616
+        },
+        {
+          "ticker": "STX",
+          "shares": 15.132682
+        }
       ],
-      "open_positions_count": 0,
-      "pending_orders_count": 10,
+      "activity_state": "active",
+      "activity_label": "10 posiciones abiertas · Inactividad sin operaciones: 2026-11-03, 2026-11-04 · Reanudación desde apertura: 2026-11-05",
+      "activity_tickers": [
+        "ADI",
+        "ANET",
+        "ARE",
+        "AVGO",
+        "GS",
+        "KLAC",
+        "MCHP",
+        "MPWR",
+        "MRNA",
+        "STX"
+      ],
+      "open_positions_count": 10,
+      "pending_orders_count": 0,
       "execution_quality_status": "unobserved_post_cutover_weekly_sales",
       "unobserved_weekly_sales_count": 10,
       "unobserved_weekly_sales_sessions": [
@@ -4477,25 +4764,25 @@
           "nav": 95258.30477815906
         }
       ],
-      "note": "Arquitectura TFG 2021 portada con riesgo/beta sobre retornos y ejecución prospectiva next-open.",
-      "activity_state": "pending",
-      "activity_label": "15 compras para próxima apertura",
+      "note": "TFG/AHP USD: posiciones paper observadas a la apertura; NAV solo desde cierres exactos verificados; stop semanal ejecutable en próxima apertura.",
+      "activity_state": "active",
+      "activity_label": "15 posiciones abiertas",
       "activity_tickers": [
-        "BRK-B",
-        "FE",
-        "EVRG",
-        "COST",
-        "DUK",
         "AEE",
         "AFL",
-        "WEC",
-        "KIM",
+        "BRK-B",
+        "CAH",
+        "CB",
+        "CINF",
+        "COST",
+        "DUK",
         "ED",
-        "TSN",
-        "WRB"
+        "EVRG",
+        "FE",
+        "KIM"
       ],
-      "open_positions_count": 0,
-      "pending_orders_count": 15,
+      "open_positions_count": 15,
+      "pending_orders_count": 0,
       "comparison_eligible": true,
       "comparison_universe_id": "SP500_2026-09-29_503",
       "comparison_universe_symbols": 503,
