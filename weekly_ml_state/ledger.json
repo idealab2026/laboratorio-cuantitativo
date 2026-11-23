@@ -7,9 +7,15 @@
     "share_precision": 6
   },
   "first_session": "2026-10-02",
-  "forecast_hash": "1800fee3176f6e49a555b413f58095c9007d6411e6c5d9c982f0235aec42519f",
-  "last_session": "2026-11-06",
-  "missed_signal_weeks": [],
+  "forecast_hash": "998b259954e3033dd32dfc836a1272e486a001ddeeb4c15cdda7eb34818f40d1",
+  "last_session": "2026-11-20",
+  "missed_signal_weeks": [
+    {
+      "after": "2026-11-06",
+      "before": "2026-11-20",
+      "note": "No se crean señales retroactivas para semanas omitidas."
+    }
+  ],
   "schema_version": 1,
   "strategies": {
     "arima_return": {
@@ -43,69 +49,75 @@
           "date": "2026-11-06",
           "decision_recorded": true,
           "nav": 88351.0352933873
+        },
+        {
+          "date": "2026-11-20",
+          "decision_recorded": true,
+          "inactive_intervening_week_no_fills": true,
+          "nav": 88351.0352933873
         }
       ],
       "nav": 88351.0352933873,
       "pending": [
         {
-          "predicted_return": 0.1080715218588469,
-          "score": 0.1080715218588469,
-          "signal_date": "2026-11-06",
-          "ticker": "WDC"
+          "predicted_return": 0.09001114401903525,
+          "score": 0.09001114401903525,
+          "signal_date": "2026-11-20",
+          "ticker": "AMD"
         },
         {
-          "predicted_return": 0.09307283322513549,
-          "score": 0.09307283322513549,
-          "signal_date": "2026-11-06",
-          "ticker": "MCHP"
+          "predicted_return": 0.07742203311033376,
+          "score": 0.07742203311033376,
+          "signal_date": "2026-11-20",
+          "ticker": "MU"
         },
         {
-          "predicted_return": 0.06302210506010486,
-          "score": 0.06302210506010486,
-          "signal_date": "2026-11-06",
-          "ticker": "WMB"
+          "predicted_return": 0.06811871537556967,
+          "score": 0.06811871537556967,
+          "signal_date": "2026-11-20",
+          "ticker": "ANET"
         },
         {
-          "predicted_return": 0.06254793338380804,
-          "score": 0.06254793338380804,
-          "signal_date": "2026-11-06",
+          "predicted_return": 0.06744616302186199,
+          "score": 0.06744616302186199,
+          "signal_date": "2026-11-20",
+          "ticker": "ADI"
+        },
+        {
+          "predicted_return": 0.0648688156080594,
+          "score": 0.0648688156080594,
+          "signal_date": "2026-11-20",
           "ticker": "MRNA"
         },
         {
-          "predicted_return": 0.06071304944624574,
-          "score": 0.06071304944624574,
-          "signal_date": "2026-11-06",
-          "ticker": "STX"
+          "predicted_return": 0.06150214493343487,
+          "score": 0.06150214493343487,
+          "signal_date": "2026-11-20",
+          "ticker": "TXN"
         },
         {
-          "predicted_return": 0.05504004293122942,
-          "score": 0.05504004293122942,
-          "signal_date": "2026-11-06",
-          "ticker": "ROK"
+          "predicted_return": 0.05668273534537761,
+          "score": 0.05668273534537761,
+          "signal_date": "2026-11-20",
+          "ticker": "MPC"
         },
         {
-          "predicted_return": 0.05464947496391023,
-          "score": 0.05464947496391023,
-          "signal_date": "2026-11-06",
-          "ticker": "CRWD"
+          "predicted_return": 0.056450198461479056,
+          "score": 0.056450198461479056,
+          "signal_date": "2026-11-20",
+          "ticker": "URI"
         },
         {
-          "predicted_return": 0.054307784166145213,
-          "score": 0.054307784166145213,
-          "signal_date": "2026-11-06",
-          "ticker": "TRGP"
+          "predicted_return": 0.055830778669064274,
+          "score": 0.055830778669064274,
+          "signal_date": "2026-11-20",
+          "ticker": "IRM"
         },
         {
-          "predicted_return": 0.046574861483444814,
-          "score": 0.046574861483444814,
-          "signal_date": "2026-11-06",
-          "ticker": "ABNB"
-        },
-        {
-          "predicted_return": 0.04459075300924447,
-          "score": 0.04459075300924447,
-          "signal_date": "2026-11-06",
-          "ticker": "PANW"
+          "predicted_return": 0.05547314797488714,
+          "score": 0.05547314797488714,
+          "signal_date": "2026-11-20",
+          "ticker": "CEG"
         }
       ],
       "trades": [
@@ -1060,7 +1072,88 @@
           "week": "2026-10-31/2026-11-06"
         }
       ],
-      "unfilled": []
+      "unfilled": [
+        {
+          "expired_at_signal": "2026-11-20",
+          "predicted_return": 0.1080715218588469,
+          "reason": "missed_weekly_execution_no_retro_fill",
+          "score": 0.1080715218588469,
+          "signal_date": "2026-11-06",
+          "ticker": "WDC"
+        },
+        {
+          "expired_at_signal": "2026-11-20",
+          "predicted_return": 0.09307283322513549,
+          "reason": "missed_weekly_execution_no_retro_fill",
+          "score": 0.09307283322513549,
+          "signal_date": "2026-11-06",
+          "ticker": "MCHP"
+        },
+        {
+          "expired_at_signal": "2026-11-20",
+          "predicted_return": 0.06302210506010486,
+          "reason": "missed_weekly_execution_no_retro_fill",
+          "score": 0.06302210506010486,
+          "signal_date": "2026-11-06",
+          "ticker": "WMB"
+        },
+        {
+          "expired_at_signal": "2026-11-20",
+          "predicted_return": 0.06254793338380804,
+          "reason": "missed_weekly_execution_no_retro_fill",
+          "score": 0.06254793338380804,
+          "signal_date": "2026-11-06",
+          "ticker": "MRNA"
+        },
+        {
+          "expired_at_signal": "2026-11-20",
+          "predicted_return": 0.06071304944624574,
+          "reason": "missed_weekly_execution_no_retro_fill",
+          "score": 0.06071304944624574,
+          "signal_date": "2026-11-06",
+          "ticker": "STX"
+        },
+        {
+          "expired_at_signal": "2026-11-20",
+          "predicted_return": 0.05504004293122942,
+          "reason": "missed_weekly_execution_no_retro_fill",
+          "score": 0.05504004293122942,
+          "signal_date": "2026-11-06",
+          "ticker": "ROK"
+        },
+        {
+          "expired_at_signal": "2026-11-20",
+          "predicted_return": 0.05464947496391023,
+          "reason": "missed_weekly_execution_no_retro_fill",
+          "score": 0.05464947496391023,
+          "signal_date": "2026-11-06",
+          "ticker": "CRWD"
+        },
+        {
+          "expired_at_signal": "2026-11-20",
+          "predicted_return": 0.054307784166145213,
+          "reason": "missed_weekly_execution_no_retro_fill",
+          "score": 0.054307784166145213,
+          "signal_date": "2026-11-06",
+          "ticker": "TRGP"
+        },
+        {
+          "expired_at_signal": "2026-11-20",
+          "predicted_return": 0.046574861483444814,
+          "reason": "missed_weekly_execution_no_retro_fill",
+          "score": 0.046574861483444814,
+          "signal_date": "2026-11-06",
+          "ticker": "ABNB"
+        },
+        {
+          "expired_at_signal": "2026-11-20",
+          "predicted_return": 0.04459075300924447,
+          "reason": "missed_weekly_execution_no_retro_fill",
+          "score": 0.04459075300924447,
+          "signal_date": "2026-11-06",
+          "ticker": "PANW"
+        }
+      ]
     },
     "benchmark_rsp": {
       "equity": [
@@ -1093,13 +1186,19 @@
           "date": "2026-11-06",
           "decision_recorded": true,
           "nav": 100411.19506158795
+        },
+        {
+          "date": "2026-11-20",
+          "decision_recorded": true,
+          "inactive_intervening_week_no_fills": true,
+          "nav": 100411.19506158795
         }
       ],
       "nav": 100411.19506158795,
       "pending": [
         {
           "score": 1.0,
-          "signal_date": "2026-11-06",
+          "signal_date": "2026-11-20",
           "ticker": "RSP"
         }
       ],
@@ -1195,7 +1294,15 @@
           "week": "2026-10-31/2026-11-06"
         }
       ],
-      "unfilled": []
+      "unfilled": [
+        {
+          "expired_at_signal": "2026-11-20",
+          "reason": "missed_weekly_execution_no_retro_fill",
+          "score": 1.0,
+          "signal_date": "2026-11-06",
+          "ticker": "RSP"
+        }
+      ]
     },
     "benchmark_spy": {
       "equity": [
@@ -1228,13 +1335,19 @@
           "date": "2026-11-06",
           "decision_recorded": true,
           "nav": 93206.21337906581
+        },
+        {
+          "date": "2026-11-20",
+          "decision_recorded": true,
+          "inactive_intervening_week_no_fills": true,
+          "nav": 93206.21337906581
         }
       ],
       "nav": 93206.21337906581,
       "pending": [
         {
           "score": 1.0,
-          "signal_date": "2026-11-06",
+          "signal_date": "2026-11-20",
           "ticker": "SPY"
         }
       ],
@@ -1330,7 +1443,15 @@
           "week": "2026-10-31/2026-11-06"
         }
       ],
-      "unfilled": []
+      "unfilled": [
+        {
+          "expired_at_signal": "2026-11-20",
+          "reason": "missed_weekly_execution_no_retro_fill",
+          "score": 1.0,
+          "signal_date": "2026-11-06",
+          "ticker": "SPY"
+        }
+      ]
     },
     "ensemble_consensus": {
       "equity": [
@@ -1363,89 +1484,95 @@
           "date": "2026-11-06",
           "decision_recorded": true,
           "nav": 79872.70197174858
+        },
+        {
+          "date": "2026-11-20",
+          "decision_recorded": true,
+          "inactive_intervening_week_no_fills": true,
+          "nav": 79872.70197174858
         }
       ],
       "nav": 79872.70197174858,
       "pending": [
         {
           "positive_votes": 5,
-          "predicted_return": 0.03650213054056004,
-          "rank_dispersion": 0.07685052342434445,
-          "score": 0.9400614754098361,
-          "signal_date": "2026-11-06",
+          "predicted_return": 0.04352249918326944,
+          "rank_dispersion": 0.07309062349396414,
+          "score": 0.9166666666666666,
+          "signal_date": "2026-11-20",
           "ticker": "STX"
         },
         {
           "positive_votes": 5,
-          "predicted_return": 0.020137256264657587,
-          "rank_dispersion": 0.0774462230185408,
-          "score": 0.9363046448087431,
-          "signal_date": "2026-11-06",
-          "ticker": "WDC"
+          "predicted_return": 0.061356902927083734,
+          "rank_dispersion": 0.1297063523187102,
+          "score": 0.8794398907103824,
+          "signal_date": "2026-11-20",
+          "ticker": "ADI"
         },
         {
           "positive_votes": 5,
-          "predicted_return": 0.007719979960600408,
-          "rank_dispersion": 0.14624227609010404,
-          "score": 0.8794398907103825,
-          "signal_date": "2026-11-06",
-          "ticker": "DELL"
+          "predicted_return": 0.04146961304005445,
+          "rank_dispersion": 0.08362954610908835,
+          "score": 0.8743169398907105,
+          "signal_date": "2026-11-20",
+          "ticker": "MPWR"
         },
         {
           "positive_votes": 5,
-          "predicted_return": 0.008480617400086918,
-          "rank_dispersion": 0.11765351002148998,
-          "score": 0.8787568306010929,
-          "signal_date": "2026-11-06",
-          "ticker": "AMD"
+          "predicted_return": 0.03019837933854927,
+          "rank_dispersion": 0.09315259631670748,
+          "score": 0.8609972677595628,
+          "signal_date": "2026-11-20",
+          "ticker": "ARE"
         },
         {
           "positive_votes": 5,
-          "predicted_return": 0.007495673960151331,
-          "rank_dispersion": 0.115790273772771,
-          "score": 0.8743169398907104,
-          "signal_date": "2026-11-06",
-          "ticker": "MU"
+          "predicted_return": 0.03351067105780504,
+          "rank_dispersion": 0.08787349952369265,
+          "score": 0.8510928961748635,
+          "signal_date": "2026-11-20",
+          "ticker": "MCHP"
         },
         {
           "positive_votes": 5,
-          "predicted_return": 0.010142702732195247,
-          "rank_dispersion": 0.13556850427415,
-          "score": 0.873292349726776,
-          "signal_date": "2026-11-06",
-          "ticker": "SMCI"
+          "predicted_return": 0.044835069283171866,
+          "rank_dispersion": 0.10079318040332458,
+          "score": 0.8502390710382514,
+          "signal_date": "2026-11-20",
+          "ticker": "GS"
         },
         {
           "positive_votes": 5,
-          "predicted_return": 0.005646816403453285,
-          "rank_dispersion": 0.17617762571839646,
-          "score": 0.8673155737704917,
-          "signal_date": "2026-11-06",
-          "ticker": "NOW"
+          "predicted_return": 0.05235455218540795,
+          "rank_dispersion": 0.16046861488739994,
+          "score": 0.8493852459016393,
+          "signal_date": "2026-11-20",
+          "ticker": "AVGO"
         },
         {
           "positive_votes": 5,
-          "predicted_return": 0.010720138528217831,
-          "rank_dispersion": 0.11177376566170068,
-          "score": 0.8469945355191256,
-          "signal_date": "2026-11-06",
-          "ticker": "NRG"
+          "predicted_return": 0.059791014558915556,
+          "rank_dispersion": 0.18677041857899682,
+          "score": 0.8408469945355191,
+          "signal_date": "2026-11-20",
+          "ticker": "ANET"
         },
         {
           "positive_votes": 5,
-          "predicted_return": 0.005962579112934347,
-          "rank_dispersion": 0.1534261763573675,
-          "score": 0.8447745901639344,
-          "signal_date": "2026-11-06",
-          "ticker": "HPE"
+          "predicted_return": 0.03669325389524576,
+          "rank_dispersion": 0.21445728406083084,
+          "score": 0.8341871584699453,
+          "signal_date": "2026-11-20",
+          "ticker": "KLAC"
         },
         {
           "positive_votes": 5,
-          "predicted_return": 0.006717420597408945,
-          "rank_dispersion": 0.1528144734304038,
-          "score": 0.8410177595628415,
-          "signal_date": "2026-11-06",
-          "ticker": "GEV"
+          "predicted_return": 0.05746546495899951,
+          "rank_dispersion": 0.2862176724164038,
+          "score": 0.8312841530054644,
+          "signal_date": "2026-11-20",
+          "ticker": "MRNA"
         }
       ],
       "trades": [
@@ -2500,7 +2627,108 @@
           "week": "2026-10-31/2026-11-06"
         }
       ],
-      "unfilled": []
+      "unfilled": [
+        {
+          "expired_at_signal": "2026-11-20",
+          "positive_votes": 5,
+          "predicted_return": 0.03650213054056004,
+          "rank_dispersion": 0.07685052342434445,
+          "reason": "missed_weekly_execution_no_retro_fill",
+          "score": 0.9400614754098361,
+          "signal_date": "2026-11-06",
+          "ticker": "STX"
+        },
+        {
+          "expired_at_signal": "2026-11-20",
+          "positive_votes": 5,
+          "predicted_return": 0.020137256264657587,
+          "rank_dispersion": 0.0774462230185408,
+          "reason": "missed_weekly_execution_no_retro_fill",
+          "score": 0.9363046448087431,
+          "signal_date": "2026-11-06",
+          "ticker": "WDC"
+        },
+        {
+          "expired_at_signal": "2026-11-20",
+          "positive_votes": 5,
+          "predicted_return": 0.007719979960600408,
+          "rank_dispersion": 0.14624227609010404,
+          "reason": "missed_weekly_execution_no_retro_fill",
+          "score": 0.8794398907103825,
+          "signal_date": "2026-11-06",
+          "ticker": "DELL"
+        },
+        {
+          "expired_at_signal": "2026-11-20",
+          "positive_votes": 5,
+          "predicted_return": 0.008480617400086918,
+          "rank_dispersion": 0.11765351002148998,
+          "reason": "missed_weekly_execution_no_retro_fill",
+          "score": 0.8787568306010929,
+          "signal_date": "2026-11-06",
+          "ticker": "AMD"
+        },
+        {
+          "expired_at_signal": "2026-11-20",
+          "positive_votes": 5,
+          "predicted_return": 0.007495673960151331,
+          "rank_dispersion": 0.115790273772771,
+          "reason": "missed_weekly_execution_no_retro_fill",
+          "score": 0.8743169398907104,
+          "signal_date": "2026-11-06",
+          "ticker": "MU"
+        },
+        {
+          "expired_at_signal": "2026-11-20",
+          "positive_votes": 5,
+          "predicted_return": 0.010142702732195247,
+          "rank_dispersion": 0.13556850427415,
+          "reason": "missed_weekly_execution_no_retro_fill",
+          "score": 0.873292349726776,
+          "signal_date": "2026-11-06",
+          "ticker": "SMCI"
+        },
+        {
+          "expired_at_signal": "2026-11-20",
+          "positive_votes": 5,
+          "predicted_return": 0.005646816403453285,
+          "rank_dispersion": 0.17617762571839646,
+          "reason": "missed_weekly_execution_no_retro_fill",
+          "score": 0.8673155737704917,
+          "signal_date": "2026-11-06",
+          "ticker": "NOW"
+        },
+        {
+          "expired_at_signal": "2026-11-20",
+          "positive_votes": 5,
+          "predicted_return": 0.010720138528217831,
+          "rank_dispersion": 0.11177376566170068,
+          "reason": "missed_weekly_execution_no_retro_fill",
+          "score": 0.8469945355191256,
+          "signal_date": "2026-11-06",
+          "ticker": "NRG"
+        },
+        {
+          "expired_at_signal": "2026-11-20",
+          "positive_votes": 5,
+          "predicted_return": 0.005962579112934347,
+          "rank_dispersion": 0.1534261763573675,
+          "reason": "missed_weekly_execution_no_retro_fill",
+          "score": 0.8447745901639344,
+          "signal_date": "2026-11-06",
+          "ticker": "HPE"
+        },
+        {
+          "expired_at_signal": "2026-11-20",
+          "positive_votes": 5,
+          "predicted_return": 0.006717420597408945,
+          "rank_dispersion": 0.1528144734304038,
+          "reason": "missed_weekly_execution_no_retro_fill",
+          "score": 0.8410177595628415,
+          "signal_date": "2026-11-06",
+          "ticker": "GEV"
+        }
+      ]
     },
     "lgbm_direction": {
       "equity": [
@@ -2533,69 +2761,75 @@
           "date": "2026-11-06",
           "decision_recorded": true,
           "nav": 100705.31498611334
+        },
+        {
+          "date": "2026-11-20",
+          "decision_recorded": true,
+          "inactive_intervening_week_no_fills": true,
+          "nav": 100705.31498611334
         }
       ],
       "nav": 100705.31498611334,
       "pending": [
         {
-          "direction_probability": 0.6061331231152197,
-          "score": 0.6061331231152197,
-          "signal_date": "2026-11-06",
-          "ticker": "FTNT"
+          "direction_probability": 0.8458885108345698,
+          "score": 0.8458885108345698,
+          "signal_date": "2026-11-20",
+          "ticker": "TPL"
         },
         {
-          "direction_probability": 0.5951488808439149,
-          "score": 0.5951488808439149,
-          "signal_date": "2026-11-06",
-          "ticker": "HUM"
+          "direction_probability": 0.8433407745162783,
+          "score": 0.8433407745162783,
+          "signal_date": "2026-11-20",
+          "ticker": "EQT"
         },
         {
-          "direction_probability": 0.593920802638179,
-          "score": 0.593920802638179,
-          "signal_date": "2026-11-06",
-          "ticker": "ANET"
+          "direction_probability": 0.842797787500027,
+          "score": 0.842797787500027,
+          "signal_date": "2026-11-20",
+          "ticker": "EXE"
         },
         {
-          "direction_probability": 0.5899363151768426,
-          "score": 0.5899363151768426,
-          "signal_date": "2026-11-06",
-          "ticker": "META"
+          "direction_probability": 0.8426874056559354,
+          "score": 0.8426874056559354,
+          "signal_date": "2026-11-20",
+          "ticker": "BSX"
         },
         {
-          "direction_probability": 0.5872849260958378,
-          "score": 0.5872849260958378,
-          "signal_date": "2026-11-06",
-          "ticker": "CRWD"
+          "direction_probability": 0.8399641015600992,
+          "score": 0.8399641015600992,
+          "signal_date": "2026-11-20",
+          "ticker": "VICI"
         },
         {
-          "direction_probability": 0.5867183594141703,
-          "score": 0.5867183594141703,
-          "signal_date": "2026-11-06",
-          "ticker": "PANW"
+          "direction_probability": 0.8388633465708073,
+          "score": 0.8388633465708073,
+          "signal_date": "2026-11-20",
+          "ticker": "PODD"
         },
         {
-          "direction_probability": 0.5860794449806392,
-          "score": 0.5860794449806392,
-          "signal_date": "2026-11-06",
-          "ticker": "FFIV"
+          "direction_probability": 0.8372378464055259,
+          "score": 0.8372378464055259,
+          "signal_date": "2026-11-20",
+          "ticker": "SCHW"
         },
         {
-          "direction_probability": 0.5843608931927243,
-          "score": 0.5843608931927243,
-          "signal_date": "2026-11-06",
-          "ticker": "TDY"
+          "direction_probability": 0.8368149843375026,
+          "score": 0.8368149843375026,
+          "signal_date": "2026-11-20",
+          "ticker": "GLW"
         },
         {
-          "direction_probability": 0.5841041408333344,
-          "score": 0.5841041408333344,
-          "signal_date": "2026-11-06",
-          "ticker": "ORCL"
+          "direction_probability": 0.8361073762213673,
+          "score": 0.8361073762213673,
+          "signal_date": "2026-11-20",
+          "ticker": "FICO"
         },
         {
-          "direction_probability": 0.5817960392563882,
-          "score": 0.5817960392563882,
-          "signal_date": "2026-11-06",
-          "ticker": "CDNS"
+          "direction_probability": 0.8359004207583554,
+          "score": 0.8359004207583554,
+          "signal_date": "2026-11-20",
+          "ticker": "NOC"
         }
       ],
       "trades": [
@@ -3170,7 +3404,88 @@
           "week": "2026-10-24/2026-10-30"
         }
       ],
-      "unfilled": []
+      "unfilled": [
+        {
+          "direction_probability": 0.6061331231152197,
+          "expired_at_signal": "2026-11-20",
+          "reason": "missed_weekly_execution_no_retro_fill",
+          "score": 0.6061331231152197,
+          "signal_date": "2026-11-06",
+          "ticker": "FTNT"
+        },
+        {
+          "direction_probability": 0.5951488808439149,
+          "expired_at_signal": "2026-11-20",
+          "reason": "missed_weekly_execution_no_retro_fill",
+          "score": 0.5951488808439149,
+          "signal_date": "2026-11-06",
+          "ticker": "HUM"
+        },
+        {
+          "direction_probability": 0.593920802638179,
+          "expired_at_signal": "2026-11-20",
+          "reason": "missed_weekly_execution_no_retro_fill",
+          "score": 0.593920802638179,
+          "signal_date": "2026-11-06",
+          "ticker": "ANET"
+        },
+        {
+          "direction_probability": 0.5899363151768426,
+          "expired_at_signal": "2026-11-20",
+          "reason": "missed_weekly_execution_no_retro_fill",
+          "score": 0.5899363151768426,
+          "signal_date": "2026-11-06",
+          "ticker": "META"
+        },
+        {
+          "direction_probability": 0.5872849260958378,
+          "expired_at_signal": "2026-11-20",
+          "reason": "missed_weekly_execution_no_retro_fill",
+          "score": 0.5872849260958378,
+          "signal_date": "2026-11-06",
+          "ticker": "CRWD"
+        },
+        {
+          "direction_probability": 0.5867183594141703,
+          "expired_at_signal": "2026-11-20",
+          "reason": "missed_weekly_execution_no_retro_fill",
+          "score": 0.5867183594141703,
+          "signal_date": "2026-11-06",
+          "ticker": "PANW"
+        },
+        {
+          "direction_probability": 0.5860794449806392,
+          "expired_at_signal": "2026-11-20",
+          "reason": "missed_weekly_execution_no_retro_fill",
+          "score": 0.5860794449806392,
+          "signal_date": "2026-11-06",
+          "ticker": "FFIV"
+        },
+        {
+          "direction_probability": 0.5843608931927243,
+          "expired_at_signal": "2026-11-20",
+          "reason": "missed_weekly_execution_no_retro_fill",
+          "score": 0.5843608931927243,
+          "signal_date": "2026-11-06",
+          "ticker": "TDY"
+        },
+        {
+          "direction_probability": 0.5841041408333344,
+          "expired_at_signal": "2026-11-20",
+          "reason": "missed_weekly_execution_no_retro_fill",
+          "score": 0.5841041408333344,
+          "signal_date": "2026-11-06",
+          "ticker": "ORCL"
+        },
+        {
+          "direction_probability": 0.5817960392563882,
+          "expired_at_signal": "2026-11-20",
+          "reason": "missed_weekly_execution_no_retro_fill",
+          "score": 0.5817960392563882,
+          "signal_date": "2026-11-06",
+          "ticker": "CDNS"
+        }
+      ]
     },
     "lgbm_ranker": {
       "equity": [
@@ -3203,59 +3518,65 @@
           "date": "2026-11-06",
           "decision_recorded": true,
           "nav": 80662.7528525752
+        },
+        {
+          "date": "2026-11-20",
+          "decision_recorded": true,
+          "inactive_intervening_week_no_fills": true,
+          "nav": 80662.7528525752
         }
       ],
       "nav": 80662.7528525752,
       "pending": [
         {
-          "score": 0.40266551214921786,
-          "signal_date": "2026-11-06",
-          "ticker": "DELL"
-        },
-        {
-          "score": 0.36831235924265865,
-          "signal_date": "2026-11-06",
+          "score": 0.22787456340386114,
+          "signal_date": "2026-11-20",
           "ticker": "MU"
         },
         {
-          "score": 0.3395079901791787,
-          "signal_date": "2026-11-06",
-          "ticker": "WDC"
-        },
-        {
-          "score": 0.31583720968779544,
-          "signal_date": "2026-11-06",
-          "ticker": "STX"
-        },
-        {
-          "score": 0.29204865616683046,
-          "signal_date": "2026-11-06",
-          "ticker": "HWM"
-        },
-        {
-          "score": 0.28850817094135134,
-          "signal_date": "2026-11-06",
-          "ticker": "GNRC"
-        },
-        {
-          "score": 0.28765212021251285,
-          "signal_date": "2026-11-06",
-          "ticker": "AMD"
-        },
-        {
-          "score": 0.2851014179966313,
-          "signal_date": "2026-11-06",
-          "ticker": "SMCI"
-        },
-        {
-          "score": 0.2822319503797782,
-          "signal_date": "2026-11-06",
+          "score": 0.22787456340386114,
+          "signal_date": "2026-11-20",
           "ticker": "TER"
         },
         {
-          "score": 0.26803126363689567,
-          "signal_date": "2026-11-06",
-          "ticker": "MRNA"
+          "score": 0.2254387317336271,
+          "signal_date": "2026-11-20",
+          "ticker": "LRCX"
+        },
+        {
+          "score": 0.219819757174196,
+          "signal_date": "2026-11-20",
+          "ticker": "ADI"
+        },
+        {
+          "score": 0.21023860447012593,
+          "signal_date": "2026-11-20",
+          "ticker": "SWKS"
+        },
+        {
+          "score": 0.20404095912226713,
+          "signal_date": "2026-11-20",
+          "ticker": "MPWR"
+        },
+        {
+          "score": 0.19825743340276733,
+          "signal_date": "2026-11-20",
+          "ticker": "AMD"
+        },
+        {
+          "score": 0.1922062988522795,
+          "signal_date": "2026-11-20",
+          "ticker": "PWR"
+        },
+        {
+          "score": 0.19220590913794247,
+          "signal_date": "2026-11-20",
+          "ticker": "TXN"
+        },
+        {
+          "score": 0.19021154738305637,
+          "signal_date": "2026-11-20",
+          "ticker": "CHTR"
         }
       ],
       "trades": [
@@ -4160,7 +4481,78 @@
           "week": "2026-10-31/2026-11-06"
         }
       ],
-      "unfilled": []
+      "unfilled": [
+        {
+          "expired_at_signal": "2026-11-20",
+          "reason": "missed_weekly_execution_no_retro_fill",
+          "score": 0.40266551214921786,
+          "signal_date": "2026-11-06",
+          "ticker": "DELL"
+        },
+        {
+          "expired_at_signal": "2026-11-20",
+          "reason": "missed_weekly_execution_no_retro_fill",
+          "score": 0.36831235924265865,
+          "signal_date": "2026-11-06",
+          "ticker": "MU"
+        },
+        {
+          "expired_at_signal": "2026-11-20",
+          "reason": "missed_weekly_execution_no_retro_fill",
+          "score": 0.3395079901791787,
+          "signal_date": "2026-11-06",
+          "ticker": "WDC"
+        },
+        {
+          "expired_at_signal": "2026-11-20",
+          "reason": "missed_weekly_execution_no_retro_fill",
+          "score": 0.31583720968779544,
+          "signal_date": "2026-11-06",
+          "ticker": "STX"
+        },
+        {
+          "expired_at_signal": "2026-11-20",
+          "reason": "missed_weekly_execution_no_retro_fill",
+          "score": 0.29204865616683046,
+          "signal_date": "2026-11-06",
+          "ticker": "HWM"
+        },
+        {
+          "expired_at_signal": "2026-11-20",
+          "reason": "missed_weekly_execution_no_retro_fill",
+          "score": 0.28850817094135134,
+          "signal_date": "2026-11-06",
+          "ticker": "GNRC"
+        },
+        {
+          "expired_at_signal": "2026-11-20",
+          "reason": "missed_weekly_execution_no_retro_fill",
+          "score": 0.28765212021251285,
+          "signal_date": "2026-11-06",
+          "ticker": "AMD"
+        },
+        {
+          "expired_at_signal": "2026-11-20",
+          "reason": "missed_weekly_execution_no_retro_fill",
+          "score": 0.2851014179966313,
+          "signal_date": "2026-11-06",
+          "ticker": "SMCI"
+        },
+        {
+          "expired_at_signal": "2026-11-20",
+          "reason": "missed_weekly_execution_no_retro_fill",
+          "score": 0.2822319503797782,
+          "signal_date": "2026-11-06",
+          "ticker": "TER"
+        },
+        {
+          "expired_at_signal": "2026-11-20",
+          "reason": "missed_weekly_execution_no_retro_fill",
+          "score": 0.26803126363689567,
+          "signal_date": "2026-11-06",
+          "ticker": "MRNA"
+        }
+      ]
     },
     "lgbm_return": {
       "equity": [
@@ -4193,21 +4585,75 @@
           "date": "2026-11-06",
           "decision_recorded": true,
           "nav": 83303.10859468838
+        },
+        {
+          "date": "2026-11-20",
+          "decision_recorded": true,
+          "inactive_intervening_week_no_fills": true,
+          "nav": 83303.10859468838
         }
       ],
       "nav": 83303.10859468838,
       "pending": [
         {
-          "predicted_return": 0.00527372747045483,
-          "score": 0.00527372747045483,
-          "signal_date": "2026-11-06",
-          "ticker": "SLB"
+          "predicted_return": 0.08540022696893125,
+          "score": 0.08540022696893125,
+          "signal_date": "2026-11-20",
+          "ticker": "STX"
         },
         {
-          "predicted_return": 0.005099068948625477,
-          "score": 0.005099068948625477,
-          "signal_date": "2026-11-06",
-          "ticker": "CVS"
+          "predicted_return": 0.08210600466927492,
+          "score": 0.08210600466927492,
+          "signal_date": "2026-11-20",
+          "ticker": "WDC"
+        },
+        {
+          "predicted_return": 0.08071851897200027,
+          "score": 0.08071851897200027,
+          "signal_date": "2026-11-20",
+          "ticker": "SMCI"
+        },
+        {
+          "predicted_return": 0.07943330159124312,
+          "score": 0.07943330159124312,
+          "signal_date": "2026-11-20",
+          "ticker": "GLW"
+        },
+        {
+          "predicted_return": 0.07440353729901807,
+          "score": 0.07440353729901807,
+          "signal_date": "2026-11-20",
+          "ticker": "INTC"
+        },
+        {
+          "predicted_return": 0.0734002938304299,
+          "score": 0.0734002938304299,
+          "signal_date": "2026-11-20",
+          "ticker": "FIS"
+        },
+        {
+          "predicted_return": 0.07227552075522857,
+          "score": 0.07227552075522857,
+          "signal_date": "2026-11-20",
+          "ticker": "COIN"
+        },
+        {
+          "predicted_return": 0.07126279318286574,
+          "score": 0.07126279318286574,
+          "signal_date": "2026-11-20",
+          "ticker": "AMD"
+        },
+        {
+          "predicted_return": 0.07109955400634245,
+          "score": 0.07109955400634245,
+          "signal_date": "2026-11-20",
+          "ticker": "MU"
+        },
+        {
+          "predicted_return": 0.06952150251366947,
+          "score": 0.06952150251366947,
+          "signal_date": "2026-11-20",
+          "ticker": "FICO"
         }
       ],
       "trades": [
@@ -4592,7 +5038,24 @@
           "week": "2026-10-17/2026-10-23"
         }
       ],
-      "unfilled": []
+      "unfilled": [
+        {
+          "expired_at_signal": "2026-11-20",
+          "predicted_return": 0.00527372747045483,
+          "reason": "missed_weekly_execution_no_retro_fill",
+          "score": 0.00527372747045483,
+          "signal_date": "2026-11-06",
+          "ticker": "SLB"
+        },
+        {
+          "expired_at_signal": "2026-11-20",
+          "predicted_return": 0.005099068948625477,
+          "reason": "missed_weekly_execution_no_retro_fill",
+          "score": 0.005099068948625477,
+          "signal_date": "2026-11-06",
+          "ticker": "CVS"
+        }
+      ]
     },
     "lstm_return": {
       "equity": [
@@ -4625,69 +5088,75 @@
           "date": "2026-11-06",
           "decision_recorded": true,
           "nav": 89937.43894003847
+        },
+        {
+          "date": "2026-11-20",
+          "decision_recorded": true,
+          "inactive_intervening_week_no_fills": true,
+          "nav": 89937.43894003847
         }
       ],
       "nav": 89937.43894003847,
       "pending": [
         {
-          "predicted_return": 0.013656480237841606,
-          "score": 0.013656480237841606,
-          "signal_date": "2026-11-06",
-          "ticker": "WDC"
+          "predicted_return": 0.017603106796741486,
+          "score": 0.017603106796741486,
+          "signal_date": "2026-11-20",
+          "ticker": "GLW"
         },
         {
-          "predicted_return": 0.013359221629798412,
-          "score": 0.013359221629798412,
-          "signal_date": "2026-11-06",
-          "ticker": "INTC"
+          "predicted_return": 0.016421405598521233,
+          "score": 0.016421405598521233,
+          "signal_date": "2026-11-20",
+          "ticker": "NVDA"
         },
         {
-          "predicted_return": 0.01311297994107008,
-          "score": 0.01311297994107008,
-          "signal_date": "2026-11-06",
+          "predicted_return": 0.014678824692964554,
+          "score": 0.014678824692964554,
+          "signal_date": "2026-11-20",
           "ticker": "CAT"
         },
         {
-          "predicted_return": 0.012791717424988747,
-          "score": 0.012791717424988747,
-          "signal_date": "2026-11-06",
-          "ticker": "SMCI"
+          "predicted_return": 0.014350194483995438,
+          "score": 0.014350194483995438,
+          "signal_date": "2026-11-20",
+          "ticker": "GEV"
         },
         {
-          "predicted_return": 0.012726174667477608,
-          "score": 0.012726174667477608,
-          "signal_date": "2026-11-06",
-          "ticker": "AXON"
+          "predicted_return": 0.013110890984535217,
+          "score": 0.013110890984535217,
+          "signal_date": "2026-11-20",
+          "ticker": "COIN"
         },
         {
-          "predicted_return": 0.01250225305557251,
-          "score": 0.01250225305557251,
-          "signal_date": "2026-11-06",
-          "ticker": "TER"
+          "predicted_return": 0.0130290687084198,
+          "score": 0.0130290687084198,
+          "signal_date": "2026-11-20",
+          "ticker": "CTVA"
         },
         {
-          "predicted_return": 0.012359066866338253,
-          "score": 0.012359066866338253,
-          "signal_date": "2026-11-06",
+          "predicted_return": 0.012642472982406616,
+          "score": 0.012642472982406616,
+          "signal_date": "2026-11-20",
           "ticker": "NRG"
         },
         {
-          "predicted_return": 0.012291211634874344,
-          "score": 0.012291211634874344,
-          "signal_date": "2026-11-06",
-          "ticker": "STX"
+          "predicted_return": 0.012080075219273567,
+          "score": 0.012080075219273567,
+          "signal_date": "2026-11-20",
+          "ticker": "TPL"
         },
         {
-          "predicted_return": 0.0122124208137393,
-          "score": 0.0122124208137393,
-          "signal_date": "2026-11-06",
-          "ticker": "KLAC"
+          "predicted_return": 0.011697826907038689,
+          "score": 0.011697826907038689,
+          "signal_date": "2026-11-20",
+          "ticker": "CMI"
         },
         {
-          "predicted_return": 0.01174113154411316,
-          "score": 0.01174113154411316,
-          "signal_date": "2026-11-06",
-          "ticker": "LRCX"
+          "predicted_return": 0.011561768129467964,
+          "score": 0.011561768129467964,
+          "signal_date": "2026-11-20",
+          "ticker": "INTC"
         }
       ],
       "trades": [
@@ -5642,7 +6111,88 @@
           "week": "2026-10-31/2026-11-06"
         }
       ],
-      "unfilled": []
+      "unfilled": [
+        {
+          "expired_at_signal": "2026-11-20",
+          "predicted_return": 0.013656480237841606,
+          "reason": "missed_weekly_execution_no_retro_fill",
+          "score": 0.013656480237841606,
+          "signal_date": "2026-11-06",
+          "ticker": "WDC"
+        },
+        {
+          "expired_at_signal": "2026-11-20",
+          "predicted_return": 0.013359221629798412,
+          "reason": "missed_weekly_execution_no_retro_fill",
+          "score": 0.013359221629798412,
+          "signal_date": "2026-11-06",
+          "ticker": "INTC"
+        },
+        {
+          "expired_at_signal": "2026-11-20",
+          "predicted_return": 0.01311297994107008,
+          "reason": "missed_weekly_execution_no_retro_fill",
+          "score": 0.01311297994107008,
+          "signal_date": "2026-11-06",
+          "ticker": "CAT"
+        },
+        {
+          "expired_at_signal": "2026-11-20",
+          "predicted_return": 0.012791717424988747,
+          "reason": "missed_weekly_execution_no_retro_fill",
+          "score": 0.012791717424988747,
+          "signal_date": "2026-11-06",
+          "ticker": "SMCI"
+        },
+        {
+          "expired_at_signal": "2026-11-20",
+          "predicted_return": 0.012726174667477608,
+          "reason": "missed_weekly_execution_no_retro_fill",
+          "score": 0.012726174667477608,
+          "signal_date": "2026-11-06",
+          "ticker": "AXON"
+        },
+        {
+          "expired_at_signal": "2026-11-20",
+          "predicted_return": 0.01250225305557251,
+          "reason": "missed_weekly_execution_no_retro_fill",
+          "score": 0.01250225305557251,
+          "signal_date": "2026-11-06",
+          "ticker": "TER"
+        },
+        {
+          "expired_at_signal": "2026-11-20",
+          "predicted_return": 0.012359066866338253,
+          "reason": "missed_weekly_execution_no_retro_fill",
+          "score": 0.012359066866338253,
+          "signal_date": "2026-11-06",
+          "ticker": "NRG"
+        },
+        {
+          "expired_at_signal": "2026-11-20",
+          "predicted_return": 0.012291211634874344,
+          "reason": "missed_weekly_execution_no_retro_fill",
+          "score": 0.012291211634874344,
+          "signal_date": "2026-11-06",
+          "ticker": "STX"
+        },
+        {
+          "expired_at_signal": "2026-11-20",
+          "predicted_return": 0.0122124208137393,
+          "reason": "missed_weekly_execution_no_retro_fill",
+          "score": 0.0122124208137393,
+          "signal_date": "2026-11-06",
+          "ticker": "KLAC"
+        },
+        {
+          "expired_at_signal": "2026-11-20",
+          "predicted_return": 0.01174113154411316,
+          "reason": "missed_weekly_execution_no_retro_fill",
+          "score": 0.01174113154411316,
+          "signal_date": "2026-11-06",
+          "ticker": "LRCX"
+        }
+      ]
     },
     "mlp_return": {
       "equity": [
@@ -5675,69 +6225,75 @@
           "date": "2026-11-06",
           "decision_recorded": true,
           "nav": 83524.88501531014
+        },
+        {
+          "date": "2026-11-20",
+          "decision_recorded": true,
+          "inactive_intervening_week_no_fills": true,
+          "nav": 83524.88501531014
         }
       ],
       "nav": 83524.88501531014,
       "pending": [
         {
-          "predicted_return": 0.14936242780127013,
-          "score": 0.14936242780127013,
-          "signal_date": "2026-11-06",
+          "predicted_return": 0.18178974847954604,
+          "score": 0.18178974847954604,
+          "signal_date": "2026-11-20",
+          "ticker": "MRNA"
+        },
+        {
+          "predicted_return": 0.16507090199551264,
+          "score": 0.16507090199551264,
+          "signal_date": "2026-11-20",
+          "ticker": "HPE"
+        },
+        {
+          "predicted_return": 0.1285444549266272,
+          "score": 0.1285444549266272,
+          "signal_date": "2026-11-20",
+          "ticker": "AMD"
+        },
+        {
+          "predicted_return": 0.12757996874824393,
+          "score": 0.12757996874824393,
+          "signal_date": "2026-11-20",
+          "ticker": "ABNB"
+        },
+        {
+          "predicted_return": 0.11761084983337922,
+          "score": 0.11761084983337922,
+          "signal_date": "2026-11-20",
+          "ticker": "MU"
+        },
+        {
+          "predicted_return": 0.11648554061836304,
+          "score": 0.11648554061836304,
+          "signal_date": "2026-11-20",
+          "ticker": "MOH"
+        },
+        {
+          "predicted_return": 0.11381332073477772,
+          "score": 0.11381332073477772,
+          "signal_date": "2026-11-20",
           "ticker": "DELL"
         },
         {
-          "predicted_return": 0.1085991975998347,
-          "score": 0.1085991975998347,
-          "signal_date": "2026-11-06",
-          "ticker": "SMCI"
+          "predicted_return": 0.1136695688934351,
+          "score": 0.1136695688934351,
+          "signal_date": "2026-11-20",
+          "ticker": "MOS"
         },
         {
-          "predicted_return": 0.10725421658544412,
-          "score": 0.10725421658544412,
-          "signal_date": "2026-11-06",
-          "ticker": "NOW"
+          "predicted_return": 0.11302430889415292,
+          "score": 0.11302430889415292,
+          "signal_date": "2026-11-20",
+          "ticker": "AVGO"
         },
         {
-          "predicted_return": 0.104222062639265,
-          "score": 0.104222062639265,
-          "signal_date": "2026-11-06",
-          "ticker": "EPAM"
-        },
-        {
-          "predicted_return": 0.0966325172140311,
-          "score": 0.0966325172140311,
-          "signal_date": "2026-11-06",
-          "ticker": "TER"
-        },
-        {
-          "predicted_return": 0.08962644900310707,
-          "score": 0.08962644900310707,
-          "signal_date": "2026-11-06",
-          "ticker": "IT"
-        },
-        {
-          "predicted_return": 0.08021057945886159,
-          "score": 0.08021057945886159,
-          "signal_date": "2026-11-06",
-          "ticker": "AKAM"
-        },
-        {
-          "predicted_return": 0.07566460193605548,
-          "score": 0.07566460193605548,
-          "signal_date": "2026-11-06",
-          "ticker": "CTSH"
-        },
-        {
-          "predicted_return": 0.07290585581356175,
-          "score": 0.07290585581356175,
-          "signal_date": "2026-11-06",
-          "ticker": "STX"
-        },
-        {
-          "predicted_return": 0.06999988733982924,
-          "score": 0.06999988733982924,
-          "signal_date": "2026-11-06",
-          "ticker": "HPE"
+          "predicted_return": 0.0934620759329952,
+          "score": 0.0934620759329952,
+          "signal_date": "2026-11-20",
+          "ticker": "DXCM"
         }
       ],
       "trades": [
@@ -6692,7 +7248,88 @@
           "week": "2026-10-31/2026-11-06"
         }
       ],
-      "unfilled": []
+      "unfilled": [
+        {
+          "expired_at_signal": "2026-11-20",
+          "predicted_return": 0.14936242780127013,
+          "reason": "missed_weekly_execution_no_retro_fill",
+          "score": 0.14936242780127013,
+          "signal_date": "2026-11-06",
+          "ticker": "DELL"
+        },
+        {
+          "expired_at_signal": "2026-11-20",
+          "predicted_return": 0.1085991975998347,
+          "reason": "missed_weekly_execution_no_retro_fill",
+          "score": 0.1085991975998347,
+          "signal_date": "2026-11-06",
+          "ticker": "SMCI"
+        },
+        {
+          "expired_at_signal": "2026-11-20",
+          "predicted_return": 0.10725421658544412,
+          "reason": "missed_weekly_execution_no_retro_fill",
+          "score": 0.10725421658544412,
+          "signal_date": "2026-11-06",
+          "ticker": "NOW"
+        },
+        {
+          "expired_at_signal": "2026-11-20",
+          "predicted_return": 0.104222062639265,
+          "reason": "missed_weekly_execution_no_retro_fill",
+          "score": 0.104222062639265,
+          "signal_date": "2026-11-06",
+          "ticker": "EPAM"
+        },
+        {
+          "expired_at_signal": "2026-11-20",
+          "predicted_return": 0.0966325172140311,
+          "reason": "missed_weekly_execution_no_retro_fill",
+          "score": 0.0966325172140311,
+          "signal_date": "2026-11-06",
+          "ticker": "TER"
+        },
+        {
+          "expired_at_signal": "2026-11-20",
+          "predicted_return": 0.08962644900310707,
+          "reason": "missed_weekly_execution_no_retro_fill",
+          "score": 0.08962644900310707,
+          "signal_date": "2026-11-06",
+          "ticker": "IT"
+        },
+        {
+          "expired_at_signal": "2026-11-20",
+          "predicted_return": 0.08021057945886159,
+          "reason": "missed_weekly_execution_no_retro_fill",
+          "score": 0.08021057945886159,
+          "signal_date": "2026-11-06",
+          "ticker": "AKAM"
+        },
+        {
+          "expired_at_signal": "2026-11-20",
+          "predicted_return": 0.07566460193605548,
+          "reason": "missed_weekly_execution_no_retro_fill",
+          "score": 0.07566460193605548,
+          "signal_date": "2026-11-06",
+          "ticker": "CTSH"
+        },
+        {
+          "expired_at_signal": "2026-11-20",
+          "predicted_return": 0.07290585581356175,
+          "reason": "missed_weekly_execution_no_retro_fill",
+          "score": 0.07290585581356175,
+          "signal_date": "2026-11-06",
+          "ticker": "STX"
+        },
+        {
+          "expired_at_signal": "2026-11-20",
+          "predicted_return": 0.06999988733982924,
+          "reason": "missed_weekly_execution_no_retro_fill",
+          "score": 0.06999988733982924,
+          "signal_date": "2026-11-06",
+          "ticker": "HPE"
+        }
+      ]
     }
   }
 }

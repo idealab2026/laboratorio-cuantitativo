@@ -1,12 +1,12 @@
 # MIDAS Weekly ML — dashboard
 
-> **Forward activo.** Última señal registrada: **2026-11-06**. Las predicciones mostradas abajo fueron congeladas antes de conocer la semana objetivo.
+> **Forward activo.** Última señal registrada: **2026-11-20**. Las predicciones mostradas abajo fueron congeladas antes de conocer la semana objetivo.
 
 ## Progreso
 
 | Modelo | Función | Estado | NAV | Retorno acumulado | Posiciones/órdenes | Trades cerrados |
 | --- | --- | --- | ---: | ---: | ---: | ---: |
-| **LightGBM Return** | Predice la rentabilidad semanal esperada de cada acción. | forward | 83,303.11 USD | -16.697% | 2 | 20 |
+| **LightGBM Return** | Predice la rentabilidad semanal esperada de cada acción. | forward | 83,303.11 USD | -16.697% | 10 | 20 |
 | **LightGBM Direction** | Estima la probabilidad de que la semana termine en positivo. | forward | 100,705.31 USD | 0.705% | 10 | 30 |
 | **LightGBM Ranker** | Ordena el universo de mejor a peor oportunidad relativa. | forward | 80,662.75 USD | -19.337% | 10 | 50 |
 | **MLP** | Red neuronal feed-forward sobre features tabulares. | forward | 83,524.89 USD | -16.475% | 10 | 50 |
@@ -18,102 +18,102 @@
 
 ## Predicciones del último forecast
 
-**Cutoff:** 2026-11-06 · **Horizonte:** primera apertura → último cierre de la semana siguiente.
+**Cutoff:** 2026-11-20 · **Horizonte:** primera apertura → último cierre de la semana siguiente.
 
 ### LightGBM Return
 
 Predice la rentabilidad semanal esperada de cada acción.
 
-**Validación diagnóstica:** rank-IC -0.0247 · MAE 3.47 pp · iter 14
+**Validación diagnóstica:** rank-IC -0.0098 · MAE 3.54 pp · iter 70
 
 | # | Ticker | Retorno previsto |
 | ---: | --- | ---: |
-| 1 | **SLB** | 0.53% |
-| 2 | **CVS** | 0.51% |
-| 3 | **BALL** | 0.47% |
-| 4 | **BAX** | 0.47% |
-| 5 | **BX** | 0.47% |
-| 6 | **CAH** | 0.47% |
-| 7 | **RL** | 0.47% |
-| 8 | **TAP** | 0.47% |
-| 9 | **AME** | 0.46% |
-| 10 | **AVGO** | 0.46% |
+| 1 | **STX** | 8.54% |
+| 2 | **WDC** | 8.21% |
+| 3 | **SMCI** | 8.07% |
+| 4 | **GLW** | 7.94% |
+| 5 | **INTC** | 7.44% |
+| 6 | **FIS** | 7.34% |
+| 7 | **COIN** | 7.23% |
+| 8 | **AMD** | 7.13% |
+| 9 | **MU** | 7.11% |
+| 10 | **FICO** | 6.95% |
 
 ### LightGBM Direction
 
 Estima la probabilidad de que la semana termine en positivo.
 
-**Validación diagnóstica:** accuracy 56.4% · Brier 0.2446 · iter 95
+**Validación diagnóstica:** accuracy 56.7% · Brier 0.2458 · iter 74
 
 | # | Ticker | Prob. positiva |
 | ---: | --- | ---: |
-| 1 | **FTNT** | 60.6% |
-| 2 | **HUM** | 59.5% |
-| 3 | **ANET** | 59.4% |
-| 4 | **META** | 59.0% |
-| 5 | **CRWD** | 58.7% |
-| 6 | **PANW** | 58.7% |
-| 7 | **FFIV** | 58.6% |
-| 8 | **TDY** | 58.4% |
-| 9 | **ORCL** | 58.4% |
-| 10 | **CDNS** | 58.2% |
+| 1 | **TPL** | 84.6% |
+| 2 | **EQT** | 84.3% |
+| 3 | **EXE** | 84.3% |
+| 4 | **BSX** | 84.3% |
+| 5 | **VICI** | 84.0% |
+| 6 | **PODD** | 83.9% |
+| 7 | **SCHW** | 83.7% |
+| 8 | **GLW** | 83.7% |
+| 9 | **FICO** | 83.6% |
+| 10 | **NOC** | 83.6% |
 
 ### LightGBM Ranker
 
 Ordena el universo de mejor a peor oportunidad relativa.
 
-**Validación diagnóstica:** rank-IC -0.0114 · iter 22
+**Validación diagnóstica:** rank-IC -0.0295 · iter 8
 
 | # | Ticker | Rank score |
 | ---: | --- | ---: |
-| 1 | **DELL** | 0.4027 |
-| 2 | **MU** | 0.3683 |
-| 3 | **WDC** | 0.3395 |
-| 4 | **STX** | 0.3158 |
-| 5 | **HWM** | 0.2920 |
-| 6 | **GNRC** | 0.2885 |
-| 7 | **AMD** | 0.2877 |
-| 8 | **SMCI** | 0.2851 |
-| 9 | **TER** | 0.2822 |
-| 10 | **MRNA** | 0.2680 |
+| 1 | **MU** | 0.2279 |
+| 2 | **TER** | 0.2279 |
+| 3 | **LRCX** | 0.2254 |
+| 4 | **ADI** | 0.2198 |
+| 5 | **SWKS** | 0.2102 |
+| 6 | **MPWR** | 0.2040 |
+| 7 | **AMD** | 0.1983 |
+| 8 | **PWR** | 0.1922 |
+| 9 | **TXN** | 0.1922 |
+| 10 | **CHTR** | 0.1902 |
 
 ### MLP
 
 Red neuronal feed-forward sobre features tabulares.
 
-**Validación diagnóstica:** rank-IC 0.0096 · MAE 3.95 pp
+**Validación diagnóstica:** rank-IC 0.0068 · MAE 4.02 pp
 
 | # | Ticker | Retorno previsto |
 | ---: | --- | ---: |
-| 1 | **DELL** | 14.94% |
-| 2 | **SMCI** | 10.86% |
-| 3 | **NOW** | 10.73% |
-| 4 | **EPAM** | 10.42% |
-| 5 | **TER** | 9.66% |
-| 6 | **IT** | 8.96% |
-| 7 | **AKAM** | 8.02% |
-| 8 | **CTSH** | 7.57% |
-| 9 | **STX** | 7.29% |
-| 10 | **HPE** | 7.00% |
+| 1 | **MRNA** | 18.18% |
+| 2 | **HPE** | 16.51% |
+| 3 | **AMD** | 12.85% |
+| 4 | **ABNB** | 12.76% |
+| 5 | **MU** | 11.76% |
+| 6 | **MOH** | 11.65% |
+| 7 | **DELL** | 11.38% |
+| 8 | **MOS** | 11.37% |
+| 9 | **AVGO** | 11.30% |
+| 10 | **DXCM** | 9.35% |
 
 ### LSTM
 
 Red temporal sobre la secuencia de las últimas 26 semanas.
 
-**Validación diagnóstica:** rank-IC 0.0220 · MAE 3.48 pp
+**Validación diagnóstica:** rank-IC 0.0177 · MAE 3.56 pp
 
 | # | Ticker | Retorno previsto |
 | ---: | --- | ---: |
-| 1 | **WDC** | 1.37% |
-| 2 | **INTC** | 1.34% |
-| 3 | **CAT** | 1.31% |
-| 4 | **SMCI** | 1.28% |
-| 5 | **AXON** | 1.27% |
-| 6 | **TER** | 1.25% |
-| 7 | **NRG** | 1.24% |
-| 8 | **STX** | 1.23% |
-| 9 | **KLAC** | 1.22% |
-| 10 | **LRCX** | 1.17% |
+| 1 | **GLW** | 1.76% |
+| 2 | **NVDA** | 1.64% |
+| 3 | **CAT** | 1.47% |
+| 4 | **GEV** | 1.44% |
+| 5 | **COIN** | 1.31% |
+| 6 | **CTVA** | 1.30% |
+| 7 | **NRG** | 1.26% |
+| 8 | **TPL** | 1.21% |
+| 9 | **CMI** | 1.17% |
+| 10 | **INTC** | 1.16% |
 
 ### ARIMA
 
@@ -123,16 +123,16 @@ Modelo estadístico por acción sobre retornos semanales.
 
 | # | Ticker | Retorno previsto |
 | ---: | --- | ---: |
-| 1 | **WDC** | 10.81% |
-| 2 | **MCHP** | 9.31% |
-| 3 | **WMB** | 6.30% |
-| 4 | **MRNA** | 6.25% |
-| 5 | **STX** | 6.07% |
-| 6 | **ROK** | 5.50% |
-| 7 | **CRWD** | 5.46% |
-| 8 | **TRGP** | 5.43% |
-| 9 | **ABNB** | 4.66% |
-| 10 | **PANW** | 4.46% |
+| 1 | **AMD** | 9.00% |
+| 2 | **MU** | 7.74% |
+| 3 | **ANET** | 6.81% |
+| 4 | **ADI** | 6.74% |
+| 5 | **MRNA** | 6.49% |
+| 6 | **TXN** | 6.15% |
+| 7 | **MPC** | 5.67% |
+| 8 | **URI** | 5.65% |
+| 9 | **IRM** | 5.58% |
+| 10 | **CEG** | 5.55% |
 
 ### Ensemble
 
@@ -142,16 +142,16 @@ Combina rankings y votos de los expertos anteriores.
 
 | # | Ticker | Score | Retorno previsto | Votos + | Dispersión |
 | ---: | --- | ---: | ---: | ---: | ---: |
-| 1 | **STX** | 0.9401 | 3.65% | 5 | 0.0769 |
-| 2 | **WDC** | 0.9363 | 2.01% | 5 | 0.0774 |
-| 3 | **DELL** | 0.8794 | 0.77% | 5 | 0.1462 |
-| 4 | **AMD** | 0.8788 | 0.85% | 5 | 0.1177 |
-| 5 | **MU** | 0.8743 | 0.75% | 5 | 0.1158 |
-| 6 | **SMCI** | 0.8733 | 1.01% | 5 | 0.1356 |
-| 7 | **NOW** | 0.8673 | 0.56% | 5 | 0.1762 |
-| 8 | **NRG** | 0.8470 | 1.07% | 5 | 0.1118 |
-| 9 | **HPE** | 0.8448 | 0.60% | 5 | 0.1534 |
-| 10 | **GEV** | 0.8410 | 0.67% | 5 | 0.1528 |
+| 1 | **STX** | 0.9167 | 4.35% | 5 | 0.0731 |
+| 2 | **ADI** | 0.8794 | 6.14% | 5 | 0.1297 |
+| 3 | **MPWR** | 0.8743 | 4.15% | 5 | 0.0836 |
+| 4 | **ARE** | 0.8610 | 3.02% | 5 | 0.0932 |
+| 5 | **MCHP** | 0.8511 | 3.35% | 5 | 0.0879 |
+| 6 | **GS** | 0.8502 | 4.48% | 5 | 0.1008 |
+| 7 | **AVGO** | 0.8494 | 5.24% | 5 | 0.1605 |
+| 8 | **ANET** | 0.8408 | 5.98% | 5 | 0.1868 |
+| 9 | **KLAC** | 0.8342 | 3.67% | 5 | 0.2145 |
+| 10 | **MRNA** | 0.8313 | 5.75% | 5 | 0.2862 |
 
 
 ## Cómo interpretarlo

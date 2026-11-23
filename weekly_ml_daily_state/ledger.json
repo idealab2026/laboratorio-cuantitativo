@@ -10,13 +10,13 @@
   ],
   "initial_capital": 100000.0,
   "last_session": "2026-11-20",
-  "last_signal_session": "2026-11-06",
+  "last_signal_session": "2026-11-20",
   "outage_control": {
     "first_trading_session": "2026-11-05",
     "registered_at_utc": "2026-11-04T18:03:52+00:00"
   },
   "schema_version": 1,
-  "signal_hash": "1800fee3176f6e49a555b413f58095c9007d6411e6c5d9c982f0235aec42519f",
+  "signal_hash": "998b259954e3033dd32dfc836a1272e486a001ddeeb4c15cdda7eb34818f40d1",
   "strategies": {
     "arima_return": {
       "cash": 82085.59365527469,
@@ -1239,6 +1239,11 @@
             "2026-11-13"
           ],
           "type": "prospective_unwind_after_unobserved_weekly_exit"
+        },
+        {
+          "count": 10,
+          "date": "2026-11-20",
+          "type": "signal_frozen"
         }
       ],
       "forward_executions": {
@@ -1384,14 +1389,75 @@
           "source_commit": "cf9cebe218d2e9bda2b5b82ca68f98153b846a7f"
         }
       },
-      "last_signal_session": "2026-10-30",
+      "last_signal_session": "2026-11-20",
       "nav": 82085.59365527469,
       "outage_control": {
         "first_trading_session": "2026-11-18",
         "held_exits_require_future_observed_quote": true,
         "historical_fills_created": 0
       },
-      "pending": [],
+      "pending": [
+        {
+          "predicted_return": 0.09001114401903525,
+          "score": 0.09001114401903525,
+          "signal_date": "2026-11-20",
+          "ticker": "AMD"
+        },
+        {
+          "predicted_return": 0.07742203311033376,
+          "score": 0.07742203311033376,
+          "signal_date": "2026-11-20",
+          "ticker": "MU"
+        },
+        {
+          "predicted_return": 0.06811871537556967,
+          "score": 0.06811871537556967,
+          "signal_date": "2026-11-20",
+          "ticker": "ANET"
+        },
+        {
+          "predicted_return": 0.06744616302186199,
+          "score": 0.06744616302186199,
+          "signal_date": "2026-11-20",
+          "ticker": "ADI"
+        },
+        {
+          "predicted_return": 0.0648688156080594,
+          "score": 0.0648688156080594,
+          "signal_date": "2026-11-20",
+          "ticker": "MRNA"
+        },
+        {
+          "predicted_return": 0.06150214493343487,
+          "score": 0.06150214493343487,
+          "signal_date": "2026-11-20",
+          "ticker": "TXN"
+        },
+        {
+          "predicted_return": 0.05668273534537761,
+          "score": 0.05668273534537761,
+          "signal_date": "2026-11-20",
+          "ticker": "MPC"
+        },
+        {
+          "predicted_return": 0.056450198461479056,
+          "score": 0.056450198461479056,
+          "signal_date": "2026-11-20",
+          "ticker": "URI"
+        },
+        {
+          "predicted_return": 0.055830778669064274,
+          "score": 0.055830778669064274,
+          "signal_date": "2026-11-20",
+          "ticker": "IRM"
+        },
+        {
+          "predicted_return": 0.05547314797488714,
+          "score": 0.05547314797488714,
+          "signal_date": "2026-11-20",
+          "ticker": "CEG"
+        }
+      ],
       "positions": {},
       "trades": [
         {
@@ -2194,11 +2260,22 @@
           "shares": 431.134905,
           "ticker": "RSP",
           "type": "sell"
+        },
+        {
+          "count": 1,
+          "date": "2026-11-20",
+          "type": "signal_frozen"
         }
       ],
-      "last_signal_session": "2026-11-06",
+      "last_signal_session": "2026-11-20",
       "nav": 100170.49310778703,
-      "pending": [],
+      "pending": [
+        {
+          "score": 1.0,
+          "signal_date": "2026-11-20",
+          "ticker": "RSP"
+        }
+      ],
       "positions": {},
       "trades": [
         {
@@ -2581,11 +2658,22 @@
           "shares": 118.208014,
           "ticker": "SPY",
           "type": "sell"
+        },
+        {
+          "count": 1,
+          "date": "2026-11-20",
+          "type": "signal_frozen"
         }
       ],
-      "last_signal_session": "2026-11-06",
+      "last_signal_session": "2026-11-20",
       "nav": 93661.81418879132,
-      "pending": [],
+      "pending": [
+        {
+          "score": 1.0,
+          "signal_date": "2026-11-20",
+          "ticker": "SPY"
+        }
+      ],
       "positions": {},
       "trades": [
         {
@@ -3778,11 +3866,97 @@
           "shares": 28.642389,
           "ticker": "WDC",
           "type": "sell"
+        },
+        {
+          "count": 10,
+          "date": "2026-11-20",
+          "type": "signal_frozen"
         }
       ],
-      "last_signal_session": "2026-11-06",
+      "last_signal_session": "2026-11-20",
       "nav": 85683.78100397768,
-      "pending": [],
+      "pending": [
+        {
+          "positive_votes": 5,
+          "predicted_return": 0.04352249918326944,
+          "rank_dispersion": 0.07309062349396414,
+          "score": 0.9166666666666666,
+          "signal_date": "2026-11-20",
+          "ticker": "STX"
+        },
+        {
+          "positive_votes": 5,
+          "predicted_return": 0.061356902927083734,
+          "rank_dispersion": 0.1297063523187102,
+          "score": 0.8794398907103824,
+          "signal_date": "2026-11-20",
+          "ticker": "ADI"
+        },
+        {
+          "positive_votes": 5,
+          "predicted_return": 0.04146961304005445,
+          "rank_dispersion": 0.08362954610908835,
+          "score": 0.8743169398907105,
+          "signal_date": "2026-11-20",
+          "ticker": "MPWR"
+        },
+        {
+          "positive_votes": 5,
+          "predicted_return": 0.03019837933854927,
+          "rank_dispersion": 0.09315259631670748,
+          "score": 0.8609972677595628,
+          "signal_date": "2026-11-20",
+          "ticker": "ARE"
+        },
+        {
+          "positive_votes": 5,
+          "predicted_return": 0.03351067105780504,
+          "rank_dispersion": 0.08787349952369265,
+          "score": 0.8510928961748635,
+          "signal_date": "2026-11-20",
+          "ticker": "MCHP"
+        },
+        {
+          "positive_votes": 5,
+          "predicted_return": 0.044835069283171866,
+          "rank_dispersion": 0.10079318040332458,
+          "score": 0.8502390710382514,
+          "signal_date": "2026-11-20",
+          "ticker": "GS"
+        },
+        {
+          "positive_votes": 5,
+          "predicted_return": 0.05235455218540795,
+          "rank_dispersion": 0.16046861488739994,
+          "score": 0.8493852459016393,
+          "signal_date": "2026-11-20",
+          "ticker": "AVGO"
+        },
+        {
+          "positive_votes": 5,
+          "predicted_return": 0.059791014558915556,
+          "rank_dispersion": 0.18677041857899682,
+          "score": 0.8408469945355191,
+          "signal_date": "2026-11-20",
+          "ticker": "ANET"
+        },
+        {
+          "positive_votes": 5,
+          "predicted_return": 0.03669325389524576,
+          "rank_dispersion": 0.21445728406083084,
+          "score": 0.8341871584699453,
+          "signal_date": "2026-11-20",
+          "ticker": "KLAC"
+        },
+        {
+          "positive_votes": 5,
+          "predicted_return": 0.05746546495899951,
+          "rank_dispersion": 0.2862176724164038,
+          "score": 0.8312841530054644,
+          "signal_date": "2026-11-20",
+          "ticker": "MRNA"
+        }
+      ],
       "positions": {},
       "trades": [
         {
@@ -5335,11 +5509,77 @@
           "shares": 15.213707,
           "ticker": "TDY",
           "type": "sell"
+        },
+        {
+          "count": 10,
+          "date": "2026-11-20",
+          "type": "signal_frozen"
         }
       ],
-      "last_signal_session": "2026-11-06",
+      "last_signal_session": "2026-11-20",
       "nav": 103643.21151858052,
-      "pending": [],
+      "pending": [
+        {
+          "direction_probability": 0.8458885108345698,
+          "score": 0.8458885108345698,
+          "signal_date": "2026-11-20",
+          "ticker": "TPL"
+        },
+        {
+          "direction_probability": 0.8433407745162783,
+          "score": 0.8433407745162783,
+          "signal_date": "2026-11-20",
+          "ticker": "EQT"
+        },
+        {
+          "direction_probability": 0.842797787500027,
+          "score": 0.842797787500027,
+          "signal_date": "2026-11-20",
+          "ticker": "EXE"
+        },
+        {
+          "direction_probability": 0.8426874056559354,
+          "score": 0.8426874056559354,
+          "signal_date": "2026-11-20",
+          "ticker": "BSX"
+        },
+        {
+          "direction_probability": 0.8399641015600992,
+          "score": 0.8399641015600992,
+          "signal_date": "2026-11-20",
+          "ticker": "VICI"
+        },
+        {
+          "direction_probability": 0.8388633465708073,
+          "score": 0.8388633465708073,
+          "signal_date": "2026-11-20",
+          "ticker": "PODD"
+        },
+        {
+          "direction_probability": 0.8372378464055259,
+          "score": 0.8372378464055259,
+          "signal_date": "2026-11-20",
+          "ticker": "SCHW"
+        },
+        {
+          "direction_probability": 0.8368149843375026,
+          "score": 0.8368149843375026,
+          "signal_date": "2026-11-20",
+          "ticker": "GLW"
+        },
+        {
+          "direction_probability": 0.8361073762213673,
+          "score": 0.8361073762213673,
+          "signal_date": "2026-11-20",
+          "ticker": "FICO"
+        },
+        {
+          "direction_probability": 0.8359004207583554,
+          "score": 0.8359004207583554,
+          "signal_date": "2026-11-20",
+          "ticker": "NOC"
+        }
+      ],
       "positions": {},
       "trades": [
         {
@@ -7037,6 +7277,11 @@
             "2026-11-13"
           ],
           "type": "prospective_unwind_after_unobserved_weekly_exit"
+        },
+        {
+          "count": 10,
+          "date": "2026-11-20",
+          "type": "signal_frozen"
         }
       ],
       "forward_executions": {
@@ -7182,14 +7427,65 @@
           "source_commit": "cf9cebe218d2e9bda2b5b82ca68f98153b846a7f"
         }
       },
-      "last_signal_session": "2026-10-30",
+      "last_signal_session": "2026-11-20",
       "nav": 76460.78198757014,
       "outage_control": {
         "first_trading_session": "2026-11-18",
         "held_exits_require_future_observed_quote": true,
         "historical_fills_created": 0
       },
-      "pending": [],
+      "pending": [
+        {
+          "score": 0.22787456340386114,
+          "signal_date": "2026-11-20",
+          "ticker": "MU"
+        },
+        {
+          "score": 0.22787456340386114,
+          "signal_date": "2026-11-20",
+          "ticker": "TER"
+        },
+        {
+          "score": 0.2254387317336271,
+          "signal_date": "2026-11-20",
+          "ticker": "LRCX"
+        },
+        {
+          "score": 0.219819757174196,
+          "signal_date": "2026-11-20",
+          "ticker": "ADI"
+        },
+        {
+          "score": 0.21023860447012593,
+          "signal_date": "2026-11-20",
+          "ticker": "SWKS"
+        },
+        {
+          "score": 0.20404095912226713,
+          "signal_date": "2026-11-20",
+          "ticker": "MPWR"
+        },
+        {
+          "score": 0.19825743340276733,
+          "signal_date": "2026-11-20",
+          "ticker": "AMD"
+        },
+        {
+          "score": 0.1922062988522795,
+          "signal_date": "2026-11-20",
+          "ticker": "PWR"
+        },
+        {
+          "score": 0.19220590913794247,
+          "signal_date": "2026-11-20",
+          "ticker": "TXN"
+        },
+        {
+          "score": 0.19021154738305637,
+          "signal_date": "2026-11-20",
+          "ticker": "CHTR"
+        }
+      ],
       "positions": {},
       "trades": [
         {
@@ -8298,11 +8594,77 @@
           "shares": 199.162897,
           "ticker": "SLB",
           "type": "sell"
+        },
+        {
+          "count": 10,
+          "date": "2026-11-20",
+          "type": "signal_frozen"
         }
       ],
-      "last_signal_session": "2026-11-06",
+      "last_signal_session": "2026-11-20",
       "nav": 84101.75276020692,
-      "pending": [],
+      "pending": [
+        {
+          "predicted_return": 0.08540022696893125,
+          "score": 0.08540022696893125,
+          "signal_date": "2026-11-20",
+          "ticker": "STX"
+        },
+        {
+          "predicted_return": 0.08210600466927492,
+          "score": 0.08210600466927492,
+          "signal_date": "2026-11-20",
+          "ticker": "WDC"
+        },
+        {
+          "predicted_return": 0.08071851897200027,
+          "score": 0.08071851897200027,
+          "signal_date": "2026-11-20",
+          "ticker": "SMCI"
+        },
+        {
+          "predicted_return": 0.07943330159124312,
+          "score": 0.07943330159124312,
+          "signal_date": "2026-11-20",
+          "ticker": "GLW"
+        },
+        {
+          "predicted_return": 0.07440353729901807,
+          "score": 0.07440353729901807,
+          "signal_date": "2026-11-20",
+          "ticker": "INTC"
+        },
+        {
+          "predicted_return": 0.0734002938304299,
+          "score": 0.0734002938304299,
+          "signal_date": "2026-11-20",
+          "ticker": "FIS"
+        },
+        {
+          "predicted_return": 0.07227552075522857,
+          "score": 0.07227552075522857,
+          "signal_date": "2026-11-20",
+          "ticker": "COIN"
+        },
+        {
+          "predicted_return": 0.07126279318286574,
+          "score": 0.07126279318286574,
+          "signal_date": "2026-11-20",
+          "ticker": "AMD"
+        },
+        {
+          "predicted_return": 0.07109955400634245,
+          "score": 0.07109955400634245,
+          "signal_date": "2026-11-20",
+          "ticker": "MU"
+        },
+        {
+          "predicted_return": 0.06952150251366947,
+          "score": 0.06952150251366947,
+          "signal_date": "2026-11-20",
+          "ticker": "FICO"
+        }
+      ],
       "positions": {},
       "trades": [
         {
@@ -9727,11 +10089,77 @@
           "shares": 32.24588,
           "ticker": "WDC",
           "type": "sell"
+        },
+        {
+          "count": 10,
+          "date": "2026-11-20",
+          "type": "signal_frozen"
         }
       ],
-      "last_signal_session": "2026-11-06",
+      "last_signal_session": "2026-11-20",
       "nav": 96905.48207189851,
-      "pending": [],
+      "pending": [
+        {
+          "predicted_return": 0.017603106796741486,
+          "score": 0.017603106796741486,
+          "signal_date": "2026-11-20",
+          "ticker": "GLW"
+        },
+        {
+          "predicted_return": 0.016421405598521233,
+          "score": 0.016421405598521233,
+          "signal_date": "2026-11-20",
+          "ticker": "NVDA"
+        },
+        {
+          "predicted_return": 0.014678824692964554,
+          "score": 0.014678824692964554,
+          "signal_date": "2026-11-20",
+          "ticker": "CAT"
+        },
+        {
+          "predicted_return": 0.014350194483995438,
+          "score": 0.014350194483995438,
+          "signal_date": "2026-11-20",
+          "ticker": "GEV"
+        },
+        {
+          "predicted_return": 0.013110890984535217,
+          "score": 0.013110890984535217,
+          "signal_date": "2026-11-20",
+          "ticker": "COIN"
+        },
+        {
+          "predicted_return": 0.0130290687084198,
+          "score": 0.0130290687084198,
+          "signal_date": "2026-11-20",
+          "ticker": "CTVA"
+        },
+        {
+          "predicted_return": 0.012642472982406616,
+          "score": 0.012642472982406616,
+          "signal_date": "2026-11-20",
+          "ticker": "NRG"
+        },
+        {
+          "predicted_return": 0.012080075219273567,
+          "score": 0.012080075219273567,
+          "signal_date": "2026-11-20",
+          "ticker": "TPL"
+        },
+        {
+          "predicted_return": 0.011697826907038689,
+          "score": 0.011697826907038689,
+          "signal_date": "2026-11-20",
+          "ticker": "CMI"
+        },
+        {
+          "predicted_return": 0.011561768129467964,
+          "score": 0.011561768129467964,
+          "signal_date": "2026-11-20",
+          "ticker": "INTC"
+        }
+      ],
       "positions": {},
       "trades": [
         {
@@ -11549,6 +11977,11 @@
             "2026-11-13"
           ],
           "type": "prospective_unwind_after_unobserved_weekly_exit"
+        },
+        {
+          "count": 10,
+          "date": "2026-11-20",
+          "type": "signal_frozen"
         }
       ],
       "forward_executions": {
@@ -11694,14 +12127,75 @@
           "source_commit": "cf9cebe218d2e9bda2b5b82ca68f98153b846a7f"
         }
       },
-      "last_signal_session": "2026-10-30",
+      "last_signal_session": "2026-11-20",
       "nav": 78148.4670281601,
       "outage_control": {
         "first_trading_session": "2026-11-18",
         "held_exits_require_future_observed_quote": true,
         "historical_fills_created": 0
       },
-      "pending": [],
+      "pending": [
+        {
+          "predicted_return": 0.18178974847954604,
+          "score": 0.18178974847954604,
+          "signal_date": "2026-11-20",
+          "ticker": "MRNA"
+        },
+        {
+          "predicted_return": 0.16507090199551264,
+          "score": 0.16507090199551264,
+          "signal_date": "2026-11-20",
+          "ticker": "HPE"
+        },
+        {
+          "predicted_return": 0.1285444549266272,
+          "score": 0.1285444549266272,
+          "signal_date": "2026-11-20",
+          "ticker": "AMD"
+        },
+        {
+          "predicted_return": 0.12757996874824393,
+          "score": 0.12757996874824393,
+          "signal_date": "2026-11-20",
+          "ticker": "ABNB"
+        },
+        {
+          "predicted_return": 0.11761084983337922,
+          "score": 0.11761084983337922,
+          "signal_date": "2026-11-20",
+          "ticker": "MU"
+        },
+        {
+          "predicted_return": 0.11648554061836304,
+          "score": 0.11648554061836304,
+          "signal_date": "2026-11-20",
+          "ticker": "MOH"
+        },
+        {
+          "predicted_return": 0.11381332073477772,
+          "score": 0.11381332073477772,
+          "signal_date": "2026-11-20",
+          "ticker": "DELL"
+        },
+        {
+          "predicted_return": 0.1136695688934351,
+          "score": 0.1136695688934351,
+          "signal_date": "2026-11-20",
+          "ticker": "MOS"
+        },
+        {
+          "predicted_return": 0.11302430889415292,
+          "score": 0.11302430889415292,
+          "signal_date": "2026-11-20",
+          "ticker": "AVGO"
+        },
+        {
+          "predicted_return": 0.0934620759329952,
+          "score": 0.0934620759329952,
+          "signal_date": "2026-11-20",
+          "ticker": "DXCM"
+        }
+      ],
       "positions": {},
       "trades": [
         {
