@@ -13,7 +13,7 @@ from pathlib import Path
 import numpy as np
 import pandas as pd
 
-from data import build_dataset, live_panel
+from data import build_dataset, live_panel, eligible_session
 from models import fit_predict
 from paper import advance, digest
 
@@ -62,6 +62,15 @@ def evaluate(previous, panel, current_asof):
     # Diagnostic evaluation is not the book of executed trades. Missing vendor
     # quotes may be excluded here, but NEVER imputed or used to settle positions.
     from data import execution_window
+    import pandas_market_calendars as calendars
+    target_period = pd.Timestamp(previous["asof"]).to_period("W-FRI") + 1
+    sessions = calendars.get_calendar("XNYS").valid_days(
+        start_date=target_period.start_time.date(), end_date=target_period.end_time.date())
+    if len(sessions) == 0:
+        raise ValueError("Semana objetivo sin sesiones XNYS")
+    target_open, target_close = sessions[0].date().isoformat(), sessions[-1].date().isoformat()
+    if current_asof < target_close:
+        raise ValueError("El cierre de la semana objetivo aún no está disponible")
     expected = previous["live_tickers"]
     actual = {}
     missing = {}
@@ -73,8 +82,12 @@ def evaluate(previous, panel, current_asof):
         if window is None:
             missing[ticker] = "next_week_window_unavailable"
             continue
-        # A Thursday close cannot stand in for the actual Friday settlement.
-        if window["last_session"] != current_asof:
+        # Compare with this forecast's actual exchange week, not the date of
+        # the latest forecast. A missing first/last session cannot be imputed.
+        if window["first_session"] != target_open:
+            missing[ticker] = "weekly_first_open_unavailable"
+            continue
+        if window["last_session"] != target_close:
             missing[ticker] = "weekly_final_close_unavailable"
             continue
         actual[ticker] = float(window["close"] / window["open"] - 1)
@@ -176,9 +189,13 @@ def run(config_path, output_dir, now=None):
         if previous.get("config_hash") != digest(config):
             raise ValueError("Forecast previo pertenece a otra configuración")
         evaluation_path = out / "evaluations" / (previous["asof"] + ".json")
-        evaluation = evaluate(previous, panel, asof)
-        if evaluation_path.exists():
-            if _read(evaluation_path) != evaluation:
+        saved_evaluation = _read(evaluation_path) if evaluation_path.exists() else None
+        evaluation_asof = saved_evaluation["evaluated_at_session"] if saved_evaluation else asof
+        if evaluation_asof > asof:
+            raise ValueError("Evaluación semanal registrada después del corte actual")
+        evaluation = evaluate(previous, panel, evaluation_asof)
+        if saved_evaluation is not None:
+            if saved_evaluation != evaluation:
                 raise ValueError("Evaluación semanal histórica revisada")
         else:
             _write(evaluation_path, evaluation)
@@ -212,8 +229,14 @@ def run(config_path, output_dir, now=None):
         },
     }
 
-    _write(forecast_dir / (asof + ".json"), forecast)
+    # Model fitting may take long enough to cross the next opening. Never
+    # persist a freshly computed signal once its prospective window has passed.
+    if eligible_session(now) != asof:
+        raise ValueError("La ventana prospectiva del forecast ya no está disponible")
+    # Compute both artifacts before writing: a rejected ledger transition must
+    # never leave a forecast that causes retries to mistake the run for complete.
     state, _ = advance(config, panel, forecast, state)
+    _write(forecast_dir / (asof + ".json"), forecast)
     _write(state_path, state)
     return {
         "status": "forecast_recorded",
