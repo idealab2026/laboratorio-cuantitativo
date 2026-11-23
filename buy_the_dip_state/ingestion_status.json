@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "attempted_at_utc": "2026-11-18T13:16:01.443879+00:00",
+  "attempted_at_utc": "2026-11-23T06:32:03.257895+00:00",
   "promoted": true,
   "reason": "non_regressing_candidate",
   "candidate_manifest_count": 307,
