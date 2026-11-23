@@ -58,6 +58,15 @@ jobs:
           python -m py_compile weekly_ml/daily.py strategy_comparison/report.py
           python -m unittest discover -s weekly_ml/tests -p test_daily.py -v
           python -m unittest discover -s strategy_comparison/tests -v
+      # Keep the original real-data regression reproducible after the three
+      # live portfolios have recovered; never require today's books to be stale.
+      - name: Verify reviewed ML recovery against frozen 16-Nov source
+        if: github.event_name == 'pull_request'
+        run: |
+          git fetch --no-tags --depth=1 origin 613368754f0e38c1b00abd240c26cf88a7570b15
+          mkdir -p "$RUNNER_TEMP/midas-weekly-regression"
+          git archive 613368754f0e38c1b00abd240c26cf88a7570b15 | tar -x -C "$RUNNER_TEMP/midas-weekly-regression"
+          MIDAS_FIXTURE_ROOT="$RUNNER_TEMP/midas-weekly-regression" PYTHONPATH=. python -c 'from datetime import datetime,timezone; from pathlib import Path; import os; from strategy_comparison.inactive_recovery import recover; r=recover("weekly",root=Path(os.environ["MIDAS_FIXTURE_ROOT"]),now=datetime(2026,11,17,16,tzinfo=timezone.utc),only_paused_weekly=True); assert r["recovered_books"] == ["arima_return","lgbm_ranker","mlp_return"] and r["last_session"] == "2026-11-16" and r["written"] is False and r["trades_unchanged"] is True; print(r)'
       - name: Reconcile missed marks without historical fills
         if: ${{ github.event_name == 'workflow_dispatch' && inputs.recover_inactive && !inputs.preflight_only }}
         run: |
