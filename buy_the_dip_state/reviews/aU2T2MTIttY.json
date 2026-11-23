@@ -1,0 +1,311 @@
+{
+  "schema_version": 1,
+  "status": "machine_first_pass",
+  "reviewed_at_utc": "2026-11-23T04:01:46.917990+00:00",
+  "source_identity": "Buy The Dip YouTube channel",
+  "transport": {
+    "kind": "official_podcast_mirror",
+    "provider": "iVoox",
+    "guid": "https://www.ivoox.com/60319038",
+    "published_date": "2020-11-12",
+    "youtube_video_id": "aU2T2MTIttY",
+    "match_score": 0.901647,
+    "audio_bytes_processed_transiently": 29456135
+  },
+  "models": {
+    "asr": {
+      "language": "es",
+      "language_probability": 1.0,
+      "duration_seconds": 3682.0114375,
+      "word_count": 9665,
+      "segment_count": 1129,
+      "model": "small"
+    },
+    "semantic": {
+      "repo": "Qwen/Qwen3-4B-GGUF",
+      "file": "Qwen3-4B-Q4_K_M.gguf"
+    }
+  },
+  "metadata": {
+    "video_id": "aU2T2MTIttY",
+    "youtube_url": "https://www.youtube.com/watch?v=aU2T2MTIttY",
+    "title": "BUY THE DIP PODCAST EPISODIO 25: LOS CEOs MÁS EXCENTRICOS",
+    "category": "company_or_theme",
+    "guest_likely": false,
+    "podcast_guid": "https://www.ivoox.com/60319038",
+    "published_date": "2020-11-12",
+    "source": "official_podcast_mirror",
+    "match_score": 0.901647
+  },
+  "analysis": {
+    "episode_summary": "El episodio discute la importancia de los líderes excéntricos en la inversión, destacando cómo sus decisiones pueden generar resultados positivos o riesgos significativos. Se analizan casos de inversores que han tenido éxito en proyectos de minería y venture capital, aunque también han causado daños ambientales o problemas legales. Se mencionan ejemplos como Robert Fritland, quien logró un éxito con el proyecto Summitville pero causó un daño ambiental grave, y un inversor que adquirió una empresa en quiebra para usarla como colateral, combinando estrategias de alta apalancamiento con toma de riesgos agresivas. Además, se analizan comportamientos inusuales de figuras como David Solomon, CEO de Goldman Sachs, cuyo estilo de vida y decisiones sugieren un alto nivel de riesgo y comportamiento irracional. El episodio también menciona la posibilidad de invertir en empresas como Square, cuyo rápido crecimiento anual del 570% sugiere potencial, aunque se compara con otros proyectos en Sudamérica. En general, el episodio refleja cómo la reputación, las decisiones de los líderes y el manejo de riesgos pueden influir en el valor de una empresa, aunque con implicaciones a largo plazo.",
+    "process": {
+      "idea_generation": [],
+      "quality": [],
+      "balance_sheet": [],
+      "valuation": [
+        "El valor de una empresa puede ser influenciado por la reputación y las decisiones de sus líderes, como en el caso de Robert Fritland, donde un éxito inicial fue seguido por un daño ambiental que afectó su reputación y operaciones."
+      ],
+      "cycle_macro": [],
+      "entry": [
+        "El inversor menciona un caso de una empresa que tuvo problemas con la extracción de diamantes en Namibia y luego logró un éxito en la minería de níquel en Labrador."
+      ],
+      "sizing": [],
+      "add_hold": [],
+      "exit": [
+        "La empresa Diamond Fields fue adquirida por Freightland, que luego vendió el depósito de níquel por casi cinco mil millones de dólares, mostrando un exitoso final de la inversión."
+      ],
+      "risk": [
+        "Inversores excéntricos pueden generar resultados positivos, pero también riesgos significativos, como daños ambientales o perjuicios para la empresa, dependiendo de sus decisiones y el sector en que operan."
+      ],
+      "technical": [
+        "El inversor describe una minería de níquel en Labrador con un depósito de gran tamaño, lo que muestra un análisis técnico de la empresa y su potencial."
+      ],
+      "management": [
+        "El CEO Robert Fritland, un inversor en empresas de venture capital, tuvo dos fracasos iniciales en proyectos de oro y luego logró un éxito con el proyecto Summitville, pero causó un daño ambiental grave."
+      ],
+      "mistakes": [
+        "Un CEO de una banca de inversión en Wall Street se embriagó en un vuelo y causó un escándalo, lo que llevó a sanciones severas."
+      ]
+    },
+    "candidate_rules": [
+      {
+        "rule": "paráfrasis compacta",
+        "scope": "hosts|uncertain_or_guest",
+        "confidence": 0.0,
+        "evidence_timestamps": [],
+        "automation_proxy": "variable/cálculo posible o null",
+        "cross_video_confirmation_required": true
+      }
+    ],
+    "contradictions_or_uncertainties": [],
+    "named_examples": [
+      "Robert Fritland",
+      "Diamond Fields",
+      "David Solomon"
+    ],
+    "automation_readiness": "medium"
+  },
+  "chunk_evidence": [
+    {
+      "chunk": 1,
+      "evidence": [
+        {
+          "stage": "management",
+          "paraphrase": "El CEO Robert Fritland, un inversor en empresas de venture capital, tuvo dos fracasos iniciales en proyectos de oro y luego logró un éxito con el proyecto Summitville, pero causó un daño ambiental grave.",
+          "timestamp": "00:09:19",
+          "scope": "hosts",
+          "confidence": 0.9,
+          "automation_hint": "proxy observable"
+        },
+        {
+          "stage": "risk",
+          "paraphrase": "Inversores excéntricos pueden generar resultados positivos, pero también riesgos significativos, como daños ambientales o perjuicios para la empresa, dependiendo de sus decisiones y el sector en que operan.",
+          "timestamp": "00:05:57",
+          "scope": "uncertain_or_guest",
+          "confidence": 0.7,
+          "automation_hint": "proxy observable"
+        },
+        {
+          "stage": "valuation",
+          "paraphrase": "El valor de una empresa puede ser influenciado por la reputación y las decisiones de sus líderes, como en el caso de Robert Fritland, donde un éxito inicial fue seguido por un daño ambiental que afectó su reputación y operaciones.",
+          "timestamp": "00:09:19",
+          "scope": "hosts",
+          "confidence": 0.8,
+          "automation_hint": "proxy observable"
+        }
+      ],
+      "named_examples": [
+        {
+          "name": "Robert Fritland",
+          "description": "Inversor en venture capital que tuvo dos fracasos iniciales en proyectos de oro y luego logró un éxito con el proyecto Summitville, pero causó un daño ambiental grave."
+        }
+      ],
+      "chunk_summary": "El programa discute la importancia de los líderes excéntricos en la inversión, destacando cómo sus decisiones pueden generar resultados positivos o riesgos significativos. Se presenta el caso de Robert Fritland, un inversor en venture capital que tuvo dos fracasos iniciales en proyectos de oro y luego logró un éxito con el proyecto Summitville, pero causó un daño ambiental grave, lo que muestra cómo la reputación y las decisiones de los líderes pueden influir en el valor de una empresa."
+    },
+    {
+      "chunk": 2,
+      "evidence": [
+        {
+          "stage": "entry",
+          "paraphrase": "El inversor menciona un caso de una empresa que tuvo problemas con la extracción de diamantes en Namibia y luego logró un éxito en la minería de níquel en Labrador.",
+          "timestamp": "00:10:17",
+          "scope": "hosts",
+          "confidence": 0.9
+        },
+        {
+          "stage": "valuation",
+          "paraphrase": "La empresa Diamond Fields fue valorada en cuatro mil millones de dólares, mientras que el depósito de níquel fue vendido por casi cinco mil millones de dólares, lo que muestra una alta valoración de la empresa.",
+          "timestamp": "00:13:20",
+          "scope": "hosts",
+          "confidence": 0.8
+        },
+        {
+          "stage": "risk",
+          "paraphrase": "El inversor describe una situación de alto riesgo con la empresa Diamond Fields, incluyendo conflictos con comunidades indígenas y problemas legales, lo que refleja el riesgo asociado a inversiones en minería.",
+          "timestamp": "00:11:07",
+          "scope": "hosts",
+          "confidence": 0.7
+        },
+        {
+          "stage": "exit",
+          "paraphrase": "La empresa Diamond Fields fue adquirida por Freightland, que luego vendió el depósito de níquel por casi cinco mil millones de dólares, mostrando un exitoso final de la inversión.",
+          "timestamp": "00:13:18",
+          "scope": "hosts",
+          "confidence": 0.6
+        },
+        {
+          "stage": "mistake",
+          "paraphrase": "El inversor menciona un error de la empresa que involucró problemas legales y una mala reputación, lo que refleja un error en la inversión.",
+          "timestamp": "00:10:25",
+          "scope": "hosts",
+          "confidence": 0.5
+        },
+        {
+          "stage": "technical",
+          "paraphrase": "El inversor describe una minería de níquel en Labrador con un depósito de gran tamaño, lo que muestra un análisis técnico de la empresa y su potencial.",
+          "timestamp": "00:11:29",
+          "scope": "hosts",
+          "confidence": 0.4
+        }
+      ],
+      "named_examples": [],
+      "chunk_summary": "El fragmento describe una historia de inversión en minería, donde un inversor menciona un caso de una empresa que tuvo problemas con la extracción de diamantes en Namibia y luego logró un éxito en la minería de níquel en Labrador. La empresa fue valorada en cuatro mil millones de dólares y finalmente se vendió por casi cinco mil millones, mostrando un alto retorno. Sin embargo, el inversor también menciona errores y riesgos asociados a la inversión, incluyendo conflictos legales y problemas con comunidades indígenas."
+    },
+    {
+      "chunk": 3,
+      "evidence": [
+        {
+          "stage": "risk",
+          "paraphrase": "El CEO de Goldman Sachs, David Solomon, se ha comportado de manera inusual, como robar y suicidarse su asistente personal, lo que sugiere un alto nivel de riesgo y comportamiento irracional.",
+          "timestamp": "00:20:01",
+          "scope": "uncertain_or_guest",
+          "confidence": 0.0,
+          "automation_hint": "proxy observable"
+        },
+        {
+          "stage": "management",
+          "paraphrase": "David Solomon, CEO de Goldman Sachs, se ha relacionado con narcotraficantes y ha tenido escándalos, lo que indica un manejo de riesgos inadecuado y una cultura de comportamiento poco ético.",
+          "timestamp": "00:22:00",
+          "scope": "hosts",
+          "confidence": 0.0,
+          "automation_hint": "proxy observable"
+        },
+        {
+          "stage": "technical",
+          "paraphrase": "David Solomon ha comprado jets privados de lujo durante la pandemia, lo que refleja un gasto excesivo y una falta de prudencia en el manejo de recursos.",
+          "timestamp": "00:23:30",
+          "scope": "hosts",
+          "confidence": 0.0,
+          "automation_hint": "proxy observable"
+        },
+        {
+          "stage": "valuation",
+          "paraphrase": "La colección de vinos de Salomon valía 1,2 millones de dólares, lo que sugiere que su valor es significativo y puede ser utilizado como indicador de riqueza o comportamiento irracional.",
+          "timestamp": "00:20:24",
+          "scope": "hosts",
+          "confidence": 0.0,
+          "automation_hint": "proxy observable"
+        },
+        {
+          "stage": "entry",
+          "paraphrase": "El asistente personal de Salomon fue arrestado por robo, lo que indica que el comportamiento de Salomon fue inadecuado y puede afectar la reputación de la empresa.",
+          "timestamp": "00:21:00",
+          "scope": "hosts",
+          "confidence": 0.0,
+          "automation_hint": "proxy observable"
+        }
+      ],
+      "named_examples": [],
+      "chunk_summary": "El fragmento describe el comportamiento inusual de David Solomon, CEO de Goldman Sachs, incluyendo escándalos, gastos excesivos y falta de prudencia, lo que sugiere un alto nivel de riesgo y comportamiento irracional en la gestión de recursos y reputación de la empresa."
+    },
+    {
+      "chunk": 4,
+      "evidence": [
+        {
+          "stage": "entry",
+          "paraphrase": "El usuario menciona la importancia de invertir en Square, destacando su crecimiento anual del 570% y su potencial como empresa de inversión.",
+          "timestamp": "00:30:27",
+          "scope": "hosts",
+          "confidence": 0.8,
+          "automation_hint": "proxy observable"
+        },
+        {
+          "stage": "valuation",
+          "paraphrase": "El usuario compara Square con un competidor en Brasil, mencionando que aunque el competidor tiene buena pinta, la inversión en Sudamérica no es atractiva para él.",
+          "timestamp": "00:31:20",
+          "scope": "hosts",
+          "confidence": 0.7,
+          "automation_hint": "proxy observable"
+        },
+        {
+          "stage": "risk",
+          "paraphrase": "El usuario menciona la tendencia de los relojes que miden el sueño, sugiriendo que la tecnología para monitorear hábitos de sueño está en auge y podría tener implicaciones en la inversión.",
+          "timestamp": "00:29:40",
+          "scope": "uncertain_or_guest",
+          "confidence": 0.5,
+          "automation_hint": "proxy observable"
+        }
+      ],
+      "named_examples": [],
+      "chunk_summary": "El usuario discute la posibilidad de invertir en Square, menciona su rápido crecimiento anual del 570%, compara con un competidor en Sudamérica, y menciona una tendencia tecnológica en monitoreo de sueño, sugiriendo que podría tener relevancia en inversiones."
+    },
+    {
+      "chunk": 5,
+      "evidence": [
+        {
+          "stage": "mistake",
+          "paraphrase": "Un CEO de una banca de inversión en Wall Street se embriagó en un vuelo y causó un escándalo, lo que llevó a sanciones severas.",
+          "timestamp": "00:41:00",
+          "scope": "hosts",
+          "confidence": 0.0
+        },
+        {
+          "stage": "mistake",
+          "paraphrase": "Un hombre ruso, querimov, se convirtió en uno de los más ricos del mundo a través de inversiones financieras, pero su estilo de vida y decisiones llevaron a un accidente grave y sanciones.",
+          "timestamp": "00:48:00",
+          "scope": "hosts",
+          "confidence": 0.0
+        },
+        {
+          "stage": "mistake",
+          "paraphrase": "Un incidente en un vuelo en 1995 involucró a un hombre que fue arrestado por interferir con la tripulación y causó un desvío de un vuelo debido a su comportamiento descontrolado.",
+          "timestamp": "00:42:00",
+          "scope": "hosts",
+          "confidence": 0.0
+        }
+      ],
+      "named_examples": [],
+      "chunk_summary": "El fragmento describe tres casos de errores o incidentes relacionados con inversiones y decisiones de personal en el sector financiero. El primero muestra un CEO embriagándose en un vuelo y causando un escándalo, el segundo describe el caso de un rico empresario ruso que tuvo un accidente grave y sanciones, y el tercero menciona un incidente en 1995 donde un hombre fue arrestado por un comportamiento descontrolado en un vuelo. Todos estos casos ilustran cómo decisiones impulsivas o errores pueden tener consecuencias graves en el ámbito financiero."
+    },
+    {
+      "chunk": 6,
+      "evidence": [
+        {
+          "stage": "entry",
+          "paraphrase": "Un inversor compra una empresa en quiebra para usarla como colateral para pedir préstamos y luego compra acciones de empresas buenas con el fin de generar ganancias.",
+          "timestamp": "00:52:42",
+          "scope": "hosts",
+          "confidence": 0.9
+        },
+        {
+          "stage": "risk",
+          "paraphrase": "El inversor utiliza estrategias de alta apalancamiento y operaciones sucias, pero siempre recupera pérdidas, lo que sugiere un alto nivel de riesgo y toma de decisiones agresivas.",
+          "timestamp": "00:55:02",
+          "scope": "uncertain_or_guest",
+          "confidence": 0.7
+        },
+        {
+          "stage": "exit",
+          "paraphrase": "El inversor se ha convertido en un fenómeno del mercado, con estrategias innovadoras y un perfil bajo, aunque su historial de inversiones es muy exitoso y a menudo se asocia con operaciones de alto riesgo.",
+          "timestamp": "00:57:15",
+          "scope": "hosts",
+          "confidence": 0.8
+        }
+      ],
+      "named_examples": [],
+      "chunk_summary": "El fragmento describe una estrategia de inversión basada en la compra de empresas en quiebra para usarlas como colateral, combinada con operaciones de alta apalancamiento y toma de riesgos agresivas. El inversor se destaca por su habilidad para generar ganancias significativas, aunque su historial incluye operaciones de alto riesgo y tácticas poco convencionales. Su enfoque es innovador y a menudo se asocia con estrategias de alta apalancamiento, lo que sugiere un perfil de inversión muy activo y con un alto nivel de riesgo, pero con una capacidad para recuperar pérdidas y mantener un perfil bajo en términos de transparencia."
+    }
+  ],
+  "copyright_note": "No audio or verbatim transcript is persisted; only derived paraphrases."
+}
