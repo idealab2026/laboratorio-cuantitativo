@@ -10069,6 +10069,26 @@
             "snapshot_sha256": "04474ad0ed18c98da40fc65b1e86ca5a9b9049b274c10dba986dcaa02c587575"
           },
           "recorded_at_utc": "2026-11-19T17:27:27+00:00"
+        },
+        {
+          "date": "2026-11-19",
+          "inactive_no_fills": true,
+          "nav": 99153.56056477079,
+          "quote_identity": {
+            "effective_sha256": "3bce6e959064265876c9af5162509d03af910090e5a80aff0bb2d98bb0b6f33b",
+            "snapshot_sha256": "fc922b6c2ef0a1551dbabdece1483f1eb14de505d82087ebc60851c6bd156f1f"
+          },
+          "recorded_at_utc": "2026-11-23T09:05:40+00:00"
+        },
+        {
+          "date": "2026-11-20",
+          "inactive_no_fills": true,
+          "nav": 99067.20600333365,
+          "quote_identity": {
+            "effective_sha256": "5af5d4d2e8993471c231c03734d4b96d96acda17656bbadc7f2329fae7aa257d",
+            "snapshot_sha256": "22bf660ac732725ebf4d110f5db70d5d14ab88cf29b9eaba01db54824c4d0ac9"
+          },
+          "recorded_at_utc": "2026-11-23T09:05:40+00:00"
         }
       ],
       "events": [
@@ -10413,6 +10433,18 @@
             "BF-B"
           ],
           "type": "book_quarantined_missing_held_bar"
+        },
+        {
+          "date": "2026-11-19",
+          "expired_unfilled_orders": {},
+          "recorded_at_utc": "2026-11-23T09:05:40+00:00",
+          "type": "inactive_mark_no_trades"
+        },
+        {
+          "date": "2026-11-20",
+          "expired_unfilled_orders": {},
+          "recorded_at_utc": "2026-11-23T09:05:40+00:00",
+          "type": "inactive_mark_no_trades"
         }
       ],
       "forward_executions": {
@@ -10474,18 +10506,10 @@
           "source_commit": "f1f67b5bce5679c05de36dcabede2b0106722bb4"
         }
       },
-      "nav": 99722.64545556802,
+      "nav": 99067.20600333365,
       "outage_control": {
-        "first_trading_session": "2026-11-20",
-        "registered_at_utc": "2026-11-19T17:27:27+00:00"
-      },
-      "paused_missing_quotes": {
-        "last_valued_session": "2026-11-18",
-        "missing_tickers": [
-          "BF-B"
-        ],
-        "reason": "required same-session bar unavailable",
-        "since": "2026-11-19"
+        "first_trading_session": "2026-11-23",
+        "registered_at_utc": "2026-11-23T09:05:40+00:00"
       },
       "pending": {},
       "positions": {
@@ -11641,6 +11665,26 @@
         {
           "date": "2026-11-18",
           "nav": 99582.62445701694
+        },
+        {
+          "date": "2026-11-19",
+          "inactive_no_fills": true,
+          "nav": 98394.66539253198,
+          "quote_identity": {
+            "effective_sha256": "3bce6e959064265876c9af5162509d03af910090e5a80aff0bb2d98bb0b6f33b",
+            "snapshot_sha256": "fc922b6c2ef0a1551dbabdece1483f1eb14de505d82087ebc60851c6bd156f1f"
+          },
+          "recorded_at_utc": "2026-11-23T09:05:40+00:00"
+        },
+        {
+          "date": "2026-11-20",
+          "inactive_no_fills": true,
+          "nav": 96920.64668123079,
+          "quote_identity": {
+            "effective_sha256": "5af5d4d2e8993471c231c03734d4b96d96acda17656bbadc7f2329fae7aa257d",
+            "snapshot_sha256": "22bf660ac732725ebf4d110f5db70d5d14ab88cf29b9eaba01db54824c4d0ac9"
+          },
+          "recorded_at_utc": "2026-11-23T09:05:40+00:00"
         }
       ],
       "events": [
@@ -12250,6 +12294,25 @@
             "ESS"
           ],
           "type": "book_quarantined_missing_held_bar"
+        },
+        {
+          "date": "2026-11-19",
+          "expired_unfilled_orders": {},
+          "recorded_at_utc": "2026-11-23T09:05:40+00:00",
+          "type": "inactive_mark_no_trades"
+        },
+        {
+          "date": "2026-11-20",
+          "recorded_at_utc": "2026-11-23T09:05:40+00:00",
+          "ticker": "GNRC",
+          "trigger": "stop",
+          "type": "unexecuted_during_outage"
+        },
+        {
+          "date": "2026-11-20",
+          "expired_unfilled_orders": {},
+          "recorded_at_utc": "2026-11-23T09:05:40+00:00",
+          "type": "inactive_mark_no_trades"
         }
       ],
       "forward_executions": {
@@ -12320,18 +12383,10 @@
           "source_commit": "da997560ef3398b2324d16680384c7a710c4df72"
         }
       },
-      "nav": 99582.62445701694,
+      "nav": 96920.64668123079,
       "outage_control": {
-        "first_trading_session": "2026-11-18",
-        "registered_at_utc": "2026-11-17T16:50:33+00:00"
-      },
-      "paused_missing_quotes": {
-        "last_valued_session": "2026-11-18",
-        "missing_tickers": [
-          "ESS"
-        ],
-        "reason": "required same-session bar unavailable",
-        "since": "2026-11-19"
+        "first_trading_session": "2026-11-23",
+        "registered_at_utc": "2026-11-23T09:05:40+00:00"
       },
       "pending": {},
       "positions": {
