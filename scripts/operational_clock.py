@@ -288,10 +288,19 @@ def publish_missed_open(lane, evidence):
     return True
 
 
+def matching_prior_report(lock, prior):
+    """Reuse derived observations only for the exact frozen plan."""
+    if (isinstance(prior, dict) and isinstance(prior.get("slots"), dict)
+            and lock.get("session") and lock.get("lock_sha256")
+            and prior.get("session") == lock["session"]
+            and prior.get("lock_sha256") == lock["lock_sha256"]):
+        return prior
+    return None
+
+
 def status_report(lock, now, market, quotes, prior=None, *, run_id=None):
     verify_lock(lock, market, now)
-    if prior is not None and prior.get("session") != lock["session"]:
-        prior = None
+    prior = matching_prior_report(lock, prior)
     slots = {}
     for slot, entry in lock["slots"].items():
         prev = (prior or {}).get("slots", {}).get(slot, {})
@@ -404,6 +413,7 @@ def budgeted_quote_targets(lock, prior=None, *, limit=LIMIT, now=None, market=No
     """
     if type(limit) is not int or limit < 1:
         raise ValueError("Positive hard quote budget required")
+    prior = matching_prior_report(lock, prior)
     settled = (prior or {}).get("slots", {})
     requested, omitted = set(), {}
     slots = lock["slots"]
@@ -798,7 +808,8 @@ def main(argv=None):
         lock = _read(args.lock)
         verify_prepared_lock(lock, market)
         verify_lock(lock, market, now)
-        prior = _read(args.public) if args.public.is_file() else None
+        prior = matching_prior_report(
+            lock, _read(args.public) if args.public.is_file() else None)
         requested, quota_omissions = budgeted_quote_targets(lock, prior, now=now, market=market)
         quote_diagnostics = {}
         # Only same-session diagnostics may influence acquisition order.

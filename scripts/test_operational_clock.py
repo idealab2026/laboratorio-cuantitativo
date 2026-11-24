@@ -203,6 +203,16 @@ class OperatorClockTest(unittest.TestCase):
                          first["slots"]["IL-015"]["orders"][0])
         self.assertEqual(second["slots"]["IL-015"]["observed"], 1)
 
+    def test_report_rejects_observations_from_a_different_frozen_plan(self):
+        now = self.open + timedelta(minutes=2)
+        first = status_report(self.ready, now, self.market, {"AAPL": self.observed()})
+        self.assertEqual(first["slots"]["IL-015"]["observed"], 1)
+        first["lock_sha256"] = "f"*64
+        first["slots"]["IL-015"]["status"] = "native_forward_settled"
+        second = status_report(self.ready, now, self.market, {}, first)
+        self.assertEqual(second["slots"]["IL-015"]["observed"], 0)
+        self.assertNotEqual(second["slots"]["IL-015"]["status"], "native_forward_settled")
+
     def test_order_date_and_entry_lag_prevents_hindsight(self):
         self.tracks["IL-015"]["orders"].append({
             "ticker": "META", "action": "buy",
@@ -225,7 +235,7 @@ class BudgetedQuotesTest(unittest.TestCase):
             "IL-010": {"orders": [{"ticker": f"SY{i:03d}"} for i in range(503)],
                        "execution_ready": True},
         }
-        return {"slots": slots}
+        return {"session": "2026-11-24", "lock_sha256": "a"*64, "slots": slots}
 
     def test_one_503_book_cannot_starve_other_algorithms(self):
         chosen, omitted = budgeted_quote_targets(self.synthetic(), limit=4)
@@ -236,7 +246,8 @@ class BudgetedQuotesTest(unittest.TestCase):
 
     def test_settled_lanes_do_not_reread_orders_but_stops_remain_fresh(self):
         lock = self.synthetic()
-        prior = {"slots": {"IL-038": {"status": "native_forward_settled"},
+        prior = {"session": lock["session"], "lock_sha256": lock["lock_sha256"],
+                 "slots": {"IL-038": {"status": "native_forward_settled"},
                            "IL-011": {"status": "native_forward_settled"}}}
         chosen, omitted = budgeted_quote_targets(lock, prior, limit=2)
         self.assertEqual(chosen, {"MSFT", "META"})
@@ -261,21 +272,26 @@ class BudgetedQuotesTest(unittest.TestCase):
         self.assertEqual(budgeted_quote_targets(lock, prior), ({"COST"}, {}))
         lane["fills"].pop()
         prior["lock_sha256"] = "b"*64
-        self.assertEqual(budgeted_quote_targets(lock, prior), ({"COST"}, {}))
+        self.assertEqual(budgeted_quote_targets(lock, prior), ({"COST", "PCG", "ESS"}, {}))
+        prior["lock_sha256"] = lock["lock_sha256"]
+        prior["session"] = "2026-11-23"
+        self.assertEqual(budgeted_quote_targets(lock, prior), ({"COST", "PCG", "ESS"}, {}))
 
     def test_ahp_requests_preclose_prices_only_at_week_end_and_preserves_opening_stops(self):
-        lock = {"slots": {"IL-037": {"orders": [], "execution_ready": True,
+        lock = {"lock_sha256": "a"*64, "slots": {"IL-037": {"orders": [], "execution_ready": True,
                                       "monitor_tickers": ["AAPL", "MSFT"]}}}
         for day, hour, expected in ((24, 21, set()), (27, 18, {"AAPL", "MSFT"})):
             with self.subTest(day=day):
                 close = datetime(2026, 11, day, hour, tzinfo=UTC)
                 market = {"session": f"2026-11-{day}", "close": close}
+                lock["session"] = market["session"]
                 now = close-timedelta(minutes=4)
                 chosen, omitted = budgeted_quote_targets(lock, now=now, market=market)
                 self.assertEqual(chosen, expected)
                 self.assertEqual(omitted, {})
                 if expected:
-                    prior = {"slots": {"IL-037": {"status": "native_forward_settled",
+                    prior = {"session": lock["session"], "lock_sha256": lock["lock_sha256"],
+                        "slots": {"IL-037": {"status": "native_forward_settled",
                         "native_marker": {"mode": "week_end", "session": market["session"]}}}}
                     self.assertEqual(budgeted_quote_targets(
                         lock, prior, now=now, market=market), (set(), {}))
