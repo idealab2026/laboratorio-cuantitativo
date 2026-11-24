@@ -1241,9 +1241,13 @@ test("one shared market-clock display covers every active slot and never calls p
  assert.match(workflow,/31,36,41,46,51,56 9 \* \* 1-5/);
  assert.match(workflow,/STAGE=auto/);
  assert.match(workflow,/verify_published_lock/);
- assert.equal((workflow.match(/- cron:/g)||[]).length,
-              (workflow.match(/timezone: 'America\/New_York'/g)||[]).length,
-              "Every market schedule must use the exchange's IANA timezone");
+ const schedules=[...workflow.matchAll(/- cron: '([^']+)'\s*\n\s+timezone: '([^']+)'/g)];
+ assert.equal(schedules.length,(workflow.match(/- cron:/g)||[]).length);
+ assert.equal(schedules.filter(([,cron,tz])=>cron==="23 14-20 * * 1-5"&&tz==="Etc/UTC").length,1);
+ assert.ok(schedules.every(([,cron,tz])=>tz===(cron==="23 14-20 * * 1-5"?"Etc/UTC":"America/New_York")),
+              "Only the explicit fallback uses UTC; all primary schedules use exchange time");
+ assert.ok(site.includes("Cotizaciones válidas en el último control"));
+ assert.ok(site.includes("missing_symbols"));
  assert.ok(!workflow.includes("Record Buy The Dip paper state"));
  assert.ok(script.includes("verify_lock(lock, market, now)"));
  assert.ok(script.includes("No verified opening plan"));

@@ -625,6 +625,13 @@ function operationalClockHTML(){
  const observations=entries.reduce((total,[,x])=>total+(x.observed||0),0);
  const planned=entries.reduce((total,[,x])=>total+(x.planned||0),0);
  const fresh=entries.filter(([,x])=>x.status!=="source_stale_or_unavailable").length;
+ const budget=doc.quote_budget;
+ const hasCoverage=Number.isSafeInteger(budget?.requested_symbols)&&Number.isSafeInteger(budget?.observed_symbols)&&
+  budget.requested_symbols>=0&&budget.observed_symbols>=0&&budget.observed_symbols<=budget.requested_symbols;
+ const missing=Array.isArray(budget?.missing_symbols)?budget.missing_symbols.filter(t=>typeof t==="string"&&/^[A-Z0-9.=-]{1,14}$/.test(t)):[];
+ const coverage=hasCoverage?'<p>Cotizaciones válidas en el último control: <strong>'+
+  esc(budget.observed_symbols+'/'+budget.requested_symbols)+'</strong>'+
+  (missing.length?' · Ausentes: '+esc(missing.join(", ")):'')+'</p>':"";
  const tables=entries.map(([slot,lane])=>{
   const label=signalFeed?.tracks?.[slot]?.label||slot;
   const verifiedFills=Array.isArray(lane.fills)?lane.fills:[];
@@ -718,6 +725,7 @@ function operationalClockHTML(){
   '<span>'+esc(stale?"Sin actividad acreditada hoy":"Sesión observada")+'</span></div>'+
   '<p>Última comprobación: '+esc(clock)+' · <strong>'+fresh+'</strong> motores con libro válido · '+
   '<strong>'+observations+'/'+planned+'</strong> señales con cotización observada.</p>'+
+  coverage+
   '<p>Las decisiones se congelan antes de abrir. Cada algoritmo actúa solo cuando sus reglas generan órdenes. '+
   'Un precio observado no es una compra contabilizada: la liquidación sigue siendo responsabilidad del motor '+
   'y solo las operaciones verificadas entran en rentabilidad.</p>'+
