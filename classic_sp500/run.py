@@ -274,7 +274,24 @@ def execute_frozen_open(config, name, book, day, today, *, provenance=None,
             shares = math.floor(budget / (price * (1 + p["commission"])) * scale) / scale
             cost = shares * price * (1 + p["commission"])
             if cost < p["minimum_notional"] or cost > book["cash"] + 1e-7:
-                book["events"].append({"date": day, "ticker": ticker, "type": "unfilled"})
+                reasons = []
+                if cost < p["minimum_notional"]:
+                    reasons.append("below_minimum_notional")
+                if cost > book["cash"] + 1e-7:
+                    reasons.append("insufficient_cash")
+                # Diagnostic only: retain the frozen budget and original
+                # rejection condition. This event is never an executed fill.
+                book["events"].append({
+                    "date": day, "ticker": ticker, "type": "unfilled",
+                    "side": "buy", "reason": reasons[0], "reasons": reasons,
+                    "required_cash": cost, "available_cash": book["cash"],
+                    "minimum_notional": p["minimum_notional"],
+                    "target_budget": budget,
+                    "sizing_reference": ("previous_verified_close_nav"
+                                         if sizing_nav_override is not None
+                                         else "observed_open_nav" if provenance is not None
+                                         else "dated_open_nav"),
+                })
                 continue
             spec = config["strategies"].get(name, {})
             book["positions"][ticker] = {

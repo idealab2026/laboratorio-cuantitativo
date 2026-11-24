@@ -226,6 +226,39 @@ class NativeClassicClockTests(unittest.TestCase):
         self.assertEqual(updated_book["cash"], 1.0)
         self.assertEqual(updated_book["receivables"], book["receivables"])
 
+    def test_rejected_frozen_buy_records_cash_and_minimum_reasons_without_fills(self):
+        name = SLOTS["IL-011"]
+        for cash, minimum, reason in (
+                (100.0, 10.0, "insufficient_cash"),
+                (100000.0, 20000.0, "below_minimum_notional")):
+            with self.subTest(reason=reason):
+                config = copy.deepcopy(self.config)
+                config["execution"]["minimum_notional"] = minimum
+                book = copy.deepcopy(self.book["books"][name])
+                book["cash"] = cash
+                before = copy.deepcopy(book)
+                classic.execute_frozen_open(
+                    config, name, book, self.market["session"],
+                    {"AAPL": {"open": 100.0}},
+                    provenance={"AAPL": {}}, allow_missing_orders=True,
+                    sizing_nav_override=100000.0)
+                self.assertEqual(book["cash"], before["cash"])
+                self.assertEqual(book["positions"], before["positions"])
+                self.assertEqual(book["equity"], before["equity"])
+                self.assertEqual(book["trades"], before["trades"])
+                self.assertEqual(book["pending"], {})
+                event = book["events"][-1]
+                self.assertEqual(event["type"], "unfilled")
+                self.assertEqual(event["reason"], reason)
+                self.assertEqual(event["reasons"], [reason])
+                self.assertEqual(event["available_cash"], cash)
+                self.assertEqual(event["minimum_notional"], minimum)
+                self.assertEqual(event["target_budget"], 15000.0)
+                self.assertGreater(event["required_cash"], 14999.0)
+                self.assertLessEqual(event["required_cash"], 15000.0)
+                self.assertEqual(event["sizing_reference"], "previous_verified_close_nav")
+                self.assertNotIn("execution", event)
+
     def test_native_sell_preserves_real_quantity_and_cash(self):
         # One tactical strategy sells exactly the shares it owns; peers buy.
         slot, name = "IL-011", SLOTS["IL-011"]
