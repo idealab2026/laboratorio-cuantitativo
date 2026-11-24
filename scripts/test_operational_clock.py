@@ -426,8 +426,11 @@ class ClockPreopenRecoveryTest(unittest.TestCase):
         lines = path.read_text().splitlines()
         entries = [i for i,row in enumerate(lines) if row.strip().startswith("- cron:")]
         self.assertGreaterEqual(len(entries), 5)
+        fallback = [i for i in entries if lines[i].strip() == "- cron: '23 14-20 * * 1-5'"]
+        self.assertEqual(len(fallback), 1)
         for i in entries:
-            self.assertIn("timezone: 'America/New_York'", lines[i+1])
+            expected = "Etc/UTC" if i in fallback else "America/New_York"
+            self.assertEqual(lines[i+1].strip(), f"timezone: '{expected}'")
         raw = "\n".join(lines)
         self.assertIn("17,47 7-8 * * 1-5", raw)
         self.assertIn("11,31,51 8 * * 1-5", raw)
