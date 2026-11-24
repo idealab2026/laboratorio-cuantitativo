@@ -40,7 +40,13 @@ concurrency:
   cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 jobs:
   quality:
-    if: github.event_name != 'workflow_run' || contains(fromJSON('["schedule", "workflow_dispatch"]'), github.event.workflow_run.event)
+    # The initial push may build before the shared clock commits its new
+    # observation. Publish again only after a successful clock push run.
+    # Other engine push runs remain excluded; publication never writes books.
+    if: >-
+      github.event_name != 'workflow_run' ||
+      contains(fromJSON('["schedule", "workflow_dispatch"]'), github.event.workflow_run.event) ||
+      (github.event.workflow_run.name == 'MIDAS shared market execution clock' && github.event.workflow_run.event == 'push' && github.event.workflow_run.conclusion == 'success')
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4

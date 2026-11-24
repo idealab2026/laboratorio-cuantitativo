@@ -1275,6 +1275,8 @@ test("one shared market-clock display covers every active slot and never calls p
  assert.ok(!script.includes("place_order("));
  assert.ok(pages.includes("cp data/operational-clock.json dist/data/"));
  assert.ok(pages.includes("MIDAS shared market execution clock"));
+ assert.ok(pages.includes("(github.event.workflow_run.name == 'MIDAS shared market execution clock' && github.event.workflow_run.event == 'push' && github.event.workflow_run.conclusion == 'success')"),
+   "Publish a successful push-triggered observation after the canonical clock write");
  assert.ok(audit.includes("data/operational-clock.json"));
  assert.ok(!existsSync(new URL("../.github/workflows/forward-open-il039.yml",import.meta.url)),
    "Separate IL039-only schedule must no longer exist");
