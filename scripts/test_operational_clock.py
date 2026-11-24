@@ -306,6 +306,19 @@ class BudgetedQuotesTest(unittest.TestCase):
             with self.assertRaisesRegex(sqlite3.OperationalError, "malformed"):
                 quote_batch(["AAPL"], now, {})
 
+    def test_previously_missing_symbols_get_first_fresh_request_without_extra_calls(self):
+        now = datetime(2026, 11, 10, 14, 39, tzinfo=UTC)
+        called = []
+        def vendor(symbols, requested, market):
+            called.extend(symbols)
+            return {symbols[0]: {"price": 100.}}
+        with patch("operational_clock.quotes_yahoo", side_effect=vendor):
+            result = quote_batch(["AAPL", "ERIE", "ESS", "MSFT"], now, {},
+                                 priority=["ESS", "ERIE", "OTHER", "ERIE"])
+        self.assertEqual(called, ["ERIE", "ESS", "AAPL", "MSFT"])
+        self.assertEqual(set(result), {"AAPL", "ERIE", "ESS", "MSFT"})
+        self.assertEqual(len(called), 4)
+
     def test_rate_limit_stops_batch_and_retains_only_received_quotes(self):
         # Match the pinned yfinance exception without requiring live vendor
         # credentials or the yfinance library in the offline publication CI.

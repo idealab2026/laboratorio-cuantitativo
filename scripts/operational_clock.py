@@ -472,7 +472,7 @@ def budgeted_quote_targets(lock, prior=None, *, limit=LIMIT, now=None, market=No
     return requested, omitted
 
 
-def quote_batch(tickers, now, market, *, diagnostics=None):
+def quote_batch(tickers, now, market, *, diagnostics=None, priority=()):
     """Read minute quotes without concurrent access to yfinance's SQLite cache.
 
     yfinance's lazy timezone/cookie caches are shared across threads. The
@@ -481,7 +481,11 @@ def quote_batch(tickers, now, market, *, diagnostics=None):
     One vendor call at a time is intentionally preferred over throughput:
     strict freshness checks after receipt still reject delayed quotes.
     """
-    symbols = sorted(set(tickers))
+    # Give previously missing symbols the first opportunity to obtain a
+    # fresh observation, within the SAME hard budget; no extra calls.
+    universe = set(tickers)
+    urgent = universe.intersection(priority)
+    symbols = sorted(urgent) + sorted(universe - urgent)
     if len(symbols) > LIMIT:
         raise ValueError("Quote budget exceeded: never silently truncate a paper lane")
     result = {}
@@ -781,7 +785,16 @@ def main(argv=None):
         prior = _read(args.public) if args.public.is_file() else None
         requested, quota_omissions = budgeted_quote_targets(lock, prior, now=now, market=market)
         quote_diagnostics = {}
-        quotes = quote_batch(requested, now, market, diagnostics=quote_diagnostics)
+        # Only same-session diagnostics may influence acquisition order.
+        # They are never used as prices or as new order instructions.
+        previous_budget = ((prior or {}).get("quote_budget") or {}
+                           if (prior or {}).get("session") == market["session"] else {})
+        missing_priority = previous_budget.get("missing_symbols", [])
+        if not isinstance(missing_priority, list):
+            missing_priority = []
+        missing_priority = {t for t in missing_priority if isinstance(t, str)}
+        quotes = quote_batch(requested, now, market, diagnostics=quote_diagnostics,
+                             priority=missing_priority)
         now = datetime.now(UTC)  # actual observation completion, not nominal scheduler time
         if now > market["close"]:
             print('{"status":"observation_too_late"}')
