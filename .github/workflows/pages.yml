@@ -23,6 +23,7 @@ on:
       - MIDAS shared market execution clock
       - MIDAS weekly ML paper
       - MIDAS TFG corrected paper
+      - MIDAS TFG/AHP verified daily forward marks
       - MIDAS original SP500 genetic agent
       - MIDAS classic passive mark-only recovery
     types: [completed]

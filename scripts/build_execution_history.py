@@ -38,6 +38,7 @@ WORKFLOWS = {
     "weekly_ml_daily.yml": list(range(19, 28)),
     "weekly_ml.yml": list(range(19, 28)),  # Additional weekly signal when due.
     "tfg_ahp.yml": [37],
+    "tfg_ahp_forward_daily.yml": [37],
     "capital_cycle.yml": [38],
     "buy_the_dip_strategy.yml": [39],
     "timesfm_daily.yml": [40, 41],
@@ -58,6 +59,9 @@ CLASSIC_BOOKS = {
     17: "turtle_55_20_long",
     18: "benchmark_spy",
 }
+# Daily AHP was introduced 9 Nov at 23:56 UTC; its first scheduled
+# accounting job ran 10 Nov UTC for the 9 Nov XNYS session.
+WORKFLOW_FIRST_SESSION = {"tfg_ahp_forward_daily.yml": dt.date(2026, 11, 9)}
 GITHUB_API = "https://api.github.com/repos/" + REPO + "/actions/runs"
 PUBLISHED_HISTORY = "https://idealab2026.github.io/laboratorio-cuantitativo/data/execution-history.json"
 
@@ -127,6 +131,12 @@ def due_times_for_session(session, specs):
     return sorted(result)
 
 
+def scheduled_due_times(session, workflow, specs):
+    if session < WORKFLOW_FIRST_SESSION.get(workflow, START):
+        return []
+    return due_times_for_session(session, specs)
+
+
 def live_session_plan(now, schedules):
     """Publish the next NYSE sessions and the actual workflow schedules."""
     from zoneinfo import ZoneInfo
@@ -143,7 +153,7 @@ def live_session_plan(now, schedules):
         day = index.date()
         lanes = []
         for name, spec in schedule_map.items():
-            due = due_times_for_session(day, spec)
+            due = scheduled_due_times(day, name, spec)
             if due:
                 lanes.append({
                     "workflow": name,
@@ -549,7 +559,7 @@ def build(now, runs, schedules, quarantines=None, journals=None, *, actions_avai
                 for workflow, attached in WORKFLOWS.items():
                     if int(sid[-3:]) not in attached:
                         continue
-                    due = due_times_for_session(day, schedules[workflow])
+                    due = scheduled_due_times(day, workflow, schedules[workflow])
                     if not due:
                         continue
 

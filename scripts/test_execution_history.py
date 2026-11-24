@@ -152,6 +152,29 @@ class ExecutionHistoryTests(unittest.TestCase):
         self.assertEqual(friday["expected"], 26)
         self.assertEqual(friday["not_scheduled"], 38)
 
+    def test_ahp_daily_marks_count_once_from_verified_activation(self):
+        daily = "tfg_ahp_forward_daily.yml"
+        runs = [
+            event("classic_sp500.yml", "2026-11-06T00:20:00Z", "success"),
+            event(daily, "2026-11-10T01:46:33Z", "success", 201),
+            event(daily, "2026-11-11T01:00:00Z", "failure", 202),
+            event(daily, "2026-11-14T01:00:00Z", "success", 203),
+            event("tfg_ahp.yml", "2026-11-13T23:47:00Z", "success", 204),
+        ]
+        doc = h.build(dt.datetime(2026, 11, 14, 10, tzinfo=U), runs, self.schedules)
+        h.verify(doc)
+        days = {d["date"]: d for d in doc["days"]}
+        def ahp(day):
+            return [d for d in days[day]["details"] if d["slot"] == "IL-037"]
+        self.assertEqual(ahp("2026-11-05"), [])
+        self.assertEqual(ahp("2026-11-09")[0]["status"], "success")
+        self.assertEqual(ahp("2026-11-10")[0]["status"], "failure")
+        self.assertEqual(len(ahp("2026-11-13")), 1)
+        self.assertEqual({w["workflow"] for w in ahp("2026-11-13")[0]["workflows"]},
+                         {daily, "tfg_ahp.yml"})
+        self.assertEqual(ahp("2026-11-13")[0]["status"], "success")
+        self.assertEqual(days["2026-11-10"]["expected"], 26)
+
     def test_rejects_unbalanced_and_duplicate_execution_reports(self):
         runs = [event("classic_sp500.yml", "2026-11-05T02:20:00Z", "success")]
         doc = h.build(self.now, runs, self.schedules)
