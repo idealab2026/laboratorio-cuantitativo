@@ -1,5 +1,5 @@
 {
-  "checked_at_utc": "2026-11-24T19:07:07.960282Z",
+  "checked_at_utc": "2026-11-24T19:21:34.344318Z",
   "lock_sha256": "1f1ac5090de3e5afd723b07234dd5b992aed18125750c8502d3b0ca370d0d4a7",
   "mode": "single_midas_operator_monitor_no_broker",
   "note": "Observed quotes are not fills. A native engine must settle quantity/cash before a trade counts in P&L.",
@@ -9,14 +9,13 @@
   "quote_budget": {
     "hard_symbol_limit": 250,
     "missing_symbols": [
-      "ERIE",
-      "ESS"
+      "ERIE"
     ],
-    "observed_symbols": 45,
+    "observed_symbols": 46,
     "omitted_algorithm_lanes": {},
     "requested_symbols": 47
   },
-  "run_id": 45466634338,
+  "run_id": 45469070304,
   "schema": "midas.operational_clock.v1",
   "session": "2026-11-24",
   "settlement": "native_forward_010_through_027_037_through_044",
@@ -165,16 +164,27 @@
     },
     "IL-014": {
       "exit_only_ready": false,
-      "fills": [],
-      "fills_count": 0,
+      "fills": [
+        {
+          "fee": 14.482370388561108,
+          "observed_at_utc": "2026-11-24T19:21:09.522670Z",
+          "price": 88.40077719497681,
+          "quantity": 163.826279,
+          "side": "sell",
+          "ticker": "BG"
+        }
+      ],
+      "fills_count": 1,
       "holdings_count": 7,
       "native_marker": {
-        "fill_tickers": [],
-        "fills_count": 0,
+        "fill_tickers": [
+          "BG"
+        ],
+        "fills_count": 1,
         "lock_sha256": "1f1ac5090de3e5afd723b07234dd5b992aed18125750c8502d3b0ca370d0d4a7",
         "mode": "forward_observed_paper",
-        "quotes_sha256": "3d7b654457e300cf466f1f6deb82c433c35aa83ac0e877b50532b89fe46b880b",
-        "recorded_at_utc": "2026-11-24T14:34:14.722076Z",
+        "quotes_sha256": "7c283f6148091575e42a5958a3017acebc5eaed232661d03048cbd0c5f74de5f",
+        "recorded_at_utc": "2026-11-24T19:21:34.344318Z",
         "session": "2026-11-24",
         "source_commit": "30e312b5b93e1efbc25d3afc41e16ae8b453f6aa"
       },
@@ -183,9 +193,14 @@
           "fills_count": 0,
           "key": "IL-014:2026-11-24:open:classic_forward_v1",
           "recorded_at_utc": "2026-11-24T14:34:14.722076Z"
+        },
+        {
+          "fills_count": 1,
+          "key": "IL-014:2026-11-24:stop:BG:classic_forward_v1",
+          "recorded_at_utc": "2026-11-24T19:21:34.344318Z"
         }
       ],
-      "native_settlement": "already_settled",
+      "native_settlement": "settled_native_paper",
       "observed": 1,
       "opening_quote_isolation": {
         "checked_at_utc": "2026-11-24T14:34:14.722076Z",

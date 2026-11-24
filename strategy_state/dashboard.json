@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "generated_at_utc": "2026-11-24T19:07:08.733542+00:00",
+  "generated_at_utc": "2026-11-24T19:21:35.682856+00:00",
   "principle": "Comparar rentabilidad acumulada y riesgo observado; no ordenar carteras con distintas fechas de inicio o supuestos de ejecución.",
   "counts": {
     "paper_with_diary": 18,
@@ -1555,17 +1555,16 @@
       "evaluated_universe_symbols": 488,
       "eligible_universe_symbols": 503,
       "activity_state": "active",
-      "activity_label": "7 posiciones abiertas",
+      "activity_label": "6 posiciones abiertas",
       "activity_tickers": [
         "ADM",
         "BAC",
-        "BG",
         "CZR",
         "GOOG",
         "IVZ",
         "STT"
       ],
-      "open_positions_count": 7,
+      "open_positions_count": 6,
       "pending_orders_count": 0,
       "comparison_eligible": true,
       "comparison_universe_id": "SP500_2026-09-29_503",

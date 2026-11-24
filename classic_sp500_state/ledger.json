@@ -12980,7 +12980,7 @@
       ]
     },
     "rsi_reversion_14": {
-      "cash": 6461.364012001946,
+      "cash": 20929.252030174495,
       "equity": [
         {
           "date": "2026-10-12",
@@ -13345,6 +13345,18 @@
           "date": "2026-11-24",
           "ticker": "IP",
           "type": "unfilled"
+        },
+        {
+          "date": "2026-11-24",
+          "execution": "forward_observed_paper",
+          "idempotency_key": "IL-014:2026-11-24:stop:BG:classic_forward_v1:BG",
+          "lock_sha256": "1f1ac5090de3e5afd723b07234dd5b992aed18125750c8502d3b0ca370d0d4a7",
+          "observed_at_utc": "2026-11-24T19:21:09.522670Z",
+          "quote_at_utc": "2026-11-24T19:21:00Z",
+          "reason": "stop_forward_observed",
+          "source_commit": "30e312b5b93e1efbc25d3afc41e16ae8b453f6aa",
+          "ticker": "BG",
+          "type": "sell"
         }
       ],
       "forward_executions": {
@@ -13441,6 +13453,18 @@
           "recorded_at_utc": "2026-11-24T14:34:14.722076Z",
           "session": "2026-11-24",
           "source_commit": "30e312b5b93e1efbc25d3afc41e16ae8b453f6aa"
+        },
+        "IL-014:2026-11-24:stop:BG:classic_forward_v1": {
+          "fill_tickers": [
+            "BG"
+          ],
+          "fills_count": 1,
+          "lock_sha256": "1f1ac5090de3e5afd723b07234dd5b992aed18125750c8502d3b0ca370d0d4a7",
+          "mode": "forward_observed_paper",
+          "quotes_sha256": "7c283f6148091575e42a5958a3017acebc5eaed232661d03048cbd0c5f74de5f",
+          "recorded_at_utc": "2026-11-24T19:21:34.344318Z",
+          "session": "2026-11-24",
+          "source_commit": "30e312b5b93e1efbc25d3afc41e16ae8b453f6aa"
         }
       },
       "nav": 103137.80309160796,
@@ -13463,15 +13487,6 @@
           "shares": 320.510563,
           "stop": 44.2833311618042,
           "target": 55.35416395225524
-        },
-        "BG": {
-          "cost": 15801.783582373548,
-          "dividends": 0.0,
-          "entry_date": "2026-10-30",
-          "entry_price": 96.35815255737305,
-          "shares": 163.826279,
-          "stop": 88.6495003527832,
-          "target": 110.811875440979
         },
         "CZR": {
           "cost": 11874.999971653644,
@@ -13708,6 +13723,22 @@
           "reason": "stop_forward_observed",
           "source_commit": "cf9cebe218d2e9bda2b5b82ca68f98153b846a7f",
           "ticker": "CMI"
+        },
+        {
+          "dividends": 0.0,
+          "entry_cost": 15801.783582373548,
+          "entry_date": "2026-10-30",
+          "execution": "forward_observed_paper",
+          "exit_date": "2026-11-24",
+          "idempotency_key": "IL-014:2026-11-24:stop:BG:classic_forward_v1:BG",
+          "lock_sha256": "1f1ac5090de3e5afd723b07234dd5b992aed18125750c8502d3b0ca370d0d4a7",
+          "net_pnl": -1333.8955642010005,
+          "observed_at_utc": "2026-11-24T19:21:09.522670Z",
+          "proceeds": 14467.888018172547,
+          "quote_at_utc": "2026-11-24T19:21:00Z",
+          "reason": "stop_forward_observed",
+          "source_commit": "30e312b5b93e1efbc25d3afc41e16ae8b453f6aa",
+          "ticker": "BG"
         }
       ]
     },
