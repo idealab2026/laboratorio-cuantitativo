@@ -423,6 +423,22 @@ def budgeted_quote_targets(lock, prior=None, *, limit=LIMIT, now=None, market=No
         remaining = (set() if settled.get(slot, {}).get("status") == "native_forward_settled"
                      else {r["ticker"] for r in lane["orders"]})
         monitored = set(lane.get("monitor_tickers", []))
+        # A classic tactical position bought today is not among the
+        # previous close holdings frozen in the lock. Keep its protection
+        # observable after the opening order is settled. Only reconciled
+        # native fills under this same lock can establish such holdings.
+        if (slot in {f"IL-{n:03d}" for n in range(11, 18)}
+                and prior and prior.get("session") == lock.get("session")
+                and prior.get("lock_sha256") == lock.get("lock_sha256")):
+            lane_prior = settled.get(slot, {})
+            if lane_prior.get("session_fill_reconciled") is True:
+                bought = {f["ticker"] for f in lane_prior.get("fills", [])
+                          if f.get("side") == "buy"}
+                sold = {f["ticker"] for f in lane_prior.get("fills", [])
+                        if f.get("side") == "sell"}
+                frozen_buys = {o["ticker"] for o in lane["orders"]
+                               if o.get("action") == "buy"}
+                monitored |= (bought & frozen_buys) - sold
         if slot in {f"IL-{n:03d}" for n in range(19, 28)}:
             # Freeze all held names; request them only in the LAST weekly
             # preclose window, never sacrifice the daily free quote quota.

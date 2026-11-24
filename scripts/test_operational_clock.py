@@ -242,6 +242,27 @@ class BudgetedQuotesTest(unittest.TestCase):
         self.assertEqual(chosen, {"MSFT", "META"})
         self.assertEqual(set(omitted), {"IL-010"})
 
+    def test_new_classic_buy_remains_monitored_after_native_open_settlement(self):
+        lock = {"session": "2026-11-24", "lock_sha256": "a"*64, "slots": {
+            "IL-015": {"orders": [{"ticker": "PCG", "action": "buy"},
+                                  {"ticker": "ESS", "action": "buy"}],
+                       "monitor_tickers": ["COST"], "execution_ready": True}}}
+        prior = {"session": lock["session"], "lock_sha256": lock["lock_sha256"],
+                 "slots": {"IL-015": {"status": "native_forward_settled",
+                           "session_fill_reconciled": True,
+                           "fills": [{"ticker": "PCG", "side": "buy"}]}}}
+        self.assertEqual(budgeted_quote_targets(lock, prior), ({"PCG", "COST"}, {}))
+        # An unfilled or unreconciled order must not become a held position.
+        lane = prior["slots"]["IL-015"]
+        lane["session_fill_reconciled"] = False
+        self.assertEqual(budgeted_quote_targets(lock, prior), ({"COST"}, {}))
+        lane["session_fill_reconciled"] = True
+        lane["fills"].append({"ticker": "PCG", "side": "sell"})
+        self.assertEqual(budgeted_quote_targets(lock, prior), ({"COST"}, {}))
+        lane["fills"].pop()
+        prior["lock_sha256"] = "b"*64
+        self.assertEqual(budgeted_quote_targets(lock, prior), ({"COST"}, {}))
+
     def test_ahp_requests_preclose_prices_only_at_week_end_and_preserves_opening_stops(self):
         lock = {"slots": {"IL-037": {"orders": [], "execution_ready": True,
                                       "monitor_tickers": ["AAPL", "MSFT"]}}}
