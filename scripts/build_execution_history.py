@@ -10,6 +10,7 @@ import argparse
 import datetime as dt
 import json
 import hashlib
+import http.client
 import math
 import os
 from pathlib import Path
@@ -181,7 +182,7 @@ def read_actions_json(request, opener):
         except urllib.error.HTTPError as exc:
             if exc.code not in (429, 500, 502, 503, 504) or attempt == 2:
                 raise
-        except (OSError, json.JSONDecodeError):
+        except (OSError, http.client.IncompleteRead, json.JSONDecodeError):
             if attempt == 2:
                 raise
         time.sleep(2 ** attempt)
@@ -704,7 +705,7 @@ def read_published_history(now, opener=urllib.request.urlopen):
         if (previous["status"] == "verified_github_actions" and previous["repository"] == REPO
             and dt.datetime.fromisoformat(previous["as_of_utc"].replace("Z", "+00:00")) <= now):
             return previous
-    except (ValueError, OSError, KeyError, TypeError, AttributeError):
+    except (ValueError, OSError, http.client.IncompleteRead, KeyError, TypeError, AttributeError):
         pass
     return None
 
@@ -739,7 +740,7 @@ def main():
     try:
         runs = collect_runs(token, now)
         available = True
-    except (ValueError, OSError, KeyError) as exc:
+    except (ValueError, OSError, http.client.IncompleteRead, KeyError) as exc:
         print("GitHub Actions history unavailable: " + type(exc).__name__, file=sys.stderr)
         runs, available = [], False
     document = build(now, runs, schedules, {**classic_quarantines(), **weekly_quarantines()},

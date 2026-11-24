@@ -283,6 +283,28 @@ class ExecutionHistoryTests(unittest.TestCase):
         self.assertTrue(all("event=schedule" in url for url in attempts))
         self.assertEqual([entry["id"] for entry in runs], [100])
 
+    def test_actions_incomplete_http_body_retries_without_using_partial_data(self):
+        request = h.urllib.request.Request(h.GITHUB_API)
+        interrupted = h.http.client.IncompleteRead(b'{"jobs":', 100)
+        with mock.patch.object(h.time, "sleep") as delay:
+            opener = mock.Mock(side_effect=[interrupted, io.StringIO('{"jobs":[]}')])
+            self.assertEqual(h.read_actions_json(request, opener), {"jobs": []})
+            self.assertEqual(opener.call_count, 2)
+            delay.assert_called_once_with(1)
+
+    def test_actions_incomplete_http_body_exhaustion_raises(self):
+        request = h.urllib.request.Request(h.GITHUB_API)
+        opener = mock.Mock(side_effect=h.http.client.IncompleteRead(b'', 26102))
+        with mock.patch.object(h.time, "sleep") as delay:
+            with self.assertRaises(h.http.client.IncompleteRead):
+                h.read_actions_json(request, opener)
+        self.assertEqual(opener.call_count, 3)
+        self.assertEqual(delay.call_args_list, [mock.call(1), mock.call(2)])
+
+    def test_previous_published_history_truncated_is_not_evidence(self):
+        opener = mock.Mock(side_effect=h.http.client.IncompleteRead(b'', 100))
+        self.assertIsNone(h.read_published_history(self.now, opener))
+
     def test_actions_outage_keeps_original_failures_and_uses_current_journals(self):
         failed = event("weekly_ml_daily.yml", "2026-11-05T03:28:00Z", "failure")
         prior = h.build(self.now, [failed], self.schedules)
