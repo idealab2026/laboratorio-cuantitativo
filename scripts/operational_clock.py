@@ -443,11 +443,16 @@ def budgeted_quote_targets(lock, prior=None, *, limit=LIMIT, now=None, market=No
             # budget chasing weekly strategy holdings all day.
             is_close = (now is not None and market is not None
                         and now >= market["close"] - timedelta(minutes=6))
-            if slot == "IL-040" and is_close and not lane.get("exit_only_due"):
+            # AHP exits at the last exchange session of the week, or
+            # on a separately frozen next-open portfolio stop. Its nightly
+            # valuation does not need a tradable preclose quote midweek.
+            if is_close and (slot == "IL-037" or
+                             slot == "IL-040" and not lane.get("exit_only_due")):
                 from tfg_ahp.data import is_week_end_session
                 is_close = is_week_end_session(market["session"])
             last_marker = settled.get(slot, {}).get("native_marker") or {}
-            if last_marker.get("mode") == "exit" and last_marker.get("session") == (market or {}).get("session"):
+            closed_modes = ("week_end", "stop") if slot == "IL-037" else ("exit",)
+            if last_marker.get("mode") in closed_modes and last_marker.get("session") == (market or {}).get("session"):
                 is_close = False
             if not is_close:
                 monitored = set()
@@ -611,7 +616,7 @@ def preclose_target(now, market, lock):
         if not (lane.get("execution_ready") or lane.get("exit_only_ready")):
             continue
         weekly = slot in {f"IL-{i:03d}" for i in range(19, 28)}
-        if (weekly and friday or slot in ("IL-037", "IL-042")
+        if ((weekly or slot == "IL-037") and friday or slot == "IL-042"
                 or slot == "IL-040" and (friday or lane.get("exit_only_due"))):
             watch.append(slot)
     if not watch:

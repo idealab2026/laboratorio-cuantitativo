@@ -10,6 +10,7 @@ on:
     branches: [main]
     paths:
       - '.github/workflows/operational-clock.yml'
+      - 'scripts/operational_clock.py'
   pull_request:
     paths:
       - 'scripts/operational_clock.py'
@@ -180,8 +181,8 @@ jobs:
       # the true Friday/daily close. GitHub cron was observed arriving after
       # 16:00 ET: later cron alone does NOT guarantee an observed sell.
       # This is the SAME operator and same canonical books, not a second engine.
-      - name: Rendezvous at real market preclose within the existing scheduled job
-        if: github.event_name == 'schedule'
+      - name: Rendezvous at real market preclose within the existing guarded job
+        if: github.event_name == 'schedule' || github.event_name == 'push' || (github.event_name == 'workflow_dispatch' && inputs.stage == 'observe')
         id: preclose_watch
         env:
           XDG_CACHE_HOME: ${{ runner.temp }}/midas-yfinance-${{ github.run_id }}-${{ github.run_attempt }}

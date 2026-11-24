@@ -242,6 +242,28 @@ class BudgetedQuotesTest(unittest.TestCase):
         self.assertEqual(chosen, {"MSFT", "META"})
         self.assertEqual(set(omitted), {"IL-010"})
 
+    def test_ahp_requests_preclose_prices_only_at_week_end_and_preserves_opening_stops(self):
+        lock = {"slots": {"IL-037": {"orders": [], "execution_ready": True,
+                                      "monitor_tickers": ["AAPL", "MSFT"]}}}
+        for day, hour, expected in ((24, 21, set()), (27, 18, {"AAPL", "MSFT"})):
+            with self.subTest(day=day):
+                close = datetime(2026, 11, day, hour, tzinfo=UTC)
+                market = {"session": f"2026-11-{day}", "close": close}
+                now = close-timedelta(minutes=4)
+                chosen, omitted = budgeted_quote_targets(lock, now=now, market=market)
+                self.assertEqual(chosen, expected)
+                self.assertEqual(omitted, {})
+                if expected:
+                    prior = {"slots": {"IL-037": {"status": "native_forward_settled",
+                        "native_marker": {"mode": "week_end", "session": market["session"]}}}}
+                    self.assertEqual(budgeted_quote_targets(
+                        lock, prior, now=now, market=market), (set(), {}))
+        # The weekly-close optimization must not discard a frozen opening stop.
+        lock["slots"]["IL-037"]["orders"] = [{"ticker": "AAPL", "action": "sell"}]
+        close = datetime(2026, 11, 24, 21, tzinfo=UTC)
+        self.assertEqual(budgeted_quote_targets(lock, now=close-timedelta(hours=6),
+            market={"session": "2026-11-24", "close": close}), ({"AAPL"}, {}))
+
     def test_oversized_vendor_batch_is_rejected_before_network_call(self):
         when = datetime(2026, 11, 10, 14, 31, tzinfo=UTC)
         with self.assertRaisesRegex(ValueError, "budget exceeded"):
@@ -531,6 +553,17 @@ class PrecloseWatcherTests(unittest.TestCase):
             "IL-042": {"execution_ready": True, "monitor_tickers": ["AXON"]}}}
         self.assertEqual(preclose_target(
             self.start, midweek, active), self.target)
+
+    def test_ahp_watcher_arms_at_week_end_only(self):
+        midweek = {**self.market, "session": "2026-11-18"}
+        lock = {"session": "2026-11-18", "slots": {
+            "IL-037": {"execution_ready": True, "monitor_tickers": ["AAPL"]}}}
+        self.assertIsNone(preclose_target(self.start, midweek, lock))
+        early = {**self.market, "session": "2026-11-27", "previous": "2026-11-25",
+                 "close": datetime(2026, 11, 27, 18, tzinfo=UTC)}
+        self.assertEqual(preclose_target(early["close"]-timedelta(minutes=29),
+            early, {**lock, "session": early["session"]}),
+            early["close"]-timedelta(minutes=4, seconds=30))
 
     def test_half_session_uses_real_1300_et_close(self):
         early = {**self.market, "session": "2026-11-27",
