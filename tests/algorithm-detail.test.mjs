@@ -1221,6 +1221,26 @@ test("Buy The Dip daily status describes last completed month and daily marks, n
 });
 
 
+test("clock status distinguishes stale polls, provider limits and unavailable calendar",()=>{
+ const site=readFileSync(new URL("../src/site.mjs",import.meta.url),"utf8");
+ const start=site.indexOf("function operationalClockStatus(");
+ const end=site.indexOf("function operationalClockHTML()",start);
+ assert.ok(start>=0&&end>start);
+ const status=new Function(site.slice(start,end)+"\nreturn operationalClockStatus;")();
+ const now=Date.parse("2026-11-24T19:00:00Z");
+ const session={date:"2026-11-24",phase:"open",open:Date.parse("2026-11-24T14:30:00Z")};
+ const doc={session:session.date,checked_at_utc:"2026-11-24T18:29:00Z"};
+ assert.equal(status(doc,session,now).label,"Control intradía retrasado");
+ assert.equal(status(doc,session,now).age,31);
+ const fresh={...doc,checked_at_utc:"2026-11-24T18:55:00Z"};
+ assert.equal(status(fresh,session,now).label,"Último control registrado");
+ assert.equal(status({...fresh,quote_budget:{provider_status:"rate_limited"}},session,now).label,"Control degradado · límite de Yahoo");
+ assert.equal(status(fresh,session,now,true).label,"No se pudo actualizar el control");
+ assert.equal(status(fresh,{...session,phase:"unavailable"},now).label,"Control registrado · calendario sin verificar");
+ assert.equal(status({...fresh,checked_at_utc:"2026-11-24T19:01:00Z"},session,now).label,"Hora del control no acreditada");
+ assert.equal(status({...fresh,session:"2026-11-23"},session,now).label,"Sin actividad acreditada hoy");
+});
+
 test("one shared market-clock display covers every active slot and never calls prices fills",()=>{
  const site=readFileSync(new URL("../src/site.mjs",import.meta.url),"utf8");
  const workflow=readFileSync(new URL("../.github/workflows/operational-clock.yml",import.meta.url),"utf8");

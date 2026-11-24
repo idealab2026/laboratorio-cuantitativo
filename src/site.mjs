@@ -605,14 +605,27 @@ async function refreshOperationalClock(force=false){
   if(node)node.innerHTML=operationalClockHTML();
  }
 }
+function operationalClockStatus(doc, session, now, fetchFailed=false){
+ const stamp=Date.parse(doc.checked_at_utc);
+ const valid=Number.isFinite(stamp)&&stamp<=now;
+ const age=valid?Math.floor((now-stamp)/60000):null;
+ if(doc.session!==session.date)return {label:"Sin actividad acreditada hoy",age};
+ if(!valid)return {label:"Hora del control no acreditada",age};
+ if(fetchFailed)return {label:"No se pudo actualizar el control",age};
+ if(session.phase==="open"&&age>=30)return {label:"Control intradía retrasado",age};
+ if(doc.quote_budget?.provider_status==="rate_limited")
+  return {label:"Control degradado · límite de Yahoo",age};
+ if(session.phase==="before")return {label:"Preapertura",age};
+ if(session.phase==="open"&&stamp<session.open)return {label:"Pendiente del primer control intradía",age};
+ if(session.phase==="unavailable")return {label:"Control registrado · calendario sin verificar",age};
+ return {label:"Último control registrado",age};
+}
 function operationalClockHTML(){
  const doc=operationClock;
  if(!doc)return '<section class="midas-clock"><h3>Reloj operativo de MIDAS</h3><p>'+
   (operationClockError?"Sin acceso a la actividad forward verificada.":"Consultando actividad de los motores…")+
   '</p></section>';
- const nyToday=new Intl.DateTimeFormat("sv-SE",{timeZone:"America/New_York",year:"numeric",
-  month:"2-digit",day:"2-digit"}).format(new Date());
- const stale=!doc.session||doc.session!==nyToday;
+ const health=operationalClockStatus(doc,currentSession(),Date.now(),operationClockError);
  const labels={before_open:"Apertura pendiente",source_stale_or_unavailable:"Sin libro vigente",
   exit_only_waiting_preclose:"Posiciones abiertas · salida pendiente",
   active_no_orders:"Operativo · sin operaciones previstas",partial_data:"Esperando cotizaciones",
@@ -631,7 +644,8 @@ function operationalClockHTML(){
  const missing=Array.isArray(budget?.missing_symbols)?budget.missing_symbols.filter(t=>typeof t==="string"&&/^[A-Z0-9.=-]{1,14}$/.test(t)):[];
  const coverage=hasCoverage?'<p>Cotizaciones válidas en el último control: <strong>'+
   esc(budget.observed_symbols+'/'+budget.requested_symbols)+'</strong>'+
-  (missing.length?' · Ausentes: '+esc(missing.join(", ")):'')+'</p>':"";
+  (missing.length?' · Ausentes: '+esc(missing.join(", ")):'')+
+  (budget.provider_status==="rate_limited"?' · Proveedor limitado; consultas restantes interrumpidas':'')+'</p>':"";
  const tables=entries.map(([slot,lane])=>{
   const label=signalFeed?.tracks?.[slot]?.label||slot;
   const verifiedFills=Array.isArray(lane.fills)?lane.fills:[];
@@ -722,8 +736,8 @@ function operationalClockHTML(){
  }).join("");
  return '<section class="midas-clock" aria-label="Reloj operativo para todos los algoritmos">'+
   '<div class="midas-clock-title"><h3>Reloj operativo de MIDAS · '+esc(doc.session||"sin sesión")+'</h3>'+
-  '<span>'+esc(stale?"Sin actividad acreditada hoy":"Sesión observada")+'</span></div>'+
-  '<p>Última comprobación: '+esc(clock)+' · <strong>'+fresh+'</strong> motores con libro válido · '+
+  '<span>'+esc(health.label)+'</span></div>'+
+  '<p>Última comprobación: '+esc(clock)+(health.age===null?'':' · Hace '+health.age+' min')+' · <strong>'+fresh+'</strong> motores con libro válido · '+
   '<strong>'+observations+'/'+planned+'</strong> señales con cotización observada.</p>'+
   coverage+
   '<p>Las decisiones se congelan antes de abrir. Cada algoritmo actúa solo cuando sus reglas generan órdenes. '+
