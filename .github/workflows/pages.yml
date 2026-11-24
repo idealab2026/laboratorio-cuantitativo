@@ -164,6 +164,22 @@ jobs:
         with:
           name: github-pages-${{ github.run_id }}-${{ github.run_attempt }}
           path: dist/
+      - name: Wait for the exact uploaded Pages artifact to become visible
+        env:
+          GH_TOKEN: ${{ github.token }}
+          PAGES_ARTIFACT_NAME: github-pages-${{ github.run_id }}-${{ github.run_attempt }}
+        run: |
+          set -euo pipefail
+          for attempt in $(seq 1 18); do
+            if names="$(gh api --paginate "repos/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID/artifacts?per_page=100" --jq '.artifacts[] | select(.expired == false) | .name')" && grep -Fxq "$PAGES_ARTIFACT_NAME" <<< "$names"; then
+              echo "Pages artifact visible: $PAGES_ARTIFACT_NAME"
+              exit 0
+            fi
+            echo "Awaiting artifact metadata (attempt $attempt/18)"
+            sleep 5
+          done
+          echo "::error::Uploaded Pages artifact was not visible through the Actions API within 90 seconds"
+          exit 1
       - uses: actions/deploy-pages@v4
         with:
           artifact_name: github-pages-${{ github.run_id }}-${{ github.run_attempt }}
