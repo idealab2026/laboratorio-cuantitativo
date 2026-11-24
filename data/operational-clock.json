@@ -1,5 +1,5 @@
 {
-  "checked_at_utc": "2026-11-24T14:34:14.722076Z",
+  "checked_at_utc": "2026-11-24T14:35:22.794189Z",
   "lock_sha256": "1f1ac5090de3e5afd723b07234dd5b992aed18125750c8502d3b0ca370d0d4a7",
   "mode": "single_midas_operator_monitor_no_broker",
   "note": "Observed quotes are not fills. A native engine must settle quantity/cash before a trade counts in P&L.",
@@ -8,11 +8,11 @@
   "previous_session": "2026-11-23",
   "quote_budget": {
     "hard_symbol_limit": 250,
-    "observed_symbols": 50,
+    "observed_symbols": 46,
     "omitted_algorithm_lanes": {},
-    "requested_symbols": 51
+    "requested_symbols": 47
   },
-  "run_id": 45403843224,
+  "run_id": 45413904111,
   "schema": "midas.operational_clock.v1",
   "session": "2026-11-24",
   "settlement": "native_forward_010_through_027_037_through_044",
@@ -50,7 +50,7 @@
           "recorded_at_utc": "2026-11-24T14:34:14.722076Z"
         }
       ],
-      "native_settlement": "settled_native_paper",
+      "native_settlement": "already_settled",
       "observed": 1,
       "opening_quote_isolation": {
         "checked_at_utc": "2026-11-24T14:34:14.722076Z",
@@ -114,7 +114,7 @@
           "recorded_at_utc": "2026-11-24T14:34:14.722076Z"
         }
       ],
-      "native_settlement": "settled_native_paper",
+      "native_settlement": "already_settled",
       "observed": 2,
       "opening_quote_isolation": {
         "checked_at_utc": "2026-11-24T14:34:14.722076Z",
@@ -181,7 +181,7 @@
           "recorded_at_utc": "2026-11-24T14:34:14.722076Z"
         }
       ],
-      "native_settlement": "settled_native_paper",
+      "native_settlement": "already_settled",
       "observed": 1,
       "opening_quote_isolation": {
         "checked_at_utc": "2026-11-24T14:34:14.722076Z",
@@ -245,7 +245,7 @@
           "recorded_at_utc": "2026-11-24T14:34:14.722076Z"
         }
       ],
-      "native_settlement": "settled_native_paper",
+      "native_settlement": "already_settled",
       "observed": 1,
       "opening_quote_isolation": {
         "checked_at_utc": "2026-11-24T14:34:14.722076Z",
