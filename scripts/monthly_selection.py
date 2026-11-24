@@ -8,7 +8,7 @@ not fabricate fundamentals, reconstruct prior decisions or submit market orders.
 from __future__ import annotations
 
 from collections import Counter
-from datetime import date
+from datetime import date, datetime, timedelta, timezone
 import hashlib
 import json
 import math
@@ -232,6 +232,114 @@ def choose(slot,rows,positions,session):
          "targets":targets,"sectors":{r["ticker"]:r["sector"] for r in picked},
          "exit_reasons":exits,"invest_fraction":exposure,
          "status":"RESEARCH_TARGETS_PENDING_NEXT_OPEN_NOT_EXECUTED"}
+
+
+# Separate research adaptation of IL-061. It deliberately does not change SPECS,
+# the two existing monthly books, their configuration hash, or their writers.
+MOMENTUM_SPEC = {"slot": "IL-061", "model_version": "momentum-12-1-monthly-v1",
+                 "minimum_coverage": .90, "max_positions": 20,
+                 "capital_fraction": .95, "max_weight": .05,
+                 "positive_momentum_only": True, "currency": "USD"}
+
+
+def _utc_stamp(value):
+    if not isinstance(value, str):
+        raise ValueError("Missing dated momentum evidence")
+    stamp = datetime.fromisoformat(value.replace("Z", "+00:00"))
+    if stamp.tzinfo is None or stamp.utcoffset() != timedelta(0):
+        raise ValueError("Momentum evidence requires UTC timestamp")
+    return stamp
+
+
+def _month_start(day, offset):
+    month = day.year * 12 + day.month - 1 + offset
+    return date(month // 12, month % 12 + 1, 1)
+
+
+def momentum_calendar(session):
+    """Use actual XNYS sessions, including holidays and abbreviated sessions."""
+    import pandas_market_calendars as calendars
+    day = date.fromisoformat(session)
+    if day.isoformat() != session:
+        raise ValueError("Noncanonical momentum session")
+    schedule = calendars.get_calendar("XNYS").schedule(
+        start_date=_month_start(day, -12), end_date=day + timedelta(days=14))
+    dates = [i.date() for i in schedule.index]
+    if day not in dates or any(d > day and d.month == day.month and
+                              d.year == day.year for d in dates):
+        raise ValueError("Momentum signals require final XNYS session of month")
+    def anchor(offset):
+        start, end = _month_start(day, offset), _month_start(day, offset+1)
+        return max(d for d in dates if start <= d < end).isoformat()
+    following = min(d for d in dates if d > day)
+    return {"start_session": anchor(-12), "end_session": anchor(-1),
+            "close_utc": schedule.loc[session, "market_close"].to_pydatetime(),
+            "next_session": following.isoformat(),
+            "next_open_utc": schedule.loc[following.isoformat(), "market_open"].to_pydatetime()}
+
+
+def choose_momentum(rows, positions, session, decision_at_utc):
+    """Prospective 12-minus-1 month adjusted-close ranking, not a live ledger.
+
+    A dedicated source adapter must attest the adjusted price anchors from
+    the same dated retrieval and retain their raw evidence. This function
+    validates the decision contract, not the authenticity of vendor bytes.
+    """
+    from yahoo_source import DEFAULT_UNIVERSE
+    universe = set(json.loads(DEFAULT_UNIVERSE.read_text(encoding="utf8"))["symbols"])
+    timing = momentum_calendar(session)
+    decision = _utc_stamp(decision_at_utc)
+    if not timing["close_utc"] <= decision < timing["next_open_utc"]:
+        raise ValueError("Momentum decision outside causal signal window")
+    _safe_positions(positions, universe, session)
+    if not isinstance(rows, list):
+        raise ValueError("Missing momentum candidate evidence")
+    seen, ranked = set(), []
+    for row in rows:
+        if not isinstance(row, dict):
+            raise ValueError("Invalid momentum candidate")
+        ticker = row.get("ticker")
+        if not isinstance(ticker, str) or ticker not in universe or ticker in seen:
+            raise ValueError("Foreign or duplicate momentum instrument")
+        seen.add(ticker)
+        if (row.get("start_session") != timing["start_session"] or
+                row.get("end_session") != timing["end_session"] or
+                row.get("price_basis") != "adjusted_close_same_retrieval" or
+                row.get("currency") != "USD" or
+                not isinstance(row.get("evidence_sha256"), str) or
+                not SHA.fullmatch(row["evidence_sha256"])):
+            raise ValueError("Invalid momentum anchor or source evidence")
+        captured = _utc_stamp(row.get("captured_at_utc"))
+        if not timing["close_utc"] <= captured <= decision:
+            raise ValueError("Unavailable or future momentum evidence")
+        start, end = row.get("start_price"), row.get("end_price")
+        if not (number(start) and number(end) and start > 0 and end > 0):
+            raise ValueError("Invalid momentum adjusted close")
+        score = end / start - 1
+        if not number(score):
+            raise ValueError("Invalid momentum return")
+        ranked.append((ticker, score))
+    if len(seen) < math.ceil(len(universe)*MOMENTUM_SPEC["minimum_coverage"]):
+        raise ValueError("Insufficient momentum universe coverage")
+    if set(positions) - seen:
+        raise ValueError("Missing momentum evidence for held instrument")
+    ranked.sort(key=lambda item: (-item[1], item[0]))
+    picked = [ticker for ticker, score in ranked if score > 0][:MOMENTUM_SPEC["max_positions"]]
+    # Fixed 20-slot budget; do not concentrate or increase exposure when
+    # fewer candidates qualify. Full allocation is 95%, remainder cash.
+    weight = MOMENTUM_SPEC["capital_fraction"]/MOMENTUM_SPEC["max_positions"]
+    targets = {ticker: weight for ticker in picked}
+    return {"schema": "idealab_momentum_research_decision_v1",
+            "slot": "IL-061", "model_version": MOMENTUM_SPEC["model_version"],
+            "signal_date": session, "decision_at_utc": decision.isoformat(),
+            "next_session": timing["next_session"],
+            "start_session": timing["start_session"], "end_session": timing["end_session"],
+            "coverage": {"observed": len(seen), "required": len(universe)},
+            "targets": targets, "invest_fraction": sum(targets.values()),
+            "exit_reasons": {t: "outside_positive_top_20" for t in sorted(positions) if t not in targets},
+            "ranked": [{"ticker": t, "momentum": score} for t, score in ranked],
+            "evidence_sha256": digest(sorted(rows, key=lambda r: r["ticker"])),
+            "status": "RESEARCH_TARGETS_PENDING_SOURCE_AND_LEDGER_NOT_EXECUTED"}
 
 
 def preflight():

@@ -136,3 +136,22 @@ No hay autorización para contabilizar estos totales como fondos disponibles: fa
 ### Decisión operativa
 
 Conservar intactos los libros, el bloqueo de gasto del derecho pendiente, los NAV ya publicados y la clasificación no certificada. No insertar una revisión en `merger_settlements` ni relajar las verificaciones de `settle_reviewed_claims`. La referencia se documenta para una posterior revisión prospectiva, diferenciando valoración de liquidación y sin reconstruir transacciones históricas.
+
+## IL-061: adaptación prospectiva de momentum mensual (24/11/2026)
+
+Primera pieza de productivización: `scripts/monthly_selection.py::choose_momentum`.
+Contrato nuevo, no réplica literal del screener histórico: ranking 12-1 meses
+por cierres ajustados de la misma captura, últimos días hábiles XNYS de los
+meses de referencia, decisión al cierre mensual y antes de la próxima apertura.
+Universo congelado 503, cobertura mínima 90%, hasta 20 valores con momentum
+positivo y peso fijo de 4,75% cada uno; el resto queda en efectivo. Si falta
+la evidencia de un valor ya mantenido no se emite señal. Ordenación determinista,
+fechas de captura, referencias y hash; no se admite cierre posterior ni relleno.
+
+Estado: contrato de selección en desarrollo, con pruebas offline. No hay
+cartera activa IL-061, feed de precios ajustados acreditado ni writer de órdenes.
+El siguiente gate es validar la procedencia y disponibilidad de los precios
+ajustados, vincular un diario independiente de señales y un simulador causal de
+órdenes con costes, y observar una primera apertura natural. Mantener los
+libros mensuales IL-038/039 y sus hashes intactos; no activar el prototipo HMAC
+alternativo como segundo escritor. No atribuir rentabilidad al screener histórico.

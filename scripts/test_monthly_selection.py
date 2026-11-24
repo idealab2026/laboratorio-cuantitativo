@@ -2,7 +2,7 @@ import unittest
 from copy import deepcopy
 from datetime import date
 
-from monthly_selection import SPECS,choose,due,preflight
+from monthly_selection import SPECS,choose,due,preflight,choose_momentum,momentum_calendar
 from yahoo_source import DEFAULT_UNIVERSE
 import json
 
@@ -105,6 +105,49 @@ class MonthlyTargetModels(unittest.TestCase):
   self.assertTrue(due("2026-08-31",SESSION,False))
   with self.assertRaisesRegex(ValueError,"backwards"):
    due("2026-10-31",SESSION,True)
+
+
+class MomentumResearchContract(unittest.TestCase):
+ def rows(self):
+  return [{"ticker":t,"start_session":"2025-11-28","end_session":"2026-10-30",
+           "price_basis":"adjusted_close_same_retrieval","currency":"USD",
+           "captured_at_utc":"2026-11-30T21:20:00Z","evidence_sha256":DIGEST,
+           "start_price":100.,"end_price":200.-i/10}
+          for i,t in enumerate(UNIVERSE)]
+
+ def decide(self,rows,positions=None,session="2026-11-30",stamp="2026-11-30T21:30:00Z"):
+  return choose_momentum(rows,positions or {},session,stamp)
+
+ def test_month_end_12_minus_1_and_fixed_weights(self):
+  result=self.decide(self.rows(),{UNIVERSE[-1]:{"entry_date":"2026-10-01"}})
+  self.assertEqual(result["start_session"],"2025-11-28")
+  self.assertEqual(result["end_session"],"2026-10-30")
+  self.assertEqual(result["next_session"],"2026-12-01")
+  self.assertEqual(set(result["targets"]),set(UNIVERSE[:20]))
+  self.assertAlmostEqual(sum(result["targets"].values()),.95)
+  self.assertEqual(result["exit_reasons"][UNIVERSE[-1]],"outside_positive_top_20")
+  self.assertEqual(result["status"],"RESEARCH_TARGETS_PENDING_SOURCE_AND_LEDGER_NOT_EXECUTED")
+  self.assertEqual(result["evidence_sha256"],self.decide(list(reversed(self.rows())))["evidence_sha256"])
+
+ def test_few_positive_names_leave_cash(self):
+  rows=self.rows()
+  for row in rows[2:]:row["end_price"]=90.
+  result=self.decide(rows)
+  self.assertEqual(set(result["targets"]),set(UNIVERSE[:2]))
+  self.assertAlmostEqual(result["invest_fraction"],.095)
+
+ def test_coverage_held_names_future_and_wrong_dates_fail_closed(self):
+  with self.assertRaisesRegex(ValueError,"coverage"):self.decide(self.rows()[:400])
+  with self.assertRaisesRegex(ValueError,"held instrument"):
+   self.decide(self.rows()[:-1],{UNIVERSE[-1]:{"entry_date":"2026-10-01"}})
+  for bad in [{"captured_at_utc":"2026-12-01T15:00:00Z"},
+              {"end_session":"2026-11-30"}, {"start_price":0},
+              {"price_basis":"raw_close"},{"evidence_sha256":"invalid"}]:
+   rows=self.rows();rows[0].update(bad)
+   with self.assertRaises(ValueError):self.decide(rows)
+  with self.assertRaisesRegex(ValueError,"final XNYS"):self.decide(self.rows(),session="2026-11-24")
+  with self.assertRaisesRegex(ValueError,"causal"):
+   self.decide(self.rows(),stamp="2026-12-01T14:31:00Z")
 
 
 if __name__=="__main__":
