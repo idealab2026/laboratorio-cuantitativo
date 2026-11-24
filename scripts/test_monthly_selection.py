@@ -2,7 +2,7 @@ import unittest
 from copy import deepcopy
 from datetime import date
 
-from monthly_selection import SPECS,choose,due,preflight,choose_momentum,momentum_calendar
+from monthly_selection import SPECS,choose,due,preflight,choose_momentum,momentum_calendar,momentum_receipt,momentum_rows_from_receipts,capture_momentum_internal
 from yahoo_source import DEFAULT_UNIVERSE
 import json
 
@@ -148,6 +148,38 @@ class MomentumResearchContract(unittest.TestCase):
   with self.assertRaisesRegex(ValueError,"final XNYS"):self.decide(self.rows(),session="2026-11-24")
   with self.assertRaisesRegex(ValueError,"causal"):
    self.decide(self.rows(),stamp="2026-12-01T14:31:00Z")
+
+
+class MomentumSourceContract(unittest.TestCase):
+ def test_receipt_reproduces_both_anchors_and_hash(self):
+  import pandas as pd
+  timing=momentum_calendar("2026-11-30")
+  frame=pd.DataFrame({"Adj Close":[101.,155.,999.]},index=pd.to_datetime(
+      ["2025-11-28","2026-10-30","2026-11-30"]))
+  receipt=momentum_receipt("AAPL","2026-11-30",timing,frame,"2026-11-30T21:20:00Z")
+  rows=momentum_rows_from_receipts([receipt],"2026-11-30")
+  self.assertEqual((rows[0]["start_price"],rows[0]["end_price"]),(101.,155.))
+  self.assertEqual(len(rows[0]["evidence_sha256"]),64)
+  changed=deepcopy(receipt);changed["end_price"]=156.
+  self.assertNotEqual(momentum_rows_from_receipts([changed],"2026-11-30")[0]["evidence_sha256"],
+                      rows[0]["evidence_sha256"])
+  with self.assertRaises(ValueError):
+   momentum_receipt("AAPL","2026-11-30",timing,frame.iloc[:1],"2026-11-30T21:20:00Z")
+  with self.assertRaises(ValueError):
+   momentum_receipt("PSKY","2026-11-30",timing,frame,"2026-11-30T21:20:00Z")
+  changed=deepcopy(receipt);changed["provider_symbol"]="MSFT"
+  with self.assertRaisesRegex(ValueError,"symbol mismatch"):
+   momentum_rows_from_receipts([changed],"2026-11-30")
+
+ def test_internal_capture_respects_rights_and_storage_boundaries(self):
+  from unittest.mock import patch
+  from yahoo_source import REPO_ROOT
+  with patch.dict("os.environ",{"INSTITUTIONAL_YAHOO_INTERNAL_RIGHTS":""}):
+   with self.assertRaisesRegex(RuntimeError,"rights"):
+    capture_momentum_internal("2026-11-30",REPO_ROOT)
+  with patch.dict("os.environ",{"INSTITUTIONAL_YAHOO_INTERNAL_RIGHTS":"confirmed"}):
+   with self.assertRaisesRegex(ValueError,"outside repository"):
+    capture_momentum_internal("2026-11-30",REPO_ROOT)
 
 
 if __name__=="__main__":

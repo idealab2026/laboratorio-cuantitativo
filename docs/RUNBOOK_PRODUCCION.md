@@ -155,3 +155,16 @@ ajustados, vincular un diario independiente de señales y un simulador causal de
 órdenes con costes, y observar una primera apertura natural. Mantener los
 libros mensuales IL-038/039 y sus hashes intactos; no activar el prototipo HMAC
 alternativo como segundo escritor. No atribuir rentabilidad al screener histórico.
+
+### Contrato de captura IL-061 (24/11/2026)
+
+`capture_momentum_internal` permite capturar las dos anclas ajustadas de cada
+instrumento en una misma descarga Yahoo por lotes de hasta 40, únicamente en
+la ventana causal del cierre mensual. Rechaza anclas ausentes, ambiguas y
+cambios de ticker que requieren revisión; conserva recibos normalizados y
+hashes, no cuerpos HTTP originales. El fichero se crea exclusivamente fuera
+del repositorio y sin sobreescritura; requiere confirmación explícita de
+los derechos de uso interno ya definidos por el contrato Yahoo. No se modifica
+el feed común RAW, no se programan descargas aún y no se crean señales ni fills
+retroactivos. La prueba con proveedor real, persistencia interna entre runs y
+el diario independiente de IL-061 siguen pendientes.

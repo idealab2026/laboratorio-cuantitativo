@@ -12,6 +12,8 @@ from datetime import date, datetime, timedelta, timezone
 import hashlib
 import json
 import math
+import os
+from pathlib import Path
 import re
 
 SPECS = {
@@ -340,6 +342,141 @@ def choose_momentum(rows, positions, session, decision_at_utc):
             "ranked": [{"ticker": t, "momentum": score} for t, score in ranked],
             "evidence_sha256": digest(sorted(rows, key=lambda r: r["ticker"])),
             "status": "RESEARCH_TARGETS_PENDING_SOURCE_AND_LEDGER_NOT_EXECUTED"}
+
+
+def momentum_receipt(ticker, session, timing, frame, captured_at):
+    """Extract exact adjusted-close anchors from ONE yfinance result.
+
+    Never join independently adjusted histories or silently splice renamed
+    symbols across a corporate event. Missing anchors remain missing.
+    """
+    from yahoo_source import yahoo_symbol
+    vendor = yahoo_symbol(ticker, session)
+    if any(yahoo_symbol(ticker, timing[k]) != vendor
+           for k in ("start_session", "end_session")):
+        raise ValueError("Momentum symbol transition requires separate review")
+    if not timing["close_utc"] <= _utc_stamp(captured_at) < timing["next_open_utc"]:
+        raise ValueError("Momentum retrieval outside causal signal window")
+    prices = {}
+    for name in ("start_session", "end_session"):
+        day = timing[name]
+        try:
+            selected = frame.loc[frame.index.strftime("%Y-%m-%d") == day]
+            if len(selected) != 1:
+                raise ValueError("Missing or duplicate momentum anchor")
+            value = float(selected.iloc[0]["Adj Close"])
+        except (KeyError, TypeError, IndexError, AttributeError) as exc:
+            raise ValueError("Missing adjusted close evidence") from exc
+        if not number(value) or value <= 0:
+            raise ValueError("Invalid adjusted close anchor")
+        prices[name] = value
+    receipt = {"schema": "idealab_momentum_anchor_receipt_v1",
+               "ticker": ticker, "provider_symbol": vendor,
+               "source": "Yahoo Finance via yfinance", "interval": "1d",
+               "auto_adjust": False, "signal_session": session,
+               "captured_at_utc": captured_at,
+               "start_session": timing["start_session"],
+               "end_session": timing["end_session"],
+               "start_price": prices["start_session"], "end_price": prices["end_session"]}
+    return receipt
+
+
+def momentum_rows_from_receipts(receipts, session):
+    """Derive selection rows and hashes, not a second set of price inputs."""
+    from yahoo_source import yahoo_symbol
+    timing = momentum_calendar(session)
+    if not isinstance(receipts, list):
+        raise ValueError("Missing momentum receipts")
+    rows = []
+    for receipt in receipts:
+        if (not isinstance(receipt, dict)
+                or receipt.get("schema") != "idealab_momentum_anchor_receipt_v1"
+                or receipt.get("source") != "Yahoo Finance via yfinance"
+                or receipt.get("interval") != "1d"
+                or receipt.get("auto_adjust") is not False
+                or receipt.get("signal_session") != session):
+            raise ValueError("Invalid momentum receipt contract")
+        ticker = receipt.get("ticker")
+        vendor = yahoo_symbol(ticker, session)
+        if (receipt.get("provider_symbol") != vendor
+                or any(yahoo_symbol(ticker, timing[k]) != vendor
+                       for k in ("start_session", "end_session"))):
+            raise ValueError("Momentum receipt symbol mismatch")
+        if (receipt.get("start_session") != timing["start_session"]
+                or receipt.get("end_session") != timing["end_session"]):
+            raise ValueError("Momentum receipt anchor mismatch")
+        stamp = _utc_stamp(receipt.get("captured_at_utc"))
+        if not timing["close_utc"] <= stamp < timing["next_open_utc"]:
+            raise ValueError("Momentum receipt outside causal window")
+        for key in ("start_price", "end_price"):
+            if not number(receipt.get(key)) or receipt[key] <= 0:
+                raise ValueError("Invalid receipt price")
+        rows.append({k: receipt[k] for k in ("ticker", "start_session", "end_session",
+                     "start_price", "end_price", "captured_at_utc")})
+        rows[-1].update(price_basis="adjusted_close_same_retrieval", currency="USD",
+                        evidence_sha256=digest(receipt))
+    return rows
+
+
+def capture_momentum_internal(session, output_dir, *, now=None, download=None):
+    """Rights-gated, bounded internal capture. No public data or trading writes.
+
+    Stores normalized anchor receipts (not raw HTTP responses). The frozen
+    XNYS USD universe contract supplies currency; renamed instruments are
+    excluded until identity has been reviewed. A live run still needs rights.
+    """
+    from yahoo_source import DEFAULT_UNIVERSE, REPO_ROOT, verify_universe, yahoo_symbol
+    if os.environ.get("INSTITUTIONAL_YAHOO_INTERNAL_RIGHTS") != "confirmed":
+        raise RuntimeError("Yahoo internal-use rights not confirmed")
+    target = Path(output_dir).resolve()
+    if not target.is_dir() or target.is_relative_to(REPO_ROOT):
+        raise ValueError("Internal momentum storage must exist outside repository")
+    timing = momentum_calendar(session)
+    clock = now or (lambda: datetime.now(timezone.utc))
+    if not timing["close_utc"] <= clock() < timing["next_open_utc"]:
+        raise ValueError("Momentum capture outside causal signal window")
+    filename = target / ("momentum-"+session+".json")
+    if filename.exists():
+        raise ValueError("Immutable momentum receipt already exists")
+    symbols = verify_universe(json.loads(DEFAULT_UNIVERSE.read_text(encoding="utf8"))["symbols"])
+    if download is None:
+        import yfinance as yf
+        download = yf.download
+    receipts, missing = [], []
+    begin = timing["start_session"]
+    end = (date.fromisoformat(timing["end_session"])+timedelta(days=1)).isoformat()
+    # Thirteen bounded batches; do not retry a provider-wide outage.
+    for offset in range(0, len(symbols), 40):
+        if clock() >= timing["next_open_utc"]:
+            raise ValueError("Momentum capture missed next open")
+        batch = symbols[offset:offset+40]
+        vendors = [yahoo_symbol(t, session) for t in batch]
+        frame = download(vendors, start=begin, end=end, interval="1d",
+                         auto_adjust=False, actions=False, group_by="ticker",
+                         threads=False, progress=False)
+        stamp = clock().isoformat()
+        if _utc_stamp(stamp) >= timing["next_open_utc"]:
+            raise ValueError("Momentum capture missed next open")
+        for ticker, vendor in zip(batch, vendors):
+            try:
+                part = frame[vendor] if getattr(frame.columns, "nlevels", 1) > 1 else frame
+                if getattr(frame.columns, "nlevels", 1) == 1 and len(batch) != 1:
+                    raise ValueError("Ambiguous batch identity")
+                receipts.append(momentum_receipt(ticker, session, timing, part, stamp))
+            except (KeyError, ValueError, TypeError, AttributeError):
+                missing.append(ticker)
+    rows = momentum_rows_from_receipts(receipts, session)
+    if set(missing) | {r["ticker"] for r in rows} != set(symbols):
+        raise ValueError("Momentum capture denominator mismatch")
+    doc = {"schema": "idealab_momentum_internal_capture_v1", "session": session,
+           "receipts": receipts, "missing": sorted(missing), "universe_size": len(symbols)}
+    doc["sha256"] = digest(doc)
+    # Exclusive creation prevents replacing already frozen evidence.
+    with filename.open("x", encoding="utf8") as stream:
+        json.dump(doc, stream, sort_keys=True, allow_nan=False)
+        stream.write("\\n")
+    return {"status": "internal_capture_only", "session": session,
+            "observed": len(rows), "missing": len(missing), "sha256": doc["sha256"]}
 
 
 def preflight():
