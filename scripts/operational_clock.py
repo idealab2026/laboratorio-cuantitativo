@@ -232,6 +232,18 @@ def _quote_valid(quote, now, market):
         return False
 
 
+def quote_coverage(requested, quotes, now, market, omissions):
+    requested = set(requested)
+    valid = {ticker for ticker in requested if _quote_valid(quotes.get(ticker), now, market)}
+    return {
+        "hard_symbol_limit": LIMIT,
+        "requested_symbols": len(requested),
+        "observed_symbols": len(valid),
+        "missing_symbols": sorted(requested - valid),
+        "omitted_algorithm_lanes": omissions,
+    }
+
+
 def record_opening_quote_diagnostic(lane, previous_lane, frozen_lane, evidence, now, market):
     """Publish why an opening was not booked; never infer or alter any fill.
 
@@ -755,12 +767,12 @@ def main(argv=None):
             return 2
         report = status_report(lock, now, market, quotes, prior,
                                run_id=os.environ.get("GITHUB_RUN_ID"))
-        report["quote_budget"] = {
-            "hard_symbol_limit": LIMIT,
-            "requested_symbols": len(requested),
-            "observed_symbols": len(quotes),
-            "omitted_algorithm_lanes": quota_omissions,
-        }
+        report["quote_budget"] = quote_coverage(requested, quotes, now, market,
+                                                quota_omissions)
+        # Retain only contemporaneous, validated observations for settlement.
+        # A returned but stale vendor quote is not an observed symbol.
+        quotes = {t: q for t, q in quotes.items()
+                  if t in requested and _quote_valid(q, now, market)}
         for slot in quota_omissions:
             if report["slots"][slot]["status"] not in ("native_forward_settled",):
                 report["slots"][slot]["quote_capacity_blocked"] = True

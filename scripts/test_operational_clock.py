@@ -284,6 +284,22 @@ class BudgetedQuotesTest(unittest.TestCase):
             with self.assertRaisesRegex(sqlite3.OperationalError, "malformed"):
                 quote_batch(["AAPL"], now, {})
 
+    def test_quote_coverage_reports_missing_and_stale_symbols_without_inventing_prices(self):
+        now = datetime(2026, 11, 10, 14, 39, tzinfo=UTC)
+        market = {"open": datetime(2026, 11, 10, 14, 30, tzinfo=UTC),
+                  "close": datetime(2026, 11, 10, 21, 0, tzinfo=UTC)}
+        quotes = {
+            "AAPL": {"price": 100, "quote_at_utc": "2026-11-10T14:38:00Z",
+                     "observed_at_utc": "2026-11-10T14:38:10Z"},
+            "MSFT": {"price": 100, "quote_at_utc": "2026-11-10T14:31:00Z",
+                     "observed_at_utc": "2026-11-10T14:31:10Z"},
+        }
+        report = operational_clock.quote_coverage(
+            {"AAPL", "MSFT", "CME"}, quotes, now, market, {})
+        self.assertEqual(report["requested_symbols"], 3)
+        self.assertEqual(report["observed_symbols"], 1)
+        self.assertEqual(report["missing_symbols"], ["CME", "MSFT"])
+
     def test_cached_quote_never_bypasses_observation_time_validation(self):
         now = datetime(2026, 11, 10, 14, 39, tzinfo=UTC)
         with patch("operational_clock.quotes_yahoo", return_value={
