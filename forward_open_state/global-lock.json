@@ -1,10 +1,10 @@
 {
-  "lock_sha256": "7b21cbe6411a5cb09c68db50cf6650d5f750090c1e1ccfe004da9b927311f984",
-  "open_at_utc": "2026-11-23T14:30:00Z",
-  "prepared_at_utc": "2026-11-23T13:33:15.225724Z",
-  "previous_session": "2026-11-20",
+  "lock_sha256": "1f1ac5090de3e5afd723b07234dd5b992aed18125750c8502d3b0ca370d0d4a7",
+  "open_at_utc": "2026-11-24T14:30:00Z",
+  "prepared_at_utc": "2026-11-24T13:29:29.064952Z",
+  "previous_session": "2026-11-23",
   "schema": "midas.operational_clock.v1",
-  "session": "2026-11-23",
+  "session": "2026-11-24",
   "slots": {
     "IL-010": {
       "execution_ready": true,
@@ -14,7 +14,7 @@
       "monitor_tickers": [],
       "orders": [],
       "orders_count": 0,
-      "source_session": "2026-11-20",
+      "source_session": "2026-11-23",
       "source_status": "recorded"
     },
     "IL-011": {
@@ -31,16 +31,26 @@
         "RSG",
         "YUM"
       ],
-      "orders": [],
-      "orders_count": 0,
-      "source_session": "2026-11-20",
+      "orders": [
+        {
+          "action": "buy",
+          "limit_price": null,
+          "scheduled_at_utc": "2026-11-24T14:30:00Z",
+          "signal_session": "2026-11-23",
+          "target_session": "2026-11-24",
+          "target_weight": null,
+          "ticker": "HWM"
+        }
+      ],
+      "orders_count": 1,
+      "source_session": "2026-11-23",
       "source_status": "recorded"
     },
     "IL-012": {
       "execution_ready": true,
       "exit_only_due": false,
       "exit_only_ready": false,
-      "holdings_count": 7,
+      "holdings_count": 8,
       "monitor_tickers": [
         "ABT",
         "DRI",
@@ -48,21 +58,12 @@
         "LH",
         "MNST",
         "SJM",
+        "TJX",
         "WELL"
       ],
-      "orders": [
-        {
-          "action": "buy",
-          "limit_price": null,
-          "scheduled_at_utc": "2026-11-23T14:30:00Z",
-          "signal_session": "2026-11-20",
-          "target_session": "2026-11-23",
-          "target_weight": null,
-          "ticker": "TJX"
-        }
-      ],
-      "orders_count": 1,
-      "source_session": "2026-11-20",
+      "orders": [],
+      "orders_count": 0,
+      "source_session": "2026-11-23",
       "source_status": "recorded"
     },
     "IL-013": {
@@ -78,18 +79,38 @@
         "GNRC",
         "TRGP"
       ],
-      "orders": [],
-      "orders_count": 0,
-      "source_session": "2026-11-20",
+      "orders": [
+        {
+          "action": "buy",
+          "limit_price": null,
+          "scheduled_at_utc": "2026-11-24T14:30:00Z",
+          "signal_session": "2026-11-23",
+          "target_session": "2026-11-24",
+          "target_weight": null,
+          "ticker": "DXCM"
+        },
+        {
+          "action": "buy",
+          "limit_price": null,
+          "scheduled_at_utc": "2026-11-24T14:30:00Z",
+          "signal_session": "2026-11-23",
+          "target_session": "2026-11-24",
+          "target_weight": null,
+          "ticker": "KEYS"
+        }
+      ],
+      "orders_count": 2,
+      "source_session": "2026-11-23",
       "source_status": "recorded"
     },
     "IL-014": {
       "execution_ready": true,
       "exit_only_due": false,
       "exit_only_ready": false,
-      "holdings_count": 6,
+      "holdings_count": 7,
       "monitor_tickers": [
         "ADM",
+        "BAC",
         "BG",
         "CZR",
         "GOOG",
@@ -100,24 +121,15 @@
         {
           "action": "buy",
           "limit_price": null,
-          "scheduled_at_utc": "2026-11-23T14:30:00Z",
-          "signal_session": "2026-11-20",
-          "target_session": "2026-11-23",
+          "scheduled_at_utc": "2026-11-24T14:30:00Z",
+          "signal_session": "2026-11-23",
+          "target_session": "2026-11-24",
           "target_weight": null,
-          "ticker": "BAC"
-        },
-        {
-          "action": "buy",
-          "limit_price": null,
-          "scheduled_at_utc": "2026-11-23T14:30:00Z",
-          "signal_session": "2026-11-20",
-          "target_session": "2026-11-23",
-          "target_weight": null,
-          "ticker": "HBAN"
+          "ticker": "IP"
         }
       ],
-      "orders_count": 2,
-      "source_session": "2026-11-20",
+      "orders_count": 1,
+      "source_session": "2026-11-23",
       "source_status": "recorded"
     },
     "IL-015": {
@@ -133,61 +145,34 @@
       ],
       "orders": [
         {
-          "action": "sell",
+          "action": "buy",
           "limit_price": null,
-          "scheduled_at_utc": "2026-11-23T14:30:00Z",
-          "signal_session": "2026-11-20",
-          "target_session": "2026-11-23",
+          "scheduled_at_utc": "2026-11-24T14:30:00Z",
+          "signal_session": "2026-11-23",
+          "target_session": "2026-11-24",
           "target_weight": null,
-          "ticker": "DRI"
+          "ticker": "PCG"
         }
       ],
       "orders_count": 1,
-      "source_session": "2026-11-20",
+      "source_session": "2026-11-23",
       "source_status": "recorded"
     },
     "IL-016": {
       "execution_ready": true,
       "exit_only_due": false,
       "exit_only_ready": false,
-      "holdings_count": 4,
+      "holdings_count": 5,
       "monitor_tickers": [
         "COST",
         "ERIE",
+        "HRL",
         "LW",
         "PCG"
       ],
-      "orders": [
-        {
-          "action": "sell",
-          "limit_price": null,
-          "scheduled_at_utc": "2026-11-23T14:30:00Z",
-          "signal_session": "2026-11-20",
-          "target_session": "2026-11-23",
-          "target_weight": null,
-          "ticker": "ALLE"
-        },
-        {
-          "action": "buy",
-          "limit_price": null,
-          "scheduled_at_utc": "2026-11-23T14:30:00Z",
-          "signal_session": "2026-11-20",
-          "target_session": "2026-11-23",
-          "target_weight": null,
-          "ticker": "HRL"
-        },
-        {
-          "action": "sell",
-          "limit_price": null,
-          "scheduled_at_utc": "2026-11-23T14:30:00Z",
-          "signal_session": "2026-11-20",
-          "target_session": "2026-11-23",
-          "target_weight": null,
-          "ticker": "MTD"
-        }
-      ],
-      "orders_count": 3,
-      "source_session": "2026-11-20",
+      "orders": [],
+      "orders_count": 0,
+      "source_session": "2026-11-23",
       "source_status": "recorded"
     },
     "IL-017": {
@@ -204,19 +189,9 @@
         "MTD",
         "ULTA"
       ],
-      "orders": [
-        {
-          "action": "buy",
-          "limit_price": null,
-          "scheduled_at_utc": "2026-11-23T14:30:00Z",
-          "signal_session": "2026-11-20",
-          "target_session": "2026-11-23",
-          "target_weight": null,
-          "ticker": "HRL"
-        }
-      ],
-      "orders_count": 1,
-      "source_session": "2026-11-20",
+      "orders": [],
+      "orders_count": 0,
+      "source_session": "2026-11-23",
       "source_status": "recorded"
     },
     "IL-018": {
@@ -227,910 +202,213 @@
       "monitor_tickers": [],
       "orders": [],
       "orders_count": 0,
-      "source_session": "2026-11-20",
+      "source_session": "2026-11-23",
       "source_status": "recorded"
     },
     "IL-019": {
       "execution_ready": true,
       "exit_only_due": false,
       "exit_only_ready": false,
-      "holdings_count": 0,
-      "monitor_tickers": [],
-      "orders": [
-        {
-          "action": "buy",
-          "limit_price": null,
-          "scheduled_at_utc": "2026-11-23T14:30:00Z",
-          "signal_session": "2026-11-20",
-          "target_session": "2026-11-23",
-          "target_weight": null,
-          "ticker": "SPY"
-        }
+      "holdings_count": 1,
+      "monitor_tickers": [
+        "SPY"
       ],
-      "orders_count": 1,
-      "source_session": "2026-11-20",
+      "orders": [],
+      "orders_count": 0,
+      "source_session": "2026-11-23",
       "source_status": "recorded"
     },
     "IL-020": {
       "execution_ready": true,
       "exit_only_due": false,
       "exit_only_ready": false,
-      "holdings_count": 0,
-      "monitor_tickers": [],
-      "orders": [
-        {
-          "action": "buy",
-          "limit_price": null,
-          "scheduled_at_utc": "2026-11-23T14:30:00Z",
-          "signal_session": "2026-11-20",
-          "target_session": "2026-11-23",
-          "target_weight": null,
-          "ticker": "RSP"
-        }
+      "holdings_count": 1,
+      "monitor_tickers": [
+        "RSP"
       ],
-      "orders_count": 1,
-      "source_session": "2026-11-20",
+      "orders": [],
+      "orders_count": 0,
+      "source_session": "2026-11-23",
       "source_status": "recorded"
     },
     "IL-021": {
       "execution_ready": true,
       "exit_only_due": false,
       "exit_only_ready": false,
-      "holdings_count": 0,
-      "monitor_tickers": [],
-      "orders": [
-        {
-          "action": "buy",
-          "limit_price": null,
-          "scheduled_at_utc": "2026-11-23T14:30:00Z",
-          "signal_session": "2026-11-20",
-          "target_session": "2026-11-23",
-          "target_weight": null,
-          "ticker": "AMD"
-        },
-        {
-          "action": "buy",
-          "limit_price": null,
-          "scheduled_at_utc": "2026-11-23T14:30:00Z",
-          "signal_session": "2026-11-20",
-          "target_session": "2026-11-23",
-          "target_weight": null,
-          "ticker": "COIN"
-        },
-        {
-          "action": "buy",
-          "limit_price": null,
-          "scheduled_at_utc": "2026-11-23T14:30:00Z",
-          "signal_session": "2026-11-20",
-          "target_session": "2026-11-23",
-          "target_weight": null,
-          "ticker": "FICO"
-        },
-        {
-          "action": "buy",
-          "limit_price": null,
-          "scheduled_at_utc": "2026-11-23T14:30:00Z",
-          "signal_session": "2026-11-20",
-          "target_session": "2026-11-23",
-          "target_weight": null,
-          "ticker": "FIS"
-        },
-        {
-          "action": "buy",
-          "limit_price": null,
-          "scheduled_at_utc": "2026-11-23T14:30:00Z",
-          "signal_session": "2026-11-20",
-          "target_session": "2026-11-23",
-          "target_weight": null,
-          "ticker": "GLW"
-        },
-        {
-          "action": "buy",
-          "limit_price": null,
-          "scheduled_at_utc": "2026-11-23T14:30:00Z",
-          "signal_session": "2026-11-20",
-          "target_session": "2026-11-23",
-          "target_weight": null,
-          "ticker": "INTC"
-        },
-        {
-          "action": "buy",
-          "limit_price": null,
-          "scheduled_at_utc": "2026-11-23T14:30:00Z",
-          "signal_session": "2026-11-20",
-          "target_session": "2026-11-23",
-          "target_weight": null,
-          "ticker": "MU"
-        },
-        {
-          "action": "buy",
-          "limit_price": null,
-          "scheduled_at_utc": "2026-11-23T14:30:00Z",
-          "signal_session": "2026-11-20",
-          "target_session": "2026-11-23",
-          "target_weight": null,
-          "ticker": "SMCI"
-        },
-        {
-          "action": "buy",
-          "limit_price": null,
-          "scheduled_at_utc": "2026-11-23T14:30:00Z",
-          "signal_session": "2026-11-20",
-          "target_session": "2026-11-23",
-          "target_weight": null,
-          "ticker": "STX"
-        },
-        {
-          "action": "buy",
-          "limit_price": null,
-          "scheduled_at_utc": "2026-11-23T14:30:00Z",
-          "signal_session": "2026-11-20",
-          "target_session": "2026-11-23",
-          "target_weight": null,
-          "ticker": "WDC"
-        }
+      "holdings_count": 10,
+      "monitor_tickers": [
+        "AMD",
+        "COIN",
+        "FICO",
+        "FIS",
+        "GLW",
+        "INTC",
+        "MU",
+        "SMCI",
+        "STX",
+        "WDC"
       ],
-      "orders_count": 10,
-      "source_session": "2026-11-20",
+      "orders": [],
+      "orders_count": 0,
+      "source_session": "2026-11-23",
       "source_status": "recorded"
     },
     "IL-022": {
       "execution_ready": true,
       "exit_only_due": false,
       "exit_only_ready": false,
-      "holdings_count": 0,
-      "monitor_tickers": [],
-      "orders": [
-        {
-          "action": "buy",
-          "limit_price": null,
-          "scheduled_at_utc": "2026-11-23T14:30:00Z",
-          "signal_session": "2026-11-20",
-          "target_session": "2026-11-23",
-          "target_weight": null,
-          "ticker": "BSX"
-        },
-        {
-          "action": "buy",
-          "limit_price": null,
-          "scheduled_at_utc": "2026-11-23T14:30:00Z",
-          "signal_session": "2026-11-20",
-          "target_session": "2026-11-23",
-          "target_weight": null,
-          "ticker": "EQT"
-        },
-        {
-          "action": "buy",
-          "limit_price": null,
-          "scheduled_at_utc": "2026-11-23T14:30:00Z",
-          "signal_session": "2026-11-20",
-          "target_session": "2026-11-23",
-          "target_weight": null,
-          "ticker": "EXE"
-        },
-        {
-          "action": "buy",
-          "limit_price": null,
-          "scheduled_at_utc": "2026-11-23T14:30:00Z",
-          "signal_session": "2026-11-20",
-          "target_session": "2026-11-23",
-          "target_weight": null,
-          "ticker": "FICO"
-        },
-        {
-          "action": "buy",
-          "limit_price": null,
-          "scheduled_at_utc": "2026-11-23T14:30:00Z",
-          "signal_session": "2026-11-20",
-          "target_session": "2026-11-23",
-          "target_weight": null,
-          "ticker": "GLW"
-        },
-        {
-          "action": "buy",
-          "limit_price": null,
-          "scheduled_at_utc": "2026-11-23T14:30:00Z",
-          "signal_session": "2026-11-20",
-          "target_session": "2026-11-23",
-          "target_weight": null,
-          "ticker": "NOC"
-        },
-        {
-          "action": "buy",
-          "limit_price": null,
-          "scheduled_at_utc": "2026-11-23T14:30:00Z",
-          "signal_session": "2026-11-20",
-          "target_session": "2026-11-23",
-          "target_weight": null,
-          "ticker": "PODD"
-        },
-        {
-          "action": "buy",
-          "limit_price": null,
-          "scheduled_at_utc": "2026-11-23T14:30:00Z",
-          "signal_session": "2026-11-20",
-          "target_session": "2026-11-23",
-          "target_weight": null,
-          "ticker": "SCHW"
-        },
-        {
-          "action": "buy",
-          "limit_price": null,
-          "scheduled_at_utc": "2026-11-23T14:30:00Z",
-          "signal_session": "2026-11-20",
-          "target_session": "2026-11-23",
-          "target_weight": null,
-          "ticker": "TPL"
-        },
-        {
-          "action": "buy",
-          "limit_price": null,
-          "scheduled_at_utc": "2026-11-23T14:30:00Z",
-          "signal_session": "2026-11-20",
-          "target_session": "2026-11-23",
-          "target_weight": null,
-          "ticker": "VICI"
-        }
+      "holdings_count": 10,
+      "monitor_tickers": [
+        "BSX",
+        "EQT",
+        "EXE",
+        "FICO",
+        "GLW",
+        "NOC",
+        "PODD",
+        "SCHW",
+        "TPL",
+        "VICI"
       ],
-      "orders_count": 10,
-      "source_session": "2026-11-20",
+      "orders": [],
+      "orders_count": 0,
+      "source_session": "2026-11-23",
       "source_status": "recorded"
     },
     "IL-023": {
       "execution_ready": true,
       "exit_only_due": false,
       "exit_only_ready": false,
-      "holdings_count": 0,
-      "monitor_tickers": [],
-      "orders": [
-        {
-          "action": "buy",
-          "limit_price": null,
-          "scheduled_at_utc": "2026-11-23T14:30:00Z",
-          "signal_session": "2026-11-20",
-          "target_session": "2026-11-23",
-          "target_weight": null,
-          "ticker": "ADI"
-        },
-        {
-          "action": "buy",
-          "limit_price": null,
-          "scheduled_at_utc": "2026-11-23T14:30:00Z",
-          "signal_session": "2026-11-20",
-          "target_session": "2026-11-23",
-          "target_weight": null,
-          "ticker": "AMD"
-        },
-        {
-          "action": "buy",
-          "limit_price": null,
-          "scheduled_at_utc": "2026-11-23T14:30:00Z",
-          "signal_session": "2026-11-20",
-          "target_session": "2026-11-23",
-          "target_weight": null,
-          "ticker": "CHTR"
-        },
-        {
-          "action": "buy",
-          "limit_price": null,
-          "scheduled_at_utc": "2026-11-23T14:30:00Z",
-          "signal_session": "2026-11-20",
-          "target_session": "2026-11-23",
-          "target_weight": null,
-          "ticker": "LRCX"
-        },
-        {
-          "action": "buy",
-          "limit_price": null,
-          "scheduled_at_utc": "2026-11-23T14:30:00Z",
-          "signal_session": "2026-11-20",
-          "target_session": "2026-11-23",
-          "target_weight": null,
-          "ticker": "MPWR"
-        },
-        {
-          "action": "buy",
-          "limit_price": null,
-          "scheduled_at_utc": "2026-11-23T14:30:00Z",
-          "signal_session": "2026-11-20",
-          "target_session": "2026-11-23",
-          "target_weight": null,
-          "ticker": "MU"
-        },
-        {
-          "action": "buy",
-          "limit_price": null,
-          "scheduled_at_utc": "2026-11-23T14:30:00Z",
-          "signal_session": "2026-11-20",
-          "target_session": "2026-11-23",
-          "target_weight": null,
-          "ticker": "PWR"
-        },
-        {
-          "action": "buy",
-          "limit_price": null,
-          "scheduled_at_utc": "2026-11-23T14:30:00Z",
-          "signal_session": "2026-11-20",
-          "target_session": "2026-11-23",
-          "target_weight": null,
-          "ticker": "SWKS"
-        },
-        {
-          "action": "buy",
-          "limit_price": null,
-          "scheduled_at_utc": "2026-11-23T14:30:00Z",
-          "signal_session": "2026-11-20",
-          "target_session": "2026-11-23",
-          "target_weight": null,
-          "ticker": "TER"
-        },
-        {
-          "action": "buy",
-          "limit_price": null,
-          "scheduled_at_utc": "2026-11-23T14:30:00Z",
-          "signal_session": "2026-11-20",
-          "target_session": "2026-11-23",
-          "target_weight": null,
-          "ticker": "TXN"
-        }
+      "holdings_count": 10,
+      "monitor_tickers": [
+        "ADI",
+        "AMD",
+        "CHTR",
+        "LRCX",
+        "MPWR",
+        "MU",
+        "PWR",
+        "SWKS",
+        "TER",
+        "TXN"
       ],
-      "orders_count": 10,
-      "source_session": "2026-11-20",
+      "orders": [],
+      "orders_count": 0,
+      "source_session": "2026-11-23",
       "source_status": "recorded"
     },
     "IL-024": {
       "execution_ready": true,
       "exit_only_due": false,
       "exit_only_ready": false,
-      "holdings_count": 0,
-      "monitor_tickers": [],
-      "orders": [
-        {
-          "action": "buy",
-          "limit_price": null,
-          "scheduled_at_utc": "2026-11-23T14:30:00Z",
-          "signal_session": "2026-11-20",
-          "target_session": "2026-11-23",
-          "target_weight": null,
-          "ticker": "ABNB"
-        },
-        {
-          "action": "buy",
-          "limit_price": null,
-          "scheduled_at_utc": "2026-11-23T14:30:00Z",
-          "signal_session": "2026-11-20",
-          "target_session": "2026-11-23",
-          "target_weight": null,
-          "ticker": "AMD"
-        },
-        {
-          "action": "buy",
-          "limit_price": null,
-          "scheduled_at_utc": "2026-11-23T14:30:00Z",
-          "signal_session": "2026-11-20",
-          "target_session": "2026-11-23",
-          "target_weight": null,
-          "ticker": "AVGO"
-        },
-        {
-          "action": "buy",
-          "limit_price": null,
-          "scheduled_at_utc": "2026-11-23T14:30:00Z",
-          "signal_session": "2026-11-20",
-          "target_session": "2026-11-23",
-          "target_weight": null,
-          "ticker": "DELL"
-        },
-        {
-          "action": "buy",
-          "limit_price": null,
-          "scheduled_at_utc": "2026-11-23T14:30:00Z",
-          "signal_session": "2026-11-20",
-          "target_session": "2026-11-23",
-          "target_weight": null,
-          "ticker": "DXCM"
-        },
-        {
-          "action": "buy",
-          "limit_price": null,
-          "scheduled_at_utc": "2026-11-23T14:30:00Z",
-          "signal_session": "2026-11-20",
-          "target_session": "2026-11-23",
-          "target_weight": null,
-          "ticker": "HPE"
-        },
-        {
-          "action": "buy",
-          "limit_price": null,
-          "scheduled_at_utc": "2026-11-23T14:30:00Z",
-          "signal_session": "2026-11-20",
-          "target_session": "2026-11-23",
-          "target_weight": null,
-          "ticker": "MOH"
-        },
-        {
-          "action": "buy",
-          "limit_price": null,
-          "scheduled_at_utc": "2026-11-23T14:30:00Z",
-          "signal_session": "2026-11-20",
-          "target_session": "2026-11-23",
-          "target_weight": null,
-          "ticker": "MOS"
-        },
-        {
-          "action": "buy",
-          "limit_price": null,
-          "scheduled_at_utc": "2026-11-23T14:30:00Z",
-          "signal_session": "2026-11-20",
-          "target_session": "2026-11-23",
-          "target_weight": null,
-          "ticker": "MRNA"
-        },
-        {
-          "action": "buy",
-          "limit_price": null,
-          "scheduled_at_utc": "2026-11-23T14:30:00Z",
-          "signal_session": "2026-11-20",
-          "target_session": "2026-11-23",
-          "target_weight": null,
-          "ticker": "MU"
-        }
+      "holdings_count": 10,
+      "monitor_tickers": [
+        "ABNB",
+        "AMD",
+        "AVGO",
+        "DELL",
+        "DXCM",
+        "HPE",
+        "MOH",
+        "MOS",
+        "MRNA",
+        "MU"
       ],
-      "orders_count": 10,
-      "source_session": "2026-11-20",
+      "orders": [],
+      "orders_count": 0,
+      "source_session": "2026-11-23",
       "source_status": "recorded"
     },
     "IL-025": {
       "execution_ready": true,
       "exit_only_due": false,
       "exit_only_ready": false,
-      "holdings_count": 0,
-      "monitor_tickers": [],
-      "orders": [
-        {
-          "action": "buy",
-          "limit_price": null,
-          "scheduled_at_utc": "2026-11-23T14:30:00Z",
-          "signal_session": "2026-11-20",
-          "target_session": "2026-11-23",
-          "target_weight": null,
-          "ticker": "CAT"
-        },
-        {
-          "action": "buy",
-          "limit_price": null,
-          "scheduled_at_utc": "2026-11-23T14:30:00Z",
-          "signal_session": "2026-11-20",
-          "target_session": "2026-11-23",
-          "target_weight": null,
-          "ticker": "CMI"
-        },
-        {
-          "action": "buy",
-          "limit_price": null,
-          "scheduled_at_utc": "2026-11-23T14:30:00Z",
-          "signal_session": "2026-11-20",
-          "target_session": "2026-11-23",
-          "target_weight": null,
-          "ticker": "COIN"
-        },
-        {
-          "action": "buy",
-          "limit_price": null,
-          "scheduled_at_utc": "2026-11-23T14:30:00Z",
-          "signal_session": "2026-11-20",
-          "target_session": "2026-11-23",
-          "target_weight": null,
-          "ticker": "CTVA"
-        },
-        {
-          "action": "buy",
-          "limit_price": null,
-          "scheduled_at_utc": "2026-11-23T14:30:00Z",
-          "signal_session": "2026-11-20",
-          "target_session": "2026-11-23",
-          "target_weight": null,
-          "ticker": "GEV"
-        },
-        {
-          "action": "buy",
-          "limit_price": null,
-          "scheduled_at_utc": "2026-11-23T14:30:00Z",
-          "signal_session": "2026-11-20",
-          "target_session": "2026-11-23",
-          "target_weight": null,
-          "ticker": "GLW"
-        },
-        {
-          "action": "buy",
-          "limit_price": null,
-          "scheduled_at_utc": "2026-11-23T14:30:00Z",
-          "signal_session": "2026-11-20",
-          "target_session": "2026-11-23",
-          "target_weight": null,
-          "ticker": "INTC"
-        },
-        {
-          "action": "buy",
-          "limit_price": null,
-          "scheduled_at_utc": "2026-11-23T14:30:00Z",
-          "signal_session": "2026-11-20",
-          "target_session": "2026-11-23",
-          "target_weight": null,
-          "ticker": "NRG"
-        },
-        {
-          "action": "buy",
-          "limit_price": null,
-          "scheduled_at_utc": "2026-11-23T14:30:00Z",
-          "signal_session": "2026-11-20",
-          "target_session": "2026-11-23",
-          "target_weight": null,
-          "ticker": "NVDA"
-        },
-        {
-          "action": "buy",
-          "limit_price": null,
-          "scheduled_at_utc": "2026-11-23T14:30:00Z",
-          "signal_session": "2026-11-20",
-          "target_session": "2026-11-23",
-          "target_weight": null,
-          "ticker": "TPL"
-        }
+      "holdings_count": 9,
+      "monitor_tickers": [
+        "CAT",
+        "COIN",
+        "CTVA",
+        "GEV",
+        "GLW",
+        "INTC",
+        "NRG",
+        "NVDA",
+        "TPL"
       ],
-      "orders_count": 10,
-      "source_session": "2026-11-20",
+      "orders": [],
+      "orders_count": 0,
+      "source_session": "2026-11-23",
       "source_status": "recorded"
     },
     "IL-026": {
       "execution_ready": true,
       "exit_only_due": false,
       "exit_only_ready": false,
-      "holdings_count": 0,
-      "monitor_tickers": [],
-      "orders": [
-        {
-          "action": "buy",
-          "limit_price": null,
-          "scheduled_at_utc": "2026-11-23T14:30:00Z",
-          "signal_session": "2026-11-20",
-          "target_session": "2026-11-23",
-          "target_weight": null,
-          "ticker": "ADI"
-        },
-        {
-          "action": "buy",
-          "limit_price": null,
-          "scheduled_at_utc": "2026-11-23T14:30:00Z",
-          "signal_session": "2026-11-20",
-          "target_session": "2026-11-23",
-          "target_weight": null,
-          "ticker": "AMD"
-        },
-        {
-          "action": "buy",
-          "limit_price": null,
-          "scheduled_at_utc": "2026-11-23T14:30:00Z",
-          "signal_session": "2026-11-20",
-          "target_session": "2026-11-23",
-          "target_weight": null,
-          "ticker": "ANET"
-        },
-        {
-          "action": "buy",
-          "limit_price": null,
-          "scheduled_at_utc": "2026-11-23T14:30:00Z",
-          "signal_session": "2026-11-20",
-          "target_session": "2026-11-23",
-          "target_weight": null,
-          "ticker": "CEG"
-        },
-        {
-          "action": "buy",
-          "limit_price": null,
-          "scheduled_at_utc": "2026-11-23T14:30:00Z",
-          "signal_session": "2026-11-20",
-          "target_session": "2026-11-23",
-          "target_weight": null,
-          "ticker": "IRM"
-        },
-        {
-          "action": "buy",
-          "limit_price": null,
-          "scheduled_at_utc": "2026-11-23T14:30:00Z",
-          "signal_session": "2026-11-20",
-          "target_session": "2026-11-23",
-          "target_weight": null,
-          "ticker": "MPC"
-        },
-        {
-          "action": "buy",
-          "limit_price": null,
-          "scheduled_at_utc": "2026-11-23T14:30:00Z",
-          "signal_session": "2026-11-20",
-          "target_session": "2026-11-23",
-          "target_weight": null,
-          "ticker": "MRNA"
-        },
-        {
-          "action": "buy",
-          "limit_price": null,
-          "scheduled_at_utc": "2026-11-23T14:30:00Z",
-          "signal_session": "2026-11-20",
-          "target_session": "2026-11-23",
-          "target_weight": null,
-          "ticker": "MU"
-        },
-        {
-          "action": "buy",
-          "limit_price": null,
-          "scheduled_at_utc": "2026-11-23T14:30:00Z",
-          "signal_session": "2026-11-20",
-          "target_session": "2026-11-23",
-          "target_weight": null,
-          "ticker": "TXN"
-        },
-        {
-          "action": "buy",
-          "limit_price": null,
-          "scheduled_at_utc": "2026-11-23T14:30:00Z",
-          "signal_session": "2026-11-20",
-          "target_session": "2026-11-23",
-          "target_weight": null,
-          "ticker": "URI"
-        }
+      "holdings_count": 10,
+      "monitor_tickers": [
+        "ADI",
+        "AMD",
+        "ANET",
+        "CEG",
+        "IRM",
+        "MPC",
+        "MRNA",
+        "MU",
+        "TXN",
+        "URI"
       ],
-      "orders_count": 10,
-      "source_session": "2026-11-20",
+      "orders": [],
+      "orders_count": 0,
+      "source_session": "2026-11-23",
       "source_status": "recorded"
     },
     "IL-027": {
       "execution_ready": true,
       "exit_only_due": false,
       "exit_only_ready": false,
-      "holdings_count": 0,
-      "monitor_tickers": [],
-      "orders": [
-        {
-          "action": "buy",
-          "limit_price": null,
-          "scheduled_at_utc": "2026-11-23T14:30:00Z",
-          "signal_session": "2026-11-20",
-          "target_session": "2026-11-23",
-          "target_weight": null,
-          "ticker": "ADI"
-        },
-        {
-          "action": "buy",
-          "limit_price": null,
-          "scheduled_at_utc": "2026-11-23T14:30:00Z",
-          "signal_session": "2026-11-20",
-          "target_session": "2026-11-23",
-          "target_weight": null,
-          "ticker": "ANET"
-        },
-        {
-          "action": "buy",
-          "limit_price": null,
-          "scheduled_at_utc": "2026-11-23T14:30:00Z",
-          "signal_session": "2026-11-20",
-          "target_session": "2026-11-23",
-          "target_weight": null,
-          "ticker": "ARE"
-        },
-        {
-          "action": "buy",
-          "limit_price": null,
-          "scheduled_at_utc": "2026-11-23T14:30:00Z",
-          "signal_session": "2026-11-20",
-          "target_session": "2026-11-23",
-          "target_weight": null,
-          "ticker": "AVGO"
-        },
-        {
-          "action": "buy",
-          "limit_price": null,
-          "scheduled_at_utc": "2026-11-23T14:30:00Z",
-          "signal_session": "2026-11-20",
-          "target_session": "2026-11-23",
-          "target_weight": null,
-          "ticker": "GS"
-        },
-        {
-          "action": "buy",
-          "limit_price": null,
-          "scheduled_at_utc": "2026-11-23T14:30:00Z",
-          "signal_session": "2026-11-20",
-          "target_session": "2026-11-23",
-          "target_weight": null,
-          "ticker": "KLAC"
-        },
-        {
-          "action": "buy",
-          "limit_price": null,
-          "scheduled_at_utc": "2026-11-23T14:30:00Z",
-          "signal_session": "2026-11-20",
-          "target_session": "2026-11-23",
-          "target_weight": null,
-          "ticker": "MCHP"
-        },
-        {
-          "action": "buy",
-          "limit_price": null,
-          "scheduled_at_utc": "2026-11-23T14:30:00Z",
-          "signal_session": "2026-11-20",
-          "target_session": "2026-11-23",
-          "target_weight": null,
-          "ticker": "MPWR"
-        },
-        {
-          "action": "buy",
-          "limit_price": null,
-          "scheduled_at_utc": "2026-11-23T14:30:00Z",
-          "signal_session": "2026-11-20",
-          "target_session": "2026-11-23",
-          "target_weight": null,
-          "ticker": "MRNA"
-        },
-        {
-          "action": "buy",
-          "limit_price": null,
-          "scheduled_at_utc": "2026-11-23T14:30:00Z",
-          "signal_session": "2026-11-20",
-          "target_session": "2026-11-23",
-          "target_weight": null,
-          "ticker": "STX"
-        }
+      "holdings_count": 10,
+      "monitor_tickers": [
+        "ADI",
+        "ANET",
+        "ARE",
+        "AVGO",
+        "GS",
+        "KLAC",
+        "MCHP",
+        "MPWR",
+        "MRNA",
+        "STX"
       ],
-      "orders_count": 10,
-      "source_session": "2026-11-20",
+      "orders": [],
+      "orders_count": 0,
+      "source_session": "2026-11-23",
       "source_status": "recorded"
     },
     "IL-037": {
       "execution_ready": true,
       "exit_only_due": false,
       "exit_only_ready": false,
-      "holdings_count": 0,
-      "monitor_tickers": [],
-      "orders": [
-        {
-          "action": "buy",
-          "limit_price": null,
-          "scheduled_at_utc": "2026-11-23T14:30:00Z",
-          "signal_session": "2026-11-20",
-          "target_session": "2026-11-23",
-          "target_weight": 0.08903109810102079,
-          "ticker": "AEE"
-        },
-        {
-          "action": "buy",
-          "limit_price": null,
-          "scheduled_at_utc": "2026-11-23T14:30:00Z",
-          "signal_session": "2026-11-20",
-          "target_session": "2026-11-23",
-          "target_weight": 0.056451407823199025,
-          "ticker": "AFL"
-        },
-        {
-          "action": "buy",
-          "limit_price": null,
-          "scheduled_at_utc": "2026-11-23T14:30:00Z",
-          "signal_session": "2026-11-20",
-          "target_session": "2026-11-23",
-          "target_weight": 0.12742871621641402,
-          "ticker": "BRK-B"
-        },
-        {
-          "action": "buy",
-          "limit_price": null,
-          "scheduled_at_utc": "2026-11-23T14:30:00Z",
-          "signal_session": "2026-11-20",
-          "target_session": "2026-11-23",
-          "target_weight": 0.009299356543285528,
-          "ticker": "CAH"
-        },
-        {
-          "action": "buy",
-          "limit_price": null,
-          "scheduled_at_utc": "2026-11-23T14:30:00Z",
-          "signal_session": "2026-11-20",
-          "target_session": "2026-11-23",
-          "target_weight": 0.0016962000033642,
-          "ticker": "CB"
-        },
-        {
-          "action": "buy",
-          "limit_price": null,
-          "scheduled_at_utc": "2026-11-23T14:30:00Z",
-          "signal_session": "2026-11-20",
-          "target_session": "2026-11-23",
-          "target_weight": 0.025930192934943117,
-          "ticker": "CINF"
-        },
-        {
-          "action": "buy",
-          "limit_price": null,
-          "scheduled_at_utc": "2026-11-23T14:30:00Z",
-          "signal_session": "2026-11-20",
-          "target_session": "2026-11-23",
-          "target_weight": 0.10307724910760639,
-          "ticker": "COST"
-        },
-        {
-          "action": "buy",
-          "limit_price": null,
-          "scheduled_at_utc": "2026-11-23T14:30:00Z",
-          "signal_session": "2026-11-20",
-          "target_session": "2026-11-23",
-          "target_weight": 0.09124029907211793,
-          "ticker": "DUK"
-        },
-        {
-          "action": "buy",
-          "limit_price": null,
-          "scheduled_at_utc": "2026-11-23T14:30:00Z",
-          "signal_session": "2026-11-20",
-          "target_session": "2026-11-23",
-          "target_weight": 0.04641629923719579,
-          "ticker": "ED"
-        },
-        {
-          "action": "buy",
-          "limit_price": null,
-          "scheduled_at_utc": "2026-11-23T14:30:00Z",
-          "signal_session": "2026-11-20",
-          "target_session": "2026-11-23",
-          "target_weight": 0.10741212435737688,
-          "ticker": "EVRG"
-        },
-        {
-          "action": "buy",
-          "limit_price": null,
-          "scheduled_at_utc": "2026-11-23T14:30:00Z",
-          "signal_session": "2026-11-20",
-          "target_session": "2026-11-23",
-          "target_weight": 0.12514361025697754,
-          "ticker": "FE"
-        },
-        {
-          "action": "buy",
-          "limit_price": null,
-          "scheduled_at_utc": "2026-11-23T14:30:00Z",
-          "signal_session": "2026-11-20",
-          "target_session": "2026-11-23",
-          "target_weight": 0.050813728453537696,
-          "ticker": "KIM"
-        },
-        {
-          "action": "buy",
-          "limit_price": null,
-          "scheduled_at_utc": "2026-11-23T14:30:00Z",
-          "signal_session": "2026-11-20",
-          "target_session": "2026-11-23",
-          "target_weight": 0.03470999633607102,
-          "ticker": "TSN"
-        },
-        {
-          "action": "buy",
-          "limit_price": null,
-          "scheduled_at_utc": "2026-11-23T14:30:00Z",
-          "signal_session": "2026-11-20",
-          "target_session": "2026-11-23",
-          "target_weight": 0.052277593601828445,
-          "ticker": "WEC"
-        },
-        {
-          "action": "buy",
-          "limit_price": null,
-          "scheduled_at_utc": "2026-11-23T14:30:00Z",
-          "signal_session": "2026-11-20",
-          "target_session": "2026-11-23",
-          "target_weight": 0.029072127955061623,
-          "ticker": "WRB"
-        }
+      "holdings_count": 15,
+      "monitor_tickers": [
+        "AEE",
+        "AFL",
+        "BRK-B",
+        "CAH",
+        "CB",
+        "CINF",
+        "COST",
+        "DUK",
+        "ED",
+        "EVRG",
+        "FE",
+        "KIM",
+        "TSN",
+        "WEC",
+        "WRB"
       ],
-      "orders_count": 15,
-      "source_session": "2026-11-20",
+      "orders": [],
+      "orders_count": 0,
+      "source_session": "2026-11-23",
       "source_status": "recorded"
     },
     "IL-038": {
@@ -1141,7 +419,7 @@
       "monitor_tickers": [],
       "orders": [],
       "orders_count": 0,
-      "source_session": "2026-11-20",
+      "source_session": "2026-11-23",
       "source_status": "recorded"
     },
     "IL-039": {
@@ -1152,7 +430,7 @@
       "monitor_tickers": [],
       "orders": [],
       "orders_count": 0,
-      "source_session": "2026-11-20",
+      "source_session": "2026-11-23",
       "source_status": "recorded"
     },
     "IL-040": {
@@ -1163,7 +441,7 @@
       "monitor_tickers": [],
       "orders": [],
       "orders_count": 0,
-      "source_session": "2026-11-20",
+      "source_session": "2026-11-23",
       "source_status": "recorded"
     },
     "IL-041": {
@@ -1174,7 +452,7 @@
       "monitor_tickers": [],
       "orders": [],
       "orders_count": 0,
-      "source_session": "2026-11-20",
+      "source_session": "2026-11-23",
       "source_status": "recorded"
     },
     "IL-042": {
@@ -1185,7 +463,7 @@
       "monitor_tickers": [],
       "orders": [],
       "orders_count": 0,
-      "source_session": "2026-11-20",
+      "source_session": "2026-11-23",
       "source_status": "recorded"
     },
     "IL-043": {
@@ -1196,7 +474,7 @@
       "monitor_tickers": [],
       "orders": [],
       "orders_count": 0,
-      "source_session": "2026-11-20",
+      "source_session": "2026-11-23",
       "source_status": "recorded"
     },
     "IL-044": {
@@ -1213,9 +491,9 @@
       ],
       "orders": [],
       "orders_count": 0,
-      "source_session": "2026-11-20",
+      "source_session": "2026-11-23",
       "source_status": "recorded"
     }
   },
-  "source_commit": "70ef2402f627c35228f3109b282e6424cb40ab88"
+  "source_commit": "30e312b5b93e1efbc25d3afc41e16ae8b453f6aa"
 }
