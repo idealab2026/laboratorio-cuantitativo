@@ -284,6 +284,35 @@ class BudgetedQuotesTest(unittest.TestCase):
             with self.assertRaisesRegex(sqlite3.OperationalError, "malformed"):
                 quote_batch(["AAPL"], now, {})
 
+    def test_rate_limit_stops_batch_and_retains_only_received_quotes(self):
+        # Match the pinned yfinance exception without requiring live vendor
+        # credentials or the yfinance library in the offline publication CI.
+        error = type("YFRateLimitError", (Exception,),
+                     {"__module__": "yfinance.exceptions"})
+        now = datetime(2026, 11, 10, 14, 39, tzinfo=UTC)
+        diagnostics = {}
+        called = []
+        def vendor(symbols, requested, market):
+            called.extend(symbols)
+            if symbols == ["CME"]:
+                raise error("Too Many Requests")
+            return {symbols[0]: {"price": 100.}}
+        with patch("operational_clock.quotes_yahoo", side_effect=vendor):
+            result = quote_batch(["MSFT", "CME", "AAPL"], now, {},
+                                 diagnostics=diagnostics)
+        self.assertEqual(called, ["AAPL", "CME"])
+        self.assertEqual(result, {"AAPL": {"price": 100.}})
+        self.assertEqual(diagnostics, {
+            "provider_status": "rate_limited",
+            "rate_limit_at_symbol": "CME",
+            "not_queried_symbols": ["MSFT"],
+        })
+        with patch("operational_clock.quotes_yahoo", side_effect=error()):
+            diagnostics = {}
+            self.assertEqual(quote_batch(["AAPL", "MSFT"], now, {},
+                                         diagnostics=diagnostics), {})
+            self.assertEqual(diagnostics["not_queried_symbols"], ["MSFT"])
+
     def test_quote_coverage_reports_missing_and_stale_symbols_without_inventing_prices(self):
         now = datetime(2026, 11, 10, 14, 39, tzinfo=UTC)
         market = {"open": datetime(2026, 11, 10, 14, 30, tzinfo=UTC),

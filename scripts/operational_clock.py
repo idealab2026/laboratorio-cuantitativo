@@ -467,7 +467,7 @@ def budgeted_quote_targets(lock, prior=None, *, limit=LIMIT, now=None, market=No
     return requested, omitted
 
 
-def quote_batch(tickers, now, market):
+def quote_batch(tickers, now, market, *, diagnostics=None):
     """Read minute quotes without concurrent access to yfinance's SQLite cache.
 
     yfinance's lazy timezone/cookie caches are shared across threads. The
@@ -480,7 +480,7 @@ def quote_batch(tickers, now, market):
     if len(symbols) > LIMIT:
         raise ValueError("Quote budget exceeded: never silently truncate a paper lane")
     result = {}
-    for symbol in symbols:
+    for index, symbol in enumerate(symbols):
         try:
             # Independent per-symbol failure isolation; never substitute an
             # older daily bar or fabricate an observation when a query fails.
@@ -489,6 +489,21 @@ def quote_batch(tickers, now, market):
             print(f"midas_quote_unavailable symbol={symbol} error={type(exc).__name__}",
                   file=sys.stderr)
         except Exception as exc:
+            # Yahoo's explicit rate-limit response is a provider-wide
+            # constraint, not a bad ticker. Stop this batch immediately
+            # instead of retrying the remaining symbols against the limit.
+            if (type(exc).__module__ == "yfinance.exceptions" and
+                    type(exc).__name__ == "YFRateLimitError"):
+                if diagnostics is not None:
+                    diagnostics.update({
+                        "provider_status": "rate_limited",
+                        "rate_limit_at_symbol": symbol,
+                        "not_queried_symbols": symbols[index + 1:],
+                    })
+                print(f"midas_yfinance_rate_limited symbol={symbol} "
+                      f"remaining_not_queried={len(symbols)-index-1}",
+                      file=sys.stderr)
+                break
             # A second vendor-side SQLite contention must not erase the
             # successful quotes gathered for other symbols. This narrow
             # compatibility guard covers both sqlite3 and Peewee exceptions.
@@ -760,7 +775,8 @@ def main(argv=None):
         verify_lock(lock, market, now)
         prior = _read(args.public) if args.public.is_file() else None
         requested, quota_omissions = budgeted_quote_targets(lock, prior, now=now, market=market)
-        quotes = quote_batch(requested, now, market)
+        quote_diagnostics = {}
+        quotes = quote_batch(requested, now, market, diagnostics=quote_diagnostics)
         now = datetime.now(UTC)  # actual observation completion, not nominal scheduler time
         if now > market["close"]:
             print('{"status":"observation_too_late"}')
@@ -769,6 +785,7 @@ def main(argv=None):
                                run_id=os.environ.get("GITHUB_RUN_ID"))
         report["quote_budget"] = quote_coverage(requested, quotes, now, market,
                                                 quota_omissions)
+        report["quote_budget"].update(quote_diagnostics)
         # Retain only contemporaneous, validated observations for settlement.
         # A returned but stale vendor quote is not an observed symbol.
         quotes = {t: q for t, q in quotes.items()
