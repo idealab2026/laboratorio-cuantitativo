@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "generated_at_utc": "2026-11-24T02:21:26.906715+00:00",
+  "generated_at_utc": "2026-11-24T02:23:27.234748+00:00",
   "principle": "Comparar rentabilidad acumulada y riesgo observado; no ordenar carteras con distintas fechas de inicio o supuestos de ejecución.",
   "counts": {
     "paper_with_diary": 18,
@@ -7636,9 +7636,9 @@
     }
   ],
   "market_data": {
-    "age_seconds": 382,
+    "age_seconds": 9091,
     "captured_at_utc": "2026-11-23T23:51:54+00:00",
-    "checked_at_utc": "2026-11-23T23:58:16.848515+00:00",
+    "checked_at_utc": "2026-11-24T02:23:25.879379+00:00",
     "consumers": {
       "buy_the_dip_strategy": {
         "ledger_status": "observed",
@@ -7765,7 +7765,7 @@
     "revision_hashes": [
       "e93aadf9075cea2afda2b412e2d7b2d7f2475d7927a9d7b287760d7c062b29ad"
     ],
-    "run_id": "45292184473",
+    "run_id": "45311628674",
     "schema": "midas.xnys_source_health.v1",
     "sha256": "c348714967c8d97a4f8237d47510cf611f6e5c5d1eb6741801d104294952356e",
     "status": "snapshot_verified",
