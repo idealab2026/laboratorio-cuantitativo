@@ -1,5 +1,5 @@
 {
-  "checked_at_utc": "2026-11-24T19:21:34.344318Z",
+  "checked_at_utc": "2026-11-24T19:27:52.997031Z",
   "lock_sha256": "1f1ac5090de3e5afd723b07234dd5b992aed18125750c8502d3b0ca370d0d4a7",
   "mode": "single_midas_operator_monitor_no_broker",
   "note": "Observed quotes are not fills. A native engine must settle quantity/cash before a trade counts in P&L.",
@@ -15,7 +15,7 @@
     "omitted_algorithm_lanes": {},
     "requested_symbols": 47
   },
-  "run_id": 45469070304,
+  "run_id": 45470343927,
   "schema": "midas.operational_clock.v1",
   "session": "2026-11-24",
   "settlement": "native_forward_010_through_027_037_through_044",
@@ -172,19 +172,27 @@
           "quantity": 163.826279,
           "side": "sell",
           "ticker": "BG"
+        },
+        {
+          "fee": 14.688975865721941,
+          "observed_at_utc": "2026-11-24T19:27:47.847991Z",
+          "price": 65.57719561004639,
+          "quantity": 223.995182,
+          "side": "sell",
+          "ticker": "ADM"
         }
       ],
-      "fills_count": 1,
+      "fills_count": 2,
       "holdings_count": 7,
       "native_marker": {
         "fill_tickers": [
-          "BG"
+          "ADM"
         ],
         "fills_count": 1,
         "lock_sha256": "1f1ac5090de3e5afd723b07234dd5b992aed18125750c8502d3b0ca370d0d4a7",
         "mode": "forward_observed_paper",
-        "quotes_sha256": "7c283f6148091575e42a5958a3017acebc5eaed232661d03048cbd0c5f74de5f",
-        "recorded_at_utc": "2026-11-24T19:21:34.344318Z",
+        "quotes_sha256": "7fd2df9b35bc0ac48364f1a817cdedd0be546f32c8c4ce90f0ecdabdc35b7277",
+        "recorded_at_utc": "2026-11-24T19:27:52.997031Z",
         "session": "2026-11-24",
         "source_commit": "30e312b5b93e1efbc25d3afc41e16ae8b453f6aa"
       },
@@ -198,6 +206,11 @@
           "fills_count": 1,
           "key": "IL-014:2026-11-24:stop:BG:classic_forward_v1",
           "recorded_at_utc": "2026-11-24T19:21:34.344318Z"
+        },
+        {
+          "fills_count": 1,
+          "key": "IL-014:2026-11-24:stop:ADM:classic_forward_v1",
+          "recorded_at_utc": "2026-11-24T19:27:52.997031Z"
         }
       ],
       "native_settlement": "settled_native_paper",

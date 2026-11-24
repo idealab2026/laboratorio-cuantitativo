@@ -12980,7 +12980,7 @@
       ]
     },
     "rsi_reversion_14": {
-      "cash": 20929.252030174495,
+      "cash": 35603.53892003071,
       "equity": [
         {
           "date": "2026-10-12",
@@ -13357,6 +13357,18 @@
           "source_commit": "30e312b5b93e1efbc25d3afc41e16ae8b453f6aa",
           "ticker": "BG",
           "type": "sell"
+        },
+        {
+          "date": "2026-11-24",
+          "execution": "forward_observed_paper",
+          "idempotency_key": "IL-014:2026-11-24:stop:ADM:classic_forward_v1:ADM",
+          "lock_sha256": "1f1ac5090de3e5afd723b07234dd5b992aed18125750c8502d3b0ca370d0d4a7",
+          "observed_at_utc": "2026-11-24T19:27:47.847991Z",
+          "quote_at_utc": "2026-11-24T19:27:00Z",
+          "reason": "stop_forward_observed",
+          "source_commit": "30e312b5b93e1efbc25d3afc41e16ae8b453f6aa",
+          "ticker": "ADM",
+          "type": "sell"
         }
       ],
       "forward_executions": {
@@ -13454,6 +13466,18 @@
           "session": "2026-11-24",
           "source_commit": "30e312b5b93e1efbc25d3afc41e16ae8b453f6aa"
         },
+        "IL-014:2026-11-24:stop:ADM:classic_forward_v1": {
+          "fill_tickers": [
+            "ADM"
+          ],
+          "fills_count": 1,
+          "lock_sha256": "1f1ac5090de3e5afd723b07234dd5b992aed18125750c8502d3b0ca370d0d4a7",
+          "mode": "forward_observed_paper",
+          "quotes_sha256": "7fd2df9b35bc0ac48364f1a817cdedd0be546f32c8c4ce90f0ecdabdc35b7277",
+          "recorded_at_utc": "2026-11-24T19:27:52.997031Z",
+          "session": "2026-11-24",
+          "source_commit": "30e312b5b93e1efbc25d3afc41e16ae8b453f6aa"
+        },
         "IL-014:2026-11-24:stop:BG:classic_forward_v1": {
           "fill_tickers": [
             "BG"
@@ -13470,15 +13494,6 @@
       "nav": 103137.80309160796,
       "pending": {},
       "positions": {
-        "ADM": {
-          "cost": 16050.90425304054,
-          "dividends": 0.0,
-          "entry_date": "2026-11-04",
-          "entry_price": 71.58577805328369,
-          "shares": 223.995182,
-          "stop": 65.858915809021,
-          "target": 82.32364476127624
-        },
         "BAC": {
           "cost": 15442.900736508143,
           "dividends": 0.0,
@@ -13739,6 +13754,22 @@
           "reason": "stop_forward_observed",
           "source_commit": "30e312b5b93e1efbc25d3afc41e16ae8b453f6aa",
           "ticker": "BG"
+        },
+        {
+          "dividends": 0.0,
+          "entry_cost": 16050.90425304054,
+          "entry_date": "2026-11-04",
+          "execution": "forward_observed_paper",
+          "exit_date": "2026-11-24",
+          "idempotency_key": "IL-014:2026-11-24:stop:ADM:classic_forward_v1:ADM",
+          "lock_sha256": "1f1ac5090de3e5afd723b07234dd5b992aed18125750c8502d3b0ca370d0d4a7",
+          "net_pnl": -1376.6173631843212,
+          "observed_at_utc": "2026-11-24T19:27:47.847991Z",
+          "proceeds": 14674.28688985622,
+          "quote_at_utc": "2026-11-24T19:27:00Z",
+          "reason": "stop_forward_observed",
+          "source_commit": "30e312b5b93e1efbc25d3afc41e16ae8b453f6aa",
+          "ticker": "ADM"
         }
       ]
     },
