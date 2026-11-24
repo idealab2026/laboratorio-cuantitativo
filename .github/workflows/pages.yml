@@ -180,6 +180,22 @@ jobs:
           done
           echo "::error::Uploaded Pages artifact was not visible through the Actions API within 90 seconds"
           exit 1
-      - uses: actions/deploy-pages@v4
+      # REST visibility does not guarantee visibility in the internal Actions
+      # artifact service used by deploy-pages. Retry publication only; never
+      # recompute a paper ledger, change the artifact or bypass quality gates.
+      - name: Allow internal artifact index propagation
+        run: sleep 20
+      - name: Deploy audited site (first attempt)
+        id: deploy_first
+        continue-on-error: true
+        uses: actions/deploy-pages@v4
+        with:
+          artifact_name: github-pages-${{ github.run_id }}-${{ github.run_attempt }}
+      - name: Wait before bounded deployment retry
+        if: steps.deploy_first.outcome == 'failure'
+        run: sleep 30
+      - name: Deploy audited site (final attempt)
+        if: steps.deploy_first.outcome == 'failure'
+        uses: actions/deploy-pages@v4
         with:
           artifact_name: github-pages-${{ github.run_id }}-${{ github.run_attempt }}
