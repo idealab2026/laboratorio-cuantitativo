@@ -1,84 +1,1346 @@
 {
-  "schema": "midas.gs_quant_research.v1",
-  "campaign_start": "2026-11-25",
-  "currency": "USD",
-  "initial_capital": 100000,
-  "execution_policy": "prospective_next_open_ohlc_simulation_after_close",
-  "commission": 0.001,
-  "slippage": 0.0005,
   "annual_short_borrow_assumption": 0.03,
   "books": {
     "GS-01": {
-      "name": "Momentum ajustado por volatilidad",
       "cash": 100000,
+      "diagnostic": null,
+      "history": [
+        {
+          "date": "2026-11-25",
+          "nav": 100000,
+          "source_sha256": "fbcc4f22fb1813de0c9b84bb8eb4b3790879fb21b3a80bb9d4c26a9a818a8a92"
+        }
+      ],
+      "last_session": "2026-11-25",
+      "name": "Momentum ajustado por volatilidad",
+      "pending": {
+        "issued_at_utc": "2026-11-25T23:58:43.968416+00:00",
+        "sha256": "3b47c8957af2f27f2615d22d1b2639f119b988ed663e1fad5f3c58a480d39856",
+        "signal_session": "2026-11-25",
+        "source_hashes": [
+          {
+            "session": "2026-10-28",
+            "sha256": "f281225f3db3d07ce745f0803078cb5a173bd1e48d5fbf46c527fbbe98426726"
+          },
+          {
+            "session": "2026-10-29",
+            "sha256": "0b919436da053b8e3aee7e09682ec7a821847a1e129551b14b4236b0790c41bc"
+          },
+          {
+            "session": "2026-10-30",
+            "sha256": "0f09c6ae175f1ea60bb6ced05f5a3620483aad3f4cdedc044edd8a1a8f2c2680"
+          },
+          {
+            "session": "2026-11-02",
+            "sha256": "eebe356462aa1a2bcce72d1f62aaa7be676fccba2279c555ec24c38658564910"
+          },
+          {
+            "session": "2026-11-03",
+            "sha256": "9b25e618f47478e7b61fbe5a019eea93de2d02fb50058e5fbee9953a2c105d24"
+          },
+          {
+            "session": "2026-11-04",
+            "sha256": "d8bb48d517a4e7557c3634c2f072518b48ccc34b307d1669812143cad1b2f7bd"
+          },
+          {
+            "session": "2026-11-05",
+            "sha256": "e175f0c80241cc7345979db086bcb83d513950cb5a97027aaba92df9783b93e1"
+          },
+          {
+            "session": "2026-11-06",
+            "sha256": "83bc3bf223004e864717fc44fec924b8df479d9b6dd9c2fad1cef9d5343eca6b"
+          },
+          {
+            "session": "2026-11-09",
+            "sha256": "44d94c3e556782780c149749005800389d786d1fa221281ad8a9b43b9a741ddb"
+          },
+          {
+            "session": "2026-11-10",
+            "sha256": "74529b48d939f3588c79de31304855abc82bb0c8e847eb2f89d69239e954397c"
+          },
+          {
+            "session": "2026-11-11",
+            "sha256": "ebcbb988afbec7a1abd694e2153976218ecdcd1215067ef190dd59584e47955e"
+          },
+          {
+            "session": "2026-11-12",
+            "sha256": "e6767240da15a78a1a33e8251fae3f19000ce13514d771b5fd03fd01417d4831"
+          },
+          {
+            "session": "2026-11-13",
+            "sha256": "848489c23800e69ce1edda437a865d7ad5edfb378fde9bb48e7804a143374b15"
+          },
+          {
+            "session": "2026-11-16",
+            "sha256": "9d8f9a13262b749e8f28bbb4de124015845a20e9955ed87620e16abd6341bd61"
+          },
+          {
+            "session": "2026-11-17",
+            "sha256": "9d22076ed0a0b2d21a46d893576826161750cbe9bb92367850f0465ff13e116d"
+          },
+          {
+            "session": "2026-11-18",
+            "sha256": "10d883d21c20f2c764f468357f0301346c1f41519aeb7e10e778558fd0e26d68"
+          },
+          {
+            "session": "2026-11-19",
+            "sha256": "3bce6e959064265876c9af5162509d03af910090e5a80aff0bb2d98bb0b6f33b"
+          },
+          {
+            "session": "2026-11-20",
+            "sha256": "5af5d4d2e8993471c231c03734d4b96d96acda17656bbadc7f2329fae7aa257d"
+          },
+          {
+            "session": "2026-11-23",
+            "sha256": "e93aadf9075cea2afda2b412e2d7b2d7f2475d7927a9d7b287760d7c062b29ad"
+          },
+          {
+            "session": "2026-11-24",
+            "sha256": "d26bd428bbc81615868fddb561e6ed589d8f1a00878502185d5263b5436f43ee"
+          },
+          {
+            "session": "2026-11-25",
+            "sha256": "fbcc4f22fb1813de0c9b84bb8eb4b3790879fb21b3a80bb9d4c26a9a818a8a92"
+          }
+        ],
+        "target_session": "2026-11-27",
+        "weights": {
+          "AIZ": 0.09,
+          "CAH": 0.09,
+          "CLX": 0.09,
+          "CMG": 0.09,
+          "DPZ": 0.09,
+          "MGM": 0.09,
+          "T": 0.09,
+          "TSCO": 0.09,
+          "VZ": 0.09,
+          "WRB": 0.09
+        }
+      },
       "positions": {},
-      "pending": null,
-      "last_session": null,
-      "history": [],
-      "trades": [],
-      "signals": [],
-      "status": "awaiting_first_signal",
-      "diagnostic": null
+      "signals": [
+        {
+          "issued_at_utc": "2026-11-25T23:58:43.968416+00:00",
+          "sha256": "3b47c8957af2f27f2615d22d1b2639f119b988ed663e1fad5f3c58a480d39856",
+          "signal_session": "2026-11-25",
+          "source_hashes": [
+            {
+              "session": "2026-10-28",
+              "sha256": "f281225f3db3d07ce745f0803078cb5a173bd1e48d5fbf46c527fbbe98426726"
+            },
+            {
+              "session": "2026-10-29",
+              "sha256": "0b919436da053b8e3aee7e09682ec7a821847a1e129551b14b4236b0790c41bc"
+            },
+            {
+              "session": "2026-10-30",
+              "sha256": "0f09c6ae175f1ea60bb6ced05f5a3620483aad3f4cdedc044edd8a1a8f2c2680"
+            },
+            {
+              "session": "2026-11-02",
+              "sha256": "eebe356462aa1a2bcce72d1f62aaa7be676fccba2279c555ec24c38658564910"
+            },
+            {
+              "session": "2026-11-03",
+              "sha256": "9b25e618f47478e7b61fbe5a019eea93de2d02fb50058e5fbee9953a2c105d24"
+            },
+            {
+              "session": "2026-11-04",
+              "sha256": "d8bb48d517a4e7557c3634c2f072518b48ccc34b307d1669812143cad1b2f7bd"
+            },
+            {
+              "session": "2026-11-05",
+              "sha256": "e175f0c80241cc7345979db086bcb83d513950cb5a97027aaba92df9783b93e1"
+            },
+            {
+              "session": "2026-11-06",
+              "sha256": "83bc3bf223004e864717fc44fec924b8df479d9b6dd9c2fad1cef9d5343eca6b"
+            },
+            {
+              "session": "2026-11-09",
+              "sha256": "44d94c3e556782780c149749005800389d786d1fa221281ad8a9b43b9a741ddb"
+            },
+            {
+              "session": "2026-11-10",
+              "sha256": "74529b48d939f3588c79de31304855abc82bb0c8e847eb2f89d69239e954397c"
+            },
+            {
+              "session": "2026-11-11",
+              "sha256": "ebcbb988afbec7a1abd694e2153976218ecdcd1215067ef190dd59584e47955e"
+            },
+            {
+              "session": "2026-11-12",
+              "sha256": "e6767240da15a78a1a33e8251fae3f19000ce13514d771b5fd03fd01417d4831"
+            },
+            {
+              "session": "2026-11-13",
+              "sha256": "848489c23800e69ce1edda437a865d7ad5edfb378fde9bb48e7804a143374b15"
+            },
+            {
+              "session": "2026-11-16",
+              "sha256": "9d8f9a13262b749e8f28bbb4de124015845a20e9955ed87620e16abd6341bd61"
+            },
+            {
+              "session": "2026-11-17",
+              "sha256": "9d22076ed0a0b2d21a46d893576826161750cbe9bb92367850f0465ff13e116d"
+            },
+            {
+              "session": "2026-11-18",
+              "sha256": "10d883d21c20f2c764f468357f0301346c1f41519aeb7e10e778558fd0e26d68"
+            },
+            {
+              "session": "2026-11-19",
+              "sha256": "3bce6e959064265876c9af5162509d03af910090e5a80aff0bb2d98bb0b6f33b"
+            },
+            {
+              "session": "2026-11-20",
+              "sha256": "5af5d4d2e8993471c231c03734d4b96d96acda17656bbadc7f2329fae7aa257d"
+            },
+            {
+              "session": "2026-11-23",
+              "sha256": "e93aadf9075cea2afda2b412e2d7b2d7f2475d7927a9d7b287760d7c062b29ad"
+            },
+            {
+              "session": "2026-11-24",
+              "sha256": "d26bd428bbc81615868fddb561e6ed589d8f1a00878502185d5263b5436f43ee"
+            },
+            {
+              "session": "2026-11-25",
+              "sha256": "fbcc4f22fb1813de0c9b84bb8eb4b3790879fb21b3a80bb9d4c26a9a818a8a92"
+            }
+          ],
+          "target_session": "2026-11-27",
+          "weights": {
+            "AIZ": 0.09,
+            "CAH": 0.09,
+            "CLX": 0.09,
+            "CMG": 0.09,
+            "DPZ": 0.09,
+            "MGM": 0.09,
+            "T": 0.09,
+            "TSCO": 0.09,
+            "VZ": 0.09,
+            "WRB": 0.09
+          }
+        }
+      ],
+      "status": "paper_signal_frozen",
+      "trades": []
     },
     "GS-02": {
-      "name": "Reversión a la media (z-score)",
       "cash": 100000,
+      "diagnostic": null,
+      "history": [
+        {
+          "date": "2026-11-25",
+          "nav": 100000,
+          "source_sha256": "fbcc4f22fb1813de0c9b84bb8eb4b3790879fb21b3a80bb9d4c26a9a818a8a92"
+        }
+      ],
+      "last_session": "2026-11-25",
+      "name": "Reversión a la media (z-score)",
+      "pending": {
+        "issued_at_utc": "2026-11-25T23:58:43.968416+00:00",
+        "sha256": "bfd9fbc3d3a98b73756601bfc439c1cee769431e091749e8e29542c911cbd7ca",
+        "signal_session": "2026-11-25",
+        "source_hashes": [
+          {
+            "session": "2026-10-28",
+            "sha256": "f281225f3db3d07ce745f0803078cb5a173bd1e48d5fbf46c527fbbe98426726"
+          },
+          {
+            "session": "2026-10-29",
+            "sha256": "0b919436da053b8e3aee7e09682ec7a821847a1e129551b14b4236b0790c41bc"
+          },
+          {
+            "session": "2026-10-30",
+            "sha256": "0f09c6ae175f1ea60bb6ced05f5a3620483aad3f4cdedc044edd8a1a8f2c2680"
+          },
+          {
+            "session": "2026-11-02",
+            "sha256": "eebe356462aa1a2bcce72d1f62aaa7be676fccba2279c555ec24c38658564910"
+          },
+          {
+            "session": "2026-11-03",
+            "sha256": "9b25e618f47478e7b61fbe5a019eea93de2d02fb50058e5fbee9953a2c105d24"
+          },
+          {
+            "session": "2026-11-04",
+            "sha256": "d8bb48d517a4e7557c3634c2f072518b48ccc34b307d1669812143cad1b2f7bd"
+          },
+          {
+            "session": "2026-11-05",
+            "sha256": "e175f0c80241cc7345979db086bcb83d513950cb5a97027aaba92df9783b93e1"
+          },
+          {
+            "session": "2026-11-06",
+            "sha256": "83bc3bf223004e864717fc44fec924b8df479d9b6dd9c2fad1cef9d5343eca6b"
+          },
+          {
+            "session": "2026-11-09",
+            "sha256": "44d94c3e556782780c149749005800389d786d1fa221281ad8a9b43b9a741ddb"
+          },
+          {
+            "session": "2026-11-10",
+            "sha256": "74529b48d939f3588c79de31304855abc82bb0c8e847eb2f89d69239e954397c"
+          },
+          {
+            "session": "2026-11-11",
+            "sha256": "ebcbb988afbec7a1abd694e2153976218ecdcd1215067ef190dd59584e47955e"
+          },
+          {
+            "session": "2026-11-12",
+            "sha256": "e6767240da15a78a1a33e8251fae3f19000ce13514d771b5fd03fd01417d4831"
+          },
+          {
+            "session": "2026-11-13",
+            "sha256": "848489c23800e69ce1edda437a865d7ad5edfb378fde9bb48e7804a143374b15"
+          },
+          {
+            "session": "2026-11-16",
+            "sha256": "9d8f9a13262b749e8f28bbb4de124015845a20e9955ed87620e16abd6341bd61"
+          },
+          {
+            "session": "2026-11-17",
+            "sha256": "9d22076ed0a0b2d21a46d893576826161750cbe9bb92367850f0465ff13e116d"
+          },
+          {
+            "session": "2026-11-18",
+            "sha256": "10d883d21c20f2c764f468357f0301346c1f41519aeb7e10e778558fd0e26d68"
+          },
+          {
+            "session": "2026-11-19",
+            "sha256": "3bce6e959064265876c9af5162509d03af910090e5a80aff0bb2d98bb0b6f33b"
+          },
+          {
+            "session": "2026-11-20",
+            "sha256": "5af5d4d2e8993471c231c03734d4b96d96acda17656bbadc7f2329fae7aa257d"
+          },
+          {
+            "session": "2026-11-23",
+            "sha256": "e93aadf9075cea2afda2b412e2d7b2d7f2475d7927a9d7b287760d7c062b29ad"
+          },
+          {
+            "session": "2026-11-24",
+            "sha256": "d26bd428bbc81615868fddb561e6ed589d8f1a00878502185d5263b5436f43ee"
+          },
+          {
+            "session": "2026-11-25",
+            "sha256": "fbcc4f22fb1813de0c9b84bb8eb4b3790879fb21b3a80bb9d4c26a9a818a8a92"
+          }
+        ],
+        "target_session": "2026-11-27",
+        "weights": {
+          "ADI": 0.09,
+          "CEG": 0.09,
+          "GS": 0.09,
+          "HAS": 0.09,
+          "INTU": 0.09,
+          "J": 0.09,
+          "MPC": 0.09,
+          "MS": 0.09,
+          "SNPS": 0.09,
+          "WSM": 0.09
+        }
+      },
       "positions": {},
-      "pending": null,
-      "last_session": null,
-      "history": [],
-      "trades": [],
-      "signals": [],
-      "status": "awaiting_first_signal",
-      "diagnostic": null
+      "signals": [
+        {
+          "issued_at_utc": "2026-11-25T23:58:43.968416+00:00",
+          "sha256": "bfd9fbc3d3a98b73756601bfc439c1cee769431e091749e8e29542c911cbd7ca",
+          "signal_session": "2026-11-25",
+          "source_hashes": [
+            {
+              "session": "2026-10-28",
+              "sha256": "f281225f3db3d07ce745f0803078cb5a173bd1e48d5fbf46c527fbbe98426726"
+            },
+            {
+              "session": "2026-10-29",
+              "sha256": "0b919436da053b8e3aee7e09682ec7a821847a1e129551b14b4236b0790c41bc"
+            },
+            {
+              "session": "2026-10-30",
+              "sha256": "0f09c6ae175f1ea60bb6ced05f5a3620483aad3f4cdedc044edd8a1a8f2c2680"
+            },
+            {
+              "session": "2026-11-02",
+              "sha256": "eebe356462aa1a2bcce72d1f62aaa7be676fccba2279c555ec24c38658564910"
+            },
+            {
+              "session": "2026-11-03",
+              "sha256": "9b25e618f47478e7b61fbe5a019eea93de2d02fb50058e5fbee9953a2c105d24"
+            },
+            {
+              "session": "2026-11-04",
+              "sha256": "d8bb48d517a4e7557c3634c2f072518b48ccc34b307d1669812143cad1b2f7bd"
+            },
+            {
+              "session": "2026-11-05",
+              "sha256": "e175f0c80241cc7345979db086bcb83d513950cb5a97027aaba92df9783b93e1"
+            },
+            {
+              "session": "2026-11-06",
+              "sha256": "83bc3bf223004e864717fc44fec924b8df479d9b6dd9c2fad1cef9d5343eca6b"
+            },
+            {
+              "session": "2026-11-09",
+              "sha256": "44d94c3e556782780c149749005800389d786d1fa221281ad8a9b43b9a741ddb"
+            },
+            {
+              "session": "2026-11-10",
+              "sha256": "74529b48d939f3588c79de31304855abc82bb0c8e847eb2f89d69239e954397c"
+            },
+            {
+              "session": "2026-11-11",
+              "sha256": "ebcbb988afbec7a1abd694e2153976218ecdcd1215067ef190dd59584e47955e"
+            },
+            {
+              "session": "2026-11-12",
+              "sha256": "e6767240da15a78a1a33e8251fae3f19000ce13514d771b5fd03fd01417d4831"
+            },
+            {
+              "session": "2026-11-13",
+              "sha256": "848489c23800e69ce1edda437a865d7ad5edfb378fde9bb48e7804a143374b15"
+            },
+            {
+              "session": "2026-11-16",
+              "sha256": "9d8f9a13262b749e8f28bbb4de124015845a20e9955ed87620e16abd6341bd61"
+            },
+            {
+              "session": "2026-11-17",
+              "sha256": "9d22076ed0a0b2d21a46d893576826161750cbe9bb92367850f0465ff13e116d"
+            },
+            {
+              "session": "2026-11-18",
+              "sha256": "10d883d21c20f2c764f468357f0301346c1f41519aeb7e10e778558fd0e26d68"
+            },
+            {
+              "session": "2026-11-19",
+              "sha256": "3bce6e959064265876c9af5162509d03af910090e5a80aff0bb2d98bb0b6f33b"
+            },
+            {
+              "session": "2026-11-20",
+              "sha256": "5af5d4d2e8993471c231c03734d4b96d96acda17656bbadc7f2329fae7aa257d"
+            },
+            {
+              "session": "2026-11-23",
+              "sha256": "e93aadf9075cea2afda2b412e2d7b2d7f2475d7927a9d7b287760d7c062b29ad"
+            },
+            {
+              "session": "2026-11-24",
+              "sha256": "d26bd428bbc81615868fddb561e6ed589d8f1a00878502185d5263b5436f43ee"
+            },
+            {
+              "session": "2026-11-25",
+              "sha256": "fbcc4f22fb1813de0c9b84bb8eb4b3790879fb21b3a80bb9d4c26a9a818a8a92"
+            }
+          ],
+          "target_session": "2026-11-27",
+          "weights": {
+            "ADI": 0.09,
+            "CEG": 0.09,
+            "GS": 0.09,
+            "HAS": 0.09,
+            "INTU": 0.09,
+            "J": 0.09,
+            "MPC": 0.09,
+            "MS": 0.09,
+            "SNPS": 0.09,
+            "WSM": 0.09
+          }
+        }
+      ],
+      "status": "paper_signal_frozen",
+      "trades": []
     },
     "GS-03": {
-      "name": "Risk parity (ERC)",
       "cash": 100000,
+      "diagnostic": null,
+      "history": [
+        {
+          "date": "2026-11-25",
+          "nav": 100000,
+          "source_sha256": "fbcc4f22fb1813de0c9b84bb8eb4b3790879fb21b3a80bb9d4c26a9a818a8a92"
+        }
+      ],
+      "last_session": "2026-11-25",
+      "name": "Risk parity (ERC)",
+      "pending": {
+        "issued_at_utc": "2026-11-25T23:58:43.968416+00:00",
+        "sha256": "240482a144480b476d3353b3f0ae625ef430ad097abb16f5122784fe0348a764",
+        "signal_session": "2026-11-25",
+        "source_hashes": [
+          {
+            "session": "2026-10-28",
+            "sha256": "f281225f3db3d07ce745f0803078cb5a173bd1e48d5fbf46c527fbbe98426726"
+          },
+          {
+            "session": "2026-10-29",
+            "sha256": "0b919436da053b8e3aee7e09682ec7a821847a1e129551b14b4236b0790c41bc"
+          },
+          {
+            "session": "2026-10-30",
+            "sha256": "0f09c6ae175f1ea60bb6ced05f5a3620483aad3f4cdedc044edd8a1a8f2c2680"
+          },
+          {
+            "session": "2026-11-02",
+            "sha256": "eebe356462aa1a2bcce72d1f62aaa7be676fccba2279c555ec24c38658564910"
+          },
+          {
+            "session": "2026-11-03",
+            "sha256": "9b25e618f47478e7b61fbe5a019eea93de2d02fb50058e5fbee9953a2c105d24"
+          },
+          {
+            "session": "2026-11-04",
+            "sha256": "d8bb48d517a4e7557c3634c2f072518b48ccc34b307d1669812143cad1b2f7bd"
+          },
+          {
+            "session": "2026-11-05",
+            "sha256": "e175f0c80241cc7345979db086bcb83d513950cb5a97027aaba92df9783b93e1"
+          },
+          {
+            "session": "2026-11-06",
+            "sha256": "83bc3bf223004e864717fc44fec924b8df479d9b6dd9c2fad1cef9d5343eca6b"
+          },
+          {
+            "session": "2026-11-09",
+            "sha256": "44d94c3e556782780c149749005800389d786d1fa221281ad8a9b43b9a741ddb"
+          },
+          {
+            "session": "2026-11-10",
+            "sha256": "74529b48d939f3588c79de31304855abc82bb0c8e847eb2f89d69239e954397c"
+          },
+          {
+            "session": "2026-11-11",
+            "sha256": "ebcbb988afbec7a1abd694e2153976218ecdcd1215067ef190dd59584e47955e"
+          },
+          {
+            "session": "2026-11-12",
+            "sha256": "e6767240da15a78a1a33e8251fae3f19000ce13514d771b5fd03fd01417d4831"
+          },
+          {
+            "session": "2026-11-13",
+            "sha256": "848489c23800e69ce1edda437a865d7ad5edfb378fde9bb48e7804a143374b15"
+          },
+          {
+            "session": "2026-11-16",
+            "sha256": "9d8f9a13262b749e8f28bbb4de124015845a20e9955ed87620e16abd6341bd61"
+          },
+          {
+            "session": "2026-11-17",
+            "sha256": "9d22076ed0a0b2d21a46d893576826161750cbe9bb92367850f0465ff13e116d"
+          },
+          {
+            "session": "2026-11-18",
+            "sha256": "10d883d21c20f2c764f468357f0301346c1f41519aeb7e10e778558fd0e26d68"
+          },
+          {
+            "session": "2026-11-19",
+            "sha256": "3bce6e959064265876c9af5162509d03af910090e5a80aff0bb2d98bb0b6f33b"
+          },
+          {
+            "session": "2026-11-20",
+            "sha256": "5af5d4d2e8993471c231c03734d4b96d96acda17656bbadc7f2329fae7aa257d"
+          },
+          {
+            "session": "2026-11-23",
+            "sha256": "e93aadf9075cea2afda2b412e2d7b2d7f2475d7927a9d7b287760d7c062b29ad"
+          },
+          {
+            "session": "2026-11-24",
+            "sha256": "d26bd428bbc81615868fddb561e6ed589d8f1a00878502185d5263b5436f43ee"
+          },
+          {
+            "session": "2026-11-25",
+            "sha256": "fbcc4f22fb1813de0c9b84bb8eb4b3790879fb21b3a80bb9d4c26a9a818a8a92"
+          }
+        ],
+        "target_session": "2026-11-27",
+        "weights": {
+          "AAPL": 0.0548025974998967,
+          "CAT": 0.06077862720453616,
+          "COST": 0.10754936505069347,
+          "DUK": 0.12060542601321125,
+          "JNJ": 0.05419370020629854,
+          "JPM": 0.04666128882782209,
+          "MSFT": 0.05169513525262825,
+          "NEE": 0.08476096374668497,
+          "PG": 0.07976229035407291,
+          "UNH": 0.03380151814588965,
+          "WMT": 0.06757670509614119,
+          "XOM": 0.13781238260212483
+        }
+      },
       "positions": {},
-      "pending": null,
-      "last_session": null,
-      "history": [],
-      "trades": [],
-      "signals": [],
-      "status": "awaiting_first_signal",
-      "diagnostic": null
+      "signals": [
+        {
+          "issued_at_utc": "2026-11-25T23:58:43.968416+00:00",
+          "sha256": "240482a144480b476d3353b3f0ae625ef430ad097abb16f5122784fe0348a764",
+          "signal_session": "2026-11-25",
+          "source_hashes": [
+            {
+              "session": "2026-10-28",
+              "sha256": "f281225f3db3d07ce745f0803078cb5a173bd1e48d5fbf46c527fbbe98426726"
+            },
+            {
+              "session": "2026-10-29",
+              "sha256": "0b919436da053b8e3aee7e09682ec7a821847a1e129551b14b4236b0790c41bc"
+            },
+            {
+              "session": "2026-10-30",
+              "sha256": "0f09c6ae175f1ea60bb6ced05f5a3620483aad3f4cdedc044edd8a1a8f2c2680"
+            },
+            {
+              "session": "2026-11-02",
+              "sha256": "eebe356462aa1a2bcce72d1f62aaa7be676fccba2279c555ec24c38658564910"
+            },
+            {
+              "session": "2026-11-03",
+              "sha256": "9b25e618f47478e7b61fbe5a019eea93de2d02fb50058e5fbee9953a2c105d24"
+            },
+            {
+              "session": "2026-11-04",
+              "sha256": "d8bb48d517a4e7557c3634c2f072518b48ccc34b307d1669812143cad1b2f7bd"
+            },
+            {
+              "session": "2026-11-05",
+              "sha256": "e175f0c80241cc7345979db086bcb83d513950cb5a97027aaba92df9783b93e1"
+            },
+            {
+              "session": "2026-11-06",
+              "sha256": "83bc3bf223004e864717fc44fec924b8df479d9b6dd9c2fad1cef9d5343eca6b"
+            },
+            {
+              "session": "2026-11-09",
+              "sha256": "44d94c3e556782780c149749005800389d786d1fa221281ad8a9b43b9a741ddb"
+            },
+            {
+              "session": "2026-11-10",
+              "sha256": "74529b48d939f3588c79de31304855abc82bb0c8e847eb2f89d69239e954397c"
+            },
+            {
+              "session": "2026-11-11",
+              "sha256": "ebcbb988afbec7a1abd694e2153976218ecdcd1215067ef190dd59584e47955e"
+            },
+            {
+              "session": "2026-11-12",
+              "sha256": "e6767240da15a78a1a33e8251fae3f19000ce13514d771b5fd03fd01417d4831"
+            },
+            {
+              "session": "2026-11-13",
+              "sha256": "848489c23800e69ce1edda437a865d7ad5edfb378fde9bb48e7804a143374b15"
+            },
+            {
+              "session": "2026-11-16",
+              "sha256": "9d8f9a13262b749e8f28bbb4de124015845a20e9955ed87620e16abd6341bd61"
+            },
+            {
+              "session": "2026-11-17",
+              "sha256": "9d22076ed0a0b2d21a46d893576826161750cbe9bb92367850f0465ff13e116d"
+            },
+            {
+              "session": "2026-11-18",
+              "sha256": "10d883d21c20f2c764f468357f0301346c1f41519aeb7e10e778558fd0e26d68"
+            },
+            {
+              "session": "2026-11-19",
+              "sha256": "3bce6e959064265876c9af5162509d03af910090e5a80aff0bb2d98bb0b6f33b"
+            },
+            {
+              "session": "2026-11-20",
+              "sha256": "5af5d4d2e8993471c231c03734d4b96d96acda17656bbadc7f2329fae7aa257d"
+            },
+            {
+              "session": "2026-11-23",
+              "sha256": "e93aadf9075cea2afda2b412e2d7b2d7f2475d7927a9d7b287760d7c062b29ad"
+            },
+            {
+              "session": "2026-11-24",
+              "sha256": "d26bd428bbc81615868fddb561e6ed589d8f1a00878502185d5263b5436f43ee"
+            },
+            {
+              "session": "2026-11-25",
+              "sha256": "fbcc4f22fb1813de0c9b84bb8eb4b3790879fb21b3a80bb9d4c26a9a818a8a92"
+            }
+          ],
+          "target_session": "2026-11-27",
+          "weights": {
+            "AAPL": 0.0548025974998967,
+            "CAT": 0.06077862720453616,
+            "COST": 0.10754936505069347,
+            "DUK": 0.12060542601321125,
+            "JNJ": 0.05419370020629854,
+            "JPM": 0.04666128882782209,
+            "MSFT": 0.05169513525262825,
+            "NEE": 0.08476096374668497,
+            "PG": 0.07976229035407291,
+            "UNH": 0.03380151814588965,
+            "WMT": 0.06757670509614119,
+            "XOM": 0.13781238260212483
+          }
+        }
+      ],
+      "status": "paper_signal_frozen",
+      "trades": []
     },
     "GS-04": {
-      "name": "Pairs trading (OLS long/short)",
       "cash": 100000,
+      "diagnostic": null,
+      "history": [
+        {
+          "date": "2026-11-25",
+          "nav": 100000,
+          "source_sha256": "fbcc4f22fb1813de0c9b84bb8eb4b3790879fb21b3a80bb9d4c26a9a818a8a92"
+        }
+      ],
+      "last_session": "2026-11-25",
+      "name": "Pairs trading (OLS long/short)",
+      "pending": {
+        "issued_at_utc": "2026-11-25T23:58:43.968416+00:00",
+        "sha256": "55afaf66f1af01792e3e3cd9ac4f4565c19c1ab4e36db7202d0c687c50017579",
+        "signal_session": "2026-11-25",
+        "source_hashes": [
+          {
+            "session": "2026-10-28",
+            "sha256": "f281225f3db3d07ce745f0803078cb5a173bd1e48d5fbf46c527fbbe98426726"
+          },
+          {
+            "session": "2026-10-29",
+            "sha256": "0b919436da053b8e3aee7e09682ec7a821847a1e129551b14b4236b0790c41bc"
+          },
+          {
+            "session": "2026-10-30",
+            "sha256": "0f09c6ae175f1ea60bb6ced05f5a3620483aad3f4cdedc044edd8a1a8f2c2680"
+          },
+          {
+            "session": "2026-11-02",
+            "sha256": "eebe356462aa1a2bcce72d1f62aaa7be676fccba2279c555ec24c38658564910"
+          },
+          {
+            "session": "2026-11-03",
+            "sha256": "9b25e618f47478e7b61fbe5a019eea93de2d02fb50058e5fbee9953a2c105d24"
+          },
+          {
+            "session": "2026-11-04",
+            "sha256": "d8bb48d517a4e7557c3634c2f072518b48ccc34b307d1669812143cad1b2f7bd"
+          },
+          {
+            "session": "2026-11-05",
+            "sha256": "e175f0c80241cc7345979db086bcb83d513950cb5a97027aaba92df9783b93e1"
+          },
+          {
+            "session": "2026-11-06",
+            "sha256": "83bc3bf223004e864717fc44fec924b8df479d9b6dd9c2fad1cef9d5343eca6b"
+          },
+          {
+            "session": "2026-11-09",
+            "sha256": "44d94c3e556782780c149749005800389d786d1fa221281ad8a9b43b9a741ddb"
+          },
+          {
+            "session": "2026-11-10",
+            "sha256": "74529b48d939f3588c79de31304855abc82bb0c8e847eb2f89d69239e954397c"
+          },
+          {
+            "session": "2026-11-11",
+            "sha256": "ebcbb988afbec7a1abd694e2153976218ecdcd1215067ef190dd59584e47955e"
+          },
+          {
+            "session": "2026-11-12",
+            "sha256": "e6767240da15a78a1a33e8251fae3f19000ce13514d771b5fd03fd01417d4831"
+          },
+          {
+            "session": "2026-11-13",
+            "sha256": "848489c23800e69ce1edda437a865d7ad5edfb378fde9bb48e7804a143374b15"
+          },
+          {
+            "session": "2026-11-16",
+            "sha256": "9d8f9a13262b749e8f28bbb4de124015845a20e9955ed87620e16abd6341bd61"
+          },
+          {
+            "session": "2026-11-17",
+            "sha256": "9d22076ed0a0b2d21a46d893576826161750cbe9bb92367850f0465ff13e116d"
+          },
+          {
+            "session": "2026-11-18",
+            "sha256": "10d883d21c20f2c764f468357f0301346c1f41519aeb7e10e778558fd0e26d68"
+          },
+          {
+            "session": "2026-11-19",
+            "sha256": "3bce6e959064265876c9af5162509d03af910090e5a80aff0bb2d98bb0b6f33b"
+          },
+          {
+            "session": "2026-11-20",
+            "sha256": "5af5d4d2e8993471c231c03734d4b96d96acda17656bbadc7f2329fae7aa257d"
+          },
+          {
+            "session": "2026-11-23",
+            "sha256": "e93aadf9075cea2afda2b412e2d7b2d7f2475d7927a9d7b287760d7c062b29ad"
+          },
+          {
+            "session": "2026-11-24",
+            "sha256": "d26bd428bbc81615868fddb561e6ed589d8f1a00878502185d5263b5436f43ee"
+          },
+          {
+            "session": "2026-11-25",
+            "sha256": "fbcc4f22fb1813de0c9b84bb8eb4b3790879fb21b3a80bb9d4c26a9a818a8a92"
+          }
+        ],
+        "target_session": "2026-11-27",
+        "weights": {
+          "BAC": -0.09,
+          "CL": 0.09,
+          "HD": -0.09,
+          "JPM": 0.09,
+          "LOW": 0.09,
+          "PG": -0.09
+        }
+      },
       "positions": {},
-      "pending": null,
-      "last_session": null,
-      "history": [],
-      "trades": [],
-      "signals": [],
-      "status": "awaiting_first_signal",
-      "diagnostic": null
+      "signals": [
+        {
+          "issued_at_utc": "2026-11-25T23:58:43.968416+00:00",
+          "sha256": "55afaf66f1af01792e3e3cd9ac4f4565c19c1ab4e36db7202d0c687c50017579",
+          "signal_session": "2026-11-25",
+          "source_hashes": [
+            {
+              "session": "2026-10-28",
+              "sha256": "f281225f3db3d07ce745f0803078cb5a173bd1e48d5fbf46c527fbbe98426726"
+            },
+            {
+              "session": "2026-10-29",
+              "sha256": "0b919436da053b8e3aee7e09682ec7a821847a1e129551b14b4236b0790c41bc"
+            },
+            {
+              "session": "2026-10-30",
+              "sha256": "0f09c6ae175f1ea60bb6ced05f5a3620483aad3f4cdedc044edd8a1a8f2c2680"
+            },
+            {
+              "session": "2026-11-02",
+              "sha256": "eebe356462aa1a2bcce72d1f62aaa7be676fccba2279c555ec24c38658564910"
+            },
+            {
+              "session": "2026-11-03",
+              "sha256": "9b25e618f47478e7b61fbe5a019eea93de2d02fb50058e5fbee9953a2c105d24"
+            },
+            {
+              "session": "2026-11-04",
+              "sha256": "d8bb48d517a4e7557c3634c2f072518b48ccc34b307d1669812143cad1b2f7bd"
+            },
+            {
+              "session": "2026-11-05",
+              "sha256": "e175f0c80241cc7345979db086bcb83d513950cb5a97027aaba92df9783b93e1"
+            },
+            {
+              "session": "2026-11-06",
+              "sha256": "83bc3bf223004e864717fc44fec924b8df479d9b6dd9c2fad1cef9d5343eca6b"
+            },
+            {
+              "session": "2026-11-09",
+              "sha256": "44d94c3e556782780c149749005800389d786d1fa221281ad8a9b43b9a741ddb"
+            },
+            {
+              "session": "2026-11-10",
+              "sha256": "74529b48d939f3588c79de31304855abc82bb0c8e847eb2f89d69239e954397c"
+            },
+            {
+              "session": "2026-11-11",
+              "sha256": "ebcbb988afbec7a1abd694e2153976218ecdcd1215067ef190dd59584e47955e"
+            },
+            {
+              "session": "2026-11-12",
+              "sha256": "e6767240da15a78a1a33e8251fae3f19000ce13514d771b5fd03fd01417d4831"
+            },
+            {
+              "session": "2026-11-13",
+              "sha256": "848489c23800e69ce1edda437a865d7ad5edfb378fde9bb48e7804a143374b15"
+            },
+            {
+              "session": "2026-11-16",
+              "sha256": "9d8f9a13262b749e8f28bbb4de124015845a20e9955ed87620e16abd6341bd61"
+            },
+            {
+              "session": "2026-11-17",
+              "sha256": "9d22076ed0a0b2d21a46d893576826161750cbe9bb92367850f0465ff13e116d"
+            },
+            {
+              "session": "2026-11-18",
+              "sha256": "10d883d21c20f2c764f468357f0301346c1f41519aeb7e10e778558fd0e26d68"
+            },
+            {
+              "session": "2026-11-19",
+              "sha256": "3bce6e959064265876c9af5162509d03af910090e5a80aff0bb2d98bb0b6f33b"
+            },
+            {
+              "session": "2026-11-20",
+              "sha256": "5af5d4d2e8993471c231c03734d4b96d96acda17656bbadc7f2329fae7aa257d"
+            },
+            {
+              "session": "2026-11-23",
+              "sha256": "e93aadf9075cea2afda2b412e2d7b2d7f2475d7927a9d7b287760d7c062b29ad"
+            },
+            {
+              "session": "2026-11-24",
+              "sha256": "d26bd428bbc81615868fddb561e6ed589d8f1a00878502185d5263b5436f43ee"
+            },
+            {
+              "session": "2026-11-25",
+              "sha256": "fbcc4f22fb1813de0c9b84bb8eb4b3790879fb21b3a80bb9d4c26a9a818a8a92"
+            }
+          ],
+          "target_session": "2026-11-27",
+          "weights": {
+            "BAC": -0.09,
+            "CL": 0.09,
+            "HD": -0.09,
+            "JPM": 0.09,
+            "LOW": 0.09,
+            "PG": -0.09
+          }
+        }
+      ],
+      "status": "paper_signal_frozen",
+      "trades": []
     },
     "GS-05": {
-      "name": "Multifactor cuantitativo",
       "cash": 100000,
+      "diagnostic": null,
+      "history": [
+        {
+          "date": "2026-11-25",
+          "nav": 100000,
+          "source_sha256": "fbcc4f22fb1813de0c9b84bb8eb4b3790879fb21b3a80bb9d4c26a9a818a8a92"
+        }
+      ],
+      "last_session": "2026-11-25",
+      "name": "Multifactor cuantitativo",
+      "pending": {
+        "issued_at_utc": "2026-11-25T23:58:43.968416+00:00",
+        "sha256": "8207ef44b3fddfe82755bded4f6e37446d612687063bf76c1f9ae9473625655e",
+        "signal_session": "2026-11-25",
+        "source_hashes": [
+          {
+            "session": "2026-10-28",
+            "sha256": "f281225f3db3d07ce745f0803078cb5a173bd1e48d5fbf46c527fbbe98426726"
+          },
+          {
+            "session": "2026-10-29",
+            "sha256": "0b919436da053b8e3aee7e09682ec7a821847a1e129551b14b4236b0790c41bc"
+          },
+          {
+            "session": "2026-10-30",
+            "sha256": "0f09c6ae175f1ea60bb6ced05f5a3620483aad3f4cdedc044edd8a1a8f2c2680"
+          },
+          {
+            "session": "2026-11-02",
+            "sha256": "eebe356462aa1a2bcce72d1f62aaa7be676fccba2279c555ec24c38658564910"
+          },
+          {
+            "session": "2026-11-03",
+            "sha256": "9b25e618f47478e7b61fbe5a019eea93de2d02fb50058e5fbee9953a2c105d24"
+          },
+          {
+            "session": "2026-11-04",
+            "sha256": "d8bb48d517a4e7557c3634c2f072518b48ccc34b307d1669812143cad1b2f7bd"
+          },
+          {
+            "session": "2026-11-05",
+            "sha256": "e175f0c80241cc7345979db086bcb83d513950cb5a97027aaba92df9783b93e1"
+          },
+          {
+            "session": "2026-11-06",
+            "sha256": "83bc3bf223004e864717fc44fec924b8df479d9b6dd9c2fad1cef9d5343eca6b"
+          },
+          {
+            "session": "2026-11-09",
+            "sha256": "44d94c3e556782780c149749005800389d786d1fa221281ad8a9b43b9a741ddb"
+          },
+          {
+            "session": "2026-11-10",
+            "sha256": "74529b48d939f3588c79de31304855abc82bb0c8e847eb2f89d69239e954397c"
+          },
+          {
+            "session": "2026-11-11",
+            "sha256": "ebcbb988afbec7a1abd694e2153976218ecdcd1215067ef190dd59584e47955e"
+          },
+          {
+            "session": "2026-11-12",
+            "sha256": "e6767240da15a78a1a33e8251fae3f19000ce13514d771b5fd03fd01417d4831"
+          },
+          {
+            "session": "2026-11-13",
+            "sha256": "848489c23800e69ce1edda437a865d7ad5edfb378fde9bb48e7804a143374b15"
+          },
+          {
+            "session": "2026-11-16",
+            "sha256": "9d8f9a13262b749e8f28bbb4de124015845a20e9955ed87620e16abd6341bd61"
+          },
+          {
+            "session": "2026-11-17",
+            "sha256": "9d22076ed0a0b2d21a46d893576826161750cbe9bb92367850f0465ff13e116d"
+          },
+          {
+            "session": "2026-11-18",
+            "sha256": "10d883d21c20f2c764f468357f0301346c1f41519aeb7e10e778558fd0e26d68"
+          },
+          {
+            "session": "2026-11-19",
+            "sha256": "3bce6e959064265876c9af5162509d03af910090e5a80aff0bb2d98bb0b6f33b"
+          },
+          {
+            "session": "2026-11-20",
+            "sha256": "5af5d4d2e8993471c231c03734d4b96d96acda17656bbadc7f2329fae7aa257d"
+          },
+          {
+            "session": "2026-11-23",
+            "sha256": "e93aadf9075cea2afda2b412e2d7b2d7f2475d7927a9d7b287760d7c062b29ad"
+          },
+          {
+            "session": "2026-11-24",
+            "sha256": "d26bd428bbc81615868fddb561e6ed589d8f1a00878502185d5263b5436f43ee"
+          },
+          {
+            "session": "2026-11-25",
+            "sha256": "fbcc4f22fb1813de0c9b84bb8eb4b3790879fb21b3a80bb9d4c26a9a818a8a92"
+          }
+        ],
+        "target_session": "2026-11-27",
+        "weights": {
+          "AIZ": 0.09,
+          "CAH": 0.09,
+          "COST": 0.09,
+          "DPZ": 0.09,
+          "EW": 0.09,
+          "KIM": 0.09,
+          "MCK": 0.09,
+          "SPG": 0.09,
+          "VTR": 0.09,
+          "WELL": 0.09
+        }
+      },
       "positions": {},
-      "pending": null,
-      "last_session": null,
-      "history": [],
-      "trades": [],
-      "signals": [],
-      "status": "awaiting_first_signal",
-      "diagnostic": null
+      "signals": [
+        {
+          "issued_at_utc": "2026-11-25T23:58:43.968416+00:00",
+          "sha256": "8207ef44b3fddfe82755bded4f6e37446d612687063bf76c1f9ae9473625655e",
+          "signal_session": "2026-11-25",
+          "source_hashes": [
+            {
+              "session": "2026-10-28",
+              "sha256": "f281225f3db3d07ce745f0803078cb5a173bd1e48d5fbf46c527fbbe98426726"
+            },
+            {
+              "session": "2026-10-29",
+              "sha256": "0b919436da053b8e3aee7e09682ec7a821847a1e129551b14b4236b0790c41bc"
+            },
+            {
+              "session": "2026-10-30",
+              "sha256": "0f09c6ae175f1ea60bb6ced05f5a3620483aad3f4cdedc044edd8a1a8f2c2680"
+            },
+            {
+              "session": "2026-11-02",
+              "sha256": "eebe356462aa1a2bcce72d1f62aaa7be676fccba2279c555ec24c38658564910"
+            },
+            {
+              "session": "2026-11-03",
+              "sha256": "9b25e618f47478e7b61fbe5a019eea93de2d02fb50058e5fbee9953a2c105d24"
+            },
+            {
+              "session": "2026-11-04",
+              "sha256": "d8bb48d517a4e7557c3634c2f072518b48ccc34b307d1669812143cad1b2f7bd"
+            },
+            {
+              "session": "2026-11-05",
+              "sha256": "e175f0c80241cc7345979db086bcb83d513950cb5a97027aaba92df9783b93e1"
+            },
+            {
+              "session": "2026-11-06",
+              "sha256": "83bc3bf223004e864717fc44fec924b8df479d9b6dd9c2fad1cef9d5343eca6b"
+            },
+            {
+              "session": "2026-11-09",
+              "sha256": "44d94c3e556782780c149749005800389d786d1fa221281ad8a9b43b9a741ddb"
+            },
+            {
+              "session": "2026-11-10",
+              "sha256": "74529b48d939f3588c79de31304855abc82bb0c8e847eb2f89d69239e954397c"
+            },
+            {
+              "session": "2026-11-11",
+              "sha256": "ebcbb988afbec7a1abd694e2153976218ecdcd1215067ef190dd59584e47955e"
+            },
+            {
+              "session": "2026-11-12",
+              "sha256": "e6767240da15a78a1a33e8251fae3f19000ce13514d771b5fd03fd01417d4831"
+            },
+            {
+              "session": "2026-11-13",
+              "sha256": "848489c23800e69ce1edda437a865d7ad5edfb378fde9bb48e7804a143374b15"
+            },
+            {
+              "session": "2026-11-16",
+              "sha256": "9d8f9a13262b749e8f28bbb4de124015845a20e9955ed87620e16abd6341bd61"
+            },
+            {
+              "session": "2026-11-17",
+              "sha256": "9d22076ed0a0b2d21a46d893576826161750cbe9bb92367850f0465ff13e116d"
+            },
+            {
+              "session": "2026-11-18",
+              "sha256": "10d883d21c20f2c764f468357f0301346c1f41519aeb7e10e778558fd0e26d68"
+            },
+            {
+              "session": "2026-11-19",
+              "sha256": "3bce6e959064265876c9af5162509d03af910090e5a80aff0bb2d98bb0b6f33b"
+            },
+            {
+              "session": "2026-11-20",
+              "sha256": "5af5d4d2e8993471c231c03734d4b96d96acda17656bbadc7f2329fae7aa257d"
+            },
+            {
+              "session": "2026-11-23",
+              "sha256": "e93aadf9075cea2afda2b412e2d7b2d7f2475d7927a9d7b287760d7c062b29ad"
+            },
+            {
+              "session": "2026-11-24",
+              "sha256": "d26bd428bbc81615868fddb561e6ed589d8f1a00878502185d5263b5436f43ee"
+            },
+            {
+              "session": "2026-11-25",
+              "sha256": "fbcc4f22fb1813de0c9b84bb8eb4b3790879fb21b3a80bb9d4c26a9a818a8a92"
+            }
+          ],
+          "target_session": "2026-11-27",
+          "weights": {
+            "AIZ": 0.09,
+            "CAH": 0.09,
+            "COST": 0.09,
+            "DPZ": 0.09,
+            "EW": 0.09,
+            "KIM": 0.09,
+            "MCK": 0.09,
+            "SPG": 0.09,
+            "VTR": 0.09,
+            "WELL": 0.09
+          }
+        }
+      ],
+      "status": "paper_signal_frozen",
+      "trades": []
     },
     "GS-SPY": {
-      "name": "Referencia SPY",
       "cash": 100000,
+      "diagnostic": null,
+      "history": [
+        {
+          "date": "2026-11-25",
+          "nav": 100000,
+          "source_sha256": "fbcc4f22fb1813de0c9b84bb8eb4b3790879fb21b3a80bb9d4c26a9a818a8a92"
+        }
+      ],
+      "last_session": "2026-11-25",
+      "name": "Referencia SPY",
+      "pending": {
+        "issued_at_utc": "2026-11-25T23:58:43.968416+00:00",
+        "sha256": "1babfd177232d8d909ed4967ddb8868d6aeb27a920e0c9fbc2a296d1b774c529",
+        "signal_session": "2026-11-25",
+        "source_hashes": [
+          {
+            "session": "2026-10-28",
+            "sha256": "f281225f3db3d07ce745f0803078cb5a173bd1e48d5fbf46c527fbbe98426726"
+          },
+          {
+            "session": "2026-10-29",
+            "sha256": "0b919436da053b8e3aee7e09682ec7a821847a1e129551b14b4236b0790c41bc"
+          },
+          {
+            "session": "2026-10-30",
+            "sha256": "0f09c6ae175f1ea60bb6ced05f5a3620483aad3f4cdedc044edd8a1a8f2c2680"
+          },
+          {
+            "session": "2026-11-02",
+            "sha256": "eebe356462aa1a2bcce72d1f62aaa7be676fccba2279c555ec24c38658564910"
+          },
+          {
+            "session": "2026-11-03",
+            "sha256": "9b25e618f47478e7b61fbe5a019eea93de2d02fb50058e5fbee9953a2c105d24"
+          },
+          {
+            "session": "2026-11-04",
+            "sha256": "d8bb48d517a4e7557c3634c2f072518b48ccc34b307d1669812143cad1b2f7bd"
+          },
+          {
+            "session": "2026-11-05",
+            "sha256": "e175f0c80241cc7345979db086bcb83d513950cb5a97027aaba92df9783b93e1"
+          },
+          {
+            "session": "2026-11-06",
+            "sha256": "83bc3bf223004e864717fc44fec924b8df479d9b6dd9c2fad1cef9d5343eca6b"
+          },
+          {
+            "session": "2026-11-09",
+            "sha256": "44d94c3e556782780c149749005800389d786d1fa221281ad8a9b43b9a741ddb"
+          },
+          {
+            "session": "2026-11-10",
+            "sha256": "74529b48d939f3588c79de31304855abc82bb0c8e847eb2f89d69239e954397c"
+          },
+          {
+            "session": "2026-11-11",
+            "sha256": "ebcbb988afbec7a1abd694e2153976218ecdcd1215067ef190dd59584e47955e"
+          },
+          {
+            "session": "2026-11-12",
+            "sha256": "e6767240da15a78a1a33e8251fae3f19000ce13514d771b5fd03fd01417d4831"
+          },
+          {
+            "session": "2026-11-13",
+            "sha256": "848489c23800e69ce1edda437a865d7ad5edfb378fde9bb48e7804a143374b15"
+          },
+          {
+            "session": "2026-11-16",
+            "sha256": "9d8f9a13262b749e8f28bbb4de124015845a20e9955ed87620e16abd6341bd61"
+          },
+          {
+            "session": "2026-11-17",
+            "sha256": "9d22076ed0a0b2d21a46d893576826161750cbe9bb92367850f0465ff13e116d"
+          },
+          {
+            "session": "2026-11-18",
+            "sha256": "10d883d21c20f2c764f468357f0301346c1f41519aeb7e10e778558fd0e26d68"
+          },
+          {
+            "session": "2026-11-19",
+            "sha256": "3bce6e959064265876c9af5162509d03af910090e5a80aff0bb2d98bb0b6f33b"
+          },
+          {
+            "session": "2026-11-20",
+            "sha256": "5af5d4d2e8993471c231c03734d4b96d96acda17656bbadc7f2329fae7aa257d"
+          },
+          {
+            "session": "2026-11-23",
+            "sha256": "e93aadf9075cea2afda2b412e2d7b2d7f2475d7927a9d7b287760d7c062b29ad"
+          },
+          {
+            "session": "2026-11-24",
+            "sha256": "d26bd428bbc81615868fddb561e6ed589d8f1a00878502185d5263b5436f43ee"
+          },
+          {
+            "session": "2026-11-25",
+            "sha256": "fbcc4f22fb1813de0c9b84bb8eb4b3790879fb21b3a80bb9d4c26a9a818a8a92"
+          }
+        ],
+        "target_session": "2026-11-27",
+        "weights": {
+          "SPY": 0.9
+        }
+      },
       "positions": {},
-      "pending": null,
-      "last_session": null,
-      "history": [],
-      "trades": [],
-      "signals": [],
-      "status": "awaiting_first_signal",
-      "diagnostic": null
+      "signals": [
+        {
+          "issued_at_utc": "2026-11-25T23:58:43.968416+00:00",
+          "sha256": "1babfd177232d8d909ed4967ddb8868d6aeb27a920e0c9fbc2a296d1b774c529",
+          "signal_session": "2026-11-25",
+          "source_hashes": [
+            {
+              "session": "2026-10-28",
+              "sha256": "f281225f3db3d07ce745f0803078cb5a173bd1e48d5fbf46c527fbbe98426726"
+            },
+            {
+              "session": "2026-10-29",
+              "sha256": "0b919436da053b8e3aee7e09682ec7a821847a1e129551b14b4236b0790c41bc"
+            },
+            {
+              "session": "2026-10-30",
+              "sha256": "0f09c6ae175f1ea60bb6ced05f5a3620483aad3f4cdedc044edd8a1a8f2c2680"
+            },
+            {
+              "session": "2026-11-02",
+              "sha256": "eebe356462aa1a2bcce72d1f62aaa7be676fccba2279c555ec24c38658564910"
+            },
+            {
+              "session": "2026-11-03",
+              "sha256": "9b25e618f47478e7b61fbe5a019eea93de2d02fb50058e5fbee9953a2c105d24"
+            },
+            {
+              "session": "2026-11-04",
+              "sha256": "d8bb48d517a4e7557c3634c2f072518b48ccc34b307d1669812143cad1b2f7bd"
+            },
+            {
+              "session": "2026-11-05",
+              "sha256": "e175f0c80241cc7345979db086bcb83d513950cb5a97027aaba92df9783b93e1"
+            },
+            {
+              "session": "2026-11-06",
+              "sha256": "83bc3bf223004e864717fc44fec924b8df479d9b6dd9c2fad1cef9d5343eca6b"
+            },
+            {
+              "session": "2026-11-09",
+              "sha256": "44d94c3e556782780c149749005800389d786d1fa221281ad8a9b43b9a741ddb"
+            },
+            {
+              "session": "2026-11-10",
+              "sha256": "74529b48d939f3588c79de31304855abc82bb0c8e847eb2f89d69239e954397c"
+            },
+            {
+              "session": "2026-11-11",
+              "sha256": "ebcbb988afbec7a1abd694e2153976218ecdcd1215067ef190dd59584e47955e"
+            },
+            {
+              "session": "2026-11-12",
+              "sha256": "e6767240da15a78a1a33e8251fae3f19000ce13514d771b5fd03fd01417d4831"
+            },
+            {
+              "session": "2026-11-13",
+              "sha256": "848489c23800e69ce1edda437a865d7ad5edfb378fde9bb48e7804a143374b15"
+            },
+            {
+              "session": "2026-11-16",
+              "sha256": "9d8f9a13262b749e8f28bbb4de124015845a20e9955ed87620e16abd6341bd61"
+            },
+            {
+              "session": "2026-11-17",
+              "sha256": "9d22076ed0a0b2d21a46d893576826161750cbe9bb92367850f0465ff13e116d"
+            },
+            {
+              "session": "2026-11-18",
+              "sha256": "10d883d21c20f2c764f468357f0301346c1f41519aeb7e10e778558fd0e26d68"
+            },
+            {
+              "session": "2026-11-19",
+              "sha256": "3bce6e959064265876c9af5162509d03af910090e5a80aff0bb2d98bb0b6f33b"
+            },
+            {
+              "session": "2026-11-20",
+              "sha256": "5af5d4d2e8993471c231c03734d4b96d96acda17656bbadc7f2329fae7aa257d"
+            },
+            {
+              "session": "2026-11-23",
+              "sha256": "e93aadf9075cea2afda2b412e2d7b2d7f2475d7927a9d7b287760d7c062b29ad"
+            },
+            {
+              "session": "2026-11-24",
+              "sha256": "d26bd428bbc81615868fddb561e6ed589d8f1a00878502185d5263b5436f43ee"
+            },
+            {
+              "session": "2026-11-25",
+              "sha256": "fbcc4f22fb1813de0c9b84bb8eb4b3790879fb21b3a80bb9d4c26a9a818a8a92"
+            }
+          ],
+          "target_session": "2026-11-27",
+          "weights": {
+            "SPY": 0.9
+          }
+        }
+      ],
+      "status": "paper_signal_frozen",
+      "trades": []
     }
-  }
+  },
+  "campaign_start": "2026-11-25",
+  "commission": 0.001,
+  "currency": "USD",
+  "execution_policy": "prospective_next_open_ohlc_simulation_after_close",
+  "initial_capital": 100000,
+  "schema": "midas.gs_quant_research.v1",
+  "slippage": 0.0005
 }
