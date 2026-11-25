@@ -1,0 +1,302 @@
+{
+  "schema_version": 1,
+  "status": "machine_first_pass",
+  "reviewed_at_utc": "2026-11-25T04:05:04.061683+00:00",
+  "source_identity": "Buy The Dip YouTube channel",
+  "transport": {
+    "kind": "official_podcast_mirror",
+    "provider": "iVoox",
+    "guid": "https://www.ivoox.com/56404892",
+    "published_date": "2020-09-11",
+    "youtube_video_id": "ah_lJY4BEtw",
+    "match_score": 0.896,
+    "audio_bytes_processed_transiently": 20626330
+  },
+  "models": {
+    "asr": {
+      "language": "es",
+      "language_probability": 1.0,
+      "duration_seconds": 2578.28575,
+      "word_count": 6835,
+      "segment_count": 1171,
+      "model": "small"
+    },
+    "semantic": {
+      "repo": "Qwen/Qwen3-4B-GGUF",
+      "file": "Qwen3-4B-Q4_K_M.gguf"
+    }
+  },
+  "metadata": {
+    "video_id": "ah_lJY4BEtw",
+    "youtube_url": "https://www.youtube.com/watch?v=ah_lJY4BEtw",
+    "title": "BUY THE DIP PODCAST: EPISODIO 16 RESUMEN MES DE AGOSTO",
+    "category": "company_or_theme",
+    "guest_likely": false,
+    "podcast_guid": "https://www.ivoox.com/56404892",
+    "published_date": "2020-09-11",
+    "source": "official_podcast_mirror",
+    "match_score": 0.896
+  },
+  "analysis": {
+    "episode_summary": "El episodio discute estrategias de inversión basadas en el método Buy The Dip, enfocándose en la compra de activos en momentos de descuento, como en el caso de libros descatalogados o plataformas de inversión en beta. Se menciona una promoción de Black Friday con descuentos del 50% en ropa y un código de descuento HOLIDAY, así como la promesa de lanzamiento futuro de una plataforma de análisis de inversión con 700 usuarios. También se analizan riesgos asociados a inversiones en activos, la valoración de proyectos mineros como 'mundoro' en Bosnia y Serbia, y la posibilidad de ampliar posición en Adriatic con expectativas de un buen resultado en el PIA y PF. Se destacan errores en la descripción técnica de proyectos y la importancia de evaluar comentarios para mejorar la estrategia de engagement. La estrategia se basa en eventos del mercado, análisis de riesgos y valoración cuidadosa de activos.",
+    "process": {
+      "idea_generation": [],
+      "quality": [],
+      "balance_sheet": [],
+      "valuation": [
+        "Promoción de Black Friday con descuentos del 50% en productos de ropa y código de descuento HOLIDAY.",
+        "Se menciona que el PIA y PF están esperados para el mes de octubre, con un valor estimado por encima del Billion, lo que sugiere una alta expectativa de valoración."
+      ],
+      "cycle_macro": [
+        "Promoción de Black Friday con descuentos del 50% en productos de ropa y código de descuento HOLIDAY."
+      ],
+      "entry": [
+        "El anuncio de una plataforma de análisis de inversión en beta con 700 usuarios registrados y promoción de Black Friday para productos de ropa.",
+        "Se recomienda buscar libros descatalogados en plataformas específicas, sugiriendo una estrategia de adquisición en mercados secundarios."
+      ],
+      "sizing": [
+        "Plataforma de inversión en beta con 700 usuarios registrados y promesa de lanzamiento futuro con análisis premium y exclusivos."
+      ],
+      "add_hold": [],
+      "exit": [
+        "Se menciona la venta de posición en Lockheed Martin, con un anuncio de contrato posterior, lo que indica una estrategia de entrada y salida basada en eventos del mercado."
+      ],
+      "risk": [
+        "Análisis de inversión en beta con promesas de lanzamiento futuro y promoción de Black Friday para productos de ropa.",
+        "Se advierte que la compra de libros descatalogados implica un riesgo de no renovación y posibles fluctuaciones de precio."
+      ],
+      "technical": [],
+      "management": [],
+      "mistakes": [
+        "Error en la promoción de Black Friday con código de descuento HOLIDAY y promoción de productos de ropa."
+      ]
+    },
+    "candidate_rules": [
+      {
+        "rule": "paráfrasis compacta",
+        "scope": "hosts|uncertain_or_guest",
+        "confidence": 0.0,
+        "evidence_timestamps": [],
+        "automation_proxy": "variable/cálculo posible o null",
+        "cross_video_confirmation_required": true
+      }
+    ],
+    "contradictions_or_uncertainties": [],
+    "named_examples": [],
+    "automation_readiness": "medium"
+  },
+  "chunk_evidence": [
+    {
+      "chunk": 1,
+      "evidence": [
+        {
+          "stage": "entry",
+          "paraphrase": "El anuncio de una plataforma de análisis de inversión en beta con 700 usuarios registrados y promoción de Black Friday para productos de ropa.",
+          "timestamp": "00:00:00",
+          "scope": "hosts",
+          "confidence": 0.9,
+          "automation_hint": "proxy observable"
+        },
+        {
+          "stage": "valuation",
+          "paraphrase": "Promoción de Black Friday con descuentos del 50% en productos de ropa y código de descuento HOLIDAY.",
+          "timestamp": "00:00:23",
+          "scope": "hosts",
+          "confidence": 0.8,
+          "automation_hint": "proxy observable"
+        },
+        {
+          "stage": "sizing",
+          "paraphrase": "Plataforma de inversión en beta con 700 usuarios registrados y promesa de lanzamiento futuro con análisis premium y exclusivos.",
+          "timestamp": "00:01:58",
+          "scope": "hosts",
+          "confidence": 0.7,
+          "automation_hint": "proxy observable"
+        },
+        {
+          "stage": "risk",
+          "paraphrase": "Análisis de inversión en beta con promesas de lanzamiento futuro y promoción de Black Friday para productos de ropa.",
+          "timestamp": "00:01:58",
+          "scope": "hosts",
+          "confidence": 0.6,
+          "automation_hint": "proxy observable"
+        },
+        {
+          "stage": "cycle_macro",
+          "paraphrase": "Promoción de Black Friday con descuentos del 50% en productos de ropa y código de descuento HOLIDAY.",
+          "timestamp": "00:00:23",
+          "scope": "hosts",
+          "confidence": 0.8,
+          "automation_hint": "proxy observable"
+        },
+        {
+          "stage": "mistake",
+          "paraphrase": "Error en la promoción de Black Friday con código de descuento HOLIDAY y promoción de productos de ropa.",
+          "timestamp": "00:00:23",
+          "scope": "uncertain_or_guest",
+          "confidence": 0.3,
+          "automation_hint": "null"
+        },
+        {
+          "stage": "other",
+          "paraphrase": "Análisis de inversión en beta con 700 usuarios registrados y promesa de lanzamiento futuro con análisis premium y exclusivos.",
+          "timestamp": "00:01:58",
+          "scope": "hosts",
+          "confidence": 0.7,
+          "automation_hint": "proxy observable"
+        }
+      ],
+      "named_examples": [],
+      "chunk_summary": "El anuncio de una plataforma de análisis de inversión en beta con 700 usuarios registrados y promoción de Black Friday para productos de ropa. Se menciona una promoción de descuentos del 50% en productos de ropa con código de descuento HOLIDAY, así como la promesa de lanzamiento futuro de la plataforma con análisis premium y exclusivos. Se destacan las promociones de Black Friday y la expansión de la plataforma de inversión en beta con 700 usuarios registrados."
+    },
+    {
+      "chunk": 2,
+      "evidence": [
+        {
+          "stage": "entry",
+          "paraphrase": "El hablante menciona la actualización de Twitter sobre el tema de recursos mínimos y el impacto en el mercado.",
+          "timestamp": "00:18:14",
+          "scope": "uncertain_or_guest",
+          "confidence": 0.0,
+          "automation_hint": "proxy observable"
+        },
+        {
+          "stage": "valuation",
+          "paraphrase": "El hablante comenta sobre la revalorización de activos y la importancia de la evaluación en el contexto de inversiones.",
+          "timestamp": "00:18:24",
+          "scope": "uncertain_or_guest",
+          "confidence": 0.0,
+          "automation_hint": "proxy observable"
+        },
+        {
+          "stage": "risk",
+          "paraphrase": "El hablante discute sobre el riesgo asociado a la inversión en activos y la necesidad de una evaluación cuidadosa.",
+          "timestamp": "00:18:32",
+          "scope": "uncertain_or_guest",
+          "confidence": 0.0,
+          "automation_hint": "proxy observable"
+        }
+      ],
+      "named_examples": [],
+      "chunk_summary": "El hablante analiza la situación del mercado de inversiones, menciona una actualización en Twitter sobre recursos mínimos y discute la evaluación y riesgo asociados a la inversión en activos."
+    },
+    {
+      "chunk": 3,
+      "evidence": [
+        {
+          "stage": "entry",
+          "paraphrase": "El análisis menciona la posibilidad de ampliar posición en Adriatic y menciona la expectativa de un buen resultado en el PIA y PF, con un valor superior al Billion.",
+          "timestamp": "00:20:00",
+          "scope": "hosts",
+          "confidence": 0.0,
+          "automation_hint": "proxy observable"
+        },
+        {
+          "stage": "valuation",
+          "paraphrase": "Se menciona que el PIA y PF están esperados para el mes de octubre, con un valor estimado por encima del Billion, lo que sugiere una alta expectativa de valoración.",
+          "timestamp": "00:21:32",
+          "scope": "hosts",
+          "confidence": 0.0,
+          "automation_hint": "proxy observable"
+        },
+        {
+          "stage": "exit",
+          "paraphrase": "Se menciona la venta de posición en Lockheed Martin, con un anuncio de contrato posterior, lo que indica una estrategia de entrada y salida basada en eventos del mercado.",
+          "timestamp": "00:23:30",
+          "scope": "hosts",
+          "confidence": 0.0,
+          "automation_hint": "proxy observable"
+        }
+      ],
+      "named_examples": [],
+      "chunk_summary": "El análisis discute la estrategia de inversión en Adriatic, con expectativas de un buen resultado en el PIA y PF, y menciona la venta de posición en Lockheed Martin. Se espera una alta valoración en el PIA y PF, con un valor superior al Billion, y se menciona la posibilidad de ampliar posición en Adriatic. La estrategia se basa en eventos del mercado y en la valoración de activos."
+    },
+    {
+      "chunk": 4,
+      "evidence": [
+        {
+          "stage": "entry",
+          "paraphrase": "El comentarista menciona una empresa llamada 'mundoro' que opera en Bosnia y Serbia, con un sistema de partnership con empresas grandes en exploración minera.",
+          "timestamp": "00:36:00",
+          "scope": "uncertain_or_guest",
+          "confidence": 0.0,
+          "automation_hint": "proxy observable"
+        },
+        {
+          "stage": "valuation",
+          "paraphrase": "El comentarista describe una empresa con terrenos en Serbia y Bosnia, enfatizando su historia y presencia en zonas con actividad minera, lo que sugiere un valor potencial en el mercado.",
+          "timestamp": "00:36:00",
+          "scope": "uncertain_or_guest",
+          "confidence": 0.0,
+          "automation_hint": "proxy observable"
+        },
+        {
+          "stage": "risk",
+          "paraphrase": "El comentarista menciona que la empresa 'mundoro' no ha encontrado aún yacimientos significativos, lo que implica un riesgo de no generar beneficios a corto plazo.",
+          "timestamp": "00:36:00",
+          "scope": "uncertain_or_guest",
+          "confidence": 0.0,
+          "automation_hint": "proxy observable"
+        }
+      ],
+      "named_examples": [],
+      "chunk_summary": "El fragmento describe una empresa minera llamada 'mundoro' que opera en Bosnia y Serbia, con un sistema de partnership con empresas grandes en exploración minera. El comentarista menciona su potencial, pero también señala riesgos como la falta de descubrimientos significativos y la alta valoración de su acción."
+    },
+    {
+      "chunk": 5,
+      "evidence": [
+        {
+          "stage": "entry",
+          "paraphrase": "El usuario compra libros descatalogados a un precio bajo, reconociendo que valen más cuando se descontan.",
+          "timestamp": "00:38:01",
+          "scope": "hosts",
+          "confidence": 0.9,
+          "automation_hint": "proxy observable"
+        },
+        {
+          "stage": "valuation",
+          "paraphrase": "Se menciona que los libros descatalogados pueden tener un valor futuro superior al precio actual, sugiriendo una estrategia de compra en descuento.",
+          "timestamp": "00:38:09",
+          "scope": "hosts",
+          "confidence": 0.8,
+          "automation_hint": "proxy observable"
+        },
+        {
+          "stage": "risk",
+          "paraphrase": "Se advierte que la compra de libros descatalogados implica un riesgo de no renovación y posibles fluctuaciones de precio.",
+          "timestamp": "00:38:11",
+          "scope": "hosts",
+          "confidence": 0.7,
+          "automation_hint": "proxy observable"
+        },
+        {
+          "stage": "entry",
+          "paraphrase": "Se recomienda buscar libros descatalogados en plataformas específicas, sugiriendo una estrategia de adquisición en mercados secundarios.",
+          "timestamp": "00:38:19",
+          "scope": "hosts",
+          "confidence": 0.6,
+          "automation_hint": "proxy observable"
+        },
+        {
+          "stage": "sizing",
+          "paraphrase": "Se menciona un error en la descripción de un proyecto de pipeline, indicando que la estrategia de inversión debe considerar la precisión de los datos técnicos.",
+          "timestamp": "00:40:01",
+          "scope": "hosts",
+          "confidence": 0.5,
+          "automation_hint": "proxy observable"
+        },
+        {
+          "stage": "exit",
+          "paraphrase": "Se sugiere que los comentarios sobre el podcast y la cuenta de inversión deben ser analizados para mejorar la estrategia de engagement.",
+          "timestamp": "00:41:21",
+          "scope": "hosts",
+          "confidence": 0.4,
+          "automation_hint": "proxy observable"
+        }
+      ],
+      "named_examples": [],
+      "chunk_summary": "El fragmento muestra una estrategia de inversión basada en la compra de libros descatalogados a bajo precio, con un enfoque en valor futuro y riesgos asociados. Se destacan errores en la descripción técnica de proyectos y la importancia de analizar comentarios para mejorar la estrategia de engagement. La estrategia incluye adquisición en mercados secundarios, evaluación de valor futuro y manejo de riesgos."
+    }
+  ],
+  "copyright_note": "No audio or verbatim transcript is persisted; only derived paraphrases."
+}
