@@ -209,6 +209,14 @@ def advance_book(slot,old,session,previous,next_session,now,source,history_hashe
     if p:
         if p["target_session"]!=session:
             raise ValueError("Expired order: never execute retrospectively")
+        # The frozen signal must be exactly the persisted decision, issued
+        # before today's opening. A changed weight or timestamp is not tradable.
+        if p.get("sha256")!=sha({k:v for k,v in p.items() if k!="sha256"}) or not b["signals"] or b["signals"][-1]!=p:
+            raise ValueError("Pending signal provenance mismatch")
+        _,_,expected_target,opening=dates_for(previous)
+        issued=datetime.fromisoformat(p["issued_at_utc"].replace("Z","+00:00"))
+        if expected_target!=session or issued.tzinfo is None or not issued<opening:
+            raise ValueError("Pending signal was not frozen before target open")
         weights=p["weights"]; validate_targets(slot,weights,universe)
         required=held|set(weights)
         if any(t not in bars or bars[t].get("split") for t in required):
@@ -257,7 +265,15 @@ def advance_book(slot,old,session,previous,next_session,now,source,history_hashe
 
 def run(now=None):
     now=now or datetime.now(timezone.utc)
-    session=eligible_session(now)
+    # During an open exchange session the shared eligibility helper correctly
+    # refuses the prior day's expired decision window. Treat that expected
+    # pre-close state as waiting, not a failure or a backdated launch.
+    try:
+        session=eligible_session(now)
+    except ValueError as exc:
+        if str(exc) != "La siguiente apertura ya ocurrió; no crear señal retrospectiva":
+            raise
+        return {"status":"waiting_for_next_eligible_close"}
     if session is None or session<START:
         return {"status":"awaiting_inaugural_close"}
     dates,previous,next_session,next_open=dates_for(session)

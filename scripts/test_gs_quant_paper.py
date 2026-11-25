@@ -3,7 +3,7 @@ from datetime import datetime,timezone
 from unittest.mock import patch
 import numpy as np
 from gs_quant_paper import (blank,validate,targets_for,risk_parity,advance_book,
-                            panel_from_snapshots,validate_targets,NAMES,LOOKBACK)
+                            panel_from_snapshots,validate_targets,NAMES,LOOKBACK,run)
 
 class QuantCohortTest(unittest.TestCase):
     def panel(self):
@@ -44,6 +44,12 @@ class QuantCohortTest(unittest.TestCase):
         self.assertEqual(first["history"][0]["nav"],100000.)
         self.assertFalse(first["trades"])
         self.assertEqual(first["pending"]["target_session"],"2026-11-27")
+        import copy
+        invalid=copy.deepcopy(first)
+        invalid["pending"]["weights"]["SPY"]=.5
+        with self.assertRaisesRegex(ValueError,"provenance"):
+            advance_book("GS-SPY",invalid,"2026-11-27","2026-11-25","2026-11-30",
+                         now,source,[],p,p)
         second=advance_book("GS-SPY",first,"2026-11-27","2026-11-25","2026-11-30",
                             datetime(2026,11,27,23,tzinfo=timezone.utc),source,[],p,p)
         self.assertEqual(len(second["trades"]),1)
@@ -55,6 +61,12 @@ class QuantCohortTest(unittest.TestCase):
         with self.assertRaisesRegex(ValueError,"Session gap"):
             advance_book("GS-SPY",first,"2026-11-30","2026-11-27","2026-12-01",
                          now,source,[],p,p)
+
+    def test_preclose_bootstrap_does_not_create_prior_session_signal(self):
+        with patch("gs_quant_paper.eligible_session",side_effect=ValueError(
+                "La siguiente apertura ya ocurrió; no crear señal retrospectiva")):
+            self.assertEqual(run(datetime(2026,11,25,19,49,tzinfo=timezone.utc)),
+                             {"status":"waiting_for_next_eligible_close"})
 
     def test_missing_quotes_and_bad_start(self):
         b=blank()["books"]["GS-SPY"]; p=self.panel()
