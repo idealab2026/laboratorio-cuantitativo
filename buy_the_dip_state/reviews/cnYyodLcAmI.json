@@ -1,0 +1,305 @@
+{
+  "schema_version": 1,
+  "status": "machine_first_pass",
+  "reviewed_at_utc": "2026-11-25T16:20:09.536318+00:00",
+  "source_identity": "Buy The Dip YouTube channel",
+  "transport": {
+    "kind": "official_podcast_mirror",
+    "provider": "iVoox",
+    "guid": "https://www.ivoox.com/90714520",
+    "published_date": "2022-08-05",
+    "youtube_video_id": "cnYyodLcAmI",
+    "match_score": 1.0,
+    "audio_bytes_processed_transiently": 32719561
+  },
+  "models": {
+    "asr": {
+      "language": "es",
+      "language_probability": 1.0,
+      "duration_seconds": 4089.939625,
+      "word_count": 11122,
+      "segment_count": 614,
+      "model": "small"
+    },
+    "semantic": {
+      "repo": "Qwen/Qwen3-4B-GGUF",
+      "file": "Qwen3-4B-Q4_K_M.gguf"
+    }
+  },
+  "metadata": {
+    "video_id": "cnYyodLcAmI",
+    "youtube_url": "https://www.youtube.com/watch?v=cnYyodLcAmI",
+    "title": "Invertir en Streaming y en SALAS DE CINE  | BUY THE DIP PODCAST",
+    "category": "company_or_theme",
+    "guest_likely": false,
+    "podcast_guid": "https://www.ivoox.com/90714520",
+    "published_date": "2022-08-05",
+    "source": "official_podcast_mirror",
+    "match_score": 1.0
+  },
+  "analysis": {
+    "episode_summary": "El episodio analiza el potencial de inversión en el sector cinematográfico y streaming, destacando la resistencia de los cines físicos a las crisis, su crecimiento anual del 2,4% en EE. UU. y 6% internacional, y su modelo de negocio con márgenes altos y estabilidad. Se menciona una empresa de cines con 751 salas y 10,000 pantallas, pero con riesgos de depreciación de goodwill y un balance sheet complejo. En el sector de streaming, Netflix lidera con una cuota de mercado del 11%, pero enfrenta desafíos como la pérdida de suscriptores tras un aumento de precios. Se sugiere la creación de carteras de inversión en ambas industrias, con posibles oportunidades en cines físicos y plataformas de streaming, aunque con riesgos de consolidación y volatilidad. El episodio también menciona una minera en Mali con potencial de crecimiento si se actualizan los recursos minerales.",
+    "process": {
+      "idea_generation": [],
+      "quality": [],
+      "balance_sheet": [],
+      "valuation": [],
+      "cycle_macro": [],
+      "entry": [],
+      "sizing": [],
+      "add_hold": [],
+      "exit": [],
+      "risk": [],
+      "technical": [],
+      "management": [],
+      "mistakes": []
+    },
+    "candidate_rules": [
+      {
+        "rule": "paráfrasis compacta",
+        "scope": "hosts|uncertain_or_guest",
+        "confidence": 0.0,
+        "evidence_timestamps": [],
+        "automation_proxy": "variable/cálculo posible o null",
+        "cross_video_confirmation_required": true
+      }
+    ],
+    "contradictions_or_uncertainties": [],
+    "named_examples": [],
+    "automation_readiness": "low"
+  },
+  "chunk_evidence": [
+    {
+      "chunk": 1,
+      "evidence": [
+        {
+          "stage": "entry",
+          "paraphrase": "El análisis de la industria del cine muestra que, a pesar de la competencia del streaming, los cines físicos siguen siendo un negocio sólido y resistente a las crisis, con un crecimiento anual del 2,4% en EE. UU. y del 6% a nivel internacional.",
+          "timestamp": "00:06:57",
+          "scope": "hosts",
+          "confidence": 0.9,
+          "automation_hint": "proxy observable"
+        },
+        {
+          "stage": "valuation",
+          "paraphrase": "Los cines generan ingresos estables a través de ventas de boletos y comida, con un costo de entrada muy bajo comparado con otras industrias del entretenimiento, lo que refuerza su valor como negocio recurrente.",
+          "timestamp": "00:07:47",
+          "scope": "hosts",
+          "confidence": 0.8,
+          "automation_hint": "proxy observable"
+        },
+        {
+          "stage": "risk",
+          "paraphrase": "Aunque el streaming ha reducido la frecuencia de asistencia a cines, la industria del cine sigue siendo resistente a las crisis y tiene barreras de entrada altas debido a su naturaleza local y monopolios regionales.",
+          "timestamp": "00:07:20",
+          "scope": "hosts",
+          "confidence": 0.7,
+          "automation_hint": "proxy observable"
+        }
+      ],
+      "named_examples": [],
+      "chunk_summary": "El análisis de la industria del cine muestra que, a pesar de la competencia del streaming, los cines físicos siguen siendo un negocio sólido y resistente a las crisis, con un crecimiento anual del 2,4% en EE. UU. y del 6% a nivel internacional. Los cines generan ingresos estables a través de ventas de boletos y comida, con un costo de entrada muy bajo comparado con otras industrias del entretenimiento, lo que refuerza su valor como negocio recurrente. Aunque el streaming ha reducido la frecuencia de asistencia a cines, la industria del cine sigue siendo resistente a las crisis y tiene barreras de entrada altas debido a su naturaleza local y monopolios regionales."
+    },
+    {
+      "chunk": 2,
+      "evidence": [
+        {
+          "stage": "entry",
+          "paraphrase": "El negocio de las palomitas y bebidas en cines es rentable debido a márgenes altos y costos de producción bajos.",
+          "timestamp": "00:13:11",
+          "scope": "hosts",
+          "confidence": 0.9,
+          "automation_hint": "proxy observable"
+        },
+        {
+          "stage": "valuation",
+          "paraphrase": "El sector cinematográfico tiene márgenes operativos elevados y es resistente a las crisis, lo que favorece su valoración.",
+          "timestamp": "00:14:48",
+          "scope": "hosts",
+          "confidence": 0.8,
+          "automation_hint": "proxy observable"
+        },
+        {
+          "stage": "risk",
+          "paraphrase": "La industria cinematográfica enfrenta riesgos como la pandemia, pero mantiene una tasa de ocupación estable, lo que reduce su volatilidad.",
+          "timestamp": "00:17:03",
+          "scope": "hosts",
+          "confidence": 0.7,
+          "automation_hint": "proxy observable"
+        },
+        {
+          "stage": "cycle_macro",
+          "paraphrase": "La demanda de cine ha experimentado un aumento brusco tras la pandemia, lo que refuerza su potencial de crecimiento.",
+          "timestamp": "00:17:47",
+          "scope": "hosts",
+          "confidence": 0.6,
+          "automation_hint": "proxy observable"
+        },
+        {
+          "stage": "sizing",
+          "paraphrase": "El sector cinematográfico tiene una oferta estable y una demanda creciente, lo que sugiere un mercado con potencial de expansión.",
+          "timestamp": "00:17:35",
+          "scope": "hosts",
+          "confidence": 0.5,
+          "automation_hint": "proxy observable"
+        }
+      ],
+      "named_examples": [],
+      "chunk_summary": "El análisis del negocio cinematográfico destaca márgenes altos, resistencia a las crisis, y un creciente interés en la demanda post-pandemia, lo que sugiere un modelo de negocio sostenible y rentable."
+    },
+    {
+      "chunk": 3,
+      "evidence": [
+        {
+          "stage": "entry",
+          "paraphrase": "Se menciona una empresa con 751 cines y 10,000 pantallas, pero con un balance sheet que incluye un goodwill de 4,8 billones, lo que genera riesgos de depreciación anual.",
+          "timestamp": "00:24:14",
+          "scope": "hosts",
+          "confidence": 0.8
+        },
+        {
+          "stage": "valuation",
+          "paraphrase": "La empresa tiene un EVIA ajustado de 455 millones, pero su valoración actual es por debajo del EVIA, lo que sugiere posibles ajustes en su valor contable.",
+          "timestamp": "00:28:03",
+          "scope": "hosts",
+          "confidence": 0.7
+        },
+        {
+          "stage": "risk",
+          "paraphrase": "La empresa enfrenta riesgos de depreciación del goodwill y un equity negativo, lo que podría afectar su valor si no se recupera rápidamente.",
+          "timestamp": "00:27:03",
+          "scope": "hosts",
+          "confidence": 0.6
+        },
+        {
+          "stage": "cycle_macro",
+          "paraphrase": "La industria de cines aún no ha recuperado los niveles pre-pandemia, lo que limita el potencial de crecimiento a largo plazo.",
+          "timestamp": "00:29:14",
+          "scope": "hosts",
+          "confidence": 0.7
+        },
+        {
+          "stage": "sizing",
+          "paraphrase": "La empresa posee activos en múltiples países, incluyendo Australia y Canadá, con 62 tiendas y 510 pantallas, lo que amplía su base geográfica.",
+          "timestamp": "00:33:14",
+          "scope": "hosts",
+          "confidence": 0.6
+        },
+        {
+          "stage": "add_hold",
+          "paraphrase": "Se sugiere que la empresa podría ser una buena candidata para análisis a largo plazo, considerando su diversificación y potencial de recuperación en el sector.",
+          "timestamp": "00:34:18",
+          "scope": "hosts",
+          "confidence": 0.5
+        }
+      ],
+      "named_examples": [],
+      "chunk_summary": "El fragmento describe una empresa de cines con un balance sheet complejo, riesgos de depreciación del goodwill, y un potencial de crecimiento a largo plazo si la industria recupera los niveles pre-pandemia. Se mencionan activos en múltiples países y se sugiere un análisis detallado para evaluar su valor contable y potencial de recuperación."
+    },
+    {
+      "chunk": 4,
+      "evidence": [
+        {
+          "stage": "valuation",
+          "paraphrase": "El fragmento menciona que el sector de streaming está creciendo, con expectativas de aumento de precios y aumento de usuarios, lo que sugiere un crecimiento positivo en el valor del sector.",
+          "timestamp": "00:37:53",
+          "scope": "hosts",
+          "confidence": 0.8,
+          "automation_hint": "proxy observable"
+        },
+        {
+          "stage": "entry",
+          "paraphrase": "Se menciona que Amazon Prime Video tiene una cuota de mercado significativa, lo que podría indicar una oportunidad de entrada en el sector de streaming.",
+          "timestamp": "00:41:11",
+          "scope": "hosts",
+          "confidence": 0.7,
+          "automation_hint": "proxy observable"
+        },
+        {
+          "stage": "risk",
+          "paraphrase": "El fragmento señala que el sector enfrenta desafíos como la competencia, la necesidad de innovación y la posible pérdida de usuarios si no se invierte adecuadamente, lo que representa un riesgo para el sector.",
+          "timestamp": "00:45:03",
+          "scope": "hosts",
+          "confidence": 0.6,
+          "automation_hint": "proxy observable"
+        }
+      ],
+      "named_examples": [],
+      "chunk_summary": "El fragmento analiza el crecimiento del sector de streaming, destacando el potencial de aumento de precios y usuarios, la competencia entre plataformas como Amazon Prime Video, Netflix y Disney Plus, y los riesgos asociados a la innovación y la retención de usuarios. Se mencionan también las proyecciones de crecimiento en mercados emergentes como Asia y la importancia de la inversión en contenido para mantener la ventaja competitiva."
+    },
+    {
+      "chunk": 5,
+      "evidence": [
+        {
+          "stage": "entry",
+          "paraphrase": "El análisis destaca la importancia de la cultura de empresa y la base de talento en Netflix, destacando su irreplicabilidad y su valor en la industria del streaming.",
+          "timestamp": "00:48:06",
+          "scope": "hosts",
+          "confidence": 0.8,
+          "automation_hint": "proxy observable"
+        },
+        {
+          "stage": "valuation",
+          "paraphrase": "Se menciona que Netflix tiene una cuota de mercado del 11% en streaming, lo que refleja su dominio en el sector y su crecimiento significativo en los últimos años.",
+          "timestamp": "00:56:39",
+          "scope": "hosts",
+          "confidence": 0.7,
+          "automation_hint": "proxy observable"
+        },
+        {
+          "stage": "risk",
+          "paraphrase": "Se señala una caída de suscriptores de Netflix de 200,000 en el último trimestre, atribuida a una subida de precios, lo que representa un desafío para su sostenibilidad y crecimiento.",
+          "timestamp": "00:55:23",
+          "scope": "hosts",
+          "confidence": 0.6,
+          "automation_hint": "proxy observable"
+        }
+      ],
+      "named_examples": [],
+      "chunk_summary": "El fragmento analiza la estrategia de Netflix en el sector de streaming, destacando su cultura de empresa, su cuota de mercado y los desafíos de retención de suscriptores. Se enfatiza la importancia de su modelo de negocio, la valoración de su cultura y los riesgos asociados a su crecimiento."
+    },
+    {
+      "chunk": 6,
+      "evidence": [
+        {
+          "stage": "valuation",
+          "paraphrase": "El análisis de Netflix muestra un crecimiento positivo en ingresos y márgenes, con proyecciones de superar los 30 mil millones en 2022.",
+          "timestamp": "00:58:19",
+          "scope": "hosts",
+          "confidence": 0.8
+        },
+        {
+          "stage": "cycle_macro",
+          "paraphrase": "Se menciona la recuperación de la frecuencia de asistencia a cines post-pandemia, sugiriendo un posible auge en el sector de cine físico.",
+          "timestamp": "00:04:48",
+          "scope": "uncertain_or_guest",
+          "confidence": 0.6
+        },
+        {
+          "stage": "entry",
+          "paraphrase": "Se propone la creación de dos carteras: una para streaming y otra para cines físicos, con una posible inclusión de productores y plataformas como Warner.",
+          "timestamp": "00:01:48",
+          "scope": "hosts",
+          "confidence": 0.7
+        },
+        {
+          "stage": "risk",
+          "paraphrase": "Se alerta sobre la posibilidad de que la consolidación en el sector de cines lleve a grandes ganadores y perdedores, con dificultades para reconvertir activos de cine en otros usos.",
+          "timestamp": "00:01:51",
+          "scope": "hosts",
+          "confidence": 0.7
+        },
+        {
+          "stage": "sizing",
+          "paraphrase": "Se menciona que la minera mencionada tiene un activo en Mali con una vida útil estimada de tres años, pero con posibilidad de extensión si se actualizan los recursos minerales.",
+          "timestamp": "00:01:57",
+          "scope": "hosts",
+          "confidence": 0.6
+        }
+      ],
+      "named_examples": [],
+      "chunk_summary": "El análisis discute el crecimiento de Netflix, la posibilidad de una recuperación en el sector de cines post-pandemia, y la propuesta de carteras de inversión en streaming y cines físicos. También menciona una minera en Mali con potencial de crecimiento si se actualizan los recursos minerales."
+    }
+  ],
+  "copyright_note": "No audio or verbatim transcript is persisted; only derived paraphrases."
+}
