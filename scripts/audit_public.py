@@ -75,6 +75,9 @@ REPOSITORY |= {
     "timesfm_strategy/inactive_recovery.py",
     "timesfm_strategy/tests/test_inactive_recovery.py",
 }
+# Exact, independent, virtual-capital cohort; no provider data files or credentials.
+REPOSITORY |= {"scripts/gs_quant_paper.py", "scripts/test_gs_quant_paper.py",
+               ".github/workflows/gs_quant_paper.yml", "data/gs-quant-paper.json"}
 issues = []
 try:
     private_terms = configured_terms()

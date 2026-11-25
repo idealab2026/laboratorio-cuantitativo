@@ -168,3 +168,39 @@ los derechos de uso interno ya definidos por el contrato Yahoo. No se modifica
 el feed común RAW, no se programan descargas aún y no se crean señales ni fills
 retroactivos. La prueba con proveedor real, persistencia interna entre runs y
 el diario independiente de IL-061 siguen pendientes.
+
+## Cohorte GS Quant inspirada — 25/11/2026
+
+Revisión de https://github.com/goldmansachs/gs-quant (Apache 2.0) y
+https://developer.gs.com/docs/gsquant/api/timeseries.html:
+statistics (z-score, OLS), technicals/econometrics (volatilidad, retornos),
+timeseries/backtesting (cestas) son referencias matemáticas locales; las
+consultas de datasets, precios de derivados y riesgo remoto requieren Marquee.
+La implementación es independiente, con NumPy, no importa código GS ni usa
+credenciales GS. No representa estrategias propietarias ni recomendación.
+
+GS-01: ranking de momentum de 20 sesiones dividido por volatilidad de log
+retornos; GS-02: reversión z < -1,5 frente a 20 cierres anteriores; ambas
+hasta 10 nombres con peso 9%. GS-03: equal risk contribution sobre una cesta
+predefinida de 12 acciones, covarianza con shrinkage diagonal 20%. GS-04:
+pares predefinidos, OLS de log precios con 20 observaciones previas y z-score
+fuera de la regresión, correlación mínima 0,4; hasta cinco pares dollar-neutral
+(9% por pierna), 3% anual de préstamo supuesto, sin acreditación de disponibilidad
+de préstamo. GS-05: ranking 50% momentum, 30% baja volatilidad, 20% reversión
+a cinco sesiones, hasta 10 nombres. Todos limitados al 90% de exposición bruta.
+SPY 90% + caja es referencia de exposición para las estrategias largas.
+
+Señales diarias fijadas al cierre antes de la próxima apertura, 21 snapshots
+comunes consecutivos, mínimo 350 series completas de 503, sin imputar ni unir
+splits/renombres. Precios RAW, dividendos reconocidos al ex-date, splits de
+posiciones requieren revisión. 100.000 USD virtuales por libro, comisión 10 pb
+y deslizamiento 5 pb por lado. Ejecución OHLC de apertura siguiente registrada
+después del cierre, identificada explícitamente como simulación, no ejecución
+observada. No retroceder señales ni rellenar operaciones ausentes. Si falta
+precio de un objetivo se cancela el rebalanceo; si falta marca de tenencia,
+se bloquea el libro. Conserva el inventario histórico de 64 entradas y muestra
+la cohorte aparte en la misma página de competición; no se fusiona el ranking
+certificado anterior ni se añade riesgo real. El primer cierre válido del
+25 de noviembre inicia los libros y el primer rebalanceo es la apertura
+siguiente que fije el calendario XNYS. Workflow aislado consume la fuente
+común, con dos respaldos nocturnos y exclusión mutua del writer.

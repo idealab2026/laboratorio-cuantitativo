@@ -2229,6 +2229,44 @@ function fullRosterRows(){
  }).join("");
 }
 
+function gsQuantCohort(){
+ const doc=state.gsQuantPaper;
+ if(!doc)return '<section class="competition-phase-notice"><strong>Nueva cohorte GS Quant inspirada</strong><span>Diario pendiente de verificación.</span></section>';
+ const rows=Object.entries(doc.books).map(([id,b])=>{
+  const h=b.history,last=h.at(-1),prev=h.at(-2);
+  const perf=last?100*(last.nav/doc.initial_capital-1):null;
+  const daily=last&&prev?100*(last.nav/prev.nav-1):null;
+  const activity=b.status==="awaiting_first_signal"?"Pendiente de primer cierre":
+   b.status==="blocked"?"Bloqueado: "+(b.diagnostic||"sin evidencia"):
+   b.pending?"Señal fijada · "+Object.keys(b.pending.weights).length+" objetivos":"Sin nueva señal";
+  return '<tr><td><strong>'+esc(id)+' · '+esc(b.name)+'</strong></td><td>'+esc(activity)+'</td>'+
+   '<td>'+esc(last?.date||"N/D")+'</td><td>'+esc(Object.keys(b.positions).length)+'</td><td>'+
+   esc(b.trades.length)+'</td><td>'+ (perf===null?"N/D":pctText(perf))+'</td><td>'+
+   (daily===null?"N/D":pctText(daily))+'</td></tr>';
+ }).join("");
+ return '<section class="competition-phase-notice"><strong>GS Quant · nueva cohorte prospectiva</strong>'+
+  '<span>5 estrategias independientes + SPY. Capital virtual de 100.000 USD cada una; inicio 25/11/2026. Simulación de próxima apertura con OHLC registrado al cierre, no fill observado. Comparación separada por fecha y política de ejecución.</span></section>'+
+  '<div class="table-scroll table-compact"><table><thead><tr><th>Estrategia</th><th>Actividad</th><th>Último cierre</th><th>Posiciones</th><th>Operaciones</th><th>Rent. acumulada</th><th>Rent. día</th></tr></thead><tbody>'+rows+'</tbody></table></div>';
+}
+async function loadGSQuantPaper(){
+ try{
+  const r=await fetch("https://raw.githubusercontent.com/idealab2026/laboratorio-cuantitativo/main/data/gs-quant-paper.json",{cache:"no-store",credentials:"omit"});
+  if(!r.ok)throw Error("Unavailable GS Quant cohort");
+  const doc=await r.json(),ids=["GS-01","GS-02","GS-03","GS-04","GS-05","GS-SPY"];
+  if(doc.schema!=="midas.gs_quant_research.v1"||doc.initial_capital!==100000||
+     doc.currency!=="USD"||doc.campaign_start!=="2026-11-25"||
+     Object.keys(doc.books||{}).sort().join("|")!==ids.join("|"))throw Error("Invalid cohort");
+  for(const b of Object.values(doc.books)){
+   if(typeof b.name!=="string"||!Array.isArray(b.history)||!Array.isArray(b.trades)||
+      !b.positions||!Number.isFinite(b.cash)||b.cash<0||
+      b.history.some((p,i)=>!Number.isFinite(p.nav)||p.nav<=0||p.date<doc.campaign_start||
+       (i&&p.date<=b.history[i-1].date))||
+      (b.history.at(-1)?.date||null)!==b.last_session)throw Error("Invalid cohort journal");
+  }
+  state.gsQuantPaper=doc;
+ }catch(_error){state.gsQuantPaper=null;}
+ if(["full","competition"].includes(state.view)&&state.data)render();
+}
 function full(){
  const d=state.fullRoster;
  if(!d)return '<div class="competition-heading"><h2>Clasificación de algoritmos</h2></div>'+
@@ -2285,7 +2323,7 @@ function full(){
   tabs+'<section id="competition-lifecycle-panel" role="tabpanel" aria-label="'+
    esc(phase==="active"?"Activos":phase==="obsolete"?"Obsoletos":"En desarrollo")+'">'+
   (phase==="active"?leaderBlock:context)+
-  (phase==="active"?context:"")+candidatesBlock+
+  (phase==="active"?context+gsQuantCohort():"")+candidatesBlock+
   fullMobileSortControls()+
   '<div class="table-scroll table-compact full-competition-table"><table><thead><tr>'+
   fullRosterHeaders()+'</tr></thead><tbody id="full-rows">'+fullRosterRows()+
@@ -2837,7 +2875,7 @@ async function init(){
   state.financialSankeys=verifyFinancialSankeys(await financial.json(),new Set(publication.records.map(x=>x.ticker)));
   state.publicTheses=new Map(publication.records.map(x=>[x.ticker,x]));
   state.publicThesesMetadata={...stats,published_as_of:publication.published_as_of};
-  state.data=data;state.universe=universe;render();void loadPublicCloses();void loadOfficialFx();void loadForecastLedger();void loadSecFilings();void loadOfficialYield();void loadOriginalPaper();void loadHistoricalPaper();void loadFullRoster();void loadStrategyCandidates();void loadInstitutionalPaperFeed();void loadOperationsAudit();void loadExecutionHistory().then(()=>{if(tradingRoomActive())paintTradingRoom();});
+  state.data=data;state.universe=universe;render();void loadPublicCloses();void loadOfficialFx();void loadForecastLedger();void loadSecFilings();void loadOfficialYield();void loadOriginalPaper();void loadGSQuantPaper();void loadHistoricalPaper();void loadFullRoster();void loadStrategyCandidates();void loadInstitutionalPaperFeed();void loadOperationsAudit();void loadExecutionHistory().then(()=>{if(tradingRoomActive())paintTradingRoom();});
  }catch(e){$("app").textContent="No se ha podido cargar el catálogo de emisores o el laboratorio sintético; no se muestran datos no verificados.";}
 }
 /* The public snapshot is refreshed in-browser; it never queries a market vendor.

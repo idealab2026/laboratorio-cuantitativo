@@ -13,6 +13,7 @@ on:
   workflow_run:
     workflows:
       - MIDAS common XNYS OHLC capture
+      - MIDAS GS Quant inspired paper
       - MIDAS classic S&P500 503 paper
       - MIDAS Weekly ML daily paper
       - MIDAS TimesFM 2.5 EUR daily 1-session signal
@@ -46,7 +47,8 @@ jobs:
     if: >-
       github.event_name != 'workflow_run' ||
       contains(fromJSON('["schedule", "workflow_dispatch"]'), github.event.workflow_run.event) ||
-      (github.event.workflow_run.name == 'MIDAS shared market execution clock' && github.event.workflow_run.event == 'push' && github.event.workflow_run.conclusion == 'success')
+      (github.event.workflow_run.name == 'MIDAS shared market execution clock' && github.event.workflow_run.event == 'push' && github.event.workflow_run.conclusion == 'success') ||
+      (github.event.workflow_run.name == 'MIDAS GS Quant inspired paper' && github.event.workflow_run.conclusion == 'success')
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4

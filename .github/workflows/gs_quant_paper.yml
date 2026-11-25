@@ -1,0 +1,52 @@
+name: MIDAS GS Quant inspired paper
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'scripts/gs_quant_paper.py'
+      - 'scripts/test_gs_quant_paper.py'
+      - '.github/workflows/gs_quant_paper.yml'
+  schedule:
+    - cron: '53 23 * * 1-5'
+    - cron: '53 3 * * 2-6'
+  workflow_dispatch:
+  workflow_run:
+    workflows: [MIDAS common XNYS OHLC capture]
+    types: [completed]
+    branches: [main]
+permissions:
+  contents: write
+concurrency:
+  group: midas-gs-quant-research-single-writer
+  cancel-in-progress: false
+jobs:
+  cohort:
+    if: github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success'
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install numerical and exchange-calendar dependencies
+        run: python -m pip install -r timesfm_strategy/requirements-daily.txt
+      - name: Verify isolated cohort
+        run: PYTHONPATH=scripts:. python -m unittest discover -s scripts -p test_gs_quant_paper.py -v
+      - name: Consume verified common close without creating retrospective decisions
+        run: python scripts/gs_quant_paper.py
+      - name: Publish only the new cohort's owned paper state
+        run: |
+          git config user.name "Idea Lab"
+          git config user.email "350414243+idealab2026@users.noreply.github.com"
+          git add -- data/gs-quant-paper.json
+          if git diff --cached --quiet; then exit 0; fi
+          git commit -m "Record independent GS Quant inspired paper cohort"
+          for i in 1 2 3 4 5; do
+            git fetch origin main
+            git rebase origin/main
+            if git push origin HEAD:main; then exit 0; fi
+          done
+          exit 1
