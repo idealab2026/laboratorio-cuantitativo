@@ -1,531 +1,493 @@
 {
-  "checked_at_utc": "2026-11-24T20:33:05.498487Z",
-  "lock_sha256": "1f1ac5090de3e5afd723b07234dd5b992aed18125750c8502d3b0ca370d0d4a7",
+  "checked_at_utc": "2026-11-25T13:36:38.604450Z",
+  "lock_sha256": "1f08dc2cd76d4eb892d659b723e1bfb554037f1a8c7bc7d1521839fda6f630ef",
   "mode": "single_midas_operator_monitor_no_broker",
-  "note": "Observed quotes are not fills. A native engine must settle quantity/cash before a trade counts in P&L.",
-  "open_at_utc": "2026-11-24T14:30:00Z",
-  "prepared_at_utc": "2026-11-24T13:29:29.064952Z",
-  "previous_session": "2026-11-23",
-  "quote_budget": {
-    "hard_symbol_limit": 250,
-    "missing_symbols": [],
-    "observed_symbols": 47,
-    "omitted_algorithm_lanes": {},
-    "requested_symbols": 47
-  },
-  "run_id": 45481801093,
+  "note": "Pre-opening decisions only. Not a broker or a confirmed forward fill.",
+  "open_at_utc": "2026-11-25T14:30:00Z",
+  "prepared_at_utc": "2026-11-25T13:36:38.604450Z",
+  "previous_session": "2026-11-24",
+  "run_id": null,
   "schema": "midas.operational_clock.v1",
-  "session": "2026-11-24",
-  "settlement": "native_forward_010_through_027_037_through_044",
+  "session": "2026-11-25",
+  "settlement": "native_engine_batch_until_migrated",
   "slots": {
     "IL-010": {
       "exit_only_ready": false,
       "holdings_count": 489,
-      "native_settlement": "active_no_orders",
       "observed": 0,
       "orders": [],
       "planned": 0,
-      "source_session": "2026-11-23",
-      "status": "active_no_orders",
+      "source_session": "2026-11-24",
+      "status": "before_open",
       "waiting": 0
     },
     "IL-011": {
       "exit_only_ready": false,
-      "fills": [],
-      "fills_count": 0,
       "holdings_count": 7,
-      "native_marker": {
-        "fill_tickers": [],
-        "fills_count": 0,
-        "lock_sha256": "1f1ac5090de3e5afd723b07234dd5b992aed18125750c8502d3b0ca370d0d4a7",
-        "mode": "forward_observed_paper",
-        "quotes_sha256": "189d6e6171aa143d6acbfcf39e3a5349029823697015bc946973deb78edf20e6",
-        "recorded_at_utc": "2026-11-24T14:34:14.722076Z",
-        "session": "2026-11-24",
-        "source_commit": "30e312b5b93e1efbc25d3afc41e16ae8b453f6aa"
-      },
-      "native_markers": [
-        {
-          "fills_count": 0,
-          "key": "IL-011:2026-11-24:open:classic_forward_v1",
-          "recorded_at_utc": "2026-11-24T14:34:14.722076Z"
-        }
-      ],
-      "native_settlement": "already_settled",
-      "observed": 1,
-      "opening_quote_isolation": {
-        "checked_at_utc": "2026-11-24T14:34:14.722076Z",
-        "missing_held_quotes": [],
-        "scope": "paper_forward_open_only",
-        "sizing_reference": "observed_open_nav",
-        "unfilled_tickers": []
-      },
+      "observed": 0,
       "orders": [
         {
           "action": "buy",
           "limit_price": null,
-          "observed_at_utc": "2026-11-24T14:34:08.304398Z",
-          "observed_price": 215.2550048828125,
-          "quote_at_utc": "2026-11-24T14:34:00Z",
-          "scheduled_at_utc": "2026-11-24T14:30:00Z",
-          "signal_session": "2026-11-23",
-          "source": "yfinance_1m",
-          "status": "price_observed",
-          "target_session": "2026-11-24",
+          "observed_at_utc": null,
+          "observed_price": null,
+          "quote_at_utc": null,
+          "scheduled_at_utc": "2026-11-25T14:30:00Z",
+          "signal_session": "2026-11-24",
+          "source": null,
+          "status": "pending_open",
+          "target_session": "2026-11-25",
           "target_weight": null,
-          "ticker": "HWM"
+          "ticker": "INCY"
         }
       ],
       "planned": 1,
-      "session_fill_reconciled": true,
-      "source_session": "2026-11-23",
-      "status": "native_forward_settled",
-      "waiting": 0
+      "source_session": "2026-11-24",
+      "status": "before_open",
+      "waiting": 1
     },
     "IL-012": {
       "exit_only_ready": false,
-      "holdings_count": 8,
-      "native_settlement": "active_no_orders",
+      "holdings_count": 7,
       "observed": 0,
-      "orders": [],
-      "planned": 0,
-      "source_session": "2026-11-23",
-      "status": "active_no_orders",
-      "waiting": 0
-    },
-    "IL-013": {
-      "exit_only_ready": false,
-      "fills": [],
-      "fills_count": 0,
-      "holdings_count": 6,
-      "native_marker": {
-        "fill_tickers": [],
-        "fills_count": 0,
-        "lock_sha256": "1f1ac5090de3e5afd723b07234dd5b992aed18125750c8502d3b0ca370d0d4a7",
-        "mode": "forward_observed_paper",
-        "quotes_sha256": "b22513330b9b4212c1e75e9f6b627920fd876e65ed4ea002b17c75708d691c54",
-        "recorded_at_utc": "2026-11-24T14:34:14.722076Z",
-        "session": "2026-11-24",
-        "source_commit": "30e312b5b93e1efbc25d3afc41e16ae8b453f6aa"
-      },
-      "native_markers": [
-        {
-          "fills_count": 0,
-          "key": "IL-013:2026-11-24:open:classic_forward_v1",
-          "recorded_at_utc": "2026-11-24T14:34:14.722076Z"
-        }
-      ],
-      "native_settlement": "already_settled",
-      "observed": 2,
-      "opening_quote_isolation": {
-        "checked_at_utc": "2026-11-24T14:34:14.722076Z",
-        "missing_held_quotes": [],
-        "scope": "paper_forward_open_only",
-        "sizing_reference": "observed_open_nav",
-        "unfilled_tickers": []
-      },
       "orders": [
         {
-          "action": "buy",
+          "action": "sell",
           "limit_price": null,
-          "observed_at_utc": "2026-11-24T14:34:05.379153Z",
-          "observed_price": 81.93499755859375,
-          "quote_at_utc": "2026-11-24T14:34:00Z",
-          "scheduled_at_utc": "2026-11-24T14:30:00Z",
-          "signal_session": "2026-11-23",
-          "source": "yfinance_1m",
-          "status": "price_observed",
-          "target_session": "2026-11-24",
+          "observed_at_utc": null,
+          "observed_price": null,
+          "quote_at_utc": null,
+          "scheduled_at_utc": "2026-11-25T14:30:00Z",
+          "signal_session": "2026-11-24",
+          "source": null,
+          "status": "pending_open",
+          "target_session": "2026-11-25",
           "target_weight": null,
-          "ticker": "DXCM"
+          "ticker": "MNST"
         },
         {
           "action": "buy",
           "limit_price": null,
-          "observed_at_utc": "2026-11-24T14:34:09.106251Z",
-          "observed_price": 278.2900085449219,
-          "quote_at_utc": "2026-11-24T14:34:00Z",
-          "scheduled_at_utc": "2026-11-24T14:30:00Z",
-          "signal_session": "2026-11-23",
-          "source": "yfinance_1m",
-          "status": "price_observed",
-          "target_session": "2026-11-24",
+          "observed_at_utc": null,
+          "observed_price": null,
+          "quote_at_utc": null,
+          "scheduled_at_utc": "2026-11-25T14:30:00Z",
+          "signal_session": "2026-11-24",
+          "source": null,
+          "status": "pending_open",
+          "target_session": "2026-11-25",
           "target_weight": null,
-          "ticker": "KEYS"
+          "ticker": "TPR"
         }
       ],
       "planned": 2,
-      "session_fill_reconciled": true,
-      "source_session": "2026-11-23",
-      "status": "native_forward_settled",
-      "waiting": 0
+      "source_session": "2026-11-24",
+      "status": "before_open",
+      "waiting": 2
+    },
+    "IL-013": {
+      "exit_only_ready": false,
+      "holdings_count": 6,
+      "observed": 0,
+      "orders": [
+        {
+          "action": "buy",
+          "limit_price": null,
+          "observed_at_utc": null,
+          "observed_price": null,
+          "quote_at_utc": null,
+          "scheduled_at_utc": "2026-11-25T14:30:00Z",
+          "signal_session": "2026-11-24",
+          "source": null,
+          "status": "pending_open",
+          "target_session": "2026-11-25",
+          "target_weight": null,
+          "ticker": "DIS"
+        },
+        {
+          "action": "buy",
+          "limit_price": null,
+          "observed_at_utc": null,
+          "observed_price": null,
+          "quote_at_utc": null,
+          "scheduled_at_utc": "2026-11-25T14:30:00Z",
+          "signal_session": "2026-11-24",
+          "source": null,
+          "status": "pending_open",
+          "target_session": "2026-11-25",
+          "target_weight": null,
+          "ticker": "DRI"
+        }
+      ],
+      "planned": 2,
+      "source_session": "2026-11-24",
+      "status": "before_open",
+      "waiting": 2
     },
     "IL-014": {
       "exit_only_ready": false,
-      "fills": [
+      "holdings_count": 5,
+      "observed": 0,
+      "orders": [
         {
-          "fee": 14.482370388561108,
-          "observed_at_utc": "2026-11-24T19:21:09.522670Z",
-          "price": 88.40077719497681,
-          "quantity": 163.826279,
-          "side": "sell",
+          "action": "buy",
+          "limit_price": null,
+          "observed_at_utc": null,
+          "observed_price": null,
+          "quote_at_utc": null,
+          "scheduled_at_utc": "2026-11-25T14:30:00Z",
+          "signal_session": "2026-11-24",
+          "source": null,
+          "status": "pending_open",
+          "target_session": "2026-11-25",
+          "target_weight": null,
+          "ticker": "ALB"
+        },
+        {
+          "action": "buy",
+          "limit_price": null,
+          "observed_at_utc": null,
+          "observed_price": null,
+          "quote_at_utc": null,
+          "scheduled_at_utc": "2026-11-25T14:30:00Z",
+          "signal_session": "2026-11-24",
+          "source": null,
+          "status": "pending_open",
+          "target_session": "2026-11-25",
+          "target_weight": null,
           "ticker": "BG"
         },
         {
-          "fee": 14.688975865721941,
-          "observed_at_utc": "2026-11-24T19:27:47.847991Z",
-          "price": 65.57719561004639,
-          "quantity": 223.995182,
-          "side": "sell",
-          "ticker": "ADM"
-        }
-      ],
-      "fills_count": 2,
-      "holdings_count": 7,
-      "native_marker": {
-        "fill_tickers": [
-          "ADM"
-        ],
-        "fills_count": 1,
-        "lock_sha256": "1f1ac5090de3e5afd723b07234dd5b992aed18125750c8502d3b0ca370d0d4a7",
-        "mode": "forward_observed_paper",
-        "quotes_sha256": "7fd2df9b35bc0ac48364f1a817cdedd0be546f32c8c4ce90f0ecdabdc35b7277",
-        "recorded_at_utc": "2026-11-24T19:27:52.997031Z",
-        "session": "2026-11-24",
-        "source_commit": "30e312b5b93e1efbc25d3afc41e16ae8b453f6aa"
-      },
-      "native_markers": [
-        {
-          "fills_count": 0,
-          "key": "IL-014:2026-11-24:open:classic_forward_v1",
-          "recorded_at_utc": "2026-11-24T14:34:14.722076Z"
-        },
-        {
-          "fills_count": 1,
-          "key": "IL-014:2026-11-24:stop:BG:classic_forward_v1",
-          "recorded_at_utc": "2026-11-24T19:21:34.344318Z"
-        },
-        {
-          "fills_count": 1,
-          "key": "IL-014:2026-11-24:stop:ADM:classic_forward_v1",
-          "recorded_at_utc": "2026-11-24T19:27:52.997031Z"
-        }
-      ],
-      "native_settlement": "already_settled",
-      "observed": 1,
-      "opening_quote_isolation": {
-        "checked_at_utc": "2026-11-24T14:34:14.722076Z",
-        "missing_held_quotes": [],
-        "scope": "paper_forward_open_only",
-        "sizing_reference": "observed_open_nav",
-        "unfilled_tickers": []
-      },
-      "orders": [
-        {
           "action": "buy",
           "limit_price": null,
-          "observed_at_utc": "2026-11-24T14:34:08.592170Z",
-          "observed_price": 28.475000381469727,
-          "quote_at_utc": "2026-11-24T14:34:00Z",
-          "scheduled_at_utc": "2026-11-24T14:30:00Z",
-          "signal_session": "2026-11-23",
-          "source": "yfinance_1m",
-          "status": "price_observed",
-          "target_session": "2026-11-24",
+          "observed_at_utc": null,
+          "observed_price": null,
+          "quote_at_utc": null,
+          "scheduled_at_utc": "2026-11-25T14:30:00Z",
+          "signal_session": "2026-11-24",
+          "source": null,
+          "status": "pending_open",
+          "target_session": "2026-11-25",
           "target_weight": null,
-          "ticker": "IP"
+          "ticker": "FCX"
         }
       ],
-      "planned": 1,
-      "session_fill_reconciled": true,
-      "source_session": "2026-11-23",
-      "status": "native_forward_settled",
-      "waiting": 0
+      "planned": 3,
+      "source_session": "2026-11-24",
+      "status": "before_open",
+      "waiting": 3
     },
     "IL-015": {
       "exit_only_ready": false,
-      "fills": [
-        {
-          "fee": 15.47781829471387,
-          "observed_at_utc": "2026-11-24T14:34:11.628724Z",
-          "price": 14.026009553432464,
-          "quantity": 1103.508324,
-          "side": "buy",
-          "ticker": "PCG"
-        }
-      ],
-      "fills_count": 1,
-      "holdings_count": 4,
-      "native_marker": {
-        "fill_tickers": [
-          "PCG"
-        ],
-        "fills_count": 1,
-        "lock_sha256": "1f1ac5090de3e5afd723b07234dd5b992aed18125750c8502d3b0ca370d0d4a7",
-        "mode": "forward_observed_paper",
-        "quotes_sha256": "eeb951f514f079ae8d43a290e1286896889e4a5680d8d2d76631c9f3a4edcfa5",
-        "recorded_at_utc": "2026-11-24T14:34:14.722076Z",
-        "session": "2026-11-24",
-        "source_commit": "30e312b5b93e1efbc25d3afc41e16ae8b453f6aa"
-      },
-      "native_markers": [
-        {
-          "fills_count": 1,
-          "key": "IL-015:2026-11-24:open:classic_forward_v1",
-          "recorded_at_utc": "2026-11-24T14:34:14.722076Z"
-        }
-      ],
-      "native_settlement": "already_settled",
-      "observed": 1,
-      "opening_quote_isolation": {
-        "checked_at_utc": "2026-11-24T14:34:14.722076Z",
-        "missing_held_quotes": [],
-        "scope": "paper_forward_open_only",
-        "sizing_reference": "observed_open_nav",
-        "unfilled_tickers": []
-      },
+      "holdings_count": 5,
+      "observed": 0,
       "orders": [
         {
           "action": "buy",
           "limit_price": null,
-          "observed_at_utc": "2026-11-24T14:34:11.628724Z",
-          "observed_price": 14.019000053405762,
-          "quote_at_utc": "2026-11-24T14:34:00Z",
-          "scheduled_at_utc": "2026-11-24T14:30:00Z",
-          "signal_session": "2026-11-23",
-          "source": "yfinance_1m",
-          "status": "price_observed",
-          "target_session": "2026-11-24",
+          "observed_at_utc": null,
+          "observed_price": null,
+          "quote_at_utc": null,
+          "scheduled_at_utc": "2026-11-25T14:30:00Z",
+          "signal_session": "2026-11-24",
+          "source": null,
+          "status": "pending_open",
+          "target_session": "2026-11-25",
           "target_weight": null,
-          "ticker": "PCG"
+          "ticker": "DLTR"
+        },
+        {
+          "action": "buy",
+          "limit_price": null,
+          "observed_at_utc": null,
+          "observed_price": null,
+          "quote_at_utc": null,
+          "scheduled_at_utc": "2026-11-25T14:30:00Z",
+          "signal_session": "2026-11-24",
+          "source": null,
+          "status": "pending_open",
+          "target_session": "2026-11-25",
+          "target_weight": null,
+          "ticker": "DRI"
+        },
+        {
+          "action": "buy",
+          "limit_price": null,
+          "observed_at_utc": null,
+          "observed_price": null,
+          "quote_at_utc": null,
+          "scheduled_at_utc": "2026-11-25T14:30:00Z",
+          "signal_session": "2026-11-24",
+          "source": null,
+          "status": "pending_open",
+          "target_session": "2026-11-25",
+          "target_weight": null,
+          "ticker": "TGT"
         }
       ],
-      "planned": 1,
-      "session_fill_reconciled": true,
-      "source_session": "2026-11-23",
-      "status": "native_forward_settled",
-      "waiting": 0
+      "planned": 3,
+      "source_session": "2026-11-24",
+      "status": "before_open",
+      "waiting": 3
     },
     "IL-016": {
       "exit_only_ready": false,
       "holdings_count": 5,
-      "native_settlement": "active_no_orders",
       "observed": 0,
-      "orders": [],
-      "planned": 0,
-      "source_session": "2026-11-23",
-      "status": "active_no_orders",
-      "waiting": 0
+      "orders": [
+        {
+          "action": "buy",
+          "limit_price": null,
+          "observed_at_utc": null,
+          "observed_price": null,
+          "quote_at_utc": null,
+          "scheduled_at_utc": "2026-11-25T14:30:00Z",
+          "signal_session": "2026-11-24",
+          "source": null,
+          "status": "pending_open",
+          "target_session": "2026-11-25",
+          "target_weight": null,
+          "ticker": "DLTR"
+        },
+        {
+          "action": "buy",
+          "limit_price": null,
+          "observed_at_utc": null,
+          "observed_price": null,
+          "quote_at_utc": null,
+          "scheduled_at_utc": "2026-11-25T14:30:00Z",
+          "signal_session": "2026-11-24",
+          "source": null,
+          "status": "pending_open",
+          "target_session": "2026-11-25",
+          "target_weight": null,
+          "ticker": "MGM"
+        },
+        {
+          "action": "buy",
+          "limit_price": null,
+          "observed_at_utc": null,
+          "observed_price": null,
+          "quote_at_utc": null,
+          "scheduled_at_utc": "2026-11-25T14:30:00Z",
+          "signal_session": "2026-11-24",
+          "source": null,
+          "status": "pending_open",
+          "target_session": "2026-11-25",
+          "target_weight": null,
+          "ticker": "TGT"
+        }
+      ],
+      "planned": 3,
+      "source_session": "2026-11-24",
+      "status": "before_open",
+      "waiting": 3
     },
     "IL-017": {
       "exit_only_ready": false,
       "holdings_count": 7,
-      "native_settlement": "active_no_orders",
       "observed": 0,
-      "orders": [],
-      "planned": 0,
-      "source_session": "2026-11-23",
-      "status": "active_no_orders",
-      "waiting": 0
+      "orders": [
+        {
+          "action": "buy",
+          "limit_price": null,
+          "observed_at_utc": null,
+          "observed_price": null,
+          "quote_at_utc": null,
+          "scheduled_at_utc": "2026-11-25T14:30:00Z",
+          "signal_session": "2026-11-24",
+          "source": null,
+          "status": "pending_open",
+          "target_session": "2026-11-25",
+          "target_weight": null,
+          "ticker": "DLTR"
+        }
+      ],
+      "planned": 1,
+      "source_session": "2026-11-24",
+      "status": "before_open",
+      "waiting": 1
     },
     "IL-018": {
       "exit_only_ready": false,
       "holdings_count": 1,
-      "native_settlement": "active_no_orders",
       "observed": 0,
       "orders": [],
       "planned": 0,
-      "source_session": "2026-11-23",
-      "status": "active_no_orders",
+      "source_session": "2026-11-24",
+      "status": "before_open",
       "waiting": 0
     },
     "IL-019": {
       "exit_only_ready": false,
       "holdings_count": 1,
-      "native_settlement": "no_orders",
       "observed": 0,
       "orders": [],
       "planned": 0,
-      "source_session": "2026-11-23",
-      "status": "active_no_orders",
+      "source_session": "2026-11-24",
+      "status": "before_open",
       "waiting": 0
     },
     "IL-020": {
       "exit_only_ready": false,
       "holdings_count": 1,
-      "native_settlement": "no_orders",
       "observed": 0,
       "orders": [],
       "planned": 0,
-      "source_session": "2026-11-23",
-      "status": "active_no_orders",
+      "source_session": "2026-11-24",
+      "status": "before_open",
       "waiting": 0
     },
     "IL-021": {
       "exit_only_ready": false,
       "holdings_count": 10,
-      "native_settlement": "no_orders",
       "observed": 0,
       "orders": [],
       "planned": 0,
-      "source_session": "2026-11-23",
-      "status": "active_no_orders",
+      "source_session": "2026-11-24",
+      "status": "before_open",
       "waiting": 0
     },
     "IL-022": {
       "exit_only_ready": false,
       "holdings_count": 10,
-      "native_settlement": "no_orders",
       "observed": 0,
       "orders": [],
       "planned": 0,
-      "source_session": "2026-11-23",
-      "status": "active_no_orders",
+      "source_session": "2026-11-24",
+      "status": "before_open",
       "waiting": 0
     },
     "IL-023": {
       "exit_only_ready": false,
       "holdings_count": 10,
-      "native_settlement": "no_orders",
       "observed": 0,
       "orders": [],
       "planned": 0,
-      "source_session": "2026-11-23",
-      "status": "active_no_orders",
+      "source_session": "2026-11-24",
+      "status": "before_open",
       "waiting": 0
     },
     "IL-024": {
       "exit_only_ready": false,
       "holdings_count": 10,
-      "native_settlement": "no_orders",
       "observed": 0,
       "orders": [],
       "planned": 0,
-      "source_session": "2026-11-23",
-      "status": "active_no_orders",
+      "source_session": "2026-11-24",
+      "status": "before_open",
       "waiting": 0
     },
     "IL-025": {
       "exit_only_ready": false,
       "holdings_count": 9,
-      "native_settlement": "no_orders",
       "observed": 0,
       "orders": [],
       "planned": 0,
-      "source_session": "2026-11-23",
-      "status": "active_no_orders",
+      "source_session": "2026-11-24",
+      "status": "before_open",
       "waiting": 0
     },
     "IL-026": {
       "exit_only_ready": false,
       "holdings_count": 10,
-      "native_settlement": "no_orders",
       "observed": 0,
       "orders": [],
       "planned": 0,
-      "source_session": "2026-11-23",
-      "status": "active_no_orders",
+      "source_session": "2026-11-24",
+      "status": "before_open",
       "waiting": 0
     },
     "IL-027": {
       "exit_only_ready": false,
       "holdings_count": 10,
-      "native_settlement": "no_orders",
       "observed": 0,
       "orders": [],
       "planned": 0,
-      "source_session": "2026-11-23",
-      "status": "active_no_orders",
+      "source_session": "2026-11-24",
+      "status": "before_open",
       "waiting": 0
     },
     "IL-037": {
       "exit_only_ready": false,
       "holdings_count": 15,
-      "native_settlement": "no_current_execution_due",
       "observed": 0,
       "orders": [],
       "planned": 0,
-      "source_session": "2026-11-23",
-      "status": "active_no_orders",
+      "source_session": "2026-11-24",
+      "status": "before_open",
       "waiting": 0
     },
     "IL-038": {
       "exit_only_ready": false,
       "holdings_count": 12,
-      "native_settlement": "no_orders",
       "observed": 0,
       "orders": [],
       "planned": 0,
-      "source_session": "2026-11-23",
-      "status": "active_no_orders",
+      "source_session": "2026-11-24",
+      "status": "before_open",
       "waiting": 0
     },
     "IL-039": {
       "exit_only_ready": false,
       "holdings_count": 10,
-      "native_settlement": "no_orders",
       "observed": 0,
       "orders": [],
       "planned": 0,
-      "source_session": "2026-11-23",
-      "status": "active_no_orders",
+      "source_session": "2026-11-24",
+      "status": "before_open",
       "waiting": 0
     },
     "IL-040": {
       "exit_only_ready": false,
       "holdings_count": 0,
-      "native_settlement": "no_execution_due",
       "observed": 0,
       "orders": [],
       "planned": 0,
-      "source_session": "2026-11-23",
-      "status": "active_no_orders",
+      "source_session": "2026-11-24",
+      "status": "before_open",
       "waiting": 0
     },
     "IL-041": {
       "exit_only_ready": false,
       "holdings_count": 1,
-      "native_settlement": "no_execution_due",
       "observed": 0,
       "orders": [],
       "planned": 0,
-      "source_session": "2026-11-23",
-      "status": "active_no_orders",
+      "source_session": "2026-11-24",
+      "status": "before_open",
       "waiting": 0
     },
     "IL-042": {
       "exit_only_ready": false,
       "holdings_count": 0,
-      "native_settlement": "no_execution_due",
       "observed": 0,
       "orders": [],
       "planned": 0,
-      "source_session": "2026-11-23",
-      "status": "active_no_orders",
+      "source_session": "2026-11-24",
+      "status": "before_open",
       "waiting": 0
     },
     "IL-043": {
       "exit_only_ready": false,
       "holdings_count": 1,
-      "native_settlement": "no_execution_due",
       "observed": 0,
       "orders": [],
       "planned": 0,
-      "source_session": "2026-11-23",
-      "status": "active_no_orders",
+      "source_session": "2026-11-24",
+      "status": "before_open",
       "waiting": 0
     },
     "IL-044": {
       "exit_only_ready": false,
       "holdings_count": 5,
-      "native_settlement": "no_execution_due",
       "observed": 0,
       "orders": [],
       "planned": 0,
-      "source_session": "2026-11-23",
-      "status": "active_no_orders",
+      "source_session": "2026-11-24",
+      "status": "before_open",
       "waiting": 0
     }
   },
-  "source_commit": "30e312b5b93e1efbc25d3afc41e16ae8b453f6aa"
+  "source_commit": "426307199bed5fe5cbae7236b60ce22653ae2c0d"
 }
