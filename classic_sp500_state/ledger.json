@@ -287,7 +287,7 @@
       "trades": []
     },
     "bollinger_breakout_20": {
-      "cash": 33766.52124732943,
+      "cash": 2428.277325820556,
       "equity": [
         {
           "date": "2026-10-12",
@@ -708,6 +708,51 @@
           "source_commit": "30e312b5b93e1efbc25d3afc41e16ae8b453f6aa",
           "ticker": "PCG",
           "type": "buy"
+        },
+        {
+          "date": "2026-11-25",
+          "execution": "forward_observed_paper",
+          "fee": 15.65346852861876,
+          "idempotency_key": "IL-015:2026-11-25:open:classic_forward_v1:DLTR",
+          "lock_sha256": "1f08dc2cd76d4eb892d659b723e1bfb554037f1a8c7bc7d1521839fda6f630ef",
+          "observed_at_utc": "2026-11-25T14:34:03.383710Z",
+          "price": 155.3076107254028,
+          "quote_at_utc": "2026-11-25T14:34:00Z",
+          "shares": 100.790093,
+          "sizing_reference": "previous_verified_close_nav",
+          "source_commit": "426307199bed5fe5cbae7236b60ce22653ae2c0d",
+          "ticker": "DLTR",
+          "type": "buy"
+        },
+        {
+          "date": "2026-11-25",
+          "execution": "forward_observed_paper",
+          "fee": 15.65346845590102,
+          "idempotency_key": "IL-015:2026-11-25:open:classic_forward_v1:DRI",
+          "lock_sha256": "1f08dc2cd76d4eb892d659b723e1bfb554037f1a8c7bc7d1521839fda6f630ef",
+          "observed_at_utc": "2026-11-25T14:34:03.812149Z",
+          "price": 238.23685675048827,
+          "quote_at_utc": "2026-11-25T14:34:00Z",
+          "shares": 65.705486,
+          "sizing_reference": "previous_verified_close_nav",
+          "source_commit": "426307199bed5fe5cbae7236b60ce22653ae2c0d",
+          "ticker": "DRI",
+          "type": "buy"
+        },
+        {
+          "available_cash": 2428.277325820556,
+          "date": "2026-11-25",
+          "minimum_notional": 10,
+          "reason": "insufficient_cash",
+          "reasons": [
+            "insufficient_cash"
+          ],
+          "required_cash": 15669.121975843464,
+          "side": "buy",
+          "sizing_reference": "previous_verified_close_nav",
+          "target_budget": 15669.122068214978,
+          "ticker": "TGT",
+          "type": "unfilled"
         }
       ],
       "forward_executions": {
@@ -781,6 +826,19 @@
           "recorded_at_utc": "2026-11-24T14:34:14.722076Z",
           "session": "2026-11-24",
           "source_commit": "30e312b5b93e1efbc25d3afc41e16ae8b453f6aa"
+        },
+        "IL-015:2026-11-25:open:classic_forward_v1": {
+          "fill_tickers": [
+            "DLTR",
+            "DRI"
+          ],
+          "fills_count": 2,
+          "lock_sha256": "1f08dc2cd76d4eb892d659b723e1bfb554037f1a8c7bc7d1521839fda6f630ef",
+          "mode": "forward_observed_paper",
+          "quotes_sha256": "7bae8d4fc5069a6fb1e75cda6d6e8324b2f82d0070e8269092e65588b347c2ff",
+          "recorded_at_utc": "2026-11-25T14:34:10.388027Z",
+          "session": "2026-11-25",
+          "source_commit": "426307199bed5fe5cbae7236b60ce22653ae2c0d"
         }
       },
       "nav": 104460.81378809985,
@@ -788,20 +846,7 @@
         "first_trading_session": "2026-11-05",
         "registered_at_utc": "2026-11-04T18:03:08+00:00"
       },
-      "pending": {
-        "DLTR": {
-          "side": "buy",
-          "signal_date": "2026-11-24"
-        },
-        "DRI": {
-          "side": "buy",
-          "signal_date": "2026-11-24"
-        },
-        "TGT": {
-          "side": "buy",
-          "signal_date": "2026-11-24"
-        }
-      },
+      "pending": {},
       "positions": {
         "CAH": {
           "cost": 11874.999816718037,
@@ -820,6 +865,24 @@
           "shares": 11.87966,
           "stop": 918.7203171166992,
           "target": 1148.400396395874
+        },
+        "DLTR": {
+          "cost": 15669.121997149765,
+          "dividends": 0.0,
+          "entry_date": "2026-11-25",
+          "entry_price": 155.3076107254028,
+          "shares": 100.790093,
+          "stop": 142.88300186737058,
+          "target": 178.60375233421323
+        },
+        "DRI": {
+          "cost": 15669.121924359111,
+          "dividends": 0.0,
+          "entry_date": "2026-11-25",
+          "entry_price": 238.23685675048827,
+          "shares": 65.705486,
+          "stop": 219.17790821044923,
+          "target": 273.9723852630615
         },
         "EPAM": {
           "cost": 15688.982646203409,
@@ -10619,6 +10682,21 @@
           "date": "2026-11-24",
           "ticker": "HWM",
           "type": "unfilled"
+        },
+        {
+          "available_cash": 4739.116289223919,
+          "date": "2026-11-25",
+          "minimum_notional": 10,
+          "reason": "insufficient_cash",
+          "reasons": [
+            "insufficient_cash"
+          ],
+          "required_cash": 15228.986815382927,
+          "side": "buy",
+          "sizing_reference": "observed_open_nav",
+          "target_budget": 15228.986826868619,
+          "ticker": "INCY",
+          "type": "unfilled"
         }
       ],
       "forward_executions": {
@@ -10688,6 +10766,16 @@
           "recorded_at_utc": "2026-11-24T14:34:14.722076Z",
           "session": "2026-11-24",
           "source_commit": "30e312b5b93e1efbc25d3afc41e16ae8b453f6aa"
+        },
+        "IL-011:2026-11-25:open:classic_forward_v1": {
+          "fill_tickers": [],
+          "fills_count": 0,
+          "lock_sha256": "1f08dc2cd76d4eb892d659b723e1bfb554037f1a8c7bc7d1521839fda6f630ef",
+          "mode": "forward_observed_paper",
+          "quotes_sha256": "3d40ec7ef593be768e49da83272cffc811a43cd42f9d4a61694676b19f018cb7",
+          "recorded_at_utc": "2026-11-25T14:34:10.388027Z",
+          "session": "2026-11-25",
+          "source_commit": "426307199bed5fe5cbae7236b60ce22653ae2c0d"
         }
       },
       "nav": 101517.21027515369,
@@ -10695,12 +10783,7 @@
         "first_trading_session": "2026-11-23",
         "registered_at_utc": "2026-11-23T09:05:40+00:00"
       },
-      "pending": {
-        "INCY": {
-          "side": "buy",
-          "signal_date": "2026-11-24"
-        }
-      },
+      "pending": {},
       "positions": {
         "BF-B": {
           "cost": 11874.999971558756,
@@ -10953,7 +11036,7 @@
       ]
     },
     "genetic_frozen": {
-      "cash": 4334.681926443884,
+      "cash": 15444.354531701549,
       "equity": [
         {
           "date": "2026-10-12",
@@ -11534,6 +11617,36 @@
           "source_commit": "70ef2402f627c35228f3109b282e6424cb40ab88",
           "ticker": "TJX",
           "type": "buy"
+        },
+        {
+          "date": "2026-11-25",
+          "execution": "forward_observed_paper",
+          "fee": 11.120793398656323,
+          "idempotency_key": "IL-012:2026-11-25:open:classic_forward_v1:MNST",
+          "lock_sha256": "1f08dc2cd76d4eb892d659b723e1bfb554037f1a8c7bc7d1521839fda6f630ef",
+          "observed_at_utc": "2026-11-25T14:34:07.304087Z",
+          "price": 42.14891316986084,
+          "quote_at_utc": "2026-11-25T14:34:00Z",
+          "reason": "signal_next_open",
+          "shares": 263.845318,
+          "source_commit": "426307199bed5fe5cbae7236b60ce22653ae2c0d",
+          "ticker": "MNST",
+          "type": "sell"
+        },
+        {
+          "available_cash": 15444.354531701549,
+          "date": "2026-11-25",
+          "minimum_notional": 10,
+          "reason": "insufficient_cash",
+          "reasons": [
+            "insufficient_cash"
+          ],
+          "required_cash": 16270.107502716746,
+          "side": "buy",
+          "sizing_reference": "observed_open_nav",
+          "target_budget": 16270.107508206998,
+          "ticker": "TPR",
+          "type": "unfilled"
         }
       ],
       "forward_executions": {
@@ -11560,6 +11673,18 @@
           "recorded_at_utc": "2026-11-23T14:34:31.308010Z",
           "session": "2026-11-23",
           "source_commit": "70ef2402f627c35228f3109b282e6424cb40ab88"
+        },
+        "IL-012:2026-11-25:open:classic_forward_v1": {
+          "fill_tickers": [
+            "MNST"
+          ],
+          "fills_count": 1,
+          "lock_sha256": "1f08dc2cd76d4eb892d659b723e1bfb554037f1a8c7bc7d1521839fda6f630ef",
+          "mode": "forward_observed_paper",
+          "quotes_sha256": "b7869afb5a0e2a84cfab2cfbf51119b0bc1622fbc59eec829df0260988608d9a",
+          "recorded_at_utc": "2026-11-25T14:34:10.388027Z",
+          "session": "2026-11-25",
+          "source_commit": "426307199bed5fe5cbae7236b60ce22653ae2c0d"
         }
       },
       "nav": 108460.85983457451,
@@ -11567,16 +11692,7 @@
         "first_trading_session": "2026-11-19",
         "registered_at_utc": "2026-11-18T15:55:52+00:00"
       },
-      "pending": {
-        "MNST": {
-          "side": "sell",
-          "signal_date": "2026-11-24"
-        },
-        "TPR": {
-          "side": "buy",
-          "signal_date": "2026-11-24"
-        }
-      },
+      "pending": {},
       "positions": {
         "ABT": {
           "cost": 11874.99990084408,
@@ -11615,15 +11731,6 @@
           "shares": 36.869427,
           "stop": 292.70580531514435,
           "target": 397.9215889119918
-        },
-        "MNST": {
-          "cost": 11874.999969530583,
-          "dividends": 0.0,
-          "entry_date": "2026-10-15",
-          "entry_price": 44.962468626022336,
-          "shares": 263.845318,
-          "stop": 40.90235770909252,
-          "target": 55.60508494980182
         },
         "SJM": {
           "cost": 11874.999990979122,
@@ -11766,11 +11873,27 @@
           "reason": "target_forward_observed",
           "source_commit": "da997560ef3398b2324d16680384c7a710c4df72",
           "ticker": "IDXX"
+        },
+        {
+          "dividends": 0.0,
+          "entry_cost": 11874.999969530583,
+          "entry_date": "2026-10-15",
+          "execution": "forward_observed_paper",
+          "exit_date": "2026-11-25",
+          "idempotency_key": "IL-012:2026-11-25:open:classic_forward_v1:MNST",
+          "lock_sha256": "1f08dc2cd76d4eb892d659b723e1bfb554037f1a8c7bc7d1521839fda6f630ef",
+          "net_pnl": -765.3273642729182,
+          "observed_at_utc": "2026-11-25T14:34:07.304087Z",
+          "proceeds": 11109.672605257665,
+          "quote_at_utc": "2026-11-25T14:34:00Z",
+          "reason": "signal_next_open",
+          "source_commit": "426307199bed5fe5cbae7236b60ce22653ae2c0d",
+          "ticker": "MNST"
         }
       ]
     },
     "macd_12_26_9": {
-      "cash": 11427.991822255355,
+      "cash": 25002.996935276336,
       "equity": [
         {
           "date": "2026-10-12",
@@ -12593,6 +12716,48 @@
           "date": "2026-11-24",
           "ticker": "KEYS",
           "type": "unfilled"
+        },
+        {
+          "available_cash": 11427.991822255355,
+          "date": "2026-11-25",
+          "minimum_notional": 10,
+          "reason": "insufficient_cash",
+          "reasons": [
+            "insufficient_cash"
+          ],
+          "required_cash": 15001.495352938413,
+          "side": "buy",
+          "sizing_reference": "observed_open_nav",
+          "target_budget": 15001.49540421489,
+          "ticker": "DIS",
+          "type": "unfilled"
+        },
+        {
+          "available_cash": 11427.991822255355,
+          "date": "2026-11-25",
+          "minimum_notional": 10,
+          "reason": "insufficient_cash",
+          "reasons": [
+            "insufficient_cash"
+          ],
+          "required_cash": 15001.495398924566,
+          "side": "buy",
+          "sizing_reference": "observed_open_nav",
+          "target_budget": 15001.49540421489,
+          "ticker": "DRI",
+          "type": "unfilled"
+        },
+        {
+          "date": "2026-11-25",
+          "execution": "forward_observed_paper",
+          "idempotency_key": "IL-013:2026-11-25:stop:GNRC:classic_forward_v1:GNRC",
+          "lock_sha256": "1f08dc2cd76d4eb892d659b723e1bfb554037f1a8c7bc7d1521839fda6f630ef",
+          "observed_at_utc": "2026-11-25T14:34:05.169286Z",
+          "quote_at_utc": "2026-11-25T14:33:00Z",
+          "reason": "stop_forward_observed",
+          "source_commit": "426307199bed5fe5cbae7236b60ce22653ae2c0d",
+          "ticker": "GNRC",
+          "type": "sell"
         }
       ],
       "forward_executions": {
@@ -12671,6 +12836,28 @@
           "recorded_at_utc": "2026-11-24T14:34:14.722076Z",
           "session": "2026-11-24",
           "source_commit": "30e312b5b93e1efbc25d3afc41e16ae8b453f6aa"
+        },
+        "IL-013:2026-11-25:open:classic_forward_v1": {
+          "fill_tickers": [],
+          "fills_count": 0,
+          "lock_sha256": "1f08dc2cd76d4eb892d659b723e1bfb554037f1a8c7bc7d1521839fda6f630ef",
+          "mode": "forward_observed_paper",
+          "quotes_sha256": "5edd37f61e21248de19e4775ac029ecee5a08c0096994cf79efe024daca5adef",
+          "recorded_at_utc": "2026-11-25T14:34:10.388027Z",
+          "session": "2026-11-25",
+          "source_commit": "426307199bed5fe5cbae7236b60ce22653ae2c0d"
+        },
+        "IL-013:2026-11-25:stop:GNRC:classic_forward_v1": {
+          "fill_tickers": [
+            "GNRC"
+          ],
+          "fills_count": 1,
+          "lock_sha256": "1f08dc2cd76d4eb892d659b723e1bfb554037f1a8c7bc7d1521839fda6f630ef",
+          "mode": "forward_observed_paper",
+          "quotes_sha256": "025e30ff5fa47184a55aa9b345fcc15bf005ddf43691acb0040ddc4e345cda22",
+          "recorded_at_utc": "2026-11-25T14:34:10.388027Z",
+          "session": "2026-11-25",
+          "source_commit": "426307199bed5fe5cbae7236b60ce22653ae2c0d"
         }
       },
       "nav": 100648.42122326925,
@@ -12678,16 +12865,7 @@
         "first_trading_session": "2026-11-23",
         "registered_at_utc": "2026-11-23T09:05:40+00:00"
       },
-      "pending": {
-        "DIS": {
-          "side": "buy",
-          "signal_date": "2026-11-24"
-        },
-        "DRI": {
-          "side": "buy",
-          "signal_date": "2026-11-24"
-        }
-      },
+      "pending": {},
       "positions": {
         "DLTR": {
           "cost": 14941.304688990958,
@@ -12724,15 +12902,6 @@
           "shares": 75.8182,
           "stop": 143.95073883819578,
           "target": 179.93842354774472
-        },
-        "GNRC": {
-          "cost": 14941.30463325083,
-          "dividends": 0.0,
-          "entry_date": "2026-11-19",
-          "entry_price": 209.9349168319702,
-          "shares": 71.100027,
-          "stop": 193.1401234854126,
-          "target": 241.42515435676572
         },
         "TRGP": {
           "cost": 14928.943883748088,
@@ -13070,11 +13239,27 @@
           "reason": "stop_forward_observed",
           "source_commit": "f1f67b5bce5679c05de36dcabede2b0106722bb4",
           "ticker": "IQV"
+        },
+        {
+          "dividends": 0.0,
+          "entry_cost": 14941.30463325083,
+          "entry_date": "2026-11-19",
+          "execution": "forward_observed_paper",
+          "exit_date": "2026-11-25",
+          "idempotency_key": "IL-013:2026-11-25:stop:GNRC:classic_forward_v1:GNRC",
+          "lock_sha256": "1f08dc2cd76d4eb892d659b723e1bfb554037f1a8c7bc7d1521839fda6f630ef",
+          "net_pnl": -1366.2995202298462,
+          "observed_at_utc": "2026-11-25T14:34:05.169286Z",
+          "proceeds": 13575.005113020983,
+          "quote_at_utc": "2026-11-25T14:33:00Z",
+          "reason": "stop_forward_observed",
+          "source_commit": "426307199bed5fe5cbae7236b60ce22653ae2c0d",
+          "ticker": "GNRC"
         }
       ]
     },
     "rsi_reversion_14": {
-      "cash": 35603.53892003071,
+      "cash": 5607.441376950035,
       "equity": [
         {
           "date": "2026-10-12",
@@ -13467,6 +13652,49 @@
           "source_commit": "30e312b5b93e1efbc25d3afc41e16ae8b453f6aa",
           "ticker": "ADM",
           "type": "sell"
+        },
+        {
+          "date": "2026-11-25",
+          "execution": "forward_observed_paper",
+          "fee": 14.983065720463856,
+          "idempotency_key": "IL-014:2026-11-25:open:classic_forward_v1:ALB",
+          "lock_sha256": "1f08dc2cd76d4eb892d659b723e1bfb554037f1a8c7bc7d1521839fda6f630ef",
+          "observed_at_utc": "2026-11-25T14:34:01.497020Z",
+          "price": 77.288625,
+          "quote_at_utc": "2026-11-25T14:34:00Z",
+          "shares": 193.858614,
+          "source_commit": "426307199bed5fe5cbae7236b60ce22653ae2c0d",
+          "ticker": "ALB",
+          "type": "buy"
+        },
+        {
+          "date": "2026-11-25",
+          "execution": "forward_observed_paper",
+          "fee": 14.983065691201773,
+          "idempotency_key": "IL-014:2026-11-25:open:classic_forward_v1:BG",
+          "lock_sha256": "1f08dc2cd76d4eb892d659b723e1bfb554037f1a8c7bc7d1521839fda6f630ef",
+          "observed_at_utc": "2026-11-25T14:34:01.991821Z",
+          "price": 86.13014071655273,
+          "quote_at_utc": "2026-11-25T14:34:00Z",
+          "shares": 173.958449,
+          "source_commit": "426307199bed5fe5cbae7236b60ce22653ae2c0d",
+          "ticker": "BG",
+          "type": "buy"
+        },
+        {
+          "available_cash": 5607.441376950035,
+          "date": "2026-11-25",
+          "minimum_notional": 10,
+          "reason": "insufficient_cash",
+          "reasons": [
+            "insufficient_cash"
+          ],
+          "required_cash": 14998.048754103866,
+          "side": "buy",
+          "sizing_reference": "observed_open_nav",
+          "target_budget": 14998.048798837826,
+          "ticker": "FCX",
+          "type": "unfilled"
         }
       ],
       "forward_executions": {
@@ -13587,24 +13815,33 @@
           "recorded_at_utc": "2026-11-24T19:21:34.344318Z",
           "session": "2026-11-24",
           "source_commit": "30e312b5b93e1efbc25d3afc41e16ae8b453f6aa"
+        },
+        "IL-014:2026-11-25:open:classic_forward_v1": {
+          "fill_tickers": [
+            "ALB",
+            "BG"
+          ],
+          "fills_count": 2,
+          "lock_sha256": "1f08dc2cd76d4eb892d659b723e1bfb554037f1a8c7bc7d1521839fda6f630ef",
+          "mode": "forward_observed_paper",
+          "quotes_sha256": "9995433042c691a33abbe9d97fa83f16e010acf6f8d54d39257b1c0cb49ef13c",
+          "recorded_at_utc": "2026-11-25T14:34:10.388027Z",
+          "session": "2026-11-25",
+          "source_commit": "426307199bed5fe5cbae7236b60ce22653ae2c0d"
         }
       },
       "nav": 101810.34083738948,
-      "pending": {
-        "ALB": {
-          "side": "buy",
-          "signal_date": "2026-11-24"
-        },
-        "BG": {
-          "side": "buy",
-          "signal_date": "2026-11-24"
-        },
-        "FCX": {
-          "side": "buy",
-          "signal_date": "2026-11-24"
-        }
-      },
+      "pending": {},
       "positions": {
+        "ALB": {
+          "cost": 14998.048786186213,
+          "dividends": 0.0,
+          "entry_date": "2026-11-25",
+          "entry_price": 77.288625,
+          "shares": 193.858614,
+          "stop": 71.105535,
+          "target": 88.88191874999998
+        },
         "BAC": {
           "cost": 15442.900736508143,
           "dividends": 0.0,
@@ -13613,6 +13850,15 @@
           "shares": 320.510563,
           "stop": 44.2833311618042,
           "target": 55.35416395225524
+        },
+        "BG": {
+          "cost": 14998.048756894463,
+          "dividends": 0.0,
+          "entry_date": "2026-11-25",
+          "entry_price": 86.13014071655273,
+          "shares": 173.958449,
+          "stop": 79.23972945922851,
+          "target": 99.04966182403564
         },
         "CZR": {
           "cost": 11874.999971653644,
@@ -13889,7 +14135,7 @@
       ]
     },
     "turtle_20_10_long": {
-      "cash": 27353.2466024705,
+      "cash": 13103.152657329592,
       "equity": [
         {
           "date": "2026-10-12",
@@ -14353,6 +14599,50 @@
           "source_commit": "70ef2402f627c35228f3109b282e6424cb40ab88",
           "ticker": "HRL",
           "type": "buy"
+        },
+        {
+          "date": "2026-11-25",
+          "execution": "forward_observed_paper",
+          "fee": 14.235858087051383,
+          "idempotency_key": "IL-016:2026-11-25:open:classic_forward_v1:DLTR",
+          "lock_sha256": "1f08dc2cd76d4eb892d659b723e1bfb554037f1a8c7bc7d1521839fda6f630ef",
+          "observed_at_utc": "2026-11-25T14:34:03.383710Z",
+          "price": 155.3076107254028,
+          "quote_at_utc": "2026-11-25T14:34:00Z",
+          "shares": 91.662334,
+          "source_commit": "426307199bed5fe5cbae7236b60ce22653ae2c0d",
+          "ticker": "DLTR",
+          "type": "buy"
+        },
+        {
+          "available_cash": 13103.152657329592,
+          "date": "2026-11-25",
+          "minimum_notional": 10,
+          "reason": "insufficient_cash",
+          "reasons": [
+            "insufficient_cash"
+          ],
+          "required_cash": 14250.094081150637,
+          "side": "buy",
+          "sizing_reference": "observed_open_nav",
+          "target_budget": 14250.094086045847,
+          "ticker": "MGM",
+          "type": "unfilled"
+        },
+        {
+          "available_cash": 13103.152657329592,
+          "date": "2026-11-25",
+          "minimum_notional": 10,
+          "reason": "insufficient_cash",
+          "reasons": [
+            "insufficient_cash"
+          ],
+          "required_cash": 14250.094055241152,
+          "side": "buy",
+          "sizing_reference": "observed_open_nav",
+          "target_budget": 14250.094086045847,
+          "ticker": "TGT",
+          "type": "unfilled"
         }
       ],
       "forward_executions": {
@@ -14383,6 +14673,18 @@
           "recorded_at_utc": "2026-11-23T14:34:31.308010Z",
           "session": "2026-11-23",
           "source_commit": "70ef2402f627c35228f3109b282e6424cb40ab88"
+        },
+        "IL-016:2026-11-25:open:classic_forward_v1": {
+          "fill_tickers": [
+            "DLTR"
+          ],
+          "fills_count": 1,
+          "lock_sha256": "1f08dc2cd76d4eb892d659b723e1bfb554037f1a8c7bc7d1521839fda6f630ef",
+          "mode": "forward_observed_paper",
+          "quotes_sha256": "e1f273fc3bc60229ec92affb84a94be195f12fc99dd893eab40ad221222e858d",
+          "recorded_at_utc": "2026-11-25T14:34:10.388027Z",
+          "session": "2026-11-25",
+          "source_commit": "426307199bed5fe5cbae7236b60ce22653ae2c0d"
         }
       },
       "nav": 94514.85432936804,
@@ -14390,20 +14692,7 @@
         "first_trading_session": "2026-11-05",
         "registered_at_utc": "2026-11-04T18:03:08+00:00"
       },
-      "pending": {
-        "DLTR": {
-          "side": "buy",
-          "signal_date": "2026-11-24"
-        },
-        "MGM": {
-          "side": "buy",
-          "signal_date": "2026-11-24"
-        },
-        "TGT": {
-          "side": "buy",
-          "signal_date": "2026-11-24"
-        }
-      },
+      "pending": {},
       "positions": {
         "COST": {
           "cost": 11874.999008088047,
@@ -14411,6 +14700,15 @@
           "entry_date": "2026-10-15",
           "entry_price": 998.6090403442382,
           "shares": 11.87966,
+          "stop": null,
+          "target": null
+        },
+        "DLTR": {
+          "cost": 14250.093945140907,
+          "dividends": 0.0,
+          "entry_date": "2026-11-25",
+          "entry_price": 155.3076107254028,
+          "shares": 91.662334,
           "stop": null,
           "target": null
         },
@@ -14997,6 +15295,21 @@
           "date": "2026-11-23",
           "ticker": "HRL",
           "type": "unfilled"
+        },
+        {
+          "available_cash": 4000.346631238621,
+          "date": "2026-11-25",
+          "minimum_notional": 10,
+          "reason": "insufficient_cash",
+          "reasons": [
+            "insufficient_cash"
+          ],
+          "required_cash": 13879.860248826766,
+          "side": "buy",
+          "sizing_reference": "observed_open_nav",
+          "target_budget": 13879.86032692999,
+          "ticker": "DLTR",
+          "type": "unfilled"
         }
       ],
       "forward_executions": {
@@ -15072,15 +15385,20 @@
           "recorded_at_utc": "2026-11-23T14:34:31.308010Z",
           "session": "2026-11-23",
           "source_commit": "70ef2402f627c35228f3109b282e6424cb40ab88"
+        },
+        "IL-017:2026-11-25:open:classic_forward_v1": {
+          "fill_tickers": [],
+          "fills_count": 0,
+          "lock_sha256": "1f08dc2cd76d4eb892d659b723e1bfb554037f1a8c7bc7d1521839fda6f630ef",
+          "mode": "forward_observed_paper",
+          "quotes_sha256": "397cc24bf121877baabfc329c511720799520e546c74c437fb08705f0fc947fe",
+          "recorded_at_utc": "2026-11-25T14:34:10.388027Z",
+          "session": "2026-11-25",
+          "source_commit": "426307199bed5fe5cbae7236b60ce22653ae2c0d"
         }
       },
       "nav": 93407.3596252609,
-      "pending": {
-        "DLTR": {
-          "side": "buy",
-          "signal_date": "2026-11-24"
-        }
-      },
+      "pending": {},
       "positions": {
         "ABBV": {
           "cost": 11874.999758862768,
