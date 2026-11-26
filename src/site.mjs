@@ -2229,6 +2229,19 @@ function fullRosterRows(){
  }).join("");
 }
 
+function gsOpeningOutcome(book){
+ const last=book.history.at(-1),o=last?.opening_execution;
+ if(!o)return "Sin resultado de apertura acreditado";
+ if(o.status==="cancelled"){
+  const missing=o.missing_symbols||[],splits=o.split_symbols||[];
+  const reason=[missing.length?"sin cotización: "+missing.join(", "):"",splits.length?"split: "+splits.join(", "):""].filter(Boolean).join(" · ");
+  return "Apertura cancelada · "+last.date+(reason?" · "+reason:"");
+ }
+ if(o.status==="simulated")return "Apertura simulada · "+o.fills+" movimientos · "+last.date;
+ if(o.status==="no_change")return "Apertura sin cambios · "+last.date;
+ if(o.status==="no_pending_order")return "Sin orden de apertura · "+last.date;
+ return "Resultado de apertura no verificable";
+}
 function gsQuantCohort(){
  const doc=state.gsQuantPaper;
  if(!doc)return '<section class="competition-phase-notice"><strong>Nueva cohorte GS Quant inspirada</strong><span>Diario pendiente de verificación.</span></section>';
@@ -2238,8 +2251,9 @@ function gsQuantCohort(){
   const daily=last&&prev?100*(last.nav/prev.nav-1):null;
   const activity=b.status==="awaiting_first_signal"?"Pendiente de primer cierre":
    b.status==="blocked"?"Bloqueado: "+(b.diagnostic||"sin evidencia"):
-   b.pending?"Señal fijada · "+Object.keys(b.pending.weights).length+" objetivos":"Sin nueva señal";
-  return '<tr><td><strong>'+esc(id)+' · '+esc(b.name)+'</strong></td><td>'+esc(activity)+'</td>'+
+   b.pending?"Señal fijada · "+Object.keys(b.pending.weights).length+" objetivos · "+b.pending.target_session:"Sin nueva señal";
+  const opening=gsOpeningOutcome(b);
+  return '<tr><td><strong>'+esc(id)+' · '+esc(b.name)+'</strong></td><td>'+esc(activity)+'<br><small>'+esc(opening)+'</small></td>'+
    '<td>'+esc(last?.date||"N/D")+'</td><td>'+esc(Object.keys(b.positions).length)+'</td><td>'+
    esc(b.trades.length)+'</td><td>'+ (perf===null?"N/D":pctText(perf))+'</td><td>'+
    (daily===null?"N/D":pctText(daily))+'</td></tr>';
@@ -2262,6 +2276,17 @@ async function loadGSQuantPaper(){
       b.history.some((p,i)=>!Number.isFinite(p.nav)||p.nav<=0||p.date<doc.campaign_start||
        (i&&p.date<=b.history[i-1].date))||
       (b.history.at(-1)?.date||null)!==b.last_session)throw Error("Invalid cohort journal");
+   for(const p of b.history){
+    const o=p.opening_execution;
+    // The inaugural NAV predates the new field; never invent its outcome.
+    if(o===undefined&&p.date===doc.campaign_start)continue;
+    if(!o||!["cancelled","simulated","no_change","no_pending_order"].includes(o.status)||
+       !Number.isInteger(o.fills)||o.fills<0||!Number.isInteger(o.target_count)||o.target_count<0||
+       (o.status==="simulated"?o.fills===0:o.fills!==0)||
+       (o.status==="cancelled"&&(!Array.isArray(o.missing_symbols)||!Array.isArray(o.split_symbols)||
+        ![...o.missing_symbols,...o.split_symbols].every(t=>typeof t==="string")||
+        o.missing_symbols.length+o.split_symbols.length===0)))throw Error("Invalid opening outcome");
+   }
   }
   state.gsQuantPaper=doc;
  }catch(_error){state.gsQuantPaper=null;}

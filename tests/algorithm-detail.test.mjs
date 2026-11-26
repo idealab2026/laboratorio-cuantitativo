@@ -1281,3 +1281,18 @@ test("one shared market-clock display covers every active slot and never calls p
  assert.ok(!existsSync(new URL("../.github/workflows/forward-open-il039.yml",import.meta.url)),
    "Separate IL039-only schedule must no longer exist");
 });
+
+
+test("GS Quant keeps cancelled opening separate from the next frozen signal",()=>{
+ const site=readFileSync(new URL("../src/site.mjs",import.meta.url),"utf8");
+ const start=site.indexOf("function gsOpeningOutcome("),end=site.indexOf("async function loadGSQuantPaper()",start);
+ assert.ok(start>=0&&end>start);
+ const state={gsQuantPaper:{initial_capital:100000,books:{"GS-01":{name:"Momentum",status:"paper_signal_frozen",pending:{weights:{MSFT:.09},target_session:"2026-11-30"},history:[{date:"2026-11-25",nav:100000},{date:"2026-11-27",nav:100000,opening_execution:{status:"cancelled",fills:0,target_count:1,missing_symbols:["AAPL"],split_symbols:[]}}],positions:{},trades:[]}}}};
+ const render=new Function("state","esc","pctText",site.slice(start,end)+";return {view:gsQuantCohort,outcome:gsOpeningOutcome};")(state,String,x=>String(x)+" %");
+ const html=render.view();
+ assert.match(html,/Señal fijada · 1 objetivos · 2026-11-30/);
+ assert.match(html,/Apertura cancelada · 2026-11-27 · sin cotización: AAPL/);
+ assert.match(render.outcome({history:[{date:"2026-11-25",nav:100000}]}),/Sin resultado de apertura acreditado/);
+ assert.match(render.outcome({history:[{date:"2026-11-27",opening_execution:{status:"simulated",fills:10}}]}),/10 movimientos/);
+ assert.match(render.outcome({history:[{date:"2026-11-27",opening_execution:{status:"no_change",fills:0}}]}),/sin cambios/);
+});
