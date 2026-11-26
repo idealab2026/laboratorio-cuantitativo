@@ -204,3 +204,15 @@ certificado anterior ni se añade riesgo real. El primer cierre válido del
 25 de noviembre inicia los libros y el primer rebalanceo es la apertura
 siguiente que fije el calendario XNYS. Workflow aislado consume la fuente
 común, con dos respaldos nocturnos y exclusión mutua del writer.
+
+### GS Quant: trazabilidad de apertura y sesión reducida (26/11/2026)
+
+Cada NAV nuevo registra `opening_execution` con resultado explícito de la orden
+previa: sin orden, sin cambio, simulada o cancelada; si faltan barras exactas o
+hay splits se conservan los símbolos afectados y cero fills. El siguiente
+pronóstico no borra ese resultado. Además de comprobar el hash de la señal,
+la fecha de emisión debe estar entre el cierre real de la sesión de origen y
+la apertura real de destino, según XNYS. No se modifican las seis señales ya
+congeladas el 25/11 ni el NAV inicial. La sesión del 27/11 cierra a las 18:00 UTC;
+la liquidación OHLC sigue registrándose tras el cierre, sin certificar fill
+observado ni disponibilidad real de préstamo.

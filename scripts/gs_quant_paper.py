@@ -206,6 +206,10 @@ def advance_book(slot,old,session,previous,next_session,now,source,history_hashe
         b["cash"]-=sum(-q*bars[t]["open"]*BORROW*days/365
                        for t,q in b["positions"].items() if q<0)
     p=b["pending"]
+    # Preserve the outcome of today's frozen plan independently of the
+    # next signal. A newly frozen signal does not prove yesterday's fill.
+    execution={"status":"no_pending_order","target_count":0,"fills":0}
+    b["diagnostic"]=None
     if p:
         if p["target_session"]!=session:
             raise ValueError("Expired order: never execute retrospectively")
@@ -215,12 +219,20 @@ def advance_book(slot,old,session,previous,next_session,now,source,history_hashe
             raise ValueError("Pending signal provenance mismatch")
         _,_,expected_target,opening=dates_for(previous)
         issued=datetime.fromisoformat(p["issued_at_utc"].replace("Z","+00:00"))
-        if expected_target!=session or issued.tzinfo is None or not issued<opening:
-            raise ValueError("Pending signal was not frozen before target open")
+        import pandas_market_calendars as calendars
+        previous_close=calendars.get_calendar("XNYS").schedule(
+            start_date=previous,end_date=previous).iloc[0]["market_close"].to_pydatetime()
+        if (p["signal_session"]!=previous or expected_target!=session or
+                issued.tzinfo is None or not previous_close<=issued<opening):
+            raise ValueError("Pending signal was not frozen in its causal window")
         weights=p["weights"]; validate_targets(slot,weights,universe)
         required=held|set(weights)
-        if any(t not in bars or bars[t].get("split") for t in required):
+        missing=sorted(t for t in required if t not in bars)
+        splits=sorted(t for t in required if t in bars and bars[t].get("split"))
+        execution.update(signal_sha256=p["sha256"],target_count=len(weights))
+        if missing or splits:
             b["diagnostic"]="opening_rebalance_cancelled_missing_exact_bar_or_split"
+            execution.update(status="cancelled",missing_symbols=missing,split_symbols=splits)
         else:
             open_nav=b["cash"]+sum(q*bars[t]["open"] for t,q in b["positions"].items())
             if open_nav<=0: raise ValueError("Nonpositive opening NAV")
@@ -241,11 +253,13 @@ def advance_book(slot,old,session,previous,next_session,now,source,history_hashe
             if b["cash"]<0: raise ValueError("Cash constraint")
             b["positions"]={t:q for t,q in desired.items() if q}
             b["trades"].extend(fills)
-            b["diagnostic"]=None
+            execution.update(status="simulated" if fills else "no_change",fills=len(fills),
+                             fees=sum(f["fee"] for f in fills))
     nav=b["cash"]+sum(q*bars[t]["close"] for t,q in b["positions"].items())
     if not math.isfinite(nav) or nav<=0 or b["cash"]<0:
         raise ValueError("Invalid closing economics")
-    b["history"].append({"date":session,"nav":nav,"source_sha256":source["effective_sha256"]})
+    b["history"].append({"date":session,"nav":nav,"source_sha256":source["effective_sha256"],
+                         "opening_execution":execution})
     b["last_session"]=session
     b["pending"]=None
     try:
@@ -260,7 +274,8 @@ def advance_book(slot,old,session,previous,next_session,now,source,history_hashe
         b["status"]="paper_signal_frozen"
     except ValueError as exc:
         b["status"]="marked_no_new_signal"
-        b["diagnostic"]=str(exc)
+        # Retain today's cancellation reason even if the new signal fails.
+        b["diagnostic"]="; ".join(filter(None,[b["diagnostic"],str(exc)]))
     return b
 
 def run(now=None):

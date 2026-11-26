@@ -56,11 +56,39 @@ class QuantCohortTest(unittest.TestCase):
         self.assertAlmostEqual(second["positions"]["SPY"],900.)
         self.assertAlmostEqual(second["cash"],9864.955)
         self.assertEqual(second["trades"][0]["execution"],"next_open_ohlc_paper_not_observed")
+        self.assertEqual(second["history"][-1]["opening_execution"]["status"],"simulated")
+        self.assertEqual(second["history"][-1]["opening_execution"]["fills"],1)
         self.assertEqual(advance_book("GS-SPY",second,"2026-11-27","2026-11-25",
                          "2026-11-30",now,source,[],p,p),second)
         with self.assertRaisesRegex(ValueError,"Session gap"):
             advance_book("GS-SPY",first,"2026-11-30","2026-11-27","2026-12-01",
                          now,source,[],p,p)
+
+    def test_cancelled_open_remains_visible_despite_next_signal(self):
+        p=self.panel()
+        b=blank()["books"]["GS-SPY"]
+        now=datetime(2026,11,25,23,tzinfo=timezone.utc)
+        source={"bars":{"SPY":{"open":100.,"close":101.,"dividend":0.,"split":0}},
+                "effective_sha256":"a"*64}
+        first=advance_book("GS-SPY",b,"2026-11-25","2026-11-24","2026-11-27",
+                           now,source,[],p,p)
+        second=advance_book("GS-SPY",first,"2026-11-27","2026-11-25","2026-11-30",
+                           datetime(2026,11,27,23,tzinfo=timezone.utc),
+                           {"bars":{},"effective_sha256":"b"*64},[],p,p)
+        outcome=second["history"][-1]["opening_execution"]
+        self.assertEqual(outcome["status"],"cancelled")
+        self.assertEqual(outcome["missing_symbols"],["SPY"])
+        self.assertEqual(outcome["fills"],0)
+        self.assertTrue(second["pending"])
+        self.assertFalse(second["trades"])
+        self.assertEqual(second["cash"],100000.)
+        self.assertIn("cancelled",second["diagnostic"])
+        # A later signal failure cannot erase the earlier execution outcome.
+        no_signal=advance_book("GS-SPY",first,"2026-11-27","2026-11-25","2026-11-30",
+                               datetime(2026,11,27,23,tzinfo=timezone.utc),
+                               {"bars":{},"effective_sha256":"b"*64},[],{},p)
+        self.assertIn("cancelled",no_signal["diagnostic"])
+        self.assertIn("Missing benchmark",no_signal["diagnostic"])
 
     def test_preclose_bootstrap_does_not_create_prior_session_signal(self):
         with patch("gs_quant_paper.eligible_session",side_effect=ValueError(
