@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "generated_at_utc": "2026-11-26T01:55:29.274794+00:00",
+  "generated_at_utc": "2026-11-26T02:03:55.768958+00:00",
   "principle": "Comparar rentabilidad acumulada y riesgo observado; no ordenar carteras con distintas fechas de inicio o supuestos de ejecución.",
   "counts": {
     "paper_with_diary": 18,
@@ -4958,11 +4958,11 @@
       "group": "tfg_demo_adaptado",
       "status": "demo_con_diario",
       "first_session": "2026-10-02",
-      "last_session": "2026-11-24",
+      "last_session": "2026-11-25",
       "initial_capital": 100000.0,
-      "last_equity": 96104.98839018971,
-      "return_pct": -3.895012,
-      "day_return_pct": 0.478959,
+      "last_equity": 96677.90375013114,
+      "return_pct": -3.322096,
+      "day_return_pct": 0.596135,
       "currency": "USD",
       "equity_history": [
         {
@@ -5004,6 +5004,10 @@
         {
           "date": "2026-11-24",
           "nav": 96104.98839018971
+        },
+        {
+          "date": "2026-11-25",
+          "nav": 96677.90375013114
         }
       ],
       "note": "TFG/AHP USD: posiciones paper observadas a la apertura; NAV solo desde cierres exactos verificados; stop semanal ejecutable en próxima apertura.",
@@ -5029,10 +5033,10 @@
       "comparison_universe_id": "SP500_2026-09-29_503",
       "comparison_universe_symbols": 503,
       "comparison_exclusion_reason": null,
-      "risk_observations": 10,
-      "annualized_volatility_pct": null,
+      "risk_observations": 11,
+      "annualized_volatility_pct": 8.048998,
       "max_drawdown_pct": -4.741695,
-      "sharpe_0rf": null
+      "sharpe_0rf": -2.142299
     },
     {
       "id": "capital_cycle_inflection_2026",

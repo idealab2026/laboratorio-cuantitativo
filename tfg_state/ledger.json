@@ -91,9 +91,25 @@
           ],
           "status": "common_raw_primary"
         }
+      },
+      {
+        "date": "2026-11-25",
+        "nav": 96677.90375013114,
+        "return_pct": 1.4902626865742619,
+        "source_identity": {
+          "effective_sha256": "fbcc4f22fb1813de0c9b84bb8eb4b3790879fb21b3a80bb9d4c26a9a818a8a92",
+          "hash": "1e8584504d6ec5e52429aca5c6e68ef4eed39712f0981274dd4b8bc5e612682b",
+          "independent_symbols": [],
+          "missing": [],
+          "recovered_bar_methods": {},
+          "revision_hashes": [
+            "fbcc4f22fb1813de0c9b84bb8eb4b3790879fb21b3a80bb9d4c26a9a818a8a92"
+          ],
+          "status": "common_raw_primary"
+        }
       }
     ],
-    "last_mark_session": "2026-11-24",
+    "last_mark_session": "2026-11-25",
     "nav_before": 95258.30477815906,
     "operations": [
       {
