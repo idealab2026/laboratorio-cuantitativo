@@ -1,5 +1,5 @@
 {
-  "checked_at_utc": "2026-11-27T14:34:09.628142Z",
+  "checked_at_utc": "2026-11-27T14:35:23.353359Z",
   "lock_sha256": "0dd3522eb10c652b485f205ebf60863fd15f055070fe5b2a7d007c3e1397caca",
   "mode": "single_midas_operator_monitor_no_broker",
   "note": "Observed quotes are not fills. A native engine must settle quantity/cash before a trade counts in P&L.",
@@ -9,11 +9,11 @@
   "quote_budget": {
     "hard_symbol_limit": 250,
     "missing_symbols": [],
-    "observed_symbols": 54,
+    "observed_symbols": 46,
     "omitted_algorithm_lanes": {},
-    "requested_symbols": 54
+    "requested_symbols": 46
   },
-  "run_id": 46007468504,
+  "run_id": 46015605595,
   "schema": "midas.operational_clock.v1",
   "session": "2026-11-27",
   "settlement": "native_forward_010_through_027_037_through_044",
@@ -51,7 +51,7 @@
           "recorded_at_utc": "2026-11-27T14:34:09.628142Z"
         }
       ],
-      "native_settlement": "settled_native_paper",
+      "native_settlement": "already_settled",
       "observed": 1,
       "opening_quote_isolation": {
         "checked_at_utc": "2026-11-27T14:34:09.628142Z",
@@ -104,7 +104,7 @@
           "recorded_at_utc": "2026-11-27T14:34:09.628142Z"
         }
       ],
-      "native_settlement": "settled_native_paper",
+      "native_settlement": "already_settled",
       "observed": 1,
       "opening_quote_isolation": {
         "checked_at_utc": "2026-11-27T14:34:09.628142Z",
@@ -168,7 +168,7 @@
           "recorded_at_utc": "2026-11-27T14:34:09.628142Z"
         }
       ],
-      "native_settlement": "settled_native_paper",
+      "native_settlement": "already_settled",
       "observed": 3,
       "opening_quote_isolation": {
         "checked_at_utc": "2026-11-27T14:34:09.628142Z",
@@ -249,7 +249,7 @@
           "recorded_at_utc": "2026-11-27T14:34:09.628142Z"
         }
       ],
-      "native_settlement": "settled_native_paper",
+      "native_settlement": "already_settled",
       "observed": 1,
       "opening_quote_isolation": {
         "checked_at_utc": "2026-11-27T14:34:09.628142Z",
@@ -302,7 +302,7 @@
           "recorded_at_utc": "2026-11-27T14:34:09.628142Z"
         }
       ],
-      "native_settlement": "settled_native_paper",
+      "native_settlement": "already_settled",
       "observed": 1,
       "opening_quote_isolation": {
         "checked_at_utc": "2026-11-27T14:34:09.628142Z",
@@ -355,7 +355,7 @@
           "recorded_at_utc": "2026-11-27T14:34:09.628142Z"
         }
       ],
-      "native_settlement": "settled_native_paper",
+      "native_settlement": "already_settled",
       "observed": 2,
       "opening_quote_isolation": {
         "checked_at_utc": "2026-11-27T14:34:09.628142Z",
@@ -422,7 +422,7 @@
           "recorded_at_utc": "2026-11-27T14:34:09.628142Z"
         }
       ],
-      "native_settlement": "settled_native_paper",
+      "native_settlement": "already_settled",
       "observed": 1,
       "opening_quote_isolation": {
         "checked_at_utc": "2026-11-27T14:34:09.628142Z",
