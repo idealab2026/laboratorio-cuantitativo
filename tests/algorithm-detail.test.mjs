@@ -1296,3 +1296,21 @@ test("GS Quant keeps cancelled opening separate from the next frozen signal",()=
  assert.match(render.outcome({history:[{date:"2026-11-27",opening_execution:{status:"simulated",fills:10}}]}),/10 movimientos/);
  assert.match(render.outcome({history:[{date:"2026-11-27",opening_execution:{status:"no_change",fills:0}}]}),/sin cambios/);
 });
+
+
+test("GS Quant trading adapter shows signed targets without promoting them to fills",()=>{
+ const site=readFileSync(new URL("../src/site.mjs",import.meta.url),"utf8");
+ const a=site.indexOf("const gsSlot=id=>"),b=site.indexOf("function tradingFeed()",a);
+ const adapt=new Function(site.slice(a,b)+";return gsTradingFeed;")();
+ const day="2026-11-27",feed={tracks:{"IL-010":{label:"Classic"}},opening_plans:{[day]:{previous_session:"2026-11-25",opens_at:"2026-11-27T14:30:00Z",tracks:{}}}};
+ const doc={books:{"GS-04":{name:"Pairs",status:"paper_signal_frozen",last_session:"2026-11-25",history:[{date:"2026-11-25"}],trades:[],signals:[{signal_session:"2026-11-25",target_session:day,issued_at_utc:"2026-11-25T23:58:43Z",weights:{BAC:-.09,JPM:.09}}]}}};
+ const view=adapt(feed,doc,day);
+ assert.equal(view.tracks["GS-04"].executions.length,0);
+ assert.equal(view.opening_plans[day].tracks["GS-04"].orders.length,2);
+ assert.equal(view.opening_plans[day].tracks["GS-04"].orders[0].target_weight,-.09);
+ assert.equal(view.opening_plans[day].tracks["GS-04"].orders[0].action,"rebalance");
+ assert.equal(feed.tracks["GS-04"],undefined);
+ assert.equal(feed.opening_plans[day].tracks["GS-04"],undefined);
+ doc.books["GS-04"].signals[0].issued_at_utc="2026-11-27T14:31:00Z";
+ assert.equal(adapt(feed,doc,day).opening_plans[day].tracks["GS-04"],undefined);
+});

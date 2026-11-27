@@ -544,6 +544,7 @@ async function refreshLiveSignals(force=false){
   const next=verifyLiveSignals(await response.json());
   const newer=!previous||Date.parse(next.published_at_utc)>Date.parse(previous.published_at_utc);
   if(newer)signalFeed=next;
+  if(room)await loadGSQuantPaper();
   signalFeedError=false;
   signalRefresh.state=!previous?"loaded":newer?"updated":"unchanged";
  }catch{
@@ -768,8 +769,36 @@ function tradingOptions(values,selected){
 function tradingDates(){
  return tradingOptions(Object.keys(signalFeed?.opening_plans||{}).sort().reverse().map(day=>[day,shortPaperDate(day)]),tradingDay());
 }
+const gsSlot=id=>/^GS-(0[1-5]|SPY)$/.test(id||"");
+// Presentation adapter only. The original verified feed and its certified
+// execution policy are not changed. A signed target is not a broker order.
+function gsTradingFeed(feed,doc,day){
+ if(!feed||!doc)return feed;
+ const tracks={...feed.tracks},plans=Object.fromEntries(Object.entries(feed.opening_plans||{}).map(([d,p])=>[d,{...p,tracks:{...p.tracks}}]));
+ for(const [id,b] of Object.entries(doc.books)){
+  const signals=[],executions=b.trades.filter(t=>t.date===day).map(t=>({
+   ticker:t.ticker,action:t.shares>0?"buy":"sell",price:t.price,quantity:Math.abs(t.shares),
+   target_weight:null,limit_price:null,gs_paper:true,fee:t.fee
+  }));
+  tracks[id]={label:b.name,currency:"USD",session:b.history.some(p=>p.date===day)?day:b.last_session,
+   status:b.status==="blocked"?"paused":"recorded",signals,executions,gs_paper:true};
+  for(const signal of b.signals){
+   const plan=plans[signal.target_session];
+   if(!plan||plan.previous_session!==signal.signal_session||
+      Date.parse(signal.issued_at_utc)>=Date.parse(plan.opens_at))continue;
+   const targets=Object.entries(signal.weights).map(([ticker,weight])=>({
+    ticker,action:"rebalance",target_weight:weight,limit_price:null,
+    decision_session:signal.signal_session,target_session:signal.target_session,gs_paper:true
+   }));
+   signals.push(...targets);
+   plan.tracks[id]={status:"recorded",session:signal.signal_session,orders:targets,holdings:[],undated:0,gs_paper:true};
+  }
+ }
+ return {...feed,tracks,opening_plans:plans};
+}
+function tradingFeed(){return gsTradingFeed(signalFeed,state.gsQuantPaper,tradingDay());}
 function tradingAlgorithms(){
- return tradingOptions([["","Todos los algoritmos"],...Object.entries(signalFeed?.tracks||{}).map(([slot,track])=>
+ return tradingOptions([["","Todos los algoritmos"],...Object.entries(tradingFeed()?.tracks||{}).map(([slot,track])=>
   [slot,slot+" · "+track.label])],tradingFilter.slot);
 }
 function tradingReadModel(feed,day,{slot="",ticker="",side="all",slots=null}={}){
@@ -876,7 +905,7 @@ function deskActivity(feed,day,filter,phase,slots){
  return {...model,target};
 }
 function deskAlgorithmFilters(){
- const entries=Object.entries(signalFeed?.tracks||{});
+ const entries=Object.entries(tradingFeed()?.tracks||{});
  return '<details class="desk-algorithms" id="desk-algorithms"><summary>'+
   esc(tradingDesk.slots.size?tradingDesk.slots.size+" seleccionados":"Todos los algoritmos")+'</summary>'+
   '<div class="desk-filter-popover"><button type="button" class="outline-btn" data-action="desk-reset">Ver todos</button>'+
@@ -924,6 +953,8 @@ function deskRowChart(symbol,cutoff){
 function deskAuditedFill(item,day){
  // Execution prices by themselves do NOT disclose quantity or investment size.
  // Reconcile against exactly one dated audited paper action, never market close.
+ if(item.gs_paper&&Number.isFinite(item.quantity)&&item.quantity>0&&Number.isFinite(item.price)&&item.price>0)
+  return {quantity:item.quantity,price:item.price};
  const sessions=state.operationsAudit?.tracks?.[item.id]?.sessions;
  const record=Array.isArray(sessions)?sessions.find(row=>row.date===day):null;
  if(!record||!Array.isArray(record.actions)||!Number.isFinite(item.price))return null;
@@ -933,6 +964,9 @@ function deskAuditedFill(item,day){
  return matches.length===1?matches[0]:null;
 }
 function deskRowState(item,phase){
+ if(item.gs_paper)return phase==="fills"?
+  {label:"Apertura OHLC simulada",tone:"recorded",detail:"Registrada al cierre; no fill observado ni operación de bróker"}:
+  {label:"Peso objetivo GS Quant",tone:"info",detail:"Objetivo firmado; no cantidad, precio ni orden ejecutada"};
  if(phase==="fills")return {label:"Ejecutada en paper",tone:"recorded",detail:"No es una operación en un bróker"};
  if(phase==="signals")return {label:"Señal registrada",tone:"info",
   detail:item.book_status==="paused"?"Cartera pausada; no confirma orden":
@@ -976,7 +1010,7 @@ function deskSignalTable(orders,phase,plan,day,chartCutoff){
    const gross=audited&&Number.isFinite(audited.quantity)&&audited.quantity>0&&
     Number.isFinite(audited.price)&&audited.price>0?
     monetary(audited.quantity*audited.price,item.currency):null;
-   const weight=Number.isFinite(item.target_weight)&&item.target_weight>=0?
+   const weight=Number.isFinite(item.target_weight)&&(item.target_weight>=0||item.gs_paper)?
     percentage.format(item.target_weight):"N/D";
    const amount=gross||"N/D";
    const price=phase==="fills"?monetary(item.price,item.currency):
@@ -986,7 +1020,7 @@ function deskSignalTable(orders,phase,plan,day,chartCutoff){
     " · Apertura · "+(item.target_session?shortPaperDate(item.target_session):"sin fecha verificada");
    const reason=deskRowReason(item,phase,day,audited);
    return '<tr><th scope="row"><span class="desk-ticker">'+esc(item.ticker)+'</span></th>'+
-    '<td><strong class="desk-action" data-side="'+esc(item.action)+'">'+esc(signalNames[item.action])+'</strong>'+
+    '<td><strong class="desk-action" data-side="'+esc(item.action)+'">'+esc(item.gs_paper&&phase!=="fills"?(item.target_weight<0?"Objetivo corto":"Objetivo largo"):signalNames[item.action])+'</strong>'+
     '<span class="desk-evidence" data-evidence="'+esc(stage.tone)+'">'+esc(stage.label)+'</span>'+
     '<small class="desk-cell-note">'+esc(stage.detail)+'</small>'+
     '<small class="desk-cell-note">'+esc(moment)+'</small></td>'+
@@ -1063,6 +1097,7 @@ function deskResults(model){
   '<div class="desk-heading"><h3 id="desk-tape-title">'+esc(deskPhases[phase])+' <small>'+esc(dateLabel+open)+'</small></h3>'+
   '<span>'+model.orders.length+' registros</span></div>'+
   (coverage&&phase!=="fills"?'<p class="desk-coverage">'+esc(coverage)+'</p>':"")+
+  (model.orders.some(o=>o.gs_paper)?'<p class="desk-note">GS Quant: los pesos objetivo se muestran como rebalanceos (largos o cortos), no como órdenes de compra/venta con cantidad cerrada. Sus movimientos OHLC se contabilizan al cierre.</p>':"")+
   '<p class="desk-interpretation">'+esc(phase==="signals"?
    "Señales del último cierre acreditado para esta apertura: no son órdenes ni operaciones ejecutadas.":
    phase==="fills"?
@@ -1376,7 +1411,28 @@ function btdUniverseHTML(){
   '</section>';
 }
 
+function gsTerminalHTML(){
+ const feed=tradingFeed(),day=tradingDay(),id=tradingFilter.slot;
+ const book=state.gsQuantPaper?.books?.[id];
+ if(!book||!feed)return '<p class="trading-empty">Diario GS Quant no disponible.</p>';
+ const slots=new Set([id]),plan=feed.opening_plans?.[day];
+ const filter={...tradingFilter,side:"all"};
+ const targets=deskActivity(feed,day,filter,"opening",slots);
+ const fills=deskActivity(feed,day,filter,"fills",slots);
+ const next=deskActivity(feed,day,filter,"next",slots);
+ return '<section class="btd-health"><h3>'+esc(id+" · "+book.name)+'</h3>'+
+  '<p>Señales y movimientos del diario GS Quant. Simulación OHLC registrada al cierre, no ejecución observada.</p>'+
+  '<p>'+esc(gsOpeningOutcome(book))+'</p>'+
+  '<p>Última valoración: '+esc(book.last_session||"N/D")+' · '+esc(book.history.at(-1)?.nav??"N/D")+' USD · '+Object.keys(book.positions).length+' posiciones.</p></section>'+
+  '<h3>Objetivos de apertura · '+esc(shortPaperDate(day))+'</h3>'+
+  (targets.orders.length?deskSignalTable(targets.orders,"opening",plan,day,plan?.previous_session||day):'<p>Sin objetivos publicados.</p>')+
+  '<h3>Ejecuciones simuladas de la sesión</h3>'+
+  (fills.orders.length?deskSignalTable(fills.orders,"fills",plan,day,day):'<p>Sin movimientos registrados para esta sesión.</p>')+
+  '<h3>Objetivos de la siguiente apertura</h3>'+
+  (next.orders.length?deskSignalTable(next.orders,"next",next.plan,next.target,day):'<p>Sin próxima señal publicada.</p>');
+}
 function terminalHTML(){
+ if(gsSlot(tradingFilter.slot))return gsTerminalHTML();
  const track=signalFeed?.tracks[tradingFilter.slot];
  if(!track)return '<p class="trading-empty">Selecciona un algoritmo para ver su actividad y recorrer las empresas registradas.</p>';
  if(tradingFilter.slot==="IL-039")return buyDipHealthHTML()+btdUniverseHTML();
@@ -1674,7 +1730,7 @@ function paintTradingRoom(){
  if(!tradingRoomActive())return;
  const results=$("trading-results");
  if(!results)return;
- const model=deskActivity(signalFeed,tradingDay(),tradingFilter,tradingDesk.phase,tradingDesk.slots);
+ const model=deskActivity(tradingFeed(),tradingDay(),tradingFilter,tradingDesk.phase,tradingDesk.slots);
  const date=$("trading-date"),algorithm=$("trading-algorithm");
  const dates=tradingDates(),algorithms=tradingAlgorithms();
  if(date.dataset.options!==dates){date.innerHTML=dates;date.dataset.options=dates;}
@@ -1708,9 +1764,9 @@ function paintTradingRoom(){
   tab.setAttribute("aria-pressed",String(tab.dataset.value===terminalState.mode));
  }
  document.querySelector(".trading-filters").hidden=terminal;
- $("terminal-map").hidden=!terminal||!signalFeed||tradingFilter.slot==="IL-039";
+ $("terminal-map").hidden=!terminal||!signalFeed||tradingFilter.slot==="IL-039"||gsSlot(tradingFilter.slot);
  if(terminal){
-  if(tradingFilter.slot!=="IL-039")paintTerminalMap();
+  if(tradingFilter.slot!=="IL-039"&&!gsSlot(tradingFilter.slot))paintTerminalMap();
   const content=terminalHTML();
   if(results.dataset.terminal!==content){
    const priorScroll=results.querySelector(".btd-table-wrap")?.scrollTop??0;
@@ -1721,9 +1777,11 @@ function paintTradingRoom(){
     if(view)view.scrollTop=priorScroll;
    }
   }
-  paintTerminalRows();
-  paintTerminalActivity();
-  void refreshTerminalActivity();
+  if(!gsSlot(tradingFilter.slot)){
+   paintTerminalRows();
+   paintTerminalActivity();
+   void refreshTerminalActivity();
+  }
   return;
  }
  delete results.dataset.terminal;
@@ -2290,7 +2348,8 @@ async function loadGSQuantPaper(){
   }
   state.gsQuantPaper=doc;
  }catch(_error){state.gsQuantPaper=null;}
- if(["full","competition"].includes(state.view)&&state.data)render();
+ if(tradingRoomActive())paintTradingRoom();
+ else if(["full","competition"].includes(state.view)&&state.data)render();
 }
 function full(){
  const d=state.fullRoster;
@@ -2813,7 +2872,7 @@ $("app").addEventListener("change",e=>{
   btdTableView.sort=el.value;btdTableView.limit=50;paintTradingRoom();
  }
  if(el.id==="desk-phase"&&Object.hasOwn(deskPhases,el.value)){tradingDesk.phase=el.value;paintTradingRoom();}
- if(el.dataset.deskAlgorithm&&signalFeed?.tracks[el.dataset.deskAlgorithm]){
+ if(el.dataset.deskAlgorithm&&tradingFeed()?.tracks[el.dataset.deskAlgorithm]){
   if(el.checked)tradingDesk.slots.add(el.dataset.deskAlgorithm);
   else tradingDesk.slots.delete(el.dataset.deskAlgorithm);
   paintTradingRoom();
@@ -2884,7 +2943,7 @@ function readViewFromURL(){
   terminalState.mode=new URLSearchParams(location.search).get("panel")==="terminal"?"terminal":"signals";
   resetTerminal();terminalState.useLatest=false;expandedFamily=null;
   const slot=Number(id.slice(3));
-  tradingFilter.slot=/^IL-\d{3}$/.test(id)&&slot>=10&&slot<=44?id:"";
+  tradingFilter.slot=(/^IL-\d{3}$/.test(id)&&slot>=10&&slot<=44)||gsSlot(id)?id:"";
   tradingDesk.slots=new Set(tradingFilter.slot&&terminalState.mode!=="terminal"?[tradingFilter.slot]:[]);
  }
 }
