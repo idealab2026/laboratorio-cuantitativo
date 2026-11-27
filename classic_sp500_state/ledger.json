@@ -765,6 +765,21 @@
           "target_budget": 15669.122068214978,
           "ticker": "TGT",
           "type": "unfilled"
+        },
+        {
+          "available_cash": 2428.277325820556,
+          "date": "2026-11-27",
+          "minimum_notional": 10,
+          "reason": "insufficient_cash",
+          "reasons": [
+            "insufficient_cash"
+          ],
+          "required_cash": 15770.25244883794,
+          "side": "buy",
+          "sizing_reference": "observed_open_nav",
+          "target_budget": 15770.252472559745,
+          "ticker": "PNR",
+          "type": "unfilled"
         }
       ],
       "forward_executions": {
@@ -851,6 +866,16 @@
           "recorded_at_utc": "2026-11-25T14:34:10.388027Z",
           "session": "2026-11-25",
           "source_commit": "426307199bed5fe5cbae7236b60ce22653ae2c0d"
+        },
+        "IL-015:2026-11-27:open:classic_forward_v1": {
+          "fill_tickers": [],
+          "fills_count": 0,
+          "lock_sha256": "0dd3522eb10c652b485f205ebf60863fd15f055070fe5b2a7d007c3e1397caca",
+          "mode": "forward_observed_paper",
+          "quotes_sha256": "6d76627516bd1058cf72bf76755f575b11968e0c99a69b5d8b28b189fab7a3b8",
+          "recorded_at_utc": "2026-11-27T14:34:09.628142Z",
+          "session": "2026-11-27",
+          "source_commit": "06162f9ecc38e361d13ababe91775b93ed5c9760"
         }
       },
       "nav": 104720.37063144962,
@@ -858,12 +883,7 @@
         "first_trading_session": "2026-11-05",
         "registered_at_utc": "2026-11-04T18:03:08+00:00"
       },
-      "pending": {
-        "PNR": {
-          "side": "buy",
-          "signal_date": "2026-11-25"
-        }
-      },
+      "pending": {},
       "positions": {
         "CAH": {
           "cost": 11874.999816718037,
@@ -10735,6 +10755,21 @@
           "target_budget": 15228.986826868619,
           "ticker": "INCY",
           "type": "unfilled"
+        },
+        {
+          "available_cash": 4739.116289223919,
+          "date": "2026-11-27",
+          "minimum_notional": 10,
+          "reason": "insufficient_cash",
+          "reasons": [
+            "insufficient_cash"
+          ],
+          "required_cash": 15297.463797562206,
+          "side": "buy",
+          "sizing_reference": "observed_open_nav",
+          "target_budget": 15297.463816203162,
+          "ticker": "CSGP",
+          "type": "unfilled"
         }
       ],
       "forward_executions": {
@@ -10814,6 +10849,16 @@
           "recorded_at_utc": "2026-11-25T14:34:10.388027Z",
           "session": "2026-11-25",
           "source_commit": "426307199bed5fe5cbae7236b60ce22653ae2c0d"
+        },
+        "IL-011:2026-11-27:open:classic_forward_v1": {
+          "fill_tickers": [],
+          "fills_count": 0,
+          "lock_sha256": "0dd3522eb10c652b485f205ebf60863fd15f055070fe5b2a7d007c3e1397caca",
+          "mode": "forward_observed_paper",
+          "quotes_sha256": "7273685edf3005d1fac90063f4c1e6c7b6414388a173ba47ce662da4a69c99d9",
+          "recorded_at_utc": "2026-11-27T14:34:09.628142Z",
+          "session": "2026-11-27",
+          "source_commit": "06162f9ecc38e361d13ababe91775b93ed5c9760"
         }
       },
       "nav": 101904.30082877085,
@@ -10821,12 +10866,7 @@
         "first_trading_session": "2026-11-23",
         "registered_at_utc": "2026-11-23T09:05:40+00:00"
       },
-      "pending": {
-        "CSGP": {
-          "side": "buy",
-          "signal_date": "2026-11-25"
-        }
-      },
+      "pending": {},
       "positions": {
         "BF-B": {
           "cost": 11874.999971558756,
@@ -11703,6 +11743,21 @@
           "target_budget": 16270.107508206998,
           "ticker": "TPR",
           "type": "unfilled"
+        },
+        {
+          "available_cash": 15444.354531701549,
+          "date": "2026-11-27",
+          "minimum_notional": 10,
+          "reason": "insufficient_cash",
+          "reasons": [
+            "insufficient_cash"
+          ],
+          "required_cash": 16323.539517629803,
+          "side": "buy",
+          "sizing_reference": "observed_open_nav",
+          "target_budget": 16323.539574719009,
+          "ticker": "CBRE",
+          "type": "unfilled"
         }
       ],
       "forward_executions": {
@@ -11741,6 +11796,16 @@
           "recorded_at_utc": "2026-11-25T14:34:10.388027Z",
           "session": "2026-11-25",
           "source_commit": "426307199bed5fe5cbae7236b60ce22653ae2c0d"
+        },
+        "IL-012:2026-11-27:open:classic_forward_v1": {
+          "fill_tickers": [],
+          "fills_count": 0,
+          "lock_sha256": "0dd3522eb10c652b485f205ebf60863fd15f055070fe5b2a7d007c3e1397caca",
+          "mode": "forward_observed_paper",
+          "quotes_sha256": "44f77dd8294965083a7246a3927eec6b36502bf223b3c840abd7075b0a6e506f",
+          "recorded_at_utc": "2026-11-27T14:34:09.628142Z",
+          "session": "2026-11-27",
+          "source_commit": "06162f9ecc38e361d13ababe91775b93ed5c9760"
         }
       },
       "nav": 108833.56402583918,
@@ -11748,12 +11813,7 @@
         "first_trading_session": "2026-11-19",
         "registered_at_utc": "2026-11-18T15:55:52+00:00"
       },
-      "pending": {
-        "CBRE": {
-          "side": "buy",
-          "signal_date": "2026-11-25"
-        }
-      },
+      "pending": {},
       "positions": {
         "ABT": {
           "cost": 11874.99990084408,
@@ -11958,7 +12018,7 @@
       ]
     },
     "macd_12_26_9": {
-      "cash": 25002.996935276336,
+      "cash": 10042.568573790477,
       "equity": [
         {
           "date": "2026-10-12",
@@ -12827,6 +12887,50 @@
           "source_commit": "426307199bed5fe5cbae7236b60ce22653ae2c0d",
           "ticker": "GNRC",
           "type": "sell"
+        },
+        {
+          "date": "2026-11-27",
+          "execution": "forward_observed_paper",
+          "fee": 14.945482878605617,
+          "idempotency_key": "IL-013:2026-11-27:open:classic_forward_v1:CMCSA",
+          "lock_sha256": "0dd3522eb10c652b485f205ebf60863fd15f055070fe5b2a7d007c3e1397caca",
+          "observed_at_utc": "2026-11-27T14:34:02.845227Z",
+          "price": 25.927958415985106,
+          "quote_at_utc": "2026-11-27T14:34:00Z",
+          "shares": 576.423436,
+          "source_commit": "06162f9ecc38e361d13ababe91775b93ed5c9760",
+          "ticker": "CMCSA",
+          "type": "buy"
+        },
+        {
+          "available_cash": 10042.568573790477,
+          "date": "2026-11-27",
+          "minimum_notional": 10,
+          "reason": "insufficient_cash",
+          "reasons": [
+            "insufficient_cash"
+          ],
+          "required_cash": 14960.428345715525,
+          "side": "buy",
+          "sizing_reference": "observed_open_nav",
+          "target_budget": 14960.428383660226,
+          "ticker": "OMC",
+          "type": "unfilled"
+        },
+        {
+          "available_cash": 10042.568573790477,
+          "date": "2026-11-27",
+          "minimum_notional": 10,
+          "reason": "insufficient_cash",
+          "reasons": [
+            "insufficient_cash"
+          ],
+          "required_cash": 14960.428298860339,
+          "side": "buy",
+          "sizing_reference": "observed_open_nav",
+          "target_budget": 14960.428383660226,
+          "ticker": "ZBH",
+          "type": "unfilled"
         }
       ],
       "forward_executions": {
@@ -12927,6 +13031,18 @@
           "recorded_at_utc": "2026-11-25T14:34:10.388027Z",
           "session": "2026-11-25",
           "source_commit": "426307199bed5fe5cbae7236b60ce22653ae2c0d"
+        },
+        "IL-013:2026-11-27:open:classic_forward_v1": {
+          "fill_tickers": [
+            "CMCSA"
+          ],
+          "fills_count": 1,
+          "lock_sha256": "0dd3522eb10c652b485f205ebf60863fd15f055070fe5b2a7d007c3e1397caca",
+          "mode": "forward_observed_paper",
+          "quotes_sha256": "c069d29aa9a0737fefb83dc7d2111010d7737a822f493f4b3b1af3329c1c39fe",
+          "recorded_at_utc": "2026-11-27T14:34:09.628142Z",
+          "session": "2026-11-27",
+          "source_commit": "06162f9ecc38e361d13ababe91775b93ed5c9760"
         }
       },
       "nav": 100154.21856444591,
@@ -12934,21 +13050,17 @@
         "first_trading_session": "2026-11-23",
         "registered_at_utc": "2026-11-23T09:05:40+00:00"
       },
-      "pending": {
-        "CMCSA": {
-          "side": "buy",
-          "signal_date": "2026-11-25"
-        },
-        "OMC": {
-          "side": "buy",
-          "signal_date": "2026-11-25"
-        },
-        "ZBH": {
-          "side": "buy",
-          "signal_date": "2026-11-25"
-        }
-      },
+      "pending": {},
       "positions": {
+        "CMCSA": {
+          "cost": 14960.42836148586,
+          "dividends": 0.0,
+          "entry_date": "2026-11-27",
+          "entry_price": 25.927958415985106,
+          "shares": 576.423436,
+          "stop": 23.8537217427063,
+          "target": 29.81715217838287
+        },
         "DLTR": {
           "cost": 14941.304688990958,
           "dividends": 0.0,
@@ -13785,6 +13897,21 @@
           "target_budget": 14998.048798837826,
           "ticker": "FCX",
           "type": "unfilled"
+        },
+        {
+          "available_cash": 5607.441376950035,
+          "date": "2026-11-27",
+          "minimum_notional": 10,
+          "reason": "insufficient_cash",
+          "reasons": [
+            "insufficient_cash"
+          ],
+          "required_cash": 15697.992505259623,
+          "side": "buy",
+          "sizing_reference": "observed_open_nav",
+          "target_budget": 15697.992747435896,
+          "ticker": "INTU",
+          "type": "unfilled"
         }
       ],
       "forward_executions": {
@@ -13918,15 +14045,20 @@
           "recorded_at_utc": "2026-11-25T14:34:10.388027Z",
           "session": "2026-11-25",
           "source_commit": "426307199bed5fe5cbae7236b60ce22653ae2c0d"
+        },
+        "IL-014:2026-11-27:open:classic_forward_v1": {
+          "fill_tickers": [],
+          "fills_count": 0,
+          "lock_sha256": "0dd3522eb10c652b485f205ebf60863fd15f055070fe5b2a7d007c3e1397caca",
+          "mode": "forward_observed_paper",
+          "quotes_sha256": "f5c2fc7f292c82b3b83b01a2c165672e7e37e7c5a1571067b90c29c9c61ffccd",
+          "recorded_at_utc": "2026-11-27T14:34:09.628142Z",
+          "session": "2026-11-27",
+          "source_commit": "06162f9ecc38e361d13ababe91775b93ed5c9760"
         }
       },
       "nav": 102841.02275302575,
-      "pending": {
-        "INTU": {
-          "side": "buy",
-          "signal_date": "2026-11-25"
-        }
-      },
+      "pending": {},
       "positions": {
         "ALB": {
           "cost": 14998.048786186213,
@@ -14746,6 +14878,36 @@
           "target_budget": 14250.094086045847,
           "ticker": "TGT",
           "type": "unfilled"
+        },
+        {
+          "available_cash": 13103.152657329592,
+          "date": "2026-11-27",
+          "minimum_notional": 10,
+          "reason": "insufficient_cash",
+          "reasons": [
+            "insufficient_cash"
+          ],
+          "required_cash": 14192.833290783105,
+          "side": "buy",
+          "sizing_reference": "observed_open_nav",
+          "target_budget": 14192.833431806657,
+          "ticker": "CHTR",
+          "type": "unfilled"
+        },
+        {
+          "available_cash": 13103.152657329592,
+          "date": "2026-11-27",
+          "minimum_notional": 10,
+          "reason": "insufficient_cash",
+          "reasons": [
+            "insufficient_cash"
+          ],
+          "required_cash": 14192.833416299865,
+          "side": "buy",
+          "sizing_reference": "observed_open_nav",
+          "target_budget": 14192.833431806657,
+          "ticker": "TSCO",
+          "type": "unfilled"
         }
       ],
       "forward_executions": {
@@ -14788,6 +14950,16 @@
           "recorded_at_utc": "2026-11-25T14:34:10.388027Z",
           "session": "2026-11-25",
           "source_commit": "426307199bed5fe5cbae7236b60ce22653ae2c0d"
+        },
+        "IL-016:2026-11-27:open:classic_forward_v1": {
+          "fill_tickers": [],
+          "fills_count": 0,
+          "lock_sha256": "0dd3522eb10c652b485f205ebf60863fd15f055070fe5b2a7d007c3e1397caca",
+          "mode": "forward_observed_paper",
+          "quotes_sha256": "cd622e6566ac3d8df0793313460895a833bbabe8e2fe7976477104996bc7bf13",
+          "recorded_at_utc": "2026-11-27T14:34:09.628142Z",
+          "session": "2026-11-27",
+          "source_commit": "06162f9ecc38e361d13ababe91775b93ed5c9760"
         }
       },
       "nav": 94322.50784782475,
@@ -14795,16 +14967,7 @@
         "first_trading_session": "2026-11-05",
         "registered_at_utc": "2026-11-04T18:03:08+00:00"
       },
-      "pending": {
-        "CHTR": {
-          "side": "buy",
-          "signal_date": "2026-11-25"
-        },
-        "TSCO": {
-          "side": "buy",
-          "signal_date": "2026-11-25"
-        }
-      },
+      "pending": {},
       "positions": {
         "COST": {
           "cost": 11874.999008088047,
@@ -15430,6 +15593,21 @@
           "target_budget": 13879.86032692999,
           "ticker": "DLTR",
           "type": "unfilled"
+        },
+        {
+          "available_cash": 4000.346631238621,
+          "date": "2026-11-27",
+          "minimum_notional": 10,
+          "reason": "insufficient_cash",
+          "reasons": [
+            "insufficient_cash"
+          ],
+          "required_cash": 14048.780271895854,
+          "side": "buy",
+          "sizing_reference": "observed_open_nav",
+          "target_budget": 14048.78027981385,
+          "ticker": "TSCO",
+          "type": "unfilled"
         }
       ],
       "forward_executions": {
@@ -15515,15 +15693,20 @@
           "recorded_at_utc": "2026-11-25T14:34:10.388027Z",
           "session": "2026-11-25",
           "source_commit": "426307199bed5fe5cbae7236b60ce22653ae2c0d"
+        },
+        "IL-017:2026-11-27:open:classic_forward_v1": {
+          "fill_tickers": [],
+          "fills_count": 0,
+          "lock_sha256": "0dd3522eb10c652b485f205ebf60863fd15f055070fe5b2a7d007c3e1397caca",
+          "mode": "forward_observed_paper",
+          "quotes_sha256": "990245b2419a26d1a51bab236f19424e798c706a4d9478a31349da1ed4e8d988",
+          "recorded_at_utc": "2026-11-27T14:34:09.628142Z",
+          "session": "2026-11-27",
+          "source_commit": "06162f9ecc38e361d13ababe91775b93ed5c9760"
         }
       },
       "nav": 93057.02718888062,
-      "pending": {
-        "TSCO": {
-          "side": "buy",
-          "signal_date": "2026-11-25"
-        }
-      },
+      "pending": {},
       "positions": {
         "ABBV": {
           "cost": 11874.999758862768,
