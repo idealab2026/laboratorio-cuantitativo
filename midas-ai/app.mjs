@@ -1,4 +1,6 @@
 import {buildCorpus,retrieve,exactSource} from './retrieval.mjs';
+import {isCompetitionListQuestion,competitionAnswer} from './competition.mjs';
+import {verifyOriginalPaper} from '../src/original-paper.mjs';
 const $ = id => document.getElementById(id);
 const load = $('load'), input = $('question'), send = $('send'), status = $('status'), messages = $('messages'), badge = $('badge');
 let corpus, worker, pendingSources=[];
@@ -6,13 +8,13 @@ function setBusy(busy) { input.disabled=busy; send.disabled=busy; }
 function message(role, content, sources=[]) {
   messages.querySelector('.welcome')?.remove();
   const box=document.createElement('div'); box.className=`message ${role}`;
-  const label=document.createElement('strong'); label.textContent=role==='user'?'Tú':role==='source'?'Fragmento de la fuente':'MIDAS AI · respuesta experimental';
+  const label=document.createElement('strong'); label.textContent=role==='user'?'Tú':role==='source'?'Fragmento de la fuente':role==='data'?'Datos de la competición':'MIDAS AI · respuesta experimental';
   const text=document.createElement('p'); text.textContent=content; box.append(label,text);
   if(sources.length){const refs=document.createElement('div');refs.className='sources';refs.append('Fuentes consultadas: ');
     sources.forEach((source,i)=>{if(i) refs.append(' · ');const a=document.createElement('a');a.href=source.href;a.target='_blank';a.rel='noopener noreferrer';a.textContent=source.title;refs.append(a);});box.append(refs);
     const details=document.createElement('details'), summary=document.createElement('summary');summary.textContent='Ver fragmentos recuperados';details.append(summary);
     for(const source of sources){const h=document.createElement('strong'),p=document.createElement('p');h.textContent=source.title;p.textContent=source.text;details.append(h,p);}box.append(details);}
-  messages.append(box);messages.scrollTop=messages.scrollHeight;
+  messages.append(box);messages.scrollTop=role==='user'?messages.scrollHeight:Math.max(0,messages.scrollHeight-box.offsetHeight-60);
 }
 async function initialise() {
   load.disabled=true; status.textContent='Cargando fuentes públicas y preparando el modelo…';
@@ -32,7 +34,30 @@ async function initialise() {
   } catch(e) {fail(e.message || 'No se pudieron cargar las fuentes.');}
 }
 function fail(text){worker?.terminate();worker=null;setBusy(true);load.hidden=false;load.disabled=false;badge.textContent='Sin iniciar';status.textContent=text;}
-function ask(){const q=input.value.trim();if(!q||!worker)return;input.value='';message('user',q);const sources=retrieve(q,corpus);
+async function ask(){const q=input.value.trim();if(!q||!worker)return;input.value='';message('user',q);
+  if(isCompetitionListQuestion(q)){
+    setBusy(true);status.textContent='Consultando la competición…';
+    try{
+      const get=async url=>{const r=await fetch(url,{cache:'no-store',credentials:'omit',signal:AbortSignal.timeout(12000)});if(!r.ok)throw Error('Fuente no disponible');return r.json();};
+      const [rosterResult,mapResult,dashboardResult,gsResult]=await Promise.allSettled([
+        get('../data/competition-roster.json'),get('../data/original-track-map.json'),
+        get('https://raw.githubusercontent.com/idealab2026/laboratorio-cuantitativo/main/strategy_state/dashboard.json'),
+        get('https://raw.githubusercontent.com/idealab2026/laboratorio-cuantitativo/main/data/gs-quant-paper.json')]);
+      if(rosterResult.status!=='fulfilled')throw Error('No se ha podido consultar el catálogo.');
+      let labels=null;
+      if(mapResult.status==='fulfilled'&&dashboardResult.status==='fulfilled'){
+        try{labels=verifyOriginalPaper(dashboardResult.value,mapResult.value).labels;}catch(_error){/* use catalog labels */}
+      }
+      const text=competitionAnswer(rosterResult.value,labels,gsResult.status==='fulfilled'?gsResult.value:null);
+      const sources=[{title:'Competición de algoritmos',href:'../index.html?view=competition',text:'Clasificación y fases de las estrategias publicadas por MIDAS.'}];
+      if(labels)sources.push({title:'Diario institucional',href:'https://raw.githubusercontent.com/idealab2026/laboratorio-cuantitativo/main/strategy_state/dashboard.json',text:'Nombres de estrategias del diario institucional verificado.'});
+      if(gsResult.status==='fulfilled')sources.push({title:'Cohorte GS Quant',href:'https://raw.githubusercontent.com/idealab2026/laboratorio-cuantitativo/main/data/gs-quant-paper.json',text:'Registro publicado de la cohorte GS Quant.'});
+      message('data',text,sources);
+    }catch(_error){message('assistant','No he podido verificar el registro de la competición ahora mismo. Vuelve a intentarlo o abre la pestaña Competición de algoritmos.');}
+    finally{setBusy(false);status.textContent='Modelo listo.';input.focus();}
+    return;
+  }
+  const sources=retrieve(q,corpus);
   if(!sources.length){message('assistant','No he encontrado información relacionada en las fuentes públicas disponibles. Prueba con el nombre o identificador de una estrategia o empresa.');return;}
   const exact=exactSource(q,corpus);
   if(exact){message('source',`Esto es lo que consta en el registro consultado. Revisa si responde a tu pregunta:\n\n${exact.text}`,[exact]);return;}
