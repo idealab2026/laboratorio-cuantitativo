@@ -79,6 +79,10 @@ jobs:
       - name: Check client and engine syntax
         run: |
           node --check src/site.mjs
+          node --check src/assistant-launcher.mjs
+          node --check midas-ai/app.mjs
+          node --check midas-ai/retrieval.mjs
+          node --check midas-ai/worker.mjs
           node --check src/live-session.mjs
           node --check src/glossary.mjs
           node --check src/algorithm-detail.mjs
@@ -111,6 +115,7 @@ jobs:
       - name: Unit tests
         run: |
           node --test tests/*.test.mjs
+          node --test midas-ai/retrieval.test.mjs
           python3 -m unittest discover -s scripts -p 'test_*.py' -v
           python3 scripts/classic_503.py
           python3 scripts/monthly_selection.py
@@ -122,11 +127,21 @@ jobs:
         env:
           IDEALAB_PAPER_FEED_KEY: ${{ secrets.IDEALAB_PAPER_FEED_KEY }}
         run: python3 scripts/paper_feed.py --validate data/institutional-paper-feed.json
+      - name: Install and verify the pinned assistant runtime
+        env:
+          IDEALAB_PUBLIC_DENY_TERMS_JSON: ${{ secrets.IDEALAB_PUBLIC_DENY_TERMS_JSON }}
+          IDEALAB_REQUIRE_PRIVATE_DENY_TERMS: 'true'
+        run: |
+          npm ci --prefix midas-ai --ignore-scripts --no-audit --no-fund
+          python3 scripts/audit_ai_runtime.py
       - name: Build allowlisted static package
         run: |
-          mkdir -p dist/src dist/data
+          mkdir -p dist/src dist/data dist/midas-ai/vendor
           cp index.html research.html private-paper.html private-theses.html styles.css logo.svg favicon.svg dist/
           cp src/original-paper.mjs src/site.mjs src/live-session.mjs src/glossary.mjs src/algorithm-detail.mjs src/operations-audit.mjs src/operation-lots.mjs src/metrics.mjs src/learning.mjs src/learning-view.mjs src/paper-methods.mjs src/paper-ledger.mjs src/competition-roster.mjs src/paper-feed.mjs src/private-paper.mjs src/private-paper-view.mjs src/private-theses.mjs src/private-theses-view.mjs src/public-theses.mjs src/thesis-report.mjs src/thesis-report.css src/thesis-insights.mjs src/thesis-source-structure.mjs src/thesis-historical-figures.mjs src/financial-sankey.mjs src/financial-sankey.css dist/src/
+          cp src/assistant-launcher.mjs dist/src/
+          cp midas-ai/index.html midas-ai/style.css midas-ai/app.mjs midas-ai/retrieval.mjs midas-ai/worker.mjs dist/midas-ai/
+          cp midas-ai/node_modules/@huggingface/transformers/dist/transformers.min.js midas-ai/node_modules/@huggingface/transformers/dist/ort-wasm-simd-threaded.jsep.mjs midas-ai/node_modules/@huggingface/transformers/dist/ort-wasm-simd-threaded.jsep.wasm dist/midas-ai/vendor/
           cp data/original-track-map.json data/historical-paper-results.csv data/historical-paper-curves.csv dist/data/
           cp data/demo.json data/public-theses.json data/thesis-reports.json data/financial-sankeys.json data/public-closes.json data/fx-forecast-ledger.json data/sec-filings.json data/competition-roster.json data/strategy-candidates.json data/institutional-paper-feed.json dist/data/
           cp data/operational-clock.json dist/data/
@@ -139,18 +154,18 @@ jobs:
           python3 scripts/build_execution_history.py --validate dist/data/execution-history.json
           test -s dist/data/execution-history.json
           python3 scripts/build_thesis_pdfs.py --theses dist/data/public-theses.json --reports dist/data/thesis-reports.json --output dist/reports
-          test "$(find dist -type f | wc -l)" -eq 76
+          test "$(find dist -type f | wc -l)" -eq 85
       - name: Acquire official ECB reference observations (not tradable quotes)
         run: |
           python3 scripts/refresh_ecb.py --output dist/data/official-fx.json
           python3 scripts/refresh_ecb.py --validate dist/data/official-fx.json
           python3 -c "import json,sys;sys.path.insert(0,'scripts');from advance_fx import verify_ledger;verify_ledger(json.load(open('dist/data/fx-forecast-ledger.json',encoding='utf8')))"
-          test "$(find dist -type f | wc -l)" -eq 77
+          test "$(find dist -type f | wc -l)" -eq 86
       - name: Acquire independently checked ECB euro area AAA ten-year model yield
         run: |
           python3 scripts/refresh_ecb_yield.py --out dist/data/official-eur-yield.json
           python3 scripts/refresh_ecb_yield.py --validate dist/data/official-eur-yield.json
-          test "$(find dist -type f | wc -l)" -eq 78
+          test "$(find dist -type f | wc -l)" -eq 87
       - uses: actions/upload-artifact@v4
         with:
           name: audited-site

@@ -13,7 +13,9 @@ RELEASE = {"src/live-session.mjs", "src/original-paper.mjs", "data/original-trac
 REPOSITORY = RELEASE | {"tests/live-session.test.mjs", "scripts/private_disclosure.py", "scripts/test_private_disclosure.py", "README.md", "docs/SCIENTIFIC_PARITY.md", "scripts/audit_public.py", "scripts/operational_status.py", "scripts/test_operational_status.py", "scripts/satellite_pilot.py", "scripts/test_satellite_pilot.py", "scripts/build_operations_audit.py", "scripts/test_operations_audit.py", "scripts/build_opening_plan.py", "scripts/test_opening_plan.py", "scripts/build_execution_history.py", "scripts/test_execution_history.py", "docs/RUNBOOK_PRODUCCION.md", ".github/workflows/operational-status.yml", "scripts/refresh_ecb.py", "scripts/test_ecb.py", "scripts/advance_fx.py", "scripts/test_advance_fx.py", "scripts/refresh_sec.py", "scripts/test_sec.py", "scripts/refresh_ecb_yield.py", "scripts/test_ecb_yield.py", "scripts/yahoo_source.py", "scripts/test_yahoo_source.py", "data/universe-xnys.json", "scripts/requirements-yahoo.txt", "data/public-paper-book.json", "scripts/public_market_runner.py", "scripts/test_public_market_runner.py", "scripts/classic_503.py", "scripts/test_classic_503.py", "scripts/classic_503_book.py", "scripts/test_classic_503_book.py", "scripts/monthly_selection.py", "scripts/test_monthly_selection.py", "scripts/monthly_paper.py", "scripts/test_monthly_paper.py", "scripts/monthly_factors.py", "scripts/test_monthly_factors.py", "scripts/weekly_selection.py", "scripts/test_weekly_selection.py", "scripts/weekly_baselines.py", "scripts/test_weekly_baselines.py", "scripts/weekly_models.py", "scripts/test_weekly_models.py", "scripts/weekly_lightgbm.py", "scripts/test_weekly_lightgbm.py", "scripts/weekly_lstm.py", "scripts/test_weekly_lstm.py", "scripts/lstm_walkforward.py", "scripts/test_lstm_walkforward.py", "scripts/requirements-research.txt", "data/monthly-paper-book.json", "data/classic-503-book.json", ".github/workflows/public-market.yml", "scripts/paper_feed.py", "scripts/test_paper_feed.py", "tests/metrics.test.mjs", "tests/learning.test.mjs", "tests/paper-methods.test.mjs", "tests/paper-ledger.test.mjs", "tests/competition-roster.test.mjs", "tests/algorithm-detail.test.mjs", "tests/operation-lots.test.mjs", "tests/paper-feed.test.mjs", "tests/private-paper.test.mjs", "tests/private-theses.test.mjs", "scripts/forward_open_il039.py", "scripts/test_forward_open_il039.py", ".github/workflows/operational-clock.yml", "scripts/operational_clock.py", "scripts/test_operational_clock.py", "scripts/native_forward_settlement.py", "scripts/test_native_forward_settlement.py", ".github/workflows/pages.yml", ".github/workflows/fx-ledger.yml", ".github/workflows/sec-filings.yml"}
 # Institutionally reviewed web/PDF research templates and their source manifest.
 RELEASE |= {"src/thesis-report.mjs", "src/thesis-report.css", "src/thesis-insights.mjs", "src/thesis-source-structure.mjs", "src/thesis-historical-figures.mjs", "data/thesis-reports.json", "src/financial-sankey.mjs", "src/financial-sankey.css", "data/financial-sankeys.json"}
+RELEASE |= {"src/assistant-launcher.mjs", "midas-ai/index.html", "midas-ai/style.css", "midas-ai/app.mjs", "midas-ai/retrieval.mjs", "midas-ai/worker.mjs"}
 REPOSITORY |= RELEASE | {"tests/financial-sankey.test.mjs", "tests/thesis-report.test.mjs", "tests/thesis-historical-figures.test.mjs", "tests/thesis-source-depth.test.mjs", "scripts/build_thesis_pdfs.py", "scripts/test_thesis_pdf_builder.py"}
+REPOSITORY |= {"midas-ai/README.md", "midas-ai/retrieval.test.mjs", "midas-ai/package.json", "midas-ai/package-lock.json", "scripts/audit_ai_runtime.py"}
 REPOSITORY.add("docs/NAUT_RESEARCH_BRIEF_2026-11-05.md")
 # Retain the inactive seed from the superseded single-strategy pilot, but do not publish it.
 REPOSITORY |= {"scripts/forward_weekly_ml_settlement.py", "scripts/test_forward_weekly_ml_settlement.py"}
@@ -97,7 +99,7 @@ class Links(HTMLParser):
         if tag in ("a","link","img","script"):
             u=a.get("href") or a.get("src")
             if u: self.references.append(u)
-for page in ("index.html", "research.html", "private-paper.html", "private-theses.html"):
+for page in ("index.html", "research.html", "private-paper.html", "private-theses.html", "midas-ai/index.html"):
  if not (ROOT/page).exists(): continue
  links=Links()
  links.feed((ROOT/page).read_text(encoding="utf8"))
@@ -108,6 +110,7 @@ for page in ("index.html", "research.html", "private-paper.html", "private-these
                 issues.append("Non-institutional external link")
         elif url.startswith("./"):
             local_path, separator, query = url[2:].partition("?")
+            if page == "midas-ai/index.html": local_path = "midas-ai/" + local_path
             if local_path not in RELEASE or (separator and not (re.fullmatch(r"v=[a-f0-9]{12}", query) or local_path == "index.html" and query in {"view=competition", "view=theses"})):
                 issues.append("Dependency not on release allowlist")
         else: issues.append("Unexpected link or source type")
