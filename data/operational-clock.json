@@ -1,5 +1,5 @@
 {
-  "checked_at_utc": "2026-11-27T17:47:16.021253Z",
+  "checked_at_utc": "2026-11-27T17:55:45.631192Z",
   "lock_sha256": "0dd3522eb10c652b485f205ebf60863fd15f055070fe5b2a7d007c3e1397caca",
   "mode": "single_midas_operator_monitor_no_broker",
   "note": "Observed quotes are not fills. A native engine must settle quantity/cash before a trade counts in P&L.",
@@ -8,12 +8,10 @@
   "previous_session": "2026-11-25",
   "quote_budget": {
     "hard_symbol_limit": 250,
-    "missing_symbols": [
-      "ERIE"
-    ],
-    "observed_symbols": 45,
+    "missing_symbols": [],
+    "observed_symbols": 107,
     "omitted_algorithm_lanes": {},
-    "requested_symbols": 46
+    "requested_symbols": 107
   },
   "run_id": 46044410597,
   "schema": "midas.operational_clock.v1",
@@ -468,112 +466,1259 @@
     },
     "IL-019": {
       "exit_only_ready": false,
+      "fills": [
+        {
+          "fee": 89.53933851931707,
+          "observed_at_utc": "2026-11-27T17:55:43.434749Z",
+          "price": 726.1577355957031,
+          "quantity": 123.305632,
+          "side": "sell",
+          "ticker": "SPY"
+        }
+      ],
+      "fills_count": 1,
       "holdings_count": 1,
-      "native_settlement": "no_orders",
+      "native_marker": {
+        "fill_tickers": [
+          "SPY"
+        ],
+        "fills_count": 1,
+        "lock_sha256": "0dd3522eb10c652b485f205ebf60863fd15f055070fe5b2a7d007c3e1397caca",
+        "mode": "weekly_observed_exit",
+        "observed_fill_events_sha256": "e6b8dbf29482b1f909acbe92fa9285c98fc2c8e6933224157fc14bed8cb52e16",
+        "recorded_at_utc": "2026-11-27T17:55:45.631192Z",
+        "session": "2026-11-27",
+        "source_commit": "06162f9ecc38e361d13ababe91775b93ed5c9760"
+      },
+      "native_settlement": "settled_native_paper",
       "observed": 0,
       "orders": [],
       "planned": 0,
+      "session_fill_reconciled": true,
       "source_session": "2026-11-25",
-      "status": "active_no_orders",
-      "waiting": 0
+      "status": "native_forward_settled",
+      "waiting": 0,
+      "weekly_exit_progress": {
+        "closed_tickers": [
+          "SPY"
+        ],
+        "complete": true,
+        "remaining_tickers": [],
+        "source": "observed_preclose_paper_symbol_isolated"
+      }
     },
     "IL-020": {
       "exit_only_ready": false,
+      "fills": [
+        {
+          "fee": 97.83037011762394,
+          "observed_at_utc": "2026-11-27T17:55:42.849756Z",
+          "price": 217.90098950958253,
+          "quantity": 448.967076,
+          "side": "sell",
+          "ticker": "RSP"
+        }
+      ],
+      "fills_count": 1,
       "holdings_count": 1,
-      "native_settlement": "no_orders",
+      "native_marker": {
+        "fill_tickers": [
+          "RSP"
+        ],
+        "fills_count": 1,
+        "lock_sha256": "0dd3522eb10c652b485f205ebf60863fd15f055070fe5b2a7d007c3e1397caca",
+        "mode": "weekly_observed_exit",
+        "observed_fill_events_sha256": "be2af916b0c1440c3a7b7fca4b05cbee1883a4d1794fa0afc5e36ac75f0ea9d6",
+        "recorded_at_utc": "2026-11-27T17:55:45.631192Z",
+        "session": "2026-11-27",
+        "source_commit": "06162f9ecc38e361d13ababe91775b93ed5c9760"
+      },
+      "native_settlement": "settled_native_paper",
       "observed": 0,
       "orders": [],
       "planned": 0,
+      "session_fill_reconciled": true,
       "source_session": "2026-11-25",
-      "status": "active_no_orders",
-      "waiting": 0
+      "status": "native_forward_settled",
+      "waiting": 0,
+      "weekly_exit_progress": {
+        "closed_tickers": [
+          "RSP"
+        ],
+        "complete": true,
+        "remaining_tickers": [],
+        "source": "observed_preclose_paper_symbol_isolated"
+      }
     },
     "IL-021": {
       "exit_only_ready": false,
+      "fills": [
+        {
+          "fee": 7.220393157007243,
+          "observed_at_utc": "2026-11-27T17:55:34.008456Z",
+          "price": 418.36072232055665,
+          "quantity": 17.258774,
+          "side": "sell",
+          "ticker": "AMD"
+        },
+        {
+          "fee": 7.699473674118167,
+          "observed_at_utc": "2026-11-27T17:55:36.046346Z",
+          "price": 106.63665744018556,
+          "quantity": 72.202879,
+          "side": "sell",
+          "ticker": "COIN"
+        },
+        {
+          "fee": 7.94997519961076,
+          "observed_at_utc": "2026-11-27T17:55:38.279353Z",
+          "price": 708.1857080383301,
+          "quantity": 11.225834,
+          "side": "sell",
+          "ticker": "FICO"
+        },
+        {
+          "fee": 8.623688170593601,
+          "observed_at_utc": "2026-11-27T17:55:38.419625Z",
+          "price": 28.245870228767398,
+          "quantity": 305.30793,
+          "side": "sell",
+          "ticker": "FIS"
+        },
+        {
+          "fee": 7.752894187044749,
+          "observed_at_utc": "2026-11-27T17:55:38.773641Z",
+          "price": 104.57768225479127,
+          "quantity": 74.135265,
+          "side": "sell",
+          "ticker": "GLW"
+        },
+        {
+          "fee": 7.700704908786621,
+          "observed_at_utc": "2026-11-27T17:55:39.479651Z",
+          "price": 56.21188167762757,
+          "quantity": 136.994256,
+          "side": "sell",
+          "ticker": "INTC"
+        },
+        {
+          "fee": 7.4085458989875015,
+          "observed_at_utc": "2026-11-27T17:55:41.605871Z",
+          "price": 637.1812500000001,
+          "quantity": 11.627062,
+          "side": "sell",
+          "ticker": "MU"
+        },
+        {
+          "fee": 7.3685044086266,
+          "observed_at_utc": "2026-11-27T17:55:43.274899Z",
+          "price": 23.608190838813783,
+          "quantity": 312.116437,
+          "side": "sell",
+          "ticker": "SMCI"
+        },
+        {
+          "fee": 7.476890998559445,
+          "observed_at_utc": "2026-11-27T17:55:43.647293Z",
+          "price": 503.3831922607422,
+          "quantity": 14.853279,
+          "side": "sell",
+          "ticker": "STX"
+        },
+        {
+          "fee": 7.582298283661814,
+          "observed_at_utc": "2026-11-27T17:55:45.090043Z",
+          "price": 289.07069386291505,
+          "quantity": 26.22991,
+          "side": "sell",
+          "ticker": "WDC"
+        }
+      ],
+      "fills_count": 10,
       "holdings_count": 10,
-      "native_settlement": "no_orders",
+      "native_marker": {
+        "fill_tickers": [
+          "AMD",
+          "COIN",
+          "FICO",
+          "FIS",
+          "GLW",
+          "INTC",
+          "MU",
+          "SMCI",
+          "STX",
+          "WDC"
+        ],
+        "fills_count": 10,
+        "lock_sha256": "0dd3522eb10c652b485f205ebf60863fd15f055070fe5b2a7d007c3e1397caca",
+        "mode": "weekly_observed_exit",
+        "observed_fill_events_sha256": "24f3919dbe6ec1c31fa295cc739b6df8c85f91916472a97fc743aa69f48b1c92",
+        "recorded_at_utc": "2026-11-27T17:55:45.631192Z",
+        "session": "2026-11-27",
+        "source_commit": "06162f9ecc38e361d13ababe91775b93ed5c9760"
+      },
+      "native_settlement": "settled_native_paper",
       "observed": 0,
       "orders": [],
       "planned": 0,
+      "session_fill_reconciled": true,
       "source_session": "2026-11-25",
-      "status": "active_no_orders",
-      "waiting": 0
+      "status": "native_forward_settled",
+      "waiting": 0,
+      "weekly_exit_progress": {
+        "closed_tickers": [
+          "AMD",
+          "COIN",
+          "FICO",
+          "FIS",
+          "GLW",
+          "INTC",
+          "MU",
+          "SMCI",
+          "STX",
+          "WDC"
+        ],
+        "complete": true,
+        "remaining_tickers": [],
+        "source": "observed_preclose_paper_symbol_isolated"
+      }
     },
     "IL-022": {
       "exit_only_ready": false,
+      "fills": [
+        {
+          "fee": 10.52028623143158,
+          "observed_at_utc": "2026-11-27T17:55:34.945781Z",
+          "price": 45.31233158493042,
+          "quantity": 232.172697,
+          "side": "sell",
+          "ticker": "BSX"
+        },
+        {
+          "fee": 10.353743816446736,
+          "observed_at_utc": "2026-11-27T17:55:37.497797Z",
+          "price": 51.909033872604375,
+          "quantity": 199.459382,
+          "side": "sell",
+          "ticker": "EQT"
+        },
+        {
+          "fee": 10.492942257573377,
+          "observed_at_utc": "2026-11-27T17:55:37.919783Z",
+          "price": 87.33131250000001,
+          "quantity": 120.150974,
+          "side": "sell",
+          "ticker": "EXE"
+        },
+        {
+          "fee": 9.79719192855807,
+          "observed_at_utc": "2026-11-27T17:55:38.279353Z",
+          "price": 708.1857080383301,
+          "quantity": 13.834213,
+          "side": "sell",
+          "ticker": "FICO"
+        },
+        {
+          "fee": 9.554317549950378,
+          "observed_at_utc": "2026-11-27T17:55:38.773641Z",
+          "price": 104.57768225479127,
+          "quantity": 91.360961,
+          "side": "sell",
+          "ticker": "GLW"
+        },
+        {
+          "fee": 10.284208437344846,
+          "observed_at_utc": "2026-11-27T17:55:41.829515Z",
+          "price": 559.9049050598145,
+          "quantity": 18.367777,
+          "side": "sell",
+          "ticker": "NOC"
+        },
+        {
+          "fee": 10.158758590911424,
+          "observed_at_utc": "2026-11-27T17:55:42.331408Z",
+          "price": 139.32530677032472,
+          "quantity": 72.913951,
+          "side": "sell",
+          "ticker": "PODD"
+        },
+        {
+          "fee": 10.061052077177377,
+          "observed_at_utc": "2026-11-27T17:55:42.999553Z",
+          "price": 93.77308969497682,
+          "quantity": 107.291464,
+          "side": "sell",
+          "ticker": "SCHW"
+        },
+        {
+          "fee": 9.204733886332608,
+          "observed_at_utc": "2026-11-27T17:55:44.184998Z",
+          "price": 264.27779866027834,
+          "quantity": 34.829766,
+          "side": "sell",
+          "ticker": "TPL"
+        },
+        {
+          "fee": 10.265390669224992,
+          "observed_at_utc": "2026-11-27T17:55:44.938646Z",
+          "price": 25.127429389953615,
+          "quantity": 408.533261,
+          "side": "sell",
+          "ticker": "VICI"
+        }
+      ],
+      "fills_count": 10,
       "holdings_count": 10,
-      "native_settlement": "no_orders",
+      "native_marker": {
+        "fill_tickers": [
+          "BSX",
+          "EQT",
+          "EXE",
+          "FICO",
+          "GLW",
+          "NOC",
+          "PODD",
+          "SCHW",
+          "TPL",
+          "VICI"
+        ],
+        "fills_count": 10,
+        "lock_sha256": "0dd3522eb10c652b485f205ebf60863fd15f055070fe5b2a7d007c3e1397caca",
+        "mode": "weekly_observed_exit",
+        "observed_fill_events_sha256": "b674b8117c46c3de3a9a9f8aeb1405ab00b7d05fd09cb1c1aef754b965f9c981",
+        "recorded_at_utc": "2026-11-27T17:55:45.631192Z",
+        "session": "2026-11-27",
+        "source_commit": "06162f9ecc38e361d13ababe91775b93ed5c9760"
+      },
+      "native_settlement": "settled_native_paper",
       "observed": 0,
       "orders": [],
       "planned": 0,
+      "session_fill_reconciled": true,
       "source_session": "2026-11-25",
-      "status": "active_no_orders",
-      "waiting": 0
+      "status": "native_forward_settled",
+      "waiting": 0,
+      "weekly_exit_progress": {
+        "closed_tickers": [
+          "BSX",
+          "EQT",
+          "EXE",
+          "FICO",
+          "GLW",
+          "NOC",
+          "PODD",
+          "SCHW",
+          "TPL",
+          "VICI"
+        ],
+        "complete": true,
+        "remaining_tickers": [],
+        "source": "observed_preclose_paper_symbol_isolated"
+      }
     },
     "IL-023": {
       "exit_only_ready": false,
+      "fills": [
+        {
+          "fee": 6.543026584693298,
+          "observed_at_utc": "2026-11-27T17:55:33.471828Z",
+          "price": 341.3692385406494,
+          "quantity": 19.167007,
+          "side": "sell",
+          "ticker": "ADI"
+        },
+        {
+          "fee": 6.564392667029829,
+          "observed_at_utc": "2026-11-27T17:55:34.008456Z",
+          "price": 418.36072232055665,
+          "quantity": 15.690748,
+          "side": "sell",
+          "ticker": "AMD"
+        },
+        {
+          "fee": 8.773452949386252,
+          "observed_at_utc": "2026-11-27T17:55:35.622498Z",
+          "price": 154.41774761962893,
+          "quantity": 56.816351,
+          "side": "sell",
+          "ticker": "CHTR"
+        },
+        {
+          "fee": 6.463866464888335,
+          "observed_at_utc": "2026-11-27T17:55:40.324083Z",
+          "price": 188.95547805023193,
+          "quantity": 34.20841,
+          "side": "sell",
+          "ticker": "LRCX"
+        },
+        {
+          "fee": 6.880671145649851,
+          "observed_at_utc": "2026-11-27T17:55:41.320758Z",
+          "price": 1242.998185119629,
+          "quantity": 5.535544,
+          "side": "sell",
+          "ticker": "MPWR"
+        },
+        {
+          "fee": 6.735450565012501,
+          "observed_at_utc": "2026-11-27T17:55:41.605871Z",
+          "price": 637.1812500000001,
+          "quantity": 10.570698,
+          "side": "sell",
+          "ticker": "MU"
+        },
+        {
+          "fee": 6.940626885520301,
+          "observed_at_utc": "2026-11-27T17:55:42.533142Z",
+          "price": 579.4501202392579,
+          "quantity": 11.977954,
+          "side": "sell",
+          "ticker": "PWR"
+        },
+        {
+          "fee": 7.990201413454827,
+          "observed_at_utc": "2026-11-27T17:55:43.793082Z",
+          "price": 85.79707633972168,
+          "quantity": 93.129064,
+          "side": "sell",
+          "ticker": "SWKS"
+        },
+        {
+          "fee": 6.594731302376634,
+          "observed_at_utc": "2026-11-27T17:55:43.944775Z",
+          "price": 217.5211898803711,
+          "quantity": 30.31765,
+          "side": "sell",
+          "ticker": "TER"
+        },
+        {
+          "fee": 6.946225305046218,
+          "observed_at_utc": "2026-11-27T17:55:44.586526Z",
+          "price": 278.4756827392578,
+          "quantity": 24.943741,
+          "side": "sell",
+          "ticker": "TXN"
+        }
+      ],
+      "fills_count": 10,
       "holdings_count": 10,
-      "native_settlement": "no_orders",
+      "native_marker": {
+        "fill_tickers": [
+          "ADI",
+          "AMD",
+          "CHTR",
+          "LRCX",
+          "MPWR",
+          "MU",
+          "PWR",
+          "SWKS",
+          "TER",
+          "TXN"
+        ],
+        "fills_count": 10,
+        "lock_sha256": "0dd3522eb10c652b485f205ebf60863fd15f055070fe5b2a7d007c3e1397caca",
+        "mode": "weekly_observed_exit",
+        "observed_fill_events_sha256": "b9b5eeddb22383464e9d22ece7bfc6f579d36ff799e8e81a28d989751f999b2e",
+        "recorded_at_utc": "2026-11-27T17:55:45.631192Z",
+        "session": "2026-11-27",
+        "source_commit": "06162f9ecc38e361d13ababe91775b93ed5c9760"
+      },
+      "native_settlement": "settled_native_paper",
       "observed": 0,
       "orders": [],
       "planned": 0,
+      "session_fill_reconciled": true,
       "source_session": "2026-11-25",
-      "status": "active_no_orders",
-      "waiting": 0
+      "status": "native_forward_settled",
+      "waiting": 0,
+      "weekly_exit_progress": {
+        "closed_tickers": [
+          "ADI",
+          "AMD",
+          "CHTR",
+          "LRCX",
+          "MPWR",
+          "MU",
+          "PWR",
+          "SWKS",
+          "TER",
+          "TXN"
+        ],
+        "complete": true,
+        "remaining_tickers": [],
+        "source": "observed_preclose_paper_symbol_isolated"
+      }
     },
     "IL-024": {
       "exit_only_ready": false,
+      "fills": [
+        {
+          "fee": 7.549128045491579,
+          "observed_at_utc": "2026-11-27T17:55:33.235362Z",
+          "price": 177.5012013397217,
+          "quantity": 42.530011,
+          "side": "sell",
+          "ticker": "ABNB"
+        },
+        {
+          "fee": 6.70928562779472,
+          "observed_at_utc": "2026-11-27T17:55:34.008456Z",
+          "price": 418.36072232055665,
+          "quantity": 16.037083,
+          "side": "sell",
+          "ticker": "AMD"
+        },
+        {
+          "fee": 7.24232325947181,
+          "observed_at_utc": "2026-11-27T17:55:34.440692Z",
+          "price": 310.44470610046386,
+          "quantity": 23.328867,
+          "side": "sell",
+          "ticker": "AVGO"
+        },
+        {
+          "fee": 6.477070480931875,
+          "observed_at_utc": "2026-11-27T17:55:36.572356Z",
+          "price": 314.592625,
+          "quantity": 20.588755,
+          "side": "sell",
+          "ticker": "DELL"
+        },
+        {
+          "fee": 7.790506674728538,
+          "observed_at_utc": "2026-11-27T17:55:37.088628Z",
+          "price": 84.96749713516236,
+          "quantity": 91.68808,
+          "side": "sell",
+          "ticker": "DXCM"
+        },
+        {
+          "fee": 6.77907197210328,
+          "observed_at_utc": "2026-11-27T17:55:39.246926Z",
+          "price": 42.46875667762757,
+          "quantity": 159.624922,
+          "side": "sell",
+          "ticker": "HPE"
+        },
+        {
+          "fee": 7.616540055050522,
+          "observed_at_utc": "2026-11-27T17:55:40.819264Z",
+          "price": 202.3787557296753,
+          "quantity": 37.635077,
+          "side": "sell",
+          "ticker": "MOH"
+        },
+        {
+          "fee": 8.13609074443791,
+          "observed_at_utc": "2026-11-27T17:55:40.992545Z",
+          "price": 21.0344775762558,
+          "quantity": 386.797852,
+          "side": "sell",
+          "ticker": "MOS"
+        },
+        {
+          "fee": 8.207836936461694,
+          "observed_at_utc": "2026-11-27T17:55:41.395867Z",
+          "price": 227.6011388397217,
+          "quantity": 36.062372,
+          "side": "sell",
+          "ticker": "MRNA"
+        },
+        {
+          "fee": 6.884118968625001,
+          "observed_at_utc": "2026-11-27T17:55:41.605871Z",
+          "price": 637.1812500000001,
+          "quantity": 10.80402,
+          "side": "sell",
+          "ticker": "MU"
+        }
+      ],
+      "fills_count": 10,
       "holdings_count": 10,
-      "native_settlement": "no_orders",
+      "native_marker": {
+        "fill_tickers": [
+          "ABNB",
+          "AMD",
+          "AVGO",
+          "DELL",
+          "DXCM",
+          "HPE",
+          "MOH",
+          "MOS",
+          "MRNA",
+          "MU"
+        ],
+        "fills_count": 10,
+        "lock_sha256": "0dd3522eb10c652b485f205ebf60863fd15f055070fe5b2a7d007c3e1397caca",
+        "mode": "weekly_observed_exit",
+        "observed_fill_events_sha256": "8f78fa9bcca2083139ba53f54200452c1bca314183b21783331378a354fc66fe",
+        "recorded_at_utc": "2026-11-27T17:55:45.631192Z",
+        "session": "2026-11-27",
+        "source_commit": "06162f9ecc38e361d13ababe91775b93ed5c9760"
+      },
+      "native_settlement": "settled_native_paper",
       "observed": 0,
       "orders": [],
       "planned": 0,
+      "session_fill_reconciled": true,
       "source_session": "2026-11-25",
-      "status": "active_no_orders",
-      "waiting": 0
+      "status": "native_forward_settled",
+      "waiting": 0,
+      "weekly_exit_progress": {
+        "closed_tickers": [
+          "ABNB",
+          "AMD",
+          "AVGO",
+          "DELL",
+          "DXCM",
+          "HPE",
+          "MOH",
+          "MOS",
+          "MRNA",
+          "MU"
+        ],
+        "complete": true,
+        "remaining_tickers": [],
+        "source": "observed_preclose_paper_symbol_isolated"
+      }
     },
     "IL-025": {
       "exit_only_ready": false,
+      "fills": [
+        {
+          "fee": 9.434716873584309,
+          "observed_at_utc": "2026-11-27T17:55:35.191815Z",
+          "price": 560.0698005981445,
+          "quantity": 16.845609,
+          "side": "sell",
+          "ticker": "CAT"
+        },
+        {
+          "fee": 8.871648765678529,
+          "observed_at_utc": "2026-11-27T17:55:36.046346Z",
+          "price": 106.63665744018556,
+          "quantity": 83.195113,
+          "side": "sell",
+          "ticker": "COIN"
+        },
+        {
+          "fee": 9.581553636071753,
+          "observed_at_utc": "2026-11-27T17:55:36.365919Z",
+          "price": 8.26586545753479,
+          "quantity": 1159.171255,
+          "side": "sell",
+          "ticker": "CTVA"
+        },
+        {
+          "fee": 8.69329868615502,
+          "observed_at_utc": "2026-11-27T17:55:38.548160Z",
+          "price": 733.9328377990723,
+          "quantity": 11.844815,
+          "side": "sell",
+          "ticker": "GEV"
+        },
+        {
+          "fee": 8.933202040754235,
+          "observed_at_utc": "2026-11-27T17:55:38.773641Z",
+          "price": 104.57768225479127,
+          "quantity": 85.421687,
+          "side": "sell",
+          "ticker": "GLW"
+        },
+        {
+          "fee": 8.873067389235485,
+          "observed_at_utc": "2026-11-27T17:55:39.479651Z",
+          "price": 56.21188167762757,
+          "quantity": 157.850389,
+          "side": "sell",
+          "ticker": "INTC"
+        },
+        {
+          "fee": 9.126773597764588,
+          "observed_at_utc": "2026-11-27T17:55:41.961360Z",
+          "price": 93.68313835525514,
+          "quantity": 97.421732,
+          "side": "sell",
+          "ticker": "NRG"
+        },
+        {
+          "fee": 8.49016841240881,
+          "observed_at_utc": "2026-11-27T17:55:42.105994Z",
+          "price": 149.1653854904175,
+          "quantity": 56.917819,
+          "side": "sell",
+          "ticker": "NVDA"
+        },
+        {
+          "fee": 8.606344466382865,
+          "observed_at_utc": "2026-11-27T17:55:44.184998Z",
+          "price": 264.27779866027834,
+          "quantity": 32.565522,
+          "side": "sell",
+          "ticker": "TPL"
+        }
+      ],
+      "fills_count": 9,
       "holdings_count": 9,
-      "native_settlement": "no_orders",
+      "native_marker": {
+        "fill_tickers": [
+          "CAT",
+          "COIN",
+          "CTVA",
+          "GEV",
+          "GLW",
+          "INTC",
+          "NRG",
+          "NVDA",
+          "TPL"
+        ],
+        "fills_count": 9,
+        "lock_sha256": "0dd3522eb10c652b485f205ebf60863fd15f055070fe5b2a7d007c3e1397caca",
+        "mode": "weekly_observed_exit",
+        "observed_fill_events_sha256": "f31d8c531e196d2891af3140a1489a0a72ee048462967099d5b67eefc64c1397",
+        "recorded_at_utc": "2026-11-27T17:55:45.631192Z",
+        "session": "2026-11-27",
+        "source_commit": "06162f9ecc38e361d13ababe91775b93ed5c9760"
+      },
+      "native_settlement": "settled_native_paper",
       "observed": 0,
       "orders": [],
       "planned": 0,
+      "session_fill_reconciled": true,
       "source_session": "2026-11-25",
-      "status": "active_no_orders",
-      "waiting": 0
+      "status": "native_forward_settled",
+      "waiting": 0,
+      "weekly_exit_progress": {
+        "closed_tickers": [
+          "CAT",
+          "COIN",
+          "CTVA",
+          "GEV",
+          "GLW",
+          "INTC",
+          "NRG",
+          "NVDA",
+          "TPL"
+        ],
+        "complete": true,
+        "remaining_tickers": [],
+        "source": "observed_preclose_paper_symbol_isolated"
+      }
     },
     "IL-026": {
       "exit_only_ready": false,
+      "fills": [
+        {
+          "fee": 7.024361990204952,
+          "observed_at_utc": "2026-11-27T17:55:33.471828Z",
+          "price": 341.3692385406494,
+          "quantity": 20.577021,
+          "side": "sell",
+          "ticker": "ADI"
+        },
+        {
+          "fee": 7.047299755032891,
+          "observed_at_utc": "2026-11-27T17:55:34.008456Z",
+          "price": 418.36072232055665,
+          "quantity": 16.845032,
+          "side": "sell",
+          "ticker": "AMD"
+        },
+        {
+          "fee": 7.341762430159471,
+          "observed_at_utc": "2026-11-27T17:55:34.134749Z",
+          "price": 174.38276622009278,
+          "quantity": 42.101422,
+          "side": "sell",
+          "ticker": "ANET"
+        },
+        {
+          "fee": 7.234988764710532,
+          "observed_at_utc": "2026-11-27T17:55:35.486729Z",
+          "price": 237.56325733947756,
+          "quantity": 30.454999,
+          "side": "sell",
+          "ticker": "CEG"
+        },
+        {
+          "fee": 7.491041063219351,
+          "observed_at_utc": "2026-11-27T17:55:39.625663Z",
+          "price": 104.27783683013917,
+          "quantity": 71.837327,
+          "side": "sell",
+          "ticker": "IRM"
+        },
+        {
+          "fee": 7.699947611075702,
+          "observed_at_utc": "2026-11-27T17:55:41.131222Z",
+          "price": 359.6200877990723,
+          "quantity": 21.411339,
+          "side": "sell",
+          "ticker": "MPC"
+        },
+        {
+          "fee": 8.62134837553417,
+          "observed_at_utc": "2026-11-27T17:55:41.395867Z",
+          "price": 227.6011388397217,
+          "quantity": 37.879197,
+          "side": "sell",
+          "ticker": "MRNA"
+        },
+        {
+          "fee": 7.230941820450002,
+          "observed_at_utc": "2026-11-27T17:55:41.605871Z",
+          "price": 637.1812500000001,
+          "quantity": 11.348328,
+          "side": "sell",
+          "ticker": "MU"
+        },
+        {
+          "fee": 7.457222056407735,
+          "observed_at_utc": "2026-11-27T17:55:44.586526Z",
+          "price": 278.4756827392578,
+          "quantity": 26.778719,
+          "side": "sell",
+          "ticker": "TXN"
+        },
+        {
+          "fee": 7.789093815071327,
+          "observed_at_utc": "2026-11-27T17:55:44.803172Z",
+          "price": 1041.6389541625977,
+          "quantity": 7.477729,
+          "side": "sell",
+          "ticker": "URI"
+        }
+      ],
+      "fills_count": 10,
       "holdings_count": 10,
-      "native_settlement": "no_orders",
+      "native_marker": {
+        "fill_tickers": [
+          "ADI",
+          "AMD",
+          "ANET",
+          "CEG",
+          "IRM",
+          "MPC",
+          "MRNA",
+          "MU",
+          "TXN",
+          "URI"
+        ],
+        "fills_count": 10,
+        "lock_sha256": "0dd3522eb10c652b485f205ebf60863fd15f055070fe5b2a7d007c3e1397caca",
+        "mode": "weekly_observed_exit",
+        "observed_fill_events_sha256": "4766ef730d69460178b561451d1fef92c4760d3e9d8ed64d01667c2031589f9a",
+        "recorded_at_utc": "2026-11-27T17:55:45.631192Z",
+        "session": "2026-11-27",
+        "source_commit": "06162f9ecc38e361d13ababe91775b93ed5c9760"
+      },
+      "native_settlement": "settled_native_paper",
       "observed": 0,
       "orders": [],
       "planned": 0,
+      "session_fill_reconciled": true,
       "source_session": "2026-11-25",
-      "status": "active_no_orders",
-      "waiting": 0
+      "status": "native_forward_settled",
+      "waiting": 0,
+      "weekly_exit_progress": {
+        "closed_tickers": [
+          "ADI",
+          "AMD",
+          "ANET",
+          "CEG",
+          "IRM",
+          "MPC",
+          "MRNA",
+          "MU",
+          "TXN",
+          "URI"
+        ],
+        "complete": true,
+        "remaining_tickers": [],
+        "source": "observed_preclose_paper_symbol_isolated"
+      }
     },
     "IL-027": {
       "exit_only_ready": false,
+      "fills": [
+        {
+          "fee": 7.3322719228300395,
+          "observed_at_utc": "2026-11-27T17:55:33.471828Z",
+          "price": 341.3692385406494,
+          "quantity": 21.479006,
+          "side": "sell",
+          "ticker": "ADI"
+        },
+        {
+          "fee": 7.66358547645312,
+          "observed_at_utc": "2026-11-27T17:55:34.134749Z",
+          "price": 174.38276622009278,
+          "quantity": 43.94692,
+          "side": "sell",
+          "ticker": "ANET"
+        },
+        {
+          "fee": 8.555527691441204,
+          "observed_at_utc": "2026-11-27T17:55:34.281982Z",
+          "price": 43.268355915069584,
+          "quantity": 197.731749,
+          "side": "sell",
+          "ticker": "ARE"
+        },
+        {
+          "fee": 7.940650309607144,
+          "observed_at_utc": "2026-11-27T17:55:34.440692Z",
+          "price": 310.44470610046386,
+          "quantity": 25.578308,
+          "side": "sell",
+          "ticker": "AVGO"
+        },
+        {
+          "fee": 7.949738887800503,
+          "observed_at_utc": "2026-11-27T17:55:39.031290Z",
+          "price": 810.0597943420411,
+          "quantity": 9.813768,
+          "side": "sell",
+          "ticker": "GS"
+        },
+        {
+          "fee": 7.780084213141749,
+          "observed_at_utc": "2026-11-27T17:55:40.029548Z",
+          "price": 138.38577433013916,
+          "quantity": 56.22026,
+          "side": "sell",
+          "ticker": "KLAC"
+        },
+        {
+          "fee": 7.98141506869237,
+          "observed_at_utc": "2026-11-27T17:55:40.609913Z",
+          "price": 59.15041030502319,
+          "quantity": 134.93423,
+          "side": "sell",
+          "ticker": "MCHP"
+        },
+        {
+          "fee": 7.710644650819744,
+          "observed_at_utc": "2026-11-27T17:55:41.320758Z",
+          "price": 1242.998185119629,
+          "quantity": 6.203263,
+          "side": "sell",
+          "ticker": "MPWR"
+        },
+        {
+          "fee": 8.99926163088528,
+          "observed_at_utc": "2026-11-27T17:55:41.395867Z",
+          "price": 227.6011388397217,
+          "quantity": 39.539616,
+          "side": "sell",
+          "ticker": "MRNA"
+        },
+        {
+          "fee": 7.617537772626673,
+          "observed_at_utc": "2026-11-27T17:55:43.647293Z",
+          "price": 503.3831922607422,
+          "quantity": 15.132682,
+          "side": "sell",
+          "ticker": "STX"
+        }
+      ],
+      "fills_count": 10,
       "holdings_count": 10,
-      "native_settlement": "no_orders",
+      "native_marker": {
+        "fill_tickers": [
+          "ADI",
+          "ANET",
+          "ARE",
+          "AVGO",
+          "GS",
+          "KLAC",
+          "MCHP",
+          "MPWR",
+          "MRNA",
+          "STX"
+        ],
+        "fills_count": 10,
+        "lock_sha256": "0dd3522eb10c652b485f205ebf60863fd15f055070fe5b2a7d007c3e1397caca",
+        "mode": "weekly_observed_exit",
+        "observed_fill_events_sha256": "33d113f29179d6f75ef60837ab7254823de3b37d671c9d1333df3b1b92c470b2",
+        "recorded_at_utc": "2026-11-27T17:55:45.631192Z",
+        "session": "2026-11-27",
+        "source_commit": "06162f9ecc38e361d13ababe91775b93ed5c9760"
+      },
+      "native_settlement": "settled_native_paper",
       "observed": 0,
       "orders": [],
       "planned": 0,
+      "session_fill_reconciled": true,
       "source_session": "2026-11-25",
-      "status": "active_no_orders",
-      "waiting": 0
+      "status": "native_forward_settled",
+      "waiting": 0,
+      "weekly_exit_progress": {
+        "closed_tickers": [
+          "ADI",
+          "ANET",
+          "ARE",
+          "AVGO",
+          "GS",
+          "KLAC",
+          "MCHP",
+          "MPWR",
+          "MRNA",
+          "STX"
+        ],
+        "complete": true,
+        "remaining_tickers": [],
+        "source": "observed_preclose_paper_symbol_isolated"
+      }
     },
     "IL-037": {
       "exit_only_ready": false,
+      "fills": [
+        {
+          "date": "2026-11-27",
+          "execution": "forward_observed_paper",
+          "fee": 8.673138167043788,
+          "idempotency_key": "IL-037:2026-11-27:week_end:tfg_ahp_forward_v1:AEE",
+          "lock_sha256": "0dd3522eb10c652b485f205ebf60863fd15f055070fe5b2a7d007c3e1397caca",
+          "observed_at_utc": "2026-11-27T17:55:33.627554Z",
+          "price": 114.82255725479126,
+          "quantity": 75.535142,
+          "quote_at_utc": "2026-11-27T17:55:00Z",
+          "side": "sell",
+          "source_commit": "06162f9ecc38e361d13ababe91775b93ed5c9760",
+          "ticker": "AEE"
+        },
+        {
+          "date": "2026-11-27",
+          "execution": "forward_observed_paper",
+          "fee": 5.5174837146991615,
+          "idempotency_key": "IL-037:2026-11-27:week_end:tfg_ahp_forward_v1:AFL",
+          "lock_sha256": "0dd3522eb10c652b485f205ebf60863fd15f055070fe5b2a7d007c3e1397caca",
+          "observed_at_utc": "2026-11-27T17:55:33.808042Z",
+          "price": 127.57118463516235,
+          "quantity": 43.250235,
+          "quote_at_utc": "2026-11-27T17:55:00Z",
+          "side": "sell",
+          "source_commit": "06162f9ecc38e361d13ababe91775b93ed5c9760",
+          "ticker": "AFL"
+        },
+        {
+          "date": "2026-11-27",
+          "execution": "forward_observed_paper",
+          "fee": 12.385655842265828,
+          "idempotency_key": "IL-037:2026-11-27:week_end:tfg_ahp_forward_v1:BRK-B",
+          "lock_sha256": "0dd3522eb10c652b485f205ebf60863fd15f055070fe5b2a7d007c3e1397caca",
+          "observed_at_utc": "2026-11-27T17:55:34.805556Z",
+          "price": 582.5535482177735,
+          "quantity": 21.260974,
+          "quote_at_utc": "2026-11-27T17:55:00Z",
+          "side": "sell",
+          "source_commit": "06162f9ecc38e361d13ababe91775b93ed5c9760",
+          "ticker": "BRK-B"
+        },
+        {
+          "date": "2026-11-27",
+          "execution": "forward_observed_paper",
+          "fee": 0.921162728111285,
+          "idempotency_key": "IL-037:2026-11-27:week_end:tfg_ahp_forward_v1:CAH",
+          "lock_sha256": "0dd3522eb10c652b485f205ebf60863fd15f055070fe5b2a7d007c3e1397caca",
+          "observed_at_utc": "2026-11-27T17:55:35.017614Z",
+          "price": 282.7285601196289,
+          "quantity": 3.258117,
+          "quote_at_utc": "2026-11-27T17:55:00Z",
+          "side": "sell",
+          "source_commit": "06162f9ecc38e361d13ababe91775b93ed5c9760",
+          "ticker": "CAH"
+        },
+        {
+          "date": "2026-11-27",
+          "execution": "forward_observed_paper",
+          "fee": 0.16665788709928533,
+          "idempotency_key": "IL-037:2026-11-27:week_end:tfg_ahp_forward_v1:CB",
+          "lock_sha256": "0dd3522eb10c652b485f205ebf60863fd15f055070fe5b2a7d007c3e1397caca",
+          "observed_at_utc": "2026-11-27T17:55:35.343919Z",
+          "price": 380.70954389953613,
+          "quantity": 0.437756,
+          "quote_at_utc": "2026-11-27T17:55:00Z",
+          "side": "sell",
+          "source_commit": "06162f9ecc38e361d13ababe91775b93ed5c9760",
+          "ticker": "CB"
+        },
+        {
+          "date": "2026-11-27",
+          "execution": "forward_observed_paper",
+          "fee": 2.561148627970522,
+          "idempotency_key": "IL-037:2026-11-27:week_end:tfg_ahp_forward_v1:CINF",
+          "lock_sha256": "0dd3522eb10c652b485f205ebf60863fd15f055070fe5b2a7d007c3e1397caca",
+          "observed_at_utc": "2026-11-27T17:55:35.773016Z",
+          "price": 193.0234351196289,
+          "quantity": 13.268589,
+          "quote_at_utc": "2026-11-27T17:55:00Z",
+          "side": "sell",
+          "source_commit": "06162f9ecc38e361d13ababe91775b93ed5c9760",
+          "ticker": "CINF"
+        },
+        {
+          "date": "2026-11-27",
+          "execution": "forward_observed_paper",
+          "fee": 9.873096044235476,
+          "idempotency_key": "IL-037:2026-11-27:week_end:tfg_ahp_forward_v1:COST",
+          "lock_sha256": "0dd3522eb10c652b485f205ebf60863fd15f055070fe5b2a7d007c3e1397caca",
+          "observed_at_utc": "2026-11-27T17:55:36.158265Z",
+          "price": 1098.5904446411134,
+          "quantity": 8.987058,
+          "quote_at_utc": "2026-11-27T17:55:00Z",
+          "side": "sell",
+          "source_commit": "06162f9ecc38e361d13ababe91775b93ed5c9760",
+          "ticker": "COST"
+        },
+        {
+          "date": "2026-11-27",
+          "execution": "forward_observed_paper",
+          "fee": 8.873457313474361,
+          "idempotency_key": "IL-037:2026-11-27:week_end:tfg_ahp_forward_v1:DUK",
+          "lock_sha256": "0dd3522eb10c652b485f205ebf60863fd15f055070fe5b2a7d007c3e1397caca",
+          "observed_at_utc": "2026-11-27T17:55:36.953506Z",
+          "price": 131.86402767944335,
+          "quantity": 67.292479,
+          "quote_at_utc": "2026-11-27T17:55:00Z",
+          "side": "sell",
+          "source_commit": "06162f9ecc38e361d13ababe91775b93ed5c9760",
+          "ticker": "DUK"
+        },
+        {
+          "date": "2026-11-27",
+          "execution": "forward_observed_paper",
+          "fee": 4.489122226719788,
+          "idempotency_key": "IL-037:2026-11-27:week_end:tfg_ahp_forward_v1:ED",
+          "lock_sha256": "0dd3522eb10c652b485f205ebf60863fd15f055070fe5b2a7d007c3e1397caca",
+          "observed_at_utc": "2026-11-27T17:55:37.274913Z",
+          "price": 120.07493463516236,
+          "quantity": 37.386006,
+          "quote_at_utc": "2026-11-27T17:55:00Z",
+          "side": "sell",
+          "source_commit": "06162f9ecc38e361d13ababe91775b93ed5c9760",
+          "ticker": "ED"
+        },
+        {
+          "date": "2026-11-27",
+          "execution": "forward_observed_paper",
+          "fee": 10.397130454613663,
+          "idempotency_key": "IL-037:2026-11-27:week_end:tfg_ahp_forward_v1:EVRG",
+          "lock_sha256": "0dd3522eb10c652b485f205ebf60863fd15f055070fe5b2a7d007c3e1397caca",
+          "observed_at_utc": "2026-11-27T17:55:37.751527Z",
+          "price": 87.53621183013917,
+          "quantity": 118.775193,
+          "quote_at_utc": "2026-11-27T17:55:00Z",
+          "side": "sell",
+          "source_commit": "06162f9ecc38e361d13ababe91775b93ed5c9760",
+          "ticker": "EVRG"
+        },
+        {
+          "date": "2026-11-27",
+          "execution": "forward_observed_paper",
+          "fee": 11.987055634331819,
+          "idempotency_key": "IL-037:2026-11-27:week_end:tfg_ahp_forward_v1:FE",
+          "lock_sha256": "0dd3522eb10c652b485f205ebf60863fd15f055070fe5b2a7d007c3e1397caca",
+          "observed_at_utc": "2026-11-27T17:55:38.085130Z",
+          "price": 47.31133158493042,
+          "quantity": 253.365425,
+          "quote_at_utc": "2026-11-27T17:55:00Z",
+          "side": "sell",
+          "source_commit": "06162f9ecc38e361d13ababe91775b93ed5c9760",
+          "ticker": "FE"
+        },
+        {
+          "date": "2026-11-27",
+          "execution": "forward_observed_paper",
+          "fee": 4.970229031802765,
+          "idempotency_key": "IL-037:2026-11-27:week_end:tfg_ahp_forward_v1:KIM",
+          "lock_sha256": "0dd3522eb10c652b485f205ebf60863fd15f055070fe5b2a7d007c3e1397caca",
+          "observed_at_utc": "2026-11-27T17:55:39.892297Z",
+          "price": 26.001991889953615,
+          "quantity": 191.148011,
+          "quote_at_utc": "2026-11-27T17:55:00Z",
+          "side": "sell",
+          "source_commit": "06162f9ecc38e361d13ababe91775b93ed5c9760",
+          "ticker": "KIM"
+        },
+        {
+          "date": "2026-11-27",
+          "execution": "forward_observed_paper",
+          "fee": 3.2607141919791154,
+          "idempotency_key": "IL-037:2026-11-27:week_end:tfg_ahp_forward_v1:TSN",
+          "lock_sha256": "0dd3522eb10c652b485f205ebf60863fd15f055070fe5b2a7d007c3e1397caca",
+          "observed_at_utc": "2026-11-27T17:55:44.416978Z",
+          "price": 63.35330582237244,
+          "quantity": 51.46873,
+          "quote_at_utc": "2026-11-27T17:55:00Z",
+          "side": "sell",
+          "source_commit": "06162f9ecc38e361d13ababe91775b93ed5c9760",
+          "ticker": "TSN"
+        },
+        {
+          "date": "2026-11-27",
+          "execution": "forward_observed_paper",
+          "fee": 5.063001946695373,
+          "idempotency_key": "IL-037:2026-11-27:week_end:tfg_ahp_forward_v1:WEC",
+          "lock_sha256": "0dd3522eb10c652b485f205ebf60863fd15f055070fe5b2a7d007c3e1397caca",
+          "observed_at_utc": "2026-11-27T17:55:45.247472Z",
+          "price": 119.07043225479127,
+          "quantity": 42.521068,
+          "quote_at_utc": "2026-11-27T17:55:00Z",
+          "side": "sell",
+          "source_commit": "06162f9ecc38e361d13ababe91775b93ed5c9760",
+          "ticker": "WEC"
+        },
+        {
+          "date": "2026-11-27",
+          "execution": "forward_observed_paper",
+          "fee": 2.8211078095513336,
+          "idempotency_key": "IL-037:2026-11-27:week_end:tfg_ahp_forward_v1:WRB",
+          "lock_sha256": "0dd3522eb10c652b485f205ebf60863fd15f055070fe5b2a7d007c3e1397caca",
+          "observed_at_utc": "2026-11-27T17:55:45.550743Z",
+          "price": 79.38028816986085,
+          "quantity": 35.539148,
+          "quote_at_utc": "2026-11-27T17:55:00Z",
+          "side": "sell",
+          "source_commit": "06162f9ecc38e361d13ababe91775b93ed5c9760",
+          "ticker": "WRB"
+        }
+      ],
+      "fills_count": 15,
       "holdings_count": 15,
-      "native_settlement": "no_current_execution_due",
+      "native_marker": {
+        "fill_tickers": [
+          "AEE",
+          "AFL",
+          "BRK-B",
+          "CAH",
+          "CB",
+          "CINF",
+          "COST",
+          "DUK",
+          "ED",
+          "EVRG",
+          "FE",
+          "KIM",
+          "TSN",
+          "WEC",
+          "WRB"
+        ],
+        "fills_count": 15,
+        "lock_sha256": "0dd3522eb10c652b485f205ebf60863fd15f055070fe5b2a7d007c3e1397caca",
+        "mode": "week_end",
+        "quotes_sha256": "479b7c3a7200674dd934e298a41d07d9e8980e7a0a775ccb5522437622108345",
+        "recorded_at_utc": "2026-11-27T17:55:45.631192Z",
+        "session": "2026-11-27",
+        "source_commit": "06162f9ecc38e361d13ababe91775b93ed5c9760"
+      },
+      "native_settlement": "settled_native_paper",
       "observed": 0,
       "orders": [],
       "planned": 0,
       "source_session": "2026-11-25",
-      "status": "active_no_orders",
+      "status": "native_forward_settled",
       "waiting": 0
     },
     "IL-038": {
