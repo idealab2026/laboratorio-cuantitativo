@@ -9,7 +9,7 @@
     "2026-11-04"
   ],
   "initial_capital": 100000.0,
-  "last_session": "2026-11-25",
+  "last_session": "2026-11-27",
   "last_signal_session": "2026-11-20",
   "outage_control": {
     "first_trading_session": "2026-11-05",
@@ -291,6 +291,11 @@
           "date": "2026-11-25",
           "decision_recorded": false,
           "nav": 76776.38419725203
+        },
+        {
+          "date": "2026-11-27",
+          "decision_recorded": false,
+          "nav": 78967.35122808488
         }
       ],
       "events": [
@@ -1848,7 +1853,7 @@
         }
       },
       "last_signal_session": "2026-11-20",
-      "nav": 76776.38419725203,
+      "nav": 78967.35122808488,
       "outage_control": {
         "first_trading_session": "2026-11-18",
         "held_exits_require_future_observed_quote": true,
@@ -2663,6 +2668,11 @@
           "date": "2026-11-25",
           "decision_recorded": false,
           "nav": 101868.68426243284
+        },
+        {
+          "date": "2026-11-27",
+          "decision_recorded": false,
+          "nav": 102741.06456744936
         }
       ],
       "events": [
@@ -2867,7 +2877,7 @@
         }
       },
       "last_signal_session": "2026-11-20",
-      "nav": 101868.68426243284,
+      "nav": 102741.06456744936,
       "pending": [],
       "positions": {},
       "trades": [
@@ -3149,6 +3159,11 @@
           "date": "2026-11-25",
           "decision_recorded": false,
           "nav": 93056.23897229589
+        },
+        {
+          "date": "2026-11-27",
+          "decision_recorded": false,
+          "nav": 94132.89019349794
         }
       ],
       "events": [
@@ -3353,7 +3368,7 @@
         }
       },
       "last_signal_session": "2026-11-20",
-      "nav": 93056.23897229589,
+      "nav": 94132.89019349794,
       "pending": [],
       "positions": {},
       "trades": [
@@ -3635,6 +3650,11 @@
           "date": "2026-11-25",
           "decision_recorded": false,
           "nav": 81337.22837384071
+        },
+        {
+          "date": "2026-11-27",
+          "decision_recorded": false,
+          "nav": 83735.37793252115
         }
       ],
       "events": [
@@ -5027,7 +5047,7 @@
         }
       },
       "last_signal_session": "2026-11-20",
-      "nav": 81337.22837384071,
+      "nav": 83735.37793252115,
       "pending": [],
       "positions": {},
       "trades": [
@@ -5957,6 +5977,11 @@
           "date": "2026-11-25",
           "decision_recorded": false,
           "nav": 105204.96485989836
+        },
+        {
+          "date": "2026-11-27",
+          "decision_recorded": false,
+          "nav": 105774.09443412113
         }
       ],
       "events": [
@@ -7169,7 +7194,7 @@
         }
       },
       "last_signal_session": "2026-11-20",
-      "nav": 105204.96485989836,
+      "nav": 105774.09443412113,
       "pending": [],
       "positions": {},
       "trades": [
@@ -8048,6 +8073,11 @@
           "date": "2026-11-25",
           "decision_recorded": false,
           "nav": 71825.5087492086
+        },
+        {
+          "date": "2026-11-27",
+          "decision_recorded": false,
+          "nav": 74185.25305024297
         }
       ],
       "events": [
@@ -9597,7 +9627,7 @@
         }
       },
       "last_signal_session": "2026-11-20",
-      "nav": 71825.5087492086,
+      "nav": 74185.25305024297,
       "outage_control": {
         "first_trading_session": "2026-11-18",
         "held_exits_require_future_observed_quote": true,
@@ -10412,6 +10442,11 @@
           "date": "2026-11-25",
           "decision_recorded": false,
           "nav": 78317.80334488406
+        },
+        {
+          "date": "2026-11-27",
+          "decision_recorded": false,
+          "nav": 80911.6748414605
         }
       ],
       "events": [
@@ -11300,7 +11335,7 @@
         }
       },
       "last_signal_session": "2026-11-20",
-      "nav": 78317.80334488406,
+      "nav": 80911.6748414605,
       "pending": [],
       "positions": {},
       "trades": [
@@ -11906,6 +11941,11 @@
           "date": "2026-11-25",
           "decision_recorded": false,
           "nav": 92975.31939179075
+        },
+        {
+          "date": "2026-11-27",
+          "decision_recorded": false,
+          "nav": 94581.45868430914
         }
       ],
       "events": [
@@ -13278,7 +13318,7 @@
         }
       },
       "last_signal_session": "2026-11-20",
-      "nav": 92975.31939179075,
+      "nav": 94581.45868430914,
       "pending": [],
       "positions": {},
       "trades": [
@@ -14265,6 +14305,11 @@
           "date": "2026-11-25",
           "decision_recorded": false,
           "nav": 75240.19490842424
+        },
+        {
+          "date": "2026-11-27",
+          "decision_recorded": false,
+          "nav": 77226.00541465523
         }
       ],
       "events": [
@@ -15814,7 +15859,7 @@
         }
       },
       "last_signal_session": "2026-11-20",
-      "nav": 75240.19490842424,
+      "nav": 77226.00541465523,
       "outage_control": {
         "first_trading_session": "2026-11-18",
         "held_exits_require_future_observed_quote": true,
