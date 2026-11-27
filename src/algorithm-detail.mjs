@@ -191,3 +191,15 @@ export function paperLeaderboard(entries){
  return [...rows].sort((a,b)=>b.record.return_pct-a.record.return_pct||
   a.id.localeCompare(b.id))[0]||null;
 }
+
+/** Single economic-record precedence shared by the table and assistant. */
+export function economicRecordFor(slot,{feed=null,original=null,historical=null,curves=null}={}){
+ const current=feed?.bySlot.get(slot);
+ if(current)return {...current,session_count:current.history.length,sourceId:original?.bySlot.get(slot)?.sourceId||null};
+ const journal=original?.bySlot.get(slot);if(journal)return journal;
+ const h=historical?.get(slot);if(!h?.active)return null;
+ return {activity:"Paper · "+(h.activity==="demo_con_diario"?"Diario registrado":h.activity.replaceAll("_"," ")),currency:h.currency,first_session:h.first,session_count:h.sessions,initial_capital:h.capital,last_equity:h.nav,last_session:h.last,
+  return_pct:h.pct,day_return_pct:h.dayPct,positions:h.positions,pending_orders:h.pending,
+  risk:{volatility_pct:null,max_drawdown_pct:h.drawdown},comparison:{eligible:false},
+  history:curves?.get(slot)||[],historical:true};
+}

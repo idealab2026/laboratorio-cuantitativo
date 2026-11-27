@@ -2,7 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFile} from 'node:fs/promises';
 import {buildCorpus,retrieve,exactSource,selectSources,structuredAnswer,contextualQuery,wantsRaw} from './retrieval.mjs';
-import {isCompetitionListQuestion,competitionAnswer} from './competition.mjs';
+import {isCompetitionListQuestion,competitionAnswer,competitionRankingIntent,leaderboardRows,rankingAnswer,fetchRankingEvidence} from './competition.mjs';
 
 const json = async path => JSON.parse(await readFile(new URL(path, import.meta.url)));
 const corpus = buildCorpus(await json('../data/competition-roster.json'), await json('../data/public-theses.json'));
@@ -84,4 +84,25 @@ test('las consultas de cifras y seguimiento devuelven el dato pertinente',()=>{
   assert.doesNotMatch(base,/Alcista:/);
   assert.match(structuredAnswer(adobe,'¿Qué riesgos tiene?'),/Riesgos de Adobe/);
   assert.match(structuredAnswer(adobe,'precio de referencia'),/No es una cotización actual/);
+});
+
+test('preguntas coloquiales de clasificación no se envían al LLM',()=>{
+ for(const q of ['q algoritmo va ganando?','¿Qué algoritmo es el mejor?','¿Quién va ganando?','¿Cuál es el líder?','¿Qué estrategia va primera?','¿Qué modelo es más rentable?'])assert.equal(competitionRankingIntent(q),'leader',q);
+ for(const q of ['ranking de algoritmos','clasificación de estrategias','top 5 modelos'])assert.equal(competitionRankingIntent(q),'ranking',q);
+ for(const q of ['¿Qué algoritmo gana hoy?','¿Qué estrategia tiene mejor rentabilidad diaria?'])assert.equal(competitionRankingIntent(q),'day',q);
+ for(const q of ['¿Cuál es la tesis de Adobe?','¿Qué rentabilidad tiene IL-012?','¿Qué algoritmos están compitiendo?','¿Cómo funciona la sala de trading?'])assert.equal(competitionRankingIntent(q),null,q);
+});
+test('clasificación usa las mismas fuentes públicas y excluye las cohortes retiradas',async()=>{
+ const roster=await json('../data/competition-roster.json');
+ const fromFile=async url=>json(url.startsWith('https:')?'../strategy_state/dashboard.json':url);
+ const fromText=async url=>readFile(new URL(url,import.meta.url),'utf8');
+ const evidence=await fetchRankingEvidence(roster,fromFile,fromText);
+ assert.ok(evidence.original,'diario original válido');
+ const rows=leaderboardRows(roster,evidence);
+ assert.ok(rows.length>0);
+ assert.ok(rows.every((row,i)=>i===0||rows[i-1].record.return_pct>=row.record.return_pct));
+ assert.match(rankingAnswer(roster,evidence),new RegExp(rows[0].id));
+ assert.match(rankingAnswer(roster,evidence),/Capital simulado/);
+ assert.equal(leaderboardRows(roster,{}).length,0);
+ assert.match(rankingAnswer(roster,{}),/No hay resultados/);
 });

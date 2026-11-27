@@ -1,5 +1,5 @@
-import {buildCorpus,selectSources,structuredAnswer} from './retrieval.mjs';
-import {isCompetitionListQuestion,competitionAnswer} from './competition.mjs';
+import {buildCorpus,selectSources,structuredAnswer} from './retrieval.mjs?v=202611270002';
+import {isCompetitionListQuestion,competitionAnswer,competitionRankingIntent,fetchRankingEvidence,rankingAnswer} from './competition.mjs?v=202611270002';
 import {verifyOriginalPaper} from '../src/original-paper.mjs';
 const $ = id => document.getElementById(id);
 const load = $('load'), input = $('question'), send = $('send'), status = $('status'), messages = $('messages'), badge = $('badge');
@@ -17,7 +17,7 @@ function message(role, content, sources=[]) {
   messages.append(box);messages.scrollTop=role==='user'?messages.scrollHeight:Math.max(0,messages.scrollHeight-box.offsetHeight-60);
 }
 async function initialise() {
-  if(loading||ready)return; loading=true;load.disabled=true; status.textContent='Cargando fuentes públicas y preparando el modelo…';
+  if(loading||ready)return; loading=true;load.hidden=true;load.disabled=true; status.textContent='Cargando fuentes públicas y preparando el modelo…';
   try {
     const responses=await Promise.all(['../data/competition-roster.json','../data/public-theses.json'].map(url=>fetch(url)));
     if(responses.some(r=>!r.ok)) throw Error('No se pudieron cargar las fuentes públicas.');
@@ -25,7 +25,7 @@ async function initialise() {
     let reports=null;
     try{const response=await fetch('../data/thesis-reports.json');if(response.ok)reports=await response.json();}catch{/* optional public reports */}
     corpus=buildCorpus(roster,theses,reports);setBusy(false);
-    worker=new Worker('./worker.mjs',{type:'module'});
+    worker=new Worker('./worker.mjs?v=202611270002',{type:'module'});
     worker.onerror=(event)=>fail(`No se pudo iniciar el modelo: ${event.message || 'revisa la compatibilidad del navegador'}.`);
     worker.onmessage=({data})=>{
       if(data.type==='progress') status.textContent=`Descargando modelo: ${Math.round(data.progress)} %`;
@@ -48,6 +48,20 @@ function fail(text){
   pendingSources=[];pendingFallback='';setBusy(false);load.hidden=false;load.disabled=false;badge.textContent=corpus?'Solo fuentes':'Sin iniciar';status.textContent=text;
 }
 async function ask(){const q=input.value.trim();if(!q||!corpus||busy)return;input.value='';message('user',q);
+  const ranking=competitionRankingIntent(q);
+  if(ranking){
+    previous='';setBusy(true);status.textContent='Verificando la clasificación paper…';
+    try{
+      const response=async url=>{const r=await fetch(url,{cache:'no-store',credentials:'omit',signal:AbortSignal.timeout(15000)});if(!r.ok)throw Error('Fuente no disponible');return r;};
+      const get=async url=>(await response(url)).json(),getText=async url=>(await response(url)).text();
+      const roster=await get('../data/competition-roster.json');
+      const evidence=await fetchRankingEvidence(roster,get,getText);
+      const text=rankingAnswer(roster,evidence,ranking);
+      message('data',text,[{title:'Clasificación de algoritmos',href:'../index.html?view=competition',text:'Misma cohorte activa y criterio de rentabilidad que la tabla pública.'}]);
+    }catch{message('assistant','No he podido verificar la clasificación actual. Consulta la tabla de competición o vuelve a intentarlo.');}
+    finally{setBusy(false);status.textContent=ready?'Modelo listo.':loading?'Preparando modelo; datos disponibles.':'Datos disponibles sin modelo.';input.focus();}
+    return;
+  }
   if(isCompetitionListQuestion(q)){
     previous='';setBusy(true);status.textContent='Consultando la competición…';
     try{

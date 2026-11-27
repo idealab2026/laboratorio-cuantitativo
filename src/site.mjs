@@ -2,7 +2,7 @@ import {LIVE_REFRESH_MS, readLiveAttempts, renderLiveSession, sessionToday} from
 import {renderThesisReport,verifyFullReports} from "./thesis-report.mjs?v=748e38ae3658";
 import {verifyFinancialSankeys} from "./financial-sankey.mjs?v=a50f0cb89012";
 import {verifyOriginalPaper} from "./original-paper.mjs?v=b4ab52ea9863";
-import {algorithmTheory,paperLeaderboard} from "./algorithm-detail.mjs";
+import {algorithmTheory,paperLeaderboard,economicRecordFor} from "./algorithm-detail.mjs?v=202611270002";
 import {glossaryGroups,searchGlossary,verifyGlossary} from "./glossary.mjs";
 import {verifyOperationsAudit,renderOperationsAudit,renderTradeLotsTable,summarizeOperationsAudit,buildSessionActionColumns,renderSessionTickerList} from "./operations-audit.mjs?v=2d8f6d728df1";
 import {parseLocalPaperResults,parseLocalPaperCurves,summarizePrivatePaper} from "./private-paper.mjs?v=4baff08a2202";
@@ -2162,15 +2162,7 @@ function ported(){
 }
 
 function economicPaperRecord(slot){
- const current=state.paperFeedRead?.bySlot.get(slot);
- if(current)return {...current,session_count:current.history.length,
-   sourceId:state.originalPaper?.bySlot.get(slot)?.sourceId||null};
- const original=state.originalPaper?.bySlot.get(slot);if(original)return original;
- const h=state.historicalPaper?.get(slot);if(!h?.active)return null;
- return {activity:"Paper · "+(h.activity==="demo_con_diario"?"Diario registrado":h.activity.replaceAll("_"," ")),currency:h.currency,first_session:h.first,session_count:h.sessions,initial_capital:h.capital,last_equity:h.nav,last_session:h.last,
-  return_pct:h.pct,day_return_pct:h.dayPct,positions:h.positions,pending_orders:h.pending,
-  risk:{volatility_pct:null,max_drawdown_pct:h.drawdown},comparison:{eligible:false},
-  history:state.historicalCurves.get(slot)||[],historical:true};
+ return economicRecordFor(slot,{feed:state.paperFeedRead,original:state.originalPaper,historical:state.historicalPaper,curves:state.historicalCurves});
 }
 function originalStrategyName(item){
  return state.originalPaper?.labels?.get(item.slot)||item.name;
