@@ -18,7 +18,7 @@ export function buildCorpus(roster, theses, reports=null) {
     title: 'Sala de trading · panel y terminal de análisis',
     identity: ['sala de trading','sala trading','terminal de análisis'],
     href: '../index.html?view=trading',
-    text: 'La sala de trading muestra señales y órdenes previstas de carteras simuladas. No envía órdenes reales. Tiene dos vistas: Panel y Terminal de análisis. El diario se consulta cada 30 segundos y los gráficos muestran cierres auditados. Puedes seleccionar sesión, algoritmos, fase de señales, ticker y tipo de señal. El plan de apertura distingue órdenes previstas, ejecuciones simuladas de la sesión y órdenes para la siguiente apertura. El botón Actualizar comprueba el diario. El reloj operativo muestra el estado de la sesión. Las señales, planes y ejecuciones paper no son operaciones reales ni garantía de rentabilidad.',
+    text: 'La sala de trading muestra señales y órdenes previstas de carteras simuladas. No envía órdenes reales. Tiene dos vistas: Panel y Terminal de análisis. El diario se consulta y actualiza cada 30 segundos y los gráficos muestran cierres auditados. Puedes seleccionar sesión, algoritmos, fase de señales, ticker y tipo de señal. El plan de apertura distingue órdenes previstas, ejecuciones simuladas de la sesión y órdenes para la siguiente apertura. El botón Actualizar comprueba el diario. El reloj operativo muestra el estado de la sesión. Las señales, planes y ejecuciones paper no son operaciones reales ni garantía de rentabilidad.',
     concise: 'La sala de trading es el panel operativo de las carteras simuladas de MIDAS.\n\n1. Selecciona la sesión y los algoritmos que quieras consultar.\n2. En Panel puedes filtrar las señales por fase, ticker y tipo; verás planes de apertura y ejecuciones paper.\n3. En Terminal de análisis puedes consultar un algoritmo y sus gráficos de cierres auditados.\n\nEl diario se consulta cada 30 segundos y puedes actualizarlo manualmente. No se envían órdenes reales.'
   });
   for (const e of roster.entries) {
@@ -56,12 +56,14 @@ export function retrieve(query, docs, limit = 4) {
   const terms = [...new Set(tokens(query))];
   if (!terms.length) return [];
   const identifier = terms.find(term => /^il-\d{3}$/.test(term));
-  const ranked = docs.filter(doc => !identifier || tokens(doc.title).includes(identifier)).map(doc => {
-    const title = new Set(tokens(doc.title));
-    const body = new Set(tokens(doc.text));
-    const score = terms.reduce((s, term) => s + (title.has(term) ? 4 : 0) + (body.has(term) ? 1 : 0), 0);
-    return {doc, score};
-  }).filter(x => x.score > 0).sort((a, b) => b.score - a.score);
+  const indexed = docs.map(doc => ({doc,title:new Set(tokens(doc.title)),body:new Set(tokens(doc.text))}));
+  // Downweight generic words (e.g. "diario") relative to discriminating
+  // terms such as "segundos" or "apertura". No external model is required.
+  const weights = new Map(terms.map(term => [term,1+Math.log((indexed.length+1)/(1+indexed.filter(d=>d.title.has(term)||d.body.has(term)).length))]));
+  const ranked = indexed.filter(d=>!identifier||d.title.has(identifier)).map(({doc,title,body})=>{
+    const score = terms.reduce((sum,term)=>sum+weights.get(term)*((title.has(term)?2:0)+(body.has(term)?1:0)),0);
+    return {doc,score};
+  }).filter(x=>x.score>0).sort((a,b)=>b.score-a.score);
   return ranked.filter(x => x.score >= ranked[0].score / 2).slice(0, limit).map(x => x.doc);
 }
 
