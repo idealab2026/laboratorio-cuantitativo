@@ -1,5 +1,5 @@
 {
-  "checked_at_utc": "2026-11-27T15:23:55.705674Z",
+  "checked_at_utc": "2026-11-27T15:25:19.578319Z",
   "lock_sha256": "0dd3522eb10c652b485f205ebf60863fd15f055070fe5b2a7d007c3e1397caca",
   "mode": "single_midas_operator_monitor_no_broker",
   "note": "Observed quotes are not fills. A native engine must settle quantity/cash before a trade counts in P&L.",
@@ -9,14 +9,13 @@
   "quote_budget": {
     "hard_symbol_limit": 250,
     "missing_symbols": [
-      "ERIE",
-      "RSG"
+      "ERIE"
     ],
-    "observed_symbols": 44,
+    "observed_symbols": 45,
     "omitted_algorithm_lanes": {},
     "requested_symbols": 46
   },
-  "run_id": 46024385721,
+  "run_id": 46024623613,
   "schema": "midas.operational_clock.v1",
   "session": "2026-11-27",
   "settlement": "native_forward_010_through_027_037_through_044",
