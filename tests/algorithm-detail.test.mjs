@@ -974,6 +974,7 @@ test("manual trading refresh gives a visible outcome even if the published snaps
   paintTradingRoom:()=>paints.push("room"),
   paintTradingRefresh:()=>paints.push("refresh"),
   refreshOperationalClock:async()=>{},
+  loadGSQuantPaper:async()=>{},
   tradingDay:()=>null,
   $:()=>null
  };
@@ -987,6 +988,8 @@ test("manual trading refresh gives a visible outcome even if the published snaps
  assert.equal(context.signalFeed.published_at_utc,published,
   "Checking a file must not forge a new publication time");
  assert.ok(paints.length>=1);
+ // The auxiliary journal must not replace the canonical refresh status.
+ assert.equal(context.signalFeedError,false);
  context.fetch=async()=>({ok:true,json:async()=>({
   ...same,published_at_utc:"2026-11-09T18:05:00Z"})});
  await context.refresh(true);

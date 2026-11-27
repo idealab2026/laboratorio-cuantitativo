@@ -544,7 +544,6 @@ async function refreshLiveSignals(force=false){
   const next=verifyLiveSignals(await response.json());
   const newer=!previous||Date.parse(next.published_at_utc)>Date.parse(previous.published_at_utc);
   if(newer)signalFeed=next;
-  if(room)await loadGSQuantPaper();
   signalFeedError=false;
   signalRefresh.state=!previous?"loaded":newer?"updated":"unchanged";
  }catch{
@@ -554,6 +553,7 @@ async function refreshLiveSignals(force=false){
   signalRequest=null;
   signalRefresh.at=Date.now();
   void refreshOperationalClock(force);
+  if(room)void loadGSQuantPaper();
   if(previous!==signalFeed||failed!==signalFeedError||$("trading-date")?.value!==tradingDay())paintTradingRoom();
   paintTradingRefresh();
   const picker=$("live-signal-algorithm"),content=$("midas-signal-content");
@@ -784,8 +784,9 @@ function gsTradingFeed(feed,doc,day){
    status:b.status==="blocked"?"paused":"recorded",signals,executions,gs_paper:true};
   for(const signal of b.signals){
    const plan=plans[signal.target_session];
+   const issued=Date.parse(signal.issued_at_utc),opens=Date.parse(plan?.opens_at);
    if(!plan||plan.previous_session!==signal.signal_session||
-      Date.parse(signal.issued_at_utc)>=Date.parse(plan.opens_at))continue;
+      !Number.isFinite(issued)||!Number.isFinite(opens)||issued>=opens)continue;
    const targets=Object.entries(signal.weights).map(([ticker,weight])=>({
     ticker,action:"rebalance",target_weight:weight,limit_price:null,
     decision_session:signal.signal_session,target_session:signal.target_session,gs_paper:true
@@ -909,6 +910,7 @@ function deskAlgorithmFilters(){
  return '<details class="desk-algorithms" id="desk-algorithms"><summary>'+
   esc(tradingDesk.slots.size?tradingDesk.slots.size+" seleccionados":"Todos los algoritmos")+'</summary>'+
   '<div class="desk-filter-popover"><button type="button" class="outline-btn" data-action="desk-reset">Ver todos</button>'+
+  (state.gsQuantError?'<p class="desk-note">GS Quant: '+(state.gsQuantPaper?"se conserva el último diario válido":"diario no disponible")+'</p>':"")+
   entries.map(([slot,track])=>'<label><input type="checkbox" data-desk-algorithm="'+esc(slot)+'"'+
    (tradingDesk.slots.has(slot)?' checked':"")+'><span>'+esc(slot+" · "+track.label)+'</span></label>').join("")+'</div></details>';
 }
@@ -1764,7 +1766,8 @@ function paintTradingRoom(){
   tab.setAttribute("aria-pressed",String(tab.dataset.value===terminalState.mode));
  }
  document.querySelector(".trading-filters").hidden=terminal;
- $("terminal-map").hidden=!terminal||!signalFeed||tradingFilter.slot==="IL-039"||gsSlot(tradingFilter.slot);
+ const hideOriginalMap=tradingFilter.slot==="IL-039";
+ $("terminal-map").hidden=!terminal||!signalFeed||hideOriginalMap||gsSlot(tradingFilter.slot);
  if(terminal){
   if(tradingFilter.slot!=="IL-039"&&!gsSlot(tradingFilter.slot))paintTerminalMap();
   const content=terminalHTML();
@@ -2320,7 +2323,10 @@ function gsQuantCohort(){
   '<span>5 estrategias independientes + SPY. Capital virtual de 100.000 USD cada una; inicio 25/11/2026. Simulación de próxima apertura con OHLC registrado al cierre, no fill observado. Comparación separada por fecha y política de ejecución.</span></section>'+
   '<div class="table-scroll table-compact"><table><thead><tr><th>Estrategia</th><th>Actividad</th><th>Último cierre</th><th>Posiciones</th><th>Operaciones</th><th>Rent. acumulada</th><th>Rent. día</th></tr></thead><tbody>'+rows+'</tbody></table></div>';
 }
+let gsQuantRequest=null;
 async function loadGSQuantPaper(){
+ if(gsQuantRequest)return gsQuantRequest;
+ gsQuantRequest=(async()=>{
  try{
   const r=await fetch("https://raw.githubusercontent.com/idealab2026/laboratorio-cuantitativo/main/data/gs-quant-paper.json",{cache:"no-store",credentials:"omit"});
   if(!r.ok)throw Error("Unavailable GS Quant cohort");
@@ -2347,9 +2353,13 @@ async function loadGSQuantPaper(){
    }
   }
   state.gsQuantPaper=doc;
- }catch(_error){state.gsQuantPaper=null;}
+  state.gsQuantError=false;
+ }catch(_error){state.gsQuantError=true;}
+ finally{gsQuantRequest=null;}
  if(tradingRoomActive())paintTradingRoom();
  else if(["full","competition"].includes(state.view)&&state.data)render();
+ })();
+ return gsQuantRequest;
 }
 function full(){
  const d=state.fullRoster;
