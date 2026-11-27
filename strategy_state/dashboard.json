@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "generated_at_utc": "2026-11-27T23:54:15.067821+00:00",
+  "generated_at_utc": "2026-11-27T23:54:17.999737+00:00",
   "principle": "Comparar rentabilidad acumulada y riesgo observado; no ordenar carteras con distintas fechas de inicio o supuestos de ejecución.",
   "counts": {
     "paper_with_diary": 18,
@@ -4690,11 +4690,11 @@
       "group": "capital_cycle_demo",
       "status": "demo_con_diario",
       "first_session": "2026-09-30",
-      "last_session": "2026-11-25",
+      "last_session": "2026-11-27",
       "initial_capital": 100000.0,
-      "last_equity": 100490.15688349171,
-      "return_pct": 0.490157,
-      "day_return_pct": 2.123339,
+      "last_equity": 102656.14913919673,
+      "return_pct": 2.656149,
+      "day_return_pct": 2.155427,
       "currency": "USD",
       "equity_history": [
         {
@@ -4860,6 +4860,10 @@
         {
           "date": "2026-11-25",
           "nav": 100490.15688349171
+        },
+        {
+          "date": "2026-11-27",
+          "nav": 102656.14913919673
         }
       ],
       "note": "Capital Cycle v1: underinvestment multianual + calidad + valoración normalizada + confirmación 6/12 meses; rebalance mensual y fills next-open.",
@@ -4885,10 +4889,10 @@
       "comparison_universe_id": "SP500_2026-09-29_503",
       "comparison_universe_symbols": 503,
       "comparison_exclusion_reason": null,
-      "risk_observations": 41,
-      "annualized_volatility_pct": 20.364933,
+      "risk_observations": 42,
+      "annualized_volatility_pct": 20.793821,
       "max_drawdown_pct": -9.306956,
-      "sharpe_0rf": 0.250728
+      "sharpe_0rf": 0.876679
     },
     {
       "id": "buy_the_dip_corpus_2026_v0",
