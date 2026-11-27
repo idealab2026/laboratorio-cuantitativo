@@ -2,7 +2,7 @@
 
 El panel usa Transformers.js y un modelo público de Hugging Face que se ejecuta en el navegador mediante WebGPU. La descarga es opcional; no precisa una clave de API. La ejecución y el historial de la sesión permanecen en el dispositivo, mientras que los archivos del modelo se obtienen de Hugging Face. El navegador y el dispositivo deben tener suficiente memoria y compatibilidad; el tamaño inicial del modelo ronda 600 MB.
 
-La aplicación consulta el registro institucional de estrategias y el archivo público de tesis. No incorpora todas las fuentes de MIDAS. Para identificadores y empresas inequívocos muestra el fragmento original. Las consultas generales se responden con un modelo pequeño y recuperación léxica; la salida es experimental, puede ser incorrecta y debe contrastarse con las fuentes. Las tesis son hipótesis históricas, no precios actuales ni rentabilidades realizadas.
+La aplicación consulta el registro institucional de estrategias y el archivo público de tesis. No incorpora todas las fuentes de MIDAS. Para identificadores y empresas inequívocos muestra el fragmento original. Las consultas generales se responden con un modelo pequeño y recuperación léxica; la salida es experimental, puede ser incorrecta y debe contrastarse con las fuentes. Cada pregunta se procesa independientemente, sin enviar los turnos anteriores al modelo. Las tesis son hipótesis históricas, no precios actuales ni rentabilidades realizadas.
 
 ## Desarrollo
 
