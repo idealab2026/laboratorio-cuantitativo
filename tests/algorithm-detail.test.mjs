@@ -1317,3 +1317,15 @@ test("GS Quant trading adapter shows signed targets without promoting them to fi
  doc.books["GS-04"].signals[0].issued_at_utc="2026-11-27T14:31:00Z";
  assert.equal(adapt(feed,doc,day).opening_plans[day].tracks["GS-04"],undefined);
 });
+
+
+test("GS Quant journal URL is explicitly permitted by the production CSP",()=>{
+ const loader=source.slice(source.indexOf("async function loadGSQuantPaper()"),source.indexOf("function full()"));
+ const url=loader.match(/fetch\("(https:\/\/[^"]+)"\s*,/)?.[1];
+ assert.equal(url,"https://raw.githubusercontent.com/idealab2026/laboratorio-cuantitativo/main/data/gs-quant-paper.json");
+ const policy=html.match(/http-equiv="Content-Security-Policy" content="([^"]+)"/i)?.[1];
+ assert.ok(policy,"Missing production CSP");
+ const connect=policy.split(";").map(x=>x.trim()).find(x=>x.startsWith("connect-src "))?.split(/\s+/)||[];
+ assert.ok(connect.includes(url),"GS Quant journal blocked by production CSP");
+ assert.ok(!connect.includes("*")&&!connect.includes("https://raw.githubusercontent.com"),"Do not broaden CSP to arbitrary raw content");
+});
