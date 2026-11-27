@@ -1,14 +1,14 @@
-import {buildCorpus,retrieve,exactSource} from './retrieval.mjs';
+import {buildCorpus,selectSources,structuredAnswer} from './retrieval.mjs';
 import {isCompetitionListQuestion,competitionAnswer} from './competition.mjs';
 import {verifyOriginalPaper} from '../src/original-paper.mjs';
 const $ = id => document.getElementById(id);
 const load = $('load'), input = $('question'), send = $('send'), status = $('status'), messages = $('messages'), badge = $('badge');
-let corpus, worker, pendingSources=[];
-function setBusy(busy) { input.disabled=busy; send.disabled=busy; }
+let corpus, worker, pendingSources=[], pendingFallback='', previous='', ready=false, loading=false, busy=false;
+function setBusy(value) { busy=value; input.disabled=value||!corpus; send.disabled=value||!corpus; }
 function message(role, content, sources=[]) {
   messages.querySelector('.welcome')?.remove();
   const box=document.createElement('div'); box.className=`message ${role}`;
-  const label=document.createElement('strong'); label.textContent=role==='user'?'Tú':role==='source'?'Fragmento de la fuente':role==='data'?'Datos de la competición':'MIDAS AI · respuesta experimental';
+  const label=document.createElement('strong'); label.textContent=role==='user'?'Tú':role==='source'?'Fragmento de la fuente':role==='data'?'Datos verificados de la fuente':'MIDAS AI · respuesta experimental';
   const text=document.createElement('p'); text.textContent=content; box.append(label,text);
   if(sources.length){const refs=document.createElement('div');refs.className='sources';refs.append('Fuentes consultadas: ');
     sources.forEach((source,i)=>{if(i) refs.append(' · ');const a=document.createElement('a');a.href=source.href;a.target='_blank';a.rel='noopener noreferrer';a.textContent=source.title;refs.append(a);});box.append(refs);
@@ -17,26 +17,39 @@ function message(role, content, sources=[]) {
   messages.append(box);messages.scrollTop=role==='user'?messages.scrollHeight:Math.max(0,messages.scrollHeight-box.offsetHeight-60);
 }
 async function initialise() {
-  load.disabled=true; status.textContent='Cargando fuentes públicas y preparando el modelo…';
+  if(loading||ready)return; loading=true;load.disabled=true; status.textContent='Cargando fuentes públicas y preparando el modelo…';
   try {
     const responses=await Promise.all(['../data/competition-roster.json','../data/public-theses.json'].map(url=>fetch(url)));
     if(responses.some(r=>!r.ok)) throw Error('No se pudieron cargar las fuentes públicas.');
-    corpus=buildCorpus(...await Promise.all(responses.map(r=>r.json())));
+    const [roster,theses]=await Promise.all(responses.map(r=>r.json()));
+    let reports=null;
+    try{const response=await fetch('../data/thesis-reports.json');if(response.ok)reports=await response.json();}catch{/* optional public reports */}
+    corpus=buildCorpus(roster,theses,reports);setBusy(false);
     worker=new Worker('./worker.mjs',{type:'module'});
     worker.onerror=(event)=>fail(`No se pudo iniciar el modelo: ${event.message || 'revisa la compatibilidad del navegador'}.`);
     worker.onmessage=({data})=>{
       if(data.type==='progress') status.textContent=`Descargando modelo: ${Math.round(data.progress)} %`;
-      if(data.type==='ready'){status.textContent='Modelo listo. El procesamiento se realiza en este dispositivo.';badge.textContent='Listo';load.hidden=true;setBusy(false);input.focus();}
-      if(data.type==='answer'){message('assistant',data.answer || 'No he podido generar una respuesta.',pendingSources);pendingSources=[];status.textContent='Modelo listo.';setBusy(false);input.focus();}
+      if(data.type==='ready'){ready=true;loading=false;status.textContent='Modelo listo. El procesamiento se realiza en este dispositivo.';badge.textContent='Listo';load.hidden=true;if(!busy)setBusy(false);}
+      if(data.type==='answer'){
+        const answer=String(data.answer||'').trim();
+        if(answer.length>=20 && !/<think>/i.test(answer) && !(pendingFallback&&/no (consta|hay información|se dispone)/i.test(answer)))message('assistant',pendingFallback?answer+'\n\nDatos verificados:\n'+pendingFallback:answer,pendingSources);
+        else if(pendingFallback)message('data',pendingFallback,pendingSources);
+        else message('assistant','No he podido elaborar una explicación fiable. Consulta las fuentes recuperadas.',pendingSources);
+        pendingSources=[];pendingFallback='';status.textContent='Modelo listo.';setBusy(false);input.focus();
+      }
       if(data.type==='error') fail('No se pudo ejecutar el modelo. Comprueba la conexión, el espacio y la memoria, y vuelve a intentarlo.');
     };
     worker.postMessage({type:'load'});
   } catch(e) {fail(e.message || 'No se pudieron cargar las fuentes.');}
 }
-function fail(text){worker?.terminate();worker=null;setBusy(true);load.hidden=false;load.disabled=false;badge.textContent='Sin iniciar';status.textContent=text;}
-async function ask(){const q=input.value.trim();if(!q||!worker)return;input.value='';message('user',q);
+function fail(text){
+  worker?.terminate();worker=null;ready=false;loading=false;
+  if(pendingSources.length)message(pendingFallback?'data':'assistant',pendingFallback||'El modelo no ha podido generar una respuesta. Puedes consultar los fragmentos recuperados.',pendingSources);
+  pendingSources=[];pendingFallback='';setBusy(false);load.hidden=false;load.disabled=false;badge.textContent=corpus?'Solo fuentes':'Sin iniciar';status.textContent=text;
+}
+async function ask(){const q=input.value.trim();if(!q||!corpus||busy)return;input.value='';message('user',q);
   if(isCompetitionListQuestion(q)){
-    setBusy(true);status.textContent='Consultando la competición…';
+    previous='';setBusy(true);status.textContent='Consultando la competición…';
     try{
       const get=async url=>{const r=await fetch(url,{cache:'no-store',credentials:'omit',signal:AbortSignal.timeout(12000)});if(!r.ok)throw Error('Fuente no disponible');return r.json();};
       const [rosterResult,mapResult,dashboardResult,gsResult]=await Promise.allSettled([
@@ -54,14 +67,25 @@ async function ask(){const q=input.value.trim();if(!q||!worker)return;input.valu
       if(gsResult.status==='fulfilled')sources.push({title:'Cohorte GS Quant',href:'https://raw.githubusercontent.com/idealab2026/laboratorio-cuantitativo/main/data/gs-quant-paper.json',text:'Registro publicado de la cohorte GS Quant.'});
       message('data',text,sources);
     }catch(_error){message('assistant','No he podido verificar el registro de la competición ahora mismo. Vuelve a intentarlo o abre la pestaña Competición de algoritmos.');}
-    finally{setBusy(false);status.textContent='Modelo listo.';input.focus();}
+    finally{setBusy(false);status.textContent=ready?'Modelo listo.':'Fuentes disponibles; modelo en preparación.';input.focus();}
     return;
   }
-  const sources=retrieve(q,corpus);
-  if(!sources.length){message('assistant','No he encontrado información relacionada en las fuentes públicas disponibles. Prueba con el nombre o identificador de una estrategia o empresa.');return;}
-  const exact=exactSource(q,corpus);
-  if(exact){message('source',`Esto es lo que consta en el registro consultado. Revisa si responde a tu pregunta:\n\n${exact.text}`,[exact]);return;}
-  pendingSources=sources;setBusy(true);status.textContent='Preparando respuesta…';worker.postMessage({type:'ask',question:q,context:sources.map((s,i)=>`[${i+1}] ${s.title}: ${s.text}`).join('\n\n')});}
+  const selection=selectSources(q,corpus,previous);
+  const {sources,exact,raw}=selection;
+  if(!sources.length){message('assistant','No he encontrado información relacionada en las fuentes públicas disponibles. Prueba con la sala de trading, una estrategia o una empresa.');return;}
+  previous=exact?.identity?.[0]||sources[0]?.identity?.[0]||'';
+  if(raw&&exact){message('source',exact.text,[exact]);return;}
+  const fallback=structuredAnswer(exact,q);
+  if(fallback&&!ready){message('data',fallback,sources);return;}
+  if(!ready){message('source','El modelo todavía no está disponible. Estas son las fuentes recuperadas; vuelve a preguntar cuando esté listo.',sources);return;}
+  // Exact financial values remain deterministic; use the LLM for the explanation.
+  if(fallback&&/\b(precio de referencia|cagr|rentabilidad registrada|escenario (base|central|bajista|alcista))\b/i.test(q)){message('data',fallback,sources);return;}
+  pendingSources=sources;pendingFallback=fallback;setBusy(true);status.textContent='Preparando respuesta…';
+  worker.postMessage({type:'ask',question:selection.query,context:sources.map((s,i)=>`[${i+1}] ${s.title}: ${s.text}`).join('\n\n').slice(0,10000),qualitative:!!fallback});
+}
 load.addEventListener('click',initialise);send.addEventListener('click',ask);
 input.addEventListener('keydown',e=>{if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();ask();}});
-document.querySelectorAll('[data-example]').forEach(b=>b.addEventListener('click',()=>{input.value=b.dataset.example;if(!input.disabled)input.focus();else status.textContent='Carga primero el modelo para hacer tu pregunta.';}));
+document.querySelectorAll('[data-example]').forEach(b=>b.addEventListener('click',()=>{input.value=b.dataset.example;if(!input.disabled)input.focus();else status.textContent='Preparando las fuentes públicas…';}));
+
+// Opening the assistant starts loading automatically; the model is cached by the runtime.
+void initialise();

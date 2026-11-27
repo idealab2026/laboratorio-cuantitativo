@@ -6,7 +6,7 @@ function setOpen(open) {
   panel.hidden = !open;
   button.setAttribute('aria-expanded', String(open));
   if (open) {
-    if (!frame.getAttribute('src')) frame.setAttribute('src', './midas-ai/index.html?v=be068a33eccb');
+    if (!frame.getAttribute('src')) frame.setAttribute('src', './midas-ai/index.html?v=202611270001');
     close.focus();
   } else button.focus();
 }

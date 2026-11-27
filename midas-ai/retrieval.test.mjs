@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFile} from 'node:fs/promises';
-import {buildCorpus,retrieve,exactSource} from './retrieval.mjs';
+import {buildCorpus,retrieve,exactSource,selectSources,structuredAnswer,contextualQuery,wantsRaw} from './retrieval.mjs';
 import {isCompetitionListQuestion,competitionAnswer} from './competition.mjs';
 
 const json = async path => JSON.parse(await readFile(new URL(path, import.meta.url)));
@@ -40,4 +40,48 @@ test('describe exactamente la cohorte vigente y separa GS Quant', async () => {
   assert.match(answer,/GS-SPY Referencia SPY/);
   assert.match(competitionAnswer(roster,null,null),/GS Quant adicional no se ha podido comprobar/);
   assert.throws(()=>competitionAnswer({schema:'incorrecto',entries:[]},null,null));
+});
+
+test('sala de trading y terminal: documentación operacional recuperable',()=>{
+  for(const q of ['¿Cómo funciona la sala de trading?','sala trading','¿Qué es el terminal de análisis?','¿Dónde veo las órdenes previstas?','¿El diario se actualiza cada 30 segundos?']){
+    assert.match(selectSources(q,corpus).sources[0].title,/Sala de trading/,q);
+  }
+  assert.match(structuredAnswer(selectSources('sala de trading',corpus).exact),/No se envían órdenes reales/);
+});
+test('la tesis exacta se puede explicar y conserva valores históricos',()=>{
+  for(const q of ['explícame la tesis de Adobe','ADBE','tesis de Adobe Inc.','valoración de Adobe','qué riesgos tiene Adobe','precio de referencia Adobe','escenario base de Adobe','escenario alcista de Adobe','escenario bajista Adobe','CAGR Adobe']){
+    const x=selectSources(q,corpus);
+    assert.equal(x.exact.record.ticker,'ADBE',q);
+    assert.equal(x.raw,false,q);
+    assert.match(structuredAnswer(x.exact),/hipótesis históricas/);
+  }
+  const doc=selectSources('tesis Adobe',corpus).exact;
+  assert.ok(structuredAnswer(doc).includes(new Intl.NumberFormat('es-ES',{maximumFractionDigits:4}).format(doc.record.baseTarget)));
+});
+test('memoria de entidad y petición explícita de fuente',()=>{
+  for(const q of ['¿Y los riesgos?','¿Y su rentabilidad?','¿Sus factores de crecimiento?','¿Qué riesgos tiene?','¿Y el escenario base?','Profundiza en la valoración']){
+    assert.equal(selectSources(q,corpus,'ADBE').exact.record.ticker,'ADBE',q);
+  }
+  assert.equal(selectSources('tesis de Palantir',corpus,'ADBE').exact.record.ticker,'PLTR');
+  for(const q of ['texto original de Adobe','registro original Adobe','fragmento original Adobe','Adobe sin resumir','Adobe literal'])assert.equal(wantsRaw(q),true);
+  assert.equal(contextualQuery('ornitorrinco','ADBE'),'ornitorrinco');
+  assert.equal(selectSources('ornitorrinco',corpus,'ADBE').sources.length,0);
+});
+test('informe ampliado solo si supera el contrato público',()=>{
+  const roster={schema:'idea_lab_strategy_coverage_v1',entries:[]},theses={schema:'midas_public_theses_v1',records:[{ticker:'TEST',company:'Test Company'}]};
+  const reports={schema:'midas_canonical_web_reports_v1',reports:[{ticker:'TEST',publication_gate:'approved',source_text:'Supuestos de valoración: flujo de caja de referencia.'}]};
+  const c=buildCorpus(roster,theses,reports);
+  assert.equal(selectSources('valoración TEST',c).sources.length,2);
+  assert.equal(selectSources('tesis TEST',c).sources.length,1);
+  reports.reports[0].publication_gate='pending';
+  assert.equal(selectSources('valoración TEST',buildCorpus(roster,theses,reports)).sources.length,1);
+});
+
+test('las consultas de cifras y seguimiento devuelven el dato pertinente',()=>{
+  const adobe=selectSources('Adobe',corpus).exact;
+  const base=structuredAnswer(adobe,'¿Y el escenario base?');
+  assert.match(base,/Base:/);
+  assert.doesNotMatch(base,/Alcista:/);
+  assert.match(structuredAnswer(adobe,'¿Qué riesgos tiene?'),/Riesgos de Adobe/);
+  assert.match(structuredAnswer(adobe,'precio de referencia'),/No es una cotización actual/);
 });
