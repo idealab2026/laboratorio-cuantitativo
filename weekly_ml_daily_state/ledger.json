@@ -10,13 +10,13 @@
   ],
   "initial_capital": 100000.0,
   "last_session": "2026-11-27",
-  "last_signal_session": "2026-11-20",
+  "last_signal_session": "2026-11-27",
   "outage_control": {
     "first_trading_session": "2026-11-05",
     "registered_at_utc": "2026-11-04T18:03:52+00:00"
   },
   "schema_version": 1,
-  "signal_hash": "998b259954e3033dd32dfc836a1272e486a001ddeeb4c15cdda7eb34818f40d1",
+  "signal_hash": "eb7da3a4029b984e78888378df45325469900750c0f9c390255fdf3046a2aa60",
   "strategies": {
     "arima_return": {
       "cash": 78967.35122808488,
@@ -1544,6 +1544,11 @@
           "source_commit": "06162f9ecc38e361d13ababe91775b93ed5c9760",
           "ticker": "URI",
           "type": "sell"
+        },
+        {
+          "count": 10,
+          "date": "2026-11-27",
+          "type": "signal_frozen"
         }
       ],
       "forward_executions": {
@@ -1852,14 +1857,75 @@
           "source_commit": "06162f9ecc38e361d13ababe91775b93ed5c9760"
         }
       },
-      "last_signal_session": "2026-11-20",
+      "last_signal_session": "2026-11-27",
       "nav": 78967.35122808488,
       "outage_control": {
         "first_trading_session": "2026-11-18",
         "held_exits_require_future_observed_quote": true,
         "historical_fills_created": 0
       },
-      "pending": [],
+      "pending": [
+        {
+          "predicted_return": 0.05644826643321121,
+          "score": 0.05644826643321121,
+          "signal_date": "2026-11-27",
+          "ticker": "MRNA"
+        },
+        {
+          "predicted_return": 0.033773577585249986,
+          "score": 0.033773577585249986,
+          "signal_date": "2026-11-27",
+          "ticker": "MHK"
+        },
+        {
+          "predicted_return": 0.031567503933580154,
+          "score": 0.031567503933580154,
+          "signal_date": "2026-11-27",
+          "ticker": "ZBRA"
+        },
+        {
+          "predicted_return": 0.030928610792459642,
+          "score": 0.030928610792459642,
+          "signal_date": "2026-11-27",
+          "ticker": "ACN"
+        },
+        {
+          "predicted_return": 0.030110011321355875,
+          "score": 0.030110011321355875,
+          "signal_date": "2026-11-27",
+          "ticker": "CRWD"
+        },
+        {
+          "predicted_return": 0.029878887892063066,
+          "score": 0.029878887892063066,
+          "signal_date": "2026-11-27",
+          "ticker": "ROP"
+        },
+        {
+          "predicted_return": 0.028147014849388377,
+          "score": 0.028147014849388377,
+          "signal_date": "2026-11-27",
+          "ticker": "CTSH"
+        },
+        {
+          "predicted_return": 0.026369928087097334,
+          "score": 0.026369928087097334,
+          "signal_date": "2026-11-27",
+          "ticker": "CRL"
+        },
+        {
+          "predicted_return": 0.02604133067765494,
+          "score": 0.02604133067765494,
+          "signal_date": "2026-11-27",
+          "ticker": "CLX"
+        },
+        {
+          "predicted_return": 0.02585968176957955,
+          "score": 0.02585968176957955,
+          "signal_date": "2026-11-27",
+          "ticker": "WTW"
+        }
+      ],
       "positions": {},
       "trades": [
         {
@@ -2835,6 +2901,11 @@
           "source_commit": "06162f9ecc38e361d13ababe91775b93ed5c9760",
           "ticker": "RSP",
           "type": "sell"
+        },
+        {
+          "count": 1,
+          "date": "2026-11-27",
+          "type": "signal_frozen"
         }
       ],
       "forward_executions": {
@@ -2876,9 +2947,15 @@
           "source_commit": "06162f9ecc38e361d13ababe91775b93ed5c9760"
         }
       },
-      "last_signal_session": "2026-11-20",
+      "last_signal_session": "2026-11-27",
       "nav": 102741.06456744936,
-      "pending": [],
+      "pending": [
+        {
+          "score": 1.0,
+          "signal_date": "2026-11-27",
+          "ticker": "RSP"
+        }
+      ],
       "positions": {},
       "trades": [
         {
@@ -3326,6 +3403,11 @@
           "source_commit": "06162f9ecc38e361d13ababe91775b93ed5c9760",
           "ticker": "SPY",
           "type": "sell"
+        },
+        {
+          "count": 1,
+          "date": "2026-11-27",
+          "type": "signal_frozen"
         }
       ],
       "forward_executions": {
@@ -3367,9 +3449,15 @@
           "source_commit": "06162f9ecc38e361d13ababe91775b93ed5c9760"
         }
       },
-      "last_signal_session": "2026-11-20",
+      "last_signal_session": "2026-11-27",
       "nav": 94132.89019349794,
-      "pending": [],
+      "pending": [
+        {
+          "score": 1.0,
+          "signal_date": "2026-11-27",
+          "ticker": "SPY"
+        }
+      ],
       "positions": {},
       "trades": [
         {
@@ -4879,6 +4967,11 @@
           "source_commit": "06162f9ecc38e361d13ababe91775b93ed5c9760",
           "ticker": "STX",
           "type": "sell"
+        },
+        {
+          "count": 10,
+          "date": "2026-11-27",
+          "type": "signal_frozen"
         }
       ],
       "forward_executions": {
@@ -5046,9 +5139,90 @@
           "source_commit": "06162f9ecc38e361d13ababe91775b93ed5c9760"
         }
       },
-      "last_signal_session": "2026-11-20",
+      "last_signal_session": "2026-11-27",
       "nav": 83735.37793252115,
-      "pending": [],
+      "pending": [
+        {
+          "positive_votes": 3,
+          "predicted_return": 0.01722242542395988,
+          "rank_dispersion": 0.2124978482729148,
+          "score": 0.8159153005464481,
+          "signal_date": "2026-11-27",
+          "ticker": "CRWD"
+        },
+        {
+          "positive_votes": 3,
+          "predicted_return": 0.006917988174086896,
+          "rank_dispersion": 0.27732813503527437,
+          "score": 0.7703210382513662,
+          "signal_date": "2026-11-27",
+          "ticker": "MPC"
+        },
+        {
+          "positive_votes": 3,
+          "predicted_return": 0.008441761424986621,
+          "rank_dispersion": 0.2814091593978113,
+          "score": 0.7513661202185792,
+          "signal_date": "2026-11-27",
+          "ticker": "WDAY"
+        },
+        {
+          "positive_votes": 3,
+          "predicted_return": 0.00770307818750904,
+          "rank_dispersion": 0.13373213201077694,
+          "score": 0.750853825136612,
+          "signal_date": "2026-11-27",
+          "ticker": "UAL"
+        },
+        {
+          "positive_votes": 3,
+          "predicted_return": 0.01782376098109853,
+          "rank_dispersion": 0.2569453082300529,
+          "score": 0.7505122950819673,
+          "signal_date": "2026-11-27",
+          "ticker": "ZBRA"
+        },
+        {
+          "positive_votes": 3,
+          "predicted_return": 0.014210924824228846,
+          "rank_dispersion": 0.30241362990679765,
+          "score": 0.7452185792349727,
+          "signal_date": "2026-11-27",
+          "ticker": "CRL"
+        },
+        {
+          "positive_votes": 3,
+          "predicted_return": 0.0054147198462457646,
+          "rank_dispersion": 0.26846347893787265,
+          "score": 0.7008196721311476,
+          "signal_date": "2026-11-27",
+          "ticker": "CRM"
+        },
+        {
+          "positive_votes": 3,
+          "predicted_return": 0.007114756047481977,
+          "rank_dispersion": 0.1794841171074554,
+          "score": 0.6975751366120219,
+          "signal_date": "2026-11-27",
+          "ticker": "LW"
+        },
+        {
+          "positive_votes": 3,
+          "predicted_return": 0.008709051800575143,
+          "rank_dispersion": 0.30746052297038884,
+          "score": 0.6953551912568305,
+          "signal_date": "2026-11-27",
+          "ticker": "WST"
+        },
+        {
+          "positive_votes": 3,
+          "predicted_return": 0.008370150389365718,
+          "rank_dispersion": 0.3271820936082388,
+          "score": 0.6907445355191256,
+          "signal_date": "2026-11-27",
+          "ticker": "TYL"
+        }
+      ],
       "positions": {},
       "trades": [
         {
@@ -7026,6 +7200,11 @@
           "source_commit": "06162f9ecc38e361d13ababe91775b93ed5c9760",
           "ticker": "VICI",
           "type": "sell"
+        },
+        {
+          "count": 0,
+          "date": "2026-11-27",
+          "type": "signal_frozen"
         }
       ],
       "forward_executions": {
@@ -7193,7 +7372,7 @@
           "source_commit": "06162f9ecc38e361d13ababe91775b93ed5c9760"
         }
       },
-      "last_signal_session": "2026-11-20",
+      "last_signal_session": "2026-11-27",
       "nav": 105774.09443412113,
       "pending": [],
       "positions": {},
@@ -9318,6 +9497,11 @@
           "source_commit": "06162f9ecc38e361d13ababe91775b93ed5c9760",
           "ticker": "TXN",
           "type": "sell"
+        },
+        {
+          "count": 10,
+          "date": "2026-11-27",
+          "type": "signal_frozen"
         }
       ],
       "forward_executions": {
@@ -9626,14 +9810,65 @@
           "source_commit": "06162f9ecc38e361d13ababe91775b93ed5c9760"
         }
       },
-      "last_signal_session": "2026-11-20",
+      "last_signal_session": "2026-11-27",
       "nav": 74185.25305024297,
       "outage_control": {
         "first_trading_session": "2026-11-18",
         "held_exits_require_future_observed_quote": true,
         "historical_fills_created": 0
       },
-      "pending": [],
+      "pending": [
+        {
+          "score": 0.11151066276505096,
+          "signal_date": "2026-11-27",
+          "ticker": "CRWD"
+        },
+        {
+          "score": 0.10632430457641465,
+          "signal_date": "2026-11-27",
+          "ticker": "AMD"
+        },
+        {
+          "score": 0.0868708143353982,
+          "signal_date": "2026-11-27",
+          "ticker": "AVGO"
+        },
+        {
+          "score": 0.0666538490130557,
+          "signal_date": "2026-11-27",
+          "ticker": "STX"
+        },
+        {
+          "score": 0.0666538490130557,
+          "signal_date": "2026-11-27",
+          "ticker": "WDC"
+        },
+        {
+          "score": 0.06514320670396034,
+          "signal_date": "2026-11-27",
+          "ticker": "ADI"
+        },
+        {
+          "score": 0.06493705795473867,
+          "signal_date": "2026-11-27",
+          "ticker": "INTU"
+        },
+        {
+          "score": 0.06450560546092571,
+          "signal_date": "2026-11-27",
+          "ticker": "ANET"
+        },
+        {
+          "score": 0.05331391141234794,
+          "signal_date": "2026-11-27",
+          "ticker": "DDOG"
+        },
+        {
+          "score": 0.05182387823899711,
+          "signal_date": "2026-11-27",
+          "ticker": "AKAM"
+        }
+      ],
       "positions": {},
       "trades": [
         {
@@ -11167,6 +11402,11 @@
           "source_commit": "06162f9ecc38e361d13ababe91775b93ed5c9760",
           "ticker": "WDC",
           "type": "sell"
+        },
+        {
+          "count": 0,
+          "date": "2026-11-27",
+          "type": "signal_frozen"
         }
       ],
       "forward_executions": {
@@ -11334,7 +11574,7 @@
           "source_commit": "06162f9ecc38e361d13ababe91775b93ed5c9760"
         }
       },
-      "last_signal_session": "2026-11-20",
+      "last_signal_session": "2026-11-27",
       "nav": 80911.6748414605,
       "pending": [],
       "positions": {},
@@ -13164,6 +13404,11 @@
           "source_commit": "06162f9ecc38e361d13ababe91775b93ed5c9760",
           "ticker": "TPL",
           "type": "sell"
+        },
+        {
+          "count": 10,
+          "date": "2026-11-27",
+          "type": "signal_frozen"
         }
       ],
       "forward_executions": {
@@ -13317,9 +13562,70 @@
           "source_commit": "06162f9ecc38e361d13ababe91775b93ed5c9760"
         }
       },
-      "last_signal_session": "2026-11-20",
+      "last_signal_session": "2026-11-27",
       "nav": 94581.45868430914,
-      "pending": [],
+      "pending": [
+        {
+          "predicted_return": 0.014409310184419155,
+          "score": 0.014409310184419155,
+          "signal_date": "2026-11-27",
+          "ticker": "COIN"
+        },
+        {
+          "predicted_return": 0.01164712943136692,
+          "score": 0.01164712943136692,
+          "signal_date": "2026-11-27",
+          "ticker": "STX"
+        },
+        {
+          "predicted_return": 0.011288940906524658,
+          "score": 0.011288940906524658,
+          "signal_date": "2026-11-27",
+          "ticker": "WDC"
+        },
+        {
+          "predicted_return": 0.01106017455458641,
+          "score": 0.01106017455458641,
+          "signal_date": "2026-11-27",
+          "ticker": "GLW"
+        },
+        {
+          "predicted_return": 0.010502050630748272,
+          "score": 0.010502050630748272,
+          "signal_date": "2026-11-27",
+          "ticker": "FICO"
+        },
+        {
+          "predicted_return": 0.0103584760800004,
+          "score": 0.0103584760800004,
+          "signal_date": "2026-11-27",
+          "ticker": "TPL"
+        },
+        {
+          "predicted_return": 0.01031116209924221,
+          "score": 0.01031116209924221,
+          "signal_date": "2026-11-27",
+          "ticker": "NRG"
+        },
+        {
+          "predicted_return": 0.010256705805659294,
+          "score": 0.010256705805659294,
+          "signal_date": "2026-11-27",
+          "ticker": "TER"
+        },
+        {
+          "predicted_return": 0.00994298979640007,
+          "score": 0.00994298979640007,
+          "signal_date": "2026-11-27",
+          "ticker": "MU"
+        },
+        {
+          "predicted_return": 0.009793070144951344,
+          "score": 0.009793070144951344,
+          "signal_date": "2026-11-27",
+          "ticker": "GEV"
+        }
+      ],
       "positions": {},
       "trades": [
         {
@@ -15550,6 +15856,11 @@
           "source_commit": "06162f9ecc38e361d13ababe91775b93ed5c9760",
           "ticker": "MU",
           "type": "sell"
+        },
+        {
+          "count": 10,
+          "date": "2026-11-27",
+          "type": "signal_frozen"
         }
       ],
       "forward_executions": {
@@ -15858,14 +16169,75 @@
           "source_commit": "06162f9ecc38e361d13ababe91775b93ed5c9760"
         }
       },
-      "last_signal_session": "2026-11-20",
+      "last_signal_session": "2026-11-27",
       "nav": 77226.00541465523,
       "outage_control": {
         "first_trading_session": "2026-11-18",
         "held_exits_require_future_observed_quote": true,
         "historical_fills_created": 0
       },
-      "pending": [],
+      "pending": [
+        {
+          "predicted_return": 0.1300442460991379,
+          "score": 0.1300442460991379,
+          "signal_date": "2026-11-27",
+          "ticker": "TER"
+        },
+        {
+          "predicted_return": 0.0845192103672652,
+          "score": 0.0845192103672652,
+          "signal_date": "2026-11-27",
+          "ticker": "ON"
+        },
+        {
+          "predicted_return": 0.08286223752266579,
+          "score": 0.08286223752266579,
+          "signal_date": "2026-11-27",
+          "ticker": "HPQ"
+        },
+        {
+          "predicted_return": 0.06454124884247463,
+          "score": 0.06454124884247463,
+          "signal_date": "2026-11-27",
+          "ticker": "GEV"
+        },
+        {
+          "predicted_return": 0.06283706471617964,
+          "score": 0.06283706471617964,
+          "signal_date": "2026-11-27",
+          "ticker": "NOW"
+        },
+        {
+          "predicted_return": 0.06271831167026597,
+          "score": 0.06271831167026597,
+          "signal_date": "2026-11-27",
+          "ticker": "JCI"
+        },
+        {
+          "predicted_return": 0.06068973114088122,
+          "score": 0.06068973114088122,
+          "signal_date": "2026-11-27",
+          "ticker": "VST"
+        },
+        {
+          "predicted_return": 0.06049071329622049,
+          "score": 0.06049071329622049,
+          "signal_date": "2026-11-27",
+          "ticker": "CSCO"
+        },
+        {
+          "predicted_return": 0.06045324724490188,
+          "score": 0.06045324724490188,
+          "signal_date": "2026-11-27",
+          "ticker": "NTAP"
+        },
+        {
+          "predicted_return": 0.05603001929396167,
+          "score": 0.05603001929396167,
+          "signal_date": "2026-11-27",
+          "ticker": "AXON"
+        }
+      ],
       "positions": {},
       "trades": [
         {
