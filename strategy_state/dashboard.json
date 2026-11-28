@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "generated_at_utc": "2026-11-28T00:38:26.562407+00:00",
+  "generated_at_utc": "2026-11-28T00:39:36.191392+00:00",
   "principle": "Comparar rentabilidad acumulada y riesgo observado; no ordenar carteras con distintas fechas de inicio o supuestos de ejecución.",
   "counts": {
     "paper_with_diary": 18,
@@ -4715,7 +4715,7 @@
       "initial_capital": 100000.0,
       "last_equity": 96631.11876400081,
       "return_pct": -3.368881,
-      "day_return_pct": -0.048393,
+      "day_return_pct": 1.441149,
       "currency": "USD",
       "equity_history": [
         {
@@ -4751,36 +4751,37 @@
           "nav": 95258.30477815906
         },
         {
-          "date": "2026-11-23",
-          "nav": 95646.87858544498
-        },
-        {
-          "date": "2026-11-24",
-          "nav": 96104.98839018971
-        },
-        {
-          "date": "2026-11-25",
-          "nav": 96677.90375013114
-        },
-        {
           "date": "2026-11-27",
           "nav": 96631.11876400081
         }
       ],
-      "note": "TFG/AHP USD: semana cerrada con operaciones paper observadas y conciliación pendiente de la siguiente señal semanal.",
-      "activity_state": "cash",
-      "activity_label": "Semana liquidada · sin posiciones",
-      "activity_tickers": [],
+      "note": "Arquitectura TFG 2021 portada con riesgo/beta sobre retornos y ejecución prospectiva next-open.",
+      "activity_state": "pending",
+      "activity_label": "15 compras para próxima apertura",
+      "activity_tickers": [
+        "FE",
+        "COST",
+        "AIZ",
+        "DUK",
+        "O",
+        "DIS",
+        "SPG",
+        "PG",
+        "BDX",
+        "PEG",
+        "ES",
+        "WRB"
+      ],
       "open_positions_count": 0,
-      "pending_orders_count": 0,
+      "pending_orders_count": 15,
       "comparison_eligible": true,
       "comparison_universe_id": "SP500_2026-09-29_503",
       "comparison_universe_symbols": 503,
       "comparison_exclusion_reason": null,
-      "risk_observations": 12,
-      "annualized_volatility_pct": 7.660738,
+      "risk_observations": 9,
+      "annualized_volatility_pct": null,
       "max_drawdown_pct": -4.741695,
-      "sharpe_0rf": -2.076112
+      "sharpe_0rf": null
     },
     {
       "id": "capital_cycle_inflection_2026",
