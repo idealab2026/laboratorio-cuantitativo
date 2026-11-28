@@ -2,26 +2,34 @@
   "annual_short_borrow_assumption": 0.03,
   "books": {
     "GS-01": {
-      "cash": 100000,
+      "cash": 9864.955777404464,
       "diagnostic": null,
       "history": [
         {
           "date": "2026-11-25",
           "nav": 100000,
           "source_sha256": "fbcc4f22fb1813de0c9b84bb8eb4b3790879fb21b3a80bb9d4c26a9a818a8a92"
+        },
+        {
+          "date": "2026-11-27",
+          "nav": 100203.83683495165,
+          "opening_execution": {
+            "fees": 90.04499922337217,
+            "fills": 10,
+            "signal_sha256": "3b47c8957af2f27f2615d22d1b2639f119b988ed663e1fad5f3c58a480d39856",
+            "status": "simulated",
+            "target_count": 10
+          },
+          "source_sha256": "347f886dd57d385169e35967cba083cf21f138e94aa25599e25cf28324c202da"
         }
       ],
-      "last_session": "2026-11-25",
+      "last_session": "2026-11-27",
       "name": "Momentum ajustado por volatilidad",
       "pending": {
-        "issued_at_utc": "2026-11-25T23:58:43.968416+00:00",
-        "sha256": "3b47c8957af2f27f2615d22d1b2639f119b988ed663e1fad5f3c58a480d39856",
-        "signal_session": "2026-11-25",
+        "issued_at_utc": "2026-11-27T23:59:58.192507+00:00",
+        "sha256": "26c7af3c20fb3a4d7876a0d6bb2d5e951ebe4affe2fbee1fb6bb330ba88ab954",
+        "signal_session": "2026-11-27",
         "source_hashes": [
-          {
-            "session": "2026-10-28",
-            "sha256": "f281225f3db3d07ce745f0803078cb5a173bd1e48d5fbf46c527fbbe98426726"
-          },
           {
             "session": "2026-10-29",
             "sha256": "0b919436da053b8e3aee7e09682ec7a821847a1e129551b14b4236b0790c41bc"
@@ -101,23 +109,38 @@
           {
             "session": "2026-11-25",
             "sha256": "fbcc4f22fb1813de0c9b84bb8eb4b3790879fb21b3a80bb9d4c26a9a818a8a92"
+          },
+          {
+            "session": "2026-11-27",
+            "sha256": "347f886dd57d385169e35967cba083cf21f138e94aa25599e25cf28324c202da"
           }
         ],
-        "target_session": "2026-11-27",
+        "target_session": "2026-11-30",
         "weights": {
+          "ADP": 0.09,
           "AIZ": 0.09,
           "CAH": 0.09,
+          "CHTR": 0.09,
           "CLX": 0.09,
-          "CMG": 0.09,
+          "CMCSA": 0.09,
           "DPZ": 0.09,
           "MGM": 0.09,
           "T": 0.09,
-          "TSCO": 0.09,
-          "VZ": 0.09,
-          "WRB": 0.09
+          "VZ": 0.09
         }
       },
-      "positions": {},
+      "positions": {
+        "AIZ": 27.607361,
+        "CAH": 31.877591,
+        "CLX": 81.818181,
+        "CMG": 238.726785,
+        "DPZ": 24.968788,
+        "MGM": 258.101527,
+        "T": 392.807251,
+        "TSCO": 225.281597,
+        "VZ": 190.758794,
+        "WRB": 113.421552
+      },
       "signals": [
         {
           "issued_at_utc": "2026-11-25T23:58:43.968416+00:00",
@@ -222,32 +245,255 @@
             "VZ": 0.09,
             "WRB": 0.09
           }
+        },
+        {
+          "issued_at_utc": "2026-11-27T23:59:58.192507+00:00",
+          "sha256": "26c7af3c20fb3a4d7876a0d6bb2d5e951ebe4affe2fbee1fb6bb330ba88ab954",
+          "signal_session": "2026-11-27",
+          "source_hashes": [
+            {
+              "session": "2026-10-29",
+              "sha256": "0b919436da053b8e3aee7e09682ec7a821847a1e129551b14b4236b0790c41bc"
+            },
+            {
+              "session": "2026-10-30",
+              "sha256": "0f09c6ae175f1ea60bb6ced05f5a3620483aad3f4cdedc044edd8a1a8f2c2680"
+            },
+            {
+              "session": "2026-11-02",
+              "sha256": "eebe356462aa1a2bcce72d1f62aaa7be676fccba2279c555ec24c38658564910"
+            },
+            {
+              "session": "2026-11-03",
+              "sha256": "9b25e618f47478e7b61fbe5a019eea93de2d02fb50058e5fbee9953a2c105d24"
+            },
+            {
+              "session": "2026-11-04",
+              "sha256": "d8bb48d517a4e7557c3634c2f072518b48ccc34b307d1669812143cad1b2f7bd"
+            },
+            {
+              "session": "2026-11-05",
+              "sha256": "e175f0c80241cc7345979db086bcb83d513950cb5a97027aaba92df9783b93e1"
+            },
+            {
+              "session": "2026-11-06",
+              "sha256": "83bc3bf223004e864717fc44fec924b8df479d9b6dd9c2fad1cef9d5343eca6b"
+            },
+            {
+              "session": "2026-11-09",
+              "sha256": "44d94c3e556782780c149749005800389d786d1fa221281ad8a9b43b9a741ddb"
+            },
+            {
+              "session": "2026-11-10",
+              "sha256": "74529b48d939f3588c79de31304855abc82bb0c8e847eb2f89d69239e954397c"
+            },
+            {
+              "session": "2026-11-11",
+              "sha256": "ebcbb988afbec7a1abd694e2153976218ecdcd1215067ef190dd59584e47955e"
+            },
+            {
+              "session": "2026-11-12",
+              "sha256": "e6767240da15a78a1a33e8251fae3f19000ce13514d771b5fd03fd01417d4831"
+            },
+            {
+              "session": "2026-11-13",
+              "sha256": "848489c23800e69ce1edda437a865d7ad5edfb378fde9bb48e7804a143374b15"
+            },
+            {
+              "session": "2026-11-16",
+              "sha256": "9d8f9a13262b749e8f28bbb4de124015845a20e9955ed87620e16abd6341bd61"
+            },
+            {
+              "session": "2026-11-17",
+              "sha256": "9d22076ed0a0b2d21a46d893576826161750cbe9bb92367850f0465ff13e116d"
+            },
+            {
+              "session": "2026-11-18",
+              "sha256": "10d883d21c20f2c764f468357f0301346c1f41519aeb7e10e778558fd0e26d68"
+            },
+            {
+              "session": "2026-11-19",
+              "sha256": "3bce6e959064265876c9af5162509d03af910090e5a80aff0bb2d98bb0b6f33b"
+            },
+            {
+              "session": "2026-11-20",
+              "sha256": "5af5d4d2e8993471c231c03734d4b96d96acda17656bbadc7f2329fae7aa257d"
+            },
+            {
+              "session": "2026-11-23",
+              "sha256": "e93aadf9075cea2afda2b412e2d7b2d7f2475d7927a9d7b287760d7c062b29ad"
+            },
+            {
+              "session": "2026-11-24",
+              "sha256": "d26bd428bbc81615868fddb561e6ed589d8f1a00878502185d5263b5436f43ee"
+            },
+            {
+              "session": "2026-11-25",
+              "sha256": "fbcc4f22fb1813de0c9b84bb8eb4b3790879fb21b3a80bb9d4c26a9a818a8a92"
+            },
+            {
+              "session": "2026-11-27",
+              "sha256": "347f886dd57d385169e35967cba083cf21f138e94aa25599e25cf28324c202da"
+            }
+          ],
+          "target_session": "2026-11-30",
+          "weights": {
+            "ADP": 0.09,
+            "AIZ": 0.09,
+            "CAH": 0.09,
+            "CHTR": 0.09,
+            "CLX": 0.09,
+            "CMCSA": 0.09,
+            "DPZ": 0.09,
+            "MGM": 0.09,
+            "T": 0.09,
+            "VZ": 0.09
+          }
         }
       ],
       "status": "paper_signal_frozen",
-      "trades": []
+      "trades": [
+        {
+          "date": "2026-11-27",
+          "execution": "next_open_ohlc_paper_not_observed",
+          "fee": 9.004499685843,
+          "price": 326.16299999999995,
+          "recorded_at_utc": "2026-11-27T23:59:58.192507+00:00",
+          "shares": 27.607361,
+          "signal_sha256": "3b47c8957af2f27f2615d22d1b2639f119b988ed663e1fad5f3c58a480d39856",
+          "source_sha256": "347f886dd57d385169e35967cba083cf21f138e94aa25599e25cf28324c202da",
+          "ticker": "AIZ"
+        },
+        {
+          "date": "2026-11-27",
+          "execution": "next_open_ohlc_paper_not_observed",
+          "fee": 9.004499838905668,
+          "price": 282.47115156555174,
+          "recorded_at_utc": "2026-11-27T23:59:58.192507+00:00",
+          "shares": 31.877591,
+          "signal_sha256": "3b47c8957af2f27f2615d22d1b2639f119b988ed663e1fad5f3c58a480d39856",
+          "source_sha256": "347f886dd57d385169e35967cba083cf21f138e94aa25599e25cf28324c202da",
+          "ticker": "CAH"
+        },
+        {
+          "date": "2026-11-27",
+          "execution": "next_open_ohlc_paper_not_observed",
+          "fee": 9.004499909955,
+          "price": 110.05499999999999,
+          "recorded_at_utc": "2026-11-27T23:59:58.192507+00:00",
+          "shares": 81.818181,
+          "signal_sha256": "3b47c8957af2f27f2615d22d1b2639f119b988ed663e1fad5f3c58a480d39856",
+          "source_sha256": "347f886dd57d385169e35967cba083cf21f138e94aa25599e25cf28324c202da",
+          "ticker": "CLX"
+        },
+        {
+          "date": "2026-11-27",
+          "execution": "next_open_ohlc_paper_not_observed",
+          "fee": 9.004499976622402,
+          "price": 37.71885076332092,
+          "recorded_at_utc": "2026-11-27T23:59:58.192507+00:00",
+          "shares": 238.726785,
+          "signal_sha256": "3b47c8957af2f27f2615d22d1b2639f119b988ed663e1fad5f3c58a480d39856",
+          "source_sha256": "347f886dd57d385169e35967cba083cf21f138e94aa25599e25cf28324c202da",
+          "ticker": "CMG"
+        },
+        {
+          "date": "2026-11-27",
+          "execution": "next_open_ohlc_paper_not_observed",
+          "fee": 9.004499939364472,
+          "price": 360.63023721313476,
+          "recorded_at_utc": "2026-11-27T23:59:58.192507+00:00",
+          "shares": 24.968788,
+          "signal_sha256": "3b47c8957af2f27f2615d22d1b2639f119b988ed663e1fad5f3c58a480d39856",
+          "source_sha256": "347f886dd57d385169e35967cba083cf21f138e94aa25599e25cf28324c202da",
+          "ticker": "DPZ"
+        },
+        {
+          "date": "2026-11-27",
+          "execution": "next_open_ohlc_paper_not_observed",
+          "fee": 9.00449997079323,
+          "price": 34.88743393135071,
+          "recorded_at_utc": "2026-11-27T23:59:58.192507+00:00",
+          "shares": 258.101527,
+          "signal_sha256": "3b47c8957af2f27f2615d22d1b2639f119b988ed663e1fad5f3c58a480d39856",
+          "source_sha256": "347f886dd57d385169e35967cba083cf21f138e94aa25599e25cf28324c202da",
+          "ticker": "MGM"
+        },
+        {
+          "date": "2026-11-27",
+          "execution": "next_open_ohlc_paper_not_observed",
+          "fee": 9.004499992640131,
+          "price": 22.923456656455993,
+          "recorded_at_utc": "2026-11-27T23:59:58.192507+00:00",
+          "shares": 392.807251,
+          "signal_sha256": "3b47c8957af2f27f2615d22d1b2639f119b988ed663e1fad5f3c58a480d39856",
+          "source_sha256": "347f886dd57d385169e35967cba083cf21f138e94aa25599e25cf28324c202da",
+          "ticker": "T"
+        },
+        {
+          "date": "2026-11-27",
+          "execution": "next_open_ohlc_paper_not_observed",
+          "fee": 9.00449997201223,
+          "price": 39.96997576332092,
+          "recorded_at_utc": "2026-11-27T23:59:58.192507+00:00",
+          "shares": 225.281597,
+          "signal_sha256": "3b47c8957af2f27f2615d22d1b2639f119b988ed663e1fad5f3c58a480d39856",
+          "source_sha256": "347f886dd57d385169e35967cba083cf21f138e94aa25599e25cf28324c202da",
+          "ticker": "TSCO"
+        },
+        {
+          "date": "2026-11-27",
+          "execution": "next_open_ohlc_paper_not_observed",
+          "fee": 9.004499959114531,
+          "price": 47.20359030532837,
+          "recorded_at_utc": "2026-11-27T23:59:58.192507+00:00",
+          "shares": 190.758794,
+          "signal_sha256": "3b47c8957af2f27f2615d22d1b2639f119b988ed663e1fad5f3c58a480d39856",
+          "source_sha256": "347f886dd57d385169e35967cba083cf21f138e94aa25599e25cf28324c202da",
+          "ticker": "VZ"
+        },
+        {
+          "date": "2026-11-27",
+          "execution": "next_open_ohlc_paper_not_observed",
+          "fee": 9.004499978121512,
+          "price": 79.38967347335814,
+          "recorded_at_utc": "2026-11-27T23:59:58.192507+00:00",
+          "shares": 113.421552,
+          "signal_sha256": "3b47c8957af2f27f2615d22d1b2639f119b988ed663e1fad5f3c58a480d39856",
+          "source_sha256": "347f886dd57d385169e35967cba083cf21f138e94aa25599e25cf28324c202da",
+          "ticker": "WRB"
+        }
+      ]
     },
     "GS-02": {
-      "cash": 100000,
+      "cash": 9864.957016609907,
       "diagnostic": null,
       "history": [
         {
           "date": "2026-11-25",
           "nav": 100000,
           "source_sha256": "fbcc4f22fb1813de0c9b84bb8eb4b3790879fb21b3a80bb9d4c26a9a818a8a92"
+        },
+        {
+          "date": "2026-11-27",
+          "nav": 99619.30388439423,
+          "opening_execution": {
+            "fees": 90.04499798540469,
+            "fills": 10,
+            "signal_sha256": "bfd9fbc3d3a98b73756601bfc439c1cee769431e091749e8e29542c911cbd7ca",
+            "status": "simulated",
+            "target_count": 10
+          },
+          "source_sha256": "347f886dd57d385169e35967cba083cf21f138e94aa25599e25cf28324c202da"
         }
       ],
-      "last_session": "2026-11-25",
+      "last_session": "2026-11-27",
       "name": "Reversión a la media (z-score)",
       "pending": {
-        "issued_at_utc": "2026-11-25T23:58:43.968416+00:00",
-        "sha256": "bfd9fbc3d3a98b73756601bfc439c1cee769431e091749e8e29542c911cbd7ca",
-        "signal_session": "2026-11-25",
+        "issued_at_utc": "2026-11-27T23:59:58.192507+00:00",
+        "sha256": "ea3a540e801dc7c8fbe657ef0a49c9105ac372903c363cbc29ffd0c457e0f6d4",
+        "signal_session": "2026-11-27",
         "source_hashes": [
-          {
-            "session": "2026-10-28",
-            "sha256": "f281225f3db3d07ce745f0803078cb5a173bd1e48d5fbf46c527fbbe98426726"
-          },
           {
             "session": "2026-10-29",
             "sha256": "0b919436da053b8e3aee7e09682ec7a821847a1e129551b14b4236b0790c41bc"
@@ -327,23 +573,38 @@
           {
             "session": "2026-11-25",
             "sha256": "fbcc4f22fb1813de0c9b84bb8eb4b3790879fb21b3a80bb9d4c26a9a818a8a92"
+          },
+          {
+            "session": "2026-11-27",
+            "sha256": "347f886dd57d385169e35967cba083cf21f138e94aa25599e25cf28324c202da"
           }
         ],
-        "target_session": "2026-11-27",
+        "target_session": "2026-11-30",
         "weights": {
-          "ADI": 0.09,
           "CEG": 0.09,
+          "CI": 0.09,
+          "EBAY": 0.09,
           "GS": 0.09,
           "HAS": 0.09,
           "INTU": 0.09,
           "J": 0.09,
-          "MPC": 0.09,
-          "MS": 0.09,
-          "SNPS": 0.09,
+          "MNST": 0.09,
+          "SJM": 0.09,
           "WSM": 0.09
         }
       },
-      "positions": {},
+      "positions": {
+        "ADI": 26.239067,
+        "CEG": 37.165509,
+        "GS": 10.99438,
+        "HAS": 80.898876,
+        "INTU": 32.953152,
+        "J": 61.232822,
+        "MPC": 25.358541,
+        "MS": 52.359067,
+        "SNPS": 21.582733,
+        "WSM": 42.237656
+      },
       "signals": [
         {
           "issued_at_utc": "2026-11-25T23:58:43.968416+00:00",
@@ -448,32 +709,258 @@
             "SNPS": 0.09,
             "WSM": 0.09
           }
+        },
+        {
+          "issued_at_utc": "2026-11-27T23:59:58.192507+00:00",
+          "sha256": "ea3a540e801dc7c8fbe657ef0a49c9105ac372903c363cbc29ffd0c457e0f6d4",
+          "signal_session": "2026-11-27",
+          "source_hashes": [
+            {
+              "session": "2026-10-29",
+              "sha256": "0b919436da053b8e3aee7e09682ec7a821847a1e129551b14b4236b0790c41bc"
+            },
+            {
+              "session": "2026-10-30",
+              "sha256": "0f09c6ae175f1ea60bb6ced05f5a3620483aad3f4cdedc044edd8a1a8f2c2680"
+            },
+            {
+              "session": "2026-11-02",
+              "sha256": "eebe356462aa1a2bcce72d1f62aaa7be676fccba2279c555ec24c38658564910"
+            },
+            {
+              "session": "2026-11-03",
+              "sha256": "9b25e618f47478e7b61fbe5a019eea93de2d02fb50058e5fbee9953a2c105d24"
+            },
+            {
+              "session": "2026-11-04",
+              "sha256": "d8bb48d517a4e7557c3634c2f072518b48ccc34b307d1669812143cad1b2f7bd"
+            },
+            {
+              "session": "2026-11-05",
+              "sha256": "e175f0c80241cc7345979db086bcb83d513950cb5a97027aaba92df9783b93e1"
+            },
+            {
+              "session": "2026-11-06",
+              "sha256": "83bc3bf223004e864717fc44fec924b8df479d9b6dd9c2fad1cef9d5343eca6b"
+            },
+            {
+              "session": "2026-11-09",
+              "sha256": "44d94c3e556782780c149749005800389d786d1fa221281ad8a9b43b9a741ddb"
+            },
+            {
+              "session": "2026-11-10",
+              "sha256": "74529b48d939f3588c79de31304855abc82bb0c8e847eb2f89d69239e954397c"
+            },
+            {
+              "session": "2026-11-11",
+              "sha256": "ebcbb988afbec7a1abd694e2153976218ecdcd1215067ef190dd59584e47955e"
+            },
+            {
+              "session": "2026-11-12",
+              "sha256": "e6767240da15a78a1a33e8251fae3f19000ce13514d771b5fd03fd01417d4831"
+            },
+            {
+              "session": "2026-11-13",
+              "sha256": "848489c23800e69ce1edda437a865d7ad5edfb378fde9bb48e7804a143374b15"
+            },
+            {
+              "session": "2026-11-16",
+              "sha256": "9d8f9a13262b749e8f28bbb4de124015845a20e9955ed87620e16abd6341bd61"
+            },
+            {
+              "session": "2026-11-17",
+              "sha256": "9d22076ed0a0b2d21a46d893576826161750cbe9bb92367850f0465ff13e116d"
+            },
+            {
+              "session": "2026-11-18",
+              "sha256": "10d883d21c20f2c764f468357f0301346c1f41519aeb7e10e778558fd0e26d68"
+            },
+            {
+              "session": "2026-11-19",
+              "sha256": "3bce6e959064265876c9af5162509d03af910090e5a80aff0bb2d98bb0b6f33b"
+            },
+            {
+              "session": "2026-11-20",
+              "sha256": "5af5d4d2e8993471c231c03734d4b96d96acda17656bbadc7f2329fae7aa257d"
+            },
+            {
+              "session": "2026-11-23",
+              "sha256": "e93aadf9075cea2afda2b412e2d7b2d7f2475d7927a9d7b287760d7c062b29ad"
+            },
+            {
+              "session": "2026-11-24",
+              "sha256": "d26bd428bbc81615868fddb561e6ed589d8f1a00878502185d5263b5436f43ee"
+            },
+            {
+              "session": "2026-11-25",
+              "sha256": "fbcc4f22fb1813de0c9b84bb8eb4b3790879fb21b3a80bb9d4c26a9a818a8a92"
+            },
+            {
+              "session": "2026-11-27",
+              "sha256": "347f886dd57d385169e35967cba083cf21f138e94aa25599e25cf28324c202da"
+            }
+          ],
+          "target_session": "2026-11-30",
+          "weights": {
+            "CEG": 0.09,
+            "CI": 0.09,
+            "EBAY": 0.09,
+            "GS": 0.09,
+            "HAS": 0.09,
+            "INTU": 0.09,
+            "J": 0.09,
+            "MNST": 0.09,
+            "SJM": 0.09,
+            "WSM": 0.09
+          }
         }
       ],
       "status": "paper_signal_frozen",
-      "trades": []
+      "trades": [
+        {
+          "date": "2026-11-27",
+          "execution": "next_open_ohlc_paper_not_observed",
+          "fee": 9.004499980990499,
+          "price": 343.1715,
+          "recorded_at_utc": "2026-11-27T23:59:58.192507+00:00",
+          "shares": 26.239067,
+          "signal_sha256": "bfd9fbc3d3a98b73756601bfc439c1cee769431e091749e8e29542c911cbd7ca",
+          "source_sha256": "347f886dd57d385169e35967cba083cf21f138e94aa25599e25cf28324c202da",
+          "ticker": "ADI"
+        },
+        {
+          "date": "2026-11-27",
+          "execution": "next_open_ohlc_paper_not_observed",
+          "fee": 9.00449979544193,
+          "price": 242.28108366394042,
+          "recorded_at_utc": "2026-11-27T23:59:58.192507+00:00",
+          "shares": 37.165509,
+          "signal_sha256": "bfd9fbc3d3a98b73756601bfc439c1cee769431e091749e8e29542c911cbd7ca",
+          "source_sha256": "347f886dd57d385169e35967cba083cf21f138e94aa25599e25cf28324c202da",
+          "ticker": "CEG"
+        },
+        {
+          "date": "2026-11-27",
+          "execution": "next_open_ohlc_paper_not_observed",
+          "fee": 9.00449919918231,
+          "price": 819.0092755737304,
+          "recorded_at_utc": "2026-11-27T23:59:58.192507+00:00",
+          "shares": 10.99438,
+          "signal_sha256": "bfd9fbc3d3a98b73756601bfc439c1cee769431e091749e8e29542c911cbd7ca",
+          "source_sha256": "347f886dd57d385169e35967cba083cf21f138e94aa25599e25cf28324c202da",
+          "ticker": "GS"
+        },
+        {
+          "date": "2026-11-27",
+          "execution": "next_open_ohlc_paper_not_observed",
+          "fee": 9.0044999549775,
+          "price": 111.30562499999999,
+          "recorded_at_utc": "2026-11-27T23:59:58.192507+00:00",
+          "shares": 80.898876,
+          "signal_sha256": "bfd9fbc3d3a98b73756601bfc439c1cee769431e091749e8e29542c911cbd7ca",
+          "source_sha256": "347f886dd57d385169e35967cba083cf21f138e94aa25599e25cf28324c202da",
+          "ticker": "HAS"
+        },
+        {
+          "date": "2026-11-27",
+          "execution": "next_open_ohlc_paper_not_observed",
+          "fee": 9.004499786565212,
+          "price": 273.2515477294922,
+          "recorded_at_utc": "2026-11-27T23:59:58.192507+00:00",
+          "shares": 32.953152,
+          "signal_sha256": "bfd9fbc3d3a98b73756601bfc439c1cee769431e091749e8e29542c911cbd7ca",
+          "source_sha256": "347f886dd57d385169e35967cba083cf21f138e94aa25599e25cf28324c202da",
+          "ticker": "INTU"
+        },
+        {
+          "date": "2026-11-27",
+          "execution": "next_open_ohlc_paper_not_observed",
+          "fee": 9.004499915903132,
+          "price": 147.05348572540282,
+          "recorded_at_utc": "2026-11-27T23:59:58.192507+00:00",
+          "shares": 61.232822,
+          "signal_sha256": "bfd9fbc3d3a98b73756601bfc439c1cee769431e091749e8e29542c911cbd7ca",
+          "source_sha256": "347f886dd57d385169e35967cba083cf21f138e94aa25599e25cf28324c202da",
+          "ticker": "J"
+        },
+        {
+          "date": "2026-11-27",
+          "execution": "next_open_ohlc_paper_not_observed",
+          "fee": 9.004499879115338,
+          "price": 355.0874586639404,
+          "recorded_at_utc": "2026-11-27T23:59:58.192507+00:00",
+          "shares": 25.358541,
+          "signal_sha256": "bfd9fbc3d3a98b73756601bfc439c1cee769431e091749e8e29542c911cbd7ca",
+          "source_sha256": "347f886dd57d385169e35967cba083cf21f138e94aa25599e25cf28324c202da",
+          "ticker": "MPC"
+        },
+        {
+          "date": "2026-11-27",
+          "execution": "next_open_ohlc_paper_not_observed",
+          "fee": 9.004499994669898,
+          "price": 171.97594438934325,
+          "recorded_at_utc": "2026-11-27T23:59:58.192507+00:00",
+          "shares": 52.359067,
+          "signal_sha256": "bfd9fbc3d3a98b73756601bfc439c1cee769431e091749e8e29542c911cbd7ca",
+          "source_sha256": "347f886dd57d385169e35967cba083cf21f138e94aa25599e25cf28324c202da",
+          "ticker": "MS"
+        },
+        {
+          "date": "2026-11-27",
+          "execution": "next_open_ohlc_paper_not_observed",
+          "fee": 9.004499660830499,
+          "price": 417.20849999999996,
+          "recorded_at_utc": "2026-11-27T23:59:58.192507+00:00",
+          "shares": 21.582733,
+          "signal_sha256": "bfd9fbc3d3a98b73756601bfc439c1cee769431e091749e8e29542c911cbd7ca",
+          "source_sha256": "347f886dd57d385169e35967cba083cf21f138e94aa25599e25cf28324c202da",
+          "ticker": "SNPS"
+        },
+        {
+          "date": "2026-11-27",
+          "execution": "next_open_ohlc_paper_not_observed",
+          "fee": 9.004499817728368,
+          "price": 213.1865418319702,
+          "recorded_at_utc": "2026-11-27T23:59:58.192507+00:00",
+          "shares": 42.237656,
+          "signal_sha256": "bfd9fbc3d3a98b73756601bfc439c1cee769431e091749e8e29542c911cbd7ca",
+          "source_sha256": "347f886dd57d385169e35967cba083cf21f138e94aa25599e25cf28324c202da",
+          "ticker": "WSM"
+        }
+      ]
     },
     "GS-03": {
       "cash": 100000,
-      "diagnostic": null,
+      "diagnostic": "opening_rebalance_cancelled_missing_exact_bar_or_split",
       "history": [
         {
           "date": "2026-11-25",
           "nav": 100000,
           "source_sha256": "fbcc4f22fb1813de0c9b84bb8eb4b3790879fb21b3a80bb9d4c26a9a818a8a92"
+        },
+        {
+          "date": "2026-11-27",
+          "nav": 100000,
+          "opening_execution": {
+            "fills": 0,
+            "missing_symbols": [
+              "NEE"
+            ],
+            "signal_sha256": "240482a144480b476d3353b3f0ae625ef430ad097abb16f5122784fe0348a764",
+            "split_symbols": [],
+            "status": "cancelled",
+            "target_count": 12
+          },
+          "source_sha256": "347f886dd57d385169e35967cba083cf21f138e94aa25599e25cf28324c202da"
         }
       ],
-      "last_session": "2026-11-25",
+      "last_session": "2026-11-27",
       "name": "Risk parity (ERC)",
       "pending": {
-        "issued_at_utc": "2026-11-25T23:58:43.968416+00:00",
-        "sha256": "240482a144480b476d3353b3f0ae625ef430ad097abb16f5122784fe0348a764",
-        "signal_session": "2026-11-25",
+        "issued_at_utc": "2026-11-27T23:59:58.192507+00:00",
+        "sha256": "fb6a739b91e350869e40081e1d0ee2224c8cfeb86f68c09ac300953906c09bc8",
+        "signal_session": "2026-11-27",
         "source_hashes": [
-          {
-            "session": "2026-10-28",
-            "sha256": "f281225f3db3d07ce745f0803078cb5a173bd1e48d5fbf46c527fbbe98426726"
-          },
           {
             "session": "2026-10-29",
             "sha256": "0b919436da053b8e3aee7e09682ec7a821847a1e129551b14b4236b0790c41bc"
@@ -553,22 +1040,25 @@
           {
             "session": "2026-11-25",
             "sha256": "fbcc4f22fb1813de0c9b84bb8eb4b3790879fb21b3a80bb9d4c26a9a818a8a92"
+          },
+          {
+            "session": "2026-11-27",
+            "sha256": "347f886dd57d385169e35967cba083cf21f138e94aa25599e25cf28324c202da"
           }
         ],
-        "target_session": "2026-11-27",
+        "target_session": "2026-11-30",
         "weights": {
-          "AAPL": 0.0548025974998967,
-          "CAT": 0.06077862720453616,
-          "COST": 0.10754936505069347,
-          "DUK": 0.12060542601321125,
-          "JNJ": 0.05419370020629854,
-          "JPM": 0.04666128882782209,
-          "MSFT": 0.05169513525262825,
-          "NEE": 0.08476096374668497,
-          "PG": 0.07976229035407291,
-          "UNH": 0.03380151814588965,
-          "WMT": 0.06757670509614119,
-          "XOM": 0.13781238260212483
+          "AAPL": 0.0630077845707684,
+          "CAT": 0.05279962046272544,
+          "COST": 0.11925235218756346,
+          "DUK": 0.15184658462143286,
+          "JNJ": 0.06074045999198112,
+          "JPM": 0.051305072633865315,
+          "MSFT": 0.05797270555100684,
+          "PG": 0.09517201960851063,
+          "UNH": 0.03593281839455071,
+          "WMT": 0.07883968460806327,
+          "XOM": 0.13313089736953215
         }
       },
       "positions": {},
@@ -678,32 +1168,145 @@
             "WMT": 0.06757670509614119,
             "XOM": 0.13781238260212483
           }
+        },
+        {
+          "issued_at_utc": "2026-11-27T23:59:58.192507+00:00",
+          "sha256": "fb6a739b91e350869e40081e1d0ee2224c8cfeb86f68c09ac300953906c09bc8",
+          "signal_session": "2026-11-27",
+          "source_hashes": [
+            {
+              "session": "2026-10-29",
+              "sha256": "0b919436da053b8e3aee7e09682ec7a821847a1e129551b14b4236b0790c41bc"
+            },
+            {
+              "session": "2026-10-30",
+              "sha256": "0f09c6ae175f1ea60bb6ced05f5a3620483aad3f4cdedc044edd8a1a8f2c2680"
+            },
+            {
+              "session": "2026-11-02",
+              "sha256": "eebe356462aa1a2bcce72d1f62aaa7be676fccba2279c555ec24c38658564910"
+            },
+            {
+              "session": "2026-11-03",
+              "sha256": "9b25e618f47478e7b61fbe5a019eea93de2d02fb50058e5fbee9953a2c105d24"
+            },
+            {
+              "session": "2026-11-04",
+              "sha256": "d8bb48d517a4e7557c3634c2f072518b48ccc34b307d1669812143cad1b2f7bd"
+            },
+            {
+              "session": "2026-11-05",
+              "sha256": "e175f0c80241cc7345979db086bcb83d513950cb5a97027aaba92df9783b93e1"
+            },
+            {
+              "session": "2026-11-06",
+              "sha256": "83bc3bf223004e864717fc44fec924b8df479d9b6dd9c2fad1cef9d5343eca6b"
+            },
+            {
+              "session": "2026-11-09",
+              "sha256": "44d94c3e556782780c149749005800389d786d1fa221281ad8a9b43b9a741ddb"
+            },
+            {
+              "session": "2026-11-10",
+              "sha256": "74529b48d939f3588c79de31304855abc82bb0c8e847eb2f89d69239e954397c"
+            },
+            {
+              "session": "2026-11-11",
+              "sha256": "ebcbb988afbec7a1abd694e2153976218ecdcd1215067ef190dd59584e47955e"
+            },
+            {
+              "session": "2026-11-12",
+              "sha256": "e6767240da15a78a1a33e8251fae3f19000ce13514d771b5fd03fd01417d4831"
+            },
+            {
+              "session": "2026-11-13",
+              "sha256": "848489c23800e69ce1edda437a865d7ad5edfb378fde9bb48e7804a143374b15"
+            },
+            {
+              "session": "2026-11-16",
+              "sha256": "9d8f9a13262b749e8f28bbb4de124015845a20e9955ed87620e16abd6341bd61"
+            },
+            {
+              "session": "2026-11-17",
+              "sha256": "9d22076ed0a0b2d21a46d893576826161750cbe9bb92367850f0465ff13e116d"
+            },
+            {
+              "session": "2026-11-18",
+              "sha256": "10d883d21c20f2c764f468357f0301346c1f41519aeb7e10e778558fd0e26d68"
+            },
+            {
+              "session": "2026-11-19",
+              "sha256": "3bce6e959064265876c9af5162509d03af910090e5a80aff0bb2d98bb0b6f33b"
+            },
+            {
+              "session": "2026-11-20",
+              "sha256": "5af5d4d2e8993471c231c03734d4b96d96acda17656bbadc7f2329fae7aa257d"
+            },
+            {
+              "session": "2026-11-23",
+              "sha256": "e93aadf9075cea2afda2b412e2d7b2d7f2475d7927a9d7b287760d7c062b29ad"
+            },
+            {
+              "session": "2026-11-24",
+              "sha256": "d26bd428bbc81615868fddb561e6ed589d8f1a00878502185d5263b5436f43ee"
+            },
+            {
+              "session": "2026-11-25",
+              "sha256": "fbcc4f22fb1813de0c9b84bb8eb4b3790879fb21b3a80bb9d4c26a9a818a8a92"
+            },
+            {
+              "session": "2026-11-27",
+              "sha256": "347f886dd57d385169e35967cba083cf21f138e94aa25599e25cf28324c202da"
+            }
+          ],
+          "target_session": "2026-11-30",
+          "weights": {
+            "AAPL": 0.0630077845707684,
+            "CAT": 0.05279962046272544,
+            "COST": 0.11925235218756346,
+            "DUK": 0.15184658462143286,
+            "JNJ": 0.06074045999198112,
+            "JPM": 0.051305072633865315,
+            "MSFT": 0.05797270555100684,
+            "PG": 0.09517201960851063,
+            "UNH": 0.03593281839455071,
+            "WMT": 0.07883968460806327,
+            "XOM": 0.13313089736953215
+          }
         }
       ],
       "status": "paper_signal_frozen",
       "trades": []
     },
     "GS-04": {
-      "cash": 100000,
+      "cash": 99919.00044440893,
       "diagnostic": null,
       "history": [
         {
           "date": "2026-11-25",
           "nav": 100000,
           "source_sha256": "fbcc4f22fb1813de0c9b84bb8eb4b3790879fb21b3a80bb9d4c26a9a818a8a92"
+        },
+        {
+          "date": "2026-11-27",
+          "nav": 100026.3279520576,
+          "opening_execution": {
+            "fees": 53.99999945979052,
+            "fills": 6,
+            "signal_sha256": "55afaf66f1af01792e3e3cd9ac4f4565c19c1ab4e36db7202d0c687c50017579",
+            "status": "simulated",
+            "target_count": 6
+          },
+          "source_sha256": "347f886dd57d385169e35967cba083cf21f138e94aa25599e25cf28324c202da"
         }
       ],
-      "last_session": "2026-11-25",
+      "last_session": "2026-11-27",
       "name": "Pairs trading (OLS long/short)",
       "pending": {
-        "issued_at_utc": "2026-11-25T23:58:43.968416+00:00",
-        "sha256": "55afaf66f1af01792e3e3cd9ac4f4565c19c1ab4e36db7202d0c687c50017579",
-        "signal_session": "2026-11-25",
+        "issued_at_utc": "2026-11-27T23:59:58.192507+00:00",
+        "sha256": "b5275b7e0337b533fcdf0dce0d8ff34a40c07025faf28ad1d3b9d3e426bb3114",
+        "signal_session": "2026-11-27",
         "source_hashes": [
-          {
-            "session": "2026-10-28",
-            "sha256": "f281225f3db3d07ce745f0803078cb5a173bd1e48d5fbf46c527fbbe98426726"
-          },
           {
             "session": "2026-10-29",
             "sha256": "0b919436da053b8e3aee7e09682ec7a821847a1e129551b14b4236b0790c41bc"
@@ -783,19 +1386,23 @@
           {
             "session": "2026-11-25",
             "sha256": "fbcc4f22fb1813de0c9b84bb8eb4b3790879fb21b3a80bb9d4c26a9a818a8a92"
+          },
+          {
+            "session": "2026-11-27",
+            "sha256": "347f886dd57d385169e35967cba083cf21f138e94aa25599e25cf28324c202da"
           }
         ],
-        "target_session": "2026-11-27",
-        "weights": {
-          "BAC": -0.09,
-          "CL": 0.09,
-          "HD": -0.09,
-          "JPM": 0.09,
-          "LOW": 0.09,
-          "PG": -0.09
-        }
+        "target_session": "2026-11-30",
+        "weights": {}
       },
-      "positions": {},
+      "positions": {
+        "BAC": -182.778222,
+        "CL": 91.185413,
+        "HD": -25.0,
+        "JPM": 27.955084,
+        "LOW": 38.323965,
+        "PG": -52.395644
+      },
       "signals": [
         {
           "issued_at_utc": "2026-11-25T23:58:43.968416+00:00",
@@ -896,32 +1503,200 @@
             "LOW": 0.09,
             "PG": -0.09
           }
+        },
+        {
+          "issued_at_utc": "2026-11-27T23:59:58.192507+00:00",
+          "sha256": "b5275b7e0337b533fcdf0dce0d8ff34a40c07025faf28ad1d3b9d3e426bb3114",
+          "signal_session": "2026-11-27",
+          "source_hashes": [
+            {
+              "session": "2026-10-29",
+              "sha256": "0b919436da053b8e3aee7e09682ec7a821847a1e129551b14b4236b0790c41bc"
+            },
+            {
+              "session": "2026-10-30",
+              "sha256": "0f09c6ae175f1ea60bb6ced05f5a3620483aad3f4cdedc044edd8a1a8f2c2680"
+            },
+            {
+              "session": "2026-11-02",
+              "sha256": "eebe356462aa1a2bcce72d1f62aaa7be676fccba2279c555ec24c38658564910"
+            },
+            {
+              "session": "2026-11-03",
+              "sha256": "9b25e618f47478e7b61fbe5a019eea93de2d02fb50058e5fbee9953a2c105d24"
+            },
+            {
+              "session": "2026-11-04",
+              "sha256": "d8bb48d517a4e7557c3634c2f072518b48ccc34b307d1669812143cad1b2f7bd"
+            },
+            {
+              "session": "2026-11-05",
+              "sha256": "e175f0c80241cc7345979db086bcb83d513950cb5a97027aaba92df9783b93e1"
+            },
+            {
+              "session": "2026-11-06",
+              "sha256": "83bc3bf223004e864717fc44fec924b8df479d9b6dd9c2fad1cef9d5343eca6b"
+            },
+            {
+              "session": "2026-11-09",
+              "sha256": "44d94c3e556782780c149749005800389d786d1fa221281ad8a9b43b9a741ddb"
+            },
+            {
+              "session": "2026-11-10",
+              "sha256": "74529b48d939f3588c79de31304855abc82bb0c8e847eb2f89d69239e954397c"
+            },
+            {
+              "session": "2026-11-11",
+              "sha256": "ebcbb988afbec7a1abd694e2153976218ecdcd1215067ef190dd59584e47955e"
+            },
+            {
+              "session": "2026-11-12",
+              "sha256": "e6767240da15a78a1a33e8251fae3f19000ce13514d771b5fd03fd01417d4831"
+            },
+            {
+              "session": "2026-11-13",
+              "sha256": "848489c23800e69ce1edda437a865d7ad5edfb378fde9bb48e7804a143374b15"
+            },
+            {
+              "session": "2026-11-16",
+              "sha256": "9d8f9a13262b749e8f28bbb4de124015845a20e9955ed87620e16abd6341bd61"
+            },
+            {
+              "session": "2026-11-17",
+              "sha256": "9d22076ed0a0b2d21a46d893576826161750cbe9bb92367850f0465ff13e116d"
+            },
+            {
+              "session": "2026-11-18",
+              "sha256": "10d883d21c20f2c764f468357f0301346c1f41519aeb7e10e778558fd0e26d68"
+            },
+            {
+              "session": "2026-11-19",
+              "sha256": "3bce6e959064265876c9af5162509d03af910090e5a80aff0bb2d98bb0b6f33b"
+            },
+            {
+              "session": "2026-11-20",
+              "sha256": "5af5d4d2e8993471c231c03734d4b96d96acda17656bbadc7f2329fae7aa257d"
+            },
+            {
+              "session": "2026-11-23",
+              "sha256": "e93aadf9075cea2afda2b412e2d7b2d7f2475d7927a9d7b287760d7c062b29ad"
+            },
+            {
+              "session": "2026-11-24",
+              "sha256": "d26bd428bbc81615868fddb561e6ed589d8f1a00878502185d5263b5436f43ee"
+            },
+            {
+              "session": "2026-11-25",
+              "sha256": "fbcc4f22fb1813de0c9b84bb8eb4b3790879fb21b3a80bb9d4c26a9a818a8a92"
+            },
+            {
+              "session": "2026-11-27",
+              "sha256": "347f886dd57d385169e35967cba083cf21f138e94aa25599e25cf28324c202da"
+            }
+          ],
+          "target_session": "2026-11-30",
+          "weights": {}
         }
       ],
       "status": "paper_signal_frozen",
-      "trades": []
+      "trades": [
+        {
+          "date": "2026-11-27",
+          "execution": "next_open_ohlc_paper_not_observed",
+          "fee": 8.995499958088145,
+          "price": 49.21538167762757,
+          "recorded_at_utc": "2026-11-27T23:59:58.192507+00:00",
+          "shares": -182.778222,
+          "signal_sha256": "55afaf66f1af01792e3e3cd9ac4f4565c19c1ab4e36db7202d0c687c50017579",
+          "source_sha256": "347f886dd57d385169e35967cba083cf21f138e94aa25599e25cf28324c202da",
+          "ticker": "BAC"
+        },
+        {
+          "date": "2026-11-27",
+          "execution": "next_open_ohlc_paper_not_observed",
+          "fee": 9.004499984816615,
+          "price": 98.7493469467163,
+          "recorded_at_utc": "2026-11-27T23:59:58.192507+00:00",
+          "shares": 91.185413,
+          "signal_sha256": "55afaf66f1af01792e3e3cd9ac4f4565c19c1ab4e36db7202d0c687c50017579",
+          "source_sha256": "347f886dd57d385169e35967cba083cf21f138e94aa25599e25cf28324c202da",
+          "ticker": "CL"
+        },
+        {
+          "date": "2026-11-27",
+          "execution": "next_open_ohlc_paper_not_observed",
+          "fee": 8.9955,
+          "price": 359.82,
+          "recorded_at_utc": "2026-11-27T23:59:58.192507+00:00",
+          "shares": -25.0,
+          "signal_sha256": "55afaf66f1af01792e3e3cd9ac4f4565c19c1ab4e36db7202d0c687c50017579",
+          "source_sha256": "347f886dd57d385169e35967cba083cf21f138e94aa25599e25cf28324c202da",
+          "ticker": "HD"
+        },
+        {
+          "date": "2026-11-27",
+          "execution": "next_open_ohlc_paper_not_observed",
+          "fee": 9.004499722990715,
+          "price": 322.10597982788084,
+          "recorded_at_utc": "2026-11-27T23:59:58.192507+00:00",
+          "shares": 27.955084,
+          "signal_sha256": "55afaf66f1af01792e3e3cd9ac4f4565c19c1ab4e36db7202d0c687c50017579",
+          "source_sha256": "347f886dd57d385169e35967cba083cf21f138e94aa25599e25cf28324c202da",
+          "ticker": "JPM"
+        },
+        {
+          "date": "2026-11-27",
+          "execution": "next_open_ohlc_paper_not_observed",
+          "fee": 9.004499800153575,
+          "price": 234.95741633605957,
+          "recorded_at_utc": "2026-11-27T23:59:58.192507+00:00",
+          "shares": 38.323965,
+          "signal_sha256": "55afaf66f1af01792e3e3cd9ac4f4565c19c1ab4e36db7202d0c687c50017579",
+          "source_sha256": "347f886dd57d385169e35967cba083cf21f138e94aa25599e25cf28324c202da",
+          "ticker": "LOW"
+        },
+        {
+          "date": "2026-11-27",
+          "execution": "next_open_ohlc_paper_not_observed",
+          "fee": 8.995499993741472,
+          "price": 171.68411927032471,
+          "recorded_at_utc": "2026-11-27T23:59:58.192507+00:00",
+          "shares": -52.395644,
+          "signal_sha256": "55afaf66f1af01792e3e3cd9ac4f4565c19c1ab4e36db7202d0c687c50017579",
+          "source_sha256": "347f886dd57d385169e35967cba083cf21f138e94aa25599e25cf28324c202da",
+          "ticker": "PG"
+        }
+      ]
     },
     "GS-05": {
-      "cash": 100000,
+      "cash": 9864.956606687698,
       "diagnostic": null,
       "history": [
         {
           "date": "2026-11-25",
           "nav": 100000,
           "source_sha256": "fbcc4f22fb1813de0c9b84bb8eb4b3790879fb21b3a80bb9d4c26a9a818a8a92"
+        },
+        {
+          "date": "2026-11-27",
+          "nav": 100199.8016813173,
+          "opening_execution": {
+            "fees": 90.04499839491737,
+            "fills": 10,
+            "signal_sha256": "8207ef44b3fddfe82755bded4f6e37446d612687063bf76c1f9ae9473625655e",
+            "status": "simulated",
+            "target_count": 10
+          },
+          "source_sha256": "347f886dd57d385169e35967cba083cf21f138e94aa25599e25cf28324c202da"
         }
       ],
-      "last_session": "2026-11-25",
+      "last_session": "2026-11-27",
       "name": "Multifactor cuantitativo",
       "pending": {
-        "issued_at_utc": "2026-11-25T23:58:43.968416+00:00",
-        "sha256": "8207ef44b3fddfe82755bded4f6e37446d612687063bf76c1f9ae9473625655e",
-        "signal_session": "2026-11-25",
+        "issued_at_utc": "2026-11-27T23:59:58.192507+00:00",
+        "sha256": "95b30935a29ec1b319949274339a85738d0ebb4374b117dced993049c7503197",
+        "signal_session": "2026-11-27",
         "source_hashes": [
-          {
-            "session": "2026-10-28",
-            "sha256": "f281225f3db3d07ce745f0803078cb5a173bd1e48d5fbf46c527fbbe98426726"
-          },
           {
             "session": "2026-10-29",
             "sha256": "0b919436da053b8e3aee7e09682ec7a821847a1e129551b14b4236b0790c41bc"
@@ -1001,23 +1776,38 @@
           {
             "session": "2026-11-25",
             "sha256": "fbcc4f22fb1813de0c9b84bb8eb4b3790879fb21b3a80bb9d4c26a9a818a8a92"
+          },
+          {
+            "session": "2026-11-27",
+            "sha256": "347f886dd57d385169e35967cba083cf21f138e94aa25599e25cf28324c202da"
           }
         ],
-        "target_session": "2026-11-27",
+        "target_session": "2026-11-30",
         "weights": {
           "AIZ": 0.09,
+          "BRK-B": 0.09,
           "CAH": 0.09,
           "COST": 0.09,
           "DPZ": 0.09,
+          "EIX": 0.09,
           "EW": 0.09,
-          "KIM": 0.09,
-          "MCK": 0.09,
-          "SPG": 0.09,
-          "VTR": 0.09,
-          "WELL": 0.09
+          "ROL": 0.09,
+          "VZ": 0.09,
+          "WRB": 0.09
         }
       },
-      "positions": {},
+      "positions": {
+        "AIZ": 27.607361,
+        "CAH": 31.877591,
+        "COST": 8.287025,
+        "DPZ": 24.968788,
+        "EW": 84.23417,
+        "KIM": 346.153846,
+        "MCK": 8.379108,
+        "SPG": 38.446751,
+        "VTR": 102.821891,
+        "WELL": 36.474164
+      },
       "signals": [
         {
           "issued_at_utc": "2026-11-25T23:58:43.968416+00:00",
@@ -1122,32 +1912,255 @@
             "VTR": 0.09,
             "WELL": 0.09
           }
+        },
+        {
+          "issued_at_utc": "2026-11-27T23:59:58.192507+00:00",
+          "sha256": "95b30935a29ec1b319949274339a85738d0ebb4374b117dced993049c7503197",
+          "signal_session": "2026-11-27",
+          "source_hashes": [
+            {
+              "session": "2026-10-29",
+              "sha256": "0b919436da053b8e3aee7e09682ec7a821847a1e129551b14b4236b0790c41bc"
+            },
+            {
+              "session": "2026-10-30",
+              "sha256": "0f09c6ae175f1ea60bb6ced05f5a3620483aad3f4cdedc044edd8a1a8f2c2680"
+            },
+            {
+              "session": "2026-11-02",
+              "sha256": "eebe356462aa1a2bcce72d1f62aaa7be676fccba2279c555ec24c38658564910"
+            },
+            {
+              "session": "2026-11-03",
+              "sha256": "9b25e618f47478e7b61fbe5a019eea93de2d02fb50058e5fbee9953a2c105d24"
+            },
+            {
+              "session": "2026-11-04",
+              "sha256": "d8bb48d517a4e7557c3634c2f072518b48ccc34b307d1669812143cad1b2f7bd"
+            },
+            {
+              "session": "2026-11-05",
+              "sha256": "e175f0c80241cc7345979db086bcb83d513950cb5a97027aaba92df9783b93e1"
+            },
+            {
+              "session": "2026-11-06",
+              "sha256": "83bc3bf223004e864717fc44fec924b8df479d9b6dd9c2fad1cef9d5343eca6b"
+            },
+            {
+              "session": "2026-11-09",
+              "sha256": "44d94c3e556782780c149749005800389d786d1fa221281ad8a9b43b9a741ddb"
+            },
+            {
+              "session": "2026-11-10",
+              "sha256": "74529b48d939f3588c79de31304855abc82bb0c8e847eb2f89d69239e954397c"
+            },
+            {
+              "session": "2026-11-11",
+              "sha256": "ebcbb988afbec7a1abd694e2153976218ecdcd1215067ef190dd59584e47955e"
+            },
+            {
+              "session": "2026-11-12",
+              "sha256": "e6767240da15a78a1a33e8251fae3f19000ce13514d771b5fd03fd01417d4831"
+            },
+            {
+              "session": "2026-11-13",
+              "sha256": "848489c23800e69ce1edda437a865d7ad5edfb378fde9bb48e7804a143374b15"
+            },
+            {
+              "session": "2026-11-16",
+              "sha256": "9d8f9a13262b749e8f28bbb4de124015845a20e9955ed87620e16abd6341bd61"
+            },
+            {
+              "session": "2026-11-17",
+              "sha256": "9d22076ed0a0b2d21a46d893576826161750cbe9bb92367850f0465ff13e116d"
+            },
+            {
+              "session": "2026-11-18",
+              "sha256": "10d883d21c20f2c764f468357f0301346c1f41519aeb7e10e778558fd0e26d68"
+            },
+            {
+              "session": "2026-11-19",
+              "sha256": "3bce6e959064265876c9af5162509d03af910090e5a80aff0bb2d98bb0b6f33b"
+            },
+            {
+              "session": "2026-11-20",
+              "sha256": "5af5d4d2e8993471c231c03734d4b96d96acda17656bbadc7f2329fae7aa257d"
+            },
+            {
+              "session": "2026-11-23",
+              "sha256": "e93aadf9075cea2afda2b412e2d7b2d7f2475d7927a9d7b287760d7c062b29ad"
+            },
+            {
+              "session": "2026-11-24",
+              "sha256": "d26bd428bbc81615868fddb561e6ed589d8f1a00878502185d5263b5436f43ee"
+            },
+            {
+              "session": "2026-11-25",
+              "sha256": "fbcc4f22fb1813de0c9b84bb8eb4b3790879fb21b3a80bb9d4c26a9a818a8a92"
+            },
+            {
+              "session": "2026-11-27",
+              "sha256": "347f886dd57d385169e35967cba083cf21f138e94aa25599e25cf28324c202da"
+            }
+          ],
+          "target_session": "2026-11-30",
+          "weights": {
+            "AIZ": 0.09,
+            "BRK-B": 0.09,
+            "CAH": 0.09,
+            "COST": 0.09,
+            "DPZ": 0.09,
+            "EIX": 0.09,
+            "EW": 0.09,
+            "ROL": 0.09,
+            "VZ": 0.09,
+            "WRB": 0.09
+          }
         }
       ],
       "status": "paper_signal_frozen",
-      "trades": []
+      "trades": [
+        {
+          "date": "2026-11-27",
+          "execution": "next_open_ohlc_paper_not_observed",
+          "fee": 9.004499685843,
+          "price": 326.16299999999995,
+          "recorded_at_utc": "2026-11-27T23:59:58.192507+00:00",
+          "shares": 27.607361,
+          "signal_sha256": "8207ef44b3fddfe82755bded4f6e37446d612687063bf76c1f9ae9473625655e",
+          "source_sha256": "347f886dd57d385169e35967cba083cf21f138e94aa25599e25cf28324c202da",
+          "ticker": "AIZ"
+        },
+        {
+          "date": "2026-11-27",
+          "execution": "next_open_ohlc_paper_not_observed",
+          "fee": 9.004499838905668,
+          "price": 282.47115156555174,
+          "recorded_at_utc": "2026-11-27T23:59:58.192507+00:00",
+          "shares": 31.877591,
+          "signal_sha256": "8207ef44b3fddfe82755bded4f6e37446d612687063bf76c1f9ae9473625655e",
+          "source_sha256": "347f886dd57d385169e35967cba083cf21f138e94aa25599e25cf28324c202da",
+          "ticker": "CAH"
+        },
+        {
+          "date": "2026-11-27",
+          "execution": "next_open_ohlc_paper_not_observed",
+          "fee": 9.004499478862487,
+          "price": 1086.5780516967773,
+          "recorded_at_utc": "2026-11-27T23:59:58.192507+00:00",
+          "shares": 8.287025,
+          "signal_sha256": "8207ef44b3fddfe82755bded4f6e37446d612687063bf76c1f9ae9473625655e",
+          "source_sha256": "347f886dd57d385169e35967cba083cf21f138e94aa25599e25cf28324c202da",
+          "ticker": "COST"
+        },
+        {
+          "date": "2026-11-27",
+          "execution": "next_open_ohlc_paper_not_observed",
+          "fee": 9.004499939364472,
+          "price": 360.63023721313476,
+          "recorded_at_utc": "2026-11-27T23:59:58.192507+00:00",
+          "shares": 24.968788,
+          "signal_sha256": "8207ef44b3fddfe82755bded4f6e37446d612687063bf76c1f9ae9473625655e",
+          "source_sha256": "347f886dd57d385169e35967cba083cf21f138e94aa25599e25cf28324c202da",
+          "ticker": "DPZ"
+        },
+        {
+          "date": "2026-11-27",
+          "execution": "next_open_ohlc_paper_not_observed",
+          "fee": 9.004499996473152,
+          "price": 106.89842372131348,
+          "recorded_at_utc": "2026-11-27T23:59:58.192507+00:00",
+          "shares": 84.23417,
+          "signal_sha256": "8207ef44b3fddfe82755bded4f6e37446d612687063bf76c1f9ae9473625655e",
+          "source_sha256": "347f886dd57d385169e35967cba083cf21f138e94aa25599e25cf28324c202da",
+          "ticker": "EW"
+        },
+        {
+          "date": "2026-11-27",
+          "execution": "next_open_ohlc_paper_not_observed",
+          "fee": 9.004499995998,
+          "price": 26.012999999999998,
+          "recorded_at_utc": "2026-11-27T23:59:58.192507+00:00",
+          "shares": 346.153846,
+          "signal_sha256": "8207ef44b3fddfe82755bded4f6e37446d612687063bf76c1f9ae9473625655e",
+          "source_sha256": "347f886dd57d385169e35967cba083cf21f138e94aa25599e25cf28324c202da",
+          "ticker": "KIM"
+        },
+        {
+          "date": "2026-11-27",
+          "execution": "next_open_ohlc_paper_not_observed",
+          "fee": 9.00449969808105,
+          "price": 1074.6370255737304,
+          "recorded_at_utc": "2026-11-27T23:59:58.192507+00:00",
+          "shares": 8.379108,
+          "signal_sha256": "8207ef44b3fddfe82755bded4f6e37446d612687063bf76c1f9ae9473625655e",
+          "source_sha256": "347f886dd57d385169e35967cba083cf21f138e94aa25599e25cf28324c202da",
+          "ticker": "MCK"
+        },
+        {
+          "date": "2026-11-27",
+          "execution": "next_open_ohlc_paper_not_observed",
+          "fee": 9.004499800694187,
+          "price": 234.20704133605955,
+          "recorded_at_utc": "2026-11-27T23:59:58.192507+00:00",
+          "shares": 38.446751,
+          "signal_sha256": "8207ef44b3fddfe82755bded4f6e37446d612687063bf76c1f9ae9473625655e",
+          "source_sha256": "347f886dd57d385169e35967cba083cf21f138e94aa25599e25cf28324c202da",
+          "ticker": "SPG"
+        },
+        {
+          "date": "2026-11-27",
+          "execution": "next_open_ohlc_paper_not_observed",
+          "fee": 9.004499993711852,
+          "price": 87.57376377868651,
+          "recorded_at_utc": "2026-11-27T23:59:58.192507+00:00",
+          "shares": 102.821891,
+          "signal_sha256": "8207ef44b3fddfe82755bded4f6e37446d612687063bf76c1f9ae9473625655e",
+          "source_sha256": "347f886dd57d385169e35967cba083cf21f138e94aa25599e25cf28324c202da",
+          "ticker": "VTR"
+        },
+        {
+          "date": "2026-11-27",
+          "execution": "next_open_ohlc_paper_not_observed",
+          "fee": 9.0044999669835,
+          "price": 246.87337499999998,
+          "recorded_at_utc": "2026-11-27T23:59:58.192507+00:00",
+          "shares": 36.474164,
+          "signal_sha256": "8207ef44b3fddfe82755bded4f6e37446d612687063bf76c1f9ae9473625655e",
+          "source_sha256": "347f886dd57d385169e35967cba083cf21f138e94aa25599e25cf28324c202da",
+          "ticker": "WELL"
+        }
+      ]
     },
     "GS-SPY": {
-      "cash": 100000,
+      "cash": 9864.955532630294,
       "diagnostic": null,
       "history": [
         {
           "date": "2026-11-25",
           "nav": 100000,
           "source_sha256": "fbcc4f22fb1813de0c9b84bb8eb4b3790879fb21b3a80bb9d4c26a9a818a8a92"
+        },
+        {
+          "date": "2026-11-27",
+          "nav": 100169.97522604643,
+          "opening_execution": {
+            "fees": 90.0449994679018,
+            "fills": 1,
+            "signal_sha256": "1babfd177232d8d909ed4967ddb8868d6aeb27a920e0c9fbc2a296d1b774c529",
+            "status": "simulated",
+            "target_count": 1
+          },
+          "source_sha256": "347f886dd57d385169e35967cba083cf21f138e94aa25599e25cf28324c202da"
         }
       ],
-      "last_session": "2026-11-25",
+      "last_session": "2026-11-27",
       "name": "Referencia SPY",
       "pending": {
-        "issued_at_utc": "2026-11-25T23:58:43.968416+00:00",
-        "sha256": "1babfd177232d8d909ed4967ddb8868d6aeb27a920e0c9fbc2a296d1b774c529",
-        "signal_session": "2026-11-25",
+        "issued_at_utc": "2026-11-27T23:59:58.192507+00:00",
+        "sha256": "d9b7d4085608826aa355d6388b7db7862aff50db6852ea1c604f1186fea15952",
+        "signal_session": "2026-11-27",
         "source_hashes": [
-          {
-            "session": "2026-10-28",
-            "sha256": "f281225f3db3d07ce745f0803078cb5a173bd1e48d5fbf46c527fbbe98426726"
-          },
           {
             "session": "2026-10-29",
             "sha256": "0b919436da053b8e3aee7e09682ec7a821847a1e129551b14b4236b0790c41bc"
@@ -1227,14 +2240,20 @@
           {
             "session": "2026-11-25",
             "sha256": "fbcc4f22fb1813de0c9b84bb8eb4b3790879fb21b3a80bb9d4c26a9a818a8a92"
+          },
+          {
+            "session": "2026-11-27",
+            "sha256": "347f886dd57d385169e35967cba083cf21f138e94aa25599e25cf28324c202da"
           }
         ],
-        "target_session": "2026-11-27",
+        "target_session": "2026-11-30",
         "weights": {
           "SPY": 0.9
         }
       },
-      "positions": {},
+      "positions": {
+        "SPY": 123.990854
+      },
       "signals": [
         {
           "issued_at_utc": "2026-11-25T23:58:43.968416+00:00",
@@ -1330,10 +2349,117 @@
           "weights": {
             "SPY": 0.9
           }
+        },
+        {
+          "issued_at_utc": "2026-11-27T23:59:58.192507+00:00",
+          "sha256": "d9b7d4085608826aa355d6388b7db7862aff50db6852ea1c604f1186fea15952",
+          "signal_session": "2026-11-27",
+          "source_hashes": [
+            {
+              "session": "2026-10-29",
+              "sha256": "0b919436da053b8e3aee7e09682ec7a821847a1e129551b14b4236b0790c41bc"
+            },
+            {
+              "session": "2026-10-30",
+              "sha256": "0f09c6ae175f1ea60bb6ced05f5a3620483aad3f4cdedc044edd8a1a8f2c2680"
+            },
+            {
+              "session": "2026-11-02",
+              "sha256": "eebe356462aa1a2bcce72d1f62aaa7be676fccba2279c555ec24c38658564910"
+            },
+            {
+              "session": "2026-11-03",
+              "sha256": "9b25e618f47478e7b61fbe5a019eea93de2d02fb50058e5fbee9953a2c105d24"
+            },
+            {
+              "session": "2026-11-04",
+              "sha256": "d8bb48d517a4e7557c3634c2f072518b48ccc34b307d1669812143cad1b2f7bd"
+            },
+            {
+              "session": "2026-11-05",
+              "sha256": "e175f0c80241cc7345979db086bcb83d513950cb5a97027aaba92df9783b93e1"
+            },
+            {
+              "session": "2026-11-06",
+              "sha256": "83bc3bf223004e864717fc44fec924b8df479d9b6dd9c2fad1cef9d5343eca6b"
+            },
+            {
+              "session": "2026-11-09",
+              "sha256": "44d94c3e556782780c149749005800389d786d1fa221281ad8a9b43b9a741ddb"
+            },
+            {
+              "session": "2026-11-10",
+              "sha256": "74529b48d939f3588c79de31304855abc82bb0c8e847eb2f89d69239e954397c"
+            },
+            {
+              "session": "2026-11-11",
+              "sha256": "ebcbb988afbec7a1abd694e2153976218ecdcd1215067ef190dd59584e47955e"
+            },
+            {
+              "session": "2026-11-12",
+              "sha256": "e6767240da15a78a1a33e8251fae3f19000ce13514d771b5fd03fd01417d4831"
+            },
+            {
+              "session": "2026-11-13",
+              "sha256": "848489c23800e69ce1edda437a865d7ad5edfb378fde9bb48e7804a143374b15"
+            },
+            {
+              "session": "2026-11-16",
+              "sha256": "9d8f9a13262b749e8f28bbb4de124015845a20e9955ed87620e16abd6341bd61"
+            },
+            {
+              "session": "2026-11-17",
+              "sha256": "9d22076ed0a0b2d21a46d893576826161750cbe9bb92367850f0465ff13e116d"
+            },
+            {
+              "session": "2026-11-18",
+              "sha256": "10d883d21c20f2c764f468357f0301346c1f41519aeb7e10e778558fd0e26d68"
+            },
+            {
+              "session": "2026-11-19",
+              "sha256": "3bce6e959064265876c9af5162509d03af910090e5a80aff0bb2d98bb0b6f33b"
+            },
+            {
+              "session": "2026-11-20",
+              "sha256": "5af5d4d2e8993471c231c03734d4b96d96acda17656bbadc7f2329fae7aa257d"
+            },
+            {
+              "session": "2026-11-23",
+              "sha256": "e93aadf9075cea2afda2b412e2d7b2d7f2475d7927a9d7b287760d7c062b29ad"
+            },
+            {
+              "session": "2026-11-24",
+              "sha256": "d26bd428bbc81615868fddb561e6ed589d8f1a00878502185d5263b5436f43ee"
+            },
+            {
+              "session": "2026-11-25",
+              "sha256": "fbcc4f22fb1813de0c9b84bb8eb4b3790879fb21b3a80bb9d4c26a9a818a8a92"
+            },
+            {
+              "session": "2026-11-27",
+              "sha256": "347f886dd57d385169e35967cba083cf21f138e94aa25599e25cf28324c202da"
+            }
+          ],
+          "target_session": "2026-11-30",
+          "weights": {
+            "SPY": 0.9
+          }
         }
       ],
       "status": "paper_signal_frozen",
-      "trades": []
+      "trades": [
+        {
+          "date": "2026-11-27",
+          "execution": "next_open_ohlc_paper_not_observed",
+          "fee": 90.0449994679018,
+          "price": 726.2229153442382,
+          "recorded_at_utc": "2026-11-27T23:59:58.192507+00:00",
+          "shares": 123.990854,
+          "signal_sha256": "1babfd177232d8d909ed4967ddb8868d6aeb27a920e0c9fbc2a296d1b774c529",
+          "source_sha256": "347f886dd57d385169e35967cba083cf21f138e94aa25599e25cf28324c202da",
+          "ticker": "SPY"
+        }
+      ]
     }
   },
   "campaign_start": "2026-11-25",
